@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+
+  --surface: #f6f8f3;
+  --surface-2: #edf2e8;
+  --surface-card: #ffffff;
+
+  --ink: #151b18;
+  --ink-soft: #4e594f;
+  --slate: #8b9187;
+
+  --border: #dce3d6;
+  --border-strong: #c7d0bf;
+
+  --copper: #c15a2a;
+  --copper-dark: #9c4720;
+  --copper-bg: #f5dfce;
+
+  --signal-green: #1ca463;
+  --signal-green-strong: #0f7e4a;
+  --signal-green-bg: #dff3e7;
+
+  --signal-coral: #e1543b;
+  --signal-coral-strong: #b33f2a;
+  --signal-coral-bg: #fbe3dd;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --surface: #0f1115;
+  --surface-2: #151922;
+  --surface-card: #191f28;
+
+  --ink: #edf2f7;
+  --ink-soft: #b2bcc8;
+  --slate: #7d8793;
+
+  --border: #272d37;
+  --border-strong: #353d49;
+
+  --copper: #e07a46;
+  --copper-dark: #f0966a;
+  --copper-bg: #3a2317;
+
+  --signal-green: #2ece86;
+  --signal-green-strong: #6ee7b0;
+  --signal-green-bg: #123324;
+
+  --signal-coral: #f0715a;
+  --signal-coral-strong: #f79683;
+  --signal-coral-bg: #3a1a14;
+}
+
+/* Map the raw tokens above into Tailwind's theme so utilities like
+   bg-surface, text-ink, border-border, bg-copper, font-display, etc.
+   become available and flip automatically with the .dark class. */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-card: var(--surface-card);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-slate: var(--slate);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-copper: var(--copper);
+  --color-copper-dark: var(--copper-dark);
+  --color-copper-bg: var(--copper-bg);
+
+  --color-signal-green: var(--signal-green);
+  --color-signal-green-strong: var(--signal-green-strong);
+  --color-signal-green-bg: var(--signal-green-bg);
+
+  --color-signal-coral: var(--signal-coral);
+  --color-signal-coral-strong: var(--signal-coral-strong);
+  --color-signal-coral-bg: var(--signal-coral-bg);
+
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-inter-sans), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+* {
+  border-color: var(--border);
+}
