@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Logo } from "@/components/icons";
+import { LogoIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
@@ -18,12 +18,11 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex h-19 items-center justify-between">
+    <nav className="flex h-19 items-center justify-between backdrop-opacity-60">
       <Link href="/" className="flex items-center gap-2.5">
-        <Logo className="h-7.5 w-7.5 text-ink" />
-        <span className="font-display text-lg font-semibold tracking-tight text-ink">
-          Nandscape
-        </span>
+        <div className="w-38 md:w-48 lg:w-64">
+          <LogoIcon />
+        </div>
       </Link>
 
       <div className="hidden items-center gap-8.5 md:flex">
@@ -37,7 +36,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative py-1.5 text-sm font-medium transition-colors ${
+              className={`relative py-1.5 text-lg font-bold transition-colors ${
                 active
                   ? "text-ink"
                   : "text-ink-soft hover:text-ink"

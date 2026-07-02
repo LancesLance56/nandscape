@@ -42,9 +42,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${interSans.variable} ${jetbrainsMono.variable}`}
     >
       <head>
-        {/* Set the theme class before paint, so there's no light/dark flash */}
-        <script
-          dangerouslySetInnerHTML={{
+        <script dangerouslySetInnerHTML={{
             __html: `(function(){try{var s=localStorage.getItem("nandscape-theme");var t=s||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.classList.toggle("dark",t==="dark");}catch(e){}})();`,
           }}
         />
