@@ -18,9 +18,9 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex h-19 items-center justify-between backdrop-opacity-60">
+    <nav className="flex h-15 items-center justify-between backdrop-opacity-60 mx-auto px-6 sm:px-10 backdrop-blur-md max-w-330">
       <Link href="/" className="flex items-center gap-2.5">
-        <div className="w-38 md:w-48 lg:w-64">
+        <div className="w-38 md:w-48 lg:w-56">
           <LogoIcon />
         </div>
       </Link>
@@ -36,7 +36,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative py-1.5 text-lg font-bold transition-colors ${
+              className={`relative py-1.5 text-base font-bold transition-colors ${
                 active
                   ? "text-ink"
                   : "text-ink-soft hover:text-ink"

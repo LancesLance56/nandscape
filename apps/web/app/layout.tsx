@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import {Navbar} from "@/components/navbar";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -50,9 +49,6 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-surface text-ink">
         <ThemeProvider >
-          <div className="mx-auto px-6 sm:px-10 border-border border-b relative z-50 backdrop-blur-md">
-            <Navbar />
-          </div>
           {children}
         </ThemeProvider>
       </body>
