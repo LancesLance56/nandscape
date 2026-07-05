@@ -10,7 +10,6 @@ export interface PaletteEntry {
   symbol: string;
 }
 
-/** The MIME type used for the drag payload; canvas.tsx's onDrop reads this back out. */
 export const PALETTE_DRAG_MIME = "application/nandscape-node";
 
 export function PaletteItem({ entry }: { entry: PaletteEntry }) {

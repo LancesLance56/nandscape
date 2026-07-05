@@ -34,84 +34,68 @@ export function ResizablePanel({
     startSize: number;
   } | null>(null);
 
-  const moveHandlerRef = useRef<(event: PointerEvent) => void>(() => {});
-  const upHandlerRef = useRef<() => void>(() => {});
+  const pointerMoveRef = useRef<(event: PointerEvent) => void>(() => {});
 
-  useEffect(() => {
-    moveHandlerRef.current = (event: PointerEvent) => {
-      if (!dragState.current) return;
+  const handlePointerMove = useCallback(
+    (event: PointerEvent) => {
+      const drag = dragState.current;
+      if (!drag) return;
 
-      const isHorizontal = edge !== "top";
-      const position = isHorizontal ? event.clientX : event.clientY;
+      const pos = edge === "top" ? event.clientY : event.clientX;
+      const delta = pos - drag.startPos;
 
-      const delta = position - dragState.current.startPos;
       const signedDelta =
-        edge === "right" || edge === "top" ? -delta : delta;
+        edge === "top" || edge === "left"
+          ? -delta
+          : delta;
 
-      const nextSize = Math.min(
-        max,
-        Math.max(min, dragState.current.startSize + signedDelta)
+      const next = Math.max(
+        min,
+        Math.min(max, drag.startSize + signedDelta),
       );
 
-      onResize(nextSize);
-    };
-
-    upHandlerRef.current = () => {
-      dragState.current = null;
-
-      window.removeEventListener(
-        "pointermove",
-        moveHandlerRef.current
-      );
-      window.removeEventListener(
-        "pointerup",
-        upHandlerRef.current
-      );
-
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
-  }, [edge, max, min, onResize]);
+      onResize(next);
+    },
+    [edge, max, min, onResize],
+  );
 
   useEffect(() => {
-    return () => {
-      window.removeEventListener(
-        "pointermove",
-        moveHandlerRef.current
-      );
-      window.removeEventListener(
-        "pointerup",
-        upHandlerRef.current
-      );
+    pointerMoveRef.current = handlePointerMove;
+  }, [handlePointerMove]);
 
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
+  const cleanup = useCallback(() => {
+    dragState.current = null;
+
+    window.removeEventListener("pointermove", pointerMoveRef.current);
+    window.removeEventListener("pointerup", cleanup);
+
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
   }, []);
+
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      event.currentTarget.setPointerCapture(event.pointerId);
+
       dragState.current = {
         startPos: edge === "top" ? event.clientY : event.clientX,
         startSize: size,
       };
 
-      window.addEventListener(
-        "pointermove",
-        moveHandlerRef.current
-      );
-
-      window.addEventListener(
-        "pointerup",
-        upHandlerRef.current
-      );
+      window.addEventListener("pointermove", pointerMoveRef.current);
+      window.addEventListener("pointerup", cleanup);
 
       document.body.style.cursor =
         edge === "top" ? "row-resize" : "col-resize";
-
       document.body.style.userSelect = "none";
     },
-    [edge, size]
+    [cleanup, edge, size],
   );
 
   const isHorizontal = edge !== "top";
@@ -120,12 +104,12 @@ export function ResizablePanel({
     ? { width: size }
     : { height: size };
 
-  const handlePositionClass =
+  const handlePosition =
     edge === "left"
-      ? "left-0 -translate-x-1/2 h-full w-2 cursor-col-resize"
+      ? "left-0 top-0 -translate-x-1/2 h-full w-3 cursor-col-resize"
       : edge === "right"
-      ? "right-0 translate-x-1/2 h-full w-2 cursor-col-resize"
-      : "top-0 h-2 w-full cursor-row-resize";
+        ? "right-0 top-0 translate-x-1/2 h-full w-3 cursor-col-resize"
+        : "top-0 w-full h-3 cursor-row-resize";
 
   return (
     <div
@@ -140,7 +124,7 @@ export function ResizablePanel({
           isHorizontal ? "vertical" : "horizontal"
         }
         onPointerDown={handlePointerDown}
-        className={`group absolute z-20 ${handlePositionClass}`}
+        className={`group absolute z-20 touch-none ${handlePosition}`}
       >
         <div
           className={

@@ -2,9 +2,8 @@
 
 import { gateTypeToString } from "@nandscape/engine";
 import { useEditorStore } from "@/store/editor-store";
+import { isVariableArityGate, defaultInputCountForGateType } from "@/lib/editor/gate-defaults";
 import type { EditorNode, GateNodeData } from "@/types/editor";
-
-const VARIABLE_ARITY_LABEL = new Set(["NAND", "AND", "OR", "NOR", "XOR", "XNOR"]);
 
 export function GateInspectorPanel({ node }: { node: EditorNode }) {
   const data = node.data as GateNodeData;
@@ -31,14 +30,14 @@ export function GateInspectorPanel({ node }: { node: EditorNode }) {
         />
       </label>
 
-      {VARIABLE_ARITY_LABEL.has(typeName) && (
+      {isVariableArityGate(data.gateType) && (
         <label className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-ink-soft">Input count</span>
           <input
             type="number"
             min={2}
             max={8}
-            value={data.inputCount ?? 2}
+            value={data.inputCount ?? defaultInputCountForGateType(data.gateType)}
             onChange={(e) => updateNodeData(node.id, { inputCount: Number(e.target.value) })}
             className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
           />

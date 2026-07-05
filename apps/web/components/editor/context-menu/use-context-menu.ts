@@ -6,11 +6,11 @@ import { useUiStore } from "@/store/ui-store";
 export interface ContextMenuTarget {
   x: number;
   y: number;
-  /** ID of the node/edge right-clicked, or null for the empty canvas. */
+  /** Id of the node/edge right-clicked, or null for the empty canvas. */
   targetId: string | null;
+  targetType: "node" | "edge" | "pane";
 }
 
-/** Returns a stable function for opening the context menu at a given point. */
 export function useContextMenuTrigger() {
   const openContextMenu = useUiStore((s) => s.openContextMenu);
   return useCallback((target: ContextMenuTarget) => openContextMenu(target), [openContextMenu]);

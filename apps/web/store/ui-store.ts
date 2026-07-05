@@ -2,6 +2,18 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { SidebarTab, InspectorTab, BottomPanelTab } from "@/types/editor";
 
+/**
+ * ui-store.ts
+ * ---------------------------------------------------------------------------
+ * Pure view/chrome state: which panels are open, how big they are, which
+ * tab is active. Nothing here describes circuit structure (that's
+ * editor-store) or undo history (that's history-store), so a panel resize
+ * never pollutes the undo stack.
+ *
+ * Persisted to localStorage so panel layout survives a refresh, the same
+ * way an IDE remembers your sidebar width.
+ */
+
 export interface UiState {
   sidebarOpen: boolean;
   sidebarTab: SidebarTab;
@@ -15,7 +27,7 @@ export interface UiState {
   bottomPanelTab: BottomPanelTab;
   bottomPanelHeight: number;
 
-  contextMenu: { x: number; y: number; targetId: string | null } | null;
+  contextMenu: { x: number; y: number; targetId: string | null; targetType: "node" | "edge" | "pane" } | null;
   activeDialog: string | null;
 
   toggleSidebar: () => void;
@@ -30,7 +42,7 @@ export interface UiState {
   setBottomPanelTab: (tab: BottomPanelTab) => void;
   setBottomPanelHeight: (height: number) => void;
 
-  openContextMenu: (menu: { x: number; y: number; targetId: string | null }) => void;
+  openContextMenu: (menu: { x: number; y: number; targetId: string | null; targetType: "node" | "edge" | "pane" }) => void;
   closeContextMenu: () => void;
 
   openDialog: (dialogId: string) => void;

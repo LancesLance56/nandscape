@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useContextMenuState, useCloseContextMenu } from "./use-context-menu";
-import { buildContextMenuItems } from "./context-menu-registry";
+import { buildContextMenuItems, type ContextMenuItem } from "./context-menu-registry";
 import { useEditorStore } from "@/store/editor-store";
 import { useCommandDispatch } from "@/hooks/use-command";
 import { commandRegistry } from "@/lib/commands/registry";
@@ -12,6 +12,7 @@ export function ContextMenu() {
   const close = useCloseContextMenu();
   const dispatch = useCommandDispatch();
   const nodes = useEditorStore((s) => s.nodes);
+  const edges = useEditorStore((s) => s.edges);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,8 +35,15 @@ export function ContextMenu() {
 
   if (!menu) return null;
 
-  const node = menu.targetId ? (nodes.find((n) => n.id === menu.targetId) ?? null) : null;
-  const items = buildContextMenuItems({ targetId: menu.targetId, node });
+  const node = menu.targetType === "node" ? (nodes.find((n) => n.id === menu.targetId) ?? null) : null;
+  const edge = menu.targetType === "edge" ? (edges.find((e) => e.id === menu.targetId) ?? null) : null;
+  const items = buildContextMenuItems({ targetId: menu.targetId, targetType: menu.targetType, node, edge });
+
+  const runItem = (item: ContextMenuItem) => {
+    const command = item.dynamicCommand ? item.dynamicCommand() : commandRegistry.get(item.commandId!);
+    if (command) dispatch(command);
+    close();
+  };
 
   return (
     <div
@@ -43,15 +51,11 @@ export function ContextMenu() {
       style={{ left: menu.x, top: menu.y }}
       className="fixed z-50 w-52 rounded-xl border border-border bg-surface-card py-1.5 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <button
-          key={item.commandId}
+          key={item.commandId ?? `${item.label}-${index}`}
           type="button"
-          onClick={() => {
-            const command = commandRegistry.get(item.commandId);
-            if (command) dispatch(command);
-            close();
-          }}
+          onClick={() => runItem(item)}
           className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-sm transition-colors hover:bg-surface-2 ${
             item.destructive ? "text-signal-coral" : "text-ink"
           }`}

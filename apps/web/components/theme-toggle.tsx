@@ -1,11 +1,30 @@
 "use client";
 
-import { useTheme } from "@/components/theme-provider";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { MoonIcon, SunIcon } from "@/components/icons";
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        className="relative flex h-8 w-14 items-center rounded-full border border-border-strong bg-surface-2 p-1"
+        aria-label="Toggle theme"
+      >
+        <span className="h-6 w-6 rounded-full bg-surface-card" />
+      </button>
+    );
+  }
+
+  const isDark = resolvedTheme === "dark";
 
   return (
     <button
@@ -13,7 +32,7 @@ export function ThemeToggle() {
       role="switch"
       aria-checked={isDark}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={toggleTheme}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
       className="relative flex h-8 w-14 items-center rounded-full border border-border-strong bg-surface-2 p-1 transition-colors"
     >
       <span

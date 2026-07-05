@@ -44,7 +44,7 @@ const GROUPS: { title: string; entries: PaletteEntry[] }[] = [
  */
 export function GatePalette() {
   return (
-    <div className="flex flex-col gap-5 overflow-y-auto p-3">
+    <div className="flex flex-col gap-5 p-3">
       {GROUPS.map((group) => (
         <div key={group.title} className="flex flex-col gap-2">
           <span className="px-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">

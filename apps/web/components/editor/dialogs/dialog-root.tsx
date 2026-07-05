@@ -3,6 +3,12 @@
 import type { ComponentType } from "react";
 import { useUiStore } from "@/store/ui-store";
 
+/**
+ * dialogs/ holds modal flows (confirm, rename, export, settings). Only one
+ * can be open at a time, tracked by id in ui-store.activeDialog. New
+ * dialogs register themselves in `dialogRegistry` below rather than
+ * DialogRoot growing a switch statement per dialog.
+ */
 export const dialogRegistry: Record<string, ComponentType<{ onClose: () => void }>> = {
   // "confirm-delete-circuit": ConfirmDeleteCircuitDialog,
 };

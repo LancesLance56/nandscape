@@ -32,10 +32,8 @@ export function HeroGradient() {
 
       const timeout = window.setTimeout(() => {
         particle.style.transition = `all ${duration}s ease-in-out`;
-        // Much lower opacity for subtlety
         particle.style.opacity = `${Math.random() * 0.15 + 0.05}`;
 
-        // Reduced travel distance
         particle.style.left = `${pos.x + (Math.random() * 10 - 5)}%`;
         particle.style.top = `${pos.y - Math.random() * 15}%`;
 
@@ -103,7 +101,7 @@ export function HeroGradient() {
 
           <div
             ref={particlesRef}
-            className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen opacity-30"
+            className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen"
           />
         </div>
       </div>

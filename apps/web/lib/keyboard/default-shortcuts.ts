@@ -1,5 +1,10 @@
 import type { ShortcutBinding } from "./shortcut-registry";
 
+/**
+ * The default binding table. Command ids referenced here (e.g. "history.undo",
+ * "selection.delete") must exist in commandRegistry — see
+ * components/editor/index.tsx where both are wired up together on mount.
+ */
 export const DEFAULT_SHORTCUTS: ShortcutBinding[] = [
   { combo: "mod+z", commandId: "history.undo" },
   { combo: "mod+shift+z", commandId: "history.redo" },

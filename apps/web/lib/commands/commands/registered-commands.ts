@@ -3,6 +3,7 @@ import { useHistoryStore } from "@/store/history-store";
 import { useEditorStore } from "@/store/editor-store";
 import { useUiStore } from "@/store/ui-store";
 import { useSimulationStore } from "@/store/simulation-store";
+import { useWireDraftStore } from "@/store/wire-draft-store";
 import { createDeleteSelectionCommand } from "./delete-selection.command";
 
 /**
@@ -51,7 +52,13 @@ export const selectAllCommand = defineCommand({
 export const clearSelectionCommand = defineCommand({
   id: "selection.clear",
   label: "Clear selection",
-  execute: () => useEditorStore.getState().clearSelection(),
+  execute: () => {
+    if (useWireDraftStore.getState().draft) {
+      useWireDraftStore.getState().cancel();
+      return;
+    }
+    useEditorStore.getState().clearSelection();
+  },
 });
 
 // --- Placeholders — wired up once clipboard/duplication logic exists -------

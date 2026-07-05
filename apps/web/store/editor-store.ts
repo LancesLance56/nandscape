@@ -6,6 +6,23 @@ import type { NodeChange, EdgeChange } from "@xyflow/react";
 import type { EditorNode, EditorEdge, Selection } from "@/types/editor";
 import { EMPTY_SELECTION } from "@/types/editor";
 
+/**
+ * editor-store.ts
+ * ---------------------------------------------------------------------------
+ * The ONLY store that owns circuit structure (nodes + edges + selection).
+ * This is deliberately "dumb": it exposes low-level graph primitives
+ * (addNode, removeNodes, connect, ...) but no domain logic about what a
+ * valid connection is, what happens on delete, etc. That logic lives in
+ * lib/commands/* so it can be undo/redo-aware and shared between the
+ * toolbar, context menu, and keyboard shortcuts.
+ *
+ * React Flow's onNodesChange/onEdgesChange handlers are wired straight to
+ * this store (see canvas/circuit-canvas.tsx) for drag/resize/select
+ * interactions that don't need their own Command — those are considered
+ * transient view state, not undoable structural edits. Structural edits
+ * (add/remove/connect) always go through commands.
+ */
+
 export interface EditorState {
   nodes: EditorNode[];
   edges: EditorEdge[];
@@ -13,9 +30,11 @@ export interface EditorState {
 
   activeCircuitId: string | null;
 
+  // --- React Flow wiring ------------------------------------------------
   onNodesChange: (changes: NodeChange<EditorNode>[]) => void;
   onEdgesChange: (changes: EdgeChange<EditorEdge>[]) => void;
 
+  // --- Graph primitives (called by commands, not UI directly) -----------
   setNodes: (nodes: EditorNode[]) => void;
   setEdges: (edges: EditorEdge[]) => void;
   addNode: (node: EditorNode) => void;
@@ -26,8 +45,10 @@ export interface EditorState {
 
   addEdge: (edge: EditorEdge) => void;
   removeEdges: (edgeIds: string[]) => void;
-  connect: (connection: Connection) => EditorEdge;
+  updateEdgeData: (edgeId: string, patch: Record<string, unknown>) => void;
+  connect: (connection: Connection, waypoints?: { x: number; y: number }[]) => EditorEdge;
 
+  // --- Selection ----------------------------------------------------------
   setSelection: (selection: Selection) => void;
   clearSelection: () => void;
   selectAll: () => void;
@@ -58,6 +79,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     const idSet = new Set(nodeIds);
     set((state) => ({
       nodes: state.nodes.filter((n) => !idSet.has(n.id)),
+      // A node's wires are structurally invalid without it — cascade delete.
       edges: state.edges.filter((e) => !idSet.has(e.source) && !idSet.has(e.target)),
     }));
   },
@@ -83,7 +105,13 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     set((state) => ({ edges: state.edges.filter((e) => !idSet.has(e.id)) }));
   },
 
-  connect: (connection) => {
+  updateEdgeData: (edgeId, patch) => {
+    set((state) => ({
+      edges: state.edges.map((e) => (e.id === edgeId ? { ...e, data: { ...e.data, ...patch } } : e)),
+    }));
+  },
+
+  connect: (connection, waypoints) => {
     const edge: EditorEdge = {
       id: `edge_${connection.source}:${connection.sourceHandle ?? "o"}-${connection.target}:${connection.targetHandle ?? "i"}_${crypto.randomUUID().slice(0, 8)}`,
       source: connection.source!,
@@ -91,7 +119,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       sourceHandle: connection.sourceHandle,
       targetHandle: connection.targetHandle,
       type: "wire",
-      data: {},
+      data: waypoints && waypoints.length > 0 ? { waypoints } : {},
     };
     get().addEdge(edge);
     return edge;

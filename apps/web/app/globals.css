@@ -96,3 +96,9 @@ body {
 * {
   border-color: var(--border);
 }
+/* Circuit Editor — marching-dashes animation for HIGH wires (wire-edge.tsx). */
+@keyframes nandscape-wire-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}

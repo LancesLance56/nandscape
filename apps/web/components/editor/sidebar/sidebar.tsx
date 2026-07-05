@@ -2,6 +2,7 @@
 
 import { useUiStore } from "@/store/ui-store";
 import { GatePalette } from "./gate-palette";
+import { CircuitsPanel } from "./circuits-panel";
 import type { SidebarTab } from "@/types/editor";
 
 const TABS: { id: SidebarTab; label: string }[] = [
@@ -18,21 +19,12 @@ function LayersPanel() {
   );
 }
 
-function CircuitsPanel() {
-  return (
-    <div className="flex flex-1 items-center justify-center p-6 text-center text-sm text-slate">
-      Circuits panel — subcircuit/puzzle-stage browser.
-    </div>
-  );
-}
-
 export function Sidebar() {
   const activeTab = useUiStore((s) => s.sidebarTab);
   const setTab = useUiStore((s) => s.setSidebarTab);
 
   return (
     <div className="flex h-full flex-col bg-surface-card">
-
       <div className="flex border-b border-border px-2">
         {TABS.map((tab) => (
           <button
@@ -45,16 +37,16 @@ export function Sidebar() {
           >
             {tab.label}
             {activeTab === tab.id && (
-              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper"/>
+              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper" />
             )}
           </button>
         ))}
       </div>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        {activeTab === "palette" && <GatePalette/>}
-        {activeTab === "layers" && <LayersPanel/>}
-        {activeTab === "circuits" && <CircuitsPanel/>}
+        {activeTab === "palette" && <GatePalette />}
+        {activeTab === "layers" && <LayersPanel />}
+        {activeTab === "circuits" && <CircuitsPanel />}
       </div>
     </div>
   );

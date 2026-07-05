@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import Script from "next/script";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -35,23 +36,16 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${interSans.variable} ${jetbrainsMono.variable}`}
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem("nandscape-theme");var t=s||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.classList.toggle("dark",t==="dark");}catch(e){}})();`,
-          }}
-        />
-        <title>Nandscape</title>
-      </head>
-      <body className="font-body antialiased bg-surface text-ink">
-        <ThemeProvider >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+  <html
+    lang="en"
+    suppressHydrationWarning
+    className={`${spaceGrotesk.variable} ${interSans.variable} ${jetbrainsMono.variable}`}
+  >
+    <body className="font-body antialiased bg-surface text-ink">
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </body>
+  </html>
   );
 }

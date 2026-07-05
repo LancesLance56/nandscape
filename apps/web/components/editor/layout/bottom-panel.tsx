@@ -9,18 +9,15 @@ const TABS: { id: BottomPanelTab; label: string }[] = [
   { id: "problems", label: "Problems" },
 ];
 
-const MESSAGES: Record<BottomPanelTab, string> = {
-  console: "Simulation and validation messages will stream here.",
-  waveform: "Signal waveform trace — renders once the simulation clock is wired up.",
-  problems: "Circuit validation issues (unconnected pins, empty nets, ...) will list here.",
-};
-
 function PanelBody({ tab }: { tab: BottomPanelTab }) {
-  return (
-    <div className="flex flex-1 items-center overflow-y-auto px-4 text-sm text-slate">
-      {MESSAGES[tab]}
-    </div>
-  );
+  const message =
+    tab === "console"
+      ? "Simulation and validation messages will stream here."
+      : tab === "waveform"
+        ? "Signal waveform trace — renders once the simulation clock is wired up."
+        : "Circuit validation issues (unconnected pins, empty nets, ...) will list here.";
+
+  return <div className="flex flex-1 items-center px-4 text-sm text-slate">{message}</div>;
 }
 
 export function BottomPanel() {
@@ -38,9 +35,7 @@ export function BottomPanel() {
             type="button"
             onClick={() => setTab(tab.id)}
             className={`rounded-md px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wide transition-colors ${
-              open && activeTab === tab.id
-                ? "bg-surface-2 text-ink"
-                : "text-ink-soft hover:bg-surface-2/50 hover:text-ink"
+              open && activeTab === tab.id ? "bg-surface-2 text-ink" : "text-ink-soft hover:text-ink"
             }`}
           >
             {tab.label}
@@ -51,7 +46,7 @@ export function BottomPanel() {
           type="button"
           onClick={toggle}
           aria-label={open ? "Collapse panel" : "Expand panel"}
-          className="rounded-md px-1.5 py-1 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+          className="rounded-md px-1.5 py-1 text-ink-soft transition-colors hover:text-ink"
         >
           {open ? "⌄" : "⌃"}
         </button>

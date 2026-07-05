@@ -1,92 +1,69 @@
 "use client";
 
-import { memo, useState, useCallback } from "react";
+import { memo } from "react";
 import type { NodeProps } from "@xyflow/react";
+import { SignalState } from "@nandscape/engine";
 import { NodeHandle, Position } from "./node-handle";
+import { useEditorStore } from "@/store/editor-store";
+import { useLiveSignalsStore } from "@/store/live-signals-store";
 import type { EditorNode, IoNodeData } from "@/types/editor";
 
-function GripIcon() {
-  return (
-    <svg width="8" height="14" viewBox="0 0 8 14" fill="currentColor">
-      <circle cx="2" cy="2" r="1.5" />
-      <circle cx="2" cy="7" r="1.5" />
-      <circle cx="2" cy="12" r="1.5" />
-      <circle cx="6" cy="2" r="1.5" />
-      <circle cx="6" cy="7" r="1.5" />
-      <circle cx="6" cy="12" r="1.5" />
-    </svg>
-  );
-}
+const HIGH_CLASS = "bg-signal-green text-white shadow-[0_0_0_4px_var(--signal-green-bg)]";
+const LOW_CLASS = "bg-signal-coral text-white shadow-[0_0_0_4px_var(--signal-coral-bg)]";
+const FLOAT_CLASS = "bg-surface-2 text-ink-soft";
 
-function IoNodeImpl({ data, selected }: NodeProps<EditorNode>) {
+/**
+ * Circuit-level terminal, styled after the LED indicators already used
+ * elsewhere in Nandscape (see components/ui/led.tsx): a round pill showing
+ * 0/1/· with the name below. Inputs are clickable — toggling one writes
+ * straight to editor-store (not a Command; this is a runtime interaction
+ * like flipping a physical switch, not a structural edit worth undoing)
+ * and the live-simulation preview picks the change up on its next pass.
+ * Outputs are read-only, colored from live-signals-store via their single
+ * incoming wire.
+ */
+function IoNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const ioData = data as IoNodeData;
   const isInput = ioData.kind === "input";
-  const [isOn, setIsOn] = useState(false);
+  const updateNodeData = useEditorStore((s) => s.updateNodeData);
+  const incomingEdgeId = useEditorStore((s) =>
+    isInput ? undefined : s.edges.find((e) => e.target === id)?.id,
+  );
+  const edgeSignals = useLiveSignalsStore((s) => s.edgeSignals);
 
-  const handleToggle = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isInput) {
-      setIsOn((prev) => !prev);
-    }
-  }, [isInput]);
+  const signal = isInput ? (ioData.value ?? SignalState.LOW) : incomingEdgeId ? edgeSignals[incomingEdgeId] : undefined;
 
-  const getContainerStyles = () => {
-    const base = "relative flex h-10 min-w-24 items-center rounded-lg border shadow-sm backdrop-blur-md transition-all duration-200";
+  const stateClass = signal === SignalState.HIGH ? HIGH_CLASS : signal === SignalState.LOW ? LOW_CLASS : FLOAT_CLASS;
+  const borderClass = selected
+    ? "border-copper ring-2 ring-copper/30"
+    : signal === SignalState.HIGH || signal === SignalState.LOW
+      ? "border-transparent"
+      : "border-border-strong";
 
-    if (selected) {
-      return `${base} border-copper bg-surface-card ring-2 ring-copper/20 scale-105`;
-    }
-
-    return `${base} border-border-strong bg-surface-card/90 hover:border-copper/50 hover:shadow-md`;
-  };
-
-  const getButtonStyles = () => {
-    const base = "nodrag flex h-full flex-1 items-center justify-center rounded-r-lg px-3 transition-colors";
-
-    if (!isInput) {
-      return `${base} cursor-default`;
-    }
-
-    return `${base} cursor-pointer hover:bg-surface-2/50`;
-  };
-
-  const getLabelStyles = () => {
-    const base = "select-none font-mono text-[11px] font-bold uppercase tracking-widest transition-all duration-200";
-
-    if (isInput) {
-      if (isOn) {
-        return `${base} text-signal-green drop-shadow-[0_0_8px_rgba(var(--color-signal-green),0.8)] scale-110`;
-      }
-      return `${base} text-signal-coral drop-shadow-[0_0_8px_rgba(var(--color-signal-coral),0.8)]`;
-    }
-
-    return `${base} text-ink`;
+  const handleToggle = () => {
+    if (!isInput) return;
+    const next = signal === SignalState.HIGH ? SignalState.LOW : SignalState.HIGH;
+    updateNodeData(id, { value: next });
   };
 
   return (
-    <div className={getContainerStyles()}>
-      {!isInput && (
-        <NodeHandle id="in-0" type="target" position={Position.Left} />
-      )}
-
-      <div className="drag-handle flex h-full w-7 shrink-0 cursor-grab items-center justify-center rounded-l-lg border-r border-border/50 bg-surface-2/30 text-ink-soft transition-colors hover:bg-surface-2/60 hover:text-ink active:cursor-grabbing">
-        <GripIcon />
+    <div className="flex flex-col items-center gap-1.5">
+      <div className="relative">
+        {!isInput && <NodeHandle id="in-0" type="target" position={Position.Left} />}
+        <button
+          type="button"
+          disabled={!isInput}
+          onClick={handleToggle}
+          aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} output`}
+          className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-mono text-xs font-bold transition-all ${stateClass} ${borderClass} ${
+            isInput ? "cursor-pointer active:scale-95" : "cursor-default"
+          }`}
+        >
+          {signal === SignalState.HIGH ? "1" : signal === SignalState.LOW ? "0" : "·"}
+        </button>
+        {isInput && <NodeHandle id="out-0" type="source" position={Position.Right} />}
       </div>
-
-      <button
-        type="button"
-        onClick={handleToggle}
-        disabled={!isInput}
-        className={getButtonStyles()}
-      >
-        <span className={getLabelStyles()}>
-          {(isOn ? "ON " : "OFF ") + ioData.name || (isInput ? "IN" : "OUT")}
-        </span>
-      </button>
-
-      {isInput && (
-        <NodeHandle id="out-0" type="source" position={Position.Right} />
-      )}
+      <span className="font-mono text-[10px] font-semibold text-slate">{ioData.name}</span>
     </div>
   );
 }
