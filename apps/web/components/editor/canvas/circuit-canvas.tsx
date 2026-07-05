@@ -44,23 +44,6 @@ interface PendingHandle {
 
 /**
  * The only file that talks to @xyflow/react directly for graph rendering.
- *
- * Wiring has two paths, both ending at createConnectEdgeCommand:
- *  - Drag straight from one pin to another -> React Flow's own onConnect
- *    fires -> a plain auto-routed wire, exactly as before.
- *  - Click a pin (mousedown+mouseup with ~no movement, detected via
- *    onConnectStart/onConnectEnd) -> starts a draft in wire-draft-store.
- *    Turn placement is handled entirely outside React Flow's own
- *    onPaneClick — that event can fire for the same gesture that already
- *    started a draft (it doesn't know about our click-vs-drag logic), which
- *    was spawning a spurious extra point right at the origin. Instead, the
- *    wrapper div tracks its own pointerdown/pointerup pair directly and
- *    only counts it as "place a turn" when the press started on genuine
- *    background (not a node/handle/edge — see NON_BACKGROUND_SELECTOR).
- *    Panning is disabled while a draft is active so a slightly-imprecise
- *    click can't turn into an accidental pan instead of a placed turn.
- *    Clicking a compatible pin finishes the draft with the placed turns
- *    attached; Escape or a right-click cancels it.
  */
 export function CircuitCanvas() {
   const nodes = useEditorStore((s) => s.nodes);

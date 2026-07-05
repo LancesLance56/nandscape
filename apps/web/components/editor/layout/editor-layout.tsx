@@ -33,7 +33,7 @@ export function EditorLayout() {
 
         <div className="flex min-h-0 flex-1">
           {sidebarOpen && (
-            <ResizablePanel edge="right" size={sidebarWidth} onResize={setSidebarWidth} min={0} max={230} className="border-r border-border">
+            <ResizablePanel edge="right" size={sidebarWidth} onResize={setSidebarWidth} min={0} max={400} className="border-r border-border">
               <Sidebar />
             </ResizablePanel>
           )}

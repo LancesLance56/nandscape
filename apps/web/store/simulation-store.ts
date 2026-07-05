@@ -3,18 +3,8 @@ import type { Simulator } from "@nandscape/engine";
 import type { SignalState } from "@nandscape/engine";
 
 /**
- * simulation-store.ts
- * ---------------------------------------------------------------------------
- * Owns the *runtime* side of a circuit: whether it's running, how fast, and
+ * Owns the runtime side of a circuit: whether it's running, how fast, and
  * the last-known signal for every net (keyed by editor edge id, not engine
- * NetId — the compile step, added in a future prompt, is responsible for
- * keeping that mapping and feeding results back in via `setSignals`).
- *
- * This store intentionally does NOT import the compiler or construct a
- * Simulator itself yet — `compileAndAttach` is a placeholder seam so a
- * later prompt can wire `lib/editor/compile-circuit.ts` (editor graph ->
- * CircuitData -> Simulator) in without touching every panel that reads
- * simulation state.
  */
 
 export type SimulationStatus = "idle" | "compiling" | "running" | "paused" | "error";

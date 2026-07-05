@@ -7,14 +7,6 @@ import { useHistoryStore } from "@/store/history-store";
 
 const EDITABLE_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"]);
 
-/**
- * Mounts a single window-level keydown listener for the whole editor.
- * Individual components never add their own document-level shortcut
- * listeners — that scales badly (ordering bugs, duplicate handling) once
- * there are a dozen panels. If a panel needs a *local* shortcut (e.g.
- * Enter to confirm a rename), it should stopPropagation on its own input
- * instead of registering here.
- */
 export function useKeyboardShortcuts(): void {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {

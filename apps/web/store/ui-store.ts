@@ -3,15 +3,12 @@ import { persist } from "zustand/middleware";
 import type { SidebarTab, InspectorTab, BottomPanelTab } from "@/types/editor";
 
 /**
- * ui-store.ts
- * ---------------------------------------------------------------------------
  * Pure view/chrome state: which panels are open, how big they are, which
  * tab is active. Nothing here describes circuit structure (that's
  * editor-store) or undo history (that's history-store), so a panel resize
  * never pollutes the undo stack.
  *
- * Persisted to localStorage so panel layout survives a refresh, the same
- * way an IDE remembers your sidebar width.
+ * Persisted to localStorage so panel layout survives a refresh
  */
 
 export interface UiState {

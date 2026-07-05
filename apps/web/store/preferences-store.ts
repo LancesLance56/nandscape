@@ -2,13 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 /**
- * preferences-store.ts
- * ---------------------------------------------------------------------------
  * User-level editing preferences that outlive any single circuit and are
  * NOT part of undo history (toggling "snap to grid" isn't something you
  * ctrl-Z). Kept distinct from ui-store: ui-store is per-session chrome
- * layout, this is intentional user settings that could eventually surface
- * in a "Preferences" dialog.
  */
 
 export type EdgeRoutingStyle = "bezier" | "smoothstep" | "straight";
@@ -33,7 +29,7 @@ export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
       snapToGrid: true,
-      gridSize: 16,
+      gridSize: 32,
       showGrid: true,
       edgeRouting: "smoothstep",
       animateSignals: true,

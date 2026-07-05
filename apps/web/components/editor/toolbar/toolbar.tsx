@@ -7,16 +7,9 @@ import { useHistoryStore } from "@/store/history-store";
 import { useUiStore } from "@/store/ui-store";
 import { useSimulationStore } from "@/store/simulation-store";
 import { commandRegistry } from "@/lib/commands/registry";
-
-/**
- * toolbar.tsx
- * ---------------------------------------------------------------------------
- * Per the architecture brief: "Toolbar dispatches commands only." Every
- * button below either (a) runs a registered Command by id, so it's
- * reachable identically from a shortcut or the future command palette, or
- * (b) toggles pure UI state (panel visibility) via ui-store directly —
- * panel visibility is not a circuit edit and deliberately isn't undoable.
- */
+import {LogoIcon} from "@/components/icons";
+import { ThemeToggle } from "@/components/theme-toggle";
+import Link from "next/link";
 
 const Icon = {
   Undo: () => (
@@ -91,6 +84,12 @@ export function Toolbar() {
 
   return (
     <div className="flex h-12 items-center gap-2.5 px-3">
+      <ToolbarGroup>
+        <Link className="flex h-12" href="/">
+          <LogoIcon/>
+        </Link>
+        <ThemeToggle />
+      </ToolbarGroup>
       <ToolbarGroup>
         <ToolbarButton icon={<Icon.Undo />} label="Undo" shortcut="⌘Z" disabled={!canUndo} onClick={() => runById("history.undo")} />
         <ToolbarButton icon={<Icon.Redo />} label="Redo" shortcut="⌘⇧Z" disabled={!canRedo} onClick={() => runById("history.redo")} />
