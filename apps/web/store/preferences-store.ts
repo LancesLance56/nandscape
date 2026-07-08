@@ -11,14 +11,16 @@ export type EdgeRoutingStyle = "bezier" | "smoothstep" | "straight";
 
 export interface PreferencesState {
   snapToGrid: boolean;
-  gridSize: number;
+  snapGridSize: number;
+  visualGridSize: number;
   showGrid: boolean;
   edgeRouting: EdgeRoutingStyle;
   animateSignals: boolean;
   reducedMotion: boolean;
 
   setSnapToGrid: (value: boolean) => void;
-  setGridSize: (size: number) => void;
+  setSnapGridSize: (size: number) => void;
+  setVisualGridSize: (size: number) => void;
   setShowGrid: (value: boolean) => void;
   setEdgeRouting: (style: EdgeRoutingStyle) => void;
   setAnimateSignals: (value: boolean) => void;
@@ -29,14 +31,16 @@ export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
       snapToGrid: true,
-      gridSize: 32,
+      snapGridSize: 16,
+      visualGridSize: 32,
       showGrid: true,
       edgeRouting: "smoothstep",
       animateSignals: true,
       reducedMotion: false,
 
       setSnapToGrid: (value) => set({ snapToGrid: value }),
-      setGridSize: (size) => set({ gridSize: Math.max(4, size) }),
+      setSnapGridSize: (size) => set({ snapGridSize: Math.max(4, size) }),
+      setVisualGridSize: (size) => set({ visualGridSize: Math.max(4, size) }),
       setShowGrid: (value) => set({ showGrid: value }),
       setEdgeRouting: (style) => set({ edgeRouting: style }),
       setAnimateSignals: (value) => set({ animateSignals: value }),

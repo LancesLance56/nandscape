@@ -24,22 +24,6 @@ const SIGNAL_STROKE: Record<SignalState, string> = {
   [SignalState.UNKNOWN]: "var(--copper)",
 };
 
-/**
- * A single wire. Color reflects the live combinational preview
- * (live-signals-store, kept live by hooks/use-live-simulation.ts); HIGH
- * wires animate via the nandscape-wire-flow keyframes in globals.css.
- *
- * Routing: with no `data.waypoints`, follows preferences-store.edgeRouting
- * (bezier/smoothstep/straight) same as before. Once the user has placed
- * turns — either by click-routing the wire from scratch (see
- * canvas/circuit-canvas.tsx + wire-draft-store) or by double-clicking an
- * existing wire to insert one — it switches to an elbow-routed polyline
- * through those points instead, and shows draggable turn markers (via
- * ViewportPortal, so they pan/zoom with the graph) whenever selected.
- * Right-click a marker to remove that turn; right-click the wire itself
- * deletes the whole thing (see canvas/circuit-canvas.tsx's
- * onEdgeContextMenu and context-menu/context-menu-registry.ts).
- */
 function WireEdgeImpl({
   id,
   sourceX,

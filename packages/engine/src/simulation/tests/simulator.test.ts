@@ -1,11 +1,3 @@
-/**
- * End-to-end tests for the event-driven, graph-based Simulator. Each test
- * builds a small circuit with the builder helpers, compiles it, drives it,
- * and asserts on observed behavior — exercising the full pipeline:
- * CircuitData -> compileTopology -> Simulator (EventQueue + RuntimeState +
- * gate-evaluators working together).
- */
-
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -92,8 +84,6 @@ describe('Simulator: propagation delay ordering', () => {
     const sim = new Simulator(circuit, topology);
     sim.setInput(input!.gate, HIGH, 0);
 
-    // Step through one delta cycle at a time and confirm the output only
-    // settles after exactly 3 * delay simulation time units.
     let steps = 0;
     while (sim.step().processed) steps++;
 
@@ -183,8 +173,6 @@ describe('Simulator: primitive SR latch', () => {
   });
 
   test('cross-coupled NAND SR latch built from primitive gates is bistable', () => {
-    // The classic "two NANDs" construction, true to nandscape's roots:
-    // each NAND's output feeds the other NAND's input, forming feedback.
     let sBar: ReturnType<typeof createInput>;
     let rBar: ReturnType<typeof createInput>;
     let qOut: ReturnType<typeof createOutput>;
@@ -207,19 +195,16 @@ describe('Simulator: primitive SR latch', () => {
     });
 
     const sim = new Simulator(circuit, topology, { maxEvents: 10_000, maxTime: 10_000 });
-    // Active-low set: S_BAR=0, R_BAR=1 -> Q=1
     sim.setInput(sBar!.gate, LOW, 0);
     sim.setInput(rBar!.gate, HIGH, 0);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), HIGH);
     assert.equal(sim.readOutput(qnOut!.gate), LOW);
 
-    // Return to the hold state (both inactive) — should remain latched.
     sim.setInput(sBar!.gate, HIGH, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), HIGH); // still set
 
-    // Active-low reset: S_BAR=1, R_BAR=0 -> Q=0
     sim.setInput(rBar!.gate, LOW, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), LOW);
@@ -268,7 +253,6 @@ describe('Simulator: tri-state bus contention', () => {
     sim.run();
     assert.equal(sim.readOutput(busOut!.gate), LOW); // B drives
 
-    // Both enabled simultaneously with disagreeing data -> contention.
     sim.setInput(enableA!.gate, HIGH, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(busOut!.gate), UNKNOWN);
@@ -289,9 +273,6 @@ describe('Simulator: free-running clock', () => {
     const sim = new Simulator(circuit, topology, { maxTime: 105 });
     sim.run(105);
 
-    // Starting LOW at t=0, toggling every 10 units: LOW@0, HIGH@10, LOW@20, ...
-    // By t=105 we've seen toggles at 0,10,...,100 => state at t=105 is whatever
-    // it became at t=100 (the 11th sample, index 10, which is even -> LOW).
     assert.equal(sim.probeNet(0 as any), LOW);
     assert.ok(sim.stats().netTransitions >= 10);
   });
@@ -367,32 +348,26 @@ describe('Simulator: D flip-flop edge-triggered behavior', () => {
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), UNKNOWN); // uninitialized, no edge yet
 
-    // Data changes with clock still LOW — must NOT be captured.
     sim.setInput(data!.gate, LOW, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), UNKNOWN);
 
-    // Rising edge captures the CURRENT data (LOW).
     sim.setInput(clock!.gate, HIGH, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), LOW);
 
-    // Data changes while clock stays HIGH — must NOT be captured (edge, not level, sensitive).
     sim.setInput(data!.gate, HIGH, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), LOW);
 
-    // Falling edge — RISING-configured flop must ignore it.
     sim.setInput(clock!.gate, LOW, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), LOW);
 
-    // Next rising edge captures the now-HIGH data.
     sim.setInput(clock!.gate, HIGH, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), HIGH);
 
-    // Asynchronous reset overrides immediately, regardless of clock.
     sim.setInput(reset!.gate, HIGH, sim.state.currentTime + 1);
     sim.run();
     assert.equal(sim.readOutput(qOut!.gate), LOW);
@@ -401,13 +376,6 @@ describe('Simulator: D flip-flop edge-triggered behavior', () => {
 
 describe('Simulator: combinational feedback / ring oscillator', () => {
   test('an odd-length inverter loop, once kicked, self-oscillates and is bounded by maxTime', () => {
-    // A purely symmetric feedback loop with no seeded stimulus has no
-    // reason to ever schedule an event (every pin legitimately starts and
-    // stays FLOAT, exactly like an unpowered real circuit) — so we inject
-    // one momentary "kick" pulse to break the deadlock, then release it
-    // (drive it back to FLOAT) well before the feedback signal returns, so
-    // afterwards the loop is free-running purely on its own feedback with
-    // no external net still holding a value.
     let kick: ReturnType<typeof createInput>;
     const gateDelay = 3;
 
@@ -423,20 +391,9 @@ describe('Simulator: combinational feedback / ring oscillator', () => {
 
     const sim = new Simulator(circuit, topology, { maxTime: 200, maxEvents: 100_000 });
     sim.setInput(kick!.gate, HIGH, 0);
-    // Release exactly when the feedback signal first returns (one full trip
-    // around the loop: 3 inverters * gateDelay). Releasing any earlier opens
-    // a momentary undriven gap that reads back as UNKNOWN — and since
-    // NOT(X) = X, an UNKNOWN that enters the loop is a genuine stable fixed
-    // point, not a glitch, so the ring would settle instead of oscillating.
-    // Releasing in the exact same delta-cycle as n3's first output means
-    // the net transitions cleanly from "kick-driven HIGH" straight to
-    // "feedback-driven LOW" with no undriven moment in between.
     sim.setInput(kick!.gate, FLOAT, 3 * gateDelay);
     const stopReason = sim.run();
 
-    // A 3-inverter ring with no stable fixed point oscillates forever in
-    // theory; in practice the simulator must be bounded by maxTime/maxEvents
-    // rather than looping infinitely.
     assert.equal(stopReason, 'MAX_TIME');
     assert.ok(sim.stats().netTransitions > 10); // it was actually oscillating, not stuck
   });

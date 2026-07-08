@@ -2,7 +2,6 @@ import { DynamicTypedArray } from './dynamic-array';
 import {
   DEFAULT_GATE_DELAY,
   INITIAL_GATE_CAPACITY,
-  INITIAL_NET_CAPACITY,
   INITIAL_PIN_CAPACITY,
 } from './constants';
 import {
@@ -105,6 +104,8 @@ export class CircuitData {
   private _netCount = 0;
   /** Optional debug metadata — NOT read by the simulator core. */
   readonly netName: (string | undefined)[] = [];
+  /** Nets retired by mergeNets() — excluded from validateCircuit's "unused net" check. */
+  private readonly absorbedNets = new Set<number>();
 
   get gateCount(): number {
     return this.gateType.length;
@@ -167,6 +168,47 @@ export class CircuitData {
     const net = this.addNet(name);
     for (const p of pins) this.connect(p, net);
     return net;
+  }
+
+  /**
+   * Joins two already-wired nets into one: every pin currently on `absorb`
+   * is reassigned onto `keep`, and `absorb` is retired. `connect()` alone
+   * can only add a pin to a net — it can't join two nets that already have
+   * their own pins, which is exactly what's needed to wire one subcircuit
+   * instance's output port directly into another's input port (both ports
+   * are nets, not bare pins). Nets are append-only storage with no
+   * compaction, so `absorb` keeps its id but is excluded from
+   * validateCircuit's "unused net" check via `isNetAbsorbed`.
+   */
+  mergeNets(keep: NetId, absorb: NetId): NetId {
+    this.assertValidNet(keep);
+    this.assertValidNet(absorb);
+    if (keep === absorb) return keep;
+    if (this.absorbedNets.has(absorb)) {
+      throw new Error(`mergeNets: net ${absorb} was already merged into another net`);
+    }
+    for (let p = 0; p < this.pinCount; p++) {
+      if (this.pinNet.get(p) === absorb) this.pinNet.set(p, keep);
+    }
+    this.absorbedNets.add(absorb);
+    return keep;
+  }
+
+  /** True if `net` was retired by mergeNets() (or markNetAbsorbed()). */
+  isNetAbsorbed(net: NetId): boolean {
+    return this.absorbedNets.has(net);
+  }
+
+  /**
+   * Marks `net` as absorbed without moving any pins. Used when cloning an
+   * already-merged net structure wholesale (e.g. flattening a subcircuit
+   * definition that itself called mergeNets internally) — the clone's pins
+   * are already correctly wired via the id remapping, so only the "don't
+   * flag this as an unused net" bit needs to carry over.
+   */
+  markNetAbsorbed(net: NetId): void {
+    this.assertValidNet(net);
+    this.absorbedNets.add(net);
   }
 
   /** Returns the PinId for a given (gate, role) pair, e.g. `pinOf(g, TRISTATE_PIN_ENABLE)`. */
@@ -260,11 +302,6 @@ function inferPinDirections(type: GateType, pinCount?: number): PinDirection[] {
       return [O];
     case GateType.OUTPUT_PIN:
       return [I];
-    case GateType.SUBCIRCUIT:
-      if (pinCount === undefined) {
-        throw new Error('SUBCIRCUIT gates require explicit pinDirections (no inference possible)');
-      }
-      return new Array(pinCount).fill(I); // caller should really pass explicit directions
     default:
       throw new Error(`inferPinDirections: unhandled GateType ${type}`);
   }

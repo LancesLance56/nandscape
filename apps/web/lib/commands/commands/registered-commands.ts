@@ -4,25 +4,7 @@ import { useEditorStore } from "@/store/editor-store";
 import { useUiStore } from "@/store/ui-store";
 import { useSimulationStore } from "@/store/simulation-store";
 import { useWireDraftStore } from "@/store/wire-draft-store";
-import { createDeleteSelectionCommand } from "./delete-selection.command";
-
-/**
- * registered-commands.ts
- * ---------------------------------------------------------------------------
- * Commands that take no per-invocation payload, so a single static instance
- * can live in commandRegistry and be triggered identically from the
- * toolbar, a shortcut, or the context menu (see components/editor/index.tsx
- * for where these get registered).
- *
- * Commands that DO need a payload (add a specific node, connect two
- * specific pins, move specific nodes) are factories instead — see
- * add-node.command.ts, connect-edge.command.ts, move-nodes.command.ts —
- * and are constructed at the call site (e.g. canvas.tsx's onConnect),
- * not registered here.
- *
- * Undo/redo and pure-UI toggles are marked `undoable: false` (the default)
- * so they run without creating a phantom entry on the history stack.
- */
+import { createDeleteSelectionCommand } from "@/lib/commands";
 
 export const historyUndoCommand = defineCommand({
   id: "history.undo",

@@ -1,21 +1,6 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { GateType, SignalState } from "@nandscape/engine";
 
-/**
- * editor.ts
- * ---------------------------------------------------------------------------
- * Domain types for the Circuit Editor. These describe *editor-space*
- * concepts (positioned nodes, wires, selection) and are intentionally kept
- * separate from the engine's simulation types (GateId, PinId, NetId, ...).
- *
- * The editor graph is the *source of truth for structure*; a compile step
- * (lib/editor/compile-circuit.ts, added in a future prompt) turns it into
- * the engine's CircuitData/CircuitTopology for simulation. Nothing in here
- * should assume React Flow is the rendering library forever — canvas.tsx is
- * the only place that's allowed to import from "@xyflow/react" directly
- * outside of this file's node/edge generic parameters.
- */
-
 /** Every placeable node kind. Mirrors GateType plus editor-only pseudo-nodes. */
 export type EditorNodeKind =
   | "gate"
@@ -42,7 +27,6 @@ export interface GateNodeData extends BaseNodeData {
 export interface IoNodeData extends BaseNodeData {
   kind: "input" | "output";
   name: string;
-  /** Only meaningful for kind === "input" — the value the user has toggled this source to drive. Defaults to LOW when omitted. */
   value?: SignalState;
 }
 

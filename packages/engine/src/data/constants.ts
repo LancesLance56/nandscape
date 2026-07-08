@@ -17,7 +17,6 @@ export const DEFAULT_GATE_DELAY: Readonly<Record<GateType, SimTime>> = {
   [GateType.OUTPUT_PIN]: 0,
   [GateType.CONSTANT]: 0,
   [GateType.CLOCK]: 0, // clock period is a separate parameter, see below
-  [GateType.SUBCIRCUIT]: 0, // delay is inherent in the subcircuit's own gates
 };
 
 /** Minimum legal propagation delay. Zero-delay combinational loops are the

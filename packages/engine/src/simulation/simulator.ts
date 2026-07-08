@@ -1,37 +1,3 @@
-/**
- * simulator.ts
- * ---------------------------------------------------------------------------
- * The event-driven, graph-based circuit simulator.
- *
- * ALGORITHM SUMMARY
- * ------------------
- * The queue holds "pin drive" events: (time, pin, value). Simulation
- * proceeds in delta cycles:
- *
- *   1. Pop every event sharing the earliest scheduled time (a "batch").
- *   2. Apply each (non-stale) event: update that pin's driven value.
- *      Special case: a CLOCK source pin schedules its own next toggle here.
- *   3. For every net touched by an applied event, re-resolve its state from
- *      all of its active driver pins (data/topology.ts gives O(driver
- *      count) access to exactly the relevant pins — no scanning the whole
- *      circuit). Record which nets actually changed value.
- *   4. Collect the union of fanout gates across every net that changed
- *      (data/topology.ts again — O(fanout count) per net, deduplicated) —
- *      this is the GRAPH-BASED part: only gates that structurally depend on
- *      a changed net are ever touched, never the whole gate population.
- *   5. Re-evaluate each such gate exactly once against the now-fully-settled
- *      net states for this delta cycle, using the pure functions in
- *      gate-evaluators.ts. If a gate's newly-computed output differs from
- *      what it's currently driving, schedule a new pin-drive event at
- *      time + gate.delay.
- *   6. Repeat until the queue is empty or a safety limit is hit.
- *
- * This is the same family of algorithm used by real HDL event simulators
- * (Verilog/VHDL): nothing is re-evaluated on a fixed clock tick "just in
- * case" — work only ever happens in response to an actual, structurally
- * relevant change, which is what makes it scale to large circuits.
- */
-
 import { CircuitData, DFF_PIN_CLOCK, DFF_PIN_DATA, DFF_PIN_Q, DFF_PIN_QN, DFF_PIN_RESET, DFF_PIN_SET, DLATCH_PIN_DATA, DLATCH_PIN_ENABLE, DLATCH_PIN_Q, DLATCH_PIN_QN, SOURCE_PIN_OUTPUT, SRLATCH_PIN_Q, SRLATCH_PIN_QN, SRLATCH_PIN_R, SRLATCH_PIN_S } from '../data/circuit';
 import { CircuitTopology } from '../data/topology';
 import { EventQueue, ScheduledEvent } from '../data/event-queue';
@@ -489,11 +455,6 @@ export class Simulator {
           { pin: qnPin, value: result.qn },
         ];
       }
-
-      case GateType.SUBCIRCUIT:
-        throw new Error(
-          'SUBCIRCUIT evaluation is not implemented by this engine version — flatten hierarchical circuits before compiling, or extend evaluateGate() to recurse into a nested Simulator.',
-        );
 
       case GateType.INPUT_PIN:
       case GateType.OUTPUT_PIN:

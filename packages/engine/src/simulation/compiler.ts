@@ -1,17 +1,3 @@
-/**
- * compiler.ts
- * ---------------------------------------------------------------------------
- * Turns a mutable CircuitData netlist into an immutable, simulation-ready
- * CircuitTopology (the CSR dependency graph described in data/topology.ts).
- *
- * This is a one-time (or "whenever the structure changes") cost — the
- * simulator's hot event loop never touches CircuitData directly, only the
- * compiled CircuitTopology + RuntimeState. Compiling is intentionally
- * implemented with plain JS Maps/Sets/arrays (not SoA) because it runs once
- * and clarity matters more than micro-performance here; the *output* is
- * what's packed into flat typed arrays for the hot path.
- */
-
 import { CircuitData } from '../data/circuit';
 import { CircuitTopology } from '../data/topology';
 import { GateId, INVALID_ID, NetId, PinDirection, PinId } from '../data/types';
@@ -50,7 +36,7 @@ export function validateCircuit(circuit: CircuitData): ValidationIssue[] {
     if (net !== INVALID_ID) connectionCounts[net]++;
   }
   for (let n = 0; n < circuit.netCount; n++) {
-    if (connectionCounts[n] === 0) {
+    if (connectionCounts[n] === 0 && !circuit.isNetAbsorbed(n as NetId)) {
       issues.push({ message: `Net ${n} has no pins connected to it`, net: n as NetId });
     }
   }

@@ -53,7 +53,8 @@ export function CircuitCanvas() {
   const setSelection = useEditorStore((s) => s.setSelection);
 
   const showGrid = usePreferencesStore((s) => s.showGrid);
-  const gridSize = usePreferencesStore((s) => s.gridSize);
+  const snapGridSize = usePreferencesStore((s) => s.snapGridSize);
+  const visualGridSize = usePreferencesStore((s) => s.visualGridSize);
   const snapToGrid = usePreferencesStore((s) => s.snapToGrid);
 
   const isDrafting = useWireDraftStore((s) => s.draft !== null);
@@ -288,14 +289,14 @@ export function CircuitCanvas() {
         panOnDrag={!isDrafting}
         nodesDraggable={!isDrafting}
         snapToGrid={snapToGrid}
-        snapGrid={[gridSize, gridSize]}
+        snapGrid={[snapGridSize, snapGridSize]}
         minZoom={0.15}
         maxZoom={2.5}
         proOptions={{ hideAttribution: true }}
         colorMode="system"
       >
         {showGrid && (
-          <Background variant={BackgroundVariant.Dots} gap={gridSize} size={1.5} color="var(--slate)" />
+          <Background variant={BackgroundVariant.Dots} gap={visualGridSize} size={1.5} color="var(--slate)" />
         )}
         <WireDraftOverlay />
         <CanvasControls />

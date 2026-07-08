@@ -1,15 +1,9 @@
-/**
- * Unit tests for the pure combinational/sequential/net-resolution functions
- * in simulation/gate-evaluators.ts. These run with zero dependency on the
- * simulator/event-queue — just plain function calls in, assertions out.
- */
-
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { SignalState, EdgeType } from '../../data/types';
-import { SrLatchKind } from '../../data/circuit';
-import { NetResolutionKind } from '../../data/types';
+import { SignalState, EdgeType } from '../../data';
+import { SrLatchKind } from '../../data';
+import { NetResolutionKind } from '../../data';
 import {
   evaluateAnd,
   evaluateNand,

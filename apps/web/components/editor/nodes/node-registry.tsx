@@ -5,30 +5,14 @@ import { IoNode } from "./io-node";
 import { defaultInputCountForGateType } from "@/lib/editor/gate-defaults";
 import type { EditorNode, EditorNodeData, EditorNodeKind } from "@/types/editor";
 
-/**
- * Single place new node kinds get plugged in — React Flow's `nodeTypes`
- * map is derived directly from this registry. constant/clock/subcircuit/
- * note have factories and data types but no dedicated renderer yet, so
- * they're commented out here rather than mis-rendered via GateNode.
- *
- * IMPORTANT: keys here are React Flow's `node.type`, not our domain
- * `data.kind`. They must never be "input", "output", "default", or
- * "group" — those are React Flow's own built-in node type names, and its
- * base stylesheet applies a decorative box (white background, border,
- * fixed width) to any node whose `type` matches one of them, *even when*
- * a custom renderer is registered for that key. That collision is what
- * previously wrapped the circular IoNode button in a big bordered square.
- * `data.kind` ("input" | "output") is what IoNode itself switches on and
- * is unaffected by this.
- */
 export const nodeTypes: NodeTypes = {
   gate: GateNode,
   "io-input": IoNode,
   "io-output": IoNode,
-  // constant: ConstantNode,
-  // clock: ClockNode,
-  // subcircuit: SubcircuitNode,
-  // note: NoteNode,
+  // "constant": ConstantNode,
+  // "clock": ClockNode,
+  // "subcircuit": SubcircuitNode,
+  // "note": NoteNode,
 };
 
 let nodeIdCounter = 0;

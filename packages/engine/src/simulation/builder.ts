@@ -1,14 +1,3 @@
-/**
- * builder.ts
- * ---------------------------------------------------------------------------
- * Ergonomic helpers for constructing circuits on top of CircuitData's
- * primitive addGate()/addNet()/connect() API. These functions don't
- * introduce any new data or state — they just return the PinIds a caller
- * needs in a friendly shape, so test/example code (and eventually a UI
- * layer, though none exists here) doesn't have to remember raw pin-role
- * offsets for every gate type.
- */
-
 import {
   DFF_PIN_CLOCK,
   DFF_PIN_DATA,
@@ -31,8 +20,8 @@ import {
   TRISTATE_PIN_DATA,
   TRISTATE_PIN_ENABLE,
   TRISTATE_PIN_OUTPUT,
-} from '../data/circuit';
-import { EdgeType, GateId, GateType, PinId, SignalState, SimTime } from '../data/types';
+} from '../data';
+import { EdgeType, GateId, GateType, PinId, SignalState, SimTime } from '../data';
 
 export interface SourceHandle {
   gate: GateId;

@@ -23,7 +23,8 @@ roughly what a logic gate is.
 8. [Two scheduling regimes: derived vs. authored events](#8-two-scheduling-regimes-derived-vs-authored-events)
 9. [Sequential elements: how "memory" works with no memory array](#9-sequential-elements-how-memory-works-with-no-memory-array)
 10. [Safety valves: stopping a simulation that never settles](#10-safety-valves-stopping-a-simulation-that-never-settles)
-11. [Glossary](#11-glossary)
+11. [Subcircuits: composing reusable blocks by flattening](#11-subcircuits-composing-reusable-blocks-by-flattening)
+12. [Glossary](#12-glossary)
 
 ---
 
@@ -170,9 +171,10 @@ Defines the enums and identifier types every other file speaks in:
 - **`GateType`** — every kind of component the engine understands:
   combinational primitives (`NAND`, `AND`, `OR`, `NOR`, `XOR`, `XNOR`,
   `NOT`, `BUFFER`, `TRISTATE_BUFFER`), sequential primitives (`D_LATCH`,
-  `D_FLIP_FLOP`, `SR_LATCH`), circuit-boundary components (`INPUT_PIN`,
-  `OUTPUT_PIN`, `CONSTANT`, `CLOCK`), and `SUBCIRCUIT` (reserved for
-  hierarchical designs — see [§4.3](#43-circuitts--the-netlist)).
+  `D_FLIP_FLOP`, `SR_LATCH`), and circuit-boundary components (`INPUT_PIN`,
+  `OUTPUT_PIN`, `CONSTANT`, `CLOCK`). There is no `SUBCIRCUIT` gate type —
+  hierarchical designs are handled at construction time, before any of
+  these types come into play — see [§11](#11-subcircuits-composing-reusable-blocks-by-flattening).
 - **`PinDirection`** — `INPUT` (reads a net, never drives it), `OUTPUT`
   (drives a net, never reads it), `INOUT` (tri-state capable — may drive or
   release to float).
@@ -234,18 +236,23 @@ bulk than to maintain incrementally as pins are wired up one at a time.
 
 `CircuitData` also exposes the **construction API** you actually use to
 build a circuit — `addGate()`, `addNet()`, `connect()`, `wire()` (connect
-several pins to one new net in one call), `pinOf(gate, role)` — as regular
-methods on this one object. This might look "not very DOD" at first
-glance (isn't DOD supposed to avoid methods on objects?) but it isn't: DOD
-is about *how bulk data is laid out and iterated*, not about banning all
-methods. There is exactly **one** `CircuitData` object per circuit,
-managing arrays that describe *every* gate/pin/net — that's the SoA
-pattern working correctly, as opposed to one object *per gate*.
+several pins to one new net in one call), `mergeNets()` (join two
+already-wired nets — see [§11](#11-subcircuits-composing-reusable-blocks-by-flattening)),
+`pinOf(gate, role)` — as regular methods on this one object. This might
+look "not very DOD" at first glance (isn't DOD supposed to avoid methods
+on objects?) but it isn't: DOD is about *how bulk data is laid out and
+iterated*, not about banning all methods. There is exactly **one**
+`CircuitData` object per circuit, managing arrays that describe *every*
+gate/pin/net — that's the SoA pattern working correctly, as opposed to one
+object *per gate*.
 
-`SUBCIRCUIT` is present in the type system as a placeholder for
-hierarchical designs (a "chip" instantiated inside another circuit), but
-its *evaluation* isn't implemented — see [§5.3](#53-simulatorts--the-engine-itself)
-for why, and what to do instead.
+Hierarchical designs (a reusable block instantiated multiple times inside
+a larger circuit) are handled entirely at this layer, by cloning one
+`CircuitData`'s gates and nets into another's — see
+[§11](#11-subcircuits-composing-reusable-blocks-by-flattening). There is
+no dedicated `GateType` for this; by the time a circuit reaches
+`compileTopology()`, an instantiated subcircuit is indistinguishable from
+gates that were hand-wired directly.
 
 ### 4.4 `topology.ts` — the derived dependency graph
 
@@ -449,15 +456,10 @@ methods you actually call:
 
 The actual algorithm lives in `processBatch()` and `evaluateGate()` — see
 [§6](#6-the-simulation-algorithm-step-by-step) for the full walkthrough.
-
-One thing this file explicitly does **not** implement: evaluating
-`SUBCIRCUIT` gates. The data model reserves the concept (a `GateType` for
-it, a `gateSubcircuitId`-style hook), but making it actually simulate would
-mean either flattening the hierarchy at compile time or recursing into a
-nested `Simulator` per instance — both are legitimate designs, but
-out of scope for this version. Calling `evaluateGate()` on a
-`SUBCIRCUIT` throws a clear error explaining exactly this, rather than
-silently doing nothing.
+`evaluateGate()`'s switch is exhaustive over the actual `GateType` enum —
+there's no `SUBCIRCUIT` case to speak of, because hierarchical designs
+never reach this file as anything but ordinary gates. See
+[§11](#11-subcircuits-composing-reusable-blocks-by-flattening).
 
 ### 5.4 `builder.ts` — ergonomics, not new behavior
 
@@ -467,6 +469,16 @@ calls and hand back a friendly object like `{ gate, inputs, output }`
 instead of making every call site remember magic pin-role offsets. This
 file introduces **no new data or state** — it's purely convenience on top
 of the construction API in `circuit.ts`.
+
+### 5.5 `subcircuit.ts` — reusable blocks, built by cloning
+
+`defineSubcircuit()` and `instantiateSubcircuit()`: define a block once as
+its own small `CircuitData`, then stamp out copies of it directly into a
+parent `CircuitData`'s flat tables. Like `builder.ts`, this introduces no
+new runtime concept — an instantiated subcircuit is just more gates and
+nets in the same flat tables `compileTopology()` already knows how to
+read. See [§11](#11-subcircuits-composing-reusable-blocks-by-flattening)
+for the full design.
 
 ---
 
@@ -781,7 +793,156 @@ model being faithful to real hardware, not an artifact to work around.
 
 ---
 
-## 11. Glossary
+## 11. Subcircuits: composing reusable blocks by flattening
+
+A subcircuit is a reusable circuit block with named input/output ports,
+built out of other gates — including other subcircuits. `NAND`, `NOT`,
+`D_FLIP_FLOP`, and so on are the engine's *primitive* vocabulary; a
+subcircuit lets you define your own words in that vocabulary (a half
+adder, a 4-bit register, an ALU) and reuse them freely.
+
+### The design question: flatten, or give it a runtime presence?
+
+The type system originally reserved a `SUBCIRCUIT` `GateType` for this,
+with two ways it could have gone:
+
+1. **Flatten at construction time.** A subcircuit is defined as its own
+   small `CircuitData`. Each time it's *instantiated*, its gates and
+   internal wiring are cloned directly into the parent circuit's flat
+   tables. By the time `compileTopology()` runs, there is no "subcircuit"
+   left to see — just more gates and nets, indistinguishable from ones
+   that were hand-wired.
+2. **Give `SUBCIRCUIT` gates a nested `Simulator`.** Keep the hierarchy at
+   runtime: an instance holds a reference to a child `Simulator`, and
+   `evaluateGate()` marshals signals across the boundary — pushing parent
+   net changes into the child's `INPUT_PIN`s, pulling the child's
+   `OUTPUT_PIN` results back out — every time a `SUBCIRCUIT` gate's inputs
+   change.
+
+This engine flattens. Option 2 fights the rest of the architecture on its
+own terms: [§6](#6-the-simulation-algorithm-step-by-step) explains that
+*batching same-time events before resolving any net* is precisely what
+keeps a delta cycle from producing order-dependent glitches — the entire
+point of a single, global, time-ordered event queue. A nested `Simulator`
+per instance means a nested event queue and nested delta cycles running
+out of step with the parent's, reintroducing exactly the class of bug §6
+exists to prevent, right at every subcircuit boundary. It would also mean
+re-deriving a `CircuitTopology` per instance and marshaling signals across
+the boundary on every delta cycle, for a hierarchy that flattening removes
+for free. Option 1 costs nothing at simulation time: `compiler.ts`,
+`topology.ts`, `simulator.ts`, and `gate-evaluators.ts` needed **zero**
+changes to support subcircuits, because none of them are aware subcircuits
+exist.
+
+### `defineSubcircuit()` — building the template
+
+```ts
+const halfAdder = defineSubcircuit('HalfAdder', (c) => {
+  const a = createInput(c, 'A');
+  const b = createInput(c, 'B');
+  const xor = createXor(c, 2);
+  const and = createAnd(c, 2);
+  const sum = createOutput(c, 'SUM');
+  const carry = createOutput(c, 'CARRY');
+
+  c.wire([a.output, xor.inputs[0], and.inputs[0]]);
+  c.wire([b.output, xor.inputs[1], and.inputs[1]]);
+  c.wire([xor.output, sum.input]);
+  c.wire([and.output, carry.input]);
+
+  return { inputs: { A: a, B: b }, outputs: { SUM: sum, CARRY: carry } };
+});
+```
+
+`build` gets a fresh `CircuitData` and constructs the block's internals
+with the ordinary `builder.ts` functions — a subcircuit definition is
+built exactly like any other circuit, with no special API to learn. It
+returns which of the `INPUT_PIN`/`OUTPUT_PIN` handles it created are the
+block's named ports. `defineSubcircuit()` runs `validateCircuit()`
+immediately, so a broken definition (a dangling pin, a port that isn't
+actually an `INPUT_PIN`/`OUTPUT_PIN` gate) fails right there, not later
+inside some unrelated parent circuit's validation errors.
+
+### `instantiateSubcircuit()` — stamping out a copy
+
+```ts
+const inst = instantiateSubcircuit(circuit, halfAdder, 'ha1');
+circuit.connect(extA.output, inst.inputs.A);
+circuit.connect(extB.output, inst.inputs.B);
+circuit.connect(sumOut.input, inst.outputs.SUM);
+```
+
+Each call clones the definition's gates and nets into `circuit`'s flat
+tables, remapping gate/pin/net ids as it goes — instantiating the same
+definition N times costs N times the gates, exactly as if they'd been
+hand-wired N times, with no shared runtime state between instances (see
+`circuit-builder.test.ts`-style independence checks in
+`subcircuit.test.ts`). The definition itself is never mutated — it's a
+template, cloned from on every instantiation.
+
+The definition's own boundary `INPUT_PIN`/`OUTPUT_PIN` gates exist only so
+it can be built and validated standalone; they are **not** cloned.
+Instead, the internal net each one was wired to is cloned and returned
+directly as the port (`inst.inputs.A`, `inst.outputs.SUM`, ... — `NetId`s,
+not gates). A port costs nothing beyond what a hand-wired net already
+costs: no wrapper buffer, no extra propagation delay, no signal
+translation at the boundary. This is what "flattening" buys you concretely
+— an instantiated half adder's `XOR`/`AND` gates settle with the exact
+same delay as if you'd wired them into the parent circuit by hand.
+
+### Composing instances: `mergeNets()`
+
+Wiring an external pin onto a port is just `connect(pin, portNet)` — the
+port is already a net, and `connect()` adds a pin to an existing net.
+But chaining one instance's *output* port straight into another
+instance's *input* port (no external pin involved, as in a ripple-carry
+adder built from full adders) means joining two nets that **each already
+have their own pins** — `connect()` can't do that; it only ever adds one
+pin to one net.
+
+`CircuitData.mergeNets(keep, absorb)` is the general-purpose primitive
+this needs: every pin currently on `absorb` is reassigned onto `keep`,
+and `absorb` is retired.
+
+```ts
+const ha1 = instantiateSubcircuit(circuit, halfAdder, 'ha1');
+const ha2 = instantiateSubcircuit(circuit, halfAdder, 'ha2');
+circuit.connect(a.output, ha1.inputs.A);
+circuit.connect(b.output, ha1.inputs.B);
+circuit.mergeNets(ha1.outputs.SUM, ha2.inputs.A); // ha1.SUM feeds ha2.A directly
+circuit.connect(cin.output, ha2.inputs.B);
+```
+
+Nets are append-only, flat storage with no compaction (consistent with
+every other table in `circuit.ts` — see [§3](#3-why-data-oriented-design)),
+so a merged-away net keeps its id but contributes nothing; it's simply
+never referenced by any pin again. The one thing this requires is
+excluding it from `validateCircuit()`'s "net has no pins connected to it"
+check, since that check exists to catch *forgotten* nets, and a
+deliberately-merged one isn't one. `CircuitData` tracks this with a small
+`absorbedNets` set, queryable via `isNetAbsorbed()`.
+
+### Nesting
+
+Because a subcircuit definition's `build` function is handed an ordinary
+`CircuitData`, it can call `instantiateSubcircuit()` itself — a
+`FullAdder` definition can be built from two `HalfAdder` instances plus an
+`OR` gate, and a `RippleCarryAdder` can in turn be built from several
+`FullAdder` instances. Nesting needs no special support: it's the same
+`defineSubcircuit()`/`instantiateSubcircuit()` pair, called recursively.
+
+The one subtlety this raises: if a definition's own `build` function calls
+`mergeNets()` internally (chaining its own nested instances together), the
+resulting "absorbed" net has to remain absorbed after *that* definition is
+itself cloned into some larger parent — otherwise the clone would trip the
+same "unused net" check the original definition correctly skipped.
+`instantiateSubcircuit()` propagates this bit explicitly when cloning each
+net (`CircuitData.markNetAbsorbed()`), which is exactly the kind of thing
+`subcircuit.test.ts`'s nested ripple-carry-adder test exists to catch.
+
+---
+
+## 12. Glossary
 
 | Term | Meaning |
 |------|---------|
@@ -797,3 +958,6 @@ model being faithful to real hardware, not an artifact to work around.
 | **Stale event** | An event still sitting in the queue that has been superseded by a newer decision for the same pin, and should be ignored rather than applied when popped. |
 | **Generation counter** | The per-pin mechanism used to detect stale, internally-derived events (see §8). |
 | **Delta-cycle / event-driven simulation** | A simulation strategy where work happens only in direct response to scheduled changes, as opposed to re-evaluating everything on a fixed timestep. |
+| **Subcircuit** | A reusable circuit block with named input/output ports, defined once and instantiated (copied) as many times as needed (see §11). |
+| **Flattening** | Cloning a subcircuit definition's gates and nets directly into a parent circuit's flat tables at construction time, so no runtime concept of "subcircuit" survives into simulation. |
+| **Port** | A subcircuit instance's named connection point. Structurally just a `NetId` — the internal net a boundary `INPUT_PIN`/`OUTPUT_PIN` was wired to in the definition, exposed directly with no extra buffering. |

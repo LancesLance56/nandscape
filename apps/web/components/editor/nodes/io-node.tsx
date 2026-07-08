@@ -12,16 +12,6 @@ const HIGH_CLASS = "bg-signal-green text-white shadow-[0_0_0_4px_var(--signal-gr
 const LOW_CLASS = "bg-signal-coral text-white shadow-[0_0_0_4px_var(--signal-coral-bg)]";
 const FLOAT_CLASS = "bg-surface-2 text-ink-soft";
 
-/**
- * Circuit-level terminal, styled after the LED indicators already used
- * elsewhere in Nandscape (see components/ui/led.tsx): a round pill showing
- * 0/1/· with the name below. Inputs are clickable — toggling one writes
- * straight to editor-store (not a Command; this is a runtime interaction
- * like flipping a physical switch, not a structural edit worth undoing)
- * and the live-simulation preview picks the change up on its next pass.
- * Outputs are read-only, colored from live-signals-store via their single
- * incoming wire.
- */
 function IoNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const ioData = data as IoNodeData;
   const isInput = ioData.kind === "input";

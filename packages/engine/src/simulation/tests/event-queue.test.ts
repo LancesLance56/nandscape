@@ -1,14 +1,8 @@
-/**
- * Tests for the binary min-heap event queue (data/event-queue.ts):
- * time-ordering, FIFO tie-breaking, batch extraction, and growth beyond
- * initial capacity.
- */
-
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { EventQueue } from '../../data/event-queue';
-import { SignalState } from '../../data/types';
+import { EventQueue } from '../../data';
+import { SignalState } from '../../data';
 
 describe('EventQueue', () => {
   test('pops events in ascending time order', () => {

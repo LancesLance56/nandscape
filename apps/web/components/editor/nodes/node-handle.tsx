@@ -19,12 +19,6 @@ const SIGNAL_CLASS: Record<SignalState, string> = {
   [SignalState.UNKNOWN]: "!bg-copper !border-copper-dark",
 };
 
-/**
- * A pin — rendered as a small two-tone circular "grip" (an inset ring makes
- * it read as a drag target rather than a flat dot) that scales up slightly
- * on hover/grab. Not simulating yet -> neutral gray; pass `signal` to color
- * it live once wired to a signal source.
- */
 export function NodeHandle({ id, type, position, signal, style }: NodeHandleProps) {
   const colorClass = signal !== undefined ? SIGNAL_CLASS[signal] : "!bg-surface-2 !border-border-strong";
 

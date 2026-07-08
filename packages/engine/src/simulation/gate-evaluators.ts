@@ -1,31 +1,5 @@
-/**
- * gate-evaluators.ts
- * ---------------------------------------------------------------------------
- * Pure, side-effect-free functions that implement:
- *
- *   1. Combinational gate truth tables over the 4-value signal model
- *      (LOW / HIGH / FLOAT / UNKNOWN), including correct propagation of
- *      UNKNOWN and FLOAT the way a real HDL simulator would (e.g. a 2-input
- *      AND with one LOW input is LOW regardless of what the other input is
- *      doing — "dominant zero" — even if that other input is UNKNOWN).
- *
- *   2. Sequential primitive evaluation (D latch, D flip-flop, SR latch),
- *      given previous/current input states.
- *
- *   3. Net driver resolution — combining the states driven by every active
- *      driver pin on a net into a single resolved SignalState, correctly
- *      modeling bus contention (multiple disagreeing drivers -> UNKNOWN)
- *      and undriven nets (zero drivers -> FLOAT).
- *
- * None of these functions touch RuntimeState, EventQueue, or any other
- * mutable structure — they take plain SignalState values in and return
- * plain SignalState values out, which makes them trivial to unit test in
- * isolation (see tests/gate-evaluators.test.ts) and safe to call from
- * anywhere in the simulator without worrying about ordering or aliasing.
- */
-
-import { EdgeType, NetResolutionKind, SignalState } from '../data/types';
-import { SrLatchKind } from '../data/circuit';
+import { EdgeType, NetResolutionKind, SignalState } from '../data';
+import { SrLatchKind } from '../data';
 
 const { LOW, HIGH, FLOAT, UNKNOWN } = SignalState;
 

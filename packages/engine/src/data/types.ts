@@ -8,7 +8,6 @@ type Brand<T, B> = T & { readonly [__brand]: B };
 export type GateId = Brand<number, 'GateId'>;
 export type PinId = Brand<number, 'PinId'>;
 export type NetId = Brand<number, 'NetId'>;
-export type CircuitId = Brand<number, 'CircuitId'>; // for hierarchical subcircuits
 export type EventId = Brand<number, 'EventId'>;
 
 /** Sentinel used in place of a valid id (e.g. "this pin has no connected net yet"). */
@@ -17,7 +16,6 @@ export const INVALID_ID = -1;
 export const asGateId = (n: number): GateId => n as GateId;
 export const asPinId = (n: number): PinId => n as PinId;
 export const asNetId = (n: number): NetId => n as NetId;
-export const asCircuitId = (n: number): CircuitId => n as CircuitId;
 export const asEventId = (n: number): EventId => n as EventId;
 
 export enum SignalState {
@@ -67,11 +65,9 @@ export enum GateType {
   OUTPUT_PIN = 13, // circuit-level output terminal; probe only, drives nothing
   CONSTANT = 14, // fixed-value source (HIGH / LOW / FLOAT / UNKNOWN)
   CLOCK = 15, // periodic oscillator source
-
-  SUBCIRCUIT = 16, // instance of a nested CircuitData graph
 }
 
-export const GATE_TYPE_COUNT = 17;
+export const GATE_TYPE_COUNT = 16;
 
 export function gateTypeToString(t: GateType): string {
   return GateType[t] ?? `UNKNOWN_GATE_TYPE(${t})`;
@@ -109,7 +105,7 @@ export function isSequential(t: GateType): boolean {
 export enum PinDirection {
   INPUT = 0, // reads a net's resolved state; never drives
   OUTPUT = 1, // drives a net; never reads
-  INOUT = 2, // bidirectional / tri-state capable (may drive or float)
+  INOUT = 2, // bidirectional / tri-state capable (may drive or release to float)
 }
 
 export function pinDirectionToString(d: PinDirection): string {

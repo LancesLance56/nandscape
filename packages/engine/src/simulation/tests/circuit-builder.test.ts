@@ -1,8 +1,3 @@
-/**
- * Tests for the CircuitData construction API (data/circuit.ts) and the
- * netlist -> CSR topology compiler (simulation/compiler.ts).
- */
-
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 

@@ -42,4 +42,5 @@ yarn-error.log*
 apps/web/next-env.d.ts
 !/apps/web/node_modules/
 !/apps/web/.next/
-/packages/engine/node_modules/
+/packages/engine/node_modules/!/apps/web/node_modules/
+!/node_modules/
