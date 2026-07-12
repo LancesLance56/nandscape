@@ -1,7 +1,7 @@
-import { CircuitEditor } from "@/components/editor";
+import {CircuitEditor} from "@/components/editor";
 
 export default function Home() {
   return (
-    <CircuitEditor />
+    <CircuitEditor/>
   );
 }

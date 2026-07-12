@@ -1,10 +1,11 @@
-import { defineCommand } from "../command";
-import { useHistoryStore } from "@/store/history-store";
-import { useEditorStore } from "@/store/editor-store";
-import { useUiStore } from "@/store/ui-store";
-import { useSimulationStore } from "@/store/simulation-store";
-import { useWireDraftStore } from "@/store/wire-draft-store";
-import { createDeleteSelectionCommand } from "@/lib/commands";
+import {defineCommand} from "../command";
+import {useHistoryStore} from "@/store/history-store";
+import {useEditorStore} from "@/store/editor-store";
+import {useUiStore} from "@/store/ui-store";
+import {useSimulationStore} from "@/store/simulation-store";
+import {useWireDraftStore} from "@/store/wire-draft-store";
+import {createDeleteSelectionCommand} from "@/lib/commands";
+import {useCustomCircuitsStore} from "@/store";
 
 export const historyUndoCommand = defineCommand({
   id: "history.undo",
@@ -65,7 +66,16 @@ export const pasteClipboardCommand = defineCommand({
 export const saveCircuitCommand = defineCommand({
   id: "circuit.save",
   label: "Save circuit",
-  execute: () => console.info("[nandscape] circuit.save: not implemented yet"),
+  execute: () => {
+    const {nodes, edges} = useEditorStore.getState();
+    if (nodes.length === 0) {
+      console.info("[nandscape] circuit.save: canvas is empty, nothing to save");
+      return;
+    }
+    const name = window.prompt("Name this circuit:", "My circuit");
+    if (!name) return;
+    useCustomCircuitsStore.getState().save(name, nodes, edges);
+  },
 });
 
 // --- UI toggles --------------------------------------------------------------
@@ -92,7 +102,7 @@ export const toggleSimulationPlayCommand = defineCommand({
   id: "simulation.togglePlay",
   label: "Play/pause simulation",
   execute: () => {
-    const { status, play, pause } = useSimulationStore.getState();
+    const {status, play, pause} = useSimulationStore.getState();
     if (status === "running") pause();
     else play();
   },

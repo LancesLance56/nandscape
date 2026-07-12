@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type {ReactNode} from "react";
 
 interface ToolbarButtonProps {
   icon: ReactNode;
@@ -12,13 +12,13 @@ interface ToolbarButtonProps {
 }
 
 export function ToolbarButton({
-  icon,
-  label,
-  onClick,
-  active = false,
-  disabled = false,
-  shortcut,
-}: ToolbarButtonProps) {
+                                icon,
+                                label,
+                                onClick,
+                                active = false,
+                                disabled = false,
+                                shortcut,
+                              }: ToolbarButtonProps) {
   return (
     <button
       type="button"

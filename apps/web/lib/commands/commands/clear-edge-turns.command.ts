@@ -1,5 +1,5 @@
-import { defineCommand } from "../command";
-import { useEditorStore } from "@/store/editor-store";
+import {defineCommand} from "../command";
+import {useEditorStore} from "@/store/editor-store";
 
 export function createClearEdgeTurnsCommand(edgeId: string) {
   let previousWaypoints: { x: number; y: number }[] = [];
@@ -12,10 +12,10 @@ export function createClearEdgeTurnsCommand(edgeId: string) {
       const store = useEditorStore.getState();
       const edge = store.edges.find((e) => e.id === edgeId);
       previousWaypoints = edge?.data?.waypoints ?? [];
-      store.updateEdgeData(edgeId, { waypoints: [] });
+      store.updateEdgeData(edgeId, {waypoints: []});
     },
     undo: () => {
-      useEditorStore.getState().updateEdgeData(edgeId, { waypoints: previousWaypoints });
+      useEditorStore.getState().updateEdgeData(edgeId, {waypoints: previousWaypoints});
     },
   });
 }

@@ -1,5 +1,5 @@
-import type { EdgeTypes } from "@xyflow/react";
-import { WireEdge } from "./wire-edge";
+import type {EdgeTypes} from "@xyflow/react";
+import {WireEdge} from "./wire-edge";
 
 /**
  * Mirrors nodes/node-registry.tsx. Currently only one edge type exists

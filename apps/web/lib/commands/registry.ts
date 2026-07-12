@@ -1,4 +1,4 @@
-import type { Command } from "./command";
+import type {Command} from "./command";
 
 /**
  * A simple id -> Command lookup. Kept separate from the individual command

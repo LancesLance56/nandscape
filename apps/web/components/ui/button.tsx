@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import {forwardRef, type ButtonHTMLAttributes} from "react";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
 type ButtonSize = "sm" | "lg";
@@ -21,7 +21,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", size = "sm", className = "", ...props }, ref) => {
+  ({variant = "primary", size = "sm", className = "", ...props}, ref) => {
     return (
       <button
         ref={ref}

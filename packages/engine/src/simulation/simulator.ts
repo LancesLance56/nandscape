@@ -1,11 +1,11 @@
 import { CircuitData, DFF_PIN_CLOCK, DFF_PIN_DATA, DFF_PIN_Q, DFF_PIN_QN, DFF_PIN_RESET, DFF_PIN_SET, DLATCH_PIN_DATA, DLATCH_PIN_ENABLE, DLATCH_PIN_Q, DLATCH_PIN_QN, SOURCE_PIN_OUTPUT, SRLATCH_PIN_Q, SRLATCH_PIN_QN, SRLATCH_PIN_R, SRLATCH_PIN_S } from '../data/circuit';
-import { CircuitTopology } from '../data/topology';
-import { EventQueue, ScheduledEvent } from '../data/event-queue';
-import { RuntimeState } from '../data/runtime-state';
+import { CircuitTopology } from '../data';
+import { EventQueue, ScheduledEvent } from '../data';
+import { RuntimeState } from '../data';
 import {
   DEFAULT_MAX_EVENTS,
   DEFAULT_MAX_TIME,
-} from '../data/constants';
+} from '../data';
 import {
   EdgeType,
   GateId,
@@ -14,8 +14,8 @@ import {
   PinId,
   SignalState,
   SimTime,
-} from '../data/types';
-import { SrLatchKind } from '../data/circuit';
+} from '../data';
+import { SrLatchKind } from '../data';
 import {
   didClockEdgeOccur,
   evaluateAnd,
@@ -33,34 +33,14 @@ import {
   resolveNet,
 } from './gate-evaluators';
 
+
+// very complex
+
 export interface SimulatorOptions {
   maxEvents?: number;
   maxTime?: SimTime;
 }
 
-/**
- * Sentinel generation value used for externally-driven events (testbench
- * stimulus via setInput(), and source-gate seeding: CONSTANT, CLOCK,
- * initial sequential-element state). These bypass the staleness check
- * entirely (see processBatch) instead of participating in the per-pin
- * generation counter.
- *
- * WHY THIS IS NECESSARY: the generation counter exists so that when a
- * combinational/sequential gate re-evaluates and decides on a NEW output
- * value before its PREVIOUSLY scheduled output has fired, the stale old
- * event is discarded rather than corrupting the waveform — each new
- * internal decision supersedes the last, because a gate's output is a
- * pure function of its current inputs. That assumption is correct for
- * internally-derived events, but wrong for external stimulus: a testbench
- * legitimately schedules a whole SEQUENCE of distinct future events on the
- * same pin (e.g. "go HIGH at t=0, then FLOAT at t=9") where each one must
- * fire at its own time regardless of how many later calls were made in the
- * meantime. If external events shared the same per-pin generation counter,
- * scheduling event #2 would retroactively invalidate still-pending event
- * #1 even though #1 is chronologically due first — exactly backwards.
- * Tagging external events with this sentinel keeps the two scheduling
- * regimes (derived vs. authored) from interfering with each other.
- */
 const EXTERNAL_GENERATION = -1;
 
 export interface SimulationStats {
@@ -246,12 +226,6 @@ export class Simulator {
     this.queue.push(time, pin, value, generation);
   }
 
-  /**
-   * Schedules an externally-authored event (testbench stimulus / source
-   * seeding) that is exempt from generation-based staleness checks — see
-   * EXTERNAL_GENERATION for why this must NOT share the per-pin generation
-   * counter used by internally-derived (gate-computed) events.
-   */
   private scheduleExternal(pin: PinId, value: SignalState, time: SimTime): void {
     this.queue.push(time, pin, value, EXTERNAL_GENERATION);
   }
@@ -261,10 +235,6 @@ export class Simulator {
     if (this.state.getPinDriveState(pin) === value) return;
     this.scheduleDrive(pin, value, time);
   }
-
-  // ---------------------------------------------------------------------------
-  // Delta-cycle processing
-  // ---------------------------------------------------------------------------
 
   private processBatch(batch: ScheduledEvent[]): void {
     const { circuit, topology, state } = this;
@@ -460,8 +430,6 @@ export class Simulator {
       case GateType.OUTPUT_PIN:
       case GateType.CONSTANT:
       case GateType.CLOCK:
-        // These have no INPUT pins, so they never appear in any net's
-        // fanout list and this branch is unreachable in practice.
         return [];
 
       default:

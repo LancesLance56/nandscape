@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { PuzzleCard } from "@/components/puzzle-card";
-import { HeroGradient } from "@/components/hero-gradient";
+import {Button} from "@/components/ui/button";
+import {PuzzleCard} from "@/components/puzzle-card";
+import {HeroGradient} from "@/components/hero-gradient";
 
 export function Hero() {
   return (

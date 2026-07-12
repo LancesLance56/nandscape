@@ -1,6 +1,6 @@
-import { defineCommand } from "../command";
-import { useEditorStore } from "@/store/editor-store";
-import type { EditorNode, EditorEdge } from "@/types/editor";
+import {defineCommand} from "../command";
+import {useEditorStore} from "@/store/editor-store";
+import type {EditorNode, EditorEdge} from "@/types/editor";
 
 /**
  * Deletes every currently-selected node and edge. Captures a snapshot up
@@ -18,7 +18,7 @@ export function createDeleteSelectionCommand() {
     undoable: true,
     execute: () => {
       const store = useEditorStore.getState();
-      const { nodeIds, edgeIds } = store.selection;
+      const {nodeIds, edgeIds} = store.selection;
       if (nodeIds.length === 0 && edgeIds.length === 0) return;
 
       const nodeIdSet = new Set(nodeIds);

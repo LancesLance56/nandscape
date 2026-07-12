@@ -1,7 +1,7 @@
 "use client";
 
-import type { ComponentType } from "react";
-import { useUiStore } from "@/store/ui-store";
+import type {ComponentType} from "react";
+import {useUiStore} from "@/store/ui-store";
 
 /**
  * dialogs/ holds modal flows (confirm, rename, export, settings). Only one
@@ -24,7 +24,7 @@ export function DialogRoot() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/40 backdrop-blur-sm">
-      <Dialog onClose={closeDialog} />
+      <Dialog onClose={closeDialog}/>
     </div>
   );
 }

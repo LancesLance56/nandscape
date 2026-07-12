@@ -21,20 +21,21 @@ interface ResizablePanelProps {
 }
 
 export function ResizablePanel({
-  edge,
-  size,
-  onResize,
-  min,
-  max,
-  className = "",
-  children,
-}: ResizablePanelProps) {
+                                 edge,
+                                 size,
+                                 onResize,
+                                 min,
+                                 max,
+                                 className = "",
+                                 children,
+                               }: ResizablePanelProps) {
   const dragState = useRef<{
     startPos: number;
     startSize: number;
   } | null>(null);
 
-  const pointerMoveRef = useRef<(event: PointerEvent) => void>(() => {});
+  const pointerMoveRef = useRef<(event: PointerEvent) => void>(() => {
+  });
 
   const handlePointerMove = useCallback(
     (event: PointerEvent) => {
@@ -101,8 +102,8 @@ export function ResizablePanel({
   const isHorizontal = edge !== "top";
 
   const style = isHorizontal
-    ? { width: size }
-    : { height: size };
+    ? {width: size}
+    : {height: size};
 
   const handlePosition =
     edge === "left"

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
-import { MoonIcon, SunIcon } from "@/components/icons";
+import {useEffect, useState} from "react";
+import {useTheme} from "next-themes";
+import {MoonIcon, SunIcon} from "@/components/icons";
 
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const {resolvedTheme, setTheme} = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -19,10 +19,12 @@ export function ThemeToggle() {
         className="relative flex h-8 w-14 items-center rounded-full border border-border-strong bg-surface-2 p-1"
         aria-label="Toggle theme"
       >
-        <span className="h-6 w-6 rounded-full bg-surface-card" />
+        <span className="h-6 w-6 rounded-full bg-surface-card"/>
       </button>
     );
   }
+
+  if (!mounted) return null;
 
   const isDark = resolvedTheme === "dark";
 
@@ -41,9 +43,9 @@ export function ThemeToggle() {
         }`}
       >
         {isDark ? (
-          <MoonIcon className="h-3.5 w-3.5" />
+          <MoonIcon className="h-3.5 w-3.5"/>
         ) : (
-          <SunIcon className="h-3.5 w-3.5" />
+          <SunIcon className="h-3.5 w-3.5"/>
         )}
       </span>
     </button>

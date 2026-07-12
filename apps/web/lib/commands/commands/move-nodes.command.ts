@@ -1,5 +1,5 @@
-import { defineCommand } from "../command";
-import { useEditorStore } from "@/store/editor-store";
+import {defineCommand} from "../command";
+import {useEditorStore} from "@/store/editor-store";
 
 export interface NodeMove {
   nodeId: string;

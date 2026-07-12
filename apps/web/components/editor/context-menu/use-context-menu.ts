@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
-import { useUiStore } from "@/store/ui-store";
+import {useCallback} from "react";
+import {useUiStore} from "@/store/ui-store";
 
 export interface ContextMenuTarget {
   x: number;

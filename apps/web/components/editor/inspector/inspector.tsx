@@ -1,15 +1,15 @@
 "use client";
 
-import { useEditorStore } from "@/store/editor-store";
-import { useUiStore } from "@/store/ui-store";
-import { inspectorPanelRegistry } from "./inspector-registry";
-import { EmptyInspectorPanel } from "./panels/empty-inspector";
-import type { InspectorTab } from "@/types/editor";
+import {useEditorStore} from "@/store/editor-store";
+import {useUiStore} from "@/store/ui-store";
+import {inspectorPanelRegistry} from "./inspector-registry";
+import {EmptyInspectorPanel} from "./panels/empty-inspector";
+import type {InspectorTab} from "@/types/editor";
 
 const TABS: { id: InspectorTab; label: string }[] = [
-  { id: "properties", label: "Properties" },
-  { id: "truth-table", label: "Truth table" },
-  { id: "notes", label: "Notes" },
+  {id: "properties", label: "Properties"},
+  {id: "truth-table", label: "Truth table"},
+  {id: "notes", label: "Notes"},
 ];
 
 export function Inspector() {
@@ -33,17 +33,17 @@ export function Inspector() {
     }
 
     if (selectedNodes.length > 1) {
-      return <EmptyInspectorPanel message={`${selectedNodes.length} items selected. Multi-edit isn't supported yet.`} />;
+      return <EmptyInspectorPanel message={`${selectedNodes.length} items selected. Multi-edit isn't supported yet.`}/>;
     }
 
-    if (!singleNode) return <EmptyInspectorPanel />;
+    if (!singleNode) return <EmptyInspectorPanel/>;
 
     const Panel = inspectorPanelRegistry[singleNode.data.kind];
     if (!Panel) {
-      return <EmptyInspectorPanel message={`"${singleNode.data.kind}" doesn't have an inspector panel yet.`} />;
+      return <EmptyInspectorPanel message={`"${singleNode.data.kind}" doesn't have an inspector panel yet.`}/>;
     }
 
-    return <Panel node={singleNode} />;
+    return <Panel node={singleNode}/>;
   };
 
   return (
@@ -60,7 +60,7 @@ export function Inspector() {
           >
             {tab.label}
             {activeTab === tab.id && (
-              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper" />
+              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper"/>
             )}
           </button>
         ))}

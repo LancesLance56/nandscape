@@ -1,6 +1,6 @@
-import { defineCommand } from "../command";
-import { useEditorStore } from "@/store/editor-store";
-import type { EditorEdge } from "@/types/editor";
+import {defineCommand} from "../command";
+import {useEditorStore} from "@/store/editor-store";
+import type {EditorEdge} from "@/types/editor";
 
 export function createDeleteEdgeCommand(edgeId: string) {
   let removedEdge: EditorEdge | null = null;

@@ -1,21 +1,21 @@
 {
   "name": "@nandscape/engine",
   "version": "0.1.0",
-  "description": "Data-oriented, event-driven, graph-based digital circuit simulation engine for nandscape. Logic only — no UI.",
+  "description": "Data-oriented, event-driven, graph-based digital circuit simulation engine for nandscape.",
   "private": true,
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "test": "tsx --test src/simulation/tests/*.test.ts",
+    "test": "pnpx tsx --test src/simulation/tests/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.19.43",
+    "tsx": "^4.23.0",
+    "typescript": "^5.0.0"
   },
-    "exports": {
+  "exports": {
     ".": "./src/index.ts"
   },
   "engines": {

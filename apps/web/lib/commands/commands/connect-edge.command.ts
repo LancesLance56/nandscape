@@ -1,6 +1,6 @@
-import type { Connection } from "@xyflow/react";
-import { defineCommand } from "../command";
-import { useEditorStore } from "@/store/editor-store";
+import type {Connection} from "@xyflow/react";
+import {defineCommand} from "../command";
+import {useEditorStore} from "@/store/editor-store";
 
 /**
  * Validity checks (pin arity, no self-loops, type matching) belong in a

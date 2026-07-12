@@ -3,20 +3,12 @@ import { SrLatchKind } from '../data';
 
 const { LOW, HIGH, FLOAT, UNKNOWN } = SignalState;
 
-// -----------------------------------------------------------------------------
-// Combinational primitives
-// -----------------------------------------------------------------------------
-
-/** FLOAT behaves like UNKNOWN from the perspective of a logic gate: a gate
- * cannot meaningfully act on a high-impedance input, so treat it as
- * indeterminate for the purposes of AND/OR-style dominance rules. */
 function toLogicInput(s: SignalState): SignalState.LOW | SignalState.HIGH | SignalState.UNKNOWN {
   if (s === HIGH) return HIGH;
   if (s === LOW) return LOW;
   return UNKNOWN; // FLOAT or UNKNOWN both collapse to UNKNOWN as a gate input
 }
 
-/** AND across any number of inputs: LOW is dominant, else UNKNOWN is dominant, else HIGH. */
 export function evaluateAnd(inputs: readonly SignalState[]): SignalState {
   let sawUnknown = false;
   for (const raw of inputs) {
@@ -27,12 +19,10 @@ export function evaluateAnd(inputs: readonly SignalState[]): SignalState {
   return sawUnknown ? UNKNOWN : HIGH;
 }
 
-/** NAND = NOT(AND). */
 export function evaluateNand(inputs: readonly SignalState[]): SignalState {
   return invert(evaluateAnd(inputs));
 }
 
-/** OR across any number of inputs: HIGH is dominant, else UNKNOWN is dominant, else LOW. */
 export function evaluateOr(inputs: readonly SignalState[]): SignalState {
   let sawUnknown = false;
   for (const raw of inputs) {
@@ -43,15 +33,10 @@ export function evaluateOr(inputs: readonly SignalState[]): SignalState {
   return sawUnknown ? UNKNOWN : LOW;
 }
 
-/** NOR = NOT(OR). */
 export function evaluateNor(inputs: readonly SignalState[]): SignalState {
   return invert(evaluateOr(inputs));
 }
 
-/** XOR across any number of inputs: well-defined only when every input is a
- * defined logic level, in which case it's the parity (odd number of HIGHs).
- * If any input is UNKNOWN/FLOAT, the result is UNKNOWN — a single unknown
- * bit can flip the parity of the whole expression. */
 export function evaluateXor(inputs: readonly SignalState[]): SignalState {
   let parity = 0;
   for (const raw of inputs) {
@@ -62,13 +47,10 @@ export function evaluateXor(inputs: readonly SignalState[]): SignalState {
   return parity === 1 ? HIGH : LOW;
 }
 
-/** XNOR = NOT(XOR). */
 export function evaluateXnor(inputs: readonly SignalState[]): SignalState {
   return invert(evaluateXor(inputs));
 }
 
-/** Logical inversion; UNKNOWN and FLOAT both invert to UNKNOWN (a floating
- * input to an inverter does not produce a well-defined output). */
 export function evaluateNot(input: SignalState): SignalState {
   const s = toLogicInput(input);
   if (s === UNKNOWN) return UNKNOWN;
@@ -81,39 +63,21 @@ function invert(s: SignalState): SignalState {
   return UNKNOWN;
 }
 
-/** A non-inverting buffer simply repeats its (logic-collapsed) input. */
 export function evaluateBuffer(input: SignalState): SignalState {
   return toLogicInput(input);
 }
 
-/**
- * Tri-state buffer: drives `data` onto the output only while `enable` is
- * HIGH; otherwise the output releases to FLOAT (high-impedance), letting
- * some other driver on the shared bus take over. An UNKNOWN/FLOAT enable
- * signal means we can't be sure whether the buffer is on or off, so the
- * output is UNKNOWN (it might be driving, might not).
- */
 export function evaluateTristateBuffer(data: SignalState, enable: SignalState): SignalState {
   if (enable === HIGH) return toLogicInput(data);
   if (enable === LOW) return FLOAT;
   return UNKNOWN;
 }
 
-// -----------------------------------------------------------------------------
-// Sequential primitives
-// -----------------------------------------------------------------------------
-
 export interface FlipFlopOutputs {
   q: SignalState;
   qn: SignalState;
 }
 
-/**
- * D latch: transparent while `enable` is HIGH (output follows `data`
- * immediately), holds its last value while `enable` is LOW. An UNKNOWN
- * enable makes it impossible to know whether the latch is transparent or
- * holding, so both outputs go UNKNOWN.
- */
 export function evaluateDLatch(
   data: SignalState,
   enable: SignalState,
@@ -129,13 +93,6 @@ export function evaluateDLatch(
   return { q: UNKNOWN, qn: UNKNOWN };
 }
 
-/**
- * D flip-flop: captures `data` into Q only on the configured clock edge
- * (RISING or FALLING), determined by the caller from the clock net's
- * previous vs. current resolved state. Asynchronous `reset`/`set` override
- * the clock: reset forces Q=LOW, set forces Q=HIGH, and both asserted
- * simultaneously is an invalid configuration -> UNKNOWN.
- */
 export function evaluateDFlipFlop(params: {
   data: SignalState;
   reset: SignalState;
@@ -160,12 +117,6 @@ export function evaluateDFlipFlop(params: {
   return { q: previousQ, qn: invert(previousQ) };
 }
 
-/**
- * SR latch, either NOR-based (active-HIGH S/R) or NAND-based (active-LOW,
- * i.e. inputs are S-bar/R-bar). Both S and R simultaneously asserted is the
- * classic "forbidden state" and resolves to UNKNOWN for both outputs,
- * matching real hardware's unpredictable behavior in that condition.
- */
 export function evaluateSrLatch(params: {
   s: SignalState;
   r: SignalState;
@@ -188,20 +139,12 @@ export function evaluateSrLatch(params: {
   return { q: previousQ, qn: invert(previousQ) }; // both de-asserted -> hold
 }
 
-// -----------------------------------------------------------------------------
-// Net driver resolution
-// -----------------------------------------------------------------------------
-
 export interface NetResolution {
   state: SignalState;
   kind: NetResolutionKind;
 }
 
 /**
- * Resolves the states driven by every active driver pin of a net into one
- * SignalState. FLOAT drivers are, by definition, not actually driving
- * (e.g. a disabled tri-state buffer) and are excluded before resolution:
- *
  *   0 active drivers            -> FLOAT     (UNDRIVEN)
  *   1 active driver             -> that driver's value (SINGLE_DRIVER)
  *   N active drivers, all equal -> that value (AGREEMENT)

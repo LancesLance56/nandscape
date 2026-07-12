@@ -1,8 +1,8 @@
-import { commandRegistry } from "@/lib/commands/registry";
-import type { Command } from "@/lib/commands/command";
-import { createDeleteEdgeCommand } from "@/lib/commands/commands/delete-edge.command";
-import { createClearEdgeTurnsCommand } from "@/lib/commands/commands/clear-edge-turns.command";
-import type { EditorNode, EditorEdge } from "@/types/editor";
+import {commandRegistry} from "@/lib/commands/registry";
+import type {Command} from "@/lib/commands/command";
+import {createDeleteEdgeCommand} from "@/lib/commands/commands/delete-edge.command";
+import {createClearEdgeTurnsCommand} from "@/lib/commands/commands/clear-edge-turns.command";
+import type {EditorNode, EditorEdge} from "@/types/editor";
 
 export interface ContextMenuItem {
   label: string;
@@ -30,24 +30,24 @@ export interface ContextMenuBuilderArgs {
 type MenuBuilder = (args: ContextMenuBuilderArgs) => ContextMenuItem[];
 
 const paneMenu: MenuBuilder = () => [
-  { commandId: "clipboard.paste", label: "Paste" },
-  { commandId: "selection.selectAll", label: "Select all", shortcut: "⌘A" },
-  { commandId: "view.zoomToFit", label: "Zoom to fit", shortcut: "⌘0" },
+  {commandId: "clipboard.paste", label: "Paste"},
+  {commandId: "selection.selectAll", label: "Select all", shortcut: "⌘A"},
+  {commandId: "view.zoomToFit", label: "Zoom to fit", shortcut: "⌘0"},
 ];
 
 const nodeMenu: MenuBuilder = () => [
-  { commandId: "selection.duplicate", label: "Duplicate", shortcut: "⌘D" },
-  { commandId: "clipboard.copy", label: "Copy", shortcut: "⌘C" },
-  { commandId: "selection.delete", label: "Delete", shortcut: "Del", destructive: true },
+  {commandId: "selection.duplicate", label: "Duplicate", shortcut: "⌘D"},
+  {commandId: "clipboard.copy", label: "Copy", shortcut: "⌘C"},
+  {commandId: "selection.delete", label: "Delete", shortcut: "Del", destructive: true},
 ];
 
-const edgeMenu: MenuBuilder = ({ edge }) => {
+const edgeMenu: MenuBuilder = ({edge}) => {
   if (!edge) return [];
   const items: ContextMenuItem[] = [];
   if (edge.data?.waypoints?.length) {
-    items.push({ label: "Clear turns", dynamicCommand: () => createClearEdgeTurnsCommand(edge.id) });
+    items.push({label: "Clear turns", dynamicCommand: () => createClearEdgeTurnsCommand(edge.id)});
   }
-  items.push({ label: "Delete wire", destructive: true, dynamicCommand: () => createDeleteEdgeCommand(edge.id) });
+  items.push({label: "Delete wire", destructive: true, dynamicCommand: () => createDeleteEdgeCommand(edge.id)});
   return items;
 };
 

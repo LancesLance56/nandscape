@@ -1,11 +1,11 @@
 "use client";
 
-import { gateTypeToString } from "@nandscape/engine";
-import { useEditorStore } from "@/store/editor-store";
-import { isVariableArityGate, defaultInputCountForGateType } from "@/lib/editor/gate-defaults";
-import type { EditorNode, GateNodeData } from "@/types/editor";
+import {gateTypeToString} from "@nandscape/engine";
+import {useEditorStore} from "@/store/editor-store";
+import {isVariableArityGate, defaultInputCountForGateType} from "@/lib/editor/gate-defaults";
+import type {EditorNode, GateNodeData} from "@/types/editor";
 
-export function GateInspectorPanel({ node }: { node: EditorNode }) {
+export function GateInspectorPanel({node}: { node: EditorNode }) {
   const data = node.data as GateNodeData;
   const updateNodeData = useEditorStore((s) => s.updateNodeData);
   const typeName = gateTypeToString(data.gateType);
@@ -25,7 +25,7 @@ export function GateInspectorPanel({ node }: { node: EditorNode }) {
           type="text"
           value={data.label ?? ""}
           placeholder={typeName}
-          onChange={(e) => updateNodeData(node.id, { label: e.target.value })}
+          onChange={(e) => updateNodeData(node.id, {label: e.target.value})}
           className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
         />
       </label>
@@ -38,7 +38,7 @@ export function GateInspectorPanel({ node }: { node: EditorNode }) {
             min={2}
             max={8}
             value={data.inputCount ?? defaultInputCountForGateType(data.gateType)}
-            onChange={(e) => updateNodeData(node.id, { inputCount: Number(e.target.value) })}
+            onChange={(e) => updateNodeData(node.id, {inputCount: Number(e.target.value)})}
             className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
           />
         </label>
@@ -49,7 +49,7 @@ export function GateInspectorPanel({ node }: { node: EditorNode }) {
         <input
           type="checkbox"
           checked={data.locked ?? false}
-          onChange={(e) => updateNodeData(node.id, { locked: e.target.checked })}
+          onChange={(e) => updateNodeData(node.id, {locked: e.target.checked})}
           className="h-4 w-4 accent-[var(--copper)]"
         />
       </label>

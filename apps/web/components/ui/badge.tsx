@@ -16,7 +16,7 @@ const labels: Record<Difficulty, string> = {
   hard: "Hard",
 };
 
-export function DifficultyBadge({ level }: DifficultyBadgeProps) {
+export function DifficultyBadge({level}: DifficultyBadgeProps) {
   return (
     <span
       className={`rounded-full px-2.5 py-1 font-mono text-xs font-semibold ${styles[level]}`}

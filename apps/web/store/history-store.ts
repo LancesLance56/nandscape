@@ -1,27 +1,10 @@
-import { create } from "zustand";
-import type { Command, CommandContext } from "@/lib/commands/command";
-import { isUndoable } from "@/lib/commands/command";
-
-/**
- * history-store.ts
- * ---------------------------------------------------------------------------
- * A linear undo/redo stack of executed Commands. This store knows nothing
- * about circuits — it just remembers "what ran" and calls back into each
- * command's own execute()/undo(). That keeps history generic enough to
- * eventually cover non-circuit edits too (e.g. puzzle metadata) without
- * modification.
- *
- * Design notes:
- *   - Executing a new command after undoing clears the redo tail (standard
- *     editor behavior — same as VS Code, Figma, etc.)
- *   - Non-undoable commands (undoable !== true) still execute, but are not
- *     pushed onto the stack, so they don't create a phantom undo step.
- *   - Stack depth is capped so long sessions don't leak memory.
- */
+import {create} from "zustand";
+import type {Command, CommandContext} from "@/lib/commands/command";
+import {isUndoable} from "@/lib/commands/command";
 
 const MAX_HISTORY = 200;
 
-const ctx: CommandContext = { now: () => Date.now() };
+const ctx: CommandContext = {now: () => Date.now()};
 
 export interface HistoryState {
   past: Command<unknown>[];
@@ -54,7 +37,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   },
 
   undo: () => {
-    const { past } = get();
+    const {past} = get();
     const command = past[past.length - 1];
     if (!command?.undo) return;
 
@@ -66,7 +49,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   },
 
   redo: () => {
-    const { future } = get();
+    const {future} = get();
     const command = future[0];
     if (!command) return;
 
@@ -77,7 +60,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     }));
   },
 
-  clear: () => set({ past: [], future: [] }),
+  clear: () => set({past: [], future: []}),
 
   canUndo: () => get().past.length > 0,
   canRedo: () => get().future.length > 0,

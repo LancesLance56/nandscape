@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { SignalState } from "@nandscape/engine";
+import {create} from "zustand";
+import {SignalState} from "@nandscape/engine";
 
 export interface LiveSignalsState {
   edgeSignals: Record<string, SignalState>;
@@ -8,5 +8,5 @@ export interface LiveSignalsState {
 
 export const useLiveSignalsStore = create<LiveSignalsState>((set) => ({
   edgeSignals: {},
-  setEdgeSignals: (signals) => set({ edgeSignals: signals }),
+  setEdgeSignals: (signals) => set({edgeSignals: signals}),
 }));

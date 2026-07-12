@@ -1,8 +1,7 @@
-import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import type {Metadata, Viewport} from "next";
+import {Space_Grotesk, Inter, JetBrains_Mono} from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import Script from "next/script";
+import {ThemeProvider} from "@/components/theme-provider";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -33,19 +32,19 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+                                     children,
+                                   }: Readonly<{ children: React.ReactNode }>) {
   return (
-  <html
-    lang="en"
-    suppressHydrationWarning
-    className={`${spaceGrotesk.variable} ${interSans.variable} ${jetbrainsMono.variable}`}
-  >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${spaceGrotesk.variable} ${interSans.variable} ${jetbrainsMono.variable}`}
+    >
     <body className="font-body antialiased bg-surface text-ink">
-      <ThemeProvider>
-        {children}
-      </ThemeProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      {children}
+    </ThemeProvider>
     </body>
-  </html>
+    </html>
   );
 }

@@ -1,5 +1,5 @@
-import type { Node, Edge } from "@xyflow/react";
-import type { GateType, SignalState } from "@nandscape/engine";
+import type {Node, Edge} from "@xyflow/react";
+import type {GateType, SignalState} from "@nandscape/engine";
 
 /** Every placeable node kind. Mirrors GateType plus editor-only pseudo-nodes. */
 export type EditorNodeKind =
@@ -75,9 +75,14 @@ export interface Selection {
   edgeIds: string[];
 }
 
-export const EMPTY_SELECTION: Selection = { nodeIds: [], edgeIds: [] };
+export const EMPTY_SELECTION: Selection = {nodeIds: [], edgeIds: []};
 
 /** Which side panel/tab is currently active — used by ui-store. */
 export type SidebarTab = "palette" | "layers" | "circuits";
 export type InspectorTab = "properties" | "truth-table" | "notes";
 export type BottomPanelTab = "console" | "waveform" | "problems";
+
+export interface SubcircuitNodeData extends BaseNodeData {
+  kind: "subcircuit";
+  circuitId: string; // -> SubcircuitBlockDefinition.id
+}

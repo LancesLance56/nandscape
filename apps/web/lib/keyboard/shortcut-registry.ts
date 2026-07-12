@@ -1,19 +1,12 @@
 /**
- * shortcut-registry.ts
- * ---------------------------------------------------------------------------
  * Maps a normalized key combo string ("mod+z", "delete", "shift+mod+z") to
  * a command id. Kept separate from the actual DOM event listener
- * (hooks/use-keyboard-shortcuts.ts) so shortcuts can be introspected —
- * e.g. a future "Keyboard Shortcuts" dialog can just render this table.
- *
- * "mod" abstracts Cmd on macOS vs Ctrl elsewhere; normalizeKeyEvent below
- * resolves it per-platform at handling time.
  */
 
 export interface ShortcutBinding {
   combo: string;
   commandId: string;
-  /** Set false to register a binding without it appearing in shortcut help UI (rare). */
+  // Set false to register a binding without it appearing in the shortcut help UI (rare)
   visible?: boolean;
 }
 
@@ -39,7 +32,6 @@ export class ShortcutRegistry {
 
 export const shortcutRegistry = new ShortcutRegistry();
 
-/** Turns a KeyboardEvent into the same combo-string shape used by ShortcutBinding.combo. */
 export function normalizeKeyEvent(event: KeyboardEvent): string {
   const parts: string[] = [];
   const isMac = typeof navigator !== "undefined" && /mac/i.test(navigator.platform);

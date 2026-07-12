@@ -1,14 +1,14 @@
 "use client";
 
-import { useUiStore } from "@/store/ui-store";
-import { GatePalette } from "./gate-palette";
-import { CircuitsPanel } from "./circuits-panel";
-import type { SidebarTab } from "@/types/editor";
+import {useUiStore} from "@/store/ui-store";
+import {GatePalette} from "./gate-palette";
+import {CircuitsPanel} from "./circuits-panel";
+import type {SidebarTab} from "@/types/editor";
 
 const TABS: { id: SidebarTab; label: string }[] = [
-  { id: "palette", label: "Palette" },
-  { id: "layers", label: "Layers" },
-  { id: "circuits", label: "Circuits" },
+  {id: "palette", label: "Palette"},
+  {id: "layers", label: "Layers"},
+  {id: "circuits", label: "Circuits"},
 ];
 
 function LayersPanel() {
@@ -25,7 +25,7 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full flex-col bg-surface-card">
-      <div className="flex border-b border-border px-2">
+      <div className="flex border-b border-border px-2 ">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -37,16 +37,24 @@ export function Sidebar() {
           >
             {tab.label}
             {activeTab === tab.id && (
-              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper" />
+              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper"/>
             )}
           </button>
         ))}
       </div>
 
-      <div className="flex flex-1 flex-col overflow-hidden">
-        {activeTab === "palette" && <GatePalette />}
-        {activeTab === "layers" && <LayersPanel />}
-        {activeTab === "circuits" && <CircuitsPanel />}
+      <div className="flex flex-1 flex-col
+            overflow-hidden overflow-y-scroll
+            [&::-webkit-scrollbar]:max-w-2
+            [&::-webkit-scrollbar-track]:bg-surface-card
+            [&::-webkit-scrollbar-thumb]:bg-border-strong
+            [&::-webkit-scrollbar-thumb]:rounded-md
+            [&::-webkit-scrollbar-thumb]:bg-clip-padding" dir="rtl">
+        <div dir="ltr">
+          {activeTab === "palette" && <GatePalette/>}
+          {activeTab === "layers" && <LayersPanel/>}
+          {activeTab === "circuits" && <CircuitsPanel/>}
+        </div>
       </div>
     </div>
   );

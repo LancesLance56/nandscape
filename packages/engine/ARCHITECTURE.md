@@ -470,7 +470,7 @@ instead of making every call site remember magic pin-role offsets. This
 file introduces **no new data or state** — it's purely convenience on top
 of the construction API in `circuit.ts`.
 
-### 5.5 `subcircuit.ts` — reusable blocks, built by cloning
+### 5.5 `subcircuits.ts` — reusable blocks, built by cloning
 
 `defineSubcircuit()` and `instantiateSubcircuit()`: define a block once as
 its own small `CircuitData`, then stamp out copies of it directly into a

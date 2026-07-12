@@ -27,6 +27,8 @@
   --signal-coral: #e1543b;
   --signal-coral-strong: #b33f2a;
   --signal-coral-bg: #fbe3dd;
+
+  --signal-unknown: #ff00ff;
 }
 
 .dark {
@@ -54,6 +56,8 @@
   --signal-coral: #f0715a;
   --signal-coral-strong: #f79683;
   --signal-coral-bg: #3a1a14;
+
+  --signal-unknown: #ff00ff;
 }
 
 /* Map the raw tokens above into Tailwind's theme so utilities like
@@ -96,6 +100,7 @@ body {
 * {
   border-color: var(--border);
 }
+
 /* Circuit Editor — marching-dashes animation for HIGH wires (wire-edge.tsx). */
 @keyframes nandscape-wire-flow {
   to {

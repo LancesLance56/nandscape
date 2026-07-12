@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditorStore } from "@/store/editor-store";
+import {useEditorStore} from "@/store/editor-store";
 
 /**
  * overlays/ hosts anything absolutely-positioned *over* the canvas that
@@ -15,7 +15,8 @@ export function SelectionSummaryOverlay() {
   if (count === 0) return null;
 
   return (
-    <div className="absolute right-4 top-4 z-10 rounded-full border border-border bg-surface-card px-3 py-1.5 font-mono text-[11px] font-semibold text-ink-soft shadow-md">
+    <div
+      className="absolute right-4 top-4 z-10 rounded-full border border-border bg-surface-card px-3 py-1.5 font-mono text-[11px] font-semibold text-ink-soft shadow-md">
       {count} selected
     </div>
   );

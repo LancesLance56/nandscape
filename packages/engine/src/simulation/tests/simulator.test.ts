@@ -1,8 +1,8 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { CircuitData, SrLatchKind } from '../../data/circuit';
-import { EdgeType, SignalState } from '../../data/types';
+import { CircuitData, SrLatchKind } from '../../data';
+import { EdgeType, SignalState } from '../../data';
 import { compileTopology } from '../compiler';
 import { Simulator } from '../simulator';
 import {

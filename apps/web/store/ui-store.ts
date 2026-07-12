@@ -1,15 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { SidebarTab, InspectorTab, BottomPanelTab } from "@/types/editor";
-
-/**
- * Pure view/chrome state: which panels are open, how big they are, which
- * tab is active. Nothing here describes circuit structure (that's
- * editor-store) or undo history (that's history-store), so a panel resize
- * never pollutes the undo stack.
- *
- * Persisted to localStorage so panel layout survives a refresh
- */
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
+import type {SidebarTab, InspectorTab, BottomPanelTab} from "@/types/editor";
 
 export interface UiState {
   sidebarOpen: boolean;
@@ -39,7 +30,12 @@ export interface UiState {
   setBottomPanelTab: (tab: BottomPanelTab) => void;
   setBottomPanelHeight: (height: number) => void;
 
-  openContextMenu: (menu: { x: number; y: number; targetId: string | null; targetType: "node" | "edge" | "pane" }) => void;
+  openContextMenu: (menu: {
+    x: number;
+    y: number;
+    targetId: string | null;
+    targetType: "node" | "edge" | "pane"
+  }) => void;
   closeContextMenu: () => void;
 
   openDialog: (dialogId: string) => void;
@@ -71,26 +67,26 @@ export const useUiStore = create<UiState>()(
       contextMenu: null,
       activeDialog: null,
 
-      toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
-      setSidebarTab: (tab) => set({ sidebarTab: tab, sidebarOpen: true }),
+      toggleSidebar: () => set((s) => ({sidebarOpen: !s.sidebarOpen})),
+      setSidebarTab: (tab) => set({sidebarTab: tab, sidebarOpen: true}),
       setSidebarWidth: (width) =>
-        set({ sidebarWidth: clamp(width, MIN_PANEL_WIDTH, MAX_PANEL_WIDTH) }),
+        set({sidebarWidth: clamp(width, MIN_PANEL_WIDTH, MAX_PANEL_WIDTH)}),
 
-      toggleInspector: () => set((s) => ({ inspectorOpen: !s.inspectorOpen })),
-      setInspectorTab: (tab) => set({ inspectorTab: tab, inspectorOpen: true }),
+      toggleInspector: () => set((s) => ({inspectorOpen: !s.inspectorOpen})),
+      setInspectorTab: (tab) => set({inspectorTab: tab, inspectorOpen: true}),
       setInspectorWidth: (width) =>
-        set({ inspectorWidth: clamp(width, MIN_PANEL_WIDTH, MAX_PANEL_WIDTH) }),
+        set({inspectorWidth: clamp(width, MIN_PANEL_WIDTH, MAX_PANEL_WIDTH)}),
 
-      toggleBottomPanel: () => set((s) => ({ bottomPanelOpen: !s.bottomPanelOpen })),
-      setBottomPanelTab: (tab) => set({ bottomPanelTab: tab, bottomPanelOpen: true }),
+      toggleBottomPanel: () => set((s) => ({bottomPanelOpen: !s.bottomPanelOpen})),
+      setBottomPanelTab: (tab) => set({bottomPanelTab: tab, bottomPanelOpen: true}),
       setBottomPanelHeight: (height) =>
-        set({ bottomPanelHeight: clamp(height, MIN_BOTTOM_HEIGHT, MAX_BOTTOM_HEIGHT) }),
+        set({bottomPanelHeight: clamp(height, MIN_BOTTOM_HEIGHT, MAX_BOTTOM_HEIGHT)}),
 
-      openContextMenu: (menu) => set({ contextMenu: menu }),
-      closeContextMenu: () => set({ contextMenu: null }),
+      openContextMenu: (menu) => set({contextMenu: menu}),
+      closeContextMenu: () => set({contextMenu: null}),
 
-      openDialog: (dialogId) => set({ activeDialog: dialogId }),
-      closeDialog: () => set({ activeDialog: null }),
+      openDialog: (dialogId) => set({activeDialog: dialogId}),
+      closeDialog: () => set({activeDialog: null}),
     }),
     {
       name: "nandscape-editor-ui",

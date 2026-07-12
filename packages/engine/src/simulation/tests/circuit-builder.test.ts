@@ -1,8 +1,8 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { CircuitData } from '../../data/circuit';
-import { GateType, PinDirection } from '../../data/types';
+import { CircuitData } from '../../data';
+import { GateType, PinDirection } from '../../data';
 import { compileTopology, validateCircuit } from '../compiler';
 import { createInput, createOutput, createNand, createNot } from '../builder';
 

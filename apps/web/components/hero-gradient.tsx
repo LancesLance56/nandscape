@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import {useEffect, useRef} from "react";
 
 export function HeroGradient() {
   const particlesRef = useRef<HTMLDivElement>(null);
@@ -9,7 +9,6 @@ export function HeroGradient() {
     const container = particlesRef.current;
     if (!container) return;
 
-    // Reduced particle count so it's less busy
     const particleCount = 25;
     const timeouts: number[] = [];
 
@@ -21,7 +20,7 @@ export function HeroGradient() {
       particle.style.top = `${y}%`;
       particle.style.opacity = "0";
 
-      return { x, y };
+      return {x, y};
     };
 
     const animateParticle = (particle: HTMLDivElement) => {
@@ -76,7 +75,7 @@ export function HeroGradient() {
   return (
     <>
       <div className="absolute inset-0 overflow-hidden bg-surface transition-colors duration-500 -z-10">
-        
+
         <div
           className="absolute inset-0"
           style={{
@@ -84,9 +83,9 @@ export function HeroGradient() {
             maskImage: "radial-gradient(ellipse at center, transparent 15%, black 80%)",
           }}
         >
-          <div className="gradient-sphere sphere-1 absolute rounded-full blur-[100px]" />
-          <div className="gradient-sphere sphere-2 absolute rounded-full blur-[100px]" />
-          <div className="gradient-sphere sphere-3 absolute rounded-full blur-[100px]" />
+          <div className="gradient-sphere sphere-1 absolute rounded-full blur-[100px]"/>
+          <div className="gradient-sphere sphere-2 absolute rounded-full blur-[100px]"/>
+          <div className="gradient-sphere sphere-3 absolute rounded-full blur-[100px]"/>
 
           <div
             className="absolute inset-0 opacity-[0.80] dark:opacity-[0.15] mix-blend-normal"

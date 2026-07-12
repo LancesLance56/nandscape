@@ -1,15 +1,15 @@
 "use client";
 
-import { useUiStore } from "@/store/ui-store";
-import type { BottomPanelTab } from "@/types/editor";
+import {useUiStore} from "@/store/ui-store";
+import type {BottomPanelTab} from "@/types/editor";
 
 const TABS: { id: BottomPanelTab; label: string }[] = [
-  { id: "console", label: "Console" },
-  { id: "waveform", label: "Waveform" },
-  { id: "problems", label: "Problems" },
+  {id: "console", label: "Console"},
+  {id: "waveform", label: "Waveform"},
+  {id: "problems", label: "Problems"},
 ];
 
-function PanelBody({ tab }: { tab: BottomPanelTab }) {
+function PanelBody({tab}: { tab: BottomPanelTab }) {
   const message =
     tab === "console"
       ? "Simulation and validation messages will stream here."
@@ -28,7 +28,7 @@ export function BottomPanel() {
 
   return (
     <div className="flex h-full flex-col border-t border-border bg-surface-card">
-      <div className="flex h-8 shrink-0 items-center gap-1 px-2">
+      <div className="flex h-8 shrink-0 gap-1 px-2">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -41,18 +41,18 @@ export function BottomPanel() {
             {tab.label}
           </button>
         ))}
-        <div className="flex-1" />
+        <div className="flex-1"/>
         <button
           type="button"
           onClick={toggle}
           aria-label={open ? "Collapse panel" : "Expand panel"}
-          className="rounded-md px-1.5 py-1 text-ink-soft transition-colors hover:text-ink"
+          className="rounded-md px-1.5 text-ink-soft transition-colors hover:text-ink"
         >
           {open ? "⌄" : "⌃"}
         </button>
       </div>
 
-      {open && <PanelBody tab={activeTab} />}
+      {open && <PanelBody tab={activeTab}/>}
     </div>
   );
 }

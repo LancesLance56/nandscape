@@ -3,7 +3,7 @@ interface LedProps {
   value: 0 | 1;
 }
 
-export function Led({ label, value }: LedProps) {
+export function Led({label, value}: LedProps) {
   const isOn = value === 1;
 
   return (

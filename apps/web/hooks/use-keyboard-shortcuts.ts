@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { shortcutRegistry, normalizeKeyEvent } from "@/lib/keyboard/shortcut-registry";
-import { commandRegistry } from "@/lib/commands/registry";
-import { useHistoryStore } from "@/store/history-store";
+import {useEffect} from "react";
+import {shortcutRegistry, normalizeKeyEvent} from "@/lib/keyboard/shortcut-registry";
+import {commandRegistry} from "@/lib/commands/registry";
+import {useHistoryStore} from "@/store/history-store";
 
 const EDITABLE_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"]);
 
