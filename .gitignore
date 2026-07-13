@@ -1,6 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
 /node_modules
 /.pnp
 .pnp.*
@@ -13,7 +10,6 @@
 # testing
 /coverage
 
-# next.js
 /.next/
 /out/
 
@@ -44,3 +40,4 @@ apps/web/next-env.d.ts
 !/apps/web/.next/
 /packages/engine/node_modules/!/apps/web/node_modules/
 !/node_modules/
+/pnpm-lock.yaml
