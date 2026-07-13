@@ -3,9 +3,13 @@ import { useShallow } from "zustand/react/shallow";
 import { GATE_COLORS } from "@/lib/editor/gate-colors";
 import { usePreferencesStore } from "@/store";
 
-export const GATE_SHAPE_WIDTH = 96;
+export const GATE_SHAPE_WIDTH = 64; // was 96
+/** Fixed footprint every gate/block node renders at — keeps the visible
+ *  box and the handle-anchoring container in lockstep so labels can never
+ *  grow the box past where the wires actually connect. */
+export const NODE_WIDTH = GATE_SHAPE_WIDTH + 20;
 
-function isInvertedGate(t: GateType): boolean {
+export function isInvertedGate(t: GateType): boolean {
   return t === GateType.NAND || t === GateType.NOR || t === GateType.XNOR || t === GateType.NOT;
 }
 
@@ -32,6 +36,11 @@ function bubbleShrink(gateType: GateType, bubbleRadius: number, bubbleGap: numbe
 export interface GateShapeGeometry {
   bodyWidth: number;
   labelX: number;
+  /** X position (within the GATE_SHAPE_WIDTH box) a wire/handle should
+   *  terminate at — the bubble's center for inverted gates, the body's
+   *  right edge otherwise. Lets the handle and the bubble read as one
+   *  clickable target instead of two overlapping circles. */
+  connectorX: number;
 }
 
 export function computeGateShapeGeometry(
@@ -40,13 +49,11 @@ export function computeGateShapeGeometry(
   bubbleRadius: number,
   bubbleGap: number,
 ): GateShapeGeometry {
-  const bodyWidth = GATE_SHAPE_WIDTH - bubbleShrink(gateType, bubbleRadius, bubbleGap);
-  const labelFraction = isAndFamily(gateType)
-    ? 0.42 // D-shape: flat back is solid up to (bodyWidth - height/2); center sits left of the round cap
-    : isOrFamily(gateType)
-      ? 0.34 // shield: back edge nearly full height, narrows fast past the midpoint
-      : 0.3; // triangle: linear taper to a point, needs the most left bias
-  return { bodyWidth, labelX: bodyWidth * labelFraction };
+  const shrink = bubbleShrink(gateType, bubbleRadius, bubbleGap);
+  const bodyWidth = GATE_SHAPE_WIDTH - shrink;
+  const labelFraction = isAndFamily(gateType) ? 0.42 : isOrFamily(gateType) ? 0.34 : 0.3;
+  const connectorX = isInvertedGate(gateType) ? bodyWidth + bubbleGap + bubbleRadius : bodyWidth;
+  return { bodyWidth, labelX: bodyWidth * labelFraction, connectorX };
 }
 
 function andBodyPath(w: number, h: number): string {
@@ -100,7 +107,7 @@ export function GateShape({ gateType, height, selected }: GateShapeProps) {
     ? andBodyPath(bodyWidth, height)
     : isOrFamily(gateType)
       ? orBodyPath(bodyWidth, height)
-      : trianglePath(bodyWidth, height); // triangle family; usesSpecialShape() gates who gets here
+      : trianglePath(bodyWidth, height);
 
   return (
     <svg
@@ -112,13 +119,7 @@ export function GateShape({ gateType, height, selected }: GateShapeProps) {
       {(gateType === GateType.XOR || gateType === GateType.XNOR) && (
         <path d={xorBackStrokePath(bodyWidth, height)} fill="none" stroke={strokeColor} strokeWidth={strokeWidth} />
       )}
-      <path
-        d={bodyPath}
-        fill={color}
-        fillOpacity={fillOpacity}
-        stroke={strokeColor}
-        strokeWidth={strokeWidth}
-      />
+      <path d={bodyPath} fill={color} fillOpacity={fillOpacity} stroke={strokeColor} strokeWidth={strokeWidth} />
       {inverted && (
         <circle
           cx={bodyWidth + bubbleGap + bubbleRadius}

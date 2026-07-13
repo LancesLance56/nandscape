@@ -10,6 +10,13 @@ interface NodeHandleProps {
   position: Position;
   signal?: SignalState;
   style?: React.CSSProperties;
+  /** Diameter in px. Defaults to 14 — pass the bubble's diameter to make an
+   *  inverted gate's output handle exactly cover its inversion bubble. */
+  diameter?: number;
+  /** When true, renders no inner fill of its own — used when a shape (like
+   *  an inversion bubble) already provides the visible circle underneath,
+   *  so the handle is purely a clickable/hoverable hit area on top of it. */
+  bare?: boolean;
   onClick?: (event: React.MouseEvent) => void;
   onMouseEnter?: (event: React.MouseEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
@@ -22,7 +29,10 @@ const SIGNAL_CLASS: Record<SignalState, string> = {
   [SignalState.UNKNOWN]: "!bg-copper !border-copper-dark",
 };
 
-export function NodeHandle({id, type, position, signal, style, onClick, onMouseEnter, onMouseLeave}: NodeHandleProps) {
+export function NodeHandle({
+  id, type, position, signal, style, diameter = 14, bare = false,
+  onClick, onMouseEnter, onMouseLeave,
+}: NodeHandleProps) {
   const colorClass = signal !== undefined ? SIGNAL_CLASS[signal] : "!bg-surface-2 !border-border-strong";
 
   return (
@@ -30,15 +40,19 @@ export function NodeHandle({id, type, position, signal, style, onClick, onMouseE
       id={id}
       type={type}
       position={position}
-      style={style}
+      style={{...style, width: diameter, height: diameter}}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="!h-3.5 !w-3.5 !p-0 !overflow-visible !bg-transparent !border-none !shadow-none !cursor-pointer group"
+      className="!p-0 !overflow-visible !bg-transparent !border-none !shadow-none !cursor-pointer group"
     >
-      <span
-        className={`pointer-events-none block h-full w-full rounded-full border-2 shadow-[inset_0_0_0_1.5px_var(--surface-card)] transition-transform group-hover:scale-125 ${colorClass}`}
-      />
+      {bare ? (
+        <span className="pointer-events-none block h-full w-full rounded-full ring-0 transition-all group-hover:ring-2 group-hover:ring-copper/50" />
+      ) : (
+        <span
+          className={`pointer-events-none block h-full w-full rounded-full border-2 shadow-[inset_0_0_0_1.5px_var(--surface-card)] transition-transform group-hover:scale-125 ${colorClass}`}
+        />
+      )}
     </Handle>
   );
 }

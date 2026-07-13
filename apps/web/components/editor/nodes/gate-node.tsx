@@ -6,7 +6,10 @@ import {useShallow} from "zustand/react/shallow";
 import {gateTypeToString, isSequential} from "@nandscape/engine";
 import {NodeHandle, Position} from "./node-handle";
 import {defaultInputCountForGateType} from "@/lib/editor/gate-defaults";
-import {GateShape, GATE_SHAPE_WIDTH, usesSpecialShape, computeGateShapeGeometry} from "./gate-shapes";
+import {
+  GateShape, GATE_SHAPE_WIDTH, NODE_WIDTH,
+  usesSpecialShape, isInvertedGate, computeGateShapeGeometry,
+} from "./gate-shapes";
 import {useHandleClick} from "@/hooks/use-handle-click";
 import type {EditorNode, GateNodeData} from "@/types/editor";
 import {usePreferencesStore} from "@/store/preferences-store";
@@ -44,10 +47,20 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
     return margin + index * sideSpacing;
   };
 
+  const special = usesSpecialShape(gateData.gateType);
+  const inverted = isInvertedGate(gateData.gateType);
+  const geometry = special
+    ? computeGateShapeGeometry(gateData.gateType, nodeHeight, bubbleRadius, bubbleGap)
+    : null;
+  // How far the connector sits inset from the node's right edge — 0 for
+  // plain shapes, `bubbleRadius` for inverted ones (bubble center).
+  const outputInset = geometry ? GATE_SHAPE_WIDTH - geometry.connectorX : 0;
+  const outputDiameter = special && inverted ? bubbleRadius * 2 + 2 : 14;
+
   return (
     <div
-      style={{height: `${nodeHeight}px`}}
-      className="relative flex min-w-24 items-center justify-center transition-[height] duration-150"
+      style={{height: `${nodeHeight}px`, width: `${NODE_WIDTH}px`}}
+      className="relative flex items-center justify-center transition-[height] duration-150"
     >
       {Array.from({length: inputCount}).map((_, i) => (
         <NodeHandle
@@ -67,7 +80,9 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           id="out-0"
           type="source"
           position={Position.Right}
-          style={{top: `${topForHandle(0, 1)}px`}}
+          style={{top: `${topForHandle(0, 1)}px`, right: outputInset}}
+          diameter={outputDiameter}
+          bare={special && inverted}
           onClick={(event) => onHandleClick(id, "out-0", "source", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "source", event)}
           onMouseLeave={onHandleMouseLeave}
@@ -87,30 +102,31 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
         ))
       )}
 
-      {usesSpecialShape(gateData.gateType) ? (
-        <div
-          className="absolute inset-y-0 left-1/2 z-10 -translate-x-1/2"
-          style={{width: GATE_SHAPE_WIDTH}}
-        >
+      {special ? (
+        <div className="absolute inset-y-0 left-1/2 z-10 -translate-x-1/2" style={{width: GATE_SHAPE_WIDTH}}>
           <GateShape gateType={gateData.gateType} height={nodeHeight} selected={selected} />
           <span
-            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-mono text-xs font-bold leading-tight text-ink"
-            style={{left: computeGateShapeGeometry(gateData.gateType, nodeHeight, bubbleRadius, bubbleGap).labelX}}
+            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            style={{left: geometry!.labelX}}
           >
             {gateData.label || typeName}
           </span>
         </div>
       ) : (
         <div
-          className={`absolute inset-y-0 left-1/2 z-10 flex min-w-24 -translate-x-1/2 flex-col items-center justify-center gap-0.5 rounded-lg border bg-surface-card px-3 py-2.5 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+          style={{width: NODE_WIDTH}}
+          className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-lg border bg-surface-card px-2 py-2 shadow-sm transition-[box-shadow,border-color] duration-150 ${
             selected ? "border-copper ring-2 ring-copper/30" : sequential ? "border-signal-green/40" : "border-border-strong"
           }`}
         >
-          <span className="text-center font-mono text-xs font-bold leading-tight text-ink">
+          <span
+            className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            title={gateData.label || typeName}
+          >
             {gateData.label || typeName}
           </span>
           {sequential && (
-            <span className="mt-0.5 text-center font-mono text-[9px] uppercase tracking-wider text-signal-green">
+            <span className="mt-0.5 text-center font-mono text-[8px] uppercase tracking-wider text-signal-green">
               stateful
             </span>
           )}

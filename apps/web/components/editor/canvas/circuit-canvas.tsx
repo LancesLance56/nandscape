@@ -30,17 +30,6 @@ import {snapPoint} from "@/lib/editor/edge-path";
 
 /**
  * The only file that talks to @xyflow/react directly for graph rendering.
- *
- * Wiring is click-click ONLY. React Flow's own handle-drag connection
- * feature is disabled entirely via `nodesConnectable={false}` below, so
- * dragging from a handle does nothing — there's no more "drag out a
- * bezier line" path to fall into by accident:
- *   - Clicking a handle (nodes/node-handle.tsx + hooks/use-handle-click.ts)
- *     starts a draft, or finishes one already in progress.
- *   - Clicking empty canvas while a draft is active (onPaneClick below)
- *     adds a bend point.
- *   - Double-clicking an existing wire while a draft is active taps/branches
- *     onto it (see edges/wire-edge.tsx).
  */
 export function CircuitCanvas() {
   const nodes = useEditorStore((s) => s.nodes);

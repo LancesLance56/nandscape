@@ -8,6 +8,7 @@ import { useHandleClick } from "@/hooks/use-handle-click";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
 import { usePreferencesStore } from "@/store/preferences-store";
 import { getBuiltinSubcircuitBlocks } from "@/lib/editor/default-blocks";
+import { NODE_WIDTH } from "./gate-shapes";
 import type { EditorNode, SubcircuitNodeData } from "@/types/editor";
 import { hexToRgba } from "@/lib/editor/block-colors";
 
@@ -48,19 +49,17 @@ function SubcircuitNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
     return margin + index * sideSpacing;
   };
 
-  const borderStyle = !selected && block.color ? { borderColor: block.color } : undefined;
-
   const colorStyle = block.color
-  ? {
-      backgroundColor: hexToRgba(block.color, 0.16),
-      borderColor: selected ? undefined : block.color, // let the border-copper class win when selected
-    }
-  : undefined;
+    ? {
+        backgroundColor: hexToRgba(block.color, 0.16),
+        borderColor: selected ? undefined : block.color,
+      }
+    : undefined;
 
   return (
     <div
-      style={{ height: `${nodeHeight}px` }}
-      className="relative flex min-w-24 items-center justify-center transition-[height] duration-150"
+      style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }}
+      className="relative flex items-center justify-center transition-[height] duration-150"
     >
       {block.inputs.map((port, i) => (
         <NodeHandle
@@ -88,20 +87,17 @@ function SubcircuitNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
         />
       ))}
 
-       <div
-         style={colorStyle}
-         className={`absolute inset-y-0 left-1/2 z-10 flex min-w-24 -translate-x-1/2 flex-col items-center justify-center gap-0.5 rounded-lg border bg-surface-card px-3 py-2.5 shadow-sm transition-[box-shadow,border-color] duration-150 ${
-           selected ? "border-copper ring-2 ring-copper/30" : block.color ? "" : "border-signal-green/40"
-         }`}
-       >
-        <span className="text-center font-mono text-xs font-bold leading-tight text-ink">
-          {scData.label || block.name}
-        </span>
+      <div
+        style={{ ...colorStyle, width: NODE_WIDTH }}
+        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-lg border bg-surface-card px-2 py-2 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+          selected ? "border-copper ring-2 ring-copper/30" : block.color ? "" : "border-signal-green/40"
+        }`}
+      >
         <span
-           className="mt-0.5 text-center font-mono text-[9px] uppercase tracking-wider"
-           style={{ color: block.color ?? "var(--signal-green)" }}
-         >
-          block
+          className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
+          title={scData.label || block.name}
+        >
+          {scData.label || block.name}
         </span>
       </div>
     </div>
