@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {commandRegistry} from "@/lib/commands/registry";
 import {ALL_REGISTERED_COMMANDS} from "@/lib/commands/commands/registered-commands";
 import {shortcutRegistry} from "@/lib/keyboard/shortcut-registry";

@@ -130,8 +130,8 @@ export function ResizablePanel({
         <div
           className={
             isHorizontal
-              ? "mx-auto h-full w-px bg-border transition-colors group-hover:bg-copper group-active:bg-copper"
-              : "my-auto h-px w-full bg-border transition-colors group-hover:bg-copper group-active:bg-copper"
+              ? "mx-auto h-10 w-1 rounded-full bg-transparent transition-colors duration-150 group-hover:bg-copper/50 group-active:bg-copper"
+              : "my-auto h-1 w-10 rounded-full bg-transparent transition-colors duration-150 group-hover:bg-copper/50 group-active:bg-copper"
           }
         />
       </div>

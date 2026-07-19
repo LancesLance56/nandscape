@@ -25,19 +25,6 @@ export function IoInspectorPanel({ node }: { node: EditorNode }) {
           className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
         />
       </label>
-      <p className="text-xs text-ink-soft">
-        Used as the pin label if this circuit is turned into a block — keep it unique among other {isInput ? "inputs" : "outputs"}.
-      </p>
-
-      <label className="flex items-center justify-between">
-        <span className="text-xs font-medium text-ink-soft">Locked</span>
-        <input
-          type="checkbox"
-          checked={data.locked ?? false}
-          onChange={(e) => updateNodeData(node.id, { locked: e.target.checked })}
-          className="h-4 w-4 accent-[var(--copper)]"
-        />
-      </label>
     </div>
   );
 }

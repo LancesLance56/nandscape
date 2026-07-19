@@ -2,13 +2,21 @@
 
 import {gateTypeToString} from "@nandscape/engine";
 import {useEditorStore} from "@/store/editor-store";
+import {useCommandDispatch} from "@/hooks/use-command";
+import {commandRegistry} from "@/lib/commands/registry";
 import {isVariableArityGate, defaultInputCountForGateType} from "@/lib/editor/gate-defaults";
 import type {EditorNode, GateNodeData} from "@/types/editor";
 
 export function GateInspectorPanel({node}: { node: EditorNode }) {
   const data = node.data as GateNodeData;
   const updateNodeData = useEditorStore((s) => s.updateNodeData);
+  const dispatch = useCommandDispatch();
   const typeName = gateTypeToString(data.gateType);
+
+  const handleRotate = () => {
+    const command = commandRegistry.get("selection.rotate90");
+    if (command) dispatch(command);
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -43,6 +51,17 @@ export function GateInspectorPanel({node}: { node: EditorNode }) {
           />
         </label>
       )}
+
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-ink-soft">Rotation</span>
+        <button
+          type="button"
+          onClick={handleRotate}
+          className="rounded-md border border-border-strong px-2 py-1 font-mono text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+        >
+          {data.rotation ?? 0}° ↻
+        </button>
+      </div>
 
       <label className="flex items-center justify-between">
         <span className="text-xs font-medium text-ink-soft">Locked</span>

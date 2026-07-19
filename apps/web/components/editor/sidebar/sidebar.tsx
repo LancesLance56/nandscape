@@ -1,23 +1,14 @@
 "use client";
 
 import {useUiStore} from "@/store/ui-store";
+import {ProblemPanel} from "./problem-panel";
 import {GatePalette} from "./gate-palette";
-import {CircuitsPanel} from "./circuits-panel";
 import type {SidebarTab} from "@/types/editor";
 
 const TABS: { id: SidebarTab; label: string }[] = [
+  {id: "problem", label: "Problem"},
   {id: "palette", label: "Palette"},
-  {id: "layers", label: "Layers"},
-  {id: "circuits", label: "Circuits"},
 ];
-
-function LayersPanel() {
-  return (
-    <div className="flex flex-1 items-center justify-center p-6 text-center text-sm text-slate">
-      Layers panel — lists every node on the canvas once wired up.
-    </div>
-  );
-}
 
 export function Sidebar() {
   const activeTab = useUiStore((s) => s.sidebarTab);
@@ -25,36 +16,26 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full flex-col bg-surface-card">
-      <div className="flex border-b border-border px-2 ">
+      <div className="flex gap-1 rounded-t-2xl bg-surface-2 p-1.5">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setTab(tab.id)}
-            className={`relative px-3 py-2.5 text-xs font-semibold transition-colors ${
-              activeTab === tab.id ? "text-ink" : "text-ink-soft hover:text-ink"
+            className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+              activeTab === tab.id
+                ? "bg-surface-card text-ink shadow-sm"
+                : "text-ink-soft hover:bg-surface-card/60 hover:text-ink"
             }`}
           >
             {tab.label}
-            {activeTab === tab.id && (
-              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper"/>
-            )}
           </button>
         ))}
       </div>
 
-      <div className="flex flex-1 flex-col
-            overflow-hidden overflow-y-scroll
-            [&::-webkit-scrollbar]:max-w-2
-            [&::-webkit-scrollbar-track]:bg-surface-card
-            [&::-webkit-scrollbar-thumb]:bg-border-strong
-            [&::-webkit-scrollbar-thumb]:rounded-md
-            [&::-webkit-scrollbar-thumb]:bg-clip-padding" dir="rtl">
-        <div dir="ltr">
-          {activeTab === "palette" && <GatePalette/>}
-          {activeTab === "layers" && <LayersPanel/>}
-          {activeTab === "circuits" && <CircuitsPanel/>}
-        </div>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {activeTab === "problem" && <ProblemPanel/>}
+        {activeTab === "palette" && <GatePalette/>}
       </div>
     </div>
   );

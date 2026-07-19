@@ -25,7 +25,6 @@ export enum SignalState {
   UNKNOWN = 3,
 }
 
-/** Number of distinct SignalState values — used to size lookup tables. */
 export const SIGNAL_STATE_COUNT = 4;
 
 export function signalStateToString(s: SignalState): string {
@@ -41,7 +40,6 @@ export function signalStateToString(s: SignalState): string {
   }
 }
 
-/** True only for actively-driven, well-defined logic levels (LOW/HIGH). */
 export function isDefinedLogicLevel(s: SignalState): boolean {
   return s === SignalState.LOW || s === SignalState.HIGH;
 }
@@ -55,16 +53,16 @@ export enum GateType {
   XNOR = 5,
   NOT = 6,
   BUFFER = 7,
-  TRISTATE_BUFFER = 8, // pins: [data, enable] -> [out]
+  TRISTATE_BUFFER = 8,
 
-  D_LATCH = 9, // pins: [data, enable] -> [q, qn]
-  D_FLIP_FLOP = 10, // pins: [data, clock, reset, set] -> [q, qn]
-  SR_LATCH = 11, // pins: [s, r] -> [q, qn] (NOR- or NAND-based, see params)
+  D_LATCH = 9,
+  FLIP_FLOP = 10,
+  SR_LATCH = 11,
 
-  INPUT_PIN = 12, // circuit-level input terminal; externally driven
-  OUTPUT_PIN = 13, // circuit-level output terminal; probe only, drives nothing
-  CONSTANT = 14, // fixed-value source (HIGH / LOW / FLOAT / UNKNOWN)
-  CLOCK = 15, // periodic oscillator source
+  INPUT_PIN = 12,
+  OUTPUT_PIN = 13,
+  CONSTANT = 14,
+  CLOCK = 15,
 }
 
 export const GATE_TYPE_COUNT = 16;
@@ -73,7 +71,6 @@ export function gateTypeToString(t: GateType): string {
   return GateType[t] ?? `UNKNOWN_GATE_TYPE(${t})`;
 }
 
-/** Gate types that participate in event-driven combinational evaluation. */
 export function isCombinational(t: GateType): boolean {
   switch (t) {
     case GateType.NAND:
@@ -94,7 +91,7 @@ export function isCombinational(t: GateType): boolean {
 export function isSequential(t: GateType): boolean {
   switch (t) {
     case GateType.D_LATCH:
-    case GateType.D_FLIP_FLOP:
+    case GateType.FLIP_FLOP:
     case GateType.SR_LATCH:
       return true;
     default:

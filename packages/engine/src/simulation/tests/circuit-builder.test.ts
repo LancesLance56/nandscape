@@ -86,17 +86,13 @@ describe('compileTopology', () => {
 
     const topology = compileTopology(circuit);
 
-    // netA: driven only by A's INPUT_PIN output; fans out only to the NAND gate.
     assert.equal(topology.driverCount(netA), 1);
     assert.equal(topology.fanoutCount(netA), 1);
     assert.deepEqual([...topology.fanoutGates(netA)], [nand.gate]);
 
-    // netB: same shape.
     assert.equal(topology.driverCount(netB), 1);
     assert.equal(topology.fanoutCount(netB), 1);
 
-    // netY: driven only by the NAND gate's output; fans out only to the OUTPUT_PIN
-    // (which has an INPUT-direction pin, making the OUTPUT_PIN gate itself the fanout target).
     assert.equal(topology.driverCount(netY), 1);
     assert.equal(topology.fanoutCount(netY), 1);
     assert.deepEqual([...topology.fanoutGates(netY)], [out.gate]);

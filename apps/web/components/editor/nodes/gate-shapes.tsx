@@ -36,10 +36,6 @@ function bubbleShrink(gateType: GateType, bubbleRadius: number, bubbleGap: numbe
 export interface GateShapeGeometry {
   bodyWidth: number;
   labelX: number;
-  /** X position (within the GATE_SHAPE_WIDTH box) a wire/handle should
-   *  terminate at — the bubble's center for inverted gates, the body's
-   *  right edge otherwise. Lets the handle and the bubble read as one
-   *  clickable target instead of two overlapping circles. */
   connectorX: number;
 }
 

@@ -21,12 +21,6 @@ export interface ContextMenuBuilderArgs {
   edge: EditorEdge | null;
 }
 
-/**
- * Menu content is derived from what was right-clicked, keyed by
- * targetType, rather than hardcoded in context-menu.tsx — a future node or
- * edge kind adds its own section here instead of growing a conditional in
- * the menu component itself.
- */
 type MenuBuilder = (args: ContextMenuBuilderArgs) => ContextMenuItem[];
 
 const paneMenu: MenuBuilder = () => [
@@ -35,11 +29,18 @@ const paneMenu: MenuBuilder = () => [
   {commandId: "view.zoomToFit", label: "Zoom to fit", shortcut: "⌘0"},
 ];
 
-const nodeMenu: MenuBuilder = () => [
-  {commandId: "selection.duplicate", label: "Duplicate", shortcut: "⌘D"},
-  {commandId: "clipboard.copy", label: "Copy", shortcut: "⌘C"},
-  {commandId: "selection.delete", label: "Delete", shortcut: "Del", destructive: true},
-];
+const nodeMenu: MenuBuilder = ({node}) => {
+  const items: ContextMenuItem[] = [];
+  if (node?.data.kind === "gate") {
+    items.push({commandId: "selection.rotate90", label: "Rotate 90°", shortcut: "R"});
+  }
+  items.push(
+    {commandId: "selection.duplicate", label: "Duplicate", shortcut: "⌘D"},
+    {commandId: "clipboard.copy", label: "Copy", shortcut: "⌘C"},
+    {commandId: "selection.delete", label: "Delete", shortcut: "Del", destructive: true},
+  );
+  return items;
+};
 
 const edgeMenu: MenuBuilder = ({edge}) => {
   if (!edge) return [];
@@ -51,13 +52,7 @@ const edgeMenu: MenuBuilder = ({edge}) => {
   return items;
 };
 
-/**
- * Placeholder commands (clipboard.*, selection.duplicate) aren't
- * registered yet — filtering them out here would render an empty pane/node
- * menu, so static items pass through even if their command id isn't found
- * yet. Dynamic items always pass through since they don't depend on the
- * static registry.
- */
+
 export function buildContextMenuItems(args: ContextMenuBuilderArgs): ContextMenuItem[] {
   const builder = args.targetType === "edge" ? edgeMenu : args.targetType === "node" ? nodeMenu : paneMenu;
   return builder(args).filter((item) => item.dynamicCommand || commandRegistry.has(item.commandId!) || true);

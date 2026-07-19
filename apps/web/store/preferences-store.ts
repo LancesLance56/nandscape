@@ -14,6 +14,9 @@ export interface PreferencesState {
   gateNodeTopMargin: number;
   gateNodePortSpacing: number;
   gateNodeMinHeight: number;
+  gateNodeMinWidth: number;
+  gateNodeMaxWidth: number;
+  gateCharWidth: number;
   gateShapesFillOpacity: number;
   gateShapesBubbleRadius: number;
   gateShapesBubbleGap: number;
@@ -28,6 +31,9 @@ export interface PreferencesState {
   setGateNodeTopMargin: (margin: number) => void;
   setGateNodePortSpacing: (spacing: number) => void;
   setGateNodeMinHeight: (height: number) => void;
+  setGateNodeMinWidth: (width: number) => void;
+  setGateNodeMaxWidth: (width: number) => void;
+  setGateCharWidth: (width: number) => void;
   setGateShapesFillOpacity: (opacity: number) => void;
   setGateShapesBubbleRadius: (radius: number) => void;
   setGateShapesBubbleGap: (gap: number) => void;
@@ -38,15 +44,18 @@ export const usePreferencesStore = create<PreferencesState>()(
     (set) => ({
       snapToGrid: true,
       snapGridSize: 10,
-      visualGridSize: 32,
+      visualGridSize: 50,
       showGrid: true,
       edgeRouting: "smoothstep",
       animateSignals: true,
       reducedMotion: false,
       gateNodeTopMargin: 10,
-      gateNodePortSpacing: 8,
-      gateNodeMinHeight: 36,
-      gateShapesFillOpacity: 0.9,
+      gateNodePortSpacing: 17.5,
+      gateNodeMinHeight: 35,
+      gateNodeMinWidth: 96,
+      gateNodeMaxWidth: 220,
+      gateCharWidth: 7.2,
+      gateShapesFillOpacity: 1.0,
       gateShapesBubbleRadius: 4,
       gateShapesBubbleGap: 2,
 
@@ -60,10 +69,20 @@ export const usePreferencesStore = create<PreferencesState>()(
       setGateNodeTopMargin: (margin) => set({gateNodeTopMargin: Math.max(4, margin)}),
       setGateNodePortSpacing: (spacing) => set({gateNodePortSpacing: Math.max(12, spacing)}),
       setGateNodeMinHeight: (height) => set({gateNodeMinHeight: Math.max(32, height)}),
+      setGateNodeMinWidth: (width) => set({gateNodeMinWidth: Math.max(64, width)}),
+      setGateNodeMaxWidth: (width) => set({gateNodeMaxWidth: Math.max(128, width)}),
+      setGateCharWidth: (width) => set({gateCharWidth: Math.max(4, width)}),
       setGateShapesFillOpacity: (opacity) => set({gateShapesFillOpacity: opacity}),
       setGateShapesBubbleRadius: (radius) => set({gateShapesBubbleRadius: radius}),
       setGateShapesBubbleGap: (gap) => set({gateShapesBubbleGap: gap}),
     }),
-    {name: "nandscape-editor-preferences"},
+    {
+      name: "nandscape-editor-preferences",
+      version: 2,
+      migrate: (persistedState, persistedVersion) => {
+        if (persistedVersion < 1) return undefined;
+        return persistedState as PreferencesState;
+      },
+    },
   ),
 );

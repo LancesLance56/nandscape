@@ -11,7 +11,7 @@ export const DEFAULT_GATE_DELAY: Readonly<Record<GateType, SimTime>> = {
   [GateType.BUFFER]: 1,
   [GateType.TRISTATE_BUFFER]: 1,
   [GateType.D_LATCH]: 2,
-  [GateType.D_FLIP_FLOP]: 2,
+  [GateType.FLIP_FLOP]: 2,
   [GateType.SR_LATCH]: 1,
   [GateType.INPUT_PIN]: 0,
   [GateType.OUTPUT_PIN]: 0,

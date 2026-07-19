@@ -292,7 +292,7 @@ function inferPinDirections(type: GateType, pinCount?: number): PinDirection[] {
       return [I, I, O]; // data, enable, output
     case GateType.D_LATCH:
       return [I, I, O, O]; // data, enable, q, qn
-    case GateType.D_FLIP_FLOP:
+    case GateType.FLIP_FLOP:
       return [I, I, I, I, O, O]; // data, clock, reset, set, q, qn
     case GateType.SR_LATCH:
       return [I, I, O, O]; // s, r, q, qn

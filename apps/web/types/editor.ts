@@ -11,6 +11,8 @@ export type EditorNodeKind =
   | "subcircuit"
   | "note";
 
+
+
 export interface BaseNodeData extends Record<string, unknown> {
   kind: EditorNodeKind;
   label?: string;
@@ -77,12 +79,19 @@ export interface Selection {
 
 export const EMPTY_SELECTION: Selection = {nodeIds: [], edgeIds: []};
 
-/** Which side panel/tab is currently active — used by ui-store. */
-export type SidebarTab = "palette" | "layers" | "circuits";
+export type SidebarTab = "problem" | "palette";
 export type InspectorTab = "properties" | "truth-table" | "notes";
-export type BottomPanelTab = "console" | "waveform" | "problems";
+export type BottomPanelTab = "palette";
 
 export interface SubcircuitNodeData extends BaseNodeData {
   kind: "subcircuit";
   circuitId: string; // -> SubcircuitBlockDefinition.id
+}
+
+export interface GateNodeData extends BaseNodeData {
+  kind: "gate";
+  gateType: GateType;
+  inputCount?: number;
+  /** Clockwise rotation in degrees. Handles move to the corresponding side; labels stay upright. */
+  rotation?: 0 | 90 | 180 | 270;
 }

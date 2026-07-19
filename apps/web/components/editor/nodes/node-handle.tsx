@@ -10,12 +10,7 @@ interface NodeHandleProps {
   position: Position;
   signal?: SignalState;
   style?: React.CSSProperties;
-  /** Diameter in px. Defaults to 14 — pass the bubble's diameter to make an
-   *  inverted gate's output handle exactly cover its inversion bubble. */
   diameter?: number;
-  /** When true, renders no inner fill of its own — used when a shape (like
-   *  an inversion bubble) already provides the visible circle underneath,
-   *  so the handle is purely a clickable/hoverable hit area on top of it. */
   bare?: boolean;
   onClick?: (event: React.MouseEvent) => void;
   onMouseEnter?: (event: React.MouseEvent) => void;

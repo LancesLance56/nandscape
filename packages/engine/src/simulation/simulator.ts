@@ -1,4 +1,4 @@
-import { CircuitData, DFF_PIN_CLOCK, DFF_PIN_DATA, DFF_PIN_Q, DFF_PIN_QN, DFF_PIN_RESET, DFF_PIN_SET, DLATCH_PIN_DATA, DLATCH_PIN_ENABLE, DLATCH_PIN_Q, DLATCH_PIN_QN, SOURCE_PIN_OUTPUT, SRLATCH_PIN_Q, SRLATCH_PIN_QN, SRLATCH_PIN_R, SRLATCH_PIN_S } from '../data/circuit';
+import { CircuitData, DFF_PIN_CLOCK, DFF_PIN_DATA, DFF_PIN_Q, DFF_PIN_QN, DFF_PIN_RESET, DFF_PIN_SET, DLATCH_PIN_DATA, DLATCH_PIN_ENABLE, DLATCH_PIN_Q, DLATCH_PIN_QN, SOURCE_PIN_OUTPUT, SRLATCH_PIN_Q, SRLATCH_PIN_QN, SRLATCH_PIN_R, SRLATCH_PIN_S } from '../data';
 import { CircuitTopology } from '../data';
 import { EventQueue, ScheduledEvent } from '../data';
 import { RuntimeState } from '../data';
@@ -155,12 +155,6 @@ export class Simulator {
       this.processBatch(batch);
     }
   }
-
-  /** Convenience: runs for `duration` simulation time units from the current time. */
-  runFor(duration: SimTime): StopReason {
-    return this.run(this.state.currentTime + duration);
-  }
-
   stats(): SimulationStats {
     return {
       currentTime: this.state.currentTime,
@@ -200,7 +194,7 @@ export class Simulator {
           this.scheduleExternal(circuit.pinOf(gate, DLATCH_PIN_QN), SignalState.UNKNOWN, 0);
           break;
         }
-        case GateType.D_FLIP_FLOP: {
+        case GateType.FLIP_FLOP: {
           this.scheduleExternal(circuit.pinOf(gate, DFF_PIN_Q), SignalState.UNKNOWN, 0);
           this.scheduleExternal(circuit.pinOf(gate, DFF_PIN_QN), SignalState.UNKNOWN, 0);
           break;
@@ -379,7 +373,7 @@ export class Simulator {
         ];
       }
 
-      case GateType.D_FLIP_FLOP: {
+      case GateType.FLIP_FLOP: {
         const dataPin = circuit.pinOf(gate, DFF_PIN_DATA);
         const clockPin = circuit.pinOf(gate, DFF_PIN_CLOCK);
         const resetPin = circuit.pinOf(gate, DFF_PIN_RESET);

@@ -6,6 +6,8 @@ import {useSimulationStore} from "@/store/simulation-store";
 import {useWireDraftStore} from "@/store/wire-draft-store";
 import {createDeleteSelectionCommand} from "@/lib/commands";
 import {useCustomCircuitsStore} from "@/store";
+import {createRotateNodesCommand} from "@/lib/commands/commands/rotate-nodes.command";
+import {GateNodeData} from "@/types/editor";
 
 export const historyUndoCommand = defineCommand({
   id: "history.undo",
@@ -127,6 +129,36 @@ export const zoomOutCommand = defineCommand({
   execute: () => console.info("[nandscape] view.zoomOut: wire to CanvasControls' useReactFlow()"),
 });
 
+export const rotateSelectionCommand = defineCommand({
+  id: "selection.rotate90",
+  label: "Rotate 90°",
+  execute: () => {
+    const {nodes, selection} = useEditorStore.getState();
+    const selectedIds = new Set(selection.nodeIds);
+    const rotations = nodes
+      .filter((n) => selectedIds.has(n.id) && n.data.kind === "gate")
+      .map((n) => {
+        const from = (n.data as GateNodeData).rotation ?? 0;
+        const to = ((from + 90) % 360) as 0 | 90 | 180 | 270;
+        return {nodeId: n.id, from, to};
+      });
+    if (rotations.length === 0) return;
+    useHistoryStore.getState().run(createRotateNodesCommand(rotations));
+  },
+});
+
+export const saveAsBlockCommand = defineCommand({
+  id: "circuit.saveAsBlock",
+  label: "Save as circuit block",
+  execute: () => useUiStore.getState().openDialog("save-subcircuit"),
+});
+
+export const openAddCircuitDialogCommand = defineCommand({
+  id: "circuit.openAddDialog",
+  label: "Add a circuit",
+  execute: () => useUiStore.getState().openDialog("add-circuit"),
+});
+
 export const ALL_REGISTERED_COMMANDS = [
   historyUndoCommand,
   historyRedoCommand,
@@ -137,6 +169,8 @@ export const ALL_REGISTERED_COMMANDS = [
   copySelectionCommand,
   pasteClipboardCommand,
   saveCircuitCommand,
+  saveAsBlockCommand,
+  rotateSelectionCommand,
   toggleSidebarCommand,
   toggleInspectorCommand,
   toggleBottomPanelCommand,

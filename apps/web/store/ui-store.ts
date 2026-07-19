@@ -13,7 +13,6 @@ export interface UiState {
 
   bottomPanelOpen: boolean;
   bottomPanelTab: BottomPanelTab;
-  bottomPanelHeight: number;
 
   contextMenu: { x: number; y: number; targetId: string | null; targetType: "node" | "edge" | "pane" } | null;
   activeDialog: string | null;
@@ -28,7 +27,6 @@ export interface UiState {
 
   toggleBottomPanel: () => void;
   setBottomPanelTab: (tab: BottomPanelTab) => void;
-  setBottomPanelHeight: (height: number) => void;
 
   openContextMenu: (menu: {
     x: number;
@@ -44,8 +42,6 @@ export interface UiState {
 
 export const MIN_PANEL_WIDTH = 220;
 export const MAX_PANEL_WIDTH = 480;
-export const MIN_BOTTOM_HEIGHT = 32;
-export const MAX_BOTTOM_HEIGHT = 420;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
@@ -53,16 +49,15 @@ export const useUiStore = create<UiState>()(
   persist(
     (set) => ({
       sidebarOpen: true,
-      sidebarTab: "palette",
+      sidebarTab: "problem",
       sidebarWidth: 260,
 
       inspectorOpen: true,
       inspectorTab: "properties",
       inspectorWidth: 300,
 
-      bottomPanelOpen: false,
-      bottomPanelTab: "console",
-      bottomPanelHeight: 220,
+      bottomPanelOpen: true,
+      bottomPanelTab: "palette",
 
       contextMenu: null,
       activeDialog: null,
@@ -79,8 +74,6 @@ export const useUiStore = create<UiState>()(
 
       toggleBottomPanel: () => set((s) => ({bottomPanelOpen: !s.bottomPanelOpen})),
       setBottomPanelTab: (tab) => set({bottomPanelTab: tab, bottomPanelOpen: true}),
-      setBottomPanelHeight: (height) =>
-        set({bottomPanelHeight: clamp(height, MIN_BOTTOM_HEIGHT, MAX_BOTTOM_HEIGHT)}),
 
       openContextMenu: (menu) => set({contextMenu: menu}),
       closeContextMenu: () => set({contextMenu: null}),
@@ -90,14 +83,19 @@ export const useUiStore = create<UiState>()(
     }),
     {
       name: "nandscape-editor-ui",
+      version: 2,
+      migrate: (persistedState, persistedVersion) => {
+        if (persistedVersion < 1) return undefined;
+        return persistedState as UiState;
+      },
       partialize: (state) => ({
         sidebarOpen: state.sidebarOpen,
         sidebarWidth: state.sidebarWidth,
         inspectorOpen: state.inspectorOpen,
         inspectorWidth: state.inspectorWidth,
         bottomPanelOpen: state.bottomPanelOpen,
-        bottomPanelHeight: state.bottomPanelHeight,
       }),
     },
+
   ),
 );

@@ -10,6 +10,7 @@ import {commandRegistry} from "@/lib/commands/registry";
 import {LogoIcon} from "@/components/icons";
 import {ThemeToggle} from "@/components/theme-toggle";
 import Link from "next/link";
+import {LoadCircuitMenu} from "@/components/editor/toolbar/load-circuit-menu";
 
 const Icon = {
   Undo: () => (
@@ -30,17 +31,6 @@ const Icon = {
             strokeLinejoin="round"/>
     </svg>
   ),
-  Play: () => (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
-      <path d="M4.5 3.5l8 4.5-8 4.5v-9z"/>
-    </svg>
-  ),
-  Pause: () => (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
-      <rect x="4" y="3.5" width="3" height="9" rx="0.5"/>
-      <rect x="9" y="3.5" width="3" height="9" rx="0.5"/>
-    </svg>
-  ),
   Sidebar: () => (
     <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
       <rect x="2" y="3" width="12" height="10" rx="1.5"/>
@@ -53,10 +43,10 @@ const Icon = {
       <path d="M9.5 3v10"/>
     </svg>
   ),
-  BottomPanel: () => (
+  Block: () => (
     <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="2" y="3" width="12" height="10" rx="1.5"/>
-      <path d="M2 9.5h12"/>
+      <path d="M8 1.5l5.8 3.35v6.7L8 14.9l-5.8-3.35v-6.7L8 1.5z" strokeLinejoin="round"/>
+      <path d="M8 8v6.4M8 8L2.4 4.75M8 8l5.6-3.25" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
 };
@@ -68,10 +58,8 @@ export function Toolbar() {
 
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   const inspectorOpen = useUiStore((s) => s.inspectorOpen);
-  const bottomPanelOpen = useUiStore((s) => s.bottomPanelOpen);
   const toggleSidebar = useUiStore((s) => s.toggleSidebar);
   const toggleInspector = useUiStore((s) => s.toggleInspector);
-  const toggleBottomPanel = useUiStore((s) => s.toggleBottomPanel);
 
   const simStatus = useSimulationStore((s) => s.status);
   const play = useSimulationStore((s) => s.play);
@@ -84,42 +72,72 @@ export function Toolbar() {
   };
 
   return (
-    <div className="flex h-12 items-center gap-2.5 px-3">
-      <ToolbarGroup>
-        <Link className="flex h-12" href="/">
-          <LogoIcon/>
-        </Link>
-        <ThemeToggle/>
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <ToolbarButton icon={<Icon.Undo/>} label="Undo" shortcut="⌘Z" disabled={!canUndo}
-                       onClick={() => runById("history.undo")}/>
-        <ToolbarButton icon={<Icon.Redo/>} label="Redo" shortcut="⌘⇧Z" disabled={!canRedo}
-                       onClick={() => runById("history.redo")}/>
-        <ToolbarButton icon={<Icon.Trash/>} label="Delete selection" shortcut="Del"
-                       onClick={() => runById("selection.delete")}/>
-      </ToolbarGroup>
+    <div className="grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-2.5 px-3">
+      <div className="flex items-center gap-2.5 justify-self-start">
+        <ToolbarGroup>
+          <Link className="flex h-12" href="/">
+            <LogoIcon/>
+          </Link>
+          <ThemeToggle/>
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <ToolbarButton icon={<Icon.Undo/>} label="Undo" shortcut="⌘Z" disabled={!canUndo}
+                         onClick={() => runById("history.undo")}/>
+          <ToolbarButton icon={<Icon.Redo/>} label="Redo" shortcut="⌘⇧Z" disabled={!canRedo}
+                         onClick={() => runById("history.redo")}/>
+          <ToolbarButton icon={<Icon.Trash/>} label="Delete selection" shortcut="Del"
+                         onClick={() => runById("selection.delete")}/>
+        </ToolbarGroup>
+      </div>
 
-      <ToolbarGroup>
-        <ToolbarButton
-          icon={isRunning ? <Icon.Pause/> : <Icon.Play/>}
-          label={isRunning ? "Pause simulation" : "Run simulation"}
-          shortcut="Space"
-          active={isRunning}
-          onClick={() => (isRunning ? pause() : play())}
+      <button
+        type="button"
+        aria-label={isRunning ? "Pause simulation" : "Run simulation"}
+        aria-pressed={isRunning}
+        onClick={() => (isRunning ? pause() : play())}
+        className={`group relative flex h-10 w-10 items-center justify-center justify-self-center rounded-full text-white transition-all duration-200 hover:scale-108 active:scale-92 ${
+          isRunning
+            ? "bg-signal-coral shadow-[0_6px_18px_-2px_rgba(225,84,59,0.55)]"
+            : "bg-copper shadow-[0_6px_18px_-2px_rgba(193,90,42,0.55)]"
+        }`}
+      >
+        {isRunning && (
+          <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-signal-coral/40"/>
+        )}
+        <span
+          className={`absolute inset-0 rounded-full ring-2 ring-white/20 transition-opacity duration-200 ${
+            isRunning ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}
         />
-      </ToolbarGroup>
+        {isRunning ? (
+          <svg viewBox="0 0 16 16" className="h-4.5 w-4.5" fill="currentColor">
+            <rect x="3.4" y="2.8" width="3.2" height="10.4" rx="1"/>
+            <rect x="9.4" y="2.8" width="3.2" height="10.4" rx="1"/>
+          </svg>
+        ) : (
+          <svg viewBox="0 0 16 16" className="ml-0.5 h-5 w-5" fill="currentColor">
+            <path d="M4 2.6v10.8a1 1 0 0 0 1.53.85l8.6-5.4a1 1 0 0 0 0-1.7l-8.6-5.4A1 1 0 0 0 4 2.6z"/>
+          </svg>
+        )}
+      </button>
 
-      <div className="flex-1"/>
+      <div className="flex items-center gap-2.5 justify-self-end">
+        <ToolbarGroup>
+          <LoadCircuitMenu/>
+          <ToolbarButton
+            icon={<Icon.Block/>}
+            label="Save as circuit block"
+            onClick={() => runById("circuit.saveAsBlock")}
+          />
+        </ToolbarGroup>
 
-      <ToolbarGroup>
-        <ToolbarButton icon={<Icon.Sidebar/>} label="Toggle sidebar" shortcut="⌘B" active={sidebarOpen}
-                       onClick={toggleSidebar}/>
-        <ToolbarButton icon={<Icon.BottomPanel/>} label="Toggle bottom panel" shortcut="⌘J" active={bottomPanelOpen}
-                       onClick={toggleBottomPanel}/>
-        <ToolbarButton icon={<Icon.Inspector/>} label="Toggle inspector" shortcut="⌘I" active={inspectorOpen}
-                       onClick={toggleInspector}/>
-      </ToolbarGroup>
+        <ToolbarGroup>
+          <ToolbarButton icon={<Icon.Sidebar/>} label="Toggle sidebar" shortcut="⌘B" active={sidebarOpen}
+                         onClick={toggleSidebar}/>
+          <ToolbarButton icon={<Icon.Inspector/>} label="Toggle inspector" shortcut="⌘I" active={inspectorOpen}
+                         onClick={toggleInspector}/>
+        </ToolbarGroup>
+      </div>
     </div>
   );
 }

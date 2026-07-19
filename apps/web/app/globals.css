@@ -33,17 +33,17 @@
 
 .dark {
   color-scheme: dark;
-
-  --surface: #0f1115;
-  --surface-2: #151922;
-  --surface-card: #191f28;
+  --background: #0a0a0a;
+  --surface: #0a0a0a;        /* was a blue-slate, e.g. #141a1f — now matches --background */
+  --surface-card: #121212;   /* sidebar/toolbar panels: one step up so they still read as layered */
+  --surface-2: #1a1a1a;      /* hover states, palette chips */
+  
+  --border: #232323;
+  --border-strong: #2e2e2e;
 
   --ink: #edf2f7;
   --ink-soft: #b2bcc8;
   --slate: #7d8793;
-
-  --border: #272d37;
-  --border-strong: #353d49;
 
   --copper: #e07a46;
   --copper-dark: #f0966a;
@@ -106,4 +106,24 @@ body {
   to {
     stroke-dashoffset: -10;
   }
+}
+
+.navbar-container {
+  width: min(1100px, calc(100vw - 48px));
+
+  padding: 14px 22px;
+
+  border-radius: 999px;
+
+  background: rgba(22, 22, 22, 0.72);
+
+  backdrop-filter: blur(20px);
+
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+      0 10px 30px rgba(0,0,0,.28),
+      inset 0 1px rgba(255,255,255,.08);
 }

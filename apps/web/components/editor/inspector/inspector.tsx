@@ -48,20 +48,19 @@ export function Inspector() {
 
   return (
     <div className="flex h-full flex-col bg-surface-card">
-      <div className="flex border-b border-border px-2">
+      <div className="flex gap-1 rounded-t-2xl bg-surface-2 p-1.5">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setTab(tab.id)}
-            className={`relative px-3 py-2.5 text-xs font-semibold transition-colors ${
-              activeTab === tab.id ? "text-ink" : "text-ink-soft hover:text-ink"
+            className={`flex-1 rounded-lg px-2 py-2 text-xs font-semibold transition-all ${
+              activeTab === tab.id
+                ? "bg-surface-card text-ink shadow-sm"
+                : "text-ink-soft hover:bg-surface-card/60 hover:text-ink"
             }`}
           >
             {tab.label}
-            {activeTab === tab.id && (
-              <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-copper"/>
-            )}
           </button>
         ))}
       </div>

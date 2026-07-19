@@ -1,12 +1,12 @@
 import { GateType } from "@nandscape/engine";
 
 export const GATE_COLORS: Partial<Record<GateType, string>> = {
-  [GateType.NAND]: "#5B8DEF",
-  [GateType.AND]: "#4CAF7D",
-  [GateType.OR]: "#E0A339",
-  [GateType.NOR]: "#D9694F",
-  [GateType.XOR]: "#9B6BD8",
-  [GateType.XNOR]: "#3FB6C7",
+  [GateType.NAND]: "var(--copper)",        // was blue — now matches primary accent
+  [GateType.AND]: "var(--signal-green)",
+  [GateType.OR]: "#E0A339",                 // warm amber, kept
+  [GateType.NOR]: "var(--signal-coral)",
+  [GateType.XOR]: "#B25A3B",                // rust/terracotta, replaces violet
+  [GateType.XNOR]: "#8A8F5C",               // olive, replaces teal
   [GateType.NOT]: "#E05C97",
-  [GateType.BUFFER]: "#8C8C8C",
+  [GateType.BUFFER]: "var(--slate)",
 };

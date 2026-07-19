@@ -62,7 +62,7 @@ export function createIoNode(
 export function createSubcircuitNode(
   position: { x: number; y: number },
   blockId: string,
-  options: NodeFactoryOptions & { label?: string } = {},
+  options: NodeFactoryOptions = {},
 ): EditorNode {
   return {
     id: options.id ?? nextNodeId("subcircuit"),
@@ -71,7 +71,6 @@ export function createSubcircuitNode(
     data: {
       kind: "subcircuit",
       circuitId: blockId,
-      label: options.label,
     } satisfies EditorNodeData,
   };
 }

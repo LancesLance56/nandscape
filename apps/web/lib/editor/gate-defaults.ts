@@ -5,7 +5,7 @@ export function defaultInputCountForGateType(gateType: GateType): number {
     case GateType.NOT:
     case GateType.BUFFER:
       return 1;
-    case GateType.D_FLIP_FLOP:
+    case GateType.FLIP_FLOP:
       return 4; // data, clock, reset, set
     case GateType.TRISTATE_BUFFER:
     case GateType.D_LATCH:

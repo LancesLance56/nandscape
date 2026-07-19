@@ -178,7 +178,7 @@ export function createDFlipFlop(
   delay?: SimTime,
   name?: string,
 ): FlipFlopHandle {
-  const gate = circuit.addGate({ type: GateType.D_FLIP_FLOP, paramA: edge, delay, name });
+  const gate = circuit.addGate({ type: GateType.FLIP_FLOP, paramA: edge, delay, name });
   return {
     gate,
     data: circuit.pinOf(gate, DFF_PIN_DATA),

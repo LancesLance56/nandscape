@@ -1,107 +1,101 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import type { NodeProps } from "@xyflow/react";
-import { useShallow } from "zustand/react/shallow";
 import { NodeHandle, Position } from "./node-handle";
 import { useHandleClick } from "@/hooks/use-handle-click";
+import { usePreferencesStore } from "@/store";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
-import { usePreferencesStore } from "@/store/preferences-store";
-import { getBuiltinSubcircuitBlocks } from "@/lib/editor/default-blocks";
-import { NODE_WIDTH } from "./gate-shapes";
+import type { BlockPort } from "@/types/subcircuit-block";
 import type { EditorNode, SubcircuitNodeData } from "@/types/editor";
-import { hexToRgba } from "@/lib/editor/block-colors";
 
-function SubcircuitNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
+function SubcircuitNodeComponent({ id, data, selected }: NodeProps<EditorNode>) {
+  const portSpacing = usePreferencesStore().gateNodePortSpacing;
+  const portTopMargin = usePreferencesStore().gateNodeTopMargin;
+  const gateMinWidth = usePreferencesStore().gateNodeMinWidth;
+  const gateMaxWidth = usePreferencesStore().gateNodeMaxWidth;
+  const gateCharWidth = usePreferencesStore().gateCharWidth;
+  const gateMinHeight = usePreferencesStore().gateNodeMinHeight;
+
   const scData = data as SubcircuitNodeData;
-  const customBlocks = useSubcircuitBlocksStore((s) => s.customBlocks);
-  const block = useMemo(
-    () =>
-      getBuiltinSubcircuitBlocks().find((b) => b.id === scData.circuitId) ??
-      customBlocks.find((b) => b.id === scData.circuitId),
-    [customBlocks, scData.circuitId],
-  );
+  const block = useSubcircuitBlocksStore((s) => s.getById(scData.circuitId));
   const { onHandleClick, onHandleMouseEnter, onHandleMouseLeave } = useHandleClick();
 
-  const { margin, spacing, minHeight } = usePreferencesStore(
-    useShallow((s) => ({
-      margin: s.gateNodeTopMargin,
-      spacing: s.gateNodePortSpacing,
-      minHeight: s.gateNodeMinHeight,
-    })),
-  );
+  const label = scData.label || block?.name || "Missing block";
+  const color = block?.color;
+  const inputs: BlockPort[] = block?.inputs ?? [];
+  const outputs: BlockPort[] = block?.outputs ?? [];
+  const portCount = Math.max(inputs.length, outputs.length, 1);
 
-  if (!block) {
-    return (
-      <div className="rounded-lg border border-signal-coral bg-surface-card px-3 py-2 font-mono text-[11px] text-signal-coral">
-        Missing block ({scData.circuitId})
-      </div>
-    );
-  }
+  const height = Math.max(gateMinHeight, (portCount - 1) * portSpacing + portTopMargin * 2);
+  const estimatedWidth = Math.ceil(label.length * gateCharWidth) + 32;
+  const width = Math.min(gateMaxWidth, Math.max(gateMinWidth, estimatedWidth));
 
-  const maxPorts = Math.max(block.inputs.length, block.outputs.length);
-  const nodeHeight = Math.max(minHeight, margin * 2 + (maxPorts - 1) * spacing);
-  const availableHeight = nodeHeight - margin * 2;
-
-  const topForHandle = (index: number, count: number) => {
-    if (count <= 1) return nodeHeight / 2;
-    const sideSpacing = availableHeight / (count - 1);
-    return margin + index * sideSpacing;
+  const portOffset = (index: number, total: number) => {
+    if (total <= 1) return height / 2;
+    const usable = height - portTopMargin * 2;
+    return portTopMargin + (usable * index) / (total - 1);
   };
-
-  const colorStyle = block.color
-    ? {
-        backgroundColor: hexToRgba(block.color, 0.16),
-        borderColor: selected ? undefined : block.color,
-      }
-    : undefined;
 
   return (
     <div
-      style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }}
-      className="relative flex items-center justify-center transition-[height] duration-150"
+      style={{ width, height }}
+      className="relative flex items-center justify-center transition-[height,width] duration-150"
     >
-      {block.inputs.map((port, i) => (
+      {inputs.map((input, i) => (
         <NodeHandle
-          key={`in-${i}`}
-          id={`in-${i}`}
+          key={input.name}
+          id={input.name}
           type="target"
           position={Position.Left}
-          style={{ top: `${topForHandle(i, block.inputs.length)}px` }}
-          onClick={(event) => onHandleClick(id, `in-${i}`, "target", event)}
+          style={{ top: portOffset(i, inputs.length) }}
+          onClick={(event) => onHandleClick(id, input.name, "target", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "target", event)}
           onMouseLeave={onHandleMouseLeave}
         />
       ))}
 
-      {block.outputs.map((port, i) => (
+      {outputs.map((output, i) => (
         <NodeHandle
-          key={`out-${i}`}
-          id={`out-${i}`}
+          key={output.name}
+          id={output.name}
           type="source"
           position={Position.Right}
-          style={{ top: `${topForHandle(i, block.outputs.length)}px` }}
-          onClick={(event) => onHandleClick(id, `out-${i}`, "source", event)}
+          style={{ top: portOffset(i, outputs.length) }}
+          onClick={(event) => onHandleClick(id, output.name, "source", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "source", event)}
           onMouseLeave={onHandleMouseLeave}
         />
       ))}
 
       <div
-        style={{ ...colorStyle, width: NODE_WIDTH }}
-        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-lg border bg-surface-card px-2 py-2 shadow-sm transition-[box-shadow,border-color] duration-150 ${
-          selected ? "border-copper ring-2 ring-copper/30" : block.color ? "" : "border-signal-green/40"
+        style={{ width, height }}
+        className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg border bg-surface-card px-1 py-1 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+          selected
+            ? "border-copper ring-2 ring-copper/30"
+            : !block
+              ? "border-dashed border-signal-coral/60"
+              : "border-border-strong"
         }`}
       >
-        <span
-          className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
-          title={scData.label || block.name}
-        >
-          {scData.label || block.name}
-        </span>
+        <div className="flex flex-col items-center gap-1">
+          {color && (
+            <span
+              className="h-1.5 w-6 rounded-full"
+              style={{ backgroundColor: color }}
+              aria-hidden="true"
+            />
+          )}
+          <span
+            className="line-clamp-3 whitespace-normal break-words text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            title={label}
+          >
+            {label}
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
-export const SubcircuitNode = memo(SubcircuitNodeImpl);
+export const SubcircuitNode = memo(SubcircuitNodeComponent);

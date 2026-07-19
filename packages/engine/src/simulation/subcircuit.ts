@@ -1,5 +1,5 @@
-import { CircuitData, SINK_PIN_INPUT, SOURCE_PIN_OUTPUT } from '../data/circuit';
-import { GateId, GateType, INVALID_ID, NetId, PinDirection } from '../data/types';
+import { CircuitData, SINK_PIN_INPUT, SOURCE_PIN_OUTPUT } from '../data';
+import { GateId, GateType, INVALID_ID, NetId, PinDirection } from '../data';
 import { validateCircuit } from './compiler';
 import { SinkHandle, SourceHandle } from './builder';
 
