@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  username     String  @unique
+  passwordHash String
+  name         String?
+  avatarUrl    String?
+  role         Role    @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions       Session[]
+  blogs          Blog[]
+  puzzles        Puzzle[]
+  puzzleAttempts PuzzleAttempt[]
+
+  @@index([email])
+}
+
+model Session {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ---------- BLOGS ----------
+
+model Blog {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  excerpt   String?
+  content   String   @db.Text
+  tags      String[] @default([])
+  published Boolean  @default(false)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  @@index([authorId])
+  @@index([published])
+}
+
+// ---------- PUZZLES ----------
+
+model Puzzle {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  description String?    @db.Text
+  difficulty  Difficulty @default(MEDIUM)
+
+  // Flexible structured data — store the puzzle definition here
+  data     Json
+  solution Json
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attempts PuzzleAttempt[]
+
+  @@index([creatorId])
+  @@index([difficulty])
+}
+
+model PuzzleAttempt {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  puzzleId String
+  puzzle   Puzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
+
+  solved        Boolean  @default(false)
+  attemptsCount Int      @default(1)
+  timeTakenMs   Int?
+  submittedAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([puzzleId])
+}

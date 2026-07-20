@@ -11,7 +11,8 @@ const links = [
   { label: "Home", href: "/" },
   { label: "Puzzles", href: "/puzzles" },
   { label: "Nandbox Editor", href: "/nandbox" },
-  { label: "Learn", href: "/learn" },
+  { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
 ];
 
 export function Navbar() {

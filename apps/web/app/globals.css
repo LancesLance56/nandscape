@@ -33,17 +33,17 @@
 
 .dark {
   color-scheme: dark;
-  --background: #0a0a0a;
-  --surface: #0a0a0a;        /* was a blue-slate, e.g. #141a1f — now matches --background */
-  --surface-card: #121212;   /* sidebar/toolbar panels: one step up so they still read as layered */
-  --surface-2: #1a1a1a;      /* hover states, palette chips */
-  
-  --border: #232323;
-  --border-strong: #2e2e2e;
+  --background: #141414;
+  --surface: #141414;
+  --surface-card: #1c1c1c;
+  --surface-2: #242424;
 
-  --ink: #edf2f7;
-  --ink-soft: #b2bcc8;
-  --slate: #7d8793;
+  --border: #2a2a2a;
+  --border-strong: #3a3a3a;
+
+  --ink: #e8ecef;
+  --ink-soft: #a9b1b9;
+  --slate: #82898f;
 
   --copper: #e07a46;
   --copper-dark: #f0966a;
