@@ -1,43 +1,7 @@
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-.idea
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-apps/web/next-env.d.ts
+!/pnpm-lock.yaml
+!/node_modules/
 !/apps/web/node_modules/
 !/apps/web/.next/
-/packages/engine/node_modules/!/apps/web/node_modules/
-!/node_modules/
-/pnpm-lock.yaml
+!/packages/db/node_modules/
+!/packages/engine/node_modules/
+!/packages/db/generated/
