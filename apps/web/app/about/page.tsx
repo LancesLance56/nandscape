@@ -79,7 +79,7 @@ export default function AboutPage() {
           <div className="flex flex-col gap-4 text-base leading-relaxed text-ink-soft">
             <p>
               Every puzzle gives you a goal and a limited number of gates. There isn&apos;t one
-              correct solution to copy — if your circuit behaves correctly and stays within
+              correct solution to copy, if your circuit behaves correctly and stays within
               budget, you&apos;ve solved it.
             </p>
             <p>

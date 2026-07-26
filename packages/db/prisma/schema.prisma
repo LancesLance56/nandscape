@@ -7,6 +7,104 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  username       String           @unique
+  passwordHash   String
+  name           String?
+  avatarUrl      String?
+  role           Role             @default(USER)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  puzzles        Puzzle[]
+  puzzleAttempts PuzzleAttempt[]
+  puzzleProgress PuzzleProgress[]
+  sessions       Session[]
+
+  @@index([email])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model BlogPost {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String    @unique
+  title       String
+  excerpt     String?
+  coverImage  String?   @map("cover_image")
+  authorName  String?   @map("author_name")
+  status      String    @default("draft")
+  body        Json      @default("[]")
+  tags        String[]  @default([])
+  publishedAt DateTime? @map("published_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([publishedAt(sort: Desc)], map: "idx_blog_posts_published_at")
+  @@map("blog_posts")
+}
+
+model Puzzle {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String
+  description String?
+  difficulty  Difficulty      @default(MEDIUM)
+  data        Json
+  solution    Json
+  creatorId   String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  creator     User            @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  attempts    PuzzleAttempt[]
+
+  @@index([creatorId])
+  @@index([difficulty])
+}
+
+model PuzzleAttempt {
+  id            String   @id @default(cuid())
+  userId        String
+  puzzleId      String
+  solved        Boolean  @default(false)
+  attemptsCount Int      @default(1)
+  timeTakenMs   Int?
+  submittedAt   DateTime @default(now())
+  puzzle        Puzzle   @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([puzzleId])
+}
+
+model PuzzleProgress {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String
+  puzzleSlug String    @map("puzzle_slug")
+  solved     Boolean   @default(false)
+  solvedAt   DateTime? @map("solved_at") @db.Timestamptz(6)
+  nodes      Json      @default("[]")
+  edges      Json      @default("[]")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, puzzleSlug])
+  @@index([userId])
+  @@map("puzzle_progress")
+}
+
 enum Role {
   USER
   ADMIN
@@ -16,101 +114,4 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
-}
-
-model User {
-  id           String  @id @default(cuid())
-  email        String  @unique
-  username     String  @unique
-  passwordHash String
-  name         String?
-  avatarUrl    String?
-  role         Role    @default(USER)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  sessions       Session[]
-  blogs          Blog[]
-  puzzles        Puzzle[]
-  puzzleAttempts PuzzleAttempt[]
-
-  @@index([email])
-}
-
-model Session {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  tokenHash String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-}
-
-// ---------- BLOGS ----------
-
-model Blog {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  title     String
-  excerpt   String?
-  content   String   @db.Text
-  tags      String[] @default([])
-  published Boolean  @default(false)
-
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime?
-
-  @@index([authorId])
-  @@index([published])
-}
-
-// ---------- PUZZLES ----------
-
-model Puzzle {
-  id          String     @id @default(cuid())
-  slug        String     @unique
-  title       String
-  description String?    @db.Text
-  difficulty  Difficulty @default(MEDIUM)
-
-  // Flexible structured data — store the puzzle definition here
-  data     Json
-  solution Json
-
-  creatorId String
-  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  attempts PuzzleAttempt[]
-
-  @@index([creatorId])
-  @@index([difficulty])
-}
-
-model PuzzleAttempt {
-  id String @id @default(cuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  puzzleId String
-  puzzle   Puzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
-
-  solved        Boolean  @default(false)
-  attemptsCount Int      @default(1)
-  timeTakenMs   Int?
-  submittedAt   DateTime @default(now())
-
-  @@index([userId])
-  @@index([puzzleId])
 }

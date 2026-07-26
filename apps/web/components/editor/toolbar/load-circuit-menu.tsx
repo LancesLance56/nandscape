@@ -7,8 +7,11 @@ import { createLoadCircuitCommand } from "@/lib/commands/commands/load-circuit.c
 import { createLoadGraphCommand } from "@/lib/commands/commands/load-graph.command";
 import { useCommandDispatch } from "@/hooks/use-command";
 import { commandRegistry } from "@/lib/commands/registry";
-import { useCustomCircuitsStore, type CustomCircuit } from "@/store/custom-circuits-store";
+import { useCustomCircuitsStore, scopeForPuzzle, type CustomCircuit } from "@/store/custom-circuits-store";
+import { usePuzzleStore } from "@/store/puzzle-store";
 import { ToolbarButton } from "./toolbar-button";
+
+const EMPTY_CIRCUITS: CustomCircuit[] = [];
 
 function FolderIcon() {
   return (
@@ -28,12 +31,10 @@ export function LoadCircuitMenu() {
   const panelRef = useRef<HTMLDivElement>(null);
   const dispatch = useCommandDispatch();
 
-  const customCircuits = useCustomCircuitsStore((s) => s.circuits);
+  const scope = usePuzzleStore((s) => scopeForPuzzle(s.activePuzzleSlug));
+  const customCircuits = useCustomCircuitsStore((s) => s.byScope[scope] ?? EMPTY_CIRCUITS);
   const removeCustom = useCustomCircuitsStore((s) => s.remove);
 
-  // Recompute screen position whenever the menu opens, and keep it glued
-  // to the button on scroll/resize since it's now portaled to <body> and
-  // no longer inherits the toolbar's own layout for positioning.
   useLayoutEffect(() => {
     if (!open) return;
 
@@ -132,7 +133,7 @@ export function LoadCircuitMenu() {
                     type="button"
                     aria-label={`Delete ${circuit.name}`}
                     onClick={() => {
-                      if (window.confirm(`Delete "${circuit.name}"?`)) removeCustom(circuit.id);
+                      if (window.confirm(`Delete "${circuit.name}"?`)) removeCustom(scope, circuit.id);
                     }}
                     className="rounded-md px-1 text-xs text-ink-soft hover:text-signal-coral"
                   >

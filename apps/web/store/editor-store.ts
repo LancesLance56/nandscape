@@ -24,6 +24,9 @@ export interface EditorState {
   updateNodeData: (nodeId: string, patch: Record<string, unknown>) => void;
   moveNode: (nodeId: string, position: { x: number; y: number }) => void;
 
+  lastLoadedAt: number;
+  loadGraph: (nodes: EditorNode[], edges: EditorEdge[]) => void;
+
   addEdge: (edge: EditorEdge) => void;
   removeEdges: (edgeIds: string[]) => void;
   updateEdgeData: (edgeId: string, patch: Record<string, unknown>) => void;
@@ -63,6 +66,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       edges: state.edges.filter((e) => !idSet.has(e.source) && !idSet.has(e.target)),
     }));
   },
+
+  lastLoadedAt: 0,
+  loadGraph: (nodes, edges) =>
+  set({ nodes, edges, selection: EMPTY_SELECTION, lastLoadedAt: Date.now() }),
 
   updateNodeData: (nodeId, patch) => {
     set((state) => ({

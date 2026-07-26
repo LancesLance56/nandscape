@@ -1,17 +1,22 @@
 "use client";
 
-import {DEFAULT_CIRCUITS} from "@/lib/editor/default-circuits";
-import {createLoadCircuitCommand} from "@/lib/commands/commands/load-circuit.command";
-import {createLoadGraphCommand} from "@/lib/commands/commands/load-graph.command";
-import {useCommandDispatch} from "@/hooks/use-command";
-import {useEditorStore} from "@/store/editor-store";
-import {useCustomCircuitsStore} from "@/store/custom-circuits-store";
+import { DEFAULT_CIRCUITS } from "@/lib/editor/default-circuits";
+import { createLoadCircuitCommand } from "@/lib/commands/commands/load-circuit.command";
+import { createLoadGraphCommand } from "@/lib/commands/commands/load-graph.command";
+import { useCommandDispatch } from "@/hooks/use-command";
+import { useEditorStore } from "@/store/editor-store";
+import {useCustomCircuitsStore, scopeForPuzzle, CustomCircuit} from "@/store/custom-circuits-store";
+import { usePuzzleStore } from "@/store/puzzle-store";
+
+const EMPTY_CIRCUITS: CustomCircuit[] = [];
 
 export function CircuitsPanel() {
   const dispatch = useCommandDispatch();
   const nodes = useEditorStore((s) => s.nodes);
   const edges = useEditorStore((s) => s.edges);
-  const customCircuits = useCustomCircuitsStore((s) => s.circuits);
+
+  const scope = usePuzzleStore((s) => scopeForPuzzle(s.activePuzzleSlug));
+  const customCircuits = useCustomCircuitsStore((s) => s.byScope[scope] ?? EMPTY_CIRCUITS);
   const saveCustom = useCustomCircuitsStore((s) => s.save);
   const removeCustom = useCustomCircuitsStore((s) => s.remove);
 
@@ -19,7 +24,7 @@ export function CircuitsPanel() {
     if (nodes.length === 0) return;
     const name = window.prompt("Name this circuit:", "My circuit");
     if (!name) return;
-    saveCustom(name, nodes, edges);
+    saveCustom(scope, name, nodes, edges);
   };
 
   return (
@@ -62,7 +67,7 @@ export function CircuitsPanel() {
               type="button"
               aria-label={`Delete ${circuit.name}`}
               onClick={() => {
-                if (window.confirm(`Delete "${circuit.name}"?`)) removeCustom(circuit.id);
+                if (window.confirm(`Delete "${circuit.name}"?`)) removeCustom(scope, circuit.id);
               }}
               className="rounded-md px-1.5 py-0.5 text-xs text-ink-soft hover:text-signal-coral"
             >

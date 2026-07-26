@@ -7,7 +7,6 @@ import type {SidebarTab} from "@/types/editor";
 
 const TABS: { id: SidebarTab; label: string }[] = [
   {id: "problem", label: "Problem"},
-  {id: "palette", label: "Palette"},
 ];
 
 export function Sidebar() {
@@ -35,7 +34,6 @@ export function Sidebar() {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {activeTab === "problem" && <ProblemPanel/>}
-        {activeTab === "palette" && <GatePalette/>}
       </div>
     </div>
   );

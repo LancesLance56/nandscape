@@ -1,4 +1,5 @@
 {
+  "id": "0",
   "slug": "reverse-engineering-with-karnaugh-maps",
   "title": "Reverse Engineering with Karnaugh Maps",
   "excerpt": "A hands-on, complete introduction to Karnaugh maps, built around a hidden three-input circuit you help reverse-engineer.",

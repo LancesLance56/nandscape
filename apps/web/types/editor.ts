@@ -11,8 +11,6 @@ export type EditorNodeKind =
   | "subcircuit"
   | "note";
 
-
-
 export interface BaseNodeData extends Record<string, unknown> {
   kind: EditorNodeKind;
   label?: string;
@@ -79,8 +77,8 @@ export interface Selection {
 
 export const EMPTY_SELECTION: Selection = {nodeIds: [], edgeIds: []};
 
-export type SidebarTab = "problem" | "palette";
-export type InspectorTab = "properties" | "truth-table" | "notes";
+export type SidebarTab = "problem";
+export type InspectorTab = "properties" | "truth-table" | "notes" | "palette";
 export type BottomPanelTab = "palette";
 
 export interface SubcircuitNodeData extends BaseNodeData {

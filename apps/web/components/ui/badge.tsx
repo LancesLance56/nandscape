@@ -5,9 +5,9 @@ interface DifficultyBadgeProps {
 }
 
 const styles: Record<Difficulty, string> = {
-  easy: "bg-surface-2 text-ink-soft",
+  easy: "bg-signal-green-bg text-signal-green-strong",
   medium: "bg-copper-bg text-copper-dark",
-  hard: "bg-ink text-surface",
+  hard: "bg-signal-coral-bg text-signal-coral-strong",
 };
 
 const labels: Record<Difficulty, string> = {

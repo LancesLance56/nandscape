@@ -162,7 +162,7 @@ export function PuzzleCard() {
             <div
               className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-surface-card/10 backdrop-blur-[2px]">
               <a
-                href="/editor/half-adder-2"
+                href="/nandbox"
                 className="inline-flex items-center justify-center rounded-xl border border-border-strong bg-surface-card px-5 py-2.5 text-xs font-semibold text-ink shadow-sm hover:border-ink-soft hover:shadow-md transition-all active:scale-[0.97]"
               >
                 Try it Yourself!

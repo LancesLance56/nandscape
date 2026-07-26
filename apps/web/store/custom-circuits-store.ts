@@ -1,6 +1,6 @@
-import {create} from "zustand";
-import {persist} from "zustand/middleware";
-import type {EditorNode, EditorEdge} from "@/types/editor";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { EditorNode, EditorEdge } from "@/types/editor";
 
 export interface CustomCircuit {
   id: string;
@@ -10,37 +10,64 @@ export interface CustomCircuit {
   updatedAt: number;
 }
 
+export type CircuitScope = "sandbox" | `puzzle:${string}`;
+
+export function scopeForPuzzle(puzzleSlug: string | null): CircuitScope {
+  return puzzleSlug ? (`puzzle:${puzzleSlug}` as CircuitScope) : "sandbox";
+}
+
 export interface CustomCircuitsState {
-  circuits: CustomCircuit[];
-  save: (name: string, nodes: EditorNode[], edges: EditorEdge[]) => string;
-  rename: (id: string, name: string) => void;
-  remove: (id: string) => void;
+  byScope: Record<string, CustomCircuit[]>;
+  list: (scope: CircuitScope) => CustomCircuit[];
+  save: (scope: CircuitScope, name: string, nodes: EditorNode[], edges: EditorEdge[]) => string;
+  rename: (scope: CircuitScope, id: string, name: string) => void;
+  remove: (scope: CircuitScope, id: string) => void;
 }
 
 export const useCustomCircuitsStore = create<CustomCircuitsState>()(
   persist(
-    (set) => ({
-      circuits: [],
+    (set, get) => ({
+      byScope: {},
 
-      save: (name, nodes, edges) => {
+      list: (scope) => get().byScope[scope] ?? [],
+
+      save: (scope, name, nodes, edges) => {
         const id = `custom_${crypto.randomUUID().slice(0, 8)}`;
         set((state) => ({
-          circuits: [
-            ...state.circuits,
-            {id, name, nodes, edges, updatedAt: Date.now()},
-          ],
+          byScope: {
+            ...state.byScope,
+            [scope]: [...(state.byScope[scope] ?? []), { id, name, nodes, edges, updatedAt: Date.now() }],
+          },
         }));
         return id;
       },
 
-      rename: (id, name) =>
+      rename: (scope, id, name) =>
         set((state) => ({
-          circuits: state.circuits.map((c) => (c.id === id ? {...c, name} : c)),
+          byScope: {
+            ...state.byScope,
+            [scope]: (state.byScope[scope] ?? []).map((c) => (c.id === id ? { ...c, name } : c)),
+          },
         })),
 
-      remove: (id) =>
-        set((state) => ({circuits: state.circuits.filter((c) => c.id !== id)})),
+      remove: (scope, id) =>
+        set((state) => ({
+          byScope: {
+            ...state.byScope,
+            [scope]: (state.byScope[scope] ?? []).filter((c) => c.id !== id),
+          },
+        })),
     }),
-    {name: "nandscape-custom-circuits"},
+    {
+      name: "nandscape-custom-circuits",
+      version: 2,
+      migrate: (persisted, version) => {
+        if (version < 2) {
+          const old = persisted as { circuits?: CustomCircuit[] } | undefined;
+          return { byScope: old?.circuits?.length ? { sandbox: old.circuits } : {} };
+        }
+        return persisted as CustomCircuitsState;
+      },
+    },
   ),
 );

@@ -53,7 +53,7 @@ export const useUiStore = create<UiState>()(
       sidebarWidth: 260,
 
       inspectorOpen: true,
-      inspectorTab: "properties",
+      inspectorTab: "palette",
       inspectorWidth: 300,
 
       bottomPanelOpen: true,

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import {useCallback, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {
   ReactFlow,
   Background,
@@ -38,6 +38,9 @@ export function CircuitCanvas() {
   const onEdgesChange = useEditorStore((s) => s.onEdgesChange);
   const setSelection = useEditorStore((s) => s.setSelection);
 
+  const lastLoadedAt = useEditorStore((s) => s.lastLoadedAt);
+  const { screenToFlowPosition, fitView } = useReactFlow();
+
   const showGrid = usePreferencesStore((s) => s.showGrid);
   const snapGridSize = usePreferencesStore((s) => s.snapGridSize);
   const visualGridSize = usePreferencesStore((s) => s.visualGridSize);
@@ -47,14 +50,15 @@ export function CircuitCanvas() {
 
   const dispatch = useCommandDispatch();
   const openContextMenu = useContextMenuTrigger();
-  // Still used for node-drop placement below — unrelated to wire drafting.
-  const {screenToFlowPosition} = useReactFlow();
-  // Used for everything wire-draft related — see hooks/use-flow-position.ts
-  // for why this is deliberately NOT React Flow's own screenToFlowPosition.
   const toFlowPosition = useScreenToFlowPosition();
   const dragOrigin = useRef<Map<string, { x: number; y: number }>>(new Map());
 
   useLiveSimulation();
+
+  useEffect(() => {
+    if (lastLoadedAt === 0) return;
+    fitView({ duration: 250, padding: 0.25 });
+  }, [lastLoadedAt, fitView]);
 
   const handlePaneClick = useCallback(
     (event: React.MouseEvent) => {

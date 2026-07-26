@@ -3,13 +3,13 @@
 import {useEditorStore} from "@/store/editor-store";
 import {useUiStore} from "@/store/ui-store";
 import {inspectorPanelRegistry} from "./inspector-registry";
+import { GatePalette } from "@/components/editor/sidebar/gate-palette";
 import {EmptyInspectorPanel} from "./panels/empty-inspector";
 import type {InspectorTab} from "@/types/editor";
 
 const TABS: { id: InspectorTab; label: string }[] = [
-  {id: "properties", label: "Properties"},
-  {id: "truth-table", label: "Truth table"},
-  {id: "notes", label: "Notes"},
+  { id: "properties", label: "Properties" },
+  { id: "palette", label: "Palette" },
 ];
 
 export function Inspector() {
@@ -22,15 +22,7 @@ export function Inspector() {
   const singleNode = selectedNodes.length === 1 ? selectedNodes[0] : null;
 
   const renderBody = () => {
-    if (activeTab !== "properties") {
-      return (
-        <div className="flex flex-1 items-center justify-center p-6 text-center text-sm text-slate">
-          {activeTab === "truth-table"
-            ? "Truth table view — generated from simulation once compile-circuit.ts lands."
-            : "Notes — free-form annotations for this circuit."}
-        </div>
-      );
-    }
+    if (activeTab === "palette") return <GatePalette/>;
 
     if (selectedNodes.length > 1) {
       return <EmptyInspectorPanel message={`${selectedNodes.length} items selected. Multi-edit isn't supported yet.`}/>;

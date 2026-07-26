@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { LogoIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { AuthStatus } from "@/components/auth-status";
 
 const links = [
   { label: "Home", href: "/" },
@@ -56,17 +56,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-5 justify-self-end">
           <ThemeToggle />
-
-          <Link
-            href="/login"
-            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
-          >
-            Log in
-          </Link>
-
-          <Button variant="primary" size="sm">
-            Start solving
-          </Button>
+          <AuthStatus />
         </div>
       </nav>
     </header>

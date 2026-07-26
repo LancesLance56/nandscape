@@ -1,8 +1,7 @@
-// palette-item.tsx — small refinements: colored ring on the swatch, subtle lift on hover
 "use client";
 
 import type React from "react";
-import type {EditorNodeKind} from "@/types/editor";
+import type { EditorNodeKind } from "@/types/editor";
 
 export interface PaletteEntry {
   kind: EditorNodeKind;
@@ -15,8 +14,31 @@ export interface PaletteEntry {
 
 export const PALETTE_DRAG_MIME = "application/nandscape-node";
 
-export function PaletteItem({ entry, onDelete }: { entry: PaletteEntry; onDelete?: () => void }) {
+function BanIcon() {
+  return (
+    <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="8" cy="8" r="6" />
+      <path d="M4 4L12 12" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function PaletteItem({
+  entry,
+  onDelete,
+  disabled = false,
+  disabledReason,
+}: {
+  entry: PaletteEntry;
+  onDelete?: () => void;
+  disabled?: boolean;
+  disabledReason?: string;
+}) {
   const handleDragStart = (event: React.DragEvent) => {
+    if (disabled) {
+      event.preventDefault();
+      return;
+    }
     event.dataTransfer.setData(PALETTE_DRAG_MIME, JSON.stringify(entry));
     event.dataTransfer.effectAllowed = "move";
   };
@@ -27,18 +49,34 @@ export function PaletteItem({ entry, onDelete }: { entry: PaletteEntry; onDelete
 
   return (
     <div
-      draggable
+      draggable={!disabled}
       onDragStart={handleDragStart}
-      className="group relative flex w-fit shrink-0 cursor-grab items-center gap-2.5 rounded-lg border border-border bg-surface-card px-3 py-2 min-w-25 text-base font-medium text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md active:cursor-grabbing active:translate-y-0 active:scale-[0.98]"
+      title={disabled ? disabledReason : undefined}
+      aria-disabled={disabled}
+      className={`group relative flex w-fit shrink-0 items-center gap-2.5 rounded-lg border px-3 py-2 min-w-25 text-base font-medium shadow-sm transition-all ${
+        disabled
+          ? "cursor-not-allowed border-border bg-surface-2/50 text-ink-soft/60 grayscale"
+          : "cursor-grab border-border bg-surface-card text-ink hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md active:cursor-grabbing active:translate-y-0 active:scale-[0.98]"
+      }`}
     >
       <span className={swatchClass} style={entry.color ? { backgroundColor: entry.color } : undefined}>
         {entry.symbol}
       </span>
       <span className="whitespace-nowrap">{entry.label}</span>
-      {onDelete && (
+
+      {disabled && (
+        <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-surface-card text-signal-coral shadow-sm">
+          <BanIcon />
+        </span>
+      )}
+
+      {onDelete && !disabled && (
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
           aria-label={`Delete ${entry.label}`}
           className="absolute right-1.5 top-1.5 hidden h-4 w-4 items-center justify-center rounded-full bg-surface-2 text-[9px] text-ink-soft hover:text-signal-coral group-hover:flex"
         >

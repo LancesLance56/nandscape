@@ -5,11 +5,14 @@ import { commandRegistry } from "@/lib/commands/registry";
 import { DEFAULT_CIRCUITS } from "@/lib/editor/default-circuits";
 import { createLoadCircuitCommand } from "@/lib/commands/commands/load-circuit.command";
 import { createLoadGraphCommand } from "@/lib/commands/commands/load-graph.command";
-import { useCustomCircuitsStore, type CustomCircuit } from "@/store/custom-circuits-store";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import {useCustomCircuitsStore, scopeForPuzzle, CustomCircuit} from "@/store/custom-circuits-store";
 
 export function AddCircuitDialog({ onClose }: { onClose: () => void }) {
   const dispatch = useCommandDispatch();
-  const customCircuits = useCustomCircuitsStore((s) => s.circuits);
+
+  const scope = usePuzzleStore((s) => scopeForPuzzle(s.activePuzzleSlug));
+  const customCircuits = useCustomCircuitsStore((s) => s.list(scope));
   const removeCustom = useCustomCircuitsStore((s) => s.remove);
 
   const handleLoadStarter = (circuitId: string) => {

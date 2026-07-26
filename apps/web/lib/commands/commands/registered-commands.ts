@@ -8,6 +8,8 @@ import {createDeleteSelectionCommand} from "@/lib/commands";
 import {useCustomCircuitsStore} from "@/store";
 import {createRotateNodesCommand} from "@/lib/commands/commands/rotate-nodes.command";
 import {GateNodeData} from "@/types/editor";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { scopeForPuzzle } from "@/store/custom-circuits-store";
 
 export const historyUndoCommand = defineCommand({
   id: "history.undo",
@@ -69,14 +71,15 @@ export const saveCircuitCommand = defineCommand({
   id: "circuit.save",
   label: "Save circuit",
   execute: () => {
-    const {nodes, edges} = useEditorStore.getState();
+    const { nodes, edges } = useEditorStore.getState();
     if (nodes.length === 0) {
       console.info("[nandscape] circuit.save: canvas is empty, nothing to save");
       return;
     }
     const name = window.prompt("Name this circuit:", "My circuit");
     if (!name) return;
-    useCustomCircuitsStore.getState().save(name, nodes, edges);
+    const scope = scopeForPuzzle(usePuzzleStore.getState().activePuzzleSlug);
+    useCustomCircuitsStore.getState().save(scope, name, nodes, edges);
   },
 });
 

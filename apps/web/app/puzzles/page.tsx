@@ -1,7 +1,33 @@
-import {Navbar} from "@/components/navbar";
+import type { Metadata } from "next";
+import { Navbar } from "@/components/navbar";
+import { PuzzleList } from "@/components/puzzles/puzzle-list";
+import { listPuzzles } from "@/lib/puzzles/puzzles";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "Puzzles — Nandscape",
+  description: "Browse logic-gate puzzles, filter by difficulty and topic, and start solving.",
+};
+
+export default async function PuzzlesPage() {
+  const puzzles = await listPuzzles();
+
   return (
-    <Navbar/>
+    <>
+      <Navbar />
+      <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
+        <div className="mb-8 max-w-2xl">
+          <div className="mb-3 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
+            <span className="h-1.75 w-1.75 rounded-full bg-copper" />
+            Nandscape puzzles
+          </div>
+          <h1 className="font-display text-4xl font-semibold leading-tight text-ink">Problems</h1>
+          <p className="mt-2 text-sm text-ink-soft">
+            Each puzzle gives you a goal, a gate budget, and sometimes a restriction on which blocks you have. Inspired by design inspired by leetcode.
+          </p>
+        </div>
+
+        <PuzzleList puzzles={puzzles} />
+      </main>
+    </>
   );
 }

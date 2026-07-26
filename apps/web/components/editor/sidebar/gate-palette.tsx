@@ -1,11 +1,13 @@
-// gate-palette.tsx
 "use client";
 
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import { GateType } from "@nandscape/engine";
 import { PaletteItem, type PaletteEntry } from "./palette-item";
 import { useUiStore } from "@/store/ui-store";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
+import { getGateRestriction } from "@/lib/puzzles/gate-restrictions";
 import { getBuiltinSubcircuitBlocks } from "@/lib/editor/default-blocks";
 import { GATE_COLORS } from "@/lib/editor/gate-colors";
 
@@ -67,6 +69,12 @@ function PaletteGroup({ title, children }: { title: string; children: React.Reac
 export function GatePalette() {
   const customBlocks = useSubcircuitBlocksStore((s) => s.customBlocks);
   const removeBlock = useSubcircuitBlocksStore((s) => s.remove);
+  const activePuzzleSlug = usePuzzleStore((s) => s.activePuzzleSlug);
+
+  const restriction = useMemo(
+    () => getGateRestriction(activePuzzleSlug ? getDefaultPuzzle(activePuzzleSlug) : null),
+    [activePuzzleSlug],
+  );
 
   const blocks = useMemo(
     () => [...getBuiltinSubcircuitBlocks(), ...customBlocks],
@@ -91,19 +99,32 @@ export function GatePalette() {
         [scrollbar-width:none]
         [&::-webkit-scrollbar]:hidden"
     >
-      {STATIC_GROUPS.map((group) => (
-        <PaletteGroup key={group.title} title={group.title}>
-          {group.entries.map((entry) => (
-            <PaletteItem
-              key={entry.label}
-              entry={{
-                ...entry,
-                color: entry.kind === "gate" ? GATE_COLORS[entry.gateType!] : undefined,
-              }}
-            />
-          ))}
-        </PaletteGroup>
-      ))}
+      {STATIC_GROUPS.map((group) => {
+        const items = group.entries
+          .map((entry) => ({
+            entry,
+            allowed: entry.kind !== "gate" || !restriction ? true : restriction.isAllowed(entry.gateType!),
+          }))
+          .filter(({ allowed }) => allowed || restriction?.mode !== "hide");
+
+        if (items.length === 0) return null;
+
+        return (
+          <PaletteGroup key={group.title} title={group.title}>
+            {items.map(({ entry, allowed }) => (
+              <PaletteItem
+                key={entry.label}
+                entry={{
+                  ...entry,
+                  color: entry.kind === "gate" ? GATE_COLORS[entry.gateType!] : undefined,
+                }}
+                disabled={!allowed}
+                disabledReason={allowed ? undefined : "Not allowed for this puzzle"}
+              />
+            ))}
+          </PaletteGroup>
+        );
+      })}
 
       <PaletteGroup title="Circuit blocks">
         {blockEntries.map((entry, i) => {
