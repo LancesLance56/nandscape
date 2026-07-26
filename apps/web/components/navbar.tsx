@@ -10,7 +10,7 @@ import { AuthStatus } from "@/components/auth-status";
 const links = [
   { label: "Home", href: "/" },
   { label: "Puzzles", href: "/puzzles" },
-  { label: "Nandbox Editor", href: "/nandbox" },
+  { label: "Sandbox", href: "/nandbox" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
 ];

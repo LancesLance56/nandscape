@@ -20,7 +20,6 @@ if (process.env.NODE_ENV !== "production") {
   globalForDb.pgPool = pool;
 }
 
-/** Thin query helper so call sites don't need to import `pg` types directly. */
 export async function query<Row extends Record<string, unknown> = Record<string, unknown>>(
   text: string,
   params: unknown[] = [],

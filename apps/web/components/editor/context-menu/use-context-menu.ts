@@ -6,7 +6,6 @@ import {useUiStore} from "@/store/ui-store";
 export interface ContextMenuTarget {
   x: number;
   y: number;
-  /** Id of the node/edge right-clicked, or null for the empty canvas. */
   targetId: string | null;
   targetType: "node" | "edge" | "pane";
 }

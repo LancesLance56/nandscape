@@ -9,6 +9,7 @@ import { usePuzzleProgressStore } from "@/store/puzzle-progress-store";
 import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
 import { gradePuzzle } from "@/lib/puzzles/grade-puzzle";
 import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
+import Link from "next/link";
 
 const STEP_DELAY_MS = 350;
 
@@ -32,11 +33,11 @@ export function ProblemPanel() {
 
   if (!activeSlug || !puzzle) {
     return (
-      <div className="flex flex-1 items-center justify-center p-6 text-center text-sm text-slate">
+      <div className="items-center justify-center p-10 m-auto text-sm text-center text-slate">
         Open a puzzle from{" "}
-        <a href="/puzzles" className="text-copper-dark underline">
+        <Link href="/puzzles" className="text-copper-dark underline">
           the puzzle list
-        </a>{" "}
+        </Link>{" "}
         to see its prompt here.
       </div>
     );

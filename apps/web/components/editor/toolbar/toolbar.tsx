@@ -7,10 +7,10 @@ import {useHistoryStore} from "@/store/history-store";
 import {useUiStore} from "@/store/ui-store";
 import {useSimulationStore} from "@/store/simulation-store";
 import {commandRegistry} from "@/lib/commands/registry";
-import {LogoIcon} from "@/components/icons";
 import {ThemeToggle} from "@/components/theme-toggle";
-import Link from "next/link";
 import {LoadCircuitMenu} from "@/components/editor/toolbar/load-circuit-menu";
+import {SiteNavMenu} from "@/components/editor/toolbar/site-nav-menu";
+import {BreadcrumbNav} from "@/components/editor/toolbar/breadcrumb-nav";
 
 const Icon = {
   Undo: () => (
@@ -73,13 +73,9 @@ export function Toolbar() {
 
   return (
     <div className="grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-2.5 px-3">
-      <div className="flex items-center gap-2.5 justify-self-start">
-        <ToolbarGroup>
-          <Link className="flex h-12" href="/">
-            <LogoIcon/>
-          </Link>
-          <ThemeToggle/>
-        </ToolbarGroup>
+      <div className="flex min-w-0 items-center gap-3 justify-self-start">
+        <BreadcrumbNav/>
+        <SiteNavMenu/>
         <ToolbarGroup>
           <ToolbarButton icon={<Icon.Undo/>} label="Undo" shortcut="⌘Z" disabled={!canUndo}
                          onClick={() => runById("history.undo")}/>
@@ -137,6 +133,7 @@ export function Toolbar() {
           <ToolbarButton icon={<Icon.Inspector/>} label="Toggle inspector" shortcut="⌘I" active={inspectorOpen}
                          onClick={toggleInspector}/>
         </ToolbarGroup>
+        <ThemeToggle/>
       </div>
     </div>
   );

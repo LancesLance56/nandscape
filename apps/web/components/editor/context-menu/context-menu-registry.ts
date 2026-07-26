@@ -8,9 +8,7 @@ export interface ContextMenuItem {
   label: string;
   shortcut?: string;
   destructive?: boolean;
-  /** Static command, looked up in commandRegistry by id. */
   commandId?: string;
-  /** Per-instance command that needs a specific target id (e.g. "delete this edge"). */
   dynamicCommand?: () => Command<unknown>;
 }
 

@@ -28,9 +28,6 @@ import type {EditorNode, EditorEdge} from "@/types/editor";
 import {useContextMenuTrigger} from "@/components/editor/context-menu/use-context-menu";
 import {snapPoint} from "@/lib/editor/edge-path";
 
-/**
- * The only file that talks to @xyflow/react directly for graph rendering.
- */
 export function CircuitCanvas() {
   const nodes = useEditorStore((s) => s.nodes);
   const edges = useEditorStore((s) => s.edges);

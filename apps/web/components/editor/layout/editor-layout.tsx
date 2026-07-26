@@ -23,7 +23,6 @@ export function EditorLayout() {
   return (
     <ReactFlowProvider>
       <div className="relative flex h-full min-h-screen max-h-screen w-full flex-col gap-3 overflow-hidden bg-surface p-3">
-        {/* Soft warm ambient wash, same palette as the homepage hero, kept subtle so it doesn't fight the canvas grid */}
         <div
           className="pointer-events-none absolute inset-0 -z-10 opacity-60 dark:opacity-30"
           style={{

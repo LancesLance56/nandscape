@@ -60,9 +60,6 @@
   --signal-unknown: #ff00ff;
 }
 
-/* Map the raw tokens above into Tailwind's theme so utilities like
-   bg-surface, text-ink, border-border, bg-copper, font-display, etc.
-   become available and flip automatically with the .dark class. */
 @theme inline {
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -101,7 +98,6 @@ body {
   border-color: var(--border);
 }
 
-/* Circuit Editor — marching-dashes animation for HIGH wires (wire-edge.tsx). */
 @keyframes nandscape-wire-flow {
   to {
     stroke-dashoffset: -10;

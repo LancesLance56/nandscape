@@ -67,7 +67,7 @@ export function AddCircuitDialog({ onClose }: { onClose: () => void }) {
               type="button"
               aria-label={`Delete ${circuit.name}`}
               onClick={() => {
-                if (window.confirm(`Delete "${circuit.name}"?`)) removeCustom(circuit.id);
+                if (window.confirm(`Delete "${circuit.name}"?`)) removeCustom("sandbox", circuit.id); // TODO: FIX THIS TEMPORARY "SANDBOX" THING
               }}
               className="rounded-md px-1 text-xs text-ink-soft hover:text-signal-coral"
             >

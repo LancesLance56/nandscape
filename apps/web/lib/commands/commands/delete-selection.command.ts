@@ -2,12 +2,6 @@ import {defineCommand} from "../command";
 import {useEditorStore} from "@/store/editor-store";
 import type {EditorNode, EditorEdge} from "@/types/editor";
 
-/**
- * Deletes every currently-selected node and edge. Captures a snapshot up
- * front (rather than diffing before/after) so undo can restore nodes AND
- * the edges that were cascade-deleted along with them, in their original
- * positions — not just re-add nodes and leave wires dangling.
- */
 export function createDeleteSelectionCommand() {
   let removedNodes: EditorNode[] = [];
   let removedEdges: EditorEdge[] = [];

@@ -4,9 +4,6 @@ import { GATE_COLORS } from "@/lib/editor/gate-colors";
 import { usePreferencesStore } from "@/store";
 
 export const GATE_SHAPE_WIDTH = 64; // was 96
-/** Fixed footprint every gate/block node renders at — keeps the visible
- *  box and the handle-anchoring container in lockstep so labels can never
- *  grow the box past where the wires actually connect. */
 export const NODE_WIDTH = GATE_SHAPE_WIDTH + 20;
 
 export function isInvertedGate(t: GateType): boolean {
