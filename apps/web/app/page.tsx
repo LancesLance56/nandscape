@@ -24,18 +24,9 @@ export default async function Home() {
       <Navbar/>
       <main className="relative mx-auto max-w-330 px-6 sm:px-10">
         <Hero/>
-
-        <ScrollReveal>
           <FeatureStrip/>
-        </ScrollReveal>
-
-        <ScrollReveal delay={60}>
           <PuzzlesShowcase/>
-        </ScrollReveal>
-
-        <ScrollReveal delay={60}>
           <BlogShowcase posts={posts}/>
-        </ScrollReveal>
       </main>
     </>
   );

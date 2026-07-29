@@ -103,23 +103,3 @@ body {
     stroke-dashoffset: -10;
   }
 }
-
-.navbar-container {
-  width: min(1100px, calc(100vw - 48px));
-
-  padding: 14px 22px;
-
-  border-radius: 999px;
-
-  background: rgba(22, 22, 22, 0.72);
-
-  backdrop-filter: blur(20px);
-
-  -webkit-backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255,255,255,.08);
-
-  box-shadow:
-      0 10px 30px rgba(0,0,0,.28),
-      inset 0 1px rgba(255,255,255,.08);
-}

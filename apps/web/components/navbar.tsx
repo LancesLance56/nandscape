@@ -20,7 +20,7 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-5 z-50 flex justify-center px-4">
-      <nav className="grid h-16 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center rounded-full border bg-background/75 px-6 shadow-xl backdrop-blur-xl transition-all duration-300 sm:px-10">
+      <nav className="grid h-16 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center rounded-full border bg-surface-card/85 px-6 shadow-xl backdrop-blur-md transition-all duration-300 will-change-transform sm:px-10">
         <Link href="/" className="flex items-center gap-2.5 justify-self-start">
           <div className="w-38 md:w-48 lg:w-56">
             <LogoIcon />

@@ -101,15 +101,15 @@ export function SiteGradient() {
       >
         <div
           className="gradient-sphere sphere-1 absolute rounded-full blur-[100px]"
-          style={{ transform: "translateY(calc(var(--scroll-y) * 0.06))" }}
+          style={{ transform: "translateY(calc(var(--scroll-y) * 0.06))", willChange: "transform" }}
         />
         <div
           className="gradient-sphere sphere-2 absolute rounded-full blur-[100px]"
-          style={{ transform: "translateY(calc(var(--scroll-y) * -0.04))" }}
+          style={{ transform: "translateY(calc(var(--scroll-y) * 0.06))", willChange: "transform" }}
         />
         <div
           className="gradient-sphere sphere-3 absolute rounded-full blur-[100px]"
-          style={{ transform: "translateY(calc(var(--scroll-y) * 0.05))" }}
+          style={{ transform: "translateY(calc(var(--scroll-y) * 0.05))", willChange: "transform" }}
         />
 
         <div
