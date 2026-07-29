@@ -6,18 +6,16 @@ import { Led } from "@/components/ui/led";
 import { bitsToMinterm, evaluateMinterm, mintermToBits } from "@/lib/blog/kmap-demo";
 import { CircuitFrame } from "./circuit-frame";
 
-interface BlackBoxExplorerData {
-  variables?: string[];
-}
+const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
 
-function isBlackBoxData(data: Record<string, unknown>): data is BlackBoxExplorerData {
-  return data.variables === undefined || Array.isArray(data.variables);
+function resolveVariables(data: Record<string, unknown>): string[] {
+  const { variables } = data;
+  if (!Array.isArray(variables) || variables.length < 3) return [...DEFAULT_VARS];
+  return variables.every((v): v is string => typeof v === "string") ? variables : [...DEFAULT_VARS];
 }
-
-const DEFAULT_VARS = ["A", "B", "C"];
 
 export function BlackBoxExplorerWidget({ data }: { data: Record<string, unknown> }) {
-  const variables = isBlackBoxData(data) && data.variables && data.variables.length === 3 ? data.variables : DEFAULT_VARS;
+  const variables = resolveVariables(data);
 
   const [a, setA] = useState(false);
   const [b, setB] = useState(false);

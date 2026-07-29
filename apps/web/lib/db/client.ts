@@ -1,13 +1,6 @@
 import { Pool } from "pg";
 
-/**
- * A single shared connection pool. Next.js dev mode re-evaluates modules on
- * every edit, which would otherwise leak a new Pool (and new connections)
- * per hot-reload — stash it on globalThis so we reuse the same instance.
- */
 const globalForDb = globalThis as unknown as { pgPool?: Pool };
-
-console.log("DATABASE_URL is set:", Boolean(process.env.DATABASE_URL));
 
 export const pool =
   globalForDb.pgPool ??

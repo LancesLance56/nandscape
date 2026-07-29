@@ -14,6 +14,7 @@ interface PostRow {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  [key: string]: unknown;
 }
 
 function toSummary(row: PostRow): PostSummary {

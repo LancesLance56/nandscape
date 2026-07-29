@@ -6,7 +6,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build"
+    "build": "pnpm --filter web build",
+    "start": "pnpm --filter web start",
+    "lint": "pnpm --filter web lint",
+    "studio": "pnpm --filter @repo/db studio"
   },
   "keywords": [],
   "author": "",

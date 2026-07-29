@@ -22,7 +22,7 @@ export default async function BlogIndexPage() {
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
             Nandscape blog
           </div>
-          <h1 className="font-display text-4xl font-semibold leading-tight text-ink">Notes from the workbench</h1>
+          <h1 className="font-display text-4xl font-semibold leading-tight text-ink">Short Blog Tutorials</h1>
         </div>
 
         {posts.length === 0 ? (

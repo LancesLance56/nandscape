@@ -4,7 +4,7 @@ import {useState} from "react";
 import {useEditorStore} from "@/store/editor-store";
 import {useSubcircuitBlocksStore} from "@/store/subcircuit-blocks-store";
 
-export function SaveSubcircuitDialog({onClose}: { onClose: () => void }) {
+export function SaveSubcircuitDialog({onCloseAction}: { onCloseAction: () => void }) {
   const nodes = useEditorStore((s) => s.nodes);
   const edges = useEditorStore((s) => s.edges);
   const createFromGraph = useSubcircuitBlocksStore((s) => s.createFromGraph);
@@ -25,7 +25,7 @@ export function SaveSubcircuitDialog({onClose}: { onClose: () => void }) {
       setError(result.error);
       return;
     }
-    onClose();
+    onCloseAction();
   };
 
   return (
@@ -57,7 +57,7 @@ export function SaveSubcircuitDialog({onClose}: { onClose: () => void }) {
       <div className="mt-4 flex justify-end gap-2">
         <button
           type="button"
-          onClick={onClose}
+          onClick={onCloseAction}
           className="rounded-lg px-3 py-1.5 text-sm font-medium text-ink-soft hover:text-ink"
         >
           Cancel

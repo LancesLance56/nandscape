@@ -7,8 +7,6 @@ import {listPublishedPosts} from "@/lib/blog/posts";
 import type {PostSummary} from "@/types/blog";
 
 export default async function Home() {
-  // Defensive: the homepage should render even if the DB isn't reachable
-  // (e.g. first boot, local dev without postgres running yet).
   let posts: PostSummary[] = [];
   try {
     posts = await listPublishedPosts();

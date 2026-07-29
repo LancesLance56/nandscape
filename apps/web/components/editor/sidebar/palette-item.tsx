@@ -1,11 +1,12 @@
 "use client";
 
 import type React from "react";
+import type { GateType } from "@nandscape/engine";
 import type { EditorNodeKind } from "@/types/editor";
 
 export interface PaletteEntry {
   kind: EditorNodeKind;
-  gateType?: number;
+  gateType?: GateType;
   blockId?: string;
   label: string;
   symbol: string;
@@ -25,12 +26,12 @@ function BanIcon() {
 
 export function PaletteItem({
   entry,
-  onDelete,
+  onDeleteAction,
   disabled = false,
   disabledReason,
 }: {
   entry: PaletteEntry;
-  onDelete?: () => void;
+  onDeleteAction?: () => void;
   disabled?: boolean;
   disabledReason?: string;
 }) {
@@ -70,12 +71,12 @@ export function PaletteItem({
         </span>
       )}
 
-      {onDelete && !disabled && (
+      {onDeleteAction && !disabled && (
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            onDelete();
+            onDeleteAction();
           }}
           aria-label={`Delete ${entry.label}`}
           className="absolute right-1.5 top-1.5 hidden h-4 w-4 items-center justify-center rounded-full bg-surface-2 text-[9px] text-ink-soft hover:text-signal-coral group-hover:flex"

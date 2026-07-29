@@ -18,6 +18,7 @@ interface PuzzleProgressRow {
   nodes: EditorNode[];
   edges: EditorEdge[];
   updated_at: string;
+  [key: string]: unknown;
 }
 
 function toRecord(row: PuzzleProgressRow): PuzzleProgressRecord {

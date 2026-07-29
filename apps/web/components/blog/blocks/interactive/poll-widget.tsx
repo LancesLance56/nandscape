@@ -7,8 +7,14 @@ export interface PollData {
   options: string[];
 }
 
-function isPollData(data: Record<string, unknown>): data is PollData {
-  return typeof data.question === "string" && Array.isArray(data.options);
+function isPollData(data: unknown): data is PollData {
+  if (typeof data !== "object" || data === null) return false;
+  const d = data as Record<string, unknown>;
+  return (
+    typeof d.question === "string" &&
+    Array.isArray(d.options) &&
+    d.options.every((option) => typeof option === "string")
+  );
 }
 
 export function PollWidget({ data }: { data: Record<string, unknown> }) {

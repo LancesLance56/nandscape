@@ -21,13 +21,34 @@ interface KMapExplorerData {
   hintGroups?: HintGroup[];
 }
 
-function isKMapData(data: Record<string, unknown>): data is KMapExplorerData {
-  if (data.variables !== undefined && !Array.isArray(data.variables)) return false;
-  if (data.hintGroups !== undefined && !Array.isArray(data.hintGroups)) return false;
-  return true;
+function isKMapData(data: unknown): data is KMapExplorerData {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (d.variables !== undefined && !Array.isArray(d.variables)) return false;
+  return !(d.hintGroups !== undefined && !Array.isArray(d.hintGroups));
 }
 
-const DEFAULT_VARS = ["A", "B", "C"];
+
+const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
+
+function isHintGroup(value: unknown): value is HintGroup {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return Array.isArray(v.cells) && v.cells.every((c) => typeof c === "number") && typeof v.term === "string";
+}
+
+function resolveVariables(data: Record<string, unknown>): string[] {
+  const { variables } = data;
+  if (!Array.isArray(variables) || variables.length === 0) return [...DEFAULT_VARS];
+  return variables.every((v): v is string => typeof v === "string") ? variables : [...DEFAULT_VARS];
+}
+
+function resolveHintGroups(data: Record<string, unknown>): HintGroup[] {
+  const { hintGroups } = data;
+  return Array.isArray(hintGroups) ? hintGroups.filter(isHintGroup) : [];
+}
 const GRAY_BC: [boolean, boolean][] = [
   [false, false],
   [false, true],
@@ -82,7 +103,7 @@ function termFor(cells: number[], variables: string[]): string {
 
   return fixedBits
     .map((p) => {
-      const varIndex = 2 - p; // bit2 -> A (index 0), bit1 -> B, bit0 -> C
+      const varIndex = 2 - p;
       const value = (base >> p) & 1;
       return value ? variables[varIndex] : `${variables[varIndex]}'`;
     })
@@ -90,9 +111,8 @@ function termFor(cells: number[], variables: string[]): string {
 }
 
 export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) {
-  const parsed = isKMapData(data) ? data : {};
-  const variables = parsed.variables && parsed.variables.length === 3 ? parsed.variables : DEFAULT_VARS;
-  const hintGroups = parsed.hintGroups ?? [];
+  const variables = resolveVariables(data);
+  const hintGroups = resolveHintGroups(data);
 
   const [selected, setSelected] = useState<number[]>([]);
   const [confirmed, setConfirmed] = useState<ConfirmedGroup[]>([]);
@@ -267,7 +287,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
 
           {covered === onesTotal && onesTotal > 0 && (
             <p className="mt-3 rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 font-mono text-xs font-semibold text-signal-green-strong">
-              Every 1 in the map is covered. That's the black box's real function: F = {expression}.
+              Every 1 in the map is covered. That&#39;s the black box&#39;s real function: F = {expression}.
             </p>
           )}
         </div>

@@ -11,15 +11,15 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
         <div>
           <div className="mb-2 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Notes from the workbench
+            Nandscape Blogs
           </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">The blog, read as a waveform</h2>
+          <h2 className="font-display text-3xl font-semibold text-ink">Read Articles About CS</h2>
         </div>
         <Link
           href="/blog"
           className="hidden shrink-0 rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97] sm:block"
         >
-          Read the blog →
+          Read the blog -{">"}
         </Link>
       </ScrollReveal>
 

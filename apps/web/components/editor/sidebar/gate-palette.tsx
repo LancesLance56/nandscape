@@ -133,7 +133,7 @@ export function GatePalette() {
             <PaletteItem
               key={block.id}
               entry={entry}
-              onDelete={block.builtIn ? undefined : () => removeBlock(block.id)}
+              onDeleteAction={block.builtIn ? undefined : () => removeBlock(block.id)}
             />
           );
         })}

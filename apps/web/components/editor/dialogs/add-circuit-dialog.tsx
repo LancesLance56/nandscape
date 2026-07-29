@@ -8,7 +8,7 @@ import { createLoadGraphCommand } from "@/lib/commands/commands/load-graph.comma
 import { usePuzzleStore } from "@/store/puzzle-store";
 import {useCustomCircuitsStore, scopeForPuzzle, CustomCircuit} from "@/store/custom-circuits-store";
 
-export function AddCircuitDialog({ onClose }: { onClose: () => void }) {
+export function AddCircuitDialog({ onCloseAction }: { onCloseAction: () => void }) {
   const dispatch = useCommandDispatch();
 
   const scope = usePuzzleStore((s) => scopeForPuzzle(s.activePuzzleSlug));
@@ -17,18 +17,18 @@ export function AddCircuitDialog({ onClose }: { onClose: () => void }) {
 
   const handleLoadStarter = (circuitId: string) => {
     dispatch(createLoadCircuitCommand(circuitId));
-    onClose();
+    onCloseAction();
   };
 
   const handleLoadCustom = (circuit: CustomCircuit) => {
     dispatch(createLoadGraphCommand(circuit.nodes, circuit.edges, `Load "${circuit.name}"`));
-    onClose();
+    onCloseAction();
   };
 
   const handleSaveCurrent = () => {
     const command = commandRegistry.get("circuit.save");
     if (command) dispatch(command);
-    onClose();
+    onCloseAction();
   };
 
   return (

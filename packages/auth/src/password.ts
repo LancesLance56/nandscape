@@ -1,7 +1,4 @@
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
-import { promisify } from "node:util";
-
-const scrypt = promisify(scryptCallback);
 
 const CURRENT_PARAMS = { N: 16384, r: 8, p: 1, keylen: 64 } as const;
 
@@ -9,17 +6,19 @@ function memoryCeiling(N: number, r: number): number {
   return 128 * N * r * 2;
 }
 
+function scryptAsync(password: string, salt: Buffer, keylen: number, N: number, r: number, p: number): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    scryptCallback(password, salt, keylen, { N, r, p, maxmem: memoryCeiling(N, r) }, (err, derivedKey) => {
+      if (err) reject(err);
+      else resolve(derivedKey);
+    });
+  });
+}
+
 export async function hashPassword(password: string): Promise<string> {
   const { N, r, p, keylen } = CURRENT_PARAMS;
   const salt = randomBytes(16);
-
-  const derived = (await scrypt(password.normalize("NFKC"), salt, keylen, {
-    N,
-    r,
-    p,
-    maxmem: memoryCeiling(N, r),
-  })) as Buffer;
-
+  const derived = await scryptAsync(password.normalize("NFKC"), salt, keylen, N, r, p);
   return `scrypt$${N}$${r}$${p}$${salt.toString("hex")}$${derived.toString("hex")}`;
 }
 
@@ -36,12 +35,7 @@ export async function verifyPassword(password: string, stored: string): Promise<
   const salt = Buffer.from(saltHex, "hex");
   const expected = Buffer.from(hashHex, "hex");
 
-  const derived = (await scrypt(password.normalize("NFKC"), salt, expected.length, {
-    N,
-    r,
-    p,
-    maxmem: memoryCeiling(N, r),
-  })) as Buffer;
+  const derived = await scryptAsync(password.normalize("NFKC"), salt, expected.length, N, r, p);
 
   return timingSafeEqual(derived, expected);
 }
