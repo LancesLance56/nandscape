@@ -140,7 +140,7 @@ export class Simulator {
   /**
    * Runs the simulation until the event queue drains, an explicit
    * `untilTime` is reached/exceeded, or a safety limit (maxEvents/maxTime)
-   * is hit — whichever comes first.
+   * is hit,  whichever comes first.
    */
   run(untilTime?: SimTime): StopReason {
     for (;;) {
@@ -224,7 +224,7 @@ export class Simulator {
     this.queue.push(time, pin, value, EXTERNAL_GENERATION);
   }
 
-  /** Schedules a drive event only if it differs from what the pin is currently driving — prevents redundant event storms during internal propagation/settling. */
+  /** Schedules a drive event only if it differs from what the pin is currently driving,  prevents redundant event storms during internal propagation/settling. */
   private scheduleIfDifferent(pin: PinId, value: SignalState, time: SimTime): void {
     if (this.state.getPinDriveState(pin) === value) return;
     this.scheduleDrive(pin, value, time);

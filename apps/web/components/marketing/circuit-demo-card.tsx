@@ -101,7 +101,7 @@ export function CircuitDemoCard() {
       <div className="space-y-5 p-6">
         <p className="text-sm leading-relaxed text-ink-soft">
           Every gate on this board is a <span className="font-mono text-copper-dark dark:text-copper">NAND</span>.
-          Flip A and B — the whole circuit really recomputes, live, wire by wire.
+          Flip A and B,  the whole circuit really recomputes, live, wire by wire.
         </p>
 
         <div className="flex items-center justify-between rounded-xl border border-border bg-surface-2 p-4 shadow-inner">

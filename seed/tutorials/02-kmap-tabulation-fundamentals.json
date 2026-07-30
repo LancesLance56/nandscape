@@ -1,0 +1,85 @@
+{
+  "slug": "kmap-tabulation-fundamentals",
+  "title": "Tabulating Truth: Why Karnaugh Maps Work",
+  "excerpt": "The algebra behind Karnaugh maps: minterms, adjacency, and why reordering a truth table with Gray code is the whole trick.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-07-28T09:00:00Z",
+  "tags": ["fundamentals", "karnaugh-maps"],
+  "sectionSlug": "karnaugh-maps",
+  "position": 10,
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        { "text": "Every combinational circuit can be written as a truth table: one row per input combination, one output column per output. A row where the output is 1 corresponds to a " },
+        { "text": "minterm", "marks": [{ "kind": "bold" }] },
+        { "text": ", a product term that is true for exactly that one input combination. Sum every minterm together and you get the canonical Sum-of-Products form of the function, guaranteed correct, but almost never the simplest circuit you could build." }
+      ]
+    },
+    { "id": "h-adjacency", "type": "heading", "level": 2, "text": "Adjacency Is Everything" },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        { "text": "Simplification comes from one algebraic identity, applied over and over: X = X. If two minterms are identical except for a single variable that appears true in one and complemented in the other, that variable cancels out entirely." }
+      ]
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "text",
+      "code": "AB'C + ABC\n= AB(C' + C)\n= AB * 1\n= AB"
+    },
+    {
+      "id": "p-3",
+      "type": "paragraph",
+      "content": [
+        { "text": "That's the entire mechanism. Two minterms merge into one shorter term whenever they differ in exactly one bit position. Karnaugh maps don't add any new math on top of this, they just make it fast to spot which pairs, quads, or larger groups of minterms qualify." }
+      ]
+    },
+    { "id": "h-problem", "type": "heading", "level": 2, "text": "The Problem With a Plain Truth Table" },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        { "text": "If you write a truth table in ordinary binary counting order (000, 001, 010, 011, ...), rows that differ by one bit are scattered all over the table instead of sitting next to each other. Row 011 and row 100 look adjacent on paper, but they differ in all three bits, they're actually as far apart as two minterms can be. Spotting mergeable pairs by eye in that ordering is painful past two variables." }
+      ]
+    },
+    { "id": "h-gray", "type": "heading", "level": 2, "text": "Gray Code: One Bit at a Time" },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        { "text": "The fix is to stop counting in ordinary binary and count in " },
+        { "text": "reflected binary Gray code", "marks": [{ "kind": "bold" }] },
+        { "text": " instead: 00, 01, 11, 10. Every consecutive pair in that sequence differs in exactly one bit. Counting this way for the rows and, separately, for the columns of a grid is the one design decision that makes everything else about a Karnaugh map work." }
+      ]
+    },
+    { "id": "h-what-it-is", "type": "heading", "level": 2, "text": "What a Karnaugh Map Actually Is" },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        { "text": "A Karnaugh map is the same truth table you already know, poured into a grid whose rows and columns are labeled with Gray code instead of counting order. Because of that labeling, any two cells that touch, including the pair formed by the leftmost and rightmost column, or the top and bottom row, wrapping around the edge of the grid, are guaranteed to represent minterms differing in exactly one variable. Geometric adjacency on the page becomes a direct stand-in for \"these two terms are legally mergeable.\" That's the entire trick, and it's why grouping cells by eye works at all." }
+      ]
+    },
+    { "id": "divider-1", "type": "divider" },
+    { "id": "h-ahead", "type": "heading", "level": 2, "text": "What's Ahead" },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        { "text": "The rest of this guide walks the same idea across three grid sizes: a 2-variable map to see the mechanics with nothing else in the way, a 3-variable map to see the wraparound rule in action for the first time, and a 4-variable map to see it happen along both axes at once, including the classic four-corners group." }
+      ]
+    },
+    {
+      "id": "b1",
+      "type": "button",
+      "label": "Start with 2-variable maps",
+      "href": "/tutorials/kmap-two-variable",
+      "style": "primary"
+    }
+  ]
+}

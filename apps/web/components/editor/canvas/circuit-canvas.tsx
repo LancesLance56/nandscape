@@ -218,7 +218,7 @@ export function CircuitCanvas() {
             variant={BackgroundVariant.Dots}
             gap={24}
             size={1.4}          // was ~1
-            className="opacity-70"  // was implicit 100% — dots were tuned for the old lighter surface
+            className="opacity-70"  // was implicit 100%,  dots were tuned for the old lighter surface
             color="var(--border-strong)"
           />
         )}

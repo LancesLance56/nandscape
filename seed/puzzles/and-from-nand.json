@@ -1,0 +1,17 @@
+{
+  "slug": "and-from-nand",
+  "title": "AND from NAND",
+  "description": "The NAND gate is universal, every other gate can be built from nothing but NAND. Start by building AND using only NAND gates.",
+  "difficulty": "easy",
+  "tags": ["combinational", "boolean-algebra"],
+  "gateBudget": 2,
+  "allowedGateTypes": [0],
+  "inputs": [{ "name": "A" }, { "name": "B" }],
+  "outputs": [{ "name": "Y" }],
+  "testCases": [
+    { "row": { "inputs": { "A": 0, "B": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "A": 0, "B": 1 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "A": 1, "B": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "A": 1, "B": 1 }, "outputs": { "Y": 1 } } }
+  ]
+}

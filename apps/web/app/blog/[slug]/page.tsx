@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
-import { BlockRenderer } from "@/components/blog/blocks/block-renderer";
+import { BlockRenderer } from "@/components/content/blocks/block-renderer";
 import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog/posts";
 
 export const revalidate = 60;

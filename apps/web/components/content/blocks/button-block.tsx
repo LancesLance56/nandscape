@@ -1,4 +1,4 @@
-import { safeHref } from "@/lib/blog/safe-href";
+import { safeHref } from "@/lib/content/safe-href";
 import type { ButtonBlock } from "@/types/blog";
 
 export function ButtonBlockView({ block }: { block: ButtonBlock }) {

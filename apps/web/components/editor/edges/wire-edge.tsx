@@ -320,7 +320,7 @@ function WireEdgeImpl({
               onContextMenu={removeWaypoint(
                 index,
               )}
-              title="Drag to move — right-click to remove"
+              title="Drag to move,  right-click to remove"
               style={{
                 position: "absolute",
                 transform: `translate(${point.x}px, ${point.y}px)`,

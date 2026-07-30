@@ -48,7 +48,7 @@ export const clearSelectionCommand = defineCommand({
   },
 });
 
-// --- Placeholders — wired up once clipboard/duplication logic exists -------
+// --- Placeholders,  wired up once clipboard/duplication logic exists -------
 export const duplicateSelectionCommand = defineCommand({
   id: "selection.duplicate",
   label: "Duplicate selection",
@@ -113,7 +113,7 @@ export const toggleSimulationPlayCommand = defineCommand({
   },
 });
 
-// --- View — placeholders until the canvas exposes an imperative zoom API ----
+// --- View,  placeholders until the canvas exposes an imperative zoom API ----
 export const zoomToFitCommand = defineCommand({
   id: "view.zoomToFit",
   label: "Zoom to fit",

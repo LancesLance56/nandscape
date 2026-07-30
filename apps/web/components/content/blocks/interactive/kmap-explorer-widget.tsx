@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { DEFAULT_BLOCK_COLORS } from "@/lib/editor/block-colors";
 import { evaluateMinterm } from "@/lib/blog/kmap-demo";
 import { CircuitFrame } from "./circuit-frame";
@@ -16,21 +16,6 @@ interface ConfirmedGroup {
   color: string;
 }
 
-interface KMapExplorerData {
-  variables?: string[];
-  hintGroups?: HintGroup[];
-}
-
-function isKMapData(data: unknown): data is KMapExplorerData {
-  if (typeof data !== 'object' || data === null) return false;
-
-  const d = data as Record<string, unknown>;
-
-  if (d.variables !== undefined && !Array.isArray(d.variables)) return false;
-  return !(d.hintGroups !== undefined && !Array.isArray(d.hintGroups));
-}
-
-
 const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
 
 function isHintGroup(value: unknown): value is HintGroup {
@@ -41,36 +26,42 @@ function isHintGroup(value: unknown): value is HintGroup {
 
 function resolveVariables(data: Record<string, unknown>): string[] {
   const { variables } = data;
-  if (!Array.isArray(variables) || variables.length === 0) return [...DEFAULT_VARS];
+  if (!Array.isArray(variables) || variables.length < 2 || variables.length > 4) return [...DEFAULT_VARS];
   return variables.every((v): v is string => typeof v === "string") ? variables : [...DEFAULT_VARS];
+}
+
+function resolveTruthTable(data: Record<string, unknown>, variableCount: number): number[] | null {
+  const { truthTable } = data;
+  const size = 1 << variableCount;
+  if (!Array.isArray(truthTable) || truthTable.length !== size) return null;
+  return truthTable.every((v) => v === 0 || v === 1) ? (truthTable as number[]) : null;
 }
 
 function resolveHintGroups(data: Record<string, unknown>): HintGroup[] {
   const { hintGroups } = data;
   return Array.isArray(hintGroups) ? hintGroups.filter(isHintGroup) : [];
 }
-const GRAY_BC: [boolean, boolean][] = [
-  [false, false],
-  [false, true],
-  [true, true],
-  [true, false],
-];
-const GRAY_LABELS = ["00", "01", "11", "10"];
 
-function mintermFor(aBit: boolean, bc: [boolean, boolean]): number {
-  const [b, c] = bc;
-  return (aBit ? 4 : 0) + (b ? 2 : 0) + (c ? 1 : 0);
+function grayCode(bits: number): number[] {
+  const size = 1 << bits;
+  const codes: number[] = [];
+  for (let i = 0; i < size; i++) codes.push(i ^ (i >> 1));
+  return codes;
 }
 
-function bitPositions(mask: number): number[] {
+function toBinaryLabel(value: number, bits: number): string {
+  return value.toString(2).padStart(bits, "0");
+}
+
+function bitPositions(mask: number, totalBits: number): number[] {
   const positions: number[] = [];
-  for (let p = 0; p < 3; p++) {
+  for (let p = 0; p < totalBits; p++) {
     if (mask & (1 << p)) positions.push(p);
   }
   return positions;
 }
 
-  function validateGroup(cells: number[]): boolean {
+function validateGroup(cells: number[], totalBits: number): boolean {
   const size = cells.length;
   if (size === 0 || (size & (size - 1)) !== 0) return false;
 
@@ -78,7 +69,7 @@ function bitPositions(mask: number): number[] {
   let freeMask = 0;
   for (const cell of cells) freeMask |= cell ^ base;
 
-  const freeBits = bitPositions(freeMask);
+  const freeBits = bitPositions(freeMask, totalBits);
   if (2 ** freeBits.length !== size) return false;
 
   const set = new Set(cells);
@@ -95,15 +86,16 @@ function bitPositions(mask: number): number[] {
 }
 
 function termFor(cells: number[], variables: string[]): string {
+  const totalBits = variables.length;
   const base = cells[0];
   let freeMask = 0;
   for (const cell of cells) freeMask |= cell ^ base;
-  const fixedBits = [0, 1, 2].filter((p) => !(freeMask & (1 << p)));
+  const fixedBits = Array.from({ length: totalBits }, (_, i) => i).filter((p) => !(freeMask & (1 << p)));
   if (fixedBits.length === 0) return "1";
 
   return fixedBits
     .map((p) => {
-      const varIndex = 2 - p;
+      const varIndex = totalBits - 1 - p;
       const value = (base >> p) & 1;
       return value ? variables[varIndex] : `${variables[varIndex]}'`;
     })
@@ -112,6 +104,13 @@ function termFor(cells: number[], variables: string[]): string {
 
 export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) {
   const variables = resolveVariables(data);
+  const totalBits = variables.length;
+  const rowBits = Math.floor(totalBits / 2);
+  const colBits = totalBits - rowBits;
+  const rowVariables = variables.slice(0, rowBits);
+  const colVariables = variables.slice(rowBits);
+
+  const truthTable = resolveTruthTable(data, totalBits);
   const hintGroups = resolveHintGroups(data);
 
   const [selected, setSelected] = useState<number[]>([]);
@@ -121,13 +120,17 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
   );
   const [hintIndex, setHintIndex] = useState<number | null>(null);
 
-  const grid = useMemo(() => [false, true].map((aBit) => GRAY_BC.map((bc) => mintermFor(aBit, bc))), []);
+  const rowCodes = useMemo(() => grayCode(rowBits), [rowBits]);
+  const colCodes = useMemo(() => grayCode(colBits), [colBits]);
 
   const cellValues = useMemo(() => {
     const values: Record<number, boolean> = {};
-    for (let m = 0; m < 8; m++) values[m] = evaluateMinterm(m);
+    const size = 1 << totalBits;
+    for (let m = 0; m < size; m++) {
+      values[m] = truthTable ? truthTable[m] === 1 : totalBits === 3 ? evaluateMinterm(m) : false;
+    }
     return values;
-  }, []);
+  }, [truthTable, totalBits]);
 
   const onesTotal = Object.values(cellValues).filter(Boolean).length;
   const coveredMinterms = new Set(confirmed.flatMap((g) => g.cells));
@@ -146,7 +149,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
       return;
     }
 
-    if (!validateGroup(selected)) {
+    if (!validateGroup(selected, totalBits)) {
       setMessage(
         "That's not a legal group. K-map groups are rectangular blocks of 1, 2, 4, or 8 cells, and the map wraps around at its edges.",
       );
@@ -186,27 +189,40 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
     return group ? group.color : null;
   };
 
+  const rowVarLabel = rowVariables.join("");
+  const colVarLabel = colVariables.join("");
+
   return (
     <CircuitFrame title="Karnaugh Map" subtitle={`${covered} / ${onesTotal} ones covered`}>
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="flex flex-col items-center gap-8">
-          <div className="grid grid-cols-[2.5rem_repeat(4,4rem)] gap-1 mr-auto">
-            <div />
-            {GRAY_LABELS.map((label) => (
-              <div key={label} className="text-center font-mono text-[11px] font-semibold text-slate">
-                {label}
+          <div
+            className="grid gap-1 mr-auto"
+            style={{ gridTemplateColumns: `3.25rem repeat(${colCodes.length}, 4rem)` }}
+          >
+            <svg viewBox="0 0 52 52" className="h-13 w-13" preserveAspectRatio="none">
+              <line x1="0" y1="0" x2="52" y2="52" stroke="var(--border-strong)" strokeWidth="1.5" />
+              <text x="47" y="15" textAnchor="end" className="font-mono text-[11px] font-bold fill-slate">
+                {colVarLabel}
+              </text>
+              <text x="5" y="45" textAnchor="start" className="font-mono text-[11px] font-bold fill-slate">
+                {rowVarLabel}
+              </text>
+            </svg>
+
+            {colCodes.map((code) => (
+              <div key={`col-${code}`} className="text-center font-mono text-[11px] font-semibold text-slate mt-auto">
+                {toBinaryLabel(code, colBits)}
               </div>
             ))}
 
-            {grid.map((row, rowIndex) => (
-              <>
-                <div
-                  key={`label-${rowIndex}`}
-                  className="flex items-center justify-center font-mono text-[11px] font-semibold text-slate mx-0"
-                >
-                  {rowIndex}
+            {rowCodes.map((rowCode) => (
+              <Fragment key={`row-${rowCode}`}>
+                <div className="flex items-center justify-center font-mono text-[11px] font-semibold text-slate ml-auto">
+                  {toBinaryLabel(rowCode, rowBits)}
                 </div>
-                {row.map((minterm) => {
+                {colCodes.map((colCode) => {
+                  const minterm = (rowCode << colBits) | colCode;
                   const value = cellValues[minterm];
                   const isSelected = selected.includes(minterm);
                   const groupColor = colorForCell(minterm);
@@ -229,7 +245,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
                     </button>
                   );
                 })}
-              </>
+              </Fragment>
             ))}
           </div>
 
@@ -287,7 +303,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
 
           {covered === onesTotal && onesTotal > 0 && (
             <p className="mt-3 rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 font-mono text-xs font-semibold text-signal-green-strong">
-              Every 1 in the map is covered. That&#39;s the black box&#39;s real function: F = {expression}.
+              Every 1 in the map is covered. That&#39;s the function: F = {expression}.
             </p>
           )}
         </div>

@@ -4,7 +4,7 @@ import { PostCard } from "@/components/blog/post-card";
 import { listPublishedPosts } from "@/lib/blog/posts";
 
 export const metadata: Metadata = {
-  title: "Blog — Nandscape",
+  title: "Blog,  Nandscape",
   description: "Notes on logic gates, puzzles, and building Nandscape.",
 };
 
@@ -26,7 +26,7 @@ export default async function BlogIndexPage() {
         </div>
 
         {posts.length === 0 ? (
-          <p className="text-sm text-ink-soft">Nothing published yet — check back soon.</p>
+          <p className="text-sm text-ink-soft">Nothing published yet,  check back soon.</p>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (

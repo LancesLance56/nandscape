@@ -121,7 +121,7 @@ describe('instantiateSubcircuit: a single instance behaves like its definition',
 
     assert.notEqual(inst1.inputs.A, inst2.inputs.A);
     assert.notEqual(inst1.outputs.SUM, inst2.outputs.SUM);
-    // Each instance clones the definition's 4 gates (XOR, AND — INPUT_PIN/
+    // Each instance clones the definition's 4 gates (XOR, AND,  INPUT_PIN/
     // OUTPUT_PIN boundary gates are dropped during flattening).
     assert.equal(circuit.gateCount, 4);
   });

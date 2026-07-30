@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // Public callers only ever get published posts; anything else needs auth
-  // (left as a TODO — see app/api/posts/route.ts).
+  // (left as a TODO,  see app/api/posts/route.ts).
   const isPublic = request.nextUrl.searchParams.get("preview") !== "1";
   if (isPublic && post.status !== "published") {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

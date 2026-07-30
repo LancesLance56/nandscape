@@ -69,7 +69,7 @@ export interface WireEdgeData extends Record<string, unknown> {
 
 export type EditorEdge = Edge<WireEdgeData>;
 
-/** Anything selectable in the editor — nodes, edges, or (future) groups. */
+/** Anything selectable in the editor,  nodes, edges, or (future) groups. */
 export interface Selection {
   nodeIds: string[];
   edgeIds: string[];

@@ -17,7 +17,7 @@ export function SaveSubcircuitDialog({onCloseAction}: { onCloseAction: () => voi
       return;
     }
     if (nodes.length === 0) {
-      setError("Build something on the canvas first — a block is made from whatever's currently placed.");
+      setError("Build something on the canvas first,  a block is made from whatever's currently placed.");
       return;
     }
     const result = createFromGraph(name.trim(), nodes, edges);

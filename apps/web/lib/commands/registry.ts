@@ -35,5 +35,5 @@ export class CommandRegistry {
   }
 }
 
-/** Process-wide singleton — one editor instance per tab, so this is safe. */
+/** Process-wide singleton,  one editor instance per tab, so this is safe. */
 export const commandRegistry = new CommandRegistry();

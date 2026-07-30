@@ -62,7 +62,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     const idSet = new Set(nodeIds);
     set((state) => ({
       nodes: state.nodes.filter((n) => !idSet.has(n.id)),
-      // A node's wires are structurally invalid without it — cascade delete.
+      // A node's wires are structurally invalid without it,  cascade delete.
       edges: state.edges.filter((e) => !idSet.has(e.source) && !idSet.has(e.target)),
     }));
   },

@@ -4,7 +4,7 @@ import {useEditorStore} from "@/store/editor-store";
 /**
  * Inserts a single waypoint into an existing edge at `index` (mirrors the
  * splice index used by edge-path.ts's nearestSegmentIndex). Used by the
- * "double-click a wire to add a turn" interaction — kept as its own command
+ * "double-click a wire to add a turn" interaction,  kept as its own command
  * (rather than a raw updateEdgeData call) so that action is undo/redo-able
  * like every other structural edit, matching clear-edge-turns.command.ts.
  */

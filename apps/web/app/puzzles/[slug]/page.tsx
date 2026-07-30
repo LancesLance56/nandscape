@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!puzzle) return {};
 
   return {
-    title: `${puzzle.title} — Nandscape`,
+    title: `${puzzle.title},  Nandscape`,
     description: puzzle.description,
   };
 }

@@ -86,9 +86,9 @@ function checkStructure(puzzle: PuzzleSpec, nodes: EditorNode[]): string | null 
   }
 
   const dupInput = findDuplicateName(nodes, "input");
-  if (dupInput) return `Multiple input nodes are named "${dupInput}" — names must be unique.`;
+  if (dupInput) return `Multiple input nodes are named "${dupInput}",  names must be unique.`;
   const dupOutput = findDuplicateName(nodes, "output");
-  if (dupOutput) return `Multiple output nodes are named "${dupOutput}" — names must be unique.`;
+  if (dupOutput) return `Multiple output nodes are named "${dupOutput}",  names must be unique.`;
 
   const inputsByName = findIoNodesByName(nodes, "input");
   const missingInputs = puzzle.inputs.filter((p) => !inputsByName.has(p.name));
@@ -176,7 +176,7 @@ async function gradeSequence(
   }
 
   return stepFailures.length === 0
-    ? { index, passed: true, detail: `${steps.length} step(s) — correct` }
+    ? { index, passed: true, detail: `${steps.length} step(s),  correct` }
     : { index, passed: false, detail: stepFailures.join("; ") };
 }
 

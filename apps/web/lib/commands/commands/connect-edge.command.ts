@@ -4,7 +4,7 @@ import {useEditorStore} from "@/store/editor-store";
 
 /**
  * Validity checks (pin arity, no self-loops, type matching) belong in a
- * dedicated lib/editor/validate-connection.ts — this command assumes the
+ * dedicated lib/editor/validate-connection.ts,  this command assumes the
  * connection already passed React Flow's `isValidConnection`/the wire-draft
  * flow's own compatibility check, and focuses on making the edit undoable.
  * `waypoints` carries any turns the user placed while click-routing the

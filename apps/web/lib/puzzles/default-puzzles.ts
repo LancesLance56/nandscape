@@ -27,7 +27,7 @@ const andFromNand: PuzzleSpec = {
   slug: "and-from-nand",
   title: "AND from NAND",
   description:
-    "The NAND gate is universal — every other gate can be built from nothing but NAND. Warm up by building AND, the simplest derived gate, using only NAND gates.",
+    "The NAND gate is universal, every other gate can be built from nothing but NAND. Start by building AND using only NAND gates.",
   difficulty: "easy",
   tags: ["combinational", "boolean-algebra"],
   gateBudget: 2,
@@ -41,7 +41,7 @@ const twoToOneMultiplexer: PuzzleSpec = {
   slug: "two-to-one-multiplexer",
   title: "2-to-1 Multiplexer",
   description:
-    "No gate types are off-limits this time — just a tight budget. Output A when SEL is 0, and B when SEL is 1.",
+    "No gate types are off-limits this time,  just a tight budget. Output A when SEL is 0, and B when SEL is 1.",
   difficulty: "easy",
   tags: ["combinational", "selectors"],
   gateBudget: 4,
@@ -54,7 +54,7 @@ const xorFromScratch: PuzzleSpec = {
   slug: "xor-from-scratch",
   title: "XOR From Scratch",
   description:
-    "XOR and XNOR are banned this time. Build a 2-input XOR out of AND, OR, NAND, and NOT instead — every other gate is fair game.",
+    "XOR and XNOR are banned this time. Build a 2-input XOR out of AND, OR, NAND, and NOT instead,  every other gate is fair game.",
   difficulty: "easy",
   tags: ["combinational", "boolean-algebra"],
   gateBudget: 5,
@@ -99,7 +99,7 @@ const halfAdderNorOnly: PuzzleSpec = {
   slug: "half-adder-nor-only",
   title: "Half Adder (NOR only)",
   description:
-    "NOR is universal too. Every gate on the canvas — even AND, OR, and NOT — has to be built from NOR alone. Produce SUM and CARRY for two bits.",
+    "NOR is universal too. Every gate on the canvas,  even AND, OR, and NOT,  has to be built from NOR alone. Produce SUM and CARRY for two bits.",
   difficulty: "medium",
   tags: ["combinational", "arithmetic"],
   gateBudget: 12,
@@ -116,7 +116,7 @@ const threeInputMajorityVoter: PuzzleSpec = {
   slug: "three-input-majority-voter",
   title: "3-Input Majority Voter",
   description:
-    "Again, no gate restrictions — just keep the gate count down. Output HIGH whenever at least two of the three inputs are HIGH.",
+    "Again, no gate restrictions,  just keep the gate count down. Output HIGH whenever at least two of the three inputs are HIGH.",
   difficulty: "medium",
   tags: ["combinational", "boolean-algebra"],
   gateBudget: 7,
@@ -131,7 +131,7 @@ const fullAdderNoXor: PuzzleSpec = {
   slug: "full-adder-no-xor",
   title: "Full Adder Without XOR",
   description:
-    "Add two bits plus a carry-in — but XOR and XNOR are banned, so the parity logic has to come from AND, OR, NAND, and NOT instead.",
+    "Add two bits plus a carry-in,  but XOR and XNOR are banned, so the parity logic has to come from AND, OR, NAND, and NOT instead.",
   difficulty: "hard",
   tags: ["combinational", "arithmetic"],
   gateBudget: 18,
@@ -171,7 +171,7 @@ const gatedDLatchNorOnly: PuzzleSpec = {
   slug: "gated-d-latch-nor-only",
   title: "Gated D Latch (NOR only)",
   description:
-    "Build a transparent-when-enabled D latch using nothing but NOR gates — you'll need to derive AND, OR, and NOT from NOR before you even get to the latch itself.",
+    "Build a transparent-when-enabled D latch using nothing but NOR gates,  you'll need to derive AND, OR, and NOT from NOR before you even get to the latch itself.",
   difficulty: "hard",
   tags: ["sequential", "memory"],
   gateBudget: 15,

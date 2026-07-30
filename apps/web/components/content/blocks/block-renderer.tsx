@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { PostBlock } from "@/types/blog";
+import type { ContentBlock } from "@/types/content-block";
 import { ParagraphBlockView } from "./paragraph-block";
 import { HeadingBlockView } from "./heading-block";
 import { ImageBlockView } from "./image-block";
@@ -8,8 +8,9 @@ import { ButtonBlockView } from "./button-block";
 import { CodeBlockView } from "./code-block";
 import { DividerBlockView } from "./divider-block";
 import { InteractiveBlockView } from "./interactive/interactive-block";
+import {PostBlock} from "@/types/blog";
 
-const blockRegistry: Record<PostBlock["type"], ComponentType<{ block: never }>> = {
+const blockRegistry: Record<ContentBlock["type"], ComponentType<{ block: never }>> = {
   paragraph: ParagraphBlockView,
   heading: HeadingBlockView,
   image: ImageBlockView,
@@ -18,9 +19,9 @@ const blockRegistry: Record<PostBlock["type"], ComponentType<{ block: never }>> 
   code: CodeBlockView,
   divider: DividerBlockView,
   interactive: InteractiveBlockView,
-} as unknown as Record<PostBlock["type"], ComponentType<{ block: never }>>;
+} as unknown as Record<ContentBlock["type"], ComponentType<{ block: never }>>;
 
-export function BlockRenderer({ blocks }: { blocks: PostBlock[] }) {
+export function BlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
   return (
     <div className="flex flex-col gap-4">
       {blocks.map((block) => {

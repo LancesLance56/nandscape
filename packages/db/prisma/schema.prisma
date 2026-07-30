@@ -55,6 +55,38 @@ model BlogPost {
   @@map("blog_posts")
 }
 
+model TutorialSection {
+  id       String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug     String         @unique
+  title    String
+  position Int            @default(0)
+  pages    TutorialPage[]
+
+  @@map("tutorial_sections")
+}
+
+model TutorialPage {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String           @unique
+  title       String
+  excerpt     String?
+  coverImage  String?          @map("cover_image")
+  authorName  String?          @map("author_name")
+  status      String           @default("draft")
+  body        Json             @default("[]")
+  tags        String[]         @default([])
+  position    Int              @default(0)
+  sectionId   String?          @map("section_id") @db.Uuid
+  section     TutorialSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  publishedAt DateTime?        @map("published_at") @db.Timestamptz(6)
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime         @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([sectionId, position])
+  @@map("tutorial_pages")
+}
+
 model Puzzle {
   id          String          @id @default(cuid())
   slug        String          @unique
@@ -63,10 +95,10 @@ model Puzzle {
   difficulty  Difficulty      @default(MEDIUM)
   data        Json
   solution    Json
-  creatorId   String
+  creatorId   String?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  creator     User            @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator     User?           @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   attempts    PuzzleAttempt[]
 
   @@index([creatorId])

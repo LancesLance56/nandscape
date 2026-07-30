@@ -26,7 +26,7 @@ export function SiteGradient() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Ambient drifting particles — same behavior as the old HeroGradient,
+  // Ambient drifting particles,  same behavior as the old HeroGradient,
   // just running across the whole viewport height now.
   useEffect(() => {
     const container = particlesRef.current;
@@ -92,7 +92,7 @@ export function SiteGradient() {
       <div
         className="absolute inset-0"
         style={{
-          // Centered higher and fading out sooner than before — since this
+          // Centered higher and fading out sooner than before,  since this
           // layer now spans the full page height, we don't want the orbs'
           // full intensity smeared all the way down past the fold.
           WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 22%, black 0%, transparent 75%)",

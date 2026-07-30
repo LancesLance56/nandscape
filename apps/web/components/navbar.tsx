@@ -12,6 +12,7 @@ const links = [
   { label: "Puzzles", href: "/puzzles" },
   { label: "Sandbox", href: "/nandbox" },
   { label: "Blog", href: "/blog" },
+  { label: "Tutorials", href: "/tutorials" },
   { label: "About", href: "/about" },
 ];
 

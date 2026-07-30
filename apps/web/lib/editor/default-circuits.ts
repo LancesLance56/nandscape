@@ -13,7 +13,7 @@ export interface DefaultCircuit {
 const andFromNand: DefaultCircuit = {
   id: "and-from-nand",
   name: "AND from NAND",
-  description: "AND = NOT(NAND(a, b)) — the first gate every Nandscape puzzle builds on.",
+  description: "AND = NOT(NAND(a, b)),  the first gate every Nandscape puzzle builds on.",
   build: () => {
     const b = new CircuitBuilder();
     const inA = b.input("A", 40, 40, { id: "demo_and_in_a" });
@@ -53,7 +53,7 @@ const halfAdderCircuit: DefaultCircuit = {
 const srLatch: DefaultCircuit = {
   id: "sr-latch-nand",
   name: "SR Latch (NAND)",
-  description: "Two cross-coupled NAND gates form a 1-bit memory cell — active-low S/R, idle by default.",
+  description: "Two cross-coupled NAND gates form a 1-bit memory cell,  active-low S/R, idle by default.",
   build: () => {
     const b = new CircuitBuilder();
     const inS = b.input("S", 40, 40, { id: "demo_sr_in_s", value: SignalState.HIGH });
@@ -77,7 +77,7 @@ const srLatch: DefaultCircuit = {
 const orFromNand: DefaultCircuit = {
   id: "or-from-nand",
   name: "OR from NAND",
-  description: "OR = NAND(NOT a, NOT b) — De Morgan's law applied to the base gate.",
+  description: "OR = NAND(NOT a, NOT b),  De Morgan's law applied to the base gate.",
   build: () => {
     const b = new CircuitBuilder();
     const inA = b.input("A", 40, 40, { id: "demo_or_in_a" });
@@ -94,7 +94,7 @@ const orFromNand: DefaultCircuit = {
 const norGateCircuit: DefaultCircuit = {
   id: "nor-gate",
   name: "NOR Gate",
-  description: "NOR = AND(NOT a, NOT b) — the other half of De Morgan's law.",
+  description: "NOR = AND(NOT a, NOT b),  the other half of De Morgan's law.",
   build: () => {
     const b = new CircuitBuilder();
     const inA = b.input("A", 40, 40, { id: "demo_nor_in_a" });
@@ -111,7 +111,7 @@ const norGateCircuit: DefaultCircuit = {
 const xnorGate: DefaultCircuit = {
   id: "xnor-gate",
   name: "XNOR Gate",
-  description: "XNOR = NOT(XOR(a, b)) — outputs HIGH when the inputs agree.",
+  description: "XNOR = NOT(XOR(a, b)),  outputs HIGH when the inputs agree.",
   build: () => {
     const b = new CircuitBuilder();
     const inA = b.input("A", 40, 40, { id: "demo_xnor_in_a" });
@@ -132,7 +132,7 @@ const xnorGate: DefaultCircuit = {
 const buffer: DefaultCircuit = {
   id: "buffer-double-not",
   name: "Buffer (Double NOT)",
-  description: "Two NOT gates in series pass the signal through unchanged — useful for demonstrating propagation delay without changing logic.",
+  description: "Two NOT gates in series pass the signal through unchanged,  useful for demonstrating propagation delay without changing logic.",
   build: () => {
     const b = new CircuitBuilder();
     const inNode = b.input("IN", 40, 90, { id: "demo_buf_in" });
@@ -237,7 +237,7 @@ const comparator1Bit: DefaultCircuit = {
 const majorityVoter3: DefaultCircuit = {
   id: "majority-voter-3",
   name: "3-Input Majority Voter",
-  description: "OUT = AB + BC + AC — high whenever at least two of the three inputs are high.",
+  description: "OUT = AB + BC + AC,  high whenever at least two of the three inputs are high.",
   build: () => {
     const b = new CircuitBuilder();
     const inA = b.input("A", 40, 40, { id: "demo_maj_in_a" });

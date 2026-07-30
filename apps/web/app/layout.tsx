@@ -22,7 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nandscape — learn logic gates by building them",
+  title: "Nandscape,  learn logic gates by building them",
   description:
     "Nandscape teaches digital logic through puzzles. Build every gate, starting from NAND alone.",
 };

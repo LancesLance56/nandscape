@@ -129,8 +129,8 @@ export function ProblemPanel() {
         >
           {runStatus === "passed"
             ? isSolved
-              ? "All tests passed — puzzle solved!"
-              : "All tests passed — submit your solution below."
+              ? "All tests passed,  puzzle solved!"
+              : "All tests passed,  submit your solution below."
             : "Some tests failed."}
         </div>
       )}
@@ -157,7 +157,7 @@ export function ProblemPanel() {
                   : "border-signal-coral/30 bg-signal-coral-bg/60 text-signal-coral-strong"
               }`}
             >
-              Case {c.index + 1}: {c.passed ? "PASS" : "FAIL"} — {c.detail}
+              Case {c.index + 1}: {c.passed ? "PASS" : "FAIL"},  {c.detail}
             </li>
           ))}
         </ul>

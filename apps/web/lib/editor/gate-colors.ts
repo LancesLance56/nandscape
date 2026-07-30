@@ -1,7 +1,7 @@
 import { GateType } from "@nandscape/engine";
 
 export const GATE_COLORS: Partial<Record<GateType, string>> = {
-  [GateType.NAND]: "var(--copper)",        // was blue — now matches primary accent
+  [GateType.NAND]: "var(--copper)",        // was blue,  now matches primary accent
   [GateType.AND]: "var(--signal-green)",
   [GateType.OR]: "#E0A339",                 // warm amber, kept
   [GateType.NOR]: "var(--signal-coral)",

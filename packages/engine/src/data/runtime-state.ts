@@ -49,7 +49,7 @@ export class RuntimeState {
     return this.pinGeneration[pin];
   }
 
-  /** Human-readable snapshot of all net states — for debugging/tests, not used by the hot path. */
+  /** Human-readable snapshot of all net states,  for debugging/tests, not used by the hot path. */
   snapshotNets(): SignalState[] {
     return Array.from(this.netResolvedState) as SignalState[];
   }

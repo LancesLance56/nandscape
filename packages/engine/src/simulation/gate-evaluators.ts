@@ -148,7 +148,7 @@ export interface NetResolution {
  *   0 active drivers            -> FLOAT     (UNDRIVEN)
  *   1 active driver             -> that driver's value (SINGLE_DRIVER)
  *   N active drivers, all equal -> that value (AGREEMENT)
- *   N active drivers, disagree  -> UNKNOWN    (CONTENTION — bus fight)
+ *   N active drivers, disagree  -> UNKNOWN    (CONTENTION,  bus fight)
  *
  * Any UNKNOWN among otherwise-agreeing active drivers also yields UNKNOWN,
  * since we can't be sure the "unknown" driver doesn't actually disagree.
@@ -174,7 +174,7 @@ export function resolveNet(driverStates: readonly SignalState[]): NetResolution 
   }
 
   if (first === UNKNOWN) {
-    // All active drivers agree they're UNKNOWN — still UNKNOWN, but the
+    // All active drivers agree they're UNKNOWN,  still UNKNOWN, but the
     // "kind" reflects that they were at least unanimous about it.
     return {
       state: UNKNOWN,

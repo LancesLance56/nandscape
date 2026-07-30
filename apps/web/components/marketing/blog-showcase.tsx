@@ -25,7 +25,7 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
 
       <ScrollReveal delay={80} className="overflow-hidden rounded-2xl border border-border/70 bg-surface-card/85 font-mono backdrop-blur-sm">
         {featured.length === 0 && (
-          <p className="px-5 py-6 text-sm text-ink-soft">Nothing published yet — check back soon.</p>
+          <p className="px-5 py-6 text-sm text-ink-soft">Nothing published yet,  check back soon.</p>
         )}
 
         {featured.map((post, i) => (

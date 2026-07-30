@@ -46,7 +46,7 @@ export async function validateSessionToken(token: string): Promise<ValidatedSess
 
   if (session.expiresAt.getTime() <= Date.now()) {
     await prisma.session.delete({ where: { id: session.id } }).catch(() => {
-      // Already gone (e.g. a concurrent logout) — not an error condition.
+      // Already gone (e.g. a concurrent logout),  not an error condition.
     });
     return null;
   }

@@ -9,7 +9,7 @@ interface PostRow {
   cover_image: string | null;
   author_name: string | null;
   status: PostStatus;
-  body: PostBlock[]; // pg deserializes jsonb -> JS values automatically
+  body: PostBlock[];
   tags: string[];
   published_at: string | null;
   created_at: string;

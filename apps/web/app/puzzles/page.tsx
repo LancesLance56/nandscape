@@ -4,7 +4,7 @@ import { PuzzleList } from "@/components/puzzles/puzzle-list";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
 
 export const metadata: Metadata = {
-  title: "Puzzles — Nandscape",
+  title: "Puzzles,  Nandscape",
   description: "Browse logic-gate puzzles, filter by difficulty and topic, and start solving.",
 };
 
@@ -22,7 +22,7 @@ export default async function PuzzlesPage() {
           </div>
           <h1 className="font-display text-4xl font-semibold leading-tight text-ink">Problems</h1>
           <p className="mt-2 text-sm text-ink-soft">
-            Each puzzle gives you a goal, a gate budget, and sometimes a restriction on which blocks you have. Inspired by design inspired by leetcode.
+            Each puzzle gives you a goal, a gate budget, and sometimes a restriction on which blocks you have. Design inspired by leetcode.
           </p>
         </div>
 

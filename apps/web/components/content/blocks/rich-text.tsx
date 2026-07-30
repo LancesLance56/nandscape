@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { safeHref } from "@/lib/blog/safe-href";
+import { safeHref } from "@/lib/content/safe-href";
 import type { TextMark, TextSpan } from "@/types/blog";
 
 function applyMarks(text: string, marks: TextMark[] | undefined, key: string): React.ReactNode {

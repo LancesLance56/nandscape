@@ -91,7 +91,7 @@ export class CircuitData {
   readonly gatePinCount = new DynamicTypedArray(Int32Array, INITIAL_GATE_CAPACITY);
   readonly gateParamA = new DynamicTypedArray(Int32Array, INITIAL_GATE_CAPACITY);
   readonly gateParamB = new DynamicTypedArray(Int32Array, INITIAL_GATE_CAPACITY);
-  /** Optional debug metadata — NOT read by the simulator core. */
+  /** Optional debug metadata,  NOT read by the simulator core. */
   readonly gateName: (string | undefined)[] = [];
 
   // --- Pin table --------------------------------------------------------------
@@ -102,9 +102,9 @@ export class CircuitData {
 
   // --- Net table ----------------------------------------------------------------
   private _netCount = 0;
-  /** Optional debug metadata — NOT read by the simulator core. */
+  /** Optional debug metadata,  NOT read by the simulator core. */
   readonly netName: (string | undefined)[] = [];
-  /** Nets retired by mergeNets() — excluded from validateCircuit's "unused net" check. */
+  /** Nets retired by mergeNets(),  excluded from validateCircuit's "unused net" check. */
   private readonly absorbedNets = new Set<number>();
 
   get gateCount(): number {
@@ -131,7 +131,7 @@ export class CircuitData {
   }
 
   /**
-   * Allocates a new gate along with all of its pins (contiguously — this is
+   * Allocates a new gate along with all of its pins (contiguously,  this is
    * what lets gatePinStart/gatePinCount address them as a flat range).
    */
   addGate(spec: GateSpec): GateId {
@@ -173,7 +173,7 @@ export class CircuitData {
   /**
    * Joins two already-wired nets into one: every pin currently on `absorb`
    * is reassigned onto `keep`, and `absorb` is retired. `connect()` alone
-   * can only add a pin to a net — it can't join two nets that already have
+   * can only add a pin to a net,  it can't join two nets that already have
    * their own pins, which is exactly what's needed to wire one subcircuit
    * instance's output port directly into another's input port (both ports
    * are nets, not bare pins). Nets are append-only storage with no
@@ -202,7 +202,7 @@ export class CircuitData {
   /**
    * Marks `net` as absorbed without moving any pins. Used when cloning an
    * already-merged net structure wholesale (e.g. flattening a subcircuit
-   * definition that itself called mergeNets internally) — the clone's pins
+   * definition that itself called mergeNets internally),  the clone's pins
    * are already correctly wired via the id remapping, so only the "don't
    * flag this as an unused net" bit needs to carry over.
    */
@@ -234,7 +234,7 @@ export class CircuitData {
     return pins;
   }
 
-  /** Returns the last pin (by role) owned by a gate — the output for standard N-ary gates. */
+  /** Returns the last pin (by role) owned by a gate,  the output for standard N-ary gates. */
   getLastPin(gate: GateId): PinId {
     this.assertValidGate(gate);
     const start = this.gatePinStart.get(gate);

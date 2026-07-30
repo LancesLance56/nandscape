@@ -1,0 +1,25 @@
+{
+  "slug": "gated-d-latch-nor-only",
+  "title": "Gated D Latch (NOR only)",
+  "description": "Build a transparent-when-enabled D latch using nothing but NOR gates, you'll need to derive AND, OR, and NOT from NOR before you even get to the latch itself.",
+  "difficulty": "hard",
+  "tags": ["sequential", "memory"],
+  "gateBudget": 15,
+  "allowedGateTypes": [3],
+  "inputs": [
+    { "name": "D", "defaultValue": 0 },
+    { "name": "E", "defaultValue": 0 }
+  ],
+  "outputs": [{ "name": "Q" }, { "name": "QN" }],
+  "testCases": [
+    {
+      "sequence": [
+        { "setInputs": { "D": 1, "E": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
+        { "setInputs": { "D": 0, "E": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
+        { "setInputs": { "E": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
+        { "setInputs": { "D": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
+        { "setInputs": { "E": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } }
+      ]
+    }
+  ]
+}

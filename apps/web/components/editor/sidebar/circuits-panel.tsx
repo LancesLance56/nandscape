@@ -45,7 +45,7 @@ export function CircuitsPanel() {
 
         {customCircuits.length === 0 && (
           <p className="px-1 text-xs text-ink-soft">
-            Nothing saved yet — build something, then hit &ldquo;Save current&rdquo;.
+            Nothing saved yet,  build something, then hit &ldquo;Save current&rdquo;.
           </p>
         )}
 
