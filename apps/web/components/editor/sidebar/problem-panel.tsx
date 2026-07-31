@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { gateTypeToString } from "@nandscape/engine";
 import { useEditorStore } from "@/store/editor-store";
 import { useLiveSignalsStore } from "@/store/live-signals-store";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { usePuzzleProgressStore } from "@/store/puzzle-progress-store";
-import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
+import { usePuzzleDataStore } from "@/store/puzzle-data-store";
 import { gradePuzzle } from "@/lib/puzzles/grade-puzzle";
 import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import Link from "next/link";
@@ -29,7 +29,11 @@ export function ProblemPanel() {
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const puzzle = activeSlug ? getDefaultPuzzle(activeSlug) : undefined;
+  const puzzle = usePuzzleDataStore((s) => (activeSlug ? s.getPuzzle(activeSlug) : undefined));
+
+  useEffect(() => {
+    if (activeSlug) void usePuzzleDataStore.getState().fetchPuzzle(activeSlug);
+  }, [activeSlug]);
 
   if (!activeSlug || !puzzle) {
     return (

@@ -6,31 +6,6 @@ export const metadata: Metadata = {
   description: "The story behind Nandscape, and why it starts from a single NAND gate.",
 };
 
-function CircuitArt({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 400 300" className={className} aria-hidden="true">
-      <rect width="400" height="300" rx="16" className="fill-surface-2" />
-      <g className="stroke-border-strong" strokeWidth="1.5" fill="none">
-        <path d="M40 60 H140 M40 150 H100 M40 240 H140" />
-        <path d="M260 60 H360 M300 150 H360 M260 240 H360" />
-        <path d="M140 60 V150 M140 240 V150 M260 60 V150 M260 240 V150" />
-      </g>
-      {[
-        [40, 60], [40, 150], [40, 240],
-        [360, 60], [360, 150], [360, 240],
-      ].map(([cx, cy]) => (
-        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="4" className="fill-copper" />
-      ))}
-      <path
-        d="M140 90 H190 A60 60 0 0 1 190 210 H140 Z"
-        className="fill-surface-card stroke-copper"
-        strokeWidth="2"
-      />
-      <circle cx="258" cy="150" r="8" className="fill-surface-card stroke-copper" strokeWidth="2" />
-    </svg>
-  );
-}
-
 function PortraitPlaceholder({ className = "" }: { className?: string }) {
   return (
     <div

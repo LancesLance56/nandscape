@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, {useEffect, useMemo} from "react";
 import { GateType } from "@nandscape/engine";
 import { PaletteItem, type PaletteEntry } from "./palette-item";
 import { useUiStore } from "@/store/ui-store";
@@ -10,6 +10,7 @@ import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
 import { getGateRestriction } from "@/lib/puzzles/gate-restrictions";
 import { getBuiltinSubcircuitBlocks } from "@/lib/editor/default-blocks";
 import { GATE_COLORS } from "@/lib/editor/gate-colors";
+import {usePuzzleDataStore} from "@/store/puzzle-data-store";
 
 const STATIC_GROUPS: { title: string; entries: Omit<PaletteEntry, "color">[] }[] = [
   { title: "Primitive", entries: [{ kind: "gate", gateType: GateType.NAND, label: "NAND", symbol: "NA" }] },
@@ -71,10 +72,15 @@ export function GatePalette() {
   const removeBlock = useSubcircuitBlocksStore((s) => s.remove);
   const activePuzzleSlug = usePuzzleStore((s) => s.activePuzzleSlug);
 
-  const restriction = useMemo(
-    () => getGateRestriction(activePuzzleSlug ? getDefaultPuzzle(activePuzzleSlug) : null),
-    [activePuzzleSlug],
+  useEffect(() => {
+    if (activePuzzleSlug) void usePuzzleDataStore.getState().fetchPuzzle(activePuzzleSlug);
+  }, [activePuzzleSlug]);
+
+  const puzzleSpec = usePuzzleDataStore((s) =>
+    activePuzzleSlug ? s.getPuzzle(activePuzzleSlug) : undefined,
   );
+
+  const restriction = useMemo(() => getGateRestriction(puzzleSpec ?? null), [puzzleSpec]);
 
   const blocks = useMemo(
     () => [...getBuiltinSubcircuitBlocks(), ...customBlocks],

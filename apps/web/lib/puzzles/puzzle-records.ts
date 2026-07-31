@@ -123,10 +123,11 @@ export async function createPuzzleRecord(input: PuzzleSeedInput): Promise<Puzzle
   const data = buildData(input);
   const solution: PuzzleSolution = { testCases: input.testCases };
 
+  // TODO: ADD AUTHOR
   const rows = await query<PuzzleRow>(
     `INSERT INTO "Puzzle" (id, slug, title, description, difficulty, data, solution, "creatorId", "createdAt", "updatedAt")
-     VALUES ($1, $2, $3, $4, $5::"Difficulty", $6::jsonb, $7::jsonb, NULL, now(), now())
-     RETURNING ${SELECT_COLUMNS}`,
+     VALUES ($1, $2, $3, $4, $5::"Difficulty", $6::jsonb, $7::jsonb, $8, now(), now())
+     RETURNING *`,
     [
       id,
       input.slug,
@@ -135,6 +136,7 @@ export async function createPuzzleRecord(input: PuzzleSeedInput): Promise<Puzzle
       difficultyToPrisma(input.difficulty),
       JSON.stringify(data),
       JSON.stringify(solution),
+      "cms1la8s80000ucsznnv1o4xy"
     ],
   );
   return toRecord(rows[0]);

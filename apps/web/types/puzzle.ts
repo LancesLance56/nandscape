@@ -48,4 +48,5 @@ export interface PuzzleSpec {
   inputs: PuzzlePort[];
   outputs: PuzzlePort[];
   testCases: PuzzleTestCase[];
+  [p: string]: unknown;
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePuzzleStore } from "@/store/puzzle-store";
-import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
+import { usePuzzleDataStore } from "@/store/puzzle-data-store";
 
 function BackIcon() {
   return (
@@ -14,7 +14,7 @@ function BackIcon() {
 
 export function BreadcrumbNav() {
   const activeSlug = usePuzzleStore((s) => s.activePuzzleSlug);
-  const puzzle = activeSlug ? getDefaultPuzzle(activeSlug) : undefined;
+  const puzzle = usePuzzleDataStore((s) => (activeSlug ? s.getPuzzle(activeSlug) : undefined));
 
   return (
     <Link

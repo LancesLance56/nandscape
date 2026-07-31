@@ -1,6 +1,7 @@
 import { PollWidget } from "./poll-widget";
 import { BlackBoxExplorerWidget } from "./blackbox-explorer-widget";
 import { KMapExplorerWidget } from "./kmap-explorer-widget";
+import { CircuitEmbedWidget } from "@/components/content/blocks/circuit/circuit-embed";
 import type { InteractiveBlock } from "@/types/blog";
 import type { ComponentType } from "react";
 
@@ -8,10 +9,16 @@ interface WidgetProps {
   data: Record<string, unknown>;
 }
 
+// "sequential-explorer" (ToggleSwitch + Led standing in for the circuit) has
+// been retired in favor of "circuit-embed",  a real, read-only React Flow
+// canvas showing the actual gates and wires, with its own zoom-in view.
+// components/content/blocks/interactive/sequential-circuit-widget.tsx is no
+// longer referenced anywhere and can be deleted.
 const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   poll: PollWidget,
   "blackbox-explorer": BlackBoxExplorerWidget,
   "kmap-explorer": KMapExplorerWidget,
+  "circuit-embed": CircuitEmbedWidget,
 };
 
 export function InteractiveBlockView({ block }: { block: InteractiveBlock }) {

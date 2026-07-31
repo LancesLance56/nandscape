@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { DEFAULT_PUZZLES } from "@/lib/puzzles/default-puzzles";
+import { listPuzzles } from "@/lib/puzzles/puzzles";
 import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
 import { gateTypeToString } from "@nandscape/engine";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import type { PuzzleSpec } from "@/types/puzzle";
 
 function tagColor(tag: string): string {
   let hash = 0;
@@ -11,7 +12,7 @@ function tagColor(tag: string): string {
   return DEFAULT_BLOCK_COLORS[hash % DEFAULT_BLOCK_COLORS.length];
 }
 
-function restriction(puzzle: (typeof DEFAULT_PUZZLES)[number]): string | null {
+function restriction(puzzle: PuzzleSpec): string | null {
   if (puzzle.allowedGateTypes?.length) return `${puzzle.allowedGateTypes.map(gateTypeToString).join(", ")} only`;
   if (puzzle.disallowedGateTypes?.length) return `No ${puzzle.disallowedGateTypes.map(gateTypeToString).join(", ")}`;
   return null;
@@ -26,10 +27,19 @@ const FEATURED_SLUGS = [
   "gated-d-latch-nor-only",
 ];
 
-export function PuzzlesShowcase() {
-  const featured = FEATURED_SLUGS.map((slug) => DEFAULT_PUZZLES.find((p) => p.slug === slug)).filter(
-    (p): p is (typeof DEFAULT_PUZZLES)[number] => Boolean(p),
+export async function PuzzlesShowcase() {
+  let puzzles: PuzzleSpec[] = [];
+  try {
+    puzzles = await listPuzzles();
+  } catch {
+    puzzles = [];
+  }
+
+  const bySlug = new Map(puzzles.map((p) => [p.slug, p]));
+  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter(
+    (p): p is PuzzleSpec => Boolean(p),
   );
+  if (featured.length === 0) featured = puzzles.slice(0, 6);
 
   return (
     <section className="py-20">
@@ -37,7 +47,7 @@ export function PuzzlesShowcase() {
         <div>
           <div className="mb-2 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            {DEFAULT_PUZZLES.length} puzzles, six chapters
+            {puzzles.length} puzzles
           </div>
           <h2 className="font-display text-3xl font-semibold text-ink">Try a Puzzle Yourself!</h2>
         </div>
@@ -89,6 +99,10 @@ export function PuzzlesShowcase() {
           </ScrollReveal>
         ))}
       </div>
+
+      {featured.length === 0 && (
+        <p className="text-sm text-ink-soft">No puzzles in the database yet.</p>
+      )}
     </section>
   );
 }

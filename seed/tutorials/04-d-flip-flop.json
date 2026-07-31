@@ -1,0 +1,540 @@
+{
+  "slug": "d-flip-flop",
+  "title": "The D Flip-Flop: From Level to Edge",
+  "excerpt": "The storage element every register and counter is actually built from,  and the reason it samples a clock edge instead of a level.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-07-30T09:30:00Z",
+  "tags": [
+    "sequential",
+    "memory"
+  ],
+  "sectionSlug": "sequential-logic",
+  "position": 40,
+  "body": [
+    {
+      "id": "h-intro",
+      "type": "heading",
+      "level": 1,
+      "text": "The D Flip-Flop: From Level to Edge"
+    },
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A D flip-flop looks, from the outside, almost identical to the gated D latch from the last tutorial: one data input D, one clock input CLK, and outputs Q and Q̄. The behavior is completely different, though, and the difference is exactly the fix the last tutorial promised. Instead of being transparent for an entire clock phase, a D flip-flop only ever looks at D for one infinitesimally brief instant per cycle: the moment CLK transitions from low to high, the "
+        },
+        {
+          "text": "rising edge",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Every other instant, no matter what D is doing, Q simply holds."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is the difference between level-sensitive and edge-sensitive logic, and it's worth being precise about the wording: a level-sensitive latch cares about a signal's "
+        },
+        {
+          "text": "value",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " over some stretch of time (\"while E is high\"). An edge-sensitive flip-flop cares about a signal's "
+        },
+        {
+          "text": "transition",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " at one specific moment (\"the instant CLK goes from 0 to 1\"), and is completely blind to it the rest of the time. The circuit below is built exactly the way real hardware builds one: two gated D latches in series (a master and a slave), with the master's enable wired to CLK inverted and the slave's enable wired to CLK directly. Fifteen gates total, and every one of them is a NAND or a NOT you already know."
+        }
+      ]
+    },
+    {
+      "id": "h-sampling",
+      "type": "heading",
+      "level": 2,
+      "text": "Sampling Once Per Tick"
+    },
+    {
+      "id": "p-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Toggle D as many times as you like,  nothing happens to Q, because nothing you're touching is a clock edge. Now toggle CLK from 0 to 1 and back. Watch the master latch (the left half) freeze the instant CLK rises, right as the slave latch (the right half) opens up and copies whatever the master was holding out to Q. That handoff, master closing exactly as slave opens, is the entire mechanism, laid out in gates instead of asserted as a black box."
+        }
+      ]
+    },
+    {
+      "id": "dff-1",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "title": "D Flip-Flop,  two gated D latches, master + slave",
+        "height": 360,
+        "nodes": [
+          {
+            "id": "in-d",
+            "type": "io-input",
+            "position": {
+              "x": 40,
+              "y": 40
+            },
+            "data": {
+              "kind": "input",
+              "name": "D",
+              "value": 0
+            }
+          },
+          {
+            "id": "in-clk",
+            "type": "io-input",
+            "position": {
+              "x": 40,
+              "y": 460
+            },
+            "data": {
+              "kind": "input",
+              "name": "CLK",
+              "value": 0
+            }
+          },
+          {
+            "id": "not-clk",
+            "type": "gate",
+            "position": {
+              "x": 220,
+              "y": 460
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 6
+            }
+          },
+          {
+            "id": "m-not-d",
+            "type": "gate",
+            "position": {
+              "x": 400,
+              "y": 250
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 6
+            }
+          },
+          {
+            "id": "m-nand-s",
+            "type": "gate",
+            "position": {
+              "x": 580,
+              "y": 40
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "m-nand-r",
+            "type": "gate",
+            "position": {
+              "x": 580,
+              "y": 460
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "m-nand-1",
+            "type": "gate",
+            "position": {
+              "x": 780,
+              "y": 40
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "m-nand-2",
+            "type": "gate",
+            "position": {
+              "x": 780,
+              "y": 460
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "s-not-d",
+            "type": "gate",
+            "position": {
+              "x": 980,
+              "y": 250
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 6
+            }
+          },
+          {
+            "id": "s-nand-s",
+            "type": "gate",
+            "position": {
+              "x": 1160,
+              "y": 40
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "s-nand-r",
+            "type": "gate",
+            "position": {
+              "x": 1160,
+              "y": 460
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "s-nand-1",
+            "type": "gate",
+            "position": {
+              "x": 1360,
+              "y": 40
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "s-nand-2",
+            "type": "gate",
+            "position": {
+              "x": 1360,
+              "y": 460
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "out-q",
+            "type": "io-output",
+            "position": {
+              "x": 1560,
+              "y": 40
+            },
+            "data": {
+              "kind": "output",
+              "name": "Q"
+            }
+          },
+          {
+            "id": "out-qn",
+            "type": "io-output",
+            "position": {
+              "x": 1560,
+              "y": 460
+            },
+            "data": {
+              "kind": "output",
+              "name": "QN"
+            }
+          }
+        ],
+        "edges": [
+          {
+            "id": "e1",
+            "source": "in-clk",
+            "sourceHandle": "out-0",
+            "target": "not-clk",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e2",
+            "source": "in-d",
+            "sourceHandle": "out-0",
+            "target": "m-nand-s",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e3",
+            "source": "in-d",
+            "sourceHandle": "out-0",
+            "target": "m-not-d",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e4",
+            "source": "not-clk",
+            "sourceHandle": "out-0",
+            "target": "m-nand-s",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e5",
+            "source": "m-not-d",
+            "sourceHandle": "out-0",
+            "target": "m-nand-r",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e6",
+            "source": "not-clk",
+            "sourceHandle": "out-0",
+            "target": "m-nand-r",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e7",
+            "source": "m-nand-s",
+            "sourceHandle": "out-0",
+            "target": "m-nand-1",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e8",
+            "source": "m-nand-r",
+            "sourceHandle": "out-0",
+            "target": "m-nand-2",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e9",
+            "source": "m-nand-1",
+            "sourceHandle": "out-0",
+            "target": "m-nand-2",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e10",
+            "source": "m-nand-2",
+            "sourceHandle": "out-0",
+            "target": "m-nand-1",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e11",
+            "source": "m-nand-1",
+            "sourceHandle": "out-0",
+            "target": "s-nand-s",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e12",
+            "source": "m-nand-1",
+            "sourceHandle": "out-0",
+            "target": "s-not-d",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e13",
+            "source": "in-clk",
+            "sourceHandle": "out-0",
+            "target": "s-nand-s",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e14",
+            "source": "s-not-d",
+            "sourceHandle": "out-0",
+            "target": "s-nand-r",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e15",
+            "source": "in-clk",
+            "sourceHandle": "out-0",
+            "target": "s-nand-r",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e16",
+            "source": "s-nand-s",
+            "sourceHandle": "out-0",
+            "target": "s-nand-1",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e17",
+            "source": "s-nand-r",
+            "sourceHandle": "out-0",
+            "target": "s-nand-2",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e18",
+            "source": "s-nand-1",
+            "sourceHandle": "out-0",
+            "target": "s-nand-2",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e19",
+            "source": "s-nand-2",
+            "sourceHandle": "out-0",
+            "target": "s-nand-1",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e20",
+            "source": "s-nand-1",
+            "sourceHandle": "out-0",
+            "target": "out-q",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e21",
+            "source": "s-nand-2",
+            "sourceHandle": "out-0",
+            "target": "out-qn",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "h-why-registers",
+      "type": "heading",
+      "level": 2,
+      "text": "Why Registers Use Flip-Flops, Not Latches"
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Chain several D flip-flops together, output of one into the input of the next, all sharing a single clock line, and you get exactly the building block a shift register, a counter, or a whole processor's register file is made of. Because every flip-flop in the chain samples at the exact same instant, edge triggering guarantees each stage advances by precisely one step per clock tick,  no stage can race ahead into the next one mid-cycle, because for all but that one instant, every flip-flop in the chain is simply holding. That guarantee is the entire reason edge-triggered storage exists; without it, a multi-stage design built from plain gated latches would need careful, error-prone timing analysis to avoid race-through on every single chain of them."
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "h-real-engine",
+      "type": "heading",
+      "level": 2,
+      "text": "This Is Exactly How the Real Simulator Does It"
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One detail worth calling out: Nandscape's actual simulation engine doesn't give a flip-flop any special \"memory cell\" data structure either, even the built-in primitive version does the same thing this gate-level circuit does by construction. A flip-flop's Q output is just an ordinary output pin, and the engine's runtime state already tracks \"what is this pin currently driving\" for every pin in the circuit,  so the stored bit "
+        },
+        {
+          "text": "is",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " that pin's drive state, nothing more. Detecting the rising edge works by comparing a net's value immediately before and immediately after it's resolved during the same simulation step, which the engine already computes for every net that changed."
+        }
+      ]
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That's the whole arc of this section: a feedback loop becomes an SR latch, a bit of gating logic turns the SR latch into a gated D latch, and stacking two gated D latches with complementary enables turns that into a D flip-flop,  and a D flip-flop, wired up enough times, is a register. Nothing above a plain logic gate was ever required."
+        }
+      ]
+    },
+    {
+      "id": "b1",
+      "type": "button",
+      "label": "Build a gated D latch from NOR only",
+      "href": "/puzzles/gated-d-latch-nor-only",
+      "style": "secondary"
+    },
+    {
+      "id": "b2",
+      "type": "button",
+      "label": "Wire one up yourself in the sandbox",
+      "href": "/nandbox",
+      "style": "primary"
+    }
+  ]
+}

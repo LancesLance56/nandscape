@@ -3,7 +3,7 @@
 import { Fragment, useMemo, useState } from "react";
 import { DEFAULT_BLOCK_COLORS } from "@/lib/editor/block-colors";
 import { evaluateMinterm } from "@/lib/blog/kmap-demo";
-import { CircuitFrame } from "./circuit-frame";
+import { CircuitFrame } from "../circuit-frame";
 
 interface HintGroup {
   cells: number[];

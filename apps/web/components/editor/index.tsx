@@ -11,8 +11,8 @@ import { useEditorStore } from "@/store/editor-store";
 import { useUiStore } from "@/store/ui-store";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { usePuzzleProgressStore } from "@/store/puzzle-progress-store";
+import { usePuzzleDataStore } from "@/store/puzzle-data-store";
 import { getDefaultCircuit } from "@/lib/editor/default-circuits";
-import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
 import { buildPuzzleStarterGraph } from "@/lib/puzzles/puzzle-starter-graph";
 import { EditorLayout } from "./layout/editor-layout";
 import { useSandboxProgressStore } from "@/store/sandbox-progress-store";
@@ -56,20 +56,21 @@ export function CircuitEditor({ puzzleSlug }: CircuitEditorProps = {}) {
       return;
     }
 
-    const puzzle = getDefaultPuzzle(nextSlug);
     usePuzzleStore.getState().setActivePuzzle(nextSlug);
     useUiStore.getState().setSidebarTab("problem");
-
-    if (!puzzle) {
-      useEditorStore.getState().loadGraph([], []);
-      return;
-    }
-
     useEditorStore.getState().loadGraph([], []);
 
     void (async () => {
-      const saved = await usePuzzleProgressStore.getState().loadOne(nextSlug);
+      const [puzzle, saved] = await Promise.all([
+        usePuzzleDataStore.getState().fetchPuzzle(nextSlug),
+        usePuzzleProgressStore.getState().loadOne(nextSlug),
+      ]);
       if (loadRequestId.current !== requestId) return;
+
+      if (!puzzle) {
+        useEditorStore.getState().loadGraph([], []);
+        return;
+      }
 
       if (saved && (saved.nodes.length > 0 || saved.edges.length > 0)) {
         useEditorStore.getState().loadGraph(saved.nodes, saved.edges);

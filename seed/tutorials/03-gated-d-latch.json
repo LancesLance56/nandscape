@@ -1,0 +1,369 @@
+{
+  "slug": "gated-d-latch",
+  "title": "The Gated D Latch: Controlling When Memory Updates",
+  "excerpt": "One data input instead of two removes the SR latch's forbidden state entirely,  but the fix introduces a new limitation of its own.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-07-30T09:20:00Z",
+  "tags": [
+    "sequential",
+    "memory"
+  ],
+  "sectionSlug": "sequential-logic",
+  "position": 30,
+  "body": [
+    {
+      "id": "h-intro",
+      "type": "heading",
+      "level": 1,
+      "text": "The Gated D Latch: Controlling When Memory Updates"
+    },
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The SR latch's forbidden state exists because it hands you two independent levers, S and R, and trusts you never to pull both at once. The gated D latch removes the trust requirement by removing the second lever. There's exactly one data input, called D, plus a second input called E (enable, sometimes labeled EN or written as a clock input on a diagram). With only one data value in play, there's no longer any combination of inputs left that could mean \"do two contradictory things at once.\" The forbidden state isn't handled better,  it's structurally impossible to construct."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Under the hood it's still an SR latch, and below you can see exactly how little it takes to get there: one NOT gate and two extra NAND gates sit in front of the same cross-coupled NAND pair from the SR latch's NAND-based cousin, deriving S and R from D and E in a way that can never produce S = R at the forbidden combination,  when D is fed straight to one gate and its inverse feeds the other, the two derived signals are guaranteed to disagree (or both go inactive together, which is the safe hold case). You're not learning a new primitive here so much as watching a disciplined way to drive the one you already have."
+        }
+      ]
+    },
+    {
+      "id": "h-transparent",
+      "type": "heading",
+      "level": 2,
+      "text": "Transparent vs. Holding"
+    },
+    {
+      "id": "p-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The behavior comes down to one rule, and it's worth memorizing exactly: "
+        },
+        {
+          "text": "while E is high, Q follows D immediately",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". This is called being "
+        },
+        {
+          "text": "transparent",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": ",  the latch isn't really storing anything yet, it's just letting D pass straight through to Q, the same way a piece of glass lets light pass through. The instant E drops low, whatever Q happened to be showing at that moment gets frozen in place, and D can wiggle freely with zero effect on Q until E goes high again."
+        }
+      ]
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try both halves of that rule on the real circuit below. With E off, click D a few times and confirm Q never moves,  you'll see the signal die out partway through the gating logic instead of reaching the latch. Then turn E on and click D again,  watch Q track it instantly, the same instant you toggle it, all the way through the five real gates that make it happen."
+        }
+      ]
+    },
+    {
+      "id": "dlatch-1",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "title": "Gated D Latch,  1 NOT + 4 NAND gates",
+        "height": 320,
+        "nodes": [
+          {
+            "id": "in-d",
+            "type": "io-input",
+            "position": {
+              "x": 40,
+              "y": 40
+            },
+            "data": {
+              "kind": "input",
+              "name": "D",
+              "value": 0
+            }
+          },
+          {
+            "id": "in-e",
+            "type": "io-input",
+            "position": {
+              "x": 40,
+              "y": 260
+            },
+            "data": {
+              "kind": "input",
+              "name": "E",
+              "value": 0
+            }
+          },
+          {
+            "id": "not-d",
+            "type": "gate",
+            "position": {
+              "x": 220,
+              "y": 160
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 6
+            }
+          },
+          {
+            "id": "nand-s",
+            "type": "gate",
+            "position": {
+              "x": 400,
+              "y": 40
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "nand-r",
+            "type": "gate",
+            "position": {
+              "x": 400,
+              "y": 260
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "nand-1",
+            "type": "gate",
+            "position": {
+              "x": 600,
+              "y": 40
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "nand-2",
+            "type": "gate",
+            "position": {
+              "x": 600,
+              "y": 260
+            },
+            "data": {
+              "kind": "gate",
+              "gateType": 0
+            }
+          },
+          {
+            "id": "out-q",
+            "type": "io-output",
+            "position": {
+              "x": 800,
+              "y": 40
+            },
+            "data": {
+              "kind": "output",
+              "name": "Q"
+            }
+          },
+          {
+            "id": "out-qn",
+            "type": "io-output",
+            "position": {
+              "x": 800,
+              "y": 260
+            },
+            "data": {
+              "kind": "output",
+              "name": "QN"
+            }
+          }
+        ],
+        "edges": [
+          {
+            "id": "e1",
+            "source": "in-d",
+            "sourceHandle": "out-0",
+            "target": "nand-s",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e2",
+            "source": "in-d",
+            "sourceHandle": "out-0",
+            "target": "not-d",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e3",
+            "source": "in-e",
+            "sourceHandle": "out-0",
+            "target": "nand-s",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e4",
+            "source": "not-d",
+            "sourceHandle": "out-0",
+            "target": "nand-r",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e5",
+            "source": "in-e",
+            "sourceHandle": "out-0",
+            "target": "nand-r",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e6",
+            "source": "nand-s",
+            "sourceHandle": "out-0",
+            "target": "nand-1",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e7",
+            "source": "nand-r",
+            "sourceHandle": "out-0",
+            "target": "nand-2",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e8",
+            "source": "nand-1",
+            "sourceHandle": "out-0",
+            "target": "nand-2",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e9",
+            "source": "nand-2",
+            "sourceHandle": "out-0",
+            "target": "nand-1",
+            "targetHandle": "in-1",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e10",
+            "source": "nand-1",
+            "sourceHandle": "out-0",
+            "target": "out-q",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          },
+          {
+            "id": "e11",
+            "source": "nand-2",
+            "sourceHandle": "out-0",
+            "target": "out-qn",
+            "targetHandle": "in-0",
+            "type": "wire",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "h-still-level",
+      "type": "heading",
+      "level": 2,
+      "text": "Still Level-Sensitive"
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The gated D latch solved the forbidden-state problem, but it kept one property from the SR latch that turns out to matter a lot once you start chaining these together: it reacts to a "
+        },
+        {
+          "text": "level",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": ", not a moment. \"Transparent while E is high\" means transparent for the entire stretch of time E happens to be high, which could be a full clock phase lasting many gate delays,  not one clean instant."
+        }
+      ]
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That becomes a real problem the moment you try to chain latches, the way a shift register or a counter needs to: if latch A's output feeds latch B's input, and both share the same enable signal, then while that enable is high, a change can ripple straight through A into B before E even has a chance to drop,  data racing through multiple stages in a single \"tick\" instead of moving one stage at a time. Engineers call this problem race-through, and it's exactly why the next storage element exists."
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "h-fix",
+      "type": "heading",
+      "level": 2,
+      "text": "The Fix: React to a Moment, Not a Level"
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What you actually want, for building registers and counters, is a storage element that ignores D almost all the time and only ever samples it at one precise, vanishingly brief instant per clock cycle,  so that chaining stage after stage moves data forward exactly one step per tick, with no possibility of racing through several stages at once. That's a D flip-flop, and as you're about to see, it's built by combining two of exactly this gated D latch, not by inventing an entirely new gate."
+        }
+      ]
+    },
+    {
+      "id": "b1",
+      "type": "button",
+      "label": "Continue to the D Flip-Flop",
+      "href": "/tutorials/d-flip-flop",
+      "style": "primary"
+    }
+  ]
+}

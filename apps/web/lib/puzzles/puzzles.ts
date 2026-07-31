@@ -1,10 +1,12 @@
 import type { PuzzleSpec } from "@/types/puzzle";
-import { DEFAULT_PUZZLES, getDefaultPuzzle } from "./default-puzzles";
+import { listPuzzleRecords, getPuzzleRecordBySlug } from "./puzzle-records";
 
 export async function listPuzzles(): Promise<PuzzleSpec[]> {
-  return DEFAULT_PUZZLES;
+  const records = await listPuzzleRecords();
+  return records.map((r) => r.spec);
 }
 
 export async function getPuzzleBySlug(slug: string): Promise<PuzzleSpec | null> {
-  return getDefaultPuzzle(slug) ?? null;
+  const record = await getPuzzleRecordBySlug(slug);
+  return record ? record.spec : null;
 }
