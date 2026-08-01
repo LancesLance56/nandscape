@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 export function SiteGradient() {
   const particlesRef = useRef<HTMLDivElement>(null);
@@ -26,8 +26,6 @@ export function SiteGradient() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Ambient drifting particles,  same behavior as the old HeroGradient,
-  // just running across the whole viewport height now.
   useEffect(() => {
     const container = particlesRef.current;
     if (!container) return;
@@ -92,11 +90,8 @@ export function SiteGradient() {
       <div
         className="absolute inset-0"
         style={{
-          // Centered higher and fading out sooner than before,  since this
-          // layer now spans the full page height, we don't want the orbs'
-          // full intensity smeared all the way down past the fold.
-          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 22%, black 0%, transparent 75%)",
-          maskImage: "radial-gradient(ellipse 70% 60% at 50% 22%, black 0%, transparent 75%)",
+          WebkitMaskImage: "radial-gradient(ellipse at center, black 0%, transparent 75%)",
+          maskImage: "radial-gradient(ellipse at center, black 0%, transparent 75%)",
         }}
       >
         <div
@@ -113,7 +108,7 @@ export function SiteGradient() {
         />
 
         <div
-          className="absolute inset-0 opacity-[0.80] dark:opacity-[0.15] mix-blend-normal"
+          className="absolute inset-0 dark:opacity-[0.15] mix-blend-normal"
           style={{
             backgroundSize: "48px 48px",
             backgroundImage: `
@@ -125,41 +120,51 @@ export function SiteGradient() {
 
         <div
           ref={particlesRef}
-          className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen"
+          className="absolute inset-0 pointer-events-none mix-blend-multiply"
         />
       </div>
 
-      {/* A gentle vertical fade so content further down the page settles
-          into a slightly calmer version of the same background instead of
-          repeating the same orb intensity forever. */}
-      <div className="absolute inset-x-0 top-[70vh] bottom-0 bg-gradient-to-b from-transparent to-surface/40 dark:to-surface/60" />
+      <div className="absolute inset-x-0 top-[70vh] bottom-0 bg-linear-to-b from-transparent to-surface/40" />
 
       <style jsx>{`
+        /* Anchored to corners, lower opacities */
         .sphere-1 {
           width: 45vw;
           height: 45vw;
           top: -10%;
           left: -10%;
-          background: linear-gradient(45deg, var(--copper), var(--copper-bg));
-          animation: floatCorner1 25s ease-in-out infinite alternate;
+          background: linear-gradient(
+            45deg,
+            var(--copper),
+            var(--copper-bg)
+          );
+          animation: floatCorner1 15s ease-in-out infinite alternate;
         }
 
         .sphere-2 {
           width: 40vw;
           height: 40vw;
-          top: 30%;
+          bottom: -10%;
           right: -10%;
-          background: linear-gradient(225deg, var(--signal-green), var(--signal-green-bg));
-          animation: floatCorner2 28s ease-in-out infinite alternate;
+          background: linear-gradient(
+            225deg,
+            var(--signal-green),
+            var(--signal-green-bg)
+          );
+          animation: floatCorner2 18s ease-in-out infinite alternate;
         }
 
         .sphere-3 {
           width: 30vw;
           height: 30vw;
-          top: 55%;
-          left: 10%;
-          background: linear-gradient(135deg, var(--signal-coral), var(--signal-coral-bg));
-          animation: floatCorner3 22s ease-in-out infinite alternate;
+          top: 10%;
+          right: -5%;
+          background: linear-gradient(
+            135deg,
+            var(--signal-coral),
+            var(--signal-coral-bg)
+          );
+          animation: floatCorner3 17s ease-in-out infinite alternate;
         }
 
         @keyframes floatCorner1 {
@@ -180,26 +185,26 @@ export function SiteGradient() {
         @keyframes floatCorner2 {
           0% {
             transform: translate(0px, 0px) scale(1);
-            opacity: 0.12;
+            opacity: 0.15;
           }
           50% {
             transform: translate(-2vw, -1vh) scale(1.05);
-            opacity: 0.2;
+            opacity: 0.25;
           }
           100% {
             transform: translate(1vw, -2vh) scale(0.95);
-            opacity: 0.12;
+            opacity: 0.15;
           }
         }
 
         @keyframes floatCorner3 {
           0% {
             transform: translate(0px, 0px) scale(0.95);
-            opacity: 0.08;
+            opacity: 0.1;
           }
           100% {
             transform: translate(-2vw, 2vh) scale(1.05);
-            opacity: 0.16;
+            opacity: 0.2;
           }
         }
       `}</style>

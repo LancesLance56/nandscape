@@ -2,19 +2,19 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 
 const STATS = [
   {
-    value: "10+",
-    label: "Logic Puzzles",
-    body: "Progress from basic gates to complete combinational circuits.",
+    value: "Custom Blocks",
+    label: "Personalize your workspace",
+    body: "Create your own custom blocks to help solve puzzles and create complex projects, accessible each time you sign in.",
   },
   {
-    value: "< 1ms",
-    label: "Live Simulation",
+    value: "Live Simulation",
+    label: "Instant Feedback",
     body: "Every wire and gate updates instantly as you build and experiment.",
   },
   {
-    value: "Personalized",
-    label: "Workspace",
-    body: "Save progress, create reusable blocks, learn, and build your own library of circuits.",
+    value: "Track Your Progress",
+    label: "Learn Interactively",
+    body: "Practice through hands-on experience by doing puzzles, assigned tasks, and interactive tutorials.",
   },
 ];
 

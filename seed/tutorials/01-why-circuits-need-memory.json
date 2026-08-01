@@ -1,77 +1,184 @@
 {
   "slug": "why-circuits-need-memory",
   "title": "Why Circuits Need Memory",
-  "excerpt": "Every gate you've built so far forgets everything the instant its inputs change. Here's the one trick that lets a circuit remember.",
+  "excerpt": "Every gate-only circuit you've built so far forgets its inputs the instant they change. Here's the feedback trick that lets a circuit remember, and why it doesn't collapse into an infinite loop.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-07-30T09:00:00Z",
-  "tags": ["fundamentals", "sequential"],
+  "tags": [
+    "fundamentals",
+    "sequential"
+  ],
   "sectionSlug": "sequential-logic",
   "position": 10,
   "body": [
-    { "id": "h-intro", "type": "heading", "level": 1, "text": "Why Circuits Need Memory" },
+    {
+      "id": "h-intro",
+      "type": "heading",
+      "level": 1,
+      "text": "Why Circuits Need Memory"
+    },
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Build a half adder. Feed it A = 1, B = 0 today, and A = 1, B = 0 again next year. You get SUM = 1, CARRY = 0 both times, no exceptions. Nothing in the circuit tracks what happened before, because nothing needs to. That single property, output depends only on current input, is both the strength and the ceiling of every gate-only circuit you've built so far."
+        }
+      ]
+    },
+    {
+      "id": "h-combinational",
+      "type": "heading",
+      "level": 2,
+      "text": "Combinational Logic: A Pure Function of Its Inputs"
+    },
     {
       "id": "p-1",
       "type": "paragraph",
       "content": [
-        { "text": "Every circuit you've built up to this point,  half adders, multiplexers, majority voters,  shares one property: its outputs depend only on its current inputs. Feed a half adder the same A and B twice, ten seconds apart or ten years apart, and you get the exact same SUM and CARRY both times. There's nothing in the circuit that could possibly know or care what happened a moment ago." }
+        {
+          "text": "Half adders, multiplexers, majority voters: all of them belong to a category called "
+        },
+        {
+          "text": "combinational logic",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Formally, a combinational circuit computes a function "
+        },
+        {
+          "text": "output = f(inputs)",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " with no dependence on time. Change the inputs, wait one propagation delay, and the output settles. That's the entire lifecycle. Most of digital logic is combinational, and for pure computation (adders, comparators, decoders) that's all you'll ever need."
+        }
       ]
     },
     {
       "id": "p-2",
       "type": "paragraph",
       "content": [
-        { "text": "That category of circuit has a name: combinational logic. It's everything you've studied so far, and it's genuinely most of what digital logic is. But it can't do a few things that every real computer needs to do,  count, hold a running total, remember which state a machine is in, store a byte after the input that produced it is long gone. All of that needs a circuit whose output depends on more than just its current inputs. It needs history. It needs " },
-        { "text": "memory", "marks": [{ "kind": "bold" }] },
-        { "text": "." }
+        {
+          "text": "But a computer needs more than computation. It needs to count, hold a running total, remember which state a state machine is currently in, and store a byte long after the signal that produced it is gone. None of that is expressible as a pure function of the current inputs, because the whole point is that the output has to depend on something that isn't there anymore: history."
+        }
       ]
     },
-    { "id": "h-forgets", "type": "heading", "level": 2, "text": "A Circuit That Forgets Everything" },
+    {
+      "id": "h-forgets",
+      "type": "heading",
+      "level": 2,
+      "text": "Why a Combinational Circuit Can't Remember"
+    },
     {
       "id": "p-3",
       "type": "paragraph",
       "content": [
-        { "text": "Take any purely combinational circuit,  say, an AND gate feeding a NOT gate. At every instant, its output is a pure function of its inputs at that same instant. Change an input, and after one propagation delay, the output updates and that's the whole story. There is no way to look at that circuit's current output and learn anything about what its inputs used to be. The moment an input changes, the old value is gone,  not stored somewhere and inaccessible, just genuinely nowhere in the circuit anymore." }
+        {
+          "text": "Take an AND gate feeding a NOT gate. At every instant its output is fully determined by its inputs at that instant. The moment an input changes, the previous value isn't stored anywhere, waiting to be read later. It's gone: not hidden, not cached, just absent from the circuit entirely. There's no wire, no node, nothing you could probe to recover what the input used to be."
+        }
       ]
     },
     {
       "id": "p-4",
       "type": "paragraph",
       "content": [
-        { "text": "That's fine for an adder. It's useless for a light switch that should stay on after you let go of the button, a counter that should keep counting after the clock tick that incremented it has passed, or a single bit of RAM. All three of those need a circuit that can hold a value independent of what its inputs are doing right now." }
+        {
+          "text": "That's fine for an adder, useless for anything that has to hold a value once the thing that set it disappears: a light switch that stays on after you release the button, a counter that keeps its count after the clock tick that incremented it, a single bit of RAM. All three need a circuit whose output can stay fixed independent of what the inputs are doing right now."
+        }
       ]
     },
-    { "id": "h-trick", "type": "heading", "level": 2, "text": "The Trick: Feed a Gate's Output Back Into Itself" },
+    {
+      "id": "h-trick",
+      "type": "heading",
+      "level": 2,
+      "text": "The Trick: Route a Gate's Output Back Into Itself"
+    },
     {
       "id": "p-5",
       "type": "paragraph",
       "content": [
-        { "text": "Every circuit you've wired so far has flowed one direction: inputs on the left, gates in the middle, outputs on the right, no wire ever looping back upstream. Sequential logic breaks that rule on purpose. Take a gate's output and route it back around into one of its own inputs (or a neighboring gate's input, which loops back into it), and something new happens: the gate's output is no longer just a function of its external inputs. It's now also a function of what it was already outputting a moment ago, because that old output is literally one of the things feeding it right now." }
+        {
+          "text": "Every circuit built so far flows one direction: inputs on the left, gates in the middle, outputs on the right, no wire ever loops back upstream. Sequential logic breaks that rule deliberately. Take a gate's output and wire it back into one of its own inputs (directly, or through a neighboring gate that loops back into it), and the gate's output stops being a pure function of its external inputs. It becomes a function of its own recent output too, because that old output is now literally one of the signals feeding it."
+        }
       ]
     },
     {
       "id": "p-6",
       "type": "paragraph",
       "content": [
-        { "text": "That's the entire idea behind every sequential element you'll meet in this section, the SR latch, the gated D latch, the D flip-flop. Different wiring, different rules for when the stored value updates, but every single one is built from ordinary combinational gates (NAND, NOR, and friends) arranged with a feedback path. There's no special \"memory gate\" primitive hiding underneath,  it's the exact same gates you already know, just connected in a loop instead of a straight line." }
+        {
+          "text": "That's the whole idea behind every storage element in this section: the SR latch, the gated D latch, the D flip-flop. Different wiring, different rules for when the stored value can change, but every one of them is built from ordinary NAND or NOR gates arranged in a loop. There's no separate \"memory gate\" primitive underneath. It's the same gates you already know, just connected differently."
+        }
       ]
+    },
+    {
+      "id": "h-why-not-infinite-loop",
+      "type": "heading",
+      "level": 2,
+      "text": "Why This Doesn't Blow Up Into an Infinite Loop"
     },
     {
       "id": "p-7",
       "type": "paragraph",
       "content": [
-        { "text": "It's worth saying explicitly why this isn't a problem the way an infinite loop in a program would be: a feedback loop in a digital circuit isn't recomputing forever, it's settling. Each gate has a small propagation delay, so a signal chasing itself around a loop reaches a steady, self-consistent value and then stops changing, the same way a value can stabilize after a few passes of relaxation in any iterative system." }
+        {
+          "text": "A feedback loop in software that recomputes a value from itself is usually a bug. In a digital circuit it isn't, because gates aren't instantaneous. Every gate has a small propagation delay, so a signal chasing itself around a loop doesn't recompute forever, it "
+        },
+        {
+          "text": "settles",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": ". After a handful of gate delays the loop reaches a value that's consistent with itself, every gate's output matches what its inputs demand, and nothing changes further. That settling behavior is what makes the next three tutorials safe to build, and it's why simulating one of these circuits gate-by-gate always converges instead of spinning."
+        }
       ]
     },
-    { "id": "divider-1", "type": "divider" },
-    { "id": "h-ahead", "type": "heading", "level": 2, "text": "What's Ahead" },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "h-ahead",
+      "type": "heading",
+      "level": 2,
+      "text": "Where This Section Is Going"
+    },
     {
       "id": "p-8",
       "type": "paragraph",
       "content": [
-        { "text": "The rest of this section builds up one storage element at a time, in the order real digital design courses teach them, because each one directly fixes a problem with the one before it. First, the SR latch: two cross-coupled gates, the simplest possible feedback loop that stores a bit,  and one very real problem it can't avoid. Then the gated D latch, which fixes that problem by trading two inputs for one. Then the D flip-flop, which fixes a different, subtler problem by changing " },
-        { "text": "when", "marks": [{ "kind": "italic" }] },
-        { "text": " the stored value is allowed to update at all. By the end, you'll know exactly what a real register is built from and why it's built that way, not just that it exists." }
+        {
+          "text": "Three storage elements, built in order, each one fixing a specific problem with the last:"
+        }
+      ]
+    },
+    {
+      "id": "code-roadmap",
+      "type": "code",
+      "language": "text",
+      "code": "SR latch        -> two cross-coupled NOR gates, the smallest circuit that stores a bit\n                   (has one input combination that is genuinely forbidden)\nGated D latch   -> fixes the forbidden state by trading two inputs (S, R) for one (D)\n                   (still reacts to a signal LEVEL, which causes race-through when chained)\nD flip-flop     -> fixes race-through by reacting to a clock EDGE instead of a level\n                   (this is what real registers and counters are built from)"
+    },
+    {
+      "id": "p-9",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "By the end you'll know exactly what a register is made of, gate by gate, and why each design decision along the way was forced by a specific limitation of the one before it."
+        }
       ]
     },
     {

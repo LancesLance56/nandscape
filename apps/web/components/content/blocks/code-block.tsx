@@ -1,6 +1,25 @@
+import { highlighter } from "@/lib/shiki";
 import type { CodeBlock } from "@/types/blog";
 
-export function CodeBlockView({ block }: { block: CodeBlock }) {
+export async function CodeBlockView({
+  block,
+}: {
+  block: CodeBlock;
+}) {
+  const html = highlighter.codeToHtml(block.code, {
+    lang: block.language || "text",
+    theme: "github-dark",
+    transformers: [
+      {
+        pre(node) {
+          node.properties.class = "overflow-x-auto p-4";
+          node.properties.style =
+            "background: transparent; margin: 0;";
+        },
+      },
+    ],
+  });
+
   return (
     <div className="my-2 overflow-hidden rounded-xl border border-border bg-surface-2">
       {block.language && (
@@ -8,9 +27,11 @@ export function CodeBlockView({ block }: { block: CodeBlock }) {
           {block.language}
         </div>
       )}
-      <pre className="overflow-x-auto p-4">
-        <code className="font-mono text-sm text-ink">{block.code}</code>
-      </pre>
+
+      <div
+        className="font-mono text-sm"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </div>
   );
 }

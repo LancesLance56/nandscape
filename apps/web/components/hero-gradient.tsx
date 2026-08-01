@@ -76,7 +76,7 @@ export function HeroGradient() {
 
   return (
     <>
-      <div className="absolute inset-0 overflow-hidden bg-surface transition-colors duration-500 -z-10">
+      <div className="fixed inset-0 -z-10 overflow-hidden bg-surface transition-colors duration-500">
 
         <div
           className="absolute inset-0"
@@ -148,7 +148,6 @@ export function HeroGradient() {
           animation: floatCorner3 22s ease-in-out infinite alternate;
         }
 
-        /* Subtle ambient movement rather than sweeping translations */
         @keyframes floatCorner1 {
           0% {
             transform: translate(0px, 0px) scale(1) rotate(0deg);

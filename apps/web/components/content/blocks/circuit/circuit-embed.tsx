@@ -20,27 +20,6 @@ import { PreviewIoNode } from "./preview-io-node";
 import { PreviewWireEdge } from "./preview-wire-edge";
 import type { EditorNode, EditorEdge, IoNodeData } from "@/types/editor";
 
-/**
- * This is what replaces the old ToggleSwitch+Led "sequential-explorer"
- * widget. Instead of a hand-drawn LED panel standing in for the circuit,
- * the reader sees the actual gate graph,  same node/edge renderers'
- * visual language as the sandbox,  and can click inputs to watch signals
- * propagate through the real wires. Nothing here talks to the app's global
- * editor-store or history-store: every embed owns its own local nodes/
- * signals, so dropping three of these into one tutorial page (or a puzzle
- * page, later) never lets one circuit's clicks bleed into another's, and
- * never touches the sandbox's actual saved graph or undo stack.
- *
- * "Zoom in" opens a larger modal view of the same live circuit. "Open in
- * sandbox editor" goes one step further,  it hands this exact node/edge
- * graph to the sandbox via sandbox-progress-store (the same mechanism the
- * sandbox already uses to restore your last session) and navigates there,
- * so a reader can keep rewiring what they just saw. Actually jumping back
- * into a tutorial-scoped mini-editor without leaving the page is future
- * work; for now "zoom in" is the fast path and "open in sandbox" is the
- * escape hatch into the real thing.
- */
-
 const nodeTypes: NodeTypes = {
   gate: PreviewGateNode,
   "io-input": PreviewIoNode,
@@ -56,6 +35,7 @@ export interface CircuitEmbedData {
   height?: number;
   nodes: EditorNode[];
   edges: EditorEdge[];
+  [key: string]: unknown | undefined;
 }
 
 function isCircuitEmbedData(data: Record<string, unknown>): data is CircuitEmbedData {
@@ -146,6 +126,7 @@ function CircuitStage({
       zoomOnScroll={allowScrollZoom}
       zoomOnPinch
       panOnDrag
+      zoomOnDoubleClick={false}
       fitView
       fitViewOptions={{ padding: 0.3 }}
       minZoom={0.3}
@@ -208,10 +189,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
         </button>
       </div>
 
-      <div
-        style={{ height }}
-        className="relative bg-[radial-gradient(var(--border-strong)_1px,transparent_1px)] bg-size-[20px_20px]"
-      >
+      <div style={{ height }} className="relative overflow-hidden">
         <ReactFlowProvider>
           <CircuitStage nodes={data.nodes} edges={data.edges} />
         </ReactFlowProvider>
@@ -254,7 +232,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
                   </button>
                 </div>
               </div>
-              <div className="relative flex-1 bg-[radial-gradient(var(--border-strong)_1px,transparent_1px)] bg-size-[20px_20px]">
+              <div className="relative flex-1 overflow-hidden">
                 <ReactFlowProvider>
                   <CircuitStage nodes={data.nodes} edges={data.edges} allowScrollZoom />
                 </ReactFlowProvider>

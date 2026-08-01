@@ -1,42 +1,75 @@
 {
   "slug": "kmap-three-variable-wraparound",
   "title": "3-Variable Karnaugh Maps and the Wraparound Rule",
-  "excerpt": "Where Gray code columns come from, and the first real example of a group that wraps around the edge of the map.",
+  "excerpt": "Where the Gray code columns come from, and the first real worked example of a group that wraps around the edge of the map.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-07-28T09:20:00Z",
-  "tags": ["fundamentals", "karnaugh-maps"],
+  "tags": [
+    "fundamentals",
+    "karnaugh-maps"
+  ],
   "sectionSlug": "karnaugh-maps",
   "position": 30,
   "body": [
     {
+      "id": "h-intro",
+      "type": "heading",
+      "level": 1,
+      "text": "3-Variable Karnaugh Maps and the Wraparound Rule"
+    },
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three variables means eight minterms, too many for a single row or column. The standard layout splits them 1-and-2: one variable controls two rows, the other two control four columns labeled in Gray code order, 00, 01, 11, 10. That order isn't counting order, it's arranged so each column differs from its neighbor by exactly one bit."
+        }
+      ]
+    },
+    {
+      "id": "h-wraparound",
+      "type": "heading",
+      "level": 2,
+      "text": "The Wraparound Rule"
+    },
+    {
       "id": "p-1",
       "type": "paragraph",
       "content": [
-        { "text": "Three variables means eight minterms, too many for a single row or column. The standard layout splits them 1-and-2: one variable controls two rows, the other two variables control four columns labeled in Gray code order, 00, 01, 11, 10. Notice that order again: it isn't counting order, it's arranged so each column differs from its neighbor by exactly one bit." }
+        {
+          "text": "Look at the two ends of that Gray code sequence: 00 and 10. They aren't next to each other in the row, they sit on opposite sides of the grid, but they still differ in exactly one bit. That means the leftmost and rightmost columns of a Karnaugh map are just as adjacent as any two side-by-side columns, the grid effectively wraps around into a cylinder. The same rule applies to the top and bottom row whenever a map has more than one row."
+        }
       ]
     },
-    { "id": "h-wraparound", "type": "heading", "level": 2, "text": "The Wraparound Rule" },
+    {
+      "id": "h-why-legal",
+      "type": "heading",
+      "level": 2,
+      "text": "Why Wraparound Is Legal, Not a Special Case"
+    },
     {
       "id": "p-2",
       "type": "paragraph",
       "content": [
-        { "text": "Look at the two ends of that Gray code sequence: 00 and 10. They aren't next to each other in the row, they're on opposite sides of the grid, but they still differ in exactly one bit. That means the leftmost column and the rightmost column of a Karnaugh map are just as adjacent as any two side-by-side columns, the grid effectively wraps around into a cylinder. The same rule applies to the top and bottom row whenever a map has more than one row." }
+        {
+          "text": "This isn't a special case bolted onto the grouping rule, it falls straight out of it. A group is legal exactly when every cell in it shares the same fixed values for some subset of variables. Algebra doesn't know or care where a cell happens to sit on a printed page, only whether the underlying minterms differ in a single variable, and the columns 00 and 10 do exactly that."
+        }
       ]
+    },
+    {
+      "id": "h-example",
+      "type": "heading",
+      "level": 2,
+      "text": "Worked Example: F = C'"
     },
     {
       "id": "p-3",
       "type": "paragraph",
       "content": [
-        { "text": "This isn't a special case bolted on top of the grouping rule, it falls straight out of it. A group is legal exactly when every cell in it shares the same fixed values for some subset of variables, algebra doesn't know or care where a cell happens to sit on a printed page." }
-      ]
-    },
-    { "id": "h-example", "type": "heading", "level": 2, "text": "Worked Example: F = C'" },
-    {
-      "id": "p-4",
-      "type": "paragraph",
-      "content": [
-        { "text": "Here's a function picked specifically to force a wraparound group: F(A, B, C) is 1 whenever C is 0, regardless of A or B. Try grouping the four 1s into a single group of four. You'll need to select cells from both the leftmost and rightmost columns to do it." }
+        {
+          "text": "Here's a function picked specifically to force a wraparound group: F(A, B, C) is 1 whenever C is 0, regardless of A or B. Try grouping the four 1s into a single group of four. You'll need to select cells from both the leftmost and rightmost columns to do it."
+        }
       ]
     },
     {
@@ -44,24 +77,60 @@
       "type": "interactive",
       "widget": "kmap-explorer",
       "data": {
-        "variables": ["A", "B", "C"],
-        "truthTable": [1, 0, 1, 0, 1, 0, 1, 0],
-        "hintGroups": [{ "cells": [0, 2, 4, 6], "term": "C'" }]
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ],
+        "truthTable": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "hintGroups": [
+          {
+            "cells": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "term": "C'"
+          }
+        ]
       }
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "All four selected cells share C = 0 and let A and B vary freely across every combination, so C is the only variable that survives, giving the single term C'. Four cells canceling two variables at once is exactly the \"group size must be a power of two, and bigger is better\" rule from the fundamentals guide, this example just happens to need the wraparound to reach that size."
+        }
+      ]
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "text",
+      "code": "Group cells at C=0: {A'B'C', A'BC', AB'C', ABC'}\nAll four share C = 0. A and B take every combination between them.\n=> only C' survives -> F = C'"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
     },
     {
       "id": "p-5",
       "type": "paragraph",
       "content": [
-        { "text": "All four selected cells share C = 0 and let A and B vary freely across every combination, so C is the only variable that survives, giving the single term C'. Four cells canceling two variables at once is exactly what the \"group size must be a power of two, and bigger is better\" rule from Karnaugh map basics is describing, this example just happens to need the wraparound to reach that size." }
-      ]
-    },
-    { "id": "divider-1", "type": "divider" },
-    {
-      "id": "p-6",
-      "type": "paragraph",
-      "content": [
-        { "text": "At four variables the wraparound rule applies along both the rows and the columns simultaneously, which produces one more shape worth knowing by name: the four corners." }
+        {
+          "text": "At four variables the wraparound rule applies along both the rows and the columns simultaneously, which produces one more shape worth knowing by name: the four corners."
+        }
       ]
     },
     {

@@ -46,11 +46,10 @@ export function PuzzleCard() {
       </div>
 
       <div className="p-6 space-y-5">
-        {/* Description */}
         <p className="text-sm leading-relaxed text-ink-soft">
           Add two single-bit inputs using only{" "}
           <code
-            className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-xs font-medium text-copper-dark dark:text-copper border border-border-strong/30">
+            className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-xs font-medium dark:text-copper border border-border-strong/30">
             NAND
           </code>{" "}
           gates. Produce{" "}

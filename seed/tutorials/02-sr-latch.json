@@ -1,7 +1,7 @@
 {
   "slug": "sr-latch",
   "title": "The SR Latch: Two Gates Remembering a Bit",
-  "excerpt": "Two cross-coupled gates are the smallest circuit that can store a single bit,  and the first place you'll meet a genuinely forbidden input.",
+  "excerpt": "Two cross-coupled NOR gates are the smallest circuit that can store a bit, and the first place you'll run into a genuinely forbidden input combination.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-07-30T09:10:00Z",
@@ -19,20 +19,48 @@
       "text": "The SR Latch: Two Gates Remembering a Bit"
     },
     {
-      "id": "p-1",
+      "id": "p-hook",
       "type": "paragraph",
       "content": [
         {
-          "text": "The SR latch is the simplest circuit that can genuinely store a bit, and it needs exactly two gates. Take two NOR gates. Wire the first gate's output into the second gate's input, and the second gate's output back into the first gate's input. That's the whole circuit,  no other components, just two gates pointing at each other in a loop, which is exactly the feedback idea from the last tutorial made concrete."
+          "text": "Take two NOR gates. Feed the first gate's output into the second gate's input, and the second gate's output back into the first gate's input. That's it, no other components. This two-gate loop is the smallest circuit that can genuinely store one bit, and it's the direct application of the feedback idea from the previous tutorial."
         }
       ]
     },
     {
-      "id": "p-2",
+      "id": "h-naming",
+      "type": "heading",
+      "level": 2,
+      "text": "Inputs, Outputs, and What \"Stored\" Means Here"
+    },
+    {
+      "id": "p-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "The two remaining free inputs, one on each gate, are called S (set) and R (reset), and the two gate outputs are called Q and Q̄ (\"Q-bar\"),  Q̄ is meant to always sit at the opposite value from Q. Whatever Q currently holds "
+          "text": "Each NOR gate has one input left over after the loop is wired: those two free inputs are called "
+        },
+        {
+          "text": "S",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " (set) and "
+        },
+        {
+          "text": "R",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " (reset). The two gate outputs are Q and Q̄ (\"Q-bar\"), which are meant to always sit at opposite values. There is no separate memory cell hiding in this circuit. Whatever Q currently reads "
         },
         {
           "text": "is",
@@ -43,7 +71,7 @@
           ]
         },
         {
-          "text": " the stored bit. There's no separate memory cell tucked away somewhere; the bit is nothing more than whichever value the loop has settled into."
+          "text": " the stored bit, nothing more than the value the feedback loop has settled into."
         }
       ]
     },
@@ -51,14 +79,40 @@
       "id": "h-behavior",
       "type": "heading",
       "level": 2,
-      "text": "How It Behaves"
+      "text": "The Four Input Combinations"
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This version is NOR-based and active-high, meaning a HIGH on S or R is what triggers an action. That gives four cases:"
+        }
+      ]
+    },
+    {
+      "id": "code-truth",
+      "type": "code",
+      "language": "text",
+      "code": "S  R  |  Q (next)     Meaning\n-------------------------------\n0  0  |  unchanged     hold / memory\n1  0  |  1             set\n0  1  |  0             reset\n1  1  |  invalid       forbidden state"
     },
     {
       "id": "p-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "This version is NOR-based and active-high, meaning a HIGH on an input is what triggers it, which makes the four cases easy to state plainly:"
+          "text": "S = 0, R = 0 is the interesting row: neither input is asking for anything, so the loop just keeps maintaining whatever it last decided. That row "
+        },
+        {
+          "text": "is",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " the memory. S = 1, R = 0 forces Q to 1; S = 0, R = 1 forces Q to 0. S = 1, R = 1 is where things break, covered below."
         }
       ]
     },
@@ -67,43 +121,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "• S = 1, R = 0: Q is forced to 1 (\"set\")."
-        }
-      ]
-    },
-    {
-      "id": "p-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "• S = 0, R = 1: Q is forced to 0 (\"reset\")."
-        }
-      ]
-    },
-    {
-      "id": "p-6",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "• S = 0, R = 0: Q keeps whatever it was already holding. This is the memory,  neither input is asking for anything, so the loop just maintains its last decision forever."
-        }
-      ]
-    },
-    {
-      "id": "p-7",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "• S = 1, R = 1: forbidden. Both gates are simultaneously being told to force their output the same way, Q and Q̄ stop being opposites, and the moment you drop back to S = 0, R = 0, which value it settles into depends on which gate happened to react a hair faster, not on anything you control."
-        }
-      ]
-    },
-    {
-      "id": "p-8",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Below is the actual circuit,  two real NOR gates, wired exactly the way it was just described, not a stand-in. Click S or R to toggle them and watch the wires themselves light up as the signal propagates through the loop. It's running the same gate-evaluation functions (evaluateNor and friends) that the real Nandscape simulator runs, so what you see here is exactly what the engine would do too. Use \"Zoom in\" if you want a bigger view of the wiring."
+          "text": "The circuit below is real, not a diagram standing in for one: two NOR gates wired exactly as described, running the same gate-evaluation logic the underlying simulator uses everywhere else. Click S or R and watch the signal propagate through the loop."
         }
       ]
     },
@@ -252,14 +270,23 @@
       "id": "h-forbidden",
       "type": "heading",
       "level": 2,
-      "text": "Why It's Called \"Forbidden,\" Not Just \"Undefined\""
+      "text": "Why S = 1, R = 1 Is Forbidden, Not Just Undefined"
     },
     {
-      "id": "p-9",
+      "id": "p-5",
       "type": "paragraph",
       "content": [
         {
-          "text": "S = 1, R = 1 isn't a case the designer of an SR latch chooses to leave unhandled,  it's structurally impossible to handle. Both NOR gates are wired to actively drive their outputs low, which directly contradicts the whole premise that Q and Q̄ are supposed to disagree. There's no clever gate arrangement that fixes this while keeping two independent set/reset inputs; the fix, as it turns out, is to stop giving the user two independent inputs at all. That's exactly what the next tutorial does."
+          "text": "\"Undefined\" would mean the designer chose not to specify a behavior. This case is worse than that: it's structurally impossible to give it a sane behavior at all. With S = R = 1, both NOR gates are being actively driven to output 0, which directly contradicts the premise that Q and Q̄ are supposed to disagree. They don't, they're both 0."
+        }
+      ]
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The real trouble shows up when you release the inputs back to S = 0, R = 0. Both gates are now trying to climb back out of that invalid state at the same time, and which one wins, meaning which value Q settles into, depends on microscopic differences in gate delay that no schematic captures. Two supposedly identical latches on the same board can resolve this race differently. There's no clever rewiring that fixes this while keeping two independent inputs; removing the ambiguity means removing the ability to set both flags at once, which is exactly what the next tutorial does."
         }
       ]
     },
@@ -271,25 +298,14 @@
       "id": "h-one-cell",
       "type": "heading",
       "level": 2,
-      "text": "One Cell, Many Machines"
+      "text": "One Idea, Two Common Flavors"
     },
     {
-      "id": "p-10",
+      "id": "p-7",
       "type": "paragraph",
       "content": [
         {
-          "text": "This exact idea,  two cross-coupled gates holding a bit through feedback,  is the seed every other storage element in this section grows out of. The version you just played with uses NOR gates and active-high inputs because that's the clearest one to reason about first. A second, equally common flavor swaps in NAND gates and flips the inputs to active-low (pulse S "
-        },
-        {
-          "text": "low",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": " to set, pulse R low to reset, hold both high to remember),  and you'll find that exact variant, built from nothing but real NAND gates, in the sandbox's default circuits and in the puzzle below."
+          "text": "Two cross-coupled gates holding a bit through feedback is the seed every other storage element in this section grows from. The NOR-based, active-high version above is the clearest one to reason about first. A second, equally common variant swaps in NAND gates and flips the inputs to active-low: pulse S low to set, pulse R low to reset, hold both high to remember. You'll find that exact variant built from real NAND gates in the sandbox's default circuits."
         }
       ]
     },
@@ -307,11 +323,11 @@
       "text": "What's Next"
     },
     {
-      "id": "p-11",
+      "id": "p-8",
       "type": "paragraph",
       "content": [
         {
-          "text": "An SR latch asks the person driving it to keep two separate inputs mutually exclusive by hand, forever, or risk the forbidden state. The gated D latch removes that burden entirely by giving you exactly one data input, so there's no combination of inputs left to forbid."
+          "text": "An SR latch requires whoever is driving it to keep S and R mutually exclusive by hand, forever, or risk the forbidden state. The gated D latch removes that burden by giving you exactly one data input, so there's no combination of inputs left to forbid."
         }
       ]
     },

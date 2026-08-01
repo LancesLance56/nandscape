@@ -45,9 +45,10 @@ function PreviewWireEdgeImpl({
 
   return (
     <>
-      <BaseEdge path={path} style={{ stroke: "var(--surface-2)", strokeWidth: 4 }} />
+      <BaseEdge path={path} interactionWidth={0} style={{ stroke: "var(--surface-2)", strokeWidth: 4 }} />
       <BaseEdge
         path={path}
+        interactionWidth={0}
         style={{
           stroke,
           strokeWidth: isHigh ? 2.5 : 2,

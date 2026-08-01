@@ -1,27 +1,45 @@
 {
   "slug": "kmap-two-variable",
   "title": "2-Variable Karnaugh Maps",
-  "excerpt": "The smallest possible Karnaugh map: a 2x2 grid, worked end to end.",
+  "excerpt": "The smallest possible Karnaugh map, a 2x2 grid, worked end to end and tied back to the algebra that justifies it.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-07-28T09:10:00Z",
-  "tags": ["fundamentals", "karnaugh-maps"],
+  "tags": [
+    "fundamentals",
+    "karnaugh-maps"
+  ],
   "sectionSlug": "karnaugh-maps",
   "position": 20,
   "body": [
     {
+      "id": "h-intro",
+      "type": "heading",
+      "level": 1,
+      "text": "2-Variable Karnaugh Maps"
+    },
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two variables means four minterms, so the smallest Karnaugh map is a 2x2 grid: one bit assigned to the rows, one to the columns. There's no room yet for a multi-digit Gray code sequence (each axis is simply 0 then 1), but the map already has the shape every larger map will share, including the split corner cell in the top-left that holds the row and column variable names."
+        }
+      ]
+    },
+    {
+      "id": "h-example",
+      "type": "heading",
+      "level": 2,
+      "text": "Worked Example: F = A + B"
+    },
+    {
       "id": "p-1",
       "type": "paragraph",
       "content": [
-        { "text": "Two variables means four minterms, so the smallest Karnaugh map is a 2x2 grid: one bit assigned to the rows, one bit assigned to the columns. With only two possible values per axis there's no room for a multi-digit Gray code sequence yet, each axis is simply 0 then 1, but the map already has the shape every larger map will share: a corner cell in the top-left holding the row and column variable names, split by a diagonal line." }
-      ]
-    },
-    { "id": "h-example", "type": "heading", "level": 2, "text": "Worked Example: F = A + B" },
-    {
-      "id": "p-2",
-      "type": "paragraph",
-      "content": [
-        { "text": "Below is the map for F(A, B) = A OR B. Three of the four cells hold a 1. Click a 1, click another adjacent 1, then press Check group once you think you've found a legal pair. A legal group has to be a rectangular block sized 1, 2, or 4 cells here, since 2x2 is as big as this map gets." }
+        {
+          "text": "Below is the map for F(A, B) = A OR B. Three of the four cells hold a 1. Click a 1, click another adjacent 1, then press Check group once you think you've found a legal pair. A legal group has to be a rectangular block sized 1, 2, or 4 cells here, since 2x2 is as big as this map gets."
+        }
       ]
     },
     {
@@ -29,35 +47,99 @@
       "type": "interactive",
       "widget": "kmap-explorer",
       "data": {
-        "variables": ["A", "B"],
-        "truthTable": [0, 1, 1, 1],
+        "variables": [
+          "A",
+          "B"
+        ],
+        "truthTable": [
+          0,
+          1,
+          1,
+          1
+        ],
         "hintGroups": [
-          { "cells": [1, 3], "term": "B" },
-          { "cells": [2, 3], "term": "A" }
+          {
+            "cells": [
+              1,
+              3
+            ],
+            "term": "B"
+          },
+          {
+            "cells": [
+              2,
+              3
+            ],
+            "term": "A"
+          }
         ]
       }
     },
-    { "id": "h-reading", "type": "heading", "level": 2, "text": "Reading the Groups" },
+    {
+      "id": "h-reading",
+      "type": "heading",
+      "level": 2,
+      "text": "Reading the Groups"
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two groups of size 2 cover every 1 in the map: the pair where B stays 1 while A changes (giving the term B), and the pair where A stays 1 while B changes (giving the term A)."
+        }
+      ]
+    },
     {
       "id": "p-3",
       "type": "paragraph",
       "content": [
-        { "text": "Two groups of size 2 cover every 1 in the map: the pair where B stays 1 while A changes (giving the term B), and the pair where A stays 1 while B changes (giving the term A). Notice the cell where A=1 and B=1 belongs to both groups, overlap is completely legal, the goal is to cover every 1 with the fewest, largest groups, not to partition the map into disjoint pieces." }
+        {
+          "text": "The cell where A = 1 and B = 1 belongs to both groups. Overlap is completely legal here, the goal is to cover every 1 with the fewest, largest groups, not to partition the map into disjoint pieces."
+        }
       ]
+    },
+    {
+      "id": "h-why-works",
+      "type": "heading",
+      "level": 2,
+      "text": "Why This Is the Same Algebra as Before"
     },
     {
       "id": "p-4",
       "type": "paragraph",
       "content": [
-        { "text": "OR the surviving terms together and you get F = A + B back out, exactly the function you started with, just derived visually instead of algebraically. For a function this small that's not a huge win, but the same procedure keeps working as the variable count climbs, which is the entire point." }
+        {
+          "text": "Each group of 2 cells is doing exactly what the identity from the previous tutorial does: AB' + AB = A(B' + B) = A. Grouping visually and factoring algebraically are the same operation, the grid just makes it obvious which minterms happen to differ in one variable."
+        }
       ]
     },
-    { "id": "divider-1", "type": "divider" },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "text",
+      "code": "A'B + AB = B(A' + A) = B\nAB' + AB = A(B' + B) = A"
+    },
     {
       "id": "p-5",
       "type": "paragraph",
       "content": [
-        { "text": "A 2x2 grid is too small to ever need to wrap around an edge, every cell already touches every other cell along at least one side. That changes at three variables." }
+        {
+          "text": "OR the surviving terms together and you get F = A + B back out, the exact function you started with, just derived visually instead of algebraically. For a function this small that's not a huge win by itself, but the same procedure keeps working as the variable count climbs, which is the entire point of learning it here first."
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A 2x2 grid is too small to ever need to wrap around an edge, every cell already touches every other cell along at least one side. That changes at three variables."
+        }
       ]
     },
     {

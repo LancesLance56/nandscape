@@ -74,15 +74,15 @@ export function Toolbar() {
   return (
     <div className="grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-2.5 px-3">
       <div className="flex min-w-0 items-center gap-3 justify-self-start">
-        <BreadcrumbNav/>
         <SiteNavMenu/>
+        <BreadcrumbNav/>
         <ToolbarGroup>
+          <ToolbarButton icon={<Icon.Trash/>} label="Delete selection" shortcut="Del"
+                         onClick={() => runById("selection.delete")}/>
           <ToolbarButton icon={<Icon.Undo/>} label="Undo" shortcut="⌘Z" disabled={!canUndo}
                          onClick={() => runById("history.undo")}/>
           <ToolbarButton icon={<Icon.Redo/>} label="Redo" shortcut="⌘⇧Z" disabled={!canRedo}
                          onClick={() => runById("history.redo")}/>
-          <ToolbarButton icon={<Icon.Trash/>} label="Delete selection" shortcut="Del"
-                         onClick={() => runById("selection.delete")}/>
         </ToolbarGroup>
       </div>
 

@@ -64,7 +64,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
   return (
     <div
       style={{ height: nodeHeight, width: NODE_WIDTH }}
-      className="relative flex items-center justify-center"
+      className="pointer-events-none relative flex items-center justify-center"
     >
       {Array.from({ length: inputCount }).map((_, i) => (
         <NodeHandle
@@ -72,7 +72,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
           id={`in-${i}`}
           type="target"
           position={Position.Left}
-          style={{ top: verticalPos(i, inputCount) }}
+          style={{ top: verticalPos(i, inputCount), pointerEvents: "none" }}
         />
       ))}
 
@@ -83,6 +83,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
           position={Position.Right}
           style={{
             top: verticalPos(0, 1),
+            pointerEvents: "none",
             ...(outputInset > 0 ? { right: outputInset } : {}),
           }}
           diameter={outputDiameter}
@@ -95,7 +96,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
             id={`out-${i}`}
             type="source"
             position={Position.Right}
-            style={{ top: verticalPos(i, outputCount) }}
+            style={{ top: verticalPos(i, outputCount), pointerEvents: "none" }}
           />
         ))
       )}

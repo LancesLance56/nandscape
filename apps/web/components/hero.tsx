@@ -57,11 +57,11 @@ export function Hero() {
         </div>
 
         <div className="mt-8.5 flex flex-wrap items-center gap-4.5 font-mono text-[13px] text-slate">
-          <span>10+ puzzles</span>
+          <span>Track Your Progress</span>
           <span className="text-border-strong">·</span>
-          <span>2 users</span>
+          <span>Custom Blocks</span>
           <span className="text-border-strong">·</span>
-          <span>free to start</span>
+          <span>Fun and Interactive</span>
         </div>
       </div>
 

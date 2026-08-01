@@ -47,7 +47,7 @@ export async function PuzzlesShowcase() {
         <div>
           <div className="mb-2 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            {puzzles.length} puzzles
+            Practice
           </div>
           <h2 className="font-display text-3xl font-semibold text-ink">Try a Puzzle Yourself!</h2>
         </div>

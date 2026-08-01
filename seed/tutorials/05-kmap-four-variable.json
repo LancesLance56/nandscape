@@ -1,42 +1,75 @@
 {
   "slug": "kmap-four-variable",
   "title": "4-Variable Karnaugh Maps and the Four Corners",
-  "excerpt": "A full 4x4 grid, Gray code running both directions at once, and the classic four-corner group.",
+  "excerpt": "A full 4x4 grid, Gray code running along both axes at once, and the classic four-corner group explained rather than just named.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-07-28T09:30:00Z",
-  "tags": ["fundamentals", "karnaugh-maps"],
+  "tags": [
+    "fundamentals",
+    "karnaugh-maps"
+  ],
   "sectionSlug": "karnaugh-maps",
   "position": 40,
   "body": [
     {
+      "id": "h-intro",
+      "type": "heading",
+      "level": 1,
+      "text": "4-Variable Karnaugh Maps and the Four Corners"
+    },
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sixteen minterms need a 4x4 grid: two variables assigned to the rows, two to the columns, both axes labeled in the same 00, 01, 11, 10 Gray code order used for the 3-variable map's columns. Nothing new is happening mathematically here, there are just two Gray-coded axes running at once instead of one."
+        }
+      ]
+    },
+    {
+      "id": "h-sizes",
+      "type": "heading",
+      "level": 2,
+      "text": "Group Sizes Get Bigger"
+    },
+    {
       "id": "p-1",
       "type": "paragraph",
       "content": [
-        { "text": "Sixteen minterms need a 4x4 grid: two variables assigned to the rows, two assigned to the columns, both axes labeled in the same 00, 01, 11, 10 Gray code order used for the 3-variable map's columns. Nothing new is happening mathematically, there are just two Gray-coded axes running at once instead of one." }
+        {
+          "text": "With sixteen cells, legal group sizes are 1, 2, 4, 8, or the entire map as a single group of 16 if the function is a constant 1."
+        }
       ]
     },
-    { "id": "h-sizes", "type": "heading", "level": 2, "text": "Group Sizes Get Bigger" },
+    {
+      "id": "code-sizes",
+      "type": "code",
+      "language": "text",
+      "code": "Group of 1  -> 0 variables cancel -> full 4-literal term\nGroup of 2  -> 1 variable cancels  -> 3-literal term\nGroup of 4  -> 2 variables cancel  -> 2-literal term\nGroup of 8  -> 3 variables cancel  -> 1-literal term\nGroup of 16 -> 4 variables cancel  -> constant 1"
+    },
+    {
+      "id": "h-corners",
+      "type": "heading",
+      "level": 2,
+      "text": "The Four Corners"
+    },
     {
       "id": "p-2",
       "type": "paragraph",
       "content": [
-        { "text": "With sixteen cells, legal group sizes are 1, 2, 4, 8, or the entire map as a single group of 16 if the function is a constant 1. A group of 8 cancels three variables, leaving a single-literal term; a group of 4 cancels two variables." }
+        {
+          "text": "Because both axes wrap around independently, the four corner cells of a 4-variable map are mutually adjacent even though none of them touch on paper: the top-left cell is adjacent to the top-right by row-wraparound, adjacent to the bottom-left by column-wraparound, and reaches the bottom-right by combining both wraps at once. All four corners are legally a single group of four whenever they all happen to be 1."
+        }
       ]
     },
-    { "id": "h-corners", "type": "heading", "level": 2, "text": "The Four Corners" },
     {
       "id": "p-3",
       "type": "paragraph",
       "content": [
-        { "text": "Because both axes wrap around independently, the four corner cells of a 4-variable map are mutually adjacent even though none of them touch on paper: the top-left cell is adjacent to the top-right by row-wraparound, adjacent to the bottom-left by column-wraparound, and reaches the bottom-right by combining both wraps at once. All four corners are legally a single group of four whenever they all happen to be 1." }
-      ]
-    },
-    {
-      "id": "p-4",
-      "type": "paragraph",
-      "content": [
-        { "text": "Try it below. F(A, B, C, D) is 1 whenever B = 0 and D = 0, everywhere else it's 0. Select all four corner cells and check the group." }
+        {
+          "text": "Try it below. F(A, B, C, D) is 1 whenever B = 0 and D = 0, everywhere else it's 0. Select all four corner cells and check the group."
+        }
       ]
     },
     {
@@ -44,25 +77,75 @@
       "type": "interactive",
       "widget": "kmap-explorer",
       "data": {
-        "variables": ["A", "B", "C", "D"],
-        "truthTable": [1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
-        "hintGroups": [{ "cells": [0, 2, 8, 10], "term": "B'D'" }]
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "truthTable": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "hintGroups": [
+          {
+            "cells": [
+              0,
+              2,
+              8,
+              10
+            ],
+            "term": "B'D'"
+          }
+        ]
       }
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every corner shares B = 0 and D = 0 while A and C vary across all four combinations between them, so those two variables cancel and only B'D' survives. Four cells, two variables gone, exactly the same power-of-two relationship as every other group size, it just happens to be scattered across all four corners of the printed grid instead of sitting in one visual block."
+        }
+      ]
+    },
+    {
+      "id": "code-corners",
+      "type": "code",
+      "language": "text",
+      "code": "Corners: {A'B'C'D', AB'C'D', A'B'CD', AB'CD'}\nAll four share B = 0 and D = 0. A and C take every combination between them.\n=> only B'D' survives -> F = B'D'"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "h-beyond",
+      "type": "heading",
+      "level": 2,
+      "text": "Beyond Four Variables"
     },
     {
       "id": "p-5",
       "type": "paragraph",
       "content": [
-        { "text": "Every corner shares B = 0 and D = 0 while A and C vary across all four combinations between them, so those two variables cancel and only B'D' survives. Four cells, two variables gone, exactly the same power-of-two relationship as every other group size, it just happens to be scattered across all four corners of the printed grid instead of sitting in one visual block." }
-      ]
-    },
-    { "id": "divider-1", "type": "divider" },
-    { "id": "h-beyond", "type": "heading", "level": 2, "text": "Beyond Four Variables" },
-    {
-      "id": "p-6",
-      "type": "paragraph",
-      "content": [
-        { "text": "A 5-variable map needs two 4x4 grids side by side, and by six variables the wraparound relationships get hard to track by eye even for someone who's done this a hundred times. That's the practical ceiling for doing Karnaugh maps by hand, past it, tabular methods like Quine-McCluskey, or letting a computer search the same adjacency structure, take over. The underlying idea never changes though: find the largest legal power-of-two group covering each 1, and the smallest possible Sum-of-Products falls out." }
+        {
+          "text": "A 5-variable map needs two 4x4 grids side by side, and by six variables the wraparound relationships get hard to track by eye even with a lot of practice. That's the practical ceiling for doing Karnaugh maps by hand. Past it, tabular methods like Quine-McCluskey, or a computer searching the same adjacency structure, take over. The underlying idea never changes: find the largest legal power-of-two group covering each 1, and the smallest Sum-of-Products falls out."
+        }
       ]
     },
     {

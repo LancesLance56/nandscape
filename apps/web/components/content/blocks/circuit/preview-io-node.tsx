@@ -34,8 +34,8 @@ function PreviewIoNodeImpl({ data }: NodeProps<EditorNode>) {
   return (
     <div className="flex flex-col items-center gap-1.5">
       <div className="relative">
-        {!isInput && <NodeHandle id="in-0" type="target" position={Position.Left} />}
-        {isInput && <NodeHandle id="out-0" type="source" position={Position.Right} />}
+        {!isInput && <NodeHandle id="in-0" type="target" position={Position.Left} style={{ pointerEvents: "none" }} />}
+        {isInput && <NodeHandle id="out-0" type="source" position={Position.Right} style={{ pointerEvents: "none" }} />}
         <button
           type="button"
           onClick={isInput ? ioData.onToggle : undefined}
