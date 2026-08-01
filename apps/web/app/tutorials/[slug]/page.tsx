@@ -33,7 +33,6 @@ export default async function TutorialPage({ params }: PageProps) {
   return (
     <article>
       <h1 className="font-display text-3xl font-bold leading-tight text-ink">{page.title}</h1>
-      {page.excerpt && <p className="mt-2 text-base text-ink-soft">{page.excerpt}</p>}
       <div className="mt-8">
         <BlockRenderer blocks={page.body} />
       </div>

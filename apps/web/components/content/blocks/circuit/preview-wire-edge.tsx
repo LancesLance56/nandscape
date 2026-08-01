@@ -5,14 +5,6 @@ import { BaseEdge, getSmoothStepPath, type EdgeProps } from "@xyflow/react";
 import { SignalState } from "@nandscape/engine";
 import type { EditorEdge } from "@/types/editor";
 
-/**
- * The circuit-embed's version of wire-edge.tsx,  same signal coloring, none
- * of the click-to-add-waypoint / drag-to-reroute interactivity, since these
- * circuits are laid out once by whoever wrote the tutorial and are read-only
- * from the reader's side. The signal itself isn't read from a store; it's
- * injected into this edge's own `data.signal` by circuit-embed.tsx every
- * time the local simulation re-settles.
- */
 const SIGNAL_STROKE: Record<SignalState, string> = {
   [SignalState.HIGH]: "var(--signal-green)",
   [SignalState.LOW]: "var(--signal-coral)",

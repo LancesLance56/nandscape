@@ -40,7 +40,7 @@ function PreviewIoNodeImpl({ data }: NodeProps<EditorNode>) {
           type="button"
           onClick={isInput ? ioData.onToggle : undefined}
           aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} output`}
-          className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-transparent font-mono text-xs font-bold transition-all ${stateClass} ${
+          className={`nodrag nopan pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border-2 border-transparent font-mono text-xs font-bold transition-all ${stateClass} ${
             isInput ? "cursor-pointer active:scale-95" : "cursor-default"
           }`}
         >

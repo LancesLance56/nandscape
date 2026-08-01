@@ -13,12 +13,6 @@
   "position": 40,
   "body": [
     {
-      "id": "h-intro",
-      "type": "heading",
-      "level": 1,
-      "text": "4-Variable Karnaugh Maps and the Four Corners"
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [

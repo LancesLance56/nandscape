@@ -13,12 +13,6 @@
   "position": 30,
   "body": [
     {
-      "id": "h-intro",
-      "type": "heading",
-      "level": 1,
-      "text": "The Gated D Latch: Controlling When Memory Updates"
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [

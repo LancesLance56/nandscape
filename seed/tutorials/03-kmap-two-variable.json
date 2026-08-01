@@ -13,12 +13,6 @@
   "position": 20,
   "body": [
     {
-      "id": "h-intro",
-      "type": "heading",
-      "level": 1,
-      "text": "2-Variable Karnaugh Maps"
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [

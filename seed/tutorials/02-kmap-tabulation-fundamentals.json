@@ -13,12 +13,6 @@
   "position": 10,
   "body": [
     {
-      "id": "h-intro",
-      "type": "heading",
-      "level": 1,
-      "text": "Tabulating Truth: Why Karnaugh Maps Work"
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [

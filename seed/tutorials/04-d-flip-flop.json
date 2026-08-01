@@ -13,12 +13,6 @@
   "position": 40,
   "body": [
     {
-      "id": "h-intro",
-      "type": "heading",
-      "level": 1,
-      "text": "The D Flip-Flop: From Level to Edge"
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [

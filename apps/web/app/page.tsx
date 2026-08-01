@@ -2,6 +2,7 @@ import {Hero} from "@/components/hero";
 import {Navbar} from "@/components/navbar";
 import {FeatureStrip} from "@/components/marketing/feature-strip";
 import {PuzzlesShowcase} from "@/components/marketing/puzzles-showcase";
+import {TutorialsShowcase} from "@/components/marketing/tutorials-showcase";
 import {BlogShowcase} from "@/components/marketing/blog-showcase";
 import {SiteGradient} from "@/components/site-gradient";
 import {ScrollReveal} from "@/components/scroll-reveal";
@@ -26,6 +27,7 @@ export default async function Home() {
         <Hero/>
           <FeatureStrip/>
           <PuzzlesShowcase/>
+          <TutorialsShowcase/>
           <BlogShowcase posts={posts}/>
       </main>
     </>

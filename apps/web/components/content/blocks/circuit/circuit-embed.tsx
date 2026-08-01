@@ -202,7 +202,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="fixed inset-0 z-[999] flex items-center justify-center bg-ink/40 p-6 backdrop-blur-sm"
+            className="fixed inset-0 z-999 flex items-center justify-center bg-ink/40 p-6 backdrop-blur-sm"
             onClick={() => setExpanded(false)}
           >
             <div

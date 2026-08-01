@@ -17,14 +17,6 @@ import {
 import { usePreferencesStore } from "@/store/preferences-store";
 import type { EditorNode, GateNodeData } from "@/types/editor";
 
-/**
- * A stripped-down twin of components/editor/nodes/gate-node.tsx for use
- * outside the real editor,  same visuals (reuses GateShape and the shared
- * sizing preferences so an embedded circuit looks identical to the sandbox),
- * but with no wire-drafting, no dispatch, and no dependency on editor-store
- * or wire-draft-store. Embedded circuits are read-only except for toggling
- * inputs, so there's nothing here for a click on a pin to do.
- */
 function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
   const gateData = data as GateNodeData;
   const typeName = gateData.gateType === GateType.BUFFER ? "" : gateTypeToString(gateData.gateType);

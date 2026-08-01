@@ -13,12 +13,6 @@
   "position": 20,
   "body": [
     {
-      "id": "h-intro",
-      "type": "heading",
-      "level": 1,
-      "text": "The SR Latch: Two Gates Remembering a Bit"
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
