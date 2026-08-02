@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useOpsMeterStore } from "@/store/ops-meter-store";
+import { cn } from "@/lib/cn";
 
-interface BooleanRevealData {
+interface RevealData {
   prompt: string;
   buttonLabel: string;
   beforeLabel?: string;
@@ -12,9 +12,11 @@ interface BooleanRevealData {
   afterCode: string;
   explanation: string;
   opsOnReveal?: number;
+  counterAmount?: number;
+  className?: string;
 }
 
-function isBooleanRevealData(data: unknown): data is BooleanRevealData {
+function isRevealData(data: unknown): data is RevealData {
   if (typeof data !== "object" || data === null) return false;
   const d = data as Record<string, unknown>;
   return (
@@ -26,21 +28,19 @@ function isBooleanRevealData(data: unknown): data is BooleanRevealData {
   );
 }
 
-export function BooleanRevealWidget({ data }: { data: Record<string, unknown> }) {
+export function RevealWidget({ data }: { data: Record<string, unknown> }) {
   const [revealed, setRevealed] = useState(false);
-  const bump = useOpsMeterStore((s) => s.bump);
 
-  if (!isBooleanRevealData(data)) {
+  if (!isRevealData(data)) {
     return <p className="text-sm text-signal-coral">Reveal widget: malformed data.</p>;
   }
 
   const handleReveal = () => {
-    if (!revealed) bump(data.opsOnReveal ?? 1);
     setRevealed(true);
   };
 
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-5">
+    <div className={cn("rounded-xl border border-border bg-surface-card p-5 m-auto w-[90%]", data.className)}>
       <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-slate">
         {data.prompt}
       </div>

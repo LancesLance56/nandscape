@@ -18,6 +18,7 @@ import { useSandboxProgressStore } from "@/store/sandbox-progress-store";
 import { PreviewGateNode } from "./preview-gate-node";
 import { PreviewIoNode } from "./preview-io-node";
 import { PreviewWireEdge } from "./preview-wire-edge";
+import { cn } from "@/lib/cn";
 import type { EditorNode, EditorEdge, IoNodeData } from "@/types/editor";
 
 const nodeTypes: NodeTypes = {
@@ -33,6 +34,7 @@ const edgeTypes: EdgeTypes = {
 export interface CircuitEmbedData {
   title?: string;
   height?: number;
+  className?: string;
   nodes: EditorNode[];
   edges: EditorEdge[];
   [key: string]: unknown | undefined;
@@ -173,7 +175,12 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
   };
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)]">
+    <div
+      className={cn(
+        "not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)]",
+        data.className,
+      )}
+    >
       <div className="flex items-center gap-2.5 border-b border-border bg-surface-2 px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-signal-coral" />
         <span className="h-2.5 w-2.5 rounded-full bg-copper" />

@@ -1,7 +1,7 @@
 {
   "slug": "boolean-algebra-for-programmers",
   "title": "How To Make Your Code Faster with Boolean Algebra",
-  "excerpt": "It makes your code faster. Not in a theoretical, computer-science-101 way, in a \"this exact line decides how much work your server does\" way.",
+  "excerpt": "It makes your code faster. Not in a theoretical or subtle way, in a \"this exact line decides how much work your server does\" way.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "coverImage": "/images/blog/boolean-algebra-for-programmers/cover.jpg",
@@ -9,23 +9,18 @@
   "tags": ["fundamentals", "boolean-algebra", "performance"],
   "body": [
     {
-      "id": "ops-meter",
-      "type": "interactive",
-      "widget": "ops-meter",
-      "data": {}
-    },
-    {
       "id": "h-intro",
       "type": "heading",
       "level": 1,
-      "text": "Why Every Programmer Should Learn Boolean Algebra"
+      "text": "Why Every Programmer Should Learn Boolean Algebra",
+      "className": "text-copper-dark"
     },
     {
       "id": "p-dek",
       "type": "paragraph",
       "content": [
         {
-          "text": "It makes your code faster. Not in a theoretical, computer-science-101 way, in a \"this exact line decides how much work your server does\" way."
+          "text": "It makes your code faster. Not in a theoretical or subtle way, in a \"this exact line decides how much work your server does\" way."
         }
       ]
     },
@@ -34,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A single Boolean expression can be the difference between code that returns in milliseconds and code that takes seconds. Look at these two conditions. They compute the exact same result. They are not the same cost."
+          "text": "A single Boolean expression can be the difference between code that returns in milliseconds and code that takes seconds. Look at these two conditions, they have the same functionality but one much faster."
         }
       ]
     },
@@ -116,7 +111,7 @@
         { "text": "&&", "marks": [{ "kind": "code" }] },
         { "text": " stops at the first false, and " },
         { "text": "||", "marks": [{ "kind": "code" }] },
-        { "text": " stops at the first true. Whatever comes after that point never executes. That single fact turns condition order into a performance decision, not just a stylistic one." }
+        { "text": " stops at the first true. Whatever comes after that point never executes. Since you would rather short circuit from the less expensive function, the order matters." }
       ]
     },
     {
@@ -303,11 +298,6 @@
       "text": "Practice Challenge"
     },
     {
-      "id": "p-challenge",
-      "type": "paragraph",
-      "content": [{ "text": "One more, and this time you optimize it yourself before looking." }]
-    },
-    {
       "id": "code-challenge",
       "type": "code",
       "language": "javascript",
@@ -328,6 +318,56 @@
     },
     {
       "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "h-recap-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Quick Recap Quiz"
+    },
+    {
+      "id": "recap-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "title": "Boolean Algebra for Programmers: Recap",
+        "counterAmountPerCorrect": 1,
+        "passMessage": "Solid, you've internalized the short-circuit habit.",
+        "failMessage": "Worth skimming the three principles above again.",
+        "questions": [
+          {
+            "prompt": "Why does putting isLoggedIn() before expensivePermissionCheck() help?",
+            "options": [
+              { "label": "&& short-circuits, so the expensive call never runs once the cheap one is false", "correct": true },
+              { "label": "JavaScript automatically reorders conditions for you", "correct": false },
+              { "label": "It changes the result of the expression", "correct": false }
+            ],
+            "explanation": "Short-circuiting is the whole mechanism: the moment the left side of && is false, the right side never executes, regardless of order elsewhere in the file."
+          },
+          {
+            "prompt": "isAdmin && canEdit || isAdmin && canDelete simplifies to which factored form?",
+            "options": [
+              { "code": "isAdmin && (canEdit || canDelete)", "correct": true },
+              { "code": "isAdmin || (canEdit && canDelete)", "correct": false },
+              { "code": "isAdmin && canEdit && canDelete", "correct": false }
+            ],
+            "explanation": "Same distributive identity as the Karnaugh map tutorials: AB + AC = A(B + C). isAdmin is now checked exactly once."
+          },
+          {
+            "prompt": "In a WHERE clause, why can column order matter for performance?",
+            "options": [
+              { "label": "Query planners are always smart enough to reorder around it, so it never matters", "correct": false },
+              { "label": "An indexed, cheap comparison first can avoid a full scan before an expensive comparison runs", "correct": true },
+              { "label": "SQL evaluates every clause in alphabetical order", "correct": false }
+            ],
+            "explanation": "Query planners are smart, but not always smart enough to reorder around an expensive function call, so putting the indexed/cheap condition first still matters in practice."
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-2",
       "type": "divider"
     },
     {

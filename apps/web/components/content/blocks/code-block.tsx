@@ -1,14 +1,15 @@
 import { highlighter } from "@/lib/shiki";
 import type { CodeBlock } from "@/types/blog";
+import { cn } from "@/lib/cn";
 
 export async function CodeBlockView({
   block,
 }: {
-  block: CodeBlock;
+  block: CodeBlock & { className?: string };
 }) {
   const html = highlighter.codeToHtml(block.code, {
     lang: block.language || "text",
-    theme: "github-dark",
+    theme: "dark-plus",
     transformers: [
       {
         pre(node) {
@@ -21,7 +22,12 @@ export async function CodeBlockView({
   });
 
   return (
-    <div className="my-2 overflow-hidden rounded-xl border border-border bg-surface-2">
+    <div
+      className={cn(
+        "my-2 overflow-hidden rounded-xl border border-border bg-surface-2 m-auto w-[90%]",
+        block.className,
+      )}
+    >
       {block.language && (
         <div className="border-b border-border px-4 py-1.5 font-mono text-[11px] uppercase tracking-wider text-slate">
           {block.language}

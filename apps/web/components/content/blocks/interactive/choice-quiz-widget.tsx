@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useOpsMeterStore } from "@/store/ops-meter-store";
+import { cn } from "@/lib/cn";
 
 interface ChoiceOption {
   label?: string;
@@ -10,12 +10,15 @@ interface ChoiceOption {
   correct: boolean;
 }
 
-interface BooleanChoiceQuizData {
+interface ChoiceQuizData {
   prompt: string;
   options: ChoiceOption[];
   verdictGood: string;
   explanation: string;
   opsOnAnswer?: number;
+  counterKey?: string;
+  counterAmount?: number;
+  className?: string;
 }
 
 function isChoiceOption(value: unknown): value is ChoiceOption {
@@ -24,7 +27,7 @@ function isChoiceOption(value: unknown): value is ChoiceOption {
   return typeof v.correct === "boolean";
 }
 
-function isBooleanChoiceQuizData(data: unknown): data is BooleanChoiceQuizData {
+function isChoiceQuizData(data: unknown): data is ChoiceQuizData {
   if (typeof data !== "object" || data === null) return false;
   const d = data as Record<string, unknown>;
   return (
@@ -36,22 +39,20 @@ function isBooleanChoiceQuizData(data: unknown): data is BooleanChoiceQuizData {
   );
 }
 
-export function BooleanChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
+export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
   const [answered, setAnswered] = useState<number | null>(null);
-  const bump = useOpsMeterStore((s) => s.bump);
 
-  if (!isBooleanChoiceQuizData(data)) {
+  if (!isChoiceQuizData(data)) {
     return <p className="text-sm text-signal-coral">Choice quiz: malformed data.</p>;
   }
 
   const handleClick = (index: number) => {
     if (answered !== null) return;
     setAnswered(index);
-    bump(data.opsOnAnswer ?? 1);
   };
 
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-5">
+    <div className={cn("rounded-xl border border-border bg-surface-card p-5 m-auto w-[90%]", data.className)}>
       <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-slate">
         {data.prompt}
       </div>
@@ -72,7 +73,10 @@ export function BooleanChoiceQuizWidget({ data }: { data: Record<string, unknown
               type="button"
               disabled={isAnswered}
               onClick={() => handleClick(i)}
-              className={`min-w-[200px] flex-1 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors ${stateClass}`}
+              className={cn(
+                "min-w-[200px] flex-1 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors",
+                stateClass,
+              )}
             >
               {option.code ? (
                 <span className="block font-mono text-[13px]">{option.code}</span>

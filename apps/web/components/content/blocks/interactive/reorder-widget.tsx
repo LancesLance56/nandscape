@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useOpsMeterStore } from "@/store/ops-meter-store";
+import { cn } from "@/lib/cn";
 
 interface ReorderItem {
   id: string;
@@ -13,6 +13,9 @@ interface BooleanReorderData {
   items: ReorderItem[];
   correctOrder: string[];
   opsOnSolve?: number;
+  counterKey?: string;
+  counterAmount?: number;
+  className?: string;
 }
 
 function isReorderItem(value: unknown): value is ReorderItem {
@@ -42,7 +45,7 @@ function expectedCost(order: ReorderItem[]): number {
   return total / order.length;
 }
 
-export function BooleanReorderWidget({ data }: { data: Record<string, unknown> }) {
+export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
   if (!isBooleanReorderData(data)) {
     return <p className="text-sm text-signal-coral">Reorder widget: malformed data.</p>;
   }
@@ -53,7 +56,6 @@ export function BooleanReorderWidget({ data }: { data: Record<string, unknown> }
   const [items, setItems] = useState<ReorderItem[]>(initialItems);
   const [checked, setChecked] = useState(false);
   const [solvedOnce, setSolvedOnce] = useState(false);
-  const bump = useOpsMeterStore((s) => s.bump);
 
   const current = expectedCost(items);
   const best = useMemo(
@@ -77,12 +79,11 @@ export function BooleanReorderWidget({ data }: { data: Record<string, unknown> }
     setChecked(true);
     if (solved && !solvedOnce) {
       setSolvedOnce(true);
-      bump(data.opsOnSolve ?? 2);
     }
   };
 
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-5">
+    <div className={cn("rounded-xl border border-border bg-surface-card p-5 w-[90%] m-auto", data.className)}>
       <ul className="mb-4 flex flex-col gap-2">
         {items.map((item, i) => (
           <li

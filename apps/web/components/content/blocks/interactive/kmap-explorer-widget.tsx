@@ -3,7 +3,8 @@
 import { Fragment, useMemo, useState } from "react";
 import { DEFAULT_BLOCK_COLORS } from "@/lib/editor/block-colors";
 import { evaluateMinterm } from "@/lib/blog/kmap-demo";
-import { CircuitFrame } from "../circuit-frame";
+import { WidgetFrame } from "./widget-frame";
+import { cn } from "@/lib/cn";
 
 interface HintGroup {
   cells: number[];
@@ -17,6 +18,7 @@ interface ConfirmedGroup {
 }
 
 const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
+const DEFAULT_TITLE = "Karnaugh Map";
 
 function isHintGroup(value: unknown): value is HintGroup {
   if (typeof value !== "object" || value === null) return false;
@@ -40,6 +42,10 @@ function resolveTruthTable(data: Record<string, unknown>, variableCount: number)
 function resolveHintGroups(data: Record<string, unknown>): HintGroup[] {
   const { hintGroups } = data;
   return Array.isArray(hintGroups) ? hintGroups.filter(isHintGroup) : [];
+}
+
+function resolveText(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.length > 0 ? value : fallback;
 }
 
 function grayCode(bits: number): number[] {
@@ -109,6 +115,8 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
   const colBits = totalBits - rowBits;
   const rowVariables = variables.slice(0, rowBits);
   const colVariables = variables.slice(rowBits);
+  const title = resolveText(data.title, DEFAULT_TITLE);
+  const className = typeof data.className === "string" ? data.className : undefined;
 
   const truthTable = resolveTruthTable(data, totalBits);
   const hintGroups = resolveHintGroups(data);
@@ -193,7 +201,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
   const colVarLabel = colVariables.join("");
 
   return (
-    <CircuitFrame title="Karnaugh Map" subtitle={`${covered} / ${onesTotal} ones covered`}>
+    <WidgetFrame title={title} subtitle={`${covered} / ${onesTotal} ones covered`} className={className}>
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="flex flex-col items-center gap-8">
           <div
@@ -232,13 +240,15 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
                       key={minterm}
                       type="button"
                       onClick={() => toggleCell(minterm)}
-                      className={`flex h-16 w-16 items-center justify-center rounded-lg border-2 font-mono text-lg font-bold transition-all ${
+                      className={cn(
+                        "flex h-16 w-16 items-center justify-center rounded-lg border-2 font-mono text-lg font-bold transition-all",
                         isSelected
                           ? "border-copper bg-copper-bg text-copper-dark"
                           : value
                             ? "border-border-strong bg-surface-card text-ink"
-                            : "border-border bg-surface-2 text-slate"
-                      } ${isHint ? "ring-2 ring-offset-1 ring-signal-green" : ""}`}
+                            : "border-border bg-surface-2 text-slate",
+                        isHint && "ring-2 ring-offset-1 ring-signal-green",
+                      )}
                       style={groupColor ? { boxShadow: `inset 0 0 0 3px ${groupColor}` } : undefined}
                     >
                       {value ? 1 : 0}
@@ -308,6 +318,6 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
           )}
         </div>
       </div>
-    </CircuitFrame>
+    </WidgetFrame>
   );
 }

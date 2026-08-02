@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/cn";
 
 export interface PollData {
   question: string;
   options: string[];
+  className?: string;
 }
 
 function isPollData(data: unknown): data is PollData {
@@ -25,7 +27,7 @@ export function PollWidget({ data }: { data: Record<string, unknown> }) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-surface-2 p-4">
+    <div className={cn("rounded-xl border border-border bg-surface-2 p-4 m-auto w-[90%]", data.className)}>
       <p className="mb-3 font-semibold text-ink">{data.question}</p>
       <div className="flex flex-col gap-2">
         {data.options.map((option, i) => (
@@ -33,18 +35,19 @@ export function PollWidget({ data }: { data: Record<string, unknown> }) {
             key={i}
             type="button"
             onClick={() => setSelected(i)}
-            className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
+            className={cn(
+              "rounded-lg border px-3 py-2 text-left text-sm transition-colors",
               selected === i
                 ? "border-copper bg-copper-bg text-copper-dark"
-                : "border-border-strong bg-surface-card text-ink hover:bg-surface"
-            }`}
+                : "border-border-strong bg-surface-card text-ink hover:bg-surface",
+            )}
           >
             {option}
           </button>
         ))}
       </div>
       {selected !== null && (
-        <p className="mt-3 font-mono text-xs text-slate">Thanks for voting,  this is a local, unsaved demo.</p>
+        <p className="mt-3 font-mono text-xs text-slate">Thanks for voting</p>
       )}
     </div>
   );

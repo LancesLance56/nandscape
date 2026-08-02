@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { Led } from "@/components/ui/led";
 import { bitsToMinterm, evaluateMinterm, mintermToBits } from "@/lib/blog/kmap-demo";
-import { CircuitFrame } from "../circuit-frame";
+import { CircuitFrame } from "./circuit-frame";
 
 const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
 

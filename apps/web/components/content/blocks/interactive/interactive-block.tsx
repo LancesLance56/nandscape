@@ -1,14 +1,17 @@
 import { PollWidget } from "./poll-widget";
-import { BlackBoxExplorerWidget } from "./blackbox-explorer-widget";
+import { TruthTableExplorerWidget } from "./truth-table-explorer-widget";
+import { ReorderWidget } from "./reorder-widget";
+import { RevealWidget } from "./reveal-widget";
+import { ChoiceQuizWidget } from "./choice-quiz-widget";
+import { ComparisonSliderWidget } from "./comparison-slider-widget";
+import { QuizWidget } from "./quiz-widget";
 import { KMapExplorerWidget } from "./kmap-explorer-widget";
+import { MintermPickerWidget } from "./minterm-picker-widget";
+import { GrayCodeExplorerWidget } from "./gray-code-explorer-widget";
 import { CircuitEmbedWidget } from "@/components/content/blocks/circuit/circuit-embed";
-import { OpsMeterWidget } from "./boolean-algebra/ops-meter-widget";
-import { BooleanChoiceQuizWidget } from "./boolean-algebra/boolean-choice-quiz-widget";
-import { BooleanRevealWidget } from "./boolean-algebra/boolean-reveal-widget";
-import { BooleanReorderWidget } from "./boolean-algebra/boolean-reorder-widget";
-import { BooleanSliderWidget } from "./boolean-algebra/boolean-slider-widget";
 import type { InteractiveBlock } from "@/types/blog";
 import type { ComponentType } from "react";
+import { cn } from "@/lib/cn";
 
 interface WidgetProps {
   data: Record<string, unknown>;
@@ -16,17 +19,26 @@ interface WidgetProps {
 
 const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   poll: PollWidget,
-  "blackbox-explorer": BlackBoxExplorerWidget,
+  "truth-table-explorer": TruthTableExplorerWidget,
+  reorder: ReorderWidget,
+  reveal: RevealWidget,
+  "choice-quiz": ChoiceQuizWidget,
+  "comparison-slider": ComparisonSliderWidget,
+  quiz: QuizWidget,
   "kmap-explorer": KMapExplorerWidget,
+  "minterm-picker": MintermPickerWidget,
+  "gray-code-explorer": GrayCodeExplorerWidget,
   "circuit-embed": CircuitEmbedWidget,
-  "ops-meter": OpsMeterWidget,
-  "boolean-choice-quiz": BooleanChoiceQuizWidget,
-  "boolean-reveal": BooleanRevealWidget,
-  "boolean-reorder": BooleanReorderWidget,
-  "boolean-slider": BooleanSliderWidget,
+
+  // Deprecated aliases
+  "blackbox-explorer": TruthTableExplorerWidget,
+  "boolean-reorder": ReorderWidget,
+  "boolean-reveal": RevealWidget,
+  "boolean-choice-quiz": ChoiceQuizWidget,
+  "boolean-slider": ComparisonSliderWidget,
 };
 
-export function InteractiveBlockView({ block }: { block: InteractiveBlock }) {
+export function InteractiveBlockView({ block }: { block: InteractiveBlock & { className?: string } }) {
   const Widget = widgetRegistry[block.widget];
   if (!Widget) {
     return (
@@ -36,7 +48,7 @@ export function InteractiveBlockView({ block }: { block: InteractiveBlock }) {
     );
   }
   return (
-    <div className="my-2">
+    <div className={cn("my-2", block.className)}>
       <Widget data={block.data} />
     </div>
   );

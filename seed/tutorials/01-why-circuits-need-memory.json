@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Build a half adder. Feed it A = 1, B = 0 today, and A = 1, B = 0 again next year. You get SUM = 1, CARRY = 0 both times, no exceptions. Nothing in the circuit tracks what happened before, because nothing needs to. That single property, output depends only on current input, is both the strength and the ceiling of every gate-only circuit you've built so far."
+          "text": "In combinational gates like adders, you would always get the same result for the same input i.e., the output is independent of what happened before. That property where the output depends only on current input, is very useful in computation because it's reliable, but useless when it comes to trying to hold information."
         }
       ]
     },
@@ -32,7 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Half adders, multiplexers, majority voters: all of them belong to a category called "
+          "text": "Half adders, multiplexers, majority voters, all belong to a category called "
         },
         {
           "text": "combinational logic",
@@ -54,7 +54,18 @@
           ]
         },
         {
-          "text": " with no dependence on time. Change the inputs, wait one propagation delay, and the output settles. That's the entire lifecycle. Most of digital logic is combinational, and for pure computation (adders, comparators, decoders) that's all you'll ever need."
+          "text": " with no dependence on time. Most of digital logic is combinational, and for pure computation (adders, comparators, decoders) that's sufficient for the most part. On the other hand, stateful circuits are sequential, which means that the output depends on a "
+        },
+        {
+          "text": "chronological sequence ",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": "of inputs."
         }
       ]
     },
@@ -63,31 +74,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "But a computer needs more than computation. It needs to count, hold a running total, remember which state a state machine is currently in, and store a byte long after the signal that produced it is gone. None of that is expressible as a pure function of the current inputs, because the whole point is that the output has to depend on something that isn't there anymore: history."
-        }
-      ]
-    },
-    {
-      "id": "h-forgets",
-      "type": "heading",
-      "level": 2,
-      "text": "Why a Combinational Circuit Can't Remember"
-    },
-    {
-      "id": "p-3",
-      "type": "paragraph",
-      "content": [
+          "text": "But a computer needs more than computation. It needs to count, hold a running total, remember which state a state machine is currently in, and store a byte long after the signal that produced it is gone. None of that is expressible as a pure function of the current inputs, because the whole point is that the output has to depend on something that isn't there anymore, in other words, the "
+        },
         {
-          "text": "Take an AND gate feeding a NOT gate. At every instant its output is fully determined by its inputs at that instant. The moment an input changes, the previous value isn't stored anywhere, waiting to be read later. It's gone: not hidden, not cached, just absent from the circuit entirely. There's no wire, no node, nothing you could probe to recover what the input used to be."
-        }
-      ]
-    },
-    {
-      "id": "p-4",
-      "type": "paragraph",
-      "content": [
+          "text": "history ",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
         {
-          "text": "That's fine for an adder, useless for anything that has to hold a value once the thing that set it disappears: a light switch that stays on after you release the button, a counter that keeps its count after the clock tick that incremented it, a single bit of RAM. All three need a circuit whose output can stay fixed independent of what the inputs are doing right now."
+          "text": "of the inputs."
         }
       ]
     },
@@ -102,16 +100,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every circuit built so far flows one direction: inputs on the left, gates in the middle, outputs on the right, no wire ever loops back upstream. Sequential logic breaks that rule deliberately. Take a gate's output and wire it back into one of its own inputs (directly, or through a neighboring gate that loops back into it), and the gate's output stops being a pure function of its external inputs. It becomes a function of its own recent output too, because that old output is now literally one of the signals feeding it."
-        }
-      ]
-    },
-    {
-      "id": "p-6",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That's the whole idea behind every storage element in this section: the SR latch, the gated D latch, the D flip-flop. Different wiring, different rules for when the stored value can change, but every one of them is built from ordinary NAND or NOR gates arranged in a loop. There's no separate \"memory gate\" primitive underneath. It's the same gates you already know, just connected differently."
+          "text": "Take a gate's output and wire it back into one of its own inputs (directly, or through a neighboring gate that loops back into it), and the gate's output stops being a pure function of its external inputs. It becomes a function of its own recent output too, because that old output is now literally one of the signals feeding it."
         }
       ]
     },
@@ -126,7 +115,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A feedback loop in software that recomputes a value from itself is usually a bug. In a digital circuit it isn't, because gates aren't instantaneous. Every gate has a small propagation delay, so a signal chasing itself around a loop doesn't recompute forever, it "
+          "text": "A feedback loop in software that recomputes a value from itself is usually a bug. In a digital circuit it isn't, because gates aren't instantaneous. Every gate has a small propagation delay, which is why a signal chasing itself around a loop doesn't recompute forever, it "
         },
         {
           "text": "settles",
@@ -137,7 +126,7 @@
           ]
         },
         {
-          "text": ". After a handful of gate delays the loop reaches a value that's consistent with itself, every gate's output matches what its inputs demand, and nothing changes further. That settling behavior is what makes the next three tutorials safe to build, and it's why simulating one of these circuits gate-by-gate always converges instead of spinning."
+          "text": ". After a handful of gate delays the loop reaches a value that's consistent with itself, every gate's output matches what its inputs demand, and nothing changes further. That converging behavior is what makes the next three tutorials safe to build, and it's why simulating one of these circuits gate-by-gate always converges instead of spinning."
         }
       ]
     },

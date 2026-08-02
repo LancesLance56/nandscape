@@ -1,8 +1,9 @@
 import type { ImageBlock } from "@/types/blog";
+import { cn } from "@/lib/cn";
 
-export function ImageBlockView({ block }: { block: ImageBlock }) {
+export function ImageBlockView({ block }: { block: ImageBlock & { className?: string } }) {
   return (
-    <figure className="my-2">
+    <figure className={cn("my-2", block.className)}>
       <img
         src={block.src}
         alt={block.alt}
