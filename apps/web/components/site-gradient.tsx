@@ -94,6 +94,8 @@ export function SiteGradient() {
           maskImage: "radial-gradient(ellipse at center, black 0%, transparent 75%)",
         }}
       >
+        {/*
+        // aesthetic spheres but I find it a bit disturbing
         <div
           className="gradient-sphere sphere-1 absolute rounded-full blur-[100px]"
           style={{ transform: "translateY(calc(var(--scroll-y) * 0.06))", willChange: "transform" }}
@@ -105,7 +107,7 @@ export function SiteGradient() {
         <div
           className="gradient-sphere sphere-3 absolute rounded-full blur-[100px]"
           style={{ transform: "translateY(calc(var(--scroll-y) * 0.05))", willChange: "transform" }}
-        />
+        />*/}
 
         <div
           className="absolute inset-0 dark:opacity-[0.15] mix-blend-normal"
