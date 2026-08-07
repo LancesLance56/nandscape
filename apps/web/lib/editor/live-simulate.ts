@@ -1,8 +1,4 @@
-import {
-  SignalState, GateType,
-  evaluateAnd, evaluateOr, evaluateNand, evaluateNor, evaluateXor, evaluateXnor,
-  evaluateNot, evaluateBuffer,
-} from "@nandscape/engine";
+import { SignalState, GateType, evaluateCombinationalGate } from "@nandscape/engine";
 import type { EditorNode, EditorEdge, GateNodeData, IoNodeData, ConstantNodeData, SubcircuitNodeData } from "@/types/editor";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
 import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
@@ -15,7 +11,6 @@ function inputIndexFromHandle(handle: string | null | undefined): number {
   return match ? Number(match[1]) : 0;
 }
 
-/** Runs one block instance's internal graph, seeded with this frame's external inputs. */
 function evaluateSubcircuitInstance(
   instanceNode: EditorNode,
   inputValues: SignalState[],
@@ -27,9 +22,6 @@ function evaluateSubcircuitInstance(
     return { outputValues: block.outputs.map(() => SignalState.UNKNOWN), internalSignals: {} };
   }
 
-  // Namespace previous-signal lookups per instance so two placed copies of
-  // the same block don't share memory, and so nested latches inside a
-  // block can hold state across frames exactly like top-level ones.
   const prefix = `${instanceNode.id}::internal::`;
   const namespacedPrevious: Record<string, SignalState> = {};
   for (const key in previousSignals) {
@@ -112,17 +104,16 @@ export function evaluateLiveCircuit(
         }
         case "gate": {
           const data = node.data as GateNodeData;
-          const arity = data.inputCount ?? 2;
-          switch (data.gateType) {
-            case GateType.NAND: drive(node.id, "out-0", evaluateNand(readInputs(node.id, arity))); break;
-            case GateType.AND: drive(node.id, "out-0", evaluateAnd(readInputs(node.id, arity))); break;
-            case GateType.OR: drive(node.id, "out-0", evaluateOr(readInputs(node.id, arity))); break;
-            case GateType.NOR: drive(node.id, "out-0", evaluateNor(readInputs(node.id, arity))); break;
-            case GateType.XOR: drive(node.id, "out-0", evaluateXor(readInputs(node.id, arity))); break;
-            case GateType.XNOR: drive(node.id, "out-0", evaluateXnor(readInputs(node.id, arity))); break;
-            case GateType.NOT: drive(node.id, "out-0", evaluateNot(readInputs(node.id, 1)[0])); break;
-            case GateType.BUFFER: drive(node.id, "out-0", evaluateBuffer(readInputs(node.id, 1)[0])); break;
-            default: break;
+          const isUnary = data.gateType === GateType.NOT || data.gateType === GateType.BUFFER;
+          const arity = isUnary ? 1 : (data.inputCount ?? 2);
+          try {
+            drive(node.id, "out-0", evaluateCombinationalGate(data.gateType, readInputs(node.id, arity)));
+          } catch {
+            // Sequential gate types (D_LATCH/FLIP_FLOP/SR_LATCH) aren't
+            // handled by evaluateCombinationalGate,  they need previous-Q
+            // and clock-edge state this pass-based preview doesn't track.
+            // Their outputs simply stay FLOAT here until a real Play run
+            // through the actual engine (see use-engine-simulation.ts).
           }
           break;
         }

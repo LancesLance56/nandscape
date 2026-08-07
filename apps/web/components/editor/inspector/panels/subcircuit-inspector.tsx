@@ -77,8 +77,8 @@ export function SubcircuitInspectorPanel({ node }: { node: EditorNode }) {
       {block && (
         <div className="flex flex-col gap-1 text-xs text-ink-soft">
           <span className="font-semibold text-ink">Pins</span>
-          <span>In: {block.inputs.map((p) => p.name).join(", ") || "—"}</span>
-          <span>Out: {block.outputs.map((p) => p.name).join(", ") || "—"}</span>
+          <span>In: {block.inputs.map((p) => p.name).join(", ") || "-"}</span>
+          <span>Out: {block.outputs.map((p) => p.name).join(", ") || "-"}</span>
         </div>
       )}
     </div>

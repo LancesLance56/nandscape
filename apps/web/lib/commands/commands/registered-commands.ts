@@ -27,7 +27,11 @@ export const historyRedoCommand = defineCommand({
 export const deleteSelectionCommand = defineCommand({
   id: "selection.delete",
   label: "Delete selection",
-  execute: () => useHistoryStore.getState().run(createDeleteSelectionCommand()),
+  execute: () => {
+    const {nodeIds, edgeIds} = useEditorStore.getState().selection;
+    if (nodeIds.length === 0 && edgeIds.length === 0) return;
+    useHistoryStore.getState().run(createDeleteSelectionCommand(nodeIds, edgeIds));
+  },
 });
 
 export const selectAllCommand = defineCommand({
@@ -102,18 +106,18 @@ export const toggleBottomPanelCommand = defineCommand({
   execute: () => useUiStore.getState().toggleBottomPanel(),
 });
 
-// --- Simulation ---------------------------------------------------------------
-export const toggleSimulationPlayCommand = defineCommand({
-  id: "simulation.togglePlay",
-  label: "Play/pause simulation",
-  execute: () => {
-    const {status, play, pause} = useSimulationStore.getState();
-    if (status === "running") pause();
-    else play();
-  },
+export const simulationStepCommand = defineCommand({
+  id: "simulation.step",
+  label: "Step simulation",
+  execute: () => useSimulationStore.getState().step(),
 });
 
-// --- View,  placeholders until the canvas exposes an imperative zoom API ----
+export const simulationResetCommand = defineCommand({
+  id: "simulation.reset",
+  label: "Reset simulation",
+  execute: () => useSimulationStore.getState().reset(),
+});
+
 export const zoomToFitCommand = defineCommand({
   id: "view.zoomToFit",
   label: "Zoom to fit",
@@ -156,6 +160,12 @@ export const saveAsBlockCommand = defineCommand({
   execute: () => useUiStore.getState().openDialog("save-subcircuit"),
 });
 
+export const shareCommand = defineCommand({
+  id: "circuit.share",
+  label: "Share",
+  execute: () => useUiStore.getState().openDialog("share"),
+});
+
 export const openAddCircuitDialogCommand = defineCommand({
   id: "circuit.openAddDialog",
   label: "Add a circuit",
@@ -173,11 +183,13 @@ export const ALL_REGISTERED_COMMANDS = [
   pasteClipboardCommand,
   saveCircuitCommand,
   saveAsBlockCommand,
+  shareCommand,
   rotateSelectionCommand,
   toggleSidebarCommand,
   toggleInspectorCommand,
   toggleBottomPanelCommand,
-  toggleSimulationPlayCommand,
+  simulationStepCommand,
+  simulationResetCommand,
   zoomToFitCommand,
   zoomInCommand,
   zoomOutCommand,

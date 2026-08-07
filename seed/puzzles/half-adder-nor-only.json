@@ -1,7 +1,7 @@
 {
   "slug": "half-adder-nor-only",
   "title": "Half Adder (NOR only)",
-  "description": "NOR is universal too. Every gate on the canvas, even AND, OR, and NOT, has to be built from NOR alone. Produce SUM and CARRY for two bits.",
+  "description": "NOR is also universal. Derive AND, OR, and NOT from NOR first, then produce SUM and CARRY for two bits.",
   "difficulty": "medium",
   "tags": ["combinational", "arithmetic"],
   "gateBudget": 12,

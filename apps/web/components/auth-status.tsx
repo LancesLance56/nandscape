@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -13,10 +13,21 @@ interface CurrentUser {
   role: "USER" | "ADMIN";
 }
 
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10" cy="7.2" r="3.2" />
+      <path d="M3.5 17c1.1-3.5 3.9-5.2 6.5-5.2s5.4 1.7 6.5 5.2" />
+    </svg>
+  );
+}
+
 export function AuthStatus() {
   const router = useRouter();
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,6 +43,25 @@ export function AuthStatus() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      if (menuRef.current?.contains(event.target as Node)) return;
+      setMenuOpen(false);
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [menuOpen]);
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -66,11 +96,37 @@ export function AuthStatus() {
   }
 
   return (
-    <>
-      <span className="hidden text-sm font-medium text-ink-soft sm:block">{user.username}</span>
-      <Button variant="secondary" size="sm" onClick={handleLogout} disabled={loggingOut}>
-        {loggingOut ? "…" : "Log out"}
-      </Button>
-    </>
+    <div ref={menuRef} className="relative">
+      <button
+        type="button"
+        aria-label="Account menu"
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((open) => !open)}
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-border-strong text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+      >
+        <UserIcon />
+      </button>
+
+      {menuOpen && (
+        <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border bg-surface-card/95 p-1.5 shadow-xl backdrop-blur-md">
+          <p className="truncate px-2.5 py-1.5 font-mono text-[11px] font-semibold text-slate">{user.username}</p>
+          <Link
+            href="/account"
+            onClick={() => setMenuOpen(false)}
+            className="block rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+          >
+            Account
+          </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="block w-full rounded-lg px-2.5 py-1.5 text-left text-sm font-medium text-ink-soft transition-colors hover:bg-surface-2 hover:text-signal-coral disabled:opacity-60"
+          >
+            {loggingOut ? "Logging out…" : "Log out"}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

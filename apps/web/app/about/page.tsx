@@ -34,7 +34,7 @@ export default function AboutPage() {
               Hi, I&apos;m Lance
             </h1>
             <p className="text-lg leading-relaxed text-ink-soft">
-              A high school student building Nandscape, a place to learn digital logic by
+              A Computer Science student building Nandscape, a place to learn digital logic by
               building it.
             </p>
           </div>

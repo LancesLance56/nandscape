@@ -33,6 +33,8 @@ function toSummary(row: TutorialPageRow): TutorialPageSummary {
     slug: row.slug,
     title: row.title,
     excerpt: row.excerpt,
+    coverImage: row.cover_image,
+    authorName: row.author_name,
     status: row.status,
     tags: row.tags,
     sectionId: row.section_id,
@@ -48,7 +50,7 @@ function toPage(row: TutorialPageRow): TutorialPage {
 }
 
 const SUMMARY_COLUMNS = `
-  id, slug, title, excerpt, status, tags, section_id, position,
+  id, slug, title, excerpt, cover_image, author_name, status, tags, section_id, position,
   published_at, created_at, updated_at
 `;
 

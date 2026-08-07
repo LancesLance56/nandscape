@@ -10,8 +10,15 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const pages = await listTutorialPages();
-  return pages.filter((p) => p.status === "published").map((p) => ({ slug: p.slug }));
+  // Runs at build time, when the DB may not be reachable (e.g. building the
+  // Docker image before postgres is networked in) - fall back to generating
+  // no static params rather than failing the whole build.
+  try {
+    const pages = await listTutorialPages();
+    return pages.filter((p) => p.status === "published").map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

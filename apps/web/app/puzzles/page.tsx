@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 import { PuzzleList } from "@/components/puzzles/puzzle-list";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
+import type { PuzzleSpec } from "@/types/puzzle";
 
 export const metadata: Metadata = {
   title: "Puzzles,  Nandscape",
@@ -9,7 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default async function PuzzlesPage() {
-  const puzzles = await listPuzzles();
+  // Defensive: this page has no dynamic segment, so Next tries to statically
+  // render it at build time, when the DB may not be reachable yet (e.g.
+  // building the Docker image before postgres is networked in).
+  let puzzles: PuzzleSpec[] = [];
+  try {
+    puzzles = await listPuzzles();
+  } catch {
+    puzzles = [];
+  }
 
   return (
     <>

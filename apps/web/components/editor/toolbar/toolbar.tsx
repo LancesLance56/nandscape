@@ -6,11 +6,13 @@ import {useCommandDispatch} from "@/hooks/use-command";
 import {useHistoryStore} from "@/store/history-store";
 import {useUiStore} from "@/store/ui-store";
 import {useSimulationStore} from "@/store/simulation-store";
+import {usePuzzleStore} from "@/store/puzzle-store";
 import {commandRegistry} from "@/lib/commands/registry";
 import {ThemeToggle} from "@/components/theme-toggle";
 import {LoadCircuitMenu} from "@/components/editor/toolbar/load-circuit-menu";
 import {SiteNavMenu} from "@/components/editor/toolbar/site-nav-menu";
 import {BreadcrumbNav} from "@/components/editor/toolbar/breadcrumb-nav";
+import {SimulationSettingsMenu} from "@/components/editor/toolbar/simulation-settings-menu";
 
 const Icon = {
   Undo: () => (
@@ -49,6 +51,26 @@ const Icon = {
       <path d="M8 8v6.4M8 8L2.4 4.75M8 8l5.6-3.25" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
+  Step: () => (
+    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
+      <rect x="10.5" y="3" width="1.6" height="10" rx="0.5"/>
+      <path d="M3.5 3.2v9.6a0.8 0.8 0 0 0 1.24.67l6.4-4.8a0.8 0.8 0 0 0 0-1.34l-6.4-4.8a0.8 0.8 0 0 0-1.24.67Z"/>
+    </svg>
+  ),
+  Reset: () => (
+    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M13 8A5 5 0 1 1 11.5 4.2" strokeLinecap="round"/>
+      <path d="M13 3v3.5h-3.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Share: () => (
+    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="12.5" cy="3.5" r="1.75"/>
+      <circle cx="3.5" cy="8" r="1.75"/>
+      <circle cx="12.5" cy="12.5" r="1.75"/>
+      <path d="M5.1 7.1l5.8-2.7M5.1 8.9l5.8 2.7" strokeLinecap="round"/>
+    </svg>
+  ),
 };
 
 export function Toolbar() {
@@ -62,14 +84,29 @@ export function Toolbar() {
   const toggleInspector = useUiStore((s) => s.toggleInspector);
 
   const simStatus = useSimulationStore((s) => s.status);
-  const play = useSimulationStore((s) => s.play);
-  const pause = useSimulationStore((s) => s.pause);
-  const isRunning = simStatus === "running";
+  const inPuzzle = usePuzzleStore((s) => s.activePuzzleSlug) !== null;
 
   const runById = (id: string) => {
     const command = commandRegistry.get(id);
     if (command) dispatch(command);
   };
+
+  const statusDot =
+    simStatus === "running"
+      ? "bg-signal-green"
+      : simStatus === "error"
+        ? "bg-signal-coral"
+        : simStatus === "compiling"
+          ? "bg-copper animate-pulse"
+          : "bg-border-strong";
+  const statusLabel =
+    simStatus === "running"
+      ? "Simulation running"
+      : simStatus === "error"
+        ? "Simulation error"
+        : simStatus === "compiling"
+          ? "Compiling…"
+          : "Idle";
 
   return (
     <div className="grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-2.5 px-3">
@@ -86,44 +123,41 @@ export function Toolbar() {
         </ToolbarGroup>
       </div>
 
-      <button
-        type="button"
-        aria-label={isRunning ? "Pause simulation" : "Run simulation"}
-        aria-pressed={isRunning}
-        onClick={() => (isRunning ? pause() : play())}
-        className={`group relative flex h-10 w-10 items-center justify-center justify-self-center rounded-full text-white transition-all duration-200 hover:scale-108 active:scale-92 ${
-          isRunning
-            ? "bg-signal-coral shadow-[0_6px_18px_-2px_rgba(225,84,59,0.55)]"
-            : "bg-copper shadow-[0_6px_18px_-2px_rgba(193,90,42,0.55)]"
-        }`}
-      >
-        {isRunning && (
-          <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-signal-coral/40"/>
-        )}
-        <span
-          className={`absolute inset-0 rounded-full ring-2 ring-white/20 transition-opacity duration-200 ${
-            isRunning ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-          }`}
-        />
-        {isRunning ? (
-          <svg viewBox="0 0 16 16" className="h-4.5 w-4.5" fill="currentColor">
-            <rect x="3.4" y="2.8" width="3.2" height="10.4" rx="1"/>
-            <rect x="9.4" y="2.8" width="3.2" height="10.4" rx="1"/>
-          </svg>
-        ) : (
-          <svg viewBox="0 0 16 16" className="ml-0.5 h-5 w-5" fill="currentColor">
-            <path d="M4 2.6v10.8a1 1 0 0 0 1.53.85l8.6-5.4a1 1 0 0 0 0-1.7l-8.6-5.4A1 1 0 0 0 4 2.6z"/>
-          </svg>
-        )}
-      </button>
+      <div className="flex items-center gap-2.5 justify-self-center">
+        <span className={`h-2 w-2 rounded-full ${statusDot}`} role="status" title={statusLabel}>
+          <span className="sr-only">{statusLabel}</span>
+        </span>
+        <ToolbarGroup>
+          <ToolbarButton icon={<Icon.Step/>} label="Step" shortcut="Space"
+                         onClick={() => runById("simulation.step")}/>
+          <ToolbarButton icon={<Icon.Reset/>} label="Reset simulation"
+                         onClick={() => runById("simulation.reset")}/>
+          <SimulationSettingsMenu/>
+        </ToolbarGroup>
+      </div>
 
       <div className="flex items-center gap-2.5 justify-self-end">
+        {/* Loading a starter/saved circuit or saving the canvas as a reusable
+            block would let a solver sidestep the puzzle entirely, so both are
+            unavailable inside puzzles,  same rule as the palette's "Circuit
+            blocks" section (gate-palette.tsx) and grade-puzzle.ts's matching
+            structural check. Sharing doesn't grant that kind of shortcut, so
+            it stays available in both modes. */}
+        {!inPuzzle && (
+          <ToolbarGroup>
+            <LoadCircuitMenu/>
+            <ToolbarButton
+              icon={<Icon.Block/>}
+              label="Save as circuit block"
+              onClick={() => runById("circuit.saveAsBlock")}
+            />
+          </ToolbarGroup>
+        )}
         <ToolbarGroup>
-          <LoadCircuitMenu/>
           <ToolbarButton
-            icon={<Icon.Block/>}
-            label="Save as circuit block"
-            onClick={() => runById("circuit.saveAsBlock")}
+            icon={<Icon.Share/>}
+            label="Share"
+            onClick={() => runById("circuit.share")}
           />
         </ToolbarGroup>
 

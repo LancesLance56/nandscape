@@ -16,6 +16,7 @@ import {usePreferencesStore} from "@/store/preferences-store";
 import {useWireDraftStore} from "@/store/wire-draft-store";
 import {useCommandDispatch} from "@/hooks/use-command";
 import {useLiveSimulation} from "@/hooks/use-live-simulation";
+import {useEngineSimulation} from "@/hooks/use-engine-simulation";
 import {useScreenToFlowPosition} from "@/hooks/use-flow-position";
 import {nodeTypes, createGateNode, createIoNode, createSubcircuitNode} from "@/components/editor/nodes/node-registry";
 import {edgeTypes} from "@/components/editor/edges/edge-registry";
@@ -51,6 +52,7 @@ export function CircuitCanvas() {
   const dragOrigin = useRef<Map<string, { x: number; y: number }>>(new Map());
 
   useLiveSimulation();
+  useEngineSimulation();
 
   useEffect(() => {
     if (lastLoadedAt === 0) return;
@@ -197,6 +199,7 @@ export function CircuitCanvas() {
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        deleteKeyCode={null}
         onPaneClick={handlePaneClick}
         onSelectionChange={handleSelectionChange}
         onNodeDragStart={handleNodeDragStart}

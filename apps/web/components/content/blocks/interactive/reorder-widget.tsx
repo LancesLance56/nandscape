@@ -83,7 +83,7 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
   };
 
   return (
-    <div className={cn("rounded-xl border border-border bg-surface-card p-5 w-[90%] m-auto", data.className)}>
+    <div className={cn("rounded-xl border border-border bg-surface-card p-5 ", data.className)}>
       <ul className="mb-4 flex flex-col gap-2">
         {items.map((item, i) => (
           <li

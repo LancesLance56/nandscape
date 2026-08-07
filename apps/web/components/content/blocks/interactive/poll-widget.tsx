@@ -9,7 +9,7 @@ export interface PollData {
   className?: string;
 }
 
-function isPollData(data: unknown): data is PollData {
+export function isPollData(data: unknown): data is PollData {
   if (typeof data !== "object" || data === null) return false;
   const d = data as Record<string, unknown>;
   return (
@@ -27,7 +27,7 @@ export function PollWidget({ data }: { data: Record<string, unknown> }) {
   }
 
   return (
-    <div className={cn("rounded-xl border border-border bg-surface-2 p-4 m-auto w-[90%]", data.className)}>
+    <div className={cn("rounded-xl border border-border bg-surface-2 p-4", data.className)}>
       <p className="mb-3 font-semibold text-ink">{data.question}</p>
       <div className="flex flex-col gap-2">
         {data.options.map((option, i) => (

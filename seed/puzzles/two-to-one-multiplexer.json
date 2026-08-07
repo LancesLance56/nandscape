@@ -1,7 +1,7 @@
 {
   "slug": "two-to-one-multiplexer",
   "title": "2-to-1 Multiplexer",
-  "description": "No gate types are off-limits this time, just a tight budget. Output A when SEL is 0, and B when SEL is 1.",
+  "description": "No gate restrictions, just a tight budget. Output A when SEL is 0, B when SEL is 1.",
   "difficulty": "easy",
   "tags": ["combinational", "selectors"],
   "gateBudget": 4,

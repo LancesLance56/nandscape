@@ -32,7 +32,7 @@ roughly what a logic gate is.
 
 A circuit simulator's job is: given a network of gates wired together, and
 some inputs, figure out what every wire in the circuit is doing *over time*
-— not just in some final steady state, but respecting the fact that real
+- not just in some final steady state, but respecting the fact that real
 gates take time to react (propagation delay), and that changes ripple
 through a circuit in a specific order.
 
@@ -373,7 +373,7 @@ own bookkeeping, which is just an orchestrator holding references to a
 
 A set of plain functions: given `SignalState` inputs, return the
 `SignalState` output. No side effects, no mutation, nothing about *when*
-— just "what does this gate compute right now." Being pure functions makes
+- just "what does this gate compute right now." Being pure functions makes
 these trivially unit-testable in isolation (see
 `tests/gate-evaluators.test.ts`), independent of the rest of the engine.
 
@@ -887,7 +887,7 @@ directly as the port (`inst.inputs.A`, `inst.outputs.SUM`, ...,  `NetId`s,
 not gates). A port costs nothing beyond what a hand-wired net already
 costs: no wrapper buffer, no extra propagation delay, no signal
 translation at the boundary. This is what "flattening" buys you concretely
-— an instantiated half adder's `XOR`/`AND` gates settle with the exact
+- an instantiated half adder's `XOR`/`AND` gates settle with the exact
 same delay as if you'd wired them into the parent circuit by hand.
 
 ### Composing instances: `mergeNets()`

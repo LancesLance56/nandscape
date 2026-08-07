@@ -1,7 +1,7 @@
 {
   "slug": "gated-d-latch-nor-only",
   "title": "Gated D Latch (NOR only)",
-  "description": "Build a transparent-when-enabled D latch using nothing but NOR gates, you'll need to derive AND, OR, and NOT from NOR before you even get to the latch itself.",
+  "description": "Build a transparent, enable-gated D latch using only NOR gates. Derive AND, OR, and NOT from NOR first, then build the latch.",
   "difficulty": "hard",
   "tags": ["sequential", "memory"],
   "gateBudget": 15,

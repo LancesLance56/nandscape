@@ -5,17 +5,57 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: nandscape
-      POSTGRES_PASSWORD: LancesLance56
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-LancesLance56}
       POSTGRES_DB: app_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U nandscape -d app_db"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  web-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      target: dev
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: postgres://nandscape:${POSTGRES_PASSWORD:-LancesLance56}@postgres:5432/app_db
+      NODE_ENV: development
+      WEB_PORT: "${WEB_PORT:-3000}"
+      CI: "true"
+      WATCHPACK_POLLING: "1000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/auth/node_modules
+      - /app/packages/db/node_modules
+      - /app/packages/engine/node_modules
+      - /app/apps/web/.next
+
+  # `docker compose --profile prod up --build` - built standalone `next start`.
+  web:
+    profiles: ["prod"]
+    build:
+      context: .
+      target: runner
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: postgres://nandscape:${POSTGRES_PASSWORD:-LancesLance56}@postgres:5432/app_db
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:

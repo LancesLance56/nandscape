@@ -63,13 +63,11 @@ export type EditorNode = Node<EditorNodeData>;
 export interface WireEdgeData extends Record<string, unknown> {
   /** Live signal drawn from the simulation store; undefined while not simulating. */
   signal?: SignalState;
-  /** User-placed bend points, in flow coordinates, between source and target. Empty/undefined means auto-routed. */
   waypoints?: { x: number; y: number }[];
 }
 
 export type EditorEdge = Edge<WireEdgeData>;
 
-/** Anything selectable in the editor,  nodes, edges, or (future) groups. */
 export interface Selection {
   nodeIds: string[];
   edgeIds: string[];
@@ -92,4 +90,7 @@ export interface GateNodeData extends BaseNodeData {
   inputCount?: number;
   /** Clockwise rotation in degrees. Handles move to the corresponding side; labels stay upright. */
   rotation?: 0 | 90 | 180 | 270;
+  /** Propagation delay override, in sim-time units. Undefined means "use the
+   *  engine's per-gate-type default" (see DEFAULT_GATE_DELAY in @nandscape/engine). */
+  delay?: number;
 }

@@ -21,6 +21,7 @@ model User {
   puzzleAttempts PuzzleAttempt[]
   puzzleProgress PuzzleProgress[]
   sessions       Session[]
+  projects       Project[]
 
   @@index([email])
 }
@@ -137,6 +138,32 @@ model PuzzleProgress {
   @@map("puzzle_progress")
 }
 
+model Project {
+  id           String            @id @default(cuid())
+  slug         String            @unique
+  name         String
+  nodes        Json              @default("[]")
+  edges        Json              @default("[]")
+  visibility   ProjectVisibility @default(PRIVATE)
+  ownerId      String            @map("owner_id")
+  owner        User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  forkedFromId String?           @map("forked_from_id")
+  forkedFrom   Project?          @relation("ProjectForks", fields: [forkedFromId], references: [id], onDelete: SetNull)
+  forks        Project[]         @relation("ProjectForks")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  @@index([ownerId])
+  @@index([visibility])
+  @@map("projects")
+}
+
+enum ProjectVisibility {
+  PRIVATE
+  UNLISTED
+  PUBLIC
+}
+
 enum Role {
   USER
   ADMIN
@@ -146,4 +173,5 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+  EXPERT
 }

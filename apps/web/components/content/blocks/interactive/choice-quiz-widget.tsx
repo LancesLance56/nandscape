@@ -52,7 +52,7 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
   };
 
   return (
-    <div className={cn("rounded-xl border border-border bg-surface-card p-5 m-auto w-[90%]", data.className)}>
+    <div className={cn("rounded-xl border border-border bg-surface-card p-5", data.className)}>
       <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-slate">
         {data.prompt}
       </div>

@@ -24,7 +24,7 @@ export async function CodeBlockView({
   return (
     <div
       className={cn(
-        "my-2 overflow-hidden rounded-xl border border-border bg-surface-2 m-auto w-[90%]",
+        "my-2 overflow-hidden rounded-xl border border-border bg-surface-2",
         block.className,
       )}
     >

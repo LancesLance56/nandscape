@@ -1,0 +1,28 @@
+{
+  "slug": "two-bit-ripple-carry-adder",
+  "title": "2-Bit Ripple-Carry Adder",
+  "description": "Add two 2-bit numbers plus a carry-in. Circuit blocks are disabled for puzzles, so the two bit-stages have to be wired by hand rather than reused as a block.",
+  "difficulty": "hard",
+  "tags": ["combinational", "arithmetic"],
+  "gateBudget": 12,
+  "inputs": [
+    { "name": "A1" },
+    { "name": "A0" },
+    { "name": "B1" },
+    { "name": "B0" },
+    { "name": "CIN" }
+  ],
+  "outputs": [{ "name": "SUM1" }, { "name": "SUM0" }, { "name": "COUT" }],
+  "testCases": [
+    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 1, "B0": 1, "CIN": 1 }, "outputs": { "SUM1": 1, "SUM0": 1, "COUT": 1 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 0, "B0": 1, "CIN": 1 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "SUM1": 1, "SUM0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "SUM1": 0, "SUM0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 1, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 1, "COUT": 0 } } }
+  ]
+}

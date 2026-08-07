@@ -132,20 +132,28 @@ export function GatePalette() {
         );
       })}
 
-      <PaletteGroup title="Circuit blocks">
-        {blockEntries.map((entry, i) => {
-          const block = blocks[i];
-          return (
-            <PaletteItem
-              key={block.id}
-              entry={entry}
-              onDeleteAction={block.builtIn ? undefined : () => removeBlock(block.id)}
-            />
-          );
-        })}
-      </PaletteGroup>
+      {/* Circuit blocks let a solver import a pre-built answer wholesale, so
+          they're unavailable inside puzzles,  see grade-puzzle.ts's matching
+          structural check, which rejects subcircuit nodes even if one gets
+          onto the canvas some other way (e.g. pasted from a saved graph). */}
+      {!activePuzzleSlug && (
+        <>
+          <PaletteGroup title="Circuit blocks">
+            {blockEntries.map((entry, i) => {
+              const block = blocks[i];
+              return (
+                <PaletteItem
+                  key={block.id}
+                  entry={entry}
+                  onDeleteAction={block.builtIn ? undefined : () => removeBlock(block.id)}
+                />
+              );
+            })}
+          </PaletteGroup>
 
-      <CreateBlockButton />
+          <CreateBlockButton />
+        </>
+      )}
     </div>
   );
 }

@@ -99,8 +99,8 @@ export function ProblemPanel() {
       <p className="text-sm leading-relaxed text-ink-soft">{puzzle.description}</p>
 
       <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-surface-2 p-3 font-mono text-xs text-ink-soft">
-        <div>Inputs: {puzzle.inputs.map((p) => p.name).join(", ") || "—"}</div>
-        <div>Outputs: {puzzle.outputs.map((p) => p.name).join(", ") || "—"}</div>
+        <div>Inputs: {puzzle.inputs.map((p) => p.name).join(", ") || "-"}</div>
+        <div>Outputs: {puzzle.outputs.map((p) => p.name).join(", ") || "-"}</div>
         <div>Gate budget: {puzzle.gateBudget ?? "unlimited"}</div>
         <div>Allowed gates: {puzzle.allowedGateTypes?.map(gateTypeToString).join(", ") ?? "any"}</div>
         {puzzle.disallowedGateTypes && puzzle.disallowedGateTypes.length > 0 && (

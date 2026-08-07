@@ -1,12 +1,6 @@
-/**
- * Maps a normalized key combo string ("mod+z", "delete", "shift+mod+z") to
- * a command id. Kept separate from the actual DOM event listener
- */
-
 export interface ShortcutBinding {
   combo: string;
   commandId: string;
-  // Set false to register a binding without it appearing in the shortcut help UI (rare)
   visible?: boolean;
 }
 

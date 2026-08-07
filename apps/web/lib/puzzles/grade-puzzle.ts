@@ -70,6 +70,15 @@ function readOutput(node: EditorNode, edges: EditorEdge[], signals: Record<strin
 }
 
 function checkStructure(puzzle: PuzzleSpec, nodes: EditorNode[]): string | null {
+  // Circuit blocks (subcircuits) let a solver import a pre-built answer
+  // wholesale, so they're rejected here even if one somehow lands on the
+  // canvas (the palette hides them in puzzle mode, but this is the rule
+  // that actually matters,  see gate-palette.tsx and toolbar.tsx for the
+  // matching UI-level gating).
+  if (nodes.some((n) => n.data.kind === "subcircuit")) {
+    return "Circuit blocks aren't allowed for puzzles,  build it from primitive gates instead.";
+  }
+
   const gateNodes = nodes.filter((n) => n.data.kind === "gate");
 
   if (puzzle.gateBudget != null && gateNodes.length > puzzle.gateBudget) {

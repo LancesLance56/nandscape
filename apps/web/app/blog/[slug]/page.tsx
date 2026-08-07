@@ -11,8 +11,16 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = await listPublishedPosts();
-  return posts.map((post) => ({ slug: post.slug }));
+  // Runs at build time, when the DB may not be reachable (e.g. building the
+  // Docker image before postgres is networked in) - fall back to generating
+  // no static params rather than failing the whole build. Pages still render
+  // fine on demand; they just won't be pre-built.
+  try {
+    const posts = await listPublishedPosts();
+    return posts.map((post) => ({ slug: post.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

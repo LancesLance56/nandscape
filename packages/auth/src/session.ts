@@ -9,6 +9,7 @@ export interface SessionUser {
   email: string;
   username: string;
   name: string | null;
+  avatarUrl: string | null;
   role: Role;
 }
 
@@ -68,6 +69,7 @@ export async function validateSessionToken(token: string): Promise<ValidatedSess
       email: user.email,
       username: user.username,
       name: user.name,
+      avatarUrl: user.avatarUrl,
       role: user.role,
     },
   };

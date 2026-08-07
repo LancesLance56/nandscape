@@ -1,8 +1,8 @@
 {
   "slug": "three-input-majority-voter",
   "title": "3-Input Majority Voter",
-  "description": "Again, no gate restrictions, just keep the gate count down. Output HIGH whenever at least two of the three inputs are HIGH.",
-  "difficulty": "medium",
+  "description": "No gate restrictions, just a tight gate budget. Output HIGH when at least two of the three inputs are HIGH.",
+  "difficulty": "easy",
   "tags": ["combinational", "boolean-algebra"],
   "gateBudget": 7,
   "inputs": [{ "name": "A" }, { "name": "B" }, { "name": "C" }],

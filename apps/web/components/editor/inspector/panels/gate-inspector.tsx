@@ -1,6 +1,6 @@
 "use client";
 
-import {gateTypeToString} from "@nandscape/engine";
+import {gateTypeToString, DEFAULT_GATE_DELAY} from "@nandscape/engine";
 import {useEditorStore} from "@/store/editor-store";
 import {useCommandDispatch} from "@/hooks/use-command";
 import {commandRegistry} from "@/lib/commands/registry";
@@ -51,6 +51,25 @@ export function GateInspectorPanel({node}: { node: EditorNode }) {
           />
         </label>
       )}
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-medium text-ink-soft">Delay (sim-time units)</span>
+        <input
+          type="number"
+          min={1}
+          placeholder={String(DEFAULT_GATE_DELAY[data.gateType])}
+          value={data.delay ?? ""}
+          onChange={(e) =>
+            updateNodeData(node.id, {
+              delay: e.target.value === "" ? undefined : Math.max(1, Number(e.target.value)),
+            })
+          }
+          className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
+        />
+        <span className="text-[11px] text-ink-soft">
+          Empty uses this gate type&apos;s default ({DEFAULT_GATE_DELAY[data.gateType]}).
+        </span>
+      </label>
 
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-ink-soft">Rotation</span>

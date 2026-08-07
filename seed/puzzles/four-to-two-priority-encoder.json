@@ -1,0 +1,22 @@
+{
+  "slug": "four-to-two-priority-encoder",
+  "title": "4-to-2 Priority Encoder",
+  "description": "Encode which of four request lines is active as a 2-bit binary index. When more than one is active, D3 outranks D2, which outranks D1, which outranks D0. Output 00 when none are active.",
+  "difficulty": "hard",
+  "tags": ["combinational", "encoders"],
+  "gateBudget": 8,
+  "inputs": [{ "name": "D3" }, { "name": "D2" }, { "name": "D1" }, { "name": "D0" }],
+  "outputs": [{ "name": "Y1" }, { "name": "Y0" }],
+  "testCases": [
+    { "row": { "inputs": { "D3": 1, "D2": 0, "D1": 0, "D0": 0 }, "outputs": { "Y1": 1, "Y0": 1 } } },
+    { "row": { "inputs": { "D3": 1, "D2": 1, "D1": 1, "D0": 1 }, "outputs": { "Y1": 1, "Y0": 1 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 1, "D1": 0, "D0": 0 }, "outputs": { "Y1": 1, "Y0": 0 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 1, "D1": 1, "D0": 1 }, "outputs": { "Y1": 1, "Y0": 0 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 0, "D1": 1, "D0": 0 }, "outputs": { "Y1": 0, "Y0": 1 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 0, "D1": 1, "D0": 1 }, "outputs": { "Y1": 0, "Y0": 1 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 0, "D1": 0, "D0": 1 }, "outputs": { "Y1": 0, "Y0": 0 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 0, "D1": 0, "D0": 0 }, "outputs": { "Y1": 0, "Y0": 0 } } },
+    { "row": { "inputs": { "D3": 0, "D2": 1, "D1": 0, "D0": 1 }, "outputs": { "Y1": 1, "Y0": 0 } } },
+    { "row": { "inputs": { "D3": 1, "D2": 0, "D1": 1, "D0": 0 }, "outputs": { "Y1": 1, "Y0": 1 } } }
+  ]
+}

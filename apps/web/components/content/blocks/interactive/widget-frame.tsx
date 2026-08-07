@@ -15,7 +15,7 @@ export function WidgetFrame({ title, subtitle, children, className, contentClass
   return (
     <div
       className={cn(
-        "not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)] w-[90%] m-auto",
+        "not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)] ",
         className,
       )}
     >

@@ -10,6 +10,7 @@ import {
 } from "@xyflow/react";
 import { SignalState } from "@nandscape/engine";
 import { useLiveSignalsStore } from "@/store/live-signals-store";
+import { useSimulationStore } from "@/store/simulation-store";
 import { usePreferencesStore } from "@/store/preferences-store";
 import { useEditorStore } from "@/store/editor-store";
 import {
@@ -47,10 +48,16 @@ function WireEdgeImpl({
   data,
 }: EdgeProps<EditorEdge>) {
   const routing = usePreferencesStore((s) => s.edgeRouting);
+  const edgeMinLength = usePreferencesStore((s) => s.edgeMinLength);
+  const edgeCornerRadius = usePreferencesStore((s) => s.edgeCornerRadius);
   const snapToGrid = usePreferencesStore((s) => s.snapToGrid);
   const snapGridSize = usePreferencesStore((s) => s.snapGridSize);
 
-  const signal = useLiveSignalsStore((s) => s.edgeSignals[id]);
+  const engineStatus = useSimulationStore((s) => s.status);
+  const engineSignal = useSimulationStore((s) => s.signalByEdgeId[id]);
+  const previewSignal = useLiveSignalsStore((s) => s.edgeSignals[id]);
+  const engineActive = engineStatus === "running";
+  const signal = engineActive && engineSignal !== undefined ? engineSignal : previewSignal;
 
   const updateEdgeData = useEditorStore((s) => s.updateEdgeData);
   const dragIndexRef = useRef<number | null>(null);
@@ -80,7 +87,8 @@ function WireEdgeImpl({
     routing === "smoothstep"
       ? getSmoothStepPath({
           ...pathArgs,
-          borderRadius: 8,
+          borderRadius: edgeCornerRadius,
+          offset: edgeMinLength,
         })
       : routing === "straight"
         ? getStraightPath(pathArgs)

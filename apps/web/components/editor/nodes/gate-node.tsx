@@ -47,6 +47,7 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
       bubbleGap: s.gateShapesBubbleGap,
     })),
   );
+  const showGateLabels = usePreferencesStore((s) => s.showGateLabels);
 
   const maxPorts = Math.max(inputCount, outputCount);
   const nodeHeight = Math.max(minHeight, margin * 2 + (maxPorts - 1) * spacing);
@@ -136,12 +137,14 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           style={{width: GATE_SHAPE_WIDTH, transform: `translateX(-50%) rotate(${rotation}deg)`}}
         >
           <GateShape gateType={gateData.gateType} height={nodeHeight} selected={selected} />
-          <span
-            className="absolute top-1/2 whitespace-nowrap text-center font-mono text-[11px] font-bold leading-tight text-ink"
-            style={{left: geometry!.labelX, transform: `translate(-50%, -50%) rotate(${-rotation}deg)`}}
-          >
-            {gateData.label || typeName}
-          </span>
+          {showGateLabels && (
+            <span
+              className="absolute top-1/2 whitespace-nowrap text-center font-mono text-[11px] font-bold leading-tight text-ink"
+              style={{left: geometry!.labelX, transform: `translate(-50%, -50%) rotate(${-rotation}deg)`}}
+            >
+              {gateData.label || typeName}
+            </span>
+          )}
         </div>
       ) : (
         <div

@@ -17,14 +17,17 @@ import { buildPuzzleStarterGraph } from "@/lib/puzzles/puzzle-starter-graph";
 import { EditorLayout } from "./layout/editor-layout";
 import { useSandboxProgressStore } from "@/store/sandbox-progress-store";
 import { useSandboxAutosave } from "@/hooks/use-sandbox-autosave";
+import { useProjectStore } from "@/store/project-store";
+import type { ProjectRecord } from "@/lib/projects/projects";
 
 let commandsRegistered = false;
 
 export interface CircuitEditorProps {
   puzzleSlug?: string;
+  projectSlug?: string;
 }
 
-export function CircuitEditor({ puzzleSlug }: CircuitEditorProps = {}) {
+export function CircuitEditor({ puzzleSlug, projectSlug }: CircuitEditorProps = {}) {
   const loadRequestId = useRef(0);
 
   useEffect(() => {
@@ -36,10 +39,33 @@ export function CircuitEditor({ puzzleSlug }: CircuitEditorProps = {}) {
   }, []);
 
   useEffect(() => {
-    const nextSlug = puzzleSlug ?? null;
     const requestId = ++loadRequestId.current;
 
-    if (!nextSlug) {
+    if (projectSlug) {
+      usePuzzleStore.getState().setActivePuzzle(null);
+      useProjectStore.getState().setActive(null);
+      useEditorStore.getState().loadGraph([], []);
+
+      void (async () => {
+        const res = await fetch(`/api/projects/${projectSlug}`);
+        if (loadRequestId.current !== requestId) return;
+        if (!res.ok) return;
+
+        const { project } = (await res.json()) as { project: ProjectRecord };
+        useEditorStore.getState().loadGraph(project.nodes, project.edges);
+        useProjectStore.getState().setActive({
+          id: project.id,
+          slug: project.slug,
+          name: project.name,
+          visibility: project.visibility,
+        });
+      })();
+      return;
+    }
+
+    useProjectStore.getState().setActive(null);
+
+    if (!puzzleSlug) {
       usePuzzleStore.getState().setActivePuzzle(null);
       const sandbox = useSandboxProgressStore.getState();
       if (sandbox.hasSavedProgress) {
@@ -56,14 +82,14 @@ export function CircuitEditor({ puzzleSlug }: CircuitEditorProps = {}) {
       return;
     }
 
-    usePuzzleStore.getState().setActivePuzzle(nextSlug);
+    usePuzzleStore.getState().setActivePuzzle(puzzleSlug);
     useUiStore.getState().setSidebarTab("problem");
     useEditorStore.getState().loadGraph([], []);
 
     void (async () => {
       const [puzzle, saved] = await Promise.all([
-        usePuzzleDataStore.getState().fetchPuzzle(nextSlug),
-        usePuzzleProgressStore.getState().loadOne(nextSlug),
+        usePuzzleDataStore.getState().fetchPuzzle(puzzleSlug),
+        usePuzzleProgressStore.getState().loadOne(puzzleSlug),
       ]);
       if (loadRequestId.current !== requestId) return;
 
@@ -79,11 +105,11 @@ export function CircuitEditor({ puzzleSlug }: CircuitEditorProps = {}) {
         useEditorStore.getState().loadGraph(nodes, edges);
       }
     })();
-  }, [puzzleSlug]);
+  }, [puzzleSlug, projectSlug]);
 
   useKeyboardShortcuts();
   usePuzzleProgressAutosave(puzzleSlug ?? null);
-  useSandboxAutosave(!puzzleSlug);
+  useSandboxAutosave(!puzzleSlug && !projectSlug);
 
   return (
     <div className="h-full w-full overflow-hidden bg-surface">

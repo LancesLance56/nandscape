@@ -6,6 +6,7 @@ import {SignalState} from "@nandscape/engine";
 import {NodeHandle, Position} from "./node-handle";
 import {useEditorStore} from "@/store/editor-store";
 import {useLiveSignalsStore} from "@/store/live-signals-store";
+import {useSimulationStore} from "@/store/simulation-store";
 import {useHandleClick} from "@/hooks/use-handle-click";
 import type {EditorNode, IoNodeData} from "@/types/editor";
 
@@ -21,9 +22,22 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
     isInput ? undefined : s.edges.find((e) => e.target === id)?.id,
   );
   const edgeSignals = useLiveSignalsStore((s) => s.edgeSignals);
+  const engineStatus = useSimulationStore((s) => s.status);
+  const engineSignalByEdge = useSimulationStore((s) => s.signalByEdgeId);
   const {onHandleClick, onHandleMouseEnter, onHandleMouseLeave} = useHandleClick();
 
-  const signal = isInput ? (ioData.value ?? SignalState.LOW) : incomingEdgeId ? edgeSignals[incomingEdgeId] : undefined;
+  // A real simulation session (see simulation-store.ts) takes priority over
+  // the always-on instant preview once one's attached,  same rule wire-edge.tsx
+  // uses for wire coloring, so an output's own LED never disagrees with the
+  // wire feeding it.
+  const engineActive = engineStatus === "running";
+  const previewOutputSignal = !isInput && incomingEdgeId ? edgeSignals[incomingEdgeId] : undefined;
+  const engineOutputSignal =
+    !isInput && incomingEdgeId && engineActive ? engineSignalByEdge[incomingEdgeId] : undefined;
+
+  const signal = isInput
+    ? (ioData.value ?? SignalState.LOW)
+    : (engineOutputSignal ?? previewOutputSignal);
 
   const stateClass = signal === SignalState.HIGH ? HIGH_CLASS : signal === SignalState.LOW ? LOW_CLASS : FLOAT_CLASS;
   const borderClass = selected
@@ -36,6 +50,10 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
     if (!isInput) return;
     const next = signal === SignalState.HIGH ? SignalState.LOW : SignalState.HIGH;
     updateNodeData(id, {value: next});
+    // No-ops safely if nothing's compiled yet (idle/error); otherwise drives
+    // the real Simulator too, settling + refreshing right away if the
+    // real-time loop isn't already doing that on its own.
+    useSimulationStore.getState().driveInput(id, next);
   };
 
   return (

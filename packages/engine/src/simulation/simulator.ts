@@ -18,18 +18,13 @@ import {
 import { SrLatchKind } from '../data';
 import {
   didClockEdgeOccur,
-  evaluateAnd,
   evaluateBuffer,
+  evaluateCombinationalGate,
   evaluateDFlipFlop,
   evaluateDLatch,
-  evaluateNand,
-  evaluateNor,
   evaluateNot,
-  evaluateOr,
   evaluateSrLatch,
   evaluateTristateBuffer,
-  evaluateXnor,
-  evaluateXor,
   resolveNet,
 } from './gate-evaluators';
 
@@ -58,7 +53,12 @@ interface PinDriveTarget {
 }
 
 /** Reason a run() call stopped, useful for tests and diagnostics. */
-export type StopReason = 'QUEUE_EMPTY' | 'MAX_EVENTS' | 'MAX_TIME' | 'TARGET_TIME_REACHED';
+export type StopReason =
+  | 'QUEUE_EMPTY'
+  | 'MAX_EVENTS'
+  | 'MAX_TIME'
+  | 'TARGET_TIME_REACHED'
+  | 'FREE_RUNNING_SOURCE_PENDING';
 
 export class Simulator {
   readonly circuit: CircuitData;
@@ -155,6 +155,54 @@ export class Simulator {
       this.processBatch(batch);
     }
   }
+
+  /**
+   * Like run(), but won't let a free-running source (currently only CLOCK)
+   * advance past its already-established value: any pending event owned by
+   * a CLOCK gate at a time > 0 is left on the queue instead of consumed.
+   *
+   * This exists for driving inputs outside of an active Play session (right
+   * after compiling, or while paused). Without it, callers used run() with a
+   * fixed lookahead window to let combinational logic settle,  but that
+   * window also silently let a CLOCK gate's next self-scheduled toggle fire
+   * (see the CLOCK case in processBatch), so a clocked circuit would advance
+   * a cycle every time an unrelated switch was toggled while "paused". A
+   * CLOCK's very first event (its seed at time 0) is still processed, since
+   * that establishes the initial value rather than advancing time.
+   *
+   * Stops as soon as the earliest pending time contains a deferred CLOCK
+   * event,  looping past it would just defer the same event forever.
+   */
+  settleCombinational(): StopReason {
+    for (;;) {
+      if (this.queue.isEmpty) return 'QUEUE_EMPTY';
+      if (this.state.eventsProcessed >= this.maxEvents) return 'MAX_EVENTS';
+
+      const next = this.queue.peek()!;
+      if (next.time > this.maxTime) return 'MAX_TIME';
+
+      const batch = this.queue.popBatchAtEarliestTime();
+      const runnable: ScheduledEvent[] = [];
+      let deferredFreeRunningSource = false;
+
+      for (const event of batch) {
+        const ownerGate = this.circuit.pinOwnerGate.get(event.pinId) as GateId;
+        const isFreeRunningTick =
+          event.time > 0 && (this.circuit.gateType.get(ownerGate) as GateType) === GateType.CLOCK;
+
+        if (isFreeRunningTick) {
+          this.queue.push(event.time, event.pinId, event.value, event.generation);
+          deferredFreeRunningSource = true;
+        } else {
+          runnable.push(event);
+        }
+      }
+
+      if (runnable.length > 0) this.processBatch(runnable);
+      if (deferredFreeRunningSource) return 'FREE_RUNNING_SOURCE_PENDING';
+    }
+  }
+
   stats(): SimulationStats {
     return {
       currentTime: this.state.currentTime,
@@ -332,7 +380,7 @@ export class Simulator {
       case GateType.XNOR: {
         const outputPin = pins[pins.length - 1];
         const inputs = pins.slice(0, -1).map((p) => this.netStateOfPin(p));
-        const value = this.evaluateNAry(type, inputs);
+        const value = evaluateCombinationalGate(type, inputs);
         return [{ pin: outputPin, value }];
       }
 
@@ -428,25 +476,6 @@ export class Simulator {
 
       default:
         throw new Error(`evaluateGate: unhandled GateType ${type}`);
-    }
-  }
-
-  private evaluateNAry(type: GateType, inputs: SignalState[]): SignalState {
-    switch (type) {
-      case GateType.NAND:
-        return evaluateNand(inputs);
-      case GateType.AND:
-        return evaluateAnd(inputs);
-      case GateType.OR:
-        return evaluateOr(inputs);
-      case GateType.NOR:
-        return evaluateNor(inputs);
-      case GateType.XOR:
-        return evaluateXor(inputs);
-      case GateType.XNOR:
-        return evaluateXnor(inputs);
-      default:
-        throw new Error(`evaluateNAry: unhandled GateType ${type}`);
     }
   }
 }

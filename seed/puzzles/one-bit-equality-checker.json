@@ -1,7 +1,7 @@
 {
   "slug": "one-bit-equality-checker",
   "title": "1-Bit Equality Checker",
-  "description": "XNOR would make this trivial, so it's banned. Output HIGH whenever A and B match, using XOR, NOT, or anything else instead.",
+  "description": "XNOR is banned since it would make this trivial. Output HIGH when A and B match.",
   "difficulty": "easy",
   "tags": ["combinational", "comparators"],
   "gateBudget": 3,

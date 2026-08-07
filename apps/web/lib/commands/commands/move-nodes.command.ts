@@ -7,13 +7,6 @@ export interface NodeMove {
   to: { x: number; y: number };
 }
 
-/**
- * Drag interactions update position continuously via onNodesChange (see
- * editor-store) for smooth 60fps feedback, WITHOUT touching history. Only
- * on drag *end* does the canvas dispatch one of these, capturing the net
- * from/to positions so undo is a single step rather than one entry per
- * intermediate frame.
- */
 export function createMoveNodesCommand(moves: NodeMove[]) {
   return defineCommand({
     id: "node.move",

@@ -9,6 +9,9 @@ export interface PreferencesState {
   visualGridSize: number;
   showGrid: boolean;
   edgeRouting: EdgeRoutingStyle;
+  edgeMinLength: number;
+  edgeCornerRadius: number;
+  showGateLabels: boolean;
   animateSignals: boolean;
   reducedMotion: boolean;
   gateNodeTopMargin: number;
@@ -26,6 +29,9 @@ export interface PreferencesState {
   setVisualGridSize: (size: number) => void;
   setShowGrid: (value: boolean) => void;
   setEdgeRouting: (style: EdgeRoutingStyle) => void;
+  setEdgeMinLength: (length: number) => void;
+  setEdgeCornerRadius: (radius: number) => void;
+  setShowGateLabels: (value: boolean) => void;
   setAnimateSignals: (value: boolean) => void;
   setReducedMotion: (value: boolean) => void;
   setGateNodeTopMargin: (margin: number) => void;
@@ -47,10 +53,13 @@ export const usePreferencesStore = create<PreferencesState>()(
       visualGridSize: 50,
       showGrid: true,
       edgeRouting: "smoothstep",
+      edgeMinLength: 8,
+      edgeCornerRadius: 2,
+      showGateLabels: true,
       animateSignals: true,
       reducedMotion: false,
       gateNodeTopMargin: 10,
-      gateNodePortSpacing: 17.5,
+      gateNodePortSpacing: 20,
       gateNodeMinHeight: 35,
       gateNodeMinWidth: 96,
       gateNodeMaxWidth: 220,
@@ -64,6 +73,9 @@ export const usePreferencesStore = create<PreferencesState>()(
       setVisualGridSize: (size) => set({visualGridSize: Math.max(4, size)}),
       setShowGrid: (value) => set({showGrid: value}),
       setEdgeRouting: (style) => set({edgeRouting: style}),
+      setEdgeMinLength: (length) => set({edgeMinLength: Math.max(0, length)}),
+      setEdgeCornerRadius: (radius) => set({edgeCornerRadius: Math.max(0, radius)}),
+      setShowGateLabels: (value) => set({showGateLabels: value}),
       setAnimateSignals: (value) => set({animateSignals: value}),
       setReducedMotion: (value) => set({reducedMotion: value}),
       setGateNodeTopMargin: (margin) => set({gateNodeTopMargin: Math.max(4, margin)}),

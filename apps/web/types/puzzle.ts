@@ -1,8 +1,8 @@
 import type { GateType } from "@nandscape/engine";
 
-export type PuzzleDifficulty = "easy" | "medium" | "hard";
+export type PuzzleDifficulty = "easy" | "medium" | "hard" | "expert";
 
-export type PrismaDifficulty = "EASY" | "MEDIUM" | "HARD";
+export type PrismaDifficulty = "EASY" | "MEDIUM" | "HARD" | "EXPERT";
 
 export function difficultyFromPrisma(d: PrismaDifficulty): PuzzleDifficulty {
   return d.toLowerCase() as PuzzleDifficulty;

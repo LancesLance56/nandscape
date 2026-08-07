@@ -5,10 +5,12 @@ import { createPortal } from "react-dom";
 import { useUiStore } from "@/store/ui-store";
 import { SaveSubcircuitDialog } from "./save-subcircuit-dialog";
 import { AddCircuitDialog } from "./add-circuit-dialog";
+import { ShareDialog } from "./share-dialog";
 
 export const dialogRegistry: Record<string, ComponentType<{ onCloseAction: () => void }>> = {
   "save-subcircuit": SaveSubcircuitDialog,
   "add-circuit": AddCircuitDialog,
+  share: ShareDialog,
 };
 
 function subscribe() {

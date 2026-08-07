@@ -1,5 +1,6 @@
 import { EdgeType, NetResolutionKind, SignalState } from '../data';
 import { SrLatchKind } from '../data';
+import { GateType } from '../data';
 
 const { LOW, HIGH, FLOAT, UNKNOWN } = SignalState;
 
@@ -202,4 +203,40 @@ export function didClockEdgeOccur(
     return configuredEdge === EdgeType.RISING || configuredEdge === EdgeType.ANY;
   }
   return false; // transitions through/from FLOAT or UNKNOWN are not clean edges
+}
+
+/**
+ * The single GateType -> evaluator dispatch for stateless combinational
+ * gates (NAND/AND/OR/NOR/XOR/XNOR/NOT/BUFFER). Both Simulator.evaluateGate()
+ * (the real event-driven engine) and apps/web's instant live-preview call
+ * this exact function, so there is exactly one place that knows "a NOR gate
+ * computes evaluateNor()",  not two copies that could quietly drift apart.
+ * Sequential types (D_LATCH/FLIP_FLOP/SR_LATCH) and boundary types
+ * (INPUT_PIN/OUTPUT_PIN/CONSTANT/CLOCK/TRISTATE_BUFFER) aren't handled here;
+ * they need extra state (previous Q, clock edges) that a stateless
+ * dispatcher like this one has no way to carry, so callers that don't have
+ * that state (the instant preview) should catch and treat it as "stays
+ * FLOAT for now," exactly as documented in NANDSCAPE_WEB_ARCHITECTURE.md.
+ */
+export function evaluateCombinationalGate(type: GateType, inputs: readonly SignalState[]): SignalState {
+  switch (type) {
+    case GateType.NAND:
+      return evaluateNand(inputs);
+    case GateType.AND:
+      return evaluateAnd(inputs);
+    case GateType.OR:
+      return evaluateOr(inputs);
+    case GateType.NOR:
+      return evaluateNor(inputs);
+    case GateType.XOR:
+      return evaluateXor(inputs);
+    case GateType.XNOR:
+      return evaluateXnor(inputs);
+    case GateType.NOT:
+      return evaluateNot(inputs[0]);
+    case GateType.BUFFER:
+      return evaluateBuffer(inputs[0]);
+    default:
+      throw new Error(`evaluateCombinationalGate: unsupported GateType ${type}`);
+  }
 }

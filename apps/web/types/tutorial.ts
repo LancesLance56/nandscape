@@ -14,6 +14,8 @@ export interface TutorialPageSummary {
   slug: string;
   title: string;
   excerpt: string | null;
+  coverImage: string | null;
+  authorName: string | null;
   status: TutorialStatus;
   tags: string[];
   sectionId: string | null;

@@ -1,0 +1,22 @@
+import type { Metadata } from "next";
+import { getProjectBySlug } from "@/lib/projects/projects";
+import { EmbedStage } from "@/components/projects/embed-stage";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
+
+export default async function EmbedPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+
+  if (!project || project.visibility === "PRIVATE") {
+    return (
+      <div className="flex h-screen items-center justify-center font-mono text-sm text-slate">
+        This circuit isn&apos;t available for embedding.
+      </div>
+    );
+  }
+
+  return <EmbedStage nodes={project.nodes} edges={project.edges} />;
+}

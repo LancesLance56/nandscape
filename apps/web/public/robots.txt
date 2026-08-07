@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://nandscape.dev
+
+# Sitemaps
+Sitemap: https://nandscape.dev/sitemap.xml

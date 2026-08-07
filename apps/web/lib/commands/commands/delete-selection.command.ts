@@ -2,7 +2,13 @@ import {defineCommand} from "../command";
 import {useEditorStore} from "@/store/editor-store";
 import type {EditorNode, EditorEdge} from "@/types/editor";
 
-export function createDeleteSelectionCommand() {
+// `nodeIds`/`edgeIds` are captured once at creation (the selection at the
+// moment the user pressed delete), NOT re-read from live store state inside
+// execute(). history-store's redo() re-invokes execute() rather than
+// replaying from a snapshot, and by the time that happens the selection has
+// long since been cleared, so reading it live would make redo silently
+// no-op while the history stack still advanced past/future as if it hadn't.
+export function createDeleteSelectionCommand(nodeIds: string[], edgeIds: string[]) {
   let removedNodes: EditorNode[] = [];
   let removedEdges: EditorEdge[] = [];
 
@@ -12,8 +18,6 @@ export function createDeleteSelectionCommand() {
     undoable: true,
     execute: () => {
       const store = useEditorStore.getState();
-      const {nodeIds, edgeIds} = store.selection;
-      if (nodeIds.length === 0 && edgeIds.length === 0) return;
 
       const nodeIdSet = new Set(nodeIds);
       removedNodes = store.nodes.filter((n) => nodeIdSet.has(n.id));

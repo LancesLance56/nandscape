@@ -12,7 +12,7 @@ export const DEFAULT_SHORTCUTS: ShortcutBinding[] = [
   {combo: "mod+c", commandId: "selection.copy"},
   {combo: "mod+v", commandId: "selection.paste"},
   {combo: "mod+s", commandId: "circuit.save"},
-  {combo: "space", commandId: "simulation.togglePlay"}, // space now only does this
+  {combo: "space", commandId: "simulation.step"},
   {combo: "mod+b", commandId: "ui.toggleSidebar"},
   {combo: "mod+i", commandId: "ui.toggleInspector"},
   {combo: "mod+j", commandId: "ui.toggleBottomPanel"},

@@ -1,0 +1,15 @@
+{
+  "slug": "not-from-nand",
+  "title": "NOT from NAND",
+  "description": "A NAND gate with both inputs tied to the same signal behaves like a NOT gate. Prove it.",
+  "difficulty": "easy",
+  "tags": ["combinational", "boolean-algebra"],
+  "gateBudget": 1,
+  "allowedGateTypes": [0],
+  "inputs": [{ "name": "A" }],
+  "outputs": [{ "name": "Y" }],
+  "testCases": [
+    { "row": { "inputs": { "A": 0 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "A": 1 }, "outputs": { "Y": 0 } } }
+  ]
+}

@@ -1,7 +1,25 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Build/typecheck caches
+*.tsbuildinfo
+
+# Env files carry real credentials (DATABASE_URL, etc.) - never commit these.
+# .env.example is the one exception: it's a template with no real secrets.
+.env
+.env.*
+!.env.example
+
+# Vim swap/undo files (e.g. ..env.local.un~) - would otherwise leak the same
+# secrets as the .env files above under a name the rules above don't match.
+*.un~
+*.swp
+
+# OS cruft
+.DS_Store
+Thumbs.db
 !/pnpm-lock.yaml
-!/node_modules/
-!/apps/web/node_modules/
-!/apps/web/.next/
-!/packages/db/node_modules/
-!/packages/engine/node_modules/
-!/packages/db/generated/

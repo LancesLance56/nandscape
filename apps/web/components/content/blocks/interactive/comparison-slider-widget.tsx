@@ -51,7 +51,7 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
     .replace("{saved}", (total - good).toLocaleString());
 
   return (
-    <div className={cn("rounded-xl border border-border bg-surface-card p-5 w-[90%] m-auto", data.className)}>
+    <div className={cn("rounded-xl border border-border bg-surface-card p-5 ", data.className)}>
       <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-slate">{prompt}</div>
       <div className="mb-5 flex items-center gap-4">
         <input

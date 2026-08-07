@@ -1,8 +1,8 @@
 {
   "slug": "full-adder-no-xor",
   "title": "Full Adder Without XOR",
-  "description": "Add two bits plus a carry-in, but XOR and XNOR are banned, so the parity logic has to come from AND, OR, NAND, and NOT instead.",
-  "difficulty": "hard",
+  "description": "Add two bits plus a carry-in. XOR and XNOR are banned, so the parity logic must come from AND, OR, NAND, and NOT.",
+  "difficulty": "medium",
   "tags": ["combinational", "arithmetic"],
   "gateBudget": 18,
   "disallowedGateTypes": [4, 5],

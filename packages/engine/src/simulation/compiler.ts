@@ -1,6 +1,6 @@
-import { CircuitData } from '../data/circuit';
-import { CircuitTopology } from '../data/topology';
-import { GateId, INVALID_ID, NetId, PinDirection, PinId } from '../data/types';
+import { CircuitData } from '../data';
+import { CircuitTopology } from '../data';
+import { GateId, INVALID_ID, NetId, PinDirection, PinId } from '../data';
 
 export interface ValidationIssue {
   message: string;
@@ -9,11 +9,6 @@ export interface ValidationIssue {
   net?: NetId;
 }
 
-/**
- * Checks structural well-formedness of a circuit before it is compiled.
- * Does NOT check simulate-ability (e.g. combinational feedback loops are
- * legal circuits,  SR latches rely on them,  so they're not flagged here).
- */
 export function validateCircuit(circuit: CircuitData): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
@@ -27,9 +22,6 @@ export function validateCircuit(circuit: CircuitData): ValidationIssue[] {
     }
   }
 
-  // A net with zero connected pins entirely is almost certainly a mistake
-  // (an allocated-but-unused net),  flag it so it's caught before it
-  // silently disappears from simulation.
   const connectionCounts = new Int32Array(circuit.netCount);
   for (let p = 0; p < circuit.pinCount; p++) {
     const net = circuit.pinNet.get(p);
@@ -44,12 +36,6 @@ export function validateCircuit(circuit: CircuitData): ValidationIssue[] {
   return issues;
 }
 
-/**
- * Compiles a CircuitData netlist into a CircuitTopology. Throws if the
- * circuit has structural issues (see validateCircuit),  callers who want to
- * inspect issues without throwing should call validateCircuit() themselves
- * first.
- */
 export function compileTopology(circuit: CircuitData): CircuitTopology {
   const issues = validateCircuit(circuit);
   if (issues.length > 0) {

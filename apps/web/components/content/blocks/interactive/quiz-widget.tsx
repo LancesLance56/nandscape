@@ -4,20 +4,20 @@ import { useMemo, useState } from "react";
 import { WidgetFrame } from "./widget-frame";
 import { cn } from "@/lib/cn";
 
-interface QuizOption {
+export interface QuizOption {
   label?: string;
   code?: string;
   correct: boolean;
 }
 
-interface QuizQuestion {
+export interface QuizQuestion {
   id?: string;
   prompt: string;
   options: QuizOption[];
   explanation?: string;
 }
 
-interface QuizData {
+export interface QuizData {
   title?: string;
   questions: QuizQuestion[];
   passMessage?: string;
@@ -39,7 +39,7 @@ function isQuizQuestion(value: unknown): value is QuizQuestion {
   return typeof v.prompt === "string" && Array.isArray(v.options) && v.options.every(isQuizOption);
 }
 
-function isQuizData(data: unknown): data is QuizData {
+export function isQuizData(data: unknown): data is QuizData {
   if (typeof data !== "object" || data === null) return false;
   const d = data as Record<string, unknown>;
   return Array.isArray(d.questions) && d.questions.length > 0 && d.questions.every(isQuizQuestion);

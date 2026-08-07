@@ -1,7 +1,7 @@
 {
   "slug": "half-adder",
   "title": "Half Adder (NAND only)",
-  "description": "Add two single bits, producing SUM and CARRY as separate outputs. The catch: you only have NAND gates to build it from, so XOR isn't free this time.",
+  "description": "Add two bits, producing SUM and CARRY as separate outputs, using only NAND gates.",
   "difficulty": "medium",
   "tags": ["combinational", "arithmetic"],
   "gateBudget": 9,

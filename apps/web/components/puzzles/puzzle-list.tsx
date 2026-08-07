@@ -10,8 +10,8 @@ import { usePuzzleProgressStore } from "@/store/puzzle-progress-store";
 
 type DifficultyFilter = "all" | PuzzleDifficulty;
 
-const DIFFICULTY_ORDER: Record<PuzzleDifficulty, number> = { easy: 0, medium: 1, hard: 2 };
-const DIFFICULTY_FILTERS: DifficultyFilter[] = ["all", "easy", "medium", "hard"];
+const DIFFICULTY_ORDER: Record<PuzzleDifficulty, number> = { easy: 0, medium: 1, hard: 2, expert: 3 };
+const DIFFICULTY_FILTERS: DifficultyFilter[] = ["all", "easy", "medium", "hard", "expert"];
 
 function tagColor(tag: string): string {
   let hash = 0;
@@ -113,7 +113,7 @@ export function PuzzleList({ puzzles }: { puzzles: PuzzleSpec[] }) {
   }, [puzzles]);
 
   const difficultyCounts = useMemo(() => {
-    const counts: Record<DifficultyFilter, number> = { all: puzzles.length, easy: 0, medium: 0, hard: 0 };
+    const counts: Record<DifficultyFilter, number> = { all: puzzles.length, easy: 0, medium: 0, hard: 0, expert: 0 };
     for (const puzzle of puzzles) counts[puzzle.difficulty]++;
     return counts;
   }, [puzzles]);

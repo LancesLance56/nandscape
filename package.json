@@ -9,7 +9,9 @@
     "build": "pnpm --filter web build",
     "start": "pnpm --filter web start",
     "lint": "pnpm --filter web lint",
-    "studio": "pnpm --filter @repo/db studio"
+    "studio": "pnpm --filter @repo/db studio",
+    "docker:dev": "docker compose --profile dev up --build",
+    "docker:start": "docker compose --profile prod up --build"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +19,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "^11.9.0",
+      "version": "11.20.0",
       "onFail": "download"
     }
   },
