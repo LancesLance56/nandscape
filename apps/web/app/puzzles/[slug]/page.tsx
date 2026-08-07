@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { CircuitEditor } from "@/components/editor";
 import { getPuzzleBySlug } from "@/lib/puzzles/puzzles";
 
+export const revalidate = 60;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
