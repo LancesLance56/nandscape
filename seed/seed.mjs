@@ -57,11 +57,42 @@ async function seedResource(label, dir, apiPath) {
   }
 }
 
+async function seedAdmin() {
+  const email = process.env.ADMIN_EMAIL;
+  const username = process.env.ADMIN_USERNAME;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !username || !password) {
+    console.log("- skipped      admin (set ADMIN_EMAIL, ADMIN_USERNAME, and ADMIN_PASSWORD to create one)");
+    return;
+  }
+
+  const res = await fetch(`${base}/api/admin/bootstrap`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, username, password }),
+  });
+
+  if (res.status === 201) {
+    console.log(`✓ created      admin/${username}`);
+    return;
+  }
+
+  if (res.status === 403) {
+    console.log("- skipped      admin (an account already exists, bootstrap only runs once)");
+    return;
+  }
+
+  const body = await res.text();
+  console.error(`✗ failed       admin/${username},  ${res.status} ${body}`);
+}
+
 async function main() {
   await seedResource("posts", path.join(here, "posts"), "/api/posts");
   await seedResource("tutorial-sections", path.join(here, "tutorial-sections"), "/api/tutorial-sections");
   await seedResource("tutorials", path.join(here, "tutorials"), "/api/tutorials");
   await seedResource("puzzles", path.join(here, "puzzles"), "/api/puzzles");
+  await seedAdmin();
 
   console.log(`\nDone. Visit ${base}/blog, ${base}/tutorials, and ${base}/puzzles`);
 }
