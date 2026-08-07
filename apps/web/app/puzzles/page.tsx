@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Browse logic-gate puzzles, filter by difficulty and topic, and start solving.",
 };
 
+export const revalidate = 60;
+
 export default async function PuzzlesPage() {
   // Defensive: this page has no dynamic segment, so Next tries to statically
   // render it at build time, when the DB may not be reachable yet (e.g.

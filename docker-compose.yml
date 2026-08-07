@@ -45,6 +45,7 @@ services:
   # `docker compose --profile prod up --build` - built standalone `next start`.
   web:
     profiles: ["prod"]
+    restart: unless-stopped
     build:
       context: .
       target: runner
