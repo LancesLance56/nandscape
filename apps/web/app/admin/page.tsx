@@ -10,8 +10,8 @@ interface AdminSection {
   href: string;
   label: string;
   description: string;
-  count: number;
-  countLabel: string;
+  count?: number;
+  countLabel?: string;
 }
 
 export default async function AdminIndexPage() {
@@ -42,6 +42,11 @@ export default async function AdminIndexPage() {
       count: users.length,
       countLabel: users.length === 1 ? "user" : "users",
     },
+    {
+      href: "/admin/database",
+      label: "Database",
+      description: "Browse and edit raw tables with Prisma Studio.",
+    },
   ];
 
   return (
@@ -63,9 +68,11 @@ export default async function AdminIndexPage() {
               <span className="font-display text-lg font-semibold text-ink group-hover:text-copper-dark">
                 {section.label}
               </span>
-              <span className="font-mono text-xs text-slate">
-                {section.count} {section.countLabel}
-              </span>
+              {section.count !== undefined && (
+                <span className="font-mono text-xs text-slate">
+                  {section.count} {section.countLabel}
+                </span>
+              )}
             </div>
             <p className="text-sm text-ink-soft">{section.description}</p>
           </Link>

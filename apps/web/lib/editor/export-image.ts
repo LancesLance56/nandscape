@@ -5,12 +5,6 @@ const EXPORT_WIDTH = 1600;
 const EXPORT_HEIGHT = 1000;
 const EXPORT_PADDING = 0.15;
 
-*
- * Renders the current canvas to a PNG data URL, framed around the actual
- * circuit rather than the current viewport,  matches React Flow's documented
- * "download as image" pattern: compute a viewport that fits every node, then
- * rasterize the .react-flow__viewport DOM node at that transform.
- */
 export async function exportCircuitImage(
   instance: Pick<ReactFlowInstance, "getNodes">,
   backgroundColor: string,
