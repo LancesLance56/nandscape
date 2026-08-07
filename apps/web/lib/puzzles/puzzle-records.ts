@@ -123,7 +123,9 @@ export async function createPuzzleRecord(input: PuzzleSeedInput): Promise<Puzzle
   const data = buildData(input);
   const solution: PuzzleSolution = { testCases: input.testCases };
 
-  // TODO: ADD AUTHOR
+  // Seeded puzzles (the only caller of this route today - see seed/seed.mjs)
+  // have no human author, and creatorId is nullable specifically for that
+  // case (see onDelete: SetNull on Puzzle.creator in schema.prisma).
   const rows = await query<PuzzleRow>(
     `INSERT INTO "Puzzle" (id, slug, title, description, difficulty, data, solution, "creatorId", "createdAt", "updatedAt")
      VALUES ($1, $2, $3, $4, $5::"Difficulty", $6::jsonb, $7::jsonb, $8, now(), now())
@@ -136,7 +138,7 @@ export async function createPuzzleRecord(input: PuzzleSeedInput): Promise<Puzzle
       difficultyToPrisma(input.difficulty),
       JSON.stringify(data),
       JSON.stringify(solution),
-      "cms1la8s80000ucsznnv1o4xy"
+      null,
     ],
   );
   return toRecord(rows[0]);

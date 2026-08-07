@@ -21,7 +21,8 @@ CMD ["pnpm", "--filter", "web", "dev:docker"]
 
 FROM deps AS build
 COPY . .
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ENV DATABASE_URL=postgres://nandscape:LancesLance56@localhost:5432/app_db
+
 RUN pnpm --filter @repo/db generate
 RUN pnpm --filter web build
 
