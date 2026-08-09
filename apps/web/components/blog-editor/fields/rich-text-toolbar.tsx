@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   $getSelection,
   $isRangeSelection,
+  BLUR_COMMAND,
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND,
   COMMAND_PRIORITY_LOW,
@@ -50,6 +51,7 @@ function useMounted() {
 export function FormatToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
   const mounted = useMounted();
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<ToolbarPosition | null>(null);
   const [activeFormats, setActiveFormats] = useState<Set<TextFormatType>>(new Set());
   const [isLink, setIsLink] = useState(false);
@@ -101,8 +103,31 @@ export function FormatToolbarPlugin() {
           },
           COMMAND_PRIORITY_LOW,
         ),
+        // Lexical intentionally keeps the last selection alive internally
+        // after the editor blurs (so a toolbar button click, which never
+        // steals focus, still has a selection to act on) - it does not fire
+        // another SELECTION_CHANGE_COMMAND for it. Each rich-text field
+        // mounts its own editor and its own copy of this toolbar, so
+        // clicking into a *different* field leaves this one's stale
+        // selection and stale toolbar sitting on screen with nothing to
+        // show it's out of date; clicking it then edits the old text
+        // instead of the newly highlighted one. Force-hide on blur so a
+        // stale toolbar can't outlive the selection it was showing.
+        editor.registerCommand(
+          BLUR_COMMAND,
+          (event) => {
+            const next = event.relatedTarget;
+            if (next instanceof Node && toolbarRef.current?.contains(next)) {
+              // Focus moved into our own link input, not away from it.
+              return false;
+            }
+            hideToolbar();
+            return false;
+          },
+          COMMAND_PRIORITY_LOW,
+        ),
       ),
-    [editor, updateToolbar],
+    [editor, updateToolbar, hideToolbar],
   );
 
   // The toolbar floats just above the current selection, which means a fresh
@@ -152,6 +177,7 @@ export function FormatToolbarPlugin() {
 
   return createPortal(
     <div
+      ref={toolbarRef}
       style={{ top: position.top, left: position.left, transform: "translateX(-50%)" }}
       className="fixed z-50 flex items-center gap-0.5 rounded-lg border border-border bg-surface-card p-1 shadow-lg"
     >
