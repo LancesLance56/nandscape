@@ -16,6 +16,7 @@ import { RawJsonField } from "@/components/blog-editor/fields/raw-json-field";
 import { PollWidgetEditor } from "@/components/blog-editor/widgets/poll-widget-editor";
 import { QuizWidgetEditor } from "@/components/blog-editor/widgets/quiz-widget-editor";
 import { RevealWidgetEditor } from "@/components/blog-editor/widgets/reveal-widget-editor";
+import { CircuitEmbedWidgetEditor } from "@/components/blog-editor/widgets/circuit-embed-widget-editor";
 
 export interface WidgetEditorProps {
   data: Record<string, unknown>;
@@ -141,7 +142,7 @@ const registryImpl: Record<string, WidgetDefinition> = {
     name: "circuit-embed",
     label: "Circuit Embed",
     Renderer: CircuitEmbedWidget,
-    Editor: (props) => <RawJsonField {...props} validate={validateCircuitEmbed} />,
+    Editor: CircuitEmbedWidgetEditor,
     createDefault: () => ({ nodes: [], edges: [] }),
     validate: validateCircuitEmbed,
   },

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -9,16 +10,26 @@ import { useSandboxProgressStore } from "@/store/sandbox-progress-store";
 import { CircuitStage } from "./circuit-stage";
 import type { EditorNode, EditorEdge } from "@/types/editor";
 
+/**
+ * Either an inline snapshot (`nodes`/`edges` pasted or built into the block
+ * directly) or a live link to a saved circuit (`projectSlug`) resolved at
+ * render time via GET /api/projects/[slug] - editing the source project
+ * afterwards updates every embed pointing at it, the same way a link would.
+ * `projectSlug` wins if both are present (see isCircuitEmbedData).
+ */
 export interface CircuitEmbedData {
   title?: string;
   height?: number;
-  nodes: EditorNode[];
-  edges: EditorEdge[];
+  projectSlug?: string;
+  nodes?: EditorNode[];
+  edges?: EditorEdge[];
   [key: string]: unknown | undefined;
 }
 
 export function isCircuitEmbedData(data: Record<string, unknown>): data is CircuitEmbedData {
-  return Array.isArray(data.nodes) && Array.isArray(data.edges);
+  const hasLink = typeof data.projectSlug === "string" && data.projectSlug.trim() !== "";
+  const hasInlineCircuit = Array.isArray(data.nodes) && Array.isArray(data.edges);
+  return hasLink || hasInlineCircuit;
 }
 
 function ExpandIcon() {
@@ -39,13 +50,71 @@ function useMounted(): boolean {
   return mounted;
 }
 
+interface LinkedCircuit {
+  nodes: EditorNode[];
+  edges: EditorEdge[];
+  name: string;
+}
+
+/**
+ * Resolves a projectSlug link to its circuit data client-side, so this
+ * works identically whether the widget is rendering on a published page or
+ * in the admin editor's live preview - both just mount this component, no
+ * separate server-side resolution path to keep in sync. Editing the source
+ * project later changes what every embed pointing at it shows, same as any
+ * other link.
+ */
+function useLinkedCircuit(projectSlug: string | undefined) {
+  const [circuit, setCircuit] = useState<LinkedCircuit | null>(null);
+  const [loading, setLoading] = useState(Boolean(projectSlug));
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!projectSlug) {
+      setCircuit(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    fetch(`/api/projects/${encodeURIComponent(projectSlug)}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error();
+        const body = (await res.json()) as { project: { nodes: EditorNode[]; edges: EditorEdge[]; name: string } };
+        if (!cancelled) setCircuit({ nodes: body.project.nodes, edges: body.project.edges, name: body.project.name });
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError(`Couldn't load circuit "${projectSlug}" - it may be private, unshared, or no longer exist.`);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [projectSlug]);
+
+  return { circuit, loading, error };
+}
+
 export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) {
   const router = useRouter();
   const mounted = useMounted();
   const [expanded, setExpanded] = useState(false);
   const saveSandbox = useSandboxProgressStore((s) => s.save);
 
-  if (!isCircuitEmbedData(data)) {
+  const valid = isCircuitEmbedData(data);
+  const projectSlug = valid ? data.projectSlug : undefined;
+  const { circuit: linked, loading, error: linkError } = useLinkedCircuit(projectSlug);
+
+  if (!valid) {
     return (
       <div className="my-2 rounded-xl border border-dashed border-border-strong p-4 text-sm text-slate">
         Circuit embed is missing node/edge data.
@@ -53,11 +122,34 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
     );
   }
 
-  const title = data.title ?? "Circuit";
   const height = data.height ?? 280;
 
+  if (projectSlug) {
+    if (loading) {
+      return (
+        <div
+          style={{ height }}
+          className="my-8 flex animate-pulse items-center justify-center rounded-2xl border border-border bg-surface-card"
+        >
+          <span className="font-mono text-xs text-slate">Loading circuit…</span>
+        </div>
+      );
+    }
+    if (linkError || !linked) {
+      return (
+        <div className="my-2 rounded-xl border border-dashed border-border-strong p-4 text-sm text-slate">
+          {linkError ?? "Circuit link is missing node/edge data."}
+        </div>
+      );
+    }
+  }
+
+  const nodes = projectSlug ? linked!.nodes : (data.nodes ?? []);
+  const edges = projectSlug ? linked!.edges : (data.edges ?? []);
+  const title = data.title ?? (projectSlug ? linked!.name : undefined) ?? "Circuit";
+
   const handleOpenSandbox = () => {
-    saveSandbox(data.nodes, data.edges);
+    saveSandbox(nodes, edges);
     router.push("/nandbox");
   };
 
@@ -68,6 +160,14 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
         <span className="h-2.5 w-2.5 rounded-full bg-copper" />
         <span className="h-2.5 w-2.5 rounded-full bg-signal-green" />
         <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">{title}</span>
+        {projectSlug && (
+          <Link
+            href={`/projects/${projectSlug}`}
+            className="font-mono text-[10px] font-medium text-slate underline decoration-border-strong underline-offset-2 hover:text-copper-dark"
+          >
+            View original
+          </Link>
+        )}
         <button
           type="button"
           onClick={() => setExpanded(true)}
@@ -80,7 +180,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
 
       <div style={{ height }} className="relative overflow-hidden">
         <ReactFlowProvider>
-          <CircuitStage nodes={data.nodes} edges={data.edges} />
+          <CircuitStage nodes={nodes} edges={edges} />
         </ReactFlowProvider>
       </div>
 
@@ -123,7 +223,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
               </div>
               <div className="relative flex-1 overflow-hidden">
                 <ReactFlowProvider>
-                  <CircuitStage nodes={data.nodes} edges={data.edges} allowScrollZoom />
+                  <CircuitStage nodes={nodes} edges={edges} allowScrollZoom />
                 </ReactFlowProvider>
               </div>
             </div>

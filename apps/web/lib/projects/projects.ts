@@ -98,10 +98,14 @@ export async function listProjectsForUser(userId: string): Promise<ProjectSummar
 
 export interface PublicProjectSummary extends ProjectSummary {
   ownerUsername: string;
+  nodes: EditorNode[];
+  edges: EditorEdge[];
 }
 
 interface PublicSummaryRow extends SummaryRow {
   owner_username: string;
+  nodes: EditorNode[];
+  edges: EditorEdge[];
 }
 
 // Reasonable upper bound so the community page never has to render an
@@ -110,7 +114,7 @@ const PUBLIC_LISTING_LIMIT = 200;
 
 export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
   const rows = await query<PublicSummaryRow>(
-    `SELECT p.id, p.slug, p.name, p.visibility, p.updated_at, u.username AS owner_username
+    `SELECT p.id, p.slug, p.name, p.visibility, p.updated_at, p.nodes, p.edges, u.username AS owner_username
      FROM projects p
      JOIN "User" u ON u.id = p.owner_id
      WHERE p.visibility = 'PUBLIC'
@@ -118,7 +122,12 @@ export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
      LIMIT $1`,
     [PUBLIC_LISTING_LIMIT],
   );
-  return rows.map((row) => ({ ...toSummary(row), ownerUsername: row.owner_username }));
+  return rows.map((row) => ({
+    ...toSummary(row),
+    ownerUsername: row.owner_username,
+    nodes: row.nodes ?? [],
+    edges: row.edges ?? [],
+  }));
 }
 
 export async function getProjectBySlug(slug: string): Promise<ProjectRecord | null> {
