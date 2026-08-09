@@ -1,4 +1,5 @@
 import * as client from "openid-client";
+import { siteUrl } from "@/lib/site-url";
 
 let configPromise: Promise<client.Configuration> | undefined;
 
@@ -9,10 +10,6 @@ function getConfig(): Promise<client.Configuration> {
     process.env.GOOGLE_CLIENT_SECRET ?? "",
   );
   return configPromise;
-}
-
-export function siteUrl(): string {
-  return (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 }
 
 function redirectURI(): string {

@@ -6,9 +6,18 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage";
 import type { ProjectRecord } from "@/lib/projects/projects";
 
-export function ProjectViewer({ project, canFork }: { project: ProjectRecord; canFork: boolean }) {
+export function ProjectViewer({
+  project,
+  canFork,
+  canDelete,
+}: {
+  project: ProjectRecord;
+  canFork: boolean;
+  canDelete: boolean;
+}) {
   const router = useRouter();
   const [forking, setForking] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleFork = async () => {
@@ -24,14 +33,29 @@ export function ProjectViewer({ project, canFork }: { project: ProjectRecord; ca
     router.push(`/projects/${fork.slug}`);
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm(`Delete "${project.name}"? This can't be undone.`)) return;
+    setDeleting(true);
+    setError(null);
+    const res = await fetch(`/api/projects/${project.slug}`, { method: "DELETE" });
+    if (!res.ok) {
+      setDeleting(false);
+      setError("Couldn't delete this circuit.");
+      return;
+    }
+    router.push("/community");
+    router.refresh();
+  };
+
   return (
     <main className="mx-auto flex h-[calc(100vh-8rem)] max-w-5xl flex-col px-6 pb-10 pt-32">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div className="min-w-0">
           <h1 className="font-display text-xl font-bold text-ink">{project.name}</h1>
           <p className="font-mono text-xs text-slate">by {project.ownerUsername}</p>
+          {project.description && <p className="mt-1.5 max-w-2xl text-sm text-ink-soft">{project.description}</p>}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           {error && <span className="text-xs text-signal-coral">{error}</span>}
           {canFork && (
             <button
@@ -41,6 +65,16 @@ export function ProjectViewer({ project, canFork }: { project: ProjectRecord; ca
               className="rounded-lg bg-copper px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-copper-dark disabled:opacity-60"
             >
               {forking ? "Forking…" : "Fork to your account"}
+            </button>
+          )}
+          {canDelete && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="rounded-lg border border-border-strong px-3 py-1.5 text-sm font-medium text-ink-soft transition-colors hover:border-signal-coral hover:text-signal-coral disabled:opacity-60"
+            >
+              {deleting ? "Deleting…" : "Delete"}
             </button>
           )}
         </div>

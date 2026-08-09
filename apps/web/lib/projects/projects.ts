@@ -9,6 +9,7 @@ export interface ProjectRecord {
   id: string;
   slug: string;
   name: string;
+  description: string | null;
   nodes: EditorNode[];
   edges: EditorEdge[];
   visibility: ProjectVisibility;
@@ -23,6 +24,7 @@ export interface ProjectSummary {
   id: string;
   slug: string;
   name: string;
+  description: string | null;
   visibility: ProjectVisibility;
   updatedAt: string;
 }
@@ -31,6 +33,7 @@ interface ProjectRow {
   id: string;
   slug: string;
   name: string;
+  description: string | null;
   nodes: EditorNode[];
   edges: EditorEdge[];
   visibility: ProjectVisibility;
@@ -46,6 +49,7 @@ interface SummaryRow {
   id: string;
   slug: string;
   name: string;
+  description: string | null;
   visibility: ProjectVisibility;
   updated_at: string;
   [key: string]: unknown;
@@ -56,6 +60,7 @@ function toRecord(row: ProjectRow): ProjectRecord {
     id: row.id,
     slug: row.slug,
     name: row.name,
+    description: row.description,
     nodes: row.nodes ?? [],
     edges: row.edges ?? [],
     visibility: row.visibility,
@@ -72,13 +77,14 @@ function toSummary(row: SummaryRow): ProjectSummary {
     id: row.id,
     slug: row.slug,
     name: row.name,
+    description: row.description,
     visibility: row.visibility,
     updatedAt: row.updated_at,
   };
 }
 
 const RECORD_SELECT = `
-  SELECT p.id, p.slug, p.name, p.nodes, p.edges, p.visibility,
+  SELECT p.id, p.slug, p.name, p.description, p.nodes, p.edges, p.visibility,
          p.owner_id, u.username AS owner_username, p.forked_from_id,
          p.created_at, p.updated_at
   FROM projects p
@@ -87,7 +93,7 @@ const RECORD_SELECT = `
 
 export async function listProjectsForUser(userId: string): Promise<ProjectSummary[]> {
   const rows = await query<SummaryRow>(
-    `SELECT id, slug, name, visibility, updated_at
+    `SELECT id, slug, name, description, visibility, updated_at
      FROM projects
      WHERE owner_id = $1
      ORDER BY updated_at DESC`,
@@ -114,7 +120,7 @@ const PUBLIC_LISTING_LIMIT = 200;
 
 export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
   const rows = await query<PublicSummaryRow>(
-    `SELECT p.id, p.slug, p.name, p.visibility, p.updated_at, p.nodes, p.edges, u.username AS owner_username
+    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, u.username AS owner_username
      FROM projects p
      JOIN "User" u ON u.id = p.owner_id
      WHERE p.visibility = 'PUBLIC'
@@ -142,6 +148,7 @@ export async function getProjectById(id: string): Promise<ProjectRecord | null> 
 
 export interface CreateProjectInput {
   name: string;
+  description?: string | null;
   nodes: EditorNode[];
   edges: EditorEdge[];
   visibility?: ProjectVisibility;
@@ -154,16 +161,17 @@ const SLUG_COLLISION_RETRIES = 3;
 
 export async function createProject(ownerId: string, input: CreateProjectInput): Promise<ProjectRecord> {
   const name = input.name.trim() || "Untitled circuit";
+  const description = input.description?.trim() || null;
   const visibility = input.visibility ?? "PRIVATE";
 
   for (let attempt = 0; attempt <= SLUG_COLLISION_RETRIES; attempt++) {
     const slug = generateProjectSlug(name);
     try {
       const rows = await query<{ id: string }>(
-        `INSERT INTO projects (id, slug, name, nodes, edges, visibility, owner_id, updated_at)
-         VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6, $7, now())
+        `INSERT INTO projects (id, slug, name, description, nodes, edges, visibility, owner_id, updated_at)
+         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, now())
          RETURNING id`,
-        [randomUUID(), slug, name, JSON.stringify(input.nodes), JSON.stringify(input.edges), visibility, ownerId],
+        [randomUUID(), slug, name, description, JSON.stringify(input.nodes), JSON.stringify(input.edges), visibility, ownerId],
       );
       const created = await getProjectById(rows[0].id);
       if (!created) throw new Error("Project vanished immediately after insert");
@@ -178,6 +186,8 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
 
 export interface UpdateProjectInput {
   name?: string;
+  /** `null` clears the description; `undefined` leaves it untouched. */
+  description?: string | null;
   nodes?: EditorNode[];
   edges?: EditorEdge[];
   visibility?: ProjectVisibility;
@@ -187,17 +197,23 @@ export async function updateProject(id: string, input: UpdateProjectInput): Prom
   const nodesJson = input.nodes !== undefined ? JSON.stringify(input.nodes) : null;
   const edgesJson = input.edges !== undefined ? JSON.stringify(input.edges) : null;
   const name = input.name !== undefined ? input.name.trim() || "Untitled circuit" : null;
+  // description needs to distinguish "leave alone" from "clear it", which a
+  // plain COALESCE(new, old) can't do (COALESCE(NULL, old) would keep old,
+  // not clear it) - only touch the column when the caller actually sent one.
+  const touchDescription = input.description !== undefined;
+  const description = touchDescription ? input.description?.trim() || null : null;
 
   const rows = await query<{ id: string }>(
     `UPDATE projects SET
        name = COALESCE($2, name),
-       nodes = COALESCE($3::jsonb, nodes),
-       edges = COALESCE($4::jsonb, edges),
-       visibility = COALESCE($5, visibility),
+       description = CASE WHEN $3 THEN $4 ELSE description END,
+       nodes = COALESCE($5::jsonb, nodes),
+       edges = COALESCE($6::jsonb, edges),
+       visibility = COALESCE($7, visibility),
        updated_at = now()
      WHERE id = $1
      RETURNING id`,
-    [id, name, nodesJson, edgesJson, input.visibility ?? null],
+    [id, name, touchDescription, description, nodesJson, edgesJson, input.visibility ?? null],
   );
   if (!rows[0]) return null;
   return getProjectById(rows[0].id);
@@ -215,10 +231,19 @@ export async function forkProject(source: ProjectRecord, newOwnerId: string): Pr
     const slug = generateProjectSlug(name);
     try {
       const rows = await query<{ id: string }>(
-        `INSERT INTO projects (id, slug, name, nodes, edges, visibility, owner_id, forked_from_id, updated_at)
-         VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, 'PRIVATE', $6, $7, now())
+        `INSERT INTO projects (id, slug, name, description, nodes, edges, visibility, owner_id, forked_from_id, updated_at)
+         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, 'PRIVATE', $7, $8, now())
          RETURNING id`,
-        [randomUUID(), slug, name, JSON.stringify(source.nodes), JSON.stringify(source.edges), newOwnerId, source.id],
+        [
+          randomUUID(),
+          slug,
+          name,
+          source.description,
+          JSON.stringify(source.nodes),
+          JSON.stringify(source.edges),
+          newOwnerId,
+          source.id,
+        ],
       );
       const created = await getProjectById(rows[0].id);
       if (!created) throw new Error("Forked project vanished immediately after insert");

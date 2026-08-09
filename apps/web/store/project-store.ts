@@ -7,6 +7,7 @@ export interface ActiveProject {
   id: string;
   slug: string;
   name: string;
+  description: string | null;
   visibility: ProjectVisibility;
 }
 

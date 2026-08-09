@@ -61,6 +61,13 @@ export async function listTutorialPages(): Promise<TutorialPageSummary[]> {
   return rows.map(toSummary);
 }
 
+export async function listPublishedTutorialPages(): Promise<TutorialPageSummary[]> {
+  const rows = await query<TutorialPageRow>(
+    `SELECT ${SUMMARY_COLUMNS} FROM tutorial_pages WHERE status = 'published' ORDER BY position ASC, title ASC`,
+  );
+  return rows.map(toSummary);
+}
+
 export async function getTutorialPageBySlug(slug: string): Promise<TutorialPage | null> {
   const rows = await query<TutorialPageRow>(`SELECT * FROM tutorial_pages WHERE slug = $1 LIMIT 1`, [slug]);
   return rows[0] ? toPage(rows[0]) : null;

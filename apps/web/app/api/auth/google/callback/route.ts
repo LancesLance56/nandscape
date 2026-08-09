@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findOrCreateGoogleUser, createSession } from "@repo/auth";
-import { exchangeGoogleAuthorizationCode, siteUrl } from "@/lib/auth/google-oauth";
+import { exchangeGoogleAuthorizationCode } from "@/lib/auth/google-oauth";
+import { siteUrl } from "@/lib/site-url";
 import { clearGoogleOAuthCookies, readGoogleOAuthCookies, setSessionCookie } from "@/lib/auth/cookies";
 
 // Redirects here must be built from SITE_URL, not request.url: behind the

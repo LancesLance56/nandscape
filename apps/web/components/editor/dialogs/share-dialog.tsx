@@ -39,6 +39,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
 
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
   const [name, setName] = useState(active?.name ?? "Untitled circuit");
+  const [description, setDescription] = useState(active?.description ?? "");
   const [visibility, setVisibility] = useState<ProjectVisibility>(active?.visibility ?? "PRIVATE");
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -54,6 +55,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
 
   useEffect(() => {
     setName(active?.name ?? "Untitled circuit");
+    setDescription(active?.description ?? "");
     setVisibility(active?.visibility ?? "PRIVATE");
   }, [active]);
 
@@ -69,7 +71,13 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
     const res = await fetch(isNew ? "/api/projects" : `/api/projects/${active.slug}`, {
       method: isNew ? "POST" : "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name.trim() || "Untitled circuit", nodes, edges, visibility }),
+      body: JSON.stringify({
+        name: name.trim() || "Untitled circuit",
+        description: description.trim() || null,
+        nodes,
+        edges,
+        visibility,
+      }),
     });
 
     if (!res.ok) {
@@ -79,7 +87,13 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
     }
 
     const { project } = (await res.json()) as { project: ProjectRecord };
-    setActive({ id: project.id, slug: project.slug, name: project.name, visibility: project.visibility });
+    setActive({
+      id: project.id,
+      slug: project.slug,
+      name: project.name,
+      description: project.description,
+      visibility: project.visibility,
+    });
     setSaveStatus("saved");
     if (isNew) router.replace(`/projects/${project.slug}`);
   };
@@ -94,7 +108,13 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
     });
     if (res.ok) {
       const { project } = (await res.json()) as { project: ProjectRecord };
-      setActive({ id: project.id, slug: project.slug, name: project.name, visibility: project.visibility });
+      setActive({
+        id: project.id,
+        slug: project.slug,
+        name: project.name,
+        description: project.description,
+        visibility: project.visibility,
+      });
     }
   };
 
@@ -176,6 +196,17 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-ink-soft">Description (optional)</span>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+              placeholder="What does this circuit do?"
+              className="resize-y rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
             />
           </label>
 

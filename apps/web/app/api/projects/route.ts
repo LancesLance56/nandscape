@@ -29,8 +29,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, nodes, edges, visibility } = body as {
+  const { name, description, nodes, edges, visibility } = body as {
     name?: unknown;
+    description?: unknown;
     nodes?: unknown;
     edges?: unknown;
     visibility?: unknown;
@@ -38,6 +39,9 @@ export async function POST(request: NextRequest) {
 
   if (typeof name !== "string" || !name.trim()) {
     return NextResponse.json({ error: "`name` is required" }, { status: 422 });
+  }
+  if (description !== undefined && description !== null && typeof description !== "string") {
+    return NextResponse.json({ error: "`description` must be a string or null" }, { status: 422 });
   }
   if (!Array.isArray(nodes) || !Array.isArray(edges)) {
     return NextResponse.json({ error: "`nodes` and `edges` must be arrays" }, { status: 422 });
@@ -48,6 +52,7 @@ export async function POST(request: NextRequest) {
 
   const project = await createProject(user.id, {
     name,
+    description: description as string | null | undefined,
     nodes: nodes as EditorNode[],
     edges: edges as EditorEdge[],
     visibility: visibility as ProjectVisibility | undefined,

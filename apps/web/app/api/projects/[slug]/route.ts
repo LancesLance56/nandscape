@@ -51,8 +51,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, nodes, edges, visibility } = body as {
+  const { name, description, nodes, edges, visibility } = body as {
     name?: unknown;
+    description?: unknown;
     nodes?: unknown;
     edges?: unknown;
     visibility?: unknown;
@@ -60,6 +61,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   if (visibility !== undefined && !VALID_VISIBILITIES.includes(visibility as ProjectVisibility)) {
     return NextResponse.json({ error: "`visibility` must be PRIVATE, UNLISTED, or PUBLIC" }, { status: 422 });
+  }
+  if (description !== undefined && description !== null && typeof description !== "string") {
+    return NextResponse.json({ error: "`description` must be a string or null" }, { status: 422 });
   }
   if (nodes !== undefined && !Array.isArray(nodes)) {
     return NextResponse.json({ error: "`nodes` must be an array" }, { status: 422 });
@@ -70,6 +74,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   const project = await updateProject(existing.id, {
     name: typeof name === "string" ? name : undefined,
+    description: description as string | null | undefined,
     nodes: nodes as EditorNode[] | undefined,
     edges: edges as EditorEdge[] | undefined,
     visibility: visibility as ProjectVisibility | undefined,
@@ -89,7 +94,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   if (!existing) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
-  if (existing.ownerId !== user.id) {
+  if (existing.ownerId !== user.id && user.role !== "ADMIN") {
     return NextResponse.json({ error: "You don't own this project" }, { status: 403 });
   }
 

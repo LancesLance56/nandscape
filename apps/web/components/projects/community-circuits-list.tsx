@@ -27,6 +27,9 @@ export function CommunityCircuitsList({ projects }: { projects: PublicProjectSum
           <CircuitPreviewThumbnail nodes={project.nodes} edges={project.edges} className="h-36 border-b border-border" />
           <div className="flex flex-col gap-0.5 px-4 py-3">
             <span className="truncate text-sm font-medium text-ink group-hover:text-copper-dark">{project.name}</span>
+            {project.description && (
+              <span className="line-clamp-2 text-xs text-ink-soft">{project.description}</span>
+            )}
             <span className="font-mono text-[11px] text-slate">
               by {project.ownerUsername} · {formatDate(project.updatedAt)}
             </span>

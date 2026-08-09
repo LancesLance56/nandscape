@@ -57,6 +57,7 @@ export function CircuitEditor({ puzzleSlug, projectSlug }: CircuitEditorProps = 
           id: project.id,
           slug: project.slug,
           name: project.name,
+          description: project.description,
           visibility: project.visibility,
         });
       })();

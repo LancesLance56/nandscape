@@ -18,10 +18,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     return <CircuitEditor projectSlug={slug} />;
   }
 
+  // isOwner already returned above, so this is reachable only for non-owners:
+  // deletion here is exclusively the admin-override path.
+  const canDelete = user?.role === "ADMIN";
+
   return (
     <>
       <Navbar />
-      <ProjectViewer project={project} canFork={Boolean(user)} />
+      <ProjectViewer project={project} canFork={Boolean(user)} canDelete={canDelete} />
     </>
   );
 }

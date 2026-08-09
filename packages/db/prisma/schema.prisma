@@ -143,6 +143,7 @@ model Project {
   id           String            @id @default(cuid())
   slug         String            @unique
   name         String
+  description  String?
   nodes        Json              @default("[]")
   edges        Json              @default("[]")
   visibility   ProjectVisibility @default(PRIVATE)
