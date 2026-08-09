@@ -179,7 +179,7 @@ export function FormatToolbarPlugin() {
     <div
       ref={toolbarRef}
       style={{ top: position.top, left: position.left, transform: "translateX(-50%)" }}
-      className="fixed z-50 flex items-center gap-0.5 rounded-lg border border-border bg-surface-card p-1 shadow-lg"
+      className="absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-surface-card p-1 shadow-lg"
     >
       {FORMAT_BUTTONS.map(({ format, label }) => (
         <button
