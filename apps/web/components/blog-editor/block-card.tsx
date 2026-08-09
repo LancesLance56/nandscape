@@ -85,6 +85,7 @@ export function BlockCard({ block, index, total }: { block: ContentBlock; index:
   return (
     <div
       ref={setNodeRef}
+      data-block-id={block.id}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`group relative rounded-lg pl-14 pr-1 ${
         isDragging ? "z-10 bg-surface-2/60 shadow-lg ring-1 ring-copper/30" : ""
@@ -113,10 +114,14 @@ export function BlockCard({ block, index, total }: { block: ContentBlock; index:
         </button>
       </div>
 
-      {/* Hover toolbar: type tag + move/duplicate/delete. Validation dot
-          stays visible even without hovering - it's information the author
-          should notice, not a control. */}
-      <div className="absolute right-1 top-1 z-10 flex items-center gap-1 rounded-md bg-surface-card/95 opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+      {/* Hover toolbar: type tag + move/duplicate/delete. Floats above the
+          block's own border rather than inside it - the label text is too
+          variable in width (e.g. "Comparison slider") to reserve a
+          permanent right-side gutter the way the left drag handle does
+          without eating into the editing width on every block. Validation
+          dot stays visible even without hovering - it's information the
+          author should notice, not a control. */}
+      <div className="absolute -top-8 right-1 z-10 flex items-center gap-1 rounded-md border border-border bg-surface-card/95 opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
         <span
           className="px-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider"
           style={accent ? { color: accent } : undefined}

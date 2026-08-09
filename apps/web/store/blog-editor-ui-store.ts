@@ -6,6 +6,9 @@ export type BlogEditorViewMode = "split" | "edit" | "preview";
 export interface BlogEditorUiState {
   viewMode: BlogEditorViewMode;
   setViewMode: (mode: BlogEditorViewMode) => void;
+  /** Split view only: scrolling one pane scrolls the other to the same block. */
+  syncScroll: boolean;
+  setSyncScroll: (sync: boolean) => void;
 }
 
 export const useBlogEditorUiStore = create<BlogEditorUiState>()(
@@ -13,10 +16,12 @@ export const useBlogEditorUiStore = create<BlogEditorUiState>()(
     (set) => ({
       viewMode: "split",
       setViewMode: (mode) => set({ viewMode: mode }),
+      syncScroll: true,
+      setSyncScroll: (sync) => set({ syncScroll: sync }),
     }),
     {
       name: "nandscape-blog-editor-ui",
-      version: 1,
+      version: 2,
     },
   ),
 );
