@@ -41,10 +41,83 @@ export async function createUser(input: CreateUserInput): Promise<SessionUser> {
   }
 }
 
+export interface GoogleProfile {
+  googleId: string;
+  email: string;
+  emailVerified: boolean;
+  name?: string;
+  avatarUrl?: string;
+}
+
+function usernameBaseFromEmail(email: string): string {
+  const local = email.split("@")[0].replace(/[^a-zA-Z0-9_]/g, "").slice(0, 15);
+  return local.length >= 3 ? local : `user${local}`;
+}
+
+async function generateUniqueUsername(email: string): Promise<string> {
+  const base = usernameBaseFromEmail(email);
+  let candidate = base;
+  let suffix = 0;
+
+  while (await prisma.user.findUnique({ where: { username: candidate } })) {
+    suffix += 1;
+    candidate = `${base}${suffix}`;
+  }
+
+  return candidate;
+}
+
+/**
+ * Finds the user for a Google sign-in, linking to an existing
+ * password-based account by email where possible, or creating a new
+ * (passwordless) account otherwise.
+ */
+export async function findOrCreateGoogleUser(profile: GoogleProfile): Promise<SessionUser> {
+  const email = profile.email.toLowerCase();
+
+  const byGoogleId = await prisma.user.findUnique({ where: { googleId: profile.googleId } });
+  if (byGoogleId) return toSessionUser(byGoogleId);
+
+  // Only auto-link to an existing account if Google has actually verified
+  // the email - otherwise anyone could claim someone else's account by
+  // registering an OAuth app that reports a matching but unverified address.
+  if (profile.emailVerified) {
+    const byEmail = await prisma.user.findUnique({ where: { email } });
+    if (byEmail) {
+      const linked = await prisma.user.update({
+        where: { id: byEmail.id },
+        data: { googleId: profile.googleId },
+      });
+      return toSessionUser(linked);
+    }
+  }
+
+  const username = await generateUniqueUsername(email);
+
+  try {
+    const user = await prisma.user.create({
+      data: { email, username, googleId: profile.googleId, name: profile.name, avatarUrl: profile.avatarUrl },
+    });
+    return toSessionUser(user);
+  } catch (error) {
+    // Someone else's request won a race for this googleId/email/username
+    // between the checks above and this insert - re-resolve rather than
+    // failing outright, since an existing account is what the caller wants
+    // either way.
+    if (isUniqueConstraintViolation(error)) {
+      return findOrCreateGoogleUser(profile);
+    }
+    throw error;
+  }
+}
+
 export async function authenticateUser(email: string, password: string): Promise<SessionUser> {
   const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
 
-  if (!user) {
+  if (!user || user.passwordHash === null) {
+    // Same dummy hash in both branches (unknown email, and a Google-only
+    // account with no password set) so the response time can't be used to
+    // tell the two cases apart.
     await hashPassword(password);
     throw new InvalidCredentialsError();
   }
@@ -118,7 +191,14 @@ export async function changeUserPassword(
   // resolved userId in the first place, so a miss means the account was
   // deleted mid-session. Reporting it as bad credentials rather than a
   // distinct case is fine; either way the request can't proceed.
-  if (!user) throw new InvalidCredentialsError();
+  //
+  // A null passwordHash means this account was created via Google sign-in
+  // and has never had a password to change - same "invalid credentials"
+  // response, since there's no current password for the caller to have
+  // provided correctly. Setting an initial password for a Google-only
+  // account would be a different flow (no current password to verify)
+  // that doesn't exist yet.
+  if (!user || user.passwordHash === null) throw new InvalidCredentialsError();
 
   const valid = await verifyPassword(currentPassword, user.passwordHash);
   if (!valid) throw new InvalidCredentialsError();

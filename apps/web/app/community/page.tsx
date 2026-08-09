@@ -11,9 +11,6 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function CommunityPage() {
-  // Defensive: this page has no dynamic segment, so Next tries to statically
-  // render it at build time, when the DB may not be reachable yet (e.g.
-  // building the Docker image before postgres is networked in).
   let projects: PublicProjectSummary[] = [];
   try {
     projects = await listPublicProjects();

@@ -111,6 +111,19 @@ export default function SignupPage() {
           </Button>
         </form>
 
+        <div className="my-5 flex items-center gap-3 text-xs text-slate">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <a
+          href="/api/auth/google"
+          className="rounded-xl border border-border-strong bg-transparent px-7 py-3.5 text-center text-base font-semibold text-ink transition-colors hover:border-ink-soft"
+        >
+          Continue with Google
+        </a>
+
         <p className="mt-4 text-sm text-ink-soft">
           Already have an account?{" "}
           <Link href="/login" className="font-medium text-copper hover:text-copper-dark">

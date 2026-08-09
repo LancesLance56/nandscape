@@ -6,14 +6,6 @@ import { studioSql } from "@/lib/db/studio-client";
 
 const executor = createPostgresJSExecutor(studioSql);
 
-// Backend-for-frontend for the embedded Prisma Studio UI (see
-// components/admin/database-studio.tsx). Wire format is dictated by
-// @prisma/studio-core's StudioBFFClient, not by us — response shapes below
-// (tuples of [error, result]) must match what that client expects to parse.
-//
-// `sql-lint` and `query-insights` are intentionally unimplemented: both are
-// documented-optional, and Studio hides the corresponding UI (SQL editor lint,
-// Queries view) when the BFF doesn't advertise support for them.
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") {

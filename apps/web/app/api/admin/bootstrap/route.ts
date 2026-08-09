@@ -2,12 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createUser, listUsers, updateUserRole, EmailAlreadyExistsError, UsernameAlreadyExistsError } from "@repo/auth";
 import { validateSignupInput } from "@/lib/auth/validation";
 
-// Creates the first ADMIN account on a fresh install. Deliberately has no
-// auth check of its own - instead it only ever succeeds while the Users
-// table is empty, which is the one moment no session could exist to gate it
-// with anyway. On any already-initialized deployment this always 403s, so
-// it's safe to leave reachable permanently rather than needing to be
-// removed/disabled after first use.
 export async function POST(request: NextRequest) {
   const existing = await listUsers();
   if (existing.length > 0) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
@@ -12,6 +12,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Populated by /api/auth/google/callback redirecting back here on failure.
+  // Read from window.location rather than useSearchParams() so this page can
+  // stay a plain client component without a Suspense boundary.
+  useEffect(() => {
+    const message = new URLSearchParams(window.location.search).get("error");
+    if (message) setError(message);
+  }, []);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -75,6 +83,19 @@ export default function LoginPage() {
             {submitting ? "Logging in…" : "Log in"}
           </Button>
         </form>
+
+        <div className="my-5 flex items-center gap-3 text-xs text-slate">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <a
+          href="/api/auth/google"
+          className="rounded-xl border border-border-strong bg-transparent px-7 py-3.5 text-center text-base font-semibold text-ink transition-colors hover:border-ink-soft"
+        >
+          Continue with Google
+        </a>
 
         <p className="mt-4 text-sm text-ink-soft">
           Don&apos;t have an account?{" "}
