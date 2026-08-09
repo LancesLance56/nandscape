@@ -10,6 +10,7 @@ interface CurrentUser {
   username: string;
   email: string;
   name: string | null;
+  avatarUrl: string | null;
   role: "USER" | "ADMIN";
 }
 
@@ -102,9 +103,14 @@ export function AuthStatus() {
         aria-label="Account menu"
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen((open) => !open)}
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-border-strong text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+        className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-border-strong text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
       >
-        <UserIcon />
+        {user.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- external (Google-hosted) avatar, not worth a next.config remotePatterns entry for a 36px icon
+          <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+        ) : (
+          <UserIcon />
+        )}
       </button>
 
       {menuOpen && (
