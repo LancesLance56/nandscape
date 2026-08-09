@@ -38,6 +38,8 @@ export function ArticleEditor({
   const saveStatus = useBlogEditorStore((s) => s.saveStatus);
   const saveError = useBlogEditorStore((s) => s.saveError);
   const viewMode = useBlogEditorUiStore((s) => s.viewMode);
+  const alignBlocks = useBlogEditorUiStore((s) => s.alignBlocks);
+  const setAlignBlocks = useBlogEditorUiStore((s) => s.setAlignBlocks);
   const canUndo = useHistoryStore((s) => s.canUndo());
   const canRedo = useHistoryStore((s) => s.canRedo());
 
@@ -86,6 +88,17 @@ export function ArticleEditor({
             </Button>
           </div>
           <ViewModeToggle />
+          {viewMode === "split" && (
+            <label className="flex items-center gap-1.5 font-mono text-xs text-slate" title="Line each block up with its rendered preview, sharing one scroll">
+              <input
+                type="checkbox"
+                checked={alignBlocks}
+                onChange={(e) => setAlignBlocks(e.target.checked)}
+                className="accent-copper"
+              />
+              Align blocks
+            </label>
+          )}
           <span className="font-mono text-xs text-slate">
             {saveStatus === "saving" && "Saving…"}
             {saveStatus === "saved" && "Saved"}
@@ -101,7 +114,7 @@ export function ArticleEditor({
         <MetadataPanel sections={sections ?? []} />
       </div>
 
-      {viewMode === "split" ? (
+      {viewMode === "split" && alignBlocks ? (
         // One shared page scroll, like before. Alignment comes from putting
         // each block and its rendered preview in the same CSS grid row
         // (block-list.tsx), so the row is naturally sized to the taller of
@@ -113,6 +126,13 @@ export function ArticleEditor({
             <PreviewHeader />
           </div>
           <BlockList renderCompanion={(block) => <PreviewBlockItem block={block} />} />
+        </div>
+      ) : viewMode === "split" ? (
+        // Alignment off: the two panes are back to being fully independent,
+        // each with its own natural block spacing/heights.
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+          <BlockList />
+          <PreviewPane />
         </div>
       ) : (
         <div className="mx-auto w-full max-w-4xl">{viewMode === "edit" ? <BlockList /> : <PreviewPane />}</div>
