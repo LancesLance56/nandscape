@@ -68,7 +68,11 @@ export function PreviewPane() {
             {blocks.map((block) => {
               const definition = blockRegistry[block.type] as unknown as BlockDefinition;
               const Renderer = definition.Renderer as unknown as ComponentType<{ block: ContentBlock }>;
-              return <Renderer key={block.id} block={block} />;
+              return (
+                <div key={block.id} data-block-id={block.id}>
+                  <Renderer block={block} />
+                </div>
+              );
             })}
           </div>
         </article>
