@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findOrCreateGoogleUser, createSession } from "@repo/auth";
-import { exchangeGoogleAuthorizationCode } from "@/lib/auth/google-oauth";
+import { exchangeGoogleAuthorizationCode, siteUrl } from "@/lib/auth/google-oauth";
 import { clearGoogleOAuthCookies, readGoogleOAuthCookies, setSessionCookie } from "@/lib/auth/cookies";
 
-function failure(request: NextRequest, message: string): NextResponse {
-  const url = new URL("/login", request.url);
+// Redirects here must be built from SITE_URL, not request.url: behind the
+// reverse proxy the app sees its own bind address as the request origin,
+// which would send the user's browser to an unreachable internal address.
+function failure(message: string): NextResponse {
+  const url = new URL("/login", siteUrl());
   url.searchParams.set("error", message);
   return NextResponse.redirect(url);
 }
@@ -14,13 +17,13 @@ export async function GET(request: NextRequest) {
   await clearGoogleOAuthCookies();
 
   if (!codeVerifier || !nonce) {
-    return failure(request, "Google sign-in request was invalid or expired. Please try again.");
+    return failure("Google sign-in request was invalid or expired. Please try again.");
   }
 
   try {
     const claims = await exchangeGoogleAuthorizationCode(request.nextUrl, codeVerifier, nonce);
     if (!claims || !claims.email) {
-      return failure(request, "Google did not return the expected account details.");
+      return failure("Google did not return the expected account details.");
     }
 
     const user = await findOrCreateGoogleUser({
@@ -34,9 +37,9 @@ export async function GET(request: NextRequest) {
     const session = await createSession(user.id);
     await setSessionCookie(session.token, session.expiresAt);
 
-    return NextResponse.redirect(new URL("/puzzles", request.url));
+    return NextResponse.redirect(new URL("/puzzles", siteUrl()));
   } catch (error) {
     console.error("[auth] google sign-in failed", error);
-    return failure(request, "Google sign-in failed. Please try again.");
+    return failure("Google sign-in failed. Please try again.");
   }
 }
