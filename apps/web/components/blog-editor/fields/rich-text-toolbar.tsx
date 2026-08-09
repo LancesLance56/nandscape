@@ -57,12 +57,16 @@ export function FormatToolbarPlugin() {
   const [linkValue, setLinkValue] = useState("");
   const [colorMenuOpen, setColorMenuOpen] = useState(false);
 
+  const hideToolbar = useCallback(() => {
+    setPosition(null);
+    setLinkInputOpen(false);
+    setColorMenuOpen(false);
+  }, []);
+
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
     if (!$isRangeSelection(selection) || selection.isCollapsed()) {
-      setPosition(null);
-      setLinkInputOpen(false);
-      setColorMenuOpen(false);
+      hideToolbar();
       return;
     }
 
@@ -83,7 +87,7 @@ export function FormatToolbarPlugin() {
     setActiveFormats(formats);
 
     setIsLink($findMatchingParent(selection.anchor.getNode(), $isLinkNode) !== null);
-  }, []);
+  }, [hideToolbar]);
 
   useEffect(
     () =>
@@ -99,6 +103,21 @@ export function FormatToolbarPlugin() {
         ),
       ),
     [editor, updateToolbar],
+  );
+
+  // The toolbar floats just above the current selection, which means a fresh
+  // drag-to-select nearby can start with the mouse right on top of it - the
+  // mousedown lands on the toolbar instead of the text, so the selection
+  // (and whatever format button gets clicked next) stays stuck on the old
+  // highlight. Hiding on mousedown clears it out of the way before the drag
+  // begins; updateToolbar() brings it back once the new selection settles.
+  useEffect(
+    () =>
+      editor.registerRootListener((rootElement, prevRootElement) => {
+        prevRootElement?.removeEventListener("mousedown", hideToolbar);
+        rootElement?.addEventListener("mousedown", hideToolbar);
+      }),
+    [editor, hideToolbar],
   );
 
   if (!mounted || !position) return null;
