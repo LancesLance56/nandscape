@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -22,7 +22,17 @@ import { useCommandDispatch } from "@/hooks/use-command";
 import { BlockConversionProvider, type ConvertBlock } from "@/components/blog-editor/block-conversion-context";
 import type { ContentBlock } from "@/types/content-block";
 
-export function BlockList() {
+export function BlockList({
+  renderCompanion,
+}: {
+  /**
+   * Split view only. Rendered as the second grid column of each block's
+   * row, so the two panes share one scroll and line up block-for-block
+   * instead of drifting apart as their heights diverge - CSS grid sizes
+   * each row to its tallest cell natively, no scroll math needed.
+   */
+  renderCompanion?: (block: ContentBlock) => ReactNode;
+}) {
   const blocks = useBlogEditorStore((s) => s.blocks);
   const dispatch = useCommandDispatch();
   const [draggingBlock, setDraggingBlock] = useState<ContentBlock | null>(null);
@@ -52,6 +62,8 @@ export function BlockList() {
     dispatch(createReorderBlockCommand(from, to));
   };
 
+  const isSplit = Boolean(renderCompanion);
+
   return (
     <BlockConversionProvider value={convertBlock}>
       <DndContext
@@ -62,16 +74,25 @@ export function BlockList() {
         onDragCancel={() => setDraggingBlock(null)}
       >
         <SortableContext items={blocks.map((block) => block.id)} strategy={verticalListSortingStrategy}>
-          <div className="flex flex-col gap-0.5">
+          <div className={isSplit ? "grid grid-cols-2 items-start gap-x-10 gap-y-0.5" : "flex flex-col gap-0.5"}>
             {blocks.map((block, index) => (
-              <BlockCard key={block.id} block={block} index={index} total={blocks.length} />
+              <Fragment key={block.id}>
+                <BlockCard block={block} index={index} total={blocks.length} />
+                {renderCompanion?.(block)}
+              </Fragment>
             ))}
             {blocks.length === 0 && (
-              <p className="mb-2 rounded-lg border border-dashed border-border-strong px-4 py-6 text-center text-sm text-slate">
+              <p
+                className={`rounded-lg border border-dashed border-border-strong px-4 py-6 text-center text-sm text-slate ${
+                  isSplit ? "col-span-2" : "mb-2"
+                }`}
+              >
                 No blocks yet.
               </p>
             )}
-            <AddBlockMenu atIndex={blocks.length} />
+            <div className={isSplit ? "col-span-2" : undefined}>
+              <AddBlockMenu atIndex={blocks.length} />
+            </div>
           </div>
         </SortableContext>
 
