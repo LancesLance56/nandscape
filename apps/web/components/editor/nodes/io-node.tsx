@@ -28,15 +28,25 @@ const STATE_BORDER_CLASS: Record<SignalState, string> = {
   [SignalState.UNKNOWN]: "border-copper/50",
 };
 
+const LABEL_HEIGHT = 13;
+const LABEL_GAP = 3;
+
 /** Same rounded-card shape and margin/spacing/minHeight-derived sizing as
- *  gate-node.tsx/bus-merge-node.tsx (single pin, so nodeHeight collapses to
- *  just `minHeight`),  a fixed inline size from first paint instead of the
- *  old circle-plus-label layout's unmeasured natural size, which needed a
- *  post-mount ResizeObserver pass and visibly jumped once React Flow
- *  measured it. That jump, combined with a toggle click bubbling into React
- *  Flow's own node-selection handling (see stopPropagation below and
- *  elevateNodesOnSelect in circuit-canvas.tsx), is what looked like the
- *  node "bouncing through" its neighbors on click. */
+ *  gate-node.tsx/bus-merge-node.tsx (single pin, so the box's own height
+ *  collapses to just `minHeight`),  a fixed inline size from first paint
+ *  instead of the old circle-plus-label layout's unmeasured natural size,
+ *  which needed a post-mount ResizeObserver pass and visibly jumped once
+ *  React Flow measured it. That jump, combined with a toggle click bubbling
+ *  into React Flow's own node-selection handling (see stopPropagation below
+ *  and elevateNodesOnSelect in circuit-canvas.tsx), is what looked like the
+ *  node "bouncing through" its neighbors on click.
+ *
+ *  The name label sits outside the box, below it, so the box itself (and
+ *  therefore the pin, which is centered on the box, not the whole node) is
+ *  exactly as tall as a plain single-port gate node,  keeping straight
+ *  wires straight against every other node type that shares this formula.
+ *  The label is extra content anchored below that fixed point, it never
+ *  changes where the box or pin sit. */
 function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
   const ioData = data as IoNodeData;
   const isInput = ioData.kind === "input";
@@ -55,7 +65,8 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
       minHeight: s.gateNodeMinHeight,
     })),
   );
-  const nodeHeight = Math.max(minHeight, margin * 2);
+  const boxHeight = Math.max(minHeight, margin * 2);
+  const nodeHeight = boxHeight + LABEL_GAP + LABEL_HEIGHT;
 
   // A real simulation session (see simulation-store.ts) takes priority over
   // the always-on instant preview once one's attached,  same rule wire-edge.tsx
@@ -89,7 +100,7 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
   return (
     <div
       style={{height: `${nodeHeight}px`, width: `${NODE_WIDTH}px`}}
-      className="relative flex items-center justify-center"
+      className="relative"
     >
       {!isInput && (
         <NodeHandle
@@ -97,7 +108,7 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           type="target"
           position={Position.Left}
           signal={signal}
-          style={{top: `${nodeHeight / 2}px`}}
+          style={{top: `${boxHeight / 2}px`}}
           onClick={(event) => onHandleClick(id, "in-0", "target", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "target", event)}
           onMouseLeave={onHandleMouseLeave}
@@ -110,7 +121,7 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           type="source"
           position={Position.Right}
           signal={signal}
-          style={{top: `${nodeHeight / 2}px`}}
+          style={{top: `${boxHeight / 2}px`}}
           onClick={(event) => onHandleClick(id, "out-0", "source", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "source", event)}
           onMouseLeave={onHandleMouseLeave}
@@ -121,16 +132,20 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
         type="button"
         onClick={handleToggle}
         aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} output`}
-        style={{width: NODE_WIDTH}}
-        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-lg border bg-surface-card px-2 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+        style={{top: 0, height: `${boxHeight}px`, width: NODE_WIDTH}}
+        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           isInput ? "cursor-pointer active:scale-[0.97]" : "cursor-default"
         } ${selected ? "border-copper ring-2 ring-copper/30" : STATE_BORDER_CLASS[signal]}`}
       >
-        <span className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink">
-          {ioData.name}
-        </span>
-        <span className={`font-mono text-xs font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
+        <span className={`font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
       </button>
+
+      <span
+        style={{top: `${boxHeight + LABEL_GAP}px`, height: `${LABEL_HEIGHT}px`, width: NODE_WIDTH}}
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[10px] font-semibold text-slate"
+      >
+        {ioData.name}
+      </span>
     </div>
   );
 }

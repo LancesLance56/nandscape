@@ -59,15 +59,18 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   };
 
   const digits = (
-    <span className="flex shrink-0 gap-px font-mono text-xs font-bold leading-none text-ink">
+    <span className="flex shrink-0 gap-0.5 font-mono text-xs font-bold leading-none text-ink">
       {busData.values.map((v, i) => (
         <button
           key={busData.names[i]}
           type="button"
           onClick={(event) => toggleLane(event, i)}
-          className={`rounded-sm px-px transition-colors ${
-            v === SignalState.HIGH ? "text-signal-green" : "text-signal-coral"
-          } hover:bg-surface-2`}
+          title={`Toggle ${busData.names[i]}`}
+          className={`min-w-[13px] rounded-sm border px-0.5 py-px text-center transition-colors ${
+            v === SignalState.HIGH
+              ? "border-signal-green/50 bg-signal-green/10 text-signal-green"
+              : "border-signal-coral/40 bg-signal-coral/10 text-signal-coral"
+          } hover:brightness-125 active:scale-95`}
         >
           {bitChar(v)}
         </button>
