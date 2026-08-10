@@ -12,6 +12,9 @@ import { usePreferencesStore } from "@/store/preferences-store";
 import { commonBusLabel, COMPACT_BUS_WIDTH_THRESHOLD } from "@/lib/editor/bus-utils";
 import type { BusOutputNodeData, EditorNode } from "@/types/editor";
 
+const LABEL_HEIGHT = 13;
+const LABEL_GAP = 3;
+
 function bitChar(s: SignalState): string {
   if (s === SignalState.HIGH) return "1";
   if (s === SignalState.LOW) return "0";
@@ -21,7 +24,10 @@ function bitChar(s: SignalState): string {
 /** N single-bit inputs (in-0..in-(N-1), index 0 = MSB) shown as one
  *  combined decimal + binary readout instead of N separate LEDs. Purely a
  *  display sink,  see bus-output-inspector.tsx for how `names` is edited
- *  and compile-circuit.ts for how each lane becomes its own OUTPUT_PIN. */
+ *  and compile-circuit.ts for how each lane becomes its own OUTPUT_PIN.
+ *  The label sits outside the box, below it (see io-node.tsx for the same
+ *  pattern): the box's own height still drives lane pin spacing, so adding
+ *  the label below never moves a pin. */
 function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const busData = data as BusOutputNodeData;
   const width = busData.names.length;
@@ -36,10 +42,11 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
     })),
   );
 
-  const nodeHeight = Math.max(minHeight, margin * 2 + (width - 1) * spacing);
-  const availableHeight = nodeHeight - margin * 2;
+  const boxHeight = Math.max(minHeight, margin * 2 + (width - 1) * spacing);
+  const nodeHeight = boxHeight + LABEL_GAP + LABEL_HEIGHT;
+  const availableHeight = boxHeight - margin * 2;
   const verticalPos = (index: number, count: number) =>
-    count <= 1 ? nodeHeight / 2 : margin + index * (availableHeight / (count - 1));
+    count <= 1 ? boxHeight / 2 : margin + index * (availableHeight / (count - 1));
 
   const allDefined = signals.every((s) => s === SignalState.HIGH || s === SignalState.LOW);
   const decimalValue = allDefined
@@ -50,10 +57,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const compact = width < COMPACT_BUS_WIDTH_THRESHOLD;
 
   return (
-    <div
-      style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }}
-      className="relative flex items-center justify-center"
-    >
+    <div style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }} className="relative">
       {busData.names.map((name, i) => (
         <NodeHandle
           key={name}
@@ -69,14 +73,13 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
       ))}
 
       <div
-        style={{ width: NODE_WIDTH }}
-        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
+        style={{ top: 0, height: `${boxHeight}px`, width: NODE_WIDTH }}
+        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           compact ? "gap-1 px-1.5 py-1" : "flex-col gap-0.5 px-2 py-1.5"
         } ${selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"}`}
       >
         {compact ? (
           <>
-            <span className="max-w-[22px] truncate font-mono text-[9px] font-semibold text-indigo-400">{label}</span>
             <span className="shrink-0 font-mono text-xs font-bold leading-none text-ink">{binaryString}</span>
             <span className="shrink-0 font-mono text-[9px] text-ink-soft">
               ={decimalValue !== null ? decimalValue : "?"}
@@ -84,9 +87,6 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
           </>
         ) : (
           <>
-            <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-indigo-400">
-              {label}
-            </span>
             <span className="font-mono text-lg font-bold leading-none text-ink">
               {decimalValue !== null ? decimalValue : "?"}
             </span>
@@ -94,6 +94,13 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
           </>
         )}
       </div>
+
+      <span
+        style={{ top: `${boxHeight + LABEL_GAP}px`, height: `${LABEL_HEIGHT}px`, width: NODE_WIDTH }}
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[10px] font-semibold text-indigo-400"
+      >
+        {label}
+      </span>
     </div>
   );
 }

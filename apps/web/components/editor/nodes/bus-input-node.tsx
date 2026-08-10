@@ -14,6 +14,9 @@ import { usePreferencesStore } from "@/store/preferences-store";
 import { commonBusLabel, COMPACT_BUS_WIDTH_THRESHOLD } from "@/lib/editor/bus-utils";
 import type { BusInputNodeData, EditorNode } from "@/types/editor";
 
+const LABEL_HEIGHT = 13;
+const LABEL_GAP = 3;
+
 function bitChar(s: SignalState): string {
   return s === SignalState.HIGH ? "1" : "0";
 }
@@ -22,7 +25,10 @@ function bitChar(s: SignalState): string {
  *  source pins (out-0..out-(N-1), index 0 = MSB) shown as one combined
  *  decimal + binary readout with clickable digits instead of N separate
  *  Input toggles. See BusInputNodeData's doc comment in types/editor.ts for
- *  why this is a general sandbox tool rather than a puzzle-input node. */
+ *  why this is a general sandbox tool rather than a puzzle-input node. The
+ *  label sits outside the box, below it (see io-node.tsx for the same
+ *  pattern): the box's own height still drives lane pin spacing, so adding
+ *  the label below never moves a pin. */
 function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const busData = data as BusInputNodeData;
   const width = busData.names.length;
@@ -37,10 +43,11 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
     })),
   );
 
-  const nodeHeight = Math.max(minHeight, margin * 2 + (width - 1) * spacing);
-  const availableHeight = nodeHeight - margin * 2;
+  const boxHeight = Math.max(minHeight, margin * 2 + (width - 1) * spacing);
+  const nodeHeight = boxHeight + LABEL_GAP + LABEL_HEIGHT;
+  const availableHeight = boxHeight - margin * 2;
   const verticalPos = (index: number, count: number) =>
-    count <= 1 ? nodeHeight / 2 : margin + index * (availableHeight / (count - 1));
+    count <= 1 ? boxHeight / 2 : margin + index * (availableHeight / (count - 1));
 
   const decimalValue = busData.values.reduce((acc, s) => (acc << 1) | (s === SignalState.HIGH ? 1 : 0), 0);
   const label = commonBusLabel(busData.names) || "BUS";
@@ -79,10 +86,7 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   );
 
   return (
-    <div
-      style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }}
-      className="relative flex items-center justify-center"
-    >
+    <div style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }} className="relative">
       {busData.names.map((name, i) => (
         <NodeHandle
           key={name}
@@ -98,27 +102,30 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
       ))}
 
       <div
-        style={{ width: NODE_WIDTH }}
-        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
+        style={{ top: 0, height: `${boxHeight}px`, width: NODE_WIDTH }}
+        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           compact ? "gap-1 px-1.5 py-1" : "flex-col gap-0.5 px-2 py-1.5"
         } ${selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"}`}
       >
         {compact ? (
           <>
-            <span className="max-w-[22px] truncate font-mono text-[9px] font-semibold text-indigo-400">{label}</span>
             {digits}
             <span className="shrink-0 font-mono text-[9px] text-ink-soft">={decimalValue}</span>
           </>
         ) : (
           <>
-            <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-indigo-400">
-              {label}
-            </span>
             <span className="font-mono text-lg font-bold leading-none text-ink">{decimalValue}</span>
             {digits}
           </>
         )}
       </div>
+
+      <span
+        style={{ top: `${boxHeight + LABEL_GAP}px`, height: `${LABEL_HEIGHT}px`, width: NODE_WIDTH }}
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[10px] font-semibold text-indigo-400"
+      >
+        {label}
+      </span>
     </div>
   );
 }

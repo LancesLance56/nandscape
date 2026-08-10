@@ -132,7 +132,7 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
         type="button"
         onClick={handleToggle}
         aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} output`}
-        style={{top: 0, height: `${boxHeight}px`, width: NODE_WIDTH}}
+        style={{top: 0, height: `${boxHeight}px`, width: `${boxHeight}px`}}
         className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           isInput ? "cursor-pointer active:scale-[0.97]" : "cursor-default"
         } ${selected ? "border-copper ring-2 ring-copper/30" : STATE_BORDER_CLASS[signal]}`}
