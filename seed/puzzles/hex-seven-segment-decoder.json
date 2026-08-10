@@ -1,0 +1,368 @@
+{
+  "slug": "hex-seven-segment-decoder",
+  "title": "Hexadecimal Seven-Segment Decoder",
+  "description": "Decode a full 4-bit hex digit (D3 D2 D1 D0, values 0-15) into the seven segments of a display, including the six hex digits A-F. Extends the BCD-only version to every possible input, so there are no free don't-cares left to simplify with.",
+  "difficulty": "expert",
+  "tags": [
+    "combinational",
+    "decoders"
+  ],
+  "gateBudget": 70,
+  "inputs": [
+    {
+      "name": "D3"
+    },
+    {
+      "name": "D2"
+    },
+    {
+      "name": "D1"
+    },
+    {
+      "name": "D0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "SEG_A"
+    },
+    {
+      "name": "SEG_B"
+    },
+    {
+      "name": "SEG_C"
+    },
+    {
+      "name": "SEG_D"
+    },
+    {
+      "name": "SEG_E"
+    },
+    {
+      "name": "SEG_F"
+    },
+    {
+      "name": "SEG_G"
+    }
+  ],
+  "outputDisplay": [
+    {
+      "type": "seven-segment",
+      "names": [
+        "SEG_A",
+        "SEG_B",
+        "SEG_C",
+        "SEG_D",
+        "SEG_E",
+        "SEG_F",
+        "SEG_G"
+      ]
+    }
+  ],
+  "testCases": [
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 0,
+          "D1": 0,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 0,
+          "D1": 0,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 0,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 0,
+          "SEG_E": 0,
+          "SEG_F": 0,
+          "SEG_G": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 0,
+          "D1": 1,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 0,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 0,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 0,
+          "D1": 1,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 0,
+          "SEG_F": 0,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 1,
+          "D1": 0,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 0,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 0,
+          "SEG_E": 0,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 1,
+          "D1": 0,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 0,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 0,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 1,
+          "D1": 1,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 0,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 0,
+          "D2": 1,
+          "D1": 1,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 0,
+          "SEG_E": 0,
+          "SEG_F": 0,
+          "SEG_G": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 0,
+          "D1": 0,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 0,
+          "D1": 0,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 0,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 0,
+          "D1": 1,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 0,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 0,
+          "D1": 1,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 0,
+          "SEG_B": 0,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 1,
+          "D1": 0,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 0,
+          "SEG_C": 0,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 1,
+          "D1": 0,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 0,
+          "SEG_B": 1,
+          "SEG_C": 1,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 0,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 1,
+          "D1": 1,
+          "D0": 0
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 0,
+          "SEG_C": 0,
+          "SEG_D": 1,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "D3": 1,
+          "D2": 1,
+          "D1": 1,
+          "D0": 1
+        },
+        "outputs": {
+          "SEG_A": 1,
+          "SEG_B": 0,
+          "SEG_C": 0,
+          "SEG_D": 0,
+          "SEG_E": 1,
+          "SEG_F": 1,
+          "SEG_G": 1
+        }
+      }
+    }
+  ]
+}

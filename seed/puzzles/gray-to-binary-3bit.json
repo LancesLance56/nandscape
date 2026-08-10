@@ -7,6 +7,7 @@
   "gateBudget": 3,
   "inputs": [{ "name": "G2" }, { "name": "G1" }, { "name": "G0" }],
   "outputs": [{ "name": "B2" }, { "name": "B1" }, { "name": "B0" }],
+  "outputDisplay": [{ "type": "bus", "names": ["B2", "B1", "B0"] }],
   "testCases": [
     { "row": { "inputs": { "G2": 0, "G1": 0, "G0": 0 }, "outputs": { "B2": 0, "B1": 0, "B0": 0 } } },
     { "row": { "inputs": { "G2": 0, "G1": 0, "G0": 1 }, "outputs": { "B2": 0, "B1": 0, "B0": 1 } } },

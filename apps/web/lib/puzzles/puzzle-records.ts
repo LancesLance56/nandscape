@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { query } from "@/lib/db/client";
 import { difficultyFromPrisma, difficultyToPrisma } from "@/types/puzzle";
-import type { PrismaDifficulty, PuzzleDifficulty, PuzzleSpec } from "@/types/puzzle";
+import type { PrismaDifficulty, PuzzleDifficulty, PuzzleSpec, OutputDisplayGroup } from "@/types/puzzle";
 
 export interface PuzzleRecord {
   id: string;
@@ -22,6 +22,7 @@ interface PuzzleData {
   gateRestrictionDisplay: string | null;
   inputs: PuzzleSpec["inputs"];
   outputs: PuzzleSpec["outputs"];
+  outputDisplay?: OutputDisplayGroup[] | null;
 }
 
 interface PuzzleSolution {
@@ -54,6 +55,7 @@ function toSpec(row: PuzzleRow): PuzzleSpec {
     gateRestrictionDisplay: (row.data.gateRestrictionDisplay ?? undefined) as PuzzleSpec["gateRestrictionDisplay"],
     inputs: row.data.inputs,
     outputs: row.data.outputs,
+    outputDisplay: (row.data.outputDisplay ?? undefined) as PuzzleSpec["outputDisplay"],
     testCases: row.solution.testCases,
   };
 }
@@ -103,6 +105,7 @@ export interface PuzzleSeedInput {
   gateRestrictionDisplay?: "hide" | "disable";
   inputs: PuzzleSpec["inputs"];
   outputs: PuzzleSpec["outputs"];
+  outputDisplay?: OutputDisplayGroup[] | null;
   testCases: PuzzleSpec["testCases"];
 }
 
@@ -115,6 +118,7 @@ function buildData(input: PuzzleSeedInput): PuzzleData {
     gateRestrictionDisplay: input.gateRestrictionDisplay ?? null,
     inputs: input.inputs,
     outputs: input.outputs,
+    outputDisplay: input.outputDisplay ?? null,
   };
 }
 
@@ -169,6 +173,10 @@ export async function updatePuzzleRecord(
     gateRestrictionDisplay: patch.gateRestrictionDisplay ?? existing.spec.gateRestrictionDisplay,
     inputs: patch.inputs ?? existing.spec.inputs,
     outputs: patch.outputs ?? existing.spec.outputs,
+    outputDisplay:
+      patch.outputDisplay !== undefined
+        ? patch.outputDisplay
+        : (existing.spec.outputDisplay as OutputDisplayGroup[] | null | undefined) ?? null,
     testCases: patch.testCases ?? existing.spec.testCases,
   };
 

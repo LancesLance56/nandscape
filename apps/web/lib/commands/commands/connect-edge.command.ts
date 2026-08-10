@@ -1,6 +1,7 @@
 import type {Connection} from "@xyflow/react";
 import {defineCommand} from "../command";
 import {useEditorStore} from "@/store/editor-store";
+import type {WireEdgeData} from "@/types/editor";
 
 /**
  * Validity checks (pin arity, no self-loops, type matching) belong in a
@@ -9,8 +10,15 @@ import {useEditorStore} from "@/store/editor-store";
  * flow's own compatibility check, and focuses on making the edit undoable.
  * `waypoints` carries any turns the user placed while click-routing the
  * wire (see wire-draft-store.ts); omitted for a plain drag-to-connect.
+ * `extraData` is how use-handle-click.ts tags a bus-merge -> bus-split
+ * connection as `{isBus, busWidth}` so wire-edge.tsx can render it as a
+ * bundle instead of a signal-colored single-bit wire.
  */
-export function createConnectEdgeCommand(connection: Connection, waypoints?: { x: number; y: number }[]) {
+export function createConnectEdgeCommand(
+  connection: Connection,
+  waypoints?: { x: number; y: number }[],
+  extraData?: Partial<WireEdgeData>,
+) {
   let createdEdgeId: string | null = null;
 
   return defineCommand({
@@ -18,7 +26,7 @@ export function createConnectEdgeCommand(connection: Connection, waypoints?: { x
     label: "Connect wire",
     undoable: true,
     execute: () => {
-      const edge = useEditorStore.getState().connect(connection, waypoints);
+      const edge = useEditorStore.getState().connect(connection, waypoints, extraData);
       createdEdgeId = edge.id;
     },
     undo: () => {

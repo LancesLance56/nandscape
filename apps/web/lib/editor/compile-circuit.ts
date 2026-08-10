@@ -4,6 +4,8 @@ import {
   SignalState,
   SOURCE_PIN_OUTPUT,
   SINK_PIN_INPUT,
+  BUFFER_PIN_INPUT,
+  BUFFER_PIN_OUTPUT,
   compileTopology,
   validateCircuit,
   type GateId,
@@ -12,12 +14,17 @@ import {
   type CircuitTopology,
 } from "@nandscape/engine";
 import { defaultInputCountForGateType, isVariableArityGate } from "@/lib/editor/gate-defaults";
+import { busWidthOf, isBusToBusConnection } from "@/lib/editor/bus-utils";
 import type {
   EditorNode,
   EditorEdge,
   GateNodeData,
   ConstantNodeData,
   ClockNodeData,
+  BusMergeNodeData,
+  BusSplitNodeData,
+  BusOutputNodeData,
+  SevenSegmentNodeData,
 } from "@/types/editor";
 
 export interface CompiledCircuit {
@@ -34,11 +41,26 @@ export type CompileResult =
 interface NodeInfo {
   gateId: GateId;
   inputCount: number;
+  /** bus-merge/bus-split: one BUFFER gate per lane (index i handles
+   *  in-i/out-i). The node's own trunk handle (bus-out/bus-in) isn't a real
+   *  pin at all,  it's unpacked into per-lane net connections directly in
+   *  the edges loop below, never through resolvePin.
+   *  bus-output/seven-segment: one OUTPUT_PIN gate per lane (index i
+   *  handles in-i), same mechanism, just a display sink instead of a
+   *  routing aid,  see resolvePin's "bus-output"/"seven-segment" cases. */
+  laneGates?: GateId[];
 }
 
 function handleRole(handle: string | null | undefined, fallback: number): number {
   const match = handle ? /(?:in|out)-(\d+)/.exec(handle) : null;
   return match ? Number(match[1]) : fallback;
+}
+
+function nodeLabel(node: EditorNode): string {
+  if (node.data.kind === "bus-merge" || node.data.kind === "bus-split") {
+    return (node.data as BusMergeNodeData | BusSplitNodeData).label || "Bus";
+  }
+  return node.data.kind;
 }
 
 function resolvePin(
@@ -66,6 +88,22 @@ function resolvePin(
       const inIndex = handleRole(handle, 0);
       return circuit.pinOf(info.gateId, inIndex);
     }
+    case "bus-merge": {
+      // in-i is an ordinary single-bit target pin on lane i's buffer.
+      const laneGate = info.laneGates![handleRole(handle, 0)];
+      return circuit.pinOf(laneGate, BUFFER_PIN_INPUT);
+    }
+    case "bus-split": {
+      // out-i is an ordinary single-bit source pin on lane i's buffer.
+      const laneGate = info.laneGates![handleRole(handle, 0)];
+      return circuit.pinOf(laneGate, BUFFER_PIN_OUTPUT);
+    }
+    case "bus-output":
+    case "seven-segment": {
+      // in-i is an ordinary single-bit sink pin on lane i's OUTPUT_PIN gate.
+      const laneGate = info.laneGates![handleRole(handle, 0)];
+      return circuit.pinOf(laneGate, SINK_PIN_INPUT);
+    }
     default:
       throw new Error(`resolvePin: unsupported node kind "${node.data.kind}"`);
   }
@@ -87,6 +125,39 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
 
   for (const node of nodes) {
     if (node.data.kind === "note") continue;
+
+    // Bus nodes don't map to a single gate: each lane is its own BUFFER
+    // gate with real pins (so ordinary fan-in/fan-out wires just work, and
+    // an unwired lane gets flagged by the normal unconnected-pin check
+    // below for free). The trunk handle (bus-out/bus-in) is wired directly
+    // lane-to-lane in the edges loop, it never becomes a pin itself.
+    if (node.data.kind === "bus-merge" || node.data.kind === "bus-split") {
+      const width = busWidthOf(node);
+      const laneGates: GateId[] = [];
+      for (let i = 0; i < width; i++) {
+        const laneGateId = circuit.addGate({ type: GateType.BUFFER, name: `${node.id}::${i}` });
+        laneGates.push(laneGateId);
+        nodeIdByGateId.set(laneGateId, node.id);
+      }
+      infoByNodeId.set(node.id, { gateId: laneGates[0], inputCount: 0, laneGates });
+      continue;
+    }
+
+    // Bus Output / Seven-Segment: pure display sinks, one OUTPUT_PIN gate
+    // per named lane. Never a source, so no bus-to-bus-style edge
+    // interception is needed,  ordinary per-edge net-building below already
+    // handles them once resolvePin knows about the kind.
+    if (node.data.kind === "bus-output" || node.data.kind === "seven-segment") {
+      const names = (node.data as BusOutputNodeData | SevenSegmentNodeData).names;
+      const laneGates: GateId[] = [];
+      for (let i = 0; i < names.length; i++) {
+        const laneGateId = circuit.addGate({ type: GateType.OUTPUT_PIN, name: `${node.id}::${names[i]}` });
+        laneGates.push(laneGateId);
+        nodeIdByGateId.set(laneGateId, node.id);
+      }
+      infoByNodeId.set(node.id, { gateId: laneGates[0], inputCount: 0, laneGates });
+      continue;
+    }
 
     let gateId: GateId;
     let inputCount = 0;
@@ -135,6 +206,7 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
   // feeding several inputs) becomes one net with several pins, not several
   // separate two-pin nets that would each only see one branch.
   const netGroups = new Map<string, { pins: Set<PinId>; edgeIds: string[] }>();
+  const busIssues: string[] = [];
 
   for (const edge of edges) {
     const sourceNode = nodesById.get(edge.source);
@@ -142,6 +214,46 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
     const sourceInfo = infoByNodeId.get(edge.source);
     const targetInfo = infoByNodeId.get(edge.target);
     if (!sourceNode || !targetNode || !sourceInfo || !targetInfo) continue;
+
+    // The one bus-specific case: a Bus Merge's trunk feeding a Bus Split's
+    // trunk doesn't produce a single pin pair,  it fans out into `width`
+    // parallel lane-to-lane connections, wired directly between the two
+    // nodes' per-lane buffers. This edge deliberately never gets an entry
+    // in netByEdgeId (see wire-edge.tsx: it's rendered as a fixed neutral
+    // bundle, not signal-colored, since it doesn't correspond to one net).
+    if (isBusToBusConnection(sourceNode, edge.sourceHandle, targetNode, edge.targetHandle)) {
+      const mergeWidth = busWidthOf(sourceNode);
+      const splitWidth = busWidthOf(targetNode);
+      if (mergeWidth !== splitWidth) {
+        busIssues.push(
+          `Bus width mismatch: "${nodeLabel(sourceNode)}" is ${mergeWidth}-bit but "${nodeLabel(targetNode)}" is ${splitWidth}-bit.`,
+        );
+        continue;
+      }
+      for (let i = 0; i < mergeWidth; i++) {
+        const mergeOutPin = circuit.pinOf(sourceInfo.laneGates![i], BUFFER_PIN_OUTPUT);
+        const splitInPin = circuit.pinOf(targetInfo.laneGates![i], BUFFER_PIN_INPUT);
+        const key = `${edge.source}::lane-${i}`;
+        const group = netGroups.get(key) ?? { pins: new Set<PinId>(), edgeIds: [] };
+        group.pins.add(mergeOutPin);
+        group.pins.add(splitInPin);
+        netGroups.set(key, group);
+      }
+      continue;
+    }
+
+    // A bus trunk handle reaching anywhere but its exact counterpart should
+    // already be blocked at connect-time (use-handle-click.ts); this is
+    // defense-in-depth for graphs that arrive some other way (paste, an
+    // older save, a hand-edited circuit file).
+    const sourceIsBusTrunk = sourceNode.data.kind === "bus-merge" && edge.sourceHandle === "bus-out";
+    const targetIsBusTrunk = targetNode.data.kind === "bus-split" && edge.targetHandle === "bus-in";
+    if (sourceIsBusTrunk || targetIsBusTrunk) {
+      busIssues.push(
+        `"${nodeLabel(sourceNode)}" -> "${nodeLabel(targetNode)}" isn't a valid bus connection,  a bus trunk can only connect to its matching Bus Split/Merge.`,
+      );
+      continue;
+    }
 
     const sourcePin = resolvePin(circuit, sourceInfo, sourceNode, edge.sourceHandle, "source");
     const targetPin = resolvePin(circuit, targetInfo, targetNode, edge.targetHandle, "target");
@@ -152,6 +264,10 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
     group.pins.add(targetPin);
     group.edgeIds.push(edge.id);
     netGroups.set(key, group);
+  }
+
+  if (busIssues.length > 0) {
+    return { ok: false, issues: Array.from(new Set(busIssues)) };
   }
 
   const netByEdgeId = new Map<string, NetId>();

@@ -3,7 +3,7 @@ import type {Connection} from "@xyflow/react";
 import {applyNodeChanges, applyEdgeChanges} from "@xyflow/react";
 import type {NodeChange, EdgeChange} from "@xyflow/react";
 
-import type {EditorNode, EditorEdge, Selection} from "@/types/editor";
+import type {EditorNode, EditorEdge, Selection, WireEdgeData} from "@/types/editor";
 import {EMPTY_SELECTION} from "@/types/editor";
 
 export interface EditorState {
@@ -30,7 +30,11 @@ export interface EditorState {
   addEdge: (edge: EditorEdge) => void;
   removeEdges: (edgeIds: string[]) => void;
   updateEdgeData: (edgeId: string, patch: Record<string, unknown>) => void;
-  connect: (connection: Connection, waypoints?: { x: number; y: number }[]) => EditorEdge;
+  connect: (
+    connection: Connection,
+    waypoints?: { x: number; y: number }[],
+    extraData?: Partial<WireEdgeData>,
+  ) => EditorEdge;
 
   setSelection: (selection: Selection) => void;
   clearSelection: () => void;
@@ -98,7 +102,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     }));
   },
 
-  connect: (connection, waypoints) => {
+  connect: (connection, waypoints, extraData) => {
     const edge: EditorEdge = {
       id: `edge_${connection.source}:${connection.sourceHandle ?? "o"}-${connection.target}:${connection.targetHandle ?? "i"}_${crypto.randomUUID().slice(0, 8)}`,
       source: connection.source!,
@@ -106,7 +110,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       sourceHandle: connection.sourceHandle,
       targetHandle: connection.targetHandle,
       type: "wire",
-      data: waypoints && waypoints.length > 0 ? {waypoints} : {},
+      data: {
+        ...(waypoints && waypoints.length > 0 ? {waypoints} : {}),
+        ...extraData,
+      },
     };
     get().addEdge(edge);
     return edge;

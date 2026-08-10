@@ -41,6 +41,20 @@ const STATIC_GROUPS: { title: string; entries: Omit<PaletteEntry, "color">[] }[]
       { kind: "output", label: "Output", symbol: "OUT" },
     ],
   },
+  {
+    title: "Buses",
+    entries: [
+      { kind: "bus-merge", label: "Bus Merge", symbol: "BM" },
+      { kind: "bus-split", label: "Bus Split", symbol: "BS" },
+    ],
+  },
+  {
+    title: "Displays",
+    entries: [
+      { kind: "bus-output", label: "Bus Output", symbol: "BO" },
+      { kind: "seven-segment", label: "7-Segment", symbol: "7S" },
+    ],
+  },
 ];
 
 function CreateBlockButton() {

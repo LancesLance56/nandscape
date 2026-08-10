@@ -59,6 +59,13 @@ function WireEdgeImpl({
   const engineActive = engineStatus === "running";
   const signal = engineActive && engineSignal !== undefined ? engineSignal : previewSignal;
 
+  // A bus edge (BusMerge.bus-out -> BusSplit.bus-in) stands for several
+  // parallel single-bit nets, not one,  neither compile-circuit.ts nor
+  // live-simulate.ts ever compute a signal for it (see bus-utils.ts /
+  // expandBusEdges), so it's drawn as a fixed neutral bundle instead of
+  // being colored from a signal that doesn't exist.
+  const isBus = data?.isBus === true;
+
   const updateEdgeData = useEditorStore((s) => s.updateEdgeData);
   const dragIndexRef = useRef<number | null>(null);
 
@@ -98,20 +105,24 @@ function WireEdgeImpl({
     ? buildOrthogonalPath(allPoints)
     : autoPath;
 
-  const stroke =
-    signal !== undefined
+  const BUS_STROKE = "#818cf8"; // Tailwind indigo-400, matches the bus node accent color
+
+  const stroke = isBus
+    ? BUS_STROKE
+    : signal !== undefined
       ? SIGNAL_STROKE[signal]
       : SIGNAL_STROKE[SignalState.FLOAT];
 
-  const signalWidth =
-    signal === SignalState.HIGH
+  const signalWidth = isBus
+    ? 5
+    : signal === SignalState.HIGH
       ? 2.5
       : signal === SignalState.FLOAT
         ? 1.5
         : 2;
 
   const signalGlow =
-    signal === SignalState.HIGH
+    !isBus && signal === SignalState.HIGH
       ? `drop-shadow(0 0 4px ${stroke})
          drop-shadow(0 0 8px ${stroke})`
       : undefined;
@@ -315,6 +326,28 @@ function WireEdgeImpl({
         }}
         onDoubleClick={handleDoubleClick}
       />
+
+      {isBus && data?.busWidth !== undefined && (
+        <ViewportPortal>
+          <div
+            className="nopan nodrag pointer-events-none select-none"
+            style={{
+              position: "absolute",
+              transform: `translate(${(sourceX + targetX) / 2}px, ${(sourceY + targetY) / 2}px) translate(-50%, -50%)`,
+              padding: "1px 5px",
+              borderRadius: 9999,
+              background: BUS_STROKE,
+              color: "white",
+              fontFamily: "var(--font-mono, monospace)",
+              fontSize: 10,
+              fontWeight: 700,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+            }}
+          >
+            ×{data.busWidth}
+          </div>
+        </ViewportPortal>
+      )}
 
       {selected && hasWaypoints && (
         <ViewportPortal>

@@ -18,7 +18,16 @@ import {useCommandDispatch} from "@/hooks/use-command";
 import {useLiveSimulation} from "@/hooks/use-live-simulation";
 import {useEngineSimulation} from "@/hooks/use-engine-simulation";
 import {useScreenToFlowPosition} from "@/hooks/use-flow-position";
-import {nodeTypes, createGateNode, createIoNode, createSubcircuitNode} from "@/components/editor/nodes/node-registry";
+import {
+  nodeTypes,
+  createGateNode,
+  createIoNode,
+  createSubcircuitNode,
+  createBusMergeNode,
+  createBusSplitNode,
+  createBusOutputNode,
+  createSevenSegmentNode,
+} from "@/components/editor/nodes/node-registry";
 import {edgeTypes} from "@/components/editor/edges/edge-registry";
 import {CanvasControls} from "./canvas-controls";
 import {WireDraftOverlay} from "./wire-draft-overlay";
@@ -128,6 +137,14 @@ export function CircuitCanvas() {
         node = createIoNode(position, entry.kind, entry.kind === "input" ? "A" : "OUT");
       } else if (entry.kind === "subcircuit" && entry.blockId) {
         node = createSubcircuitNode(position, entry.blockId);
+      } else if (entry.kind === "bus-merge") {
+        node = createBusMergeNode(position);
+      } else if (entry.kind === "bus-split") {
+        node = createBusSplitNode(position);
+      } else if (entry.kind === "bus-output") {
+        node = createBusOutputNode(position);
+      } else if (entry.kind === "seven-segment") {
+        node = createSevenSegmentNode(position);
       }
 
       if (node) dispatch(createAddNodeCommand(node));

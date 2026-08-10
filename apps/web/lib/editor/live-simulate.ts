@@ -1,7 +1,15 @@
 import { SignalState, GateType, evaluateCombinationalGate } from "@nandscape/engine";
-import type { EditorNode, EditorEdge, GateNodeData, IoNodeData, ConstantNodeData, SubcircuitNodeData } from "@/types/editor";
+import type {
+  EditorNode,
+  EditorEdge,
+  GateNodeData,
+  IoNodeData,
+  ConstantNodeData,
+  SubcircuitNodeData,
+} from "@/types/editor";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
 import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
+import { busWidthOf, isBusToBusConnection } from "@/lib/editor/bus-utils";
 
 const MAX_PASSES = 6;
 const MAX_SUBCIRCUIT_DEPTH = 8;
@@ -9,6 +17,47 @@ const MAX_SUBCIRCUIT_DEPTH = 8;
 function inputIndexFromHandle(handle: string | null | undefined): number {
   const match = handle ? /(?:in|out)-(\d+)/.exec(handle) : null;
   return match ? Number(match[1]) : 0;
+}
+
+/**
+ * This evaluator drives exactly one SignalState per edge id, but a Bus
+ * Merge -> Bus Split edge stands for `width` parallel single-bit
+ * connections, not one,  there's nowhere to put a bundled value on a
+ * single edge. So before anything else runs, replace that one edge with
+ * `width` synthetic lane edges (unique ids, internal-only handle names)
+ * connecting the same two nodes directly. The original bus edge is
+ * dropped entirely and never appears in the returned signal map,  see
+ * wire-edge.tsx, it renders as a fixed neutral bundle instead of being
+ * colored from a signal that was never computed for it.
+ */
+function expandBusEdges(nodes: EditorNode[], edges: EditorEdge[]): EditorEdge[] {
+  const nodesById = new Map(nodes.map((n) => [n.id, n]));
+  const expanded: EditorEdge[] = [];
+
+  for (const edge of edges) {
+    const sourceNode = nodesById.get(edge.source);
+    const targetNode = nodesById.get(edge.target);
+
+    if (!isBusToBusConnection(sourceNode, edge.sourceHandle, targetNode, edge.targetHandle)) {
+      expanded.push(edge);
+      continue;
+    }
+
+    const width = Math.min(busWidthOf(sourceNode!), busWidthOf(targetNode!));
+    for (let i = 0; i < width; i++) {
+      expanded.push({
+        id: `${edge.id}::lane${i}`,
+        source: edge.source,
+        sourceHandle: `lane-out-${i}`,
+        target: edge.target,
+        targetHandle: `lane-in-${i}`,
+        type: "wire",
+        data: {},
+      });
+    }
+  }
+
+  return expanded;
 }
 
 function evaluateSubcircuitInstance(
@@ -55,10 +104,12 @@ export function evaluateLiveCircuit(
   previousSignals: Record<string, SignalState> = {},
   depth = 0,
 ): Record<string, SignalState> {
+  const flatEdges = expandBusEdges(nodes, edges);
+
   const incomingByTarget = new Map<string, EditorEdge[]>();
   const outgoingBySourceHandle = new Map<string, EditorEdge[]>();
 
-  for (const edge of edges) {
+  for (const edge of flatEdges) {
     const inList = incomingByTarget.get(edge.target) ?? [];
     inList.push(edge);
     incomingByTarget.set(edge.target, inList);
@@ -70,7 +121,7 @@ export function evaluateLiveCircuit(
   }
 
   const edgeSignal = new Map<string, SignalState>();
-  for (const edge of edges) edgeSignal.set(edge.id, previousSignals[edge.id] ?? SignalState.FLOAT);
+  for (const edge of flatEdges) edgeSignal.set(edge.id, previousSignals[edge.id] ?? SignalState.FLOAT);
 
   const readInputs = (nodeId: string, count: number): SignalState[] => {
     const values = new Array<SignalState>(count).fill(SignalState.FLOAT);
@@ -79,6 +130,13 @@ export function evaluateLiveCircuit(
       if (idx < count) values[idx] = edgeSignal.get(edge.id) ?? SignalState.FLOAT;
     }
     return values;
+  };
+
+  const readHandle = (nodeId: string, handleId: string): SignalState => {
+    for (const edge of incomingByTarget.get(nodeId) ?? []) {
+      if (edge.targetHandle === handleId) return edgeSignal.get(edge.id) ?? SignalState.FLOAT;
+    }
+    return SignalState.FLOAT;
   };
 
   const drive = (nodeId: string, handleId: string, value: SignalState) => {
@@ -127,6 +185,23 @@ export function evaluateLiveCircuit(
           );
           outputValues.forEach((value, i) => drive(node.id, `out-${i}`, value));
           Object.assign(collectedInternalSignals, internalSignals);
+          break;
+        }
+        case "bus-merge": {
+          // Relay each real in-i straight through to the synthetic lane
+          // edge expandBusEdges created for it (lane-out-i),  a Bus Merge
+          // does nothing electrically beyond bundling for display.
+          const width = busWidthOf(node);
+          readInputs(node.id, width).forEach((value, i) => drive(node.id, `lane-out-${i}`, value));
+          break;
+        }
+        case "bus-split": {
+          // Mirror of bus-merge: relay each synthetic lane-in-i back out
+          // to the real out-i single-bit pin gates downstream actually see.
+          const width = busWidthOf(node);
+          for (let i = 0; i < width; i++) {
+            drive(node.id, `out-${i}`, readHandle(node.id, `lane-in-${i}`));
+          }
           break;
         }
         default:

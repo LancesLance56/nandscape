@@ -13,6 +13,7 @@
     { "name": "CIN" }
   ],
   "outputs": [{ "name": "SUM1" }, { "name": "SUM0" }, { "name": "COUT" }],
+  "outputDisplay": [{ "type": "bus", "names": ["SUM1", "SUM0"] }],
   "testCases": [
     { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 0 } } },
     { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 0, "COUT": 0 } } },

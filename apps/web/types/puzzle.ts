@@ -35,6 +35,28 @@ export interface PuzzleTestCase {
 
 export type GateRestrictionDisplay = "hide" | "disable";
 
+/**
+ * Optional hint for the puzzle's starter graph: instead of one Output node
+ * per port, group a run of related output ports into a single Bus Output
+ * (a combined decimal/binary readout) or Seven-Segment Display node. Purely
+ * a starter-canvas/display concern,  grading still checks each named port
+ * independently (see grade-puzzle.ts), and any port not covered by a group
+ * falls back to a plain Output node exactly like today.
+ */
+export interface BusOutputDisplayGroup {
+  type: "bus";
+  /** Must be a subset of this puzzle's `outputs` names, index 0 = MSB (top pin). */
+  names: string[];
+}
+
+export interface SevenSegmentDisplayGroup {
+  type: "seven-segment";
+  /** Segment names in a, b, c, d, e, f, g order,  must match this puzzle's `outputs` names. */
+  names: [string, string, string, string, string, string, string];
+}
+
+export type OutputDisplayGroup = BusOutputDisplayGroup | SevenSegmentDisplayGroup;
+
 export interface PuzzleSpec {
   slug: string;
   title: string;
@@ -47,6 +69,7 @@ export interface PuzzleSpec {
   gateRestrictionDisplay?: GateRestrictionDisplay;
   inputs: PuzzlePort[];
   outputs: PuzzlePort[];
+  outputDisplay?: OutputDisplayGroup[];
   testCases: PuzzleTestCase[];
   [p: string]: unknown;
 }

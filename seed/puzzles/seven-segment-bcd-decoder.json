@@ -15,6 +15,9 @@
     { "name": "SEG_F" },
     { "name": "SEG_G" }
   ],
+  "outputDisplay": [
+    { "type": "seven-segment", "names": ["SEG_A", "SEG_B", "SEG_C", "SEG_D", "SEG_E", "SEG_F", "SEG_G"] }
+  ],
   "testCases": [
     { "row": { "inputs": { "D3": 0, "D2": 0, "D1": 0, "D0": 0 }, "outputs": { "SEG_A": 1, "SEG_B": 1, "SEG_C": 1, "SEG_D": 1, "SEG_E": 1, "SEG_F": 1, "SEG_G": 0 } } },
     { "row": { "inputs": { "D3": 0, "D2": 0, "D1": 0, "D0": 1 }, "outputs": { "SEG_A": 0, "SEG_B": 1, "SEG_C": 1, "SEG_D": 0, "SEG_E": 0, "SEG_F": 0, "SEG_G": 0 } } },

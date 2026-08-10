@@ -1,0 +1,102 @@
+{
+  "slug": "perfect-square-lookup",
+  "title": "Perfect Square Lookup",
+  "description": "Given a 2-bit number N (N1 N0, values 0-3), output N squared as a 4-bit number (SQ3 SQ2 SQ1 SQ0). A tiny lookup table: 0*0=0, 1*1=1, 2*2=4, 3*3=9.",
+  "difficulty": "easy",
+  "tags": [
+    "combinational",
+    "arithmetic"
+  ],
+  "gateBudget": 6,
+  "inputs": [
+    {
+      "name": "N1"
+    },
+    {
+      "name": "N0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "SQ3"
+    },
+    {
+      "name": "SQ2"
+    },
+    {
+      "name": "SQ1"
+    },
+    {
+      "name": "SQ0"
+    }
+  ],
+  "outputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "SQ3",
+        "SQ2",
+        "SQ1",
+        "SQ0"
+      ]
+    }
+  ],
+  "testCases": [
+    {
+      "row": {
+        "inputs": {
+          "N1": 0,
+          "N0": 0
+        },
+        "outputs": {
+          "SQ3": 0,
+          "SQ2": 0,
+          "SQ1": 0,
+          "SQ0": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "N1": 0,
+          "N0": 1
+        },
+        "outputs": {
+          "SQ3": 0,
+          "SQ2": 0,
+          "SQ1": 0,
+          "SQ0": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "N1": 1,
+          "N0": 0
+        },
+        "outputs": {
+          "SQ3": 0,
+          "SQ2": 1,
+          "SQ1": 0,
+          "SQ0": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "N1": 1,
+          "N0": 1
+        },
+        "outputs": {
+          "SQ3": 1,
+          "SQ2": 0,
+          "SQ1": 0,
+          "SQ0": 1
+        }
+      }
+    }
+  ]
+}

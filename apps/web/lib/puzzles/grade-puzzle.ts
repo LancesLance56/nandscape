@@ -1,7 +1,14 @@
 import { SignalState, gateTypeToString } from "@nandscape/engine";
 import { evaluateLiveCircuit } from "@/lib/editor/live-simulate";
 import { getGateRestriction } from "./gate-restrictions";
-import type { EditorNode, EditorEdge, GateNodeData, IoNodeData } from "@/types/editor";
+import type {
+  EditorNode,
+  EditorEdge,
+  GateNodeData,
+  IoNodeData,
+  BusOutputNodeData,
+  SevenSegmentNodeData,
+} from "@/types/editor";
 import type { PuzzleSpec, SequentialStep, TruthTableRow } from "@/types/puzzle";
 
 export interface CaseGradeResult {
@@ -43,7 +50,7 @@ function setInputValues(nodes: EditorNode[], values: Record<string, 0 | 1>): Edi
   });
 }
 
-function findIoNodesByName(nodes: EditorNode[], kind: "input" | "output"): Map<string, EditorNode> {
+function findIoNodesByName(nodes: EditorNode[], kind: "input"): Map<string, EditorNode> {
   const map = new Map<string, EditorNode>();
   for (const node of nodes) {
     if (node.data.kind !== kind) continue;
@@ -52,7 +59,7 @@ function findIoNodesByName(nodes: EditorNode[], kind: "input" | "output"): Map<s
   return map;
 }
 
-function findDuplicateName(nodes: EditorNode[], kind: "input" | "output"): string | null {
+function findDuplicateName(nodes: EditorNode[], kind: "input"): string | null {
   const seen = new Set<string>();
   for (const node of nodes) {
     if (node.data.kind !== kind) continue;
@@ -63,8 +70,49 @@ function findDuplicateName(nodes: EditorNode[], kind: "input" | "output"): strin
   return null;
 }
 
-function readOutput(node: EditorNode, edges: EditorEdge[], signals: Record<string, SignalState>): SignalState {
-  const incoming = edges.find((e) => e.target === node.id);
+/** Every named output port's location on the canvas. Spans plain "output"
+ *  nodes (one name -> handle "in-0") and multi-lane display nodes
+ *  ("bus-output"/"seven-segment", each names[i] -> handle `in-${i}`), since
+ *  a puzzle's `outputDisplay` hint can put a given port name on either kind
+ *  of node,  see puzzle-starter-graph.ts. Grading and the missing-output
+ *  structural check both resolve output names through this map, never by
+ *  assuming one node = one port. */
+function outputNamesOf(node: EditorNode): string[] {
+  if (node.data.kind === "output") return [(node.data as IoNodeData).name];
+  if (node.data.kind === "bus-output" || node.data.kind === "seven-segment") {
+    return (node.data as BusOutputNodeData | SevenSegmentNodeData).names;
+  }
+  return [];
+}
+
+interface OutputPinRef {
+  node: EditorNode;
+  handle: string;
+}
+
+function findOutputPins(nodes: EditorNode[]): Map<string, OutputPinRef> {
+  const map = new Map<string, OutputPinRef>();
+  for (const node of nodes) {
+    outputNamesOf(node).forEach((name, i) => {
+      if (!map.has(name)) map.set(name, { node, handle: `in-${i}` });
+    });
+  }
+  return map;
+}
+
+function findDuplicateOutputName(nodes: EditorNode[]): string | null {
+  const seen = new Set<string>();
+  for (const node of nodes) {
+    for (const name of outputNamesOf(node)) {
+      if (seen.has(name)) return name;
+      seen.add(name);
+    }
+  }
+  return null;
+}
+
+function readOutputPin(ref: OutputPinRef, edges: EditorEdge[], signals: Record<string, SignalState>): SignalState {
+  const incoming = edges.find((e) => e.target === ref.node.id && e.targetHandle === ref.handle);
   if (!incoming) return SignalState.FLOAT;
   return signals[incoming.id] ?? SignalState.FLOAT;
 }
@@ -96,8 +144,8 @@ function checkStructure(puzzle: PuzzleSpec, nodes: EditorNode[]): string | null 
 
   const dupInput = findDuplicateName(nodes, "input");
   if (dupInput) return `Multiple input nodes are named "${dupInput}",  names must be unique.`;
-  const dupOutput = findDuplicateName(nodes, "output");
-  if (dupOutput) return `Multiple output nodes are named "${dupOutput}",  names must be unique.`;
+  const dupOutput = findDuplicateOutputName(nodes);
+  if (dupOutput) return `Multiple output ports are named "${dupOutput}",  names must be unique.`;
 
   const inputsByName = findIoNodesByName(nodes, "input");
   const missingInputs = puzzle.inputs.filter((p) => !inputsByName.has(p.name));
@@ -105,8 +153,8 @@ function checkStructure(puzzle: PuzzleSpec, nodes: EditorNode[]): string | null 
     return `Missing input node(s) named: ${missingInputs.map((p) => p.name).join(", ")}.`;
   }
 
-  const outputsByName = findIoNodesByName(nodes, "output");
-  const missingOutputs = puzzle.outputs.filter((p) => !outputsByName.has(p.name));
+  const outputPins = findOutputPins(nodes);
+  const missingOutputs = puzzle.outputs.filter((p) => !outputPins.has(p.name));
   if (missingOutputs.length > 0) {
     return `Missing output node(s) named: ${missingOutputs.map((p) => p.name).join(", ")}.`;
   }
@@ -125,11 +173,11 @@ async function gradeRow(
   const signals = evaluateLiveCircuit(patched, edges);
   await options.onStep?.(patched, signals);
 
-  const outputsByName = findIoNodesByName(nodes, "output");
+  const outputPins = findOutputPins(nodes);
   const mismatches: string[] = [];
   for (const [name, expected] of Object.entries(row.outputs)) {
-    const node = outputsByName.get(name);
-    const actual = node ? readOutput(node, edges, signals) : SignalState.FLOAT;
+    const ref = outputPins.get(name);
+    const actual = ref ? readOutputPin(ref, edges, signals) : SignalState.FLOAT;
     if (!signalMatchesBit(actual, expected)) {
       mismatches.push(`${name}=${signalStateBit(actual)} (expected ${expected})`);
     }
@@ -153,7 +201,7 @@ async function gradeSequence(
 ): Promise<CaseGradeResult> {
   let state = nodes;
   let previousSignals: Record<string, SignalState> = {};
-  const outputsByName = findIoNodesByName(nodes, "output");
+  const outputPins = findOutputPins(nodes);
   const stepFailures: string[] = [];
 
   for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
@@ -172,8 +220,8 @@ async function gradeSequence(
 
     const mismatches: string[] = [];
     for (const [name, expected] of Object.entries(step.expectOutputs)) {
-      const node = outputsByName.get(name);
-      const actual = node ? readOutput(node, edges, previousSignals) : SignalState.FLOAT;
+      const ref = outputPins.get(name);
+      const actual = ref ? readOutputPin(ref, edges, previousSignals) : SignalState.FLOAT;
       if (!signalMatchesBit(actual, expected)) {
         mismatches.push(`${name}=${signalStateBit(actual)} (expected ${expected})`);
       }

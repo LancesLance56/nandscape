@@ -11,6 +11,7 @@
     { "name": "RESET", "defaultValue": 0 }
   ],
   "outputs": [{ "name": "Q3" }, { "name": "Q2" }, { "name": "Q1" }, { "name": "Q0" }],
+  "outputDisplay": [{ "type": "bus", "names": ["Q3", "Q2", "Q1", "Q0"] }],
   "testCases": [
     {
       "sequence": [
