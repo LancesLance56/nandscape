@@ -14,10 +14,8 @@ export default async function TutorialsLayout({ children }: { children: React.Re
   return (
     <>
       <Navbar />
-      <div className="mx-auto flex max-w-330 gap-6 px-8 pb-24 pt-32 sm:px-10">
-        <div className="mr-4">
-          <TutorialSidebar tree={tree} />
-        </div>
+      <div className="mx-auto flex max-w-330 flex-col gap-4 px-4 pb-24 pt-28 sm:px-10 lg:flex-row lg:gap-6 lg:pt-32">
+        <TutorialSidebar tree={tree} />
         <main className="min-w-0 flex-1">{children}</main>
       </div>
     </>

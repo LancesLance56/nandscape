@@ -23,7 +23,17 @@ function UserIcon() {
   );
 }
 
-export function AuthStatus() {
+/**
+ * "compact" (default) is the pill-navbar rendering,  hidden entirely below
+ * md by navbar.tsx's own wrapper, so on mobile there's nothing to conflict
+ * with. "menu" is the stacked-link rendering used inside the navbar's
+ * mobile dropdown instead: logged-out only (Log in / Start solving), since
+ * a logged-in user's avatar (still shown directly in the pill on every
+ * breakpoint) already opens its own Account/Log out menu - duplicating
+ * that inside the hamburger dropdown too would just be the same two
+ * actions in two places.
+ */
+export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "menu" } = {}) {
   const router = useRouter();
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -77,24 +87,48 @@ export function AuthStatus() {
   };
 
   if (user === undefined) {
-    return <div className="h-9 w-20" aria-hidden="true" />;
+    // Sized for whichever outcome actually lands: the avatar (h-9 w-9,
+    // every breakpoint) or the wider logged-out buttons (md+ only, see
+    // below) - avoids a layout pop once /api/auth/me resolves.
+    return variant === "compact" ? <div className="h-9 w-9 md:w-20" aria-hidden="true" /> : null;
   }
 
   if (!user) {
+    if (variant === "menu") {
+      return (
+        <div className="mt-1 flex flex-col gap-1 border-t border-border pt-2">
+          <Link
+            href="/login"
+            className="rounded-lg px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-surface-2 hover:text-foreground"
+          >
+            Log in
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-lg bg-copper px-3 py-2.5 text-center text-sm font-bold text-white transition-colors hover:bg-copper-dark"
+          >
+            Start solving
+          </Link>
+        </div>
+      );
+    }
+
     return (
-      <>
+      <div className="hidden items-center gap-5 md:flex">
         <Link
           href="/login"
-          className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           Log in
         </Link>
         <Button variant="primary" size="sm" onClick={() => router.push("/signup")}>
           Start solving
         </Button>
-      </>
+      </div>
     );
   }
+
+  if (variant === "menu") return null;
 
   return (
     <div ref={menuRef} className="relative">

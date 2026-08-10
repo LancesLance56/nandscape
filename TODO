@@ -1,9 +1,1 @@
-FIX UNDO REDO BUG WHEN WIRES ARE NOT SELECTED BUT STILL DELETED ALONGSIDE GATES
-MAKE BLOG POSTS LIST PAGE MORE PRETTY AND STRUCTURED
-USE DOCKER FOR THE PNPM START TOO NOT JUST POSTGRES
-
-ADMIN PAGE
-    - CONTENT EDITOR
-        - less margin on the sides for more space on side to side
-        - add an option for side to side, preview only, edit only
-        - add support for tutorials
+quiz rather than poll in tutorials

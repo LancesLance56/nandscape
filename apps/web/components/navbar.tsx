@@ -41,7 +41,7 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-5 z-50 flex justify-center px-4">
       <div className="w-full max-w-7xl">
-        <nav className="grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center rounded-full border bg-surface-card/85 px-6 shadow-xl backdrop-blur-md transition-all duration-300 will-change-transform sm:px-10">
+        <nav className="flex h-16 w-full items-center justify-between rounded-full border bg-surface-card/85 px-6 shadow-xl backdrop-blur-md transition-all duration-300 will-change-transform sm:px-10 md:grid md:grid-cols-[1fr_auto_1fr]">
           <Link href="/" className="flex items-center gap-2.5 justify-self-start">
             {/* Full wordmark takes up to 224px, too wide once the nav links
                 collapse into the hamburger below md, so it shrinks to just
@@ -78,6 +78,10 @@ export function Navbar() {
 
           <div className="flex items-center gap-4 justify-self-end sm:gap-5">
             <ThemeToggle />
+            {/* AuthStatus itself hides its logged-out Log in/Start solving
+                buttons below md (they move into the dropdown below
+                instead) - the avatar it renders when logged in isn't
+                touched by that, so it still shows on every breakpoint. */}
             <AuthStatus />
             <button
               type="button"
@@ -110,6 +114,13 @@ export function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Log in / Start solving, moved here from the pill (see the
+                AuthStatus usage above) - logged-in users don't get
+                anything extra here, their avatar's own menu already
+                covers Account/Log out, so AuthStatus renders nothing at
+                all in that case (no empty divider left behind). */}
+            <AuthStatus variant="menu" />
           </div>
         )}
       </div>

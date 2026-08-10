@@ -3,7 +3,7 @@ import {CircuitDemoCard} from "@/components/marketing/circuit-demo-card";
 
 export function Hero() {
   return (
-    <section className="relative grid gap-14 overflow-hidden py-30 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-30">
+    <section className="relative grid gap-14 overflow-hidden py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4">
       <div className="relative z-10 pt-3">
         <div className="mb-5.5 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
           <span className="h-1.75 w-1.75 rounded-full bg-copper"/>
@@ -11,7 +11,7 @@ export function Hero() {
         </div>
 
         <h1
-          className="mb-5.5 max-w-xl font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink lg:text-[4em] lg:leading-[1.1]">
+          className="mb-5.5 max-w-xl font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink lg:text-6xl lg:leading-[1.1]">
           Solve <span className="text-copper">Puzzles,</span> <br/> Learn{" "}
           <span className="text-copper">Interactively.</span>
         </h1>

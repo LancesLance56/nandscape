@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { TutorialNavTree } from "@/types/tutorial";
@@ -37,6 +37,17 @@ function NavLink({ href, label }: { href: string; label: string }) {
 
 export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  // Below lg the sidebar collapses into a toggleable panel instead of its
+  // own sticky column - there's no room for both a 256px rail and readable
+  // tutorial text on a phone-width screen. Closed by default there; the
+  // lg+ nav below ignores this state entirely (always visible, see the
+  // className below).
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const toggle = (sectionId: string) => {
     setCollapsed((prev) => {
@@ -48,33 +59,47 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
   };
 
   return (
-    <nav className="sticky top-32 flex h-fit w-64 shrink-0 flex-col gap-1 overflow-y-auto px-3 py-4">
-      {tree.standalone.map((page) => (
-        <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
-      ))}
+    <div className="lg:mr-4">
+      <button
+        type="button"
+        onClick={() => setMobileOpen((o) => !o)}
+        aria-expanded={mobileOpen}
+        className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-card px-4 py-3 text-sm font-semibold text-ink lg:hidden"
+      >
+        Contents
+        <ChevronIcon open={mobileOpen} />
+      </button>
 
-      {tree.sections.map((section) => {
-        const open = !collapsed.has(section.id);
-        return (
-          <div key={section.id} className="mt-2">
-            <button
-              type="button"
-              onClick={() => toggle(section.id)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-slate hover:text-ink"
-            >
-              {section.title}
-              <ChevronIcon open={open} />
-            </button>
-            {open && (
-              <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
-                {section.pages.map((page) => (
-                  <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </nav>
+      <nav
+        className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto rounded-xl border border-border bg-surface-card px-3 py-3 lg:sticky lg:top-32 lg:mt-0 lg:flex lg:h-fit lg:max-h-none lg:w-64 lg:shrink-0 lg:border-0 lg:bg-transparent lg:px-3 lg:py-4`}
+      >
+        {tree.standalone.map((page) => (
+          <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
+        ))}
+
+        {tree.sections.map((section) => {
+          const open = !collapsed.has(section.id);
+          return (
+            <div key={section.id} className="mt-2">
+              <button
+                type="button"
+                onClick={() => toggle(section.id)}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-slate hover:text-ink"
+              >
+                {section.title}
+                <ChevronIcon open={open} />
+              </button>
+              {open && (
+                <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
+                  {section.pages.map((page) => (
+                    <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+    </div>
   );
 }

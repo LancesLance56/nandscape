@@ -1,6 +1,7 @@
 import {Hero} from "@/components/hero";
 import {Navbar} from "@/components/navbar";
 import {FeatureStrip} from "@/components/marketing/feature-strip";
+import {LiveDemo} from "@/components/marketing/live-demo";
 import {PuzzlesShowcase} from "@/components/marketing/puzzles-showcase";
 import {TutorialsShowcase} from "@/components/marketing/tutorials-showcase";
 import {BlogShowcase} from "@/components/marketing/blog-showcase";
@@ -28,6 +29,7 @@ export default async function Home() {
       <main className="relative mx-auto max-w-330 px-6 sm:px-10">
         <Hero/>
           <FeatureStrip/>
+          <LiveDemo/>
           <PuzzlesShowcase/>
           <TutorialsShowcase/>
           <BlogShowcase posts={posts}/>

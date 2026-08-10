@@ -10,7 +10,9 @@ import { useLaneSignals } from "@/hooks/use-lane-signals";
 import { SEVEN_SEGMENT_LABELS } from "@/lib/editor/bus-utils";
 import type { EditorNode, SevenSegmentNodeData } from "@/types/editor";
 
-const NODE_HEIGHT = 168;
+const BOX_HEIGHT = 168;
+const NAME_HEIGHT = 13;
+const LABEL_GAP = 3;
 
 /** a..g rect geometry in a 66x100 viewBox, matching SEVEN_SEGMENT_LABELS'
  *  order (a=top, b=upper-right, c=lower-right, d=bottom, e=lower-left,
@@ -29,19 +31,24 @@ const SEGMENT_RECTS: Record<string, { x: number; y: number; w: number; h: number
 /** Seven fixed target pins (in-0..in-6, a..g order) rendered as an actual
  *  lit digit instead of seven separate LEDs. Purely a display sink, see
  *  seven-segment-inspector.tsx for how `names` is edited and
- *  compile-circuit.ts for how each lane becomes its own OUTPUT_PIN. */
+ *  compile-circuit.ts for how each lane becomes its own OUTPUT_PIN.
+ *
+ *  Always exactly 7 lanes, so - unlike the variable-width bus nodes - the
+ *  box height is a fixed constant rather than the shared margin/spacing
+ *  formula. The name sits outside the box, below it, matching every other
+ *  bus-family node (see bus-input-node.tsx), leaving the box to show only
+ *  the lit-segment glyph itself. */
 function SevenSegmentNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const segData = data as SevenSegmentNodeData;
   const { onHandleClick, onHandleMouseEnter, onHandleMouseLeave } = useHandleClick();
   const signals = useLaneSignals(id, 7);
 
-  const verticalPos = (index: number) => 16 + index * ((NODE_HEIGHT - 32) / 6);
+  const nodeHeight = BOX_HEIGHT + LABEL_GAP + NAME_HEIGHT;
+  const verticalPos = (index: number) => 16 + index * ((BOX_HEIGHT - 32) / 6);
+  const name = segData.names[0]?.replace(/A$/, "") || "SEG";
 
   return (
-    <div
-      style={{ height: `${NODE_HEIGHT}px`, width: `${NODE_WIDTH}px` }}
-      className="relative flex items-center justify-center"
-    >
+    <div style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }} className="relative">
       {SEVEN_SEGMENT_LABELS.map((label, i) => (
         <NodeHandle
           key={label}
@@ -57,8 +64,8 @@ function SevenSegmentNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
       ))}
 
       <div
-        style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
-        className={`absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border bg-surface-card px-2 py-2 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+        style={{ top: 0, height: `${BOX_HEIGHT}px`, width: NODE_WIDTH }}
+        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"
         }`}
       >
@@ -80,9 +87,13 @@ function SevenSegmentNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
             );
           })}
         </svg>
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-indigo-400">
-          {segData.names[0]?.replace(/A$/, "") || "SEG"}
-        </span>
+      </div>
+
+      <div
+        style={{ top: `${BOX_HEIGHT + LABEL_GAP}px`, height: `${NAME_HEIGHT}px`, width: NODE_WIDTH }}
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[10px] font-semibold text-indigo-400"
+      >
+        {name}
       </div>
     </div>
   );
