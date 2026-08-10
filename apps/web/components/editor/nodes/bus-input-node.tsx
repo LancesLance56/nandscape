@@ -104,7 +104,7 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
       <div
         style={{ top: 0, height: `${boxHeight}px`, width: NODE_WIDTH }}
         className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
-          compact ? "gap-1 px-1.5 py-1" : "flex-col gap-0.5 px-2 py-1.5"
+          compact ? "gap-2 px-1.5 py-1" : "flex-col gap-1.5 px-2 py-1.5"
         } ${selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"}`}
       >
         {compact ? (

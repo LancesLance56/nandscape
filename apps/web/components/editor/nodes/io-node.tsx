@@ -99,7 +99,7 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
 
   return (
     <div
-      style={{height: `${nodeHeight}px`, width: `${NODE_WIDTH}px`}}
+      style={{height: `${nodeHeight}px`, width: `${boxHeight}px`}}
       className="relative"
     >
       {!isInput && (
