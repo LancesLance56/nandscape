@@ -9,7 +9,7 @@ import { NODE_WIDTH } from "./gate-shapes";
 import { useHandleClick } from "@/hooks/use-handle-click";
 import { useLaneSignals } from "@/hooks/use-lane-signals";
 import { usePreferencesStore } from "@/store/preferences-store";
-import { commonBusLabel } from "@/lib/editor/bus-utils";
+import { commonBusLabel, COMPACT_BUS_WIDTH_THRESHOLD } from "@/lib/editor/bus-utils";
 import type { BusOutputNodeData, EditorNode } from "@/types/editor";
 
 function bitChar(s: SignalState): string {
@@ -47,6 +47,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
     : null;
   const binaryString = signals.map(bitChar).join("");
   const label = commonBusLabel(busData.names) || "BUS";
+  const compact = width < COMPACT_BUS_WIDTH_THRESHOLD;
 
   return (
     <div
@@ -69,15 +70,29 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
 
       <div
         style={{ width: NODE_WIDTH }}
-        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-lg border bg-surface-card px-2 py-1.5 shadow-sm transition-[box-shadow,border-color] duration-150 ${
-          selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"
-        }`}
+        className={`absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
+          compact ? "gap-1 px-1.5 py-1" : "flex-col gap-0.5 px-2 py-1.5"
+        } ${selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"}`}
       >
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-indigo-400">{label}</span>
-        <span className="font-mono text-lg font-bold leading-none text-ink">
-          {decimalValue !== null ? decimalValue : "?"}
-        </span>
-        <span className="font-mono text-[9px] text-ink-soft">{binaryString}</span>
+        {compact ? (
+          <>
+            <span className="max-w-[22px] truncate font-mono text-[9px] font-semibold text-indigo-400">{label}</span>
+            <span className="shrink-0 font-mono text-xs font-bold leading-none text-ink">{binaryString}</span>
+            <span className="shrink-0 font-mono text-[9px] text-ink-soft">
+              ={decimalValue !== null ? decimalValue : "?"}
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-indigo-400">
+              {label}
+            </span>
+            <span className="font-mono text-lg font-bold leading-none text-ink">
+              {decimalValue !== null ? decimalValue : "?"}
+            </span>
+            <span className="font-mono text-[9px] text-ink-soft">{binaryString}</span>
+          </>
+        )}
       </div>
     </div>
   );

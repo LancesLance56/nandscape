@@ -11,6 +11,7 @@ export type EditorNodeKind =
   | "subcircuit"
   | "bus-merge"
   | "bus-split"
+  | "bus-input"
   | "bus-output"
   | "seven-segment"
   | "note";
@@ -69,6 +70,24 @@ export interface BusSplitNodeData extends BaseNodeData {
 }
 
 /**
+ * The source-side mirror of BusOutputNodeData: N independently toggleable
+ * single-bit source pins (out-0..out-(N-1), index 0 = MSB), shown as one
+ * combined decimal/binary readout with clickable digits instead of N
+ * separate Input toggles. `values` is the authoritative per-lane state
+ * (compiling, simulating, and the node's own readout all read from it,
+ * mirroring how IoNodeData.value works for a single input),  see
+ * bus-input-node.tsx. Unlike BusOutputNodeData, this is a general sandbox
+ * tool: it isn't wired into puzzle input-port matching (grade-puzzle.ts
+ * still only recognizes plain "input" nodes by name), the same scope
+ * Bus Merge/Split already have.
+ */
+export interface BusInputNodeData extends BaseNodeData {
+  kind: "bus-input";
+  names: string[];
+  values: SignalState[];
+}
+
+/**
  * A pure-display output sink: N single-bit target pins (in-0..in-(N-1),
  * index 0 = MSB) shown as one combined decimal/binary readout instead of N
  * separate LEDs. `names` is authoritative everywhere (compiling, grading,
@@ -106,6 +125,7 @@ export type EditorNodeData =
   | SubcircuitNodeData
   | BusMergeNodeData
   | BusSplitNodeData
+  | BusInputNodeData
   | BusOutputNodeData
   | SevenSegmentNodeData
   | NoteNodeData;

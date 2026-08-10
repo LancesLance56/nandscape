@@ -25,6 +25,7 @@ import {
   createSubcircuitNode,
   createBusMergeNode,
   createBusSplitNode,
+  createBusInputNode,
   createBusOutputNode,
   createSevenSegmentNode,
 } from "@/components/editor/nodes/node-registry";
@@ -141,6 +142,8 @@ export function CircuitCanvas() {
         node = createBusMergeNode(position);
       } else if (entry.kind === "bus-split") {
         node = createBusSplitNode(position);
+      } else if (entry.kind === "bus-input") {
+        node = createBusInputNode(position);
       } else if (entry.kind === "bus-output") {
         node = createBusOutputNode(position);
       } else if (entry.kind === "seven-segment") {
@@ -227,6 +230,14 @@ export function CircuitCanvas() {
         panOnDrag={!isDrafting}
         nodesDraggable={!isDrafting}
         nodesConnectable={false}
+        // Default true in @xyflow/react: raises a node's z-index the moment
+        // it's selected, then drops it back on deselect. Combined with a
+        // node's own click handler (e.g. an Input's toggle button) bubbling
+        // into React Flow's selection handling, that z-index churn is what
+        // made clicking a node look like it briefly jumped behind, then in
+        // front of, its neighbors,  see io-node.tsx's toggle handler for
+        // the other half of this fix.
+        elevateNodesOnSelect={false}
         snapToGrid={snapToGrid}
         snapGrid={[snapGridSize, snapGridSize]}
         minZoom={0.15}

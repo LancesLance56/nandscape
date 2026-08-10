@@ -49,8 +49,9 @@ const STATIC_GROUPS: { title: string; entries: Omit<PaletteEntry, "color">[] }[]
     ],
   },
   {
-    title: "Displays",
+    title: "Bus I/O",
     entries: [
+      { kind: "bus-input", label: "Bus Input", symbol: "BI" },
       { kind: "bus-output", label: "Bus Output", symbol: "BO" },
       { kind: "seven-segment", label: "7-Segment", symbol: "7S" },
     ],

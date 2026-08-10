@@ -5,6 +5,7 @@ import {IoInspectorPanel} from "./panels/io-inspector";
 import {SubcircuitInspectorPanel} from "./panels/subcircuit-inspector";
 import {ClockInspectorPanel} from "./panels/clock-inspector";
 import {BusInspectorPanel} from "./panels/bus-inspector";
+import {BusInputInspectorPanel} from "./panels/bus-input-inspector";
 import {BusOutputInspectorPanel} from "./panels/bus-output-inspector";
 import {SevenSegmentInspectorPanel} from "./panels/seven-segment-inspector";
 
@@ -20,6 +21,7 @@ export const inspectorPanelRegistry: Partial<Record<EditorNodeKind, ComponentTyp
   clock: ClockInspectorPanel,
   "bus-merge": BusInspectorPanel,
   "bus-split": BusInspectorPanel,
+  "bus-input": BusInputInspectorPanel,
   "bus-output": BusOutputInspectorPanel,
   "seven-segment": SevenSegmentInspectorPanel,
 };

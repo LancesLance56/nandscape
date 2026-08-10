@@ -5,6 +5,7 @@ import { IoNode } from "./io-node";
 import { SubcircuitNode } from "./subcircuit-node";
 import { BusMergeNode } from "./bus-merge-node";
 import { BusSplitNode } from "./bus-split-node";
+import { BusInputNode } from "./bus-input-node";
 import { BusOutputNode } from "./bus-output-node";
 import { SevenSegmentNode } from "./seven-segment-node";
 import { defaultInputCountForGateType } from "@/lib/editor/gate-defaults";
@@ -18,6 +19,7 @@ export const nodeTypes: NodeTypes = {
   subcircuit: SubcircuitNode,
   "bus-merge": BusMergeNode,
   "bus-split": BusSplitNode,
+  "bus-input": BusInputNode,
   "bus-output": BusOutputNode,
   "seven-segment": SevenSegmentNode,
 };
@@ -112,6 +114,23 @@ export function createBusSplitNode(
       kind: "bus-split",
       width: options.width ?? DEFAULT_BUS_WIDTH,
       label: options.label ?? "A",
+    } satisfies EditorNodeData,
+  };
+}
+
+export function createBusInputNode(
+  position: { x: number; y: number },
+  options: NodeFactoryOptions & { names?: string[]; values?: SignalState[] } = {},
+): EditorNode {
+  const names = options.names ?? busOutputLaneNames("A", DEFAULT_BUS_WIDTH);
+  return {
+    id: options.id ?? nextNodeId("bus-input"),
+    type: "bus-input",
+    position,
+    data: {
+      kind: "bus-input",
+      names,
+      values: options.values ?? names.map(() => SignalState.LOW),
     } satisfies EditorNodeData,
   };
 }

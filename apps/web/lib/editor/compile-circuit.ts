@@ -23,6 +23,7 @@ import type {
   ClockNodeData,
   BusMergeNodeData,
   BusSplitNodeData,
+  BusInputNodeData,
   BusOutputNodeData,
   SevenSegmentNodeData,
 } from "@/types/editor";
@@ -32,6 +33,12 @@ export interface CompiledCircuit {
   topology: CircuitTopology;
   gateByNodeId: Map<string, GateId>;
   netByEdgeId: Map<string, NetId>;
+  /** Per-lane gate ids for bus-merge/bus-split/bus-input/bus-output/
+   *  seven-segment nodes (index-aligned with the node's lanes), for
+   *  anything outside this module that needs to seed or drive one lane
+   *  directly,  e.g. simulation-store.ts driving a Bus Input's lanes the
+   *  same way it drives a plain Input's single gate. */
+  laneGatesByNodeId: Map<string, GateId[]>;
 }
 
 export type CompileResult =
@@ -104,6 +111,11 @@ function resolvePin(
       const laneGate = info.laneGates![handleRole(handle, 0)];
       return circuit.pinOf(laneGate, SINK_PIN_INPUT);
     }
+    case "bus-input": {
+      // out-i is an ordinary single-bit source pin on lane i's INPUT_PIN gate.
+      const laneGate = info.laneGates![handleRole(handle, 0)];
+      return circuit.pinOf(laneGate, SOURCE_PIN_OUTPUT);
+    }
     default:
       throw new Error(`resolvePin: unsupported node kind "${node.data.kind}"`);
   }
@@ -121,6 +133,7 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
   const circuit = new CircuitData();
   const gateByNodeId = new Map<string, GateId>();
   const infoByNodeId = new Map<string, NodeInfo>();
+  const laneGatesByNodeId = new Map<string, GateId[]>();
   const nodeIdByGateId = new Map<GateId, string>();
 
   for (const node of nodes) {
@@ -140,6 +153,7 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
         nodeIdByGateId.set(laneGateId, node.id);
       }
       infoByNodeId.set(node.id, { gateId: laneGates[0], inputCount: 0, laneGates });
+      laneGatesByNodeId.set(node.id, laneGates);
       continue;
     }
 
@@ -156,6 +170,24 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
         nodeIdByGateId.set(laneGateId, node.id);
       }
       infoByNodeId.set(node.id, { gateId: laneGates[0], inputCount: 0, laneGates });
+      laneGatesByNodeId.set(node.id, laneGates);
+      continue;
+    }
+
+    // Bus Input: the source-side mirror of Bus Output, one INPUT_PIN gate
+    // per named lane. simulation-store.ts seeds/drives each lane gate
+    // directly from BusInputNodeData.values via laneGatesByNodeId, the same
+    // way it seeds/drives a plain Input's single gate from IoNodeData.value.
+    if (node.data.kind === "bus-input") {
+      const names = (node.data as BusInputNodeData).names;
+      const laneGates: GateId[] = [];
+      for (let i = 0; i < names.length; i++) {
+        const laneGateId = circuit.addGate({ type: GateType.INPUT_PIN, name: `${node.id}::${names[i]}` });
+        laneGates.push(laneGateId);
+        nodeIdByGateId.set(laneGateId, node.id);
+      }
+      infoByNodeId.set(node.id, { gateId: laneGates[0], inputCount: 0, laneGates });
+      laneGatesByNodeId.set(node.id, laneGates);
       continue;
     }
 
@@ -292,7 +324,7 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
 
   try {
     const topology = compileTopology(circuit);
-    return { ok: true, result: { circuit, topology, gateByNodeId, netByEdgeId } };
+    return { ok: true, result: { circuit, topology, gateByNodeId, netByEdgeId, laneGatesByNodeId } };
   } catch (error) {
     return { ok: false, issues: [error instanceof Error ? error.message : String(error)] };
   }

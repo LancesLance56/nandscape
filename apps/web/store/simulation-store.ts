@@ -9,7 +9,7 @@ import {
 } from "@nandscape/engine";
 import { compileEditorGraph } from "@/lib/editor/compile-circuit";
 import { useEditorStore } from "./editor-store";
-import type { IoNodeData } from "@/types/editor";
+import type { BusInputNodeData, IoNodeData } from "@/types/editor";
 
 export type SimulationStatus = "idle" | "compiling" | "running" | "error";
 
@@ -18,6 +18,9 @@ export interface SimulationState {
   simulator: Simulator | null;
   /** Node id -> GateId, for anything (like an input toggle) that needs to drive the running simulator directly. */
   nodeGateMap: Map<string, GateId> | null;
+  /** Node id -> per-lane GateId, the Bus Input equivalent of nodeGateMap
+   *  (one gate per lane instead of one gate per node),  see driveInputLane. */
+  laneGateMap: Map<string, GateId[]> | null;
   /** Edge id -> NetId, so wire coloring can probe the real simulator instead of the instant preview. */
   edgeNetMap: Map<string, NetId> | null;
   signalByEdgeId: Record<string, SignalState>;
@@ -45,6 +48,8 @@ export interface SimulationState {
    *  than a time-boxed settle so this never lets a CLOCK gate in the
    *  circuit sneak in extra ticks outside of normal real-time playback. */
   driveInput: (nodeId: string, value: SignalState) => void;
+  /** Lane-indexed equivalent of driveInput, for Bus Input's per-lane toggles. */
+  driveInputLane: (nodeId: string, laneIndex: number, value: SignalState) => void;
   /** Advances the simulator by exactly one delta-cycle (all events at the
    *  earliest pending time), independent of whether it's currently running,
    *  matching a "step"/"tick once" control  it doesn't pause anything, it
@@ -65,6 +70,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   status: "idle",
   simulator: null,
   nodeGateMap: null,
+  laneGateMap: null,
   edgeNetMap: null,
   signalByEdgeId: {},
   speed: 120,
@@ -81,20 +87,27 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
         error: outcome.issues.join(" "),
         simulator: null,
         nodeGateMap: null,
+        laneGateMap: null,
         edgeNetMap: null,
       });
       return false;
     }
 
-    const { circuit, topology, gateByNodeId, netByEdgeId } = outcome.result;
+    const { circuit, topology, gateByNodeId, netByEdgeId, laneGatesByNodeId } = outcome.result;
     const simulator = new Simulator(circuit, topology);
 
     const initialInputs: Array<[GateId, SignalState]> = [];
     for (const node of nodes) {
-      if (node.data.kind !== "input") continue;
-      const gateId = gateByNodeId.get(node.id);
-      if (gateId === undefined) continue;
-      initialInputs.push([gateId, (node.data as IoNodeData).value ?? SignalState.LOW]);
+      if (node.data.kind === "input") {
+        const gateId = gateByNodeId.get(node.id);
+        if (gateId === undefined) continue;
+        initialInputs.push([gateId, (node.data as IoNodeData).value ?? SignalState.LOW]);
+      } else if (node.data.kind === "bus-input") {
+        const laneGates = laneGatesByNodeId.get(node.id);
+        if (!laneGates) continue;
+        const values = (node.data as BusInputNodeData).values;
+        laneGates.forEach((gateId, i) => initialInputs.push([gateId, values[i] ?? SignalState.LOW]));
+      }
     }
     seedInputs(simulator, initialInputs);
     settleCombinational(simulator);
@@ -102,6 +115,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     set({
       simulator,
       nodeGateMap: gateByNodeId,
+      laneGateMap: laneGatesByNodeId,
       edgeNetMap: netByEdgeId,
       signalByEdgeId: probeAll(simulator, netByEdgeId),
       status: "running",
@@ -131,6 +145,20 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     }
   },
 
+  driveInputLane: (nodeId, laneIndex, value) => {
+    const { simulator, laneGateMap, edgeNetMap, status } = get();
+    if (!simulator || !laneGateMap) return;
+    const gateId = laneGateMap.get(nodeId)?.[laneIndex];
+    if (gateId === undefined) return;
+
+    simulator.setInput(gateId, value, simulator.state.currentTime);
+
+    if (status !== "running" && edgeNetMap) {
+      settleCombinational(simulator);
+      set({ signalByEdgeId: probeAll(simulator, edgeNetMap) });
+    }
+  },
+
   step: () => {
     const { simulator, compile } = get();
     const active = simulator ?? (compile() ? get().simulator : null);
@@ -148,6 +176,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     set({
       simulator: null,
       nodeGateMap: null,
+      laneGateMap: null,
       edgeNetMap: null,
       signalByEdgeId: {},
       status: "idle",

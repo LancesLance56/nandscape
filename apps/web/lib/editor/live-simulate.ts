@@ -6,6 +6,7 @@ import type {
   IoNodeData,
   ConstantNodeData,
   SubcircuitNodeData,
+  BusInputNodeData,
 } from "@/types/editor";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
 import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
@@ -202,6 +203,14 @@ export function evaluateLiveCircuit(
           for (let i = 0; i < width; i++) {
             drive(node.id, `out-${i}`, readHandle(node.id, `lane-in-${i}`));
           }
+          break;
+        }
+        case "bus-input": {
+          // The source-side mirror of "input": drive every lane from its
+          // own stored value, same as a plain Input drives out-0 from
+          // IoNodeData.value.
+          const data = node.data as BusInputNodeData;
+          data.values.forEach((value, i) => drive(node.id, `out-${i}`, value ?? SignalState.LOW));
           break;
         }
         default:
