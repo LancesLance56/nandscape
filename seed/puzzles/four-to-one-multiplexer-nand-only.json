@@ -1,0 +1,25 @@
+{
+  "slug": "four-to-one-multiplexer-nand-only",
+  "title": "4-to-1 Multiplexer (NAND only)",
+  "description": "The same 4-to-1 multiplexer as before, SEL1 SEL0 choose between A, B, C, and D, but this time only NAND gates are on the palette.",
+  "difficulty": "hard",
+  "tags": ["combinational", "selectors"],
+  "gateBudget": 24,
+  "allowedGateTypes": [0],
+  "inputs": [{ "name": "SEL1" }, { "name": "SEL0" }, { "name": "A" }, { "name": "B" }, { "name": "C" }, { "name": "D" }],
+  "outputs": [{ "name": "Y" }],
+  "testCases": [
+    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 0, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 1, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 1, "C": 0, "D": 1 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 1, "B": 1, "C": 1, "D": 0 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "SEL1": 0, "SEL0": 1, "A": 0, "B": 1, "C": 0, "D": 1 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 0, "A": 0, "B": 0, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 0, "A": 0, "B": 1, "C": 1, "D": 1 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 0, "A": 1, "B": 1, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 0, "B": 0, "C": 0, "D": 1 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 1, "B": 0, "C": 1, "D": 1 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 1, "B": 1, "C": 1, "D": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 1, "B": 1, "C": 1, "D": 1 }, "outputs": { "Y": 1 } } }
+  ]
+}

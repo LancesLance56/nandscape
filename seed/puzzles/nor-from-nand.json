@@ -1,0 +1,17 @@
+{
+  "slug": "nor-from-nand",
+  "title": "NOR from NAND",
+  "description": "Build OR from NAND first, the way you just did, then invert it once more to get NOR.",
+  "difficulty": "easy",
+  "tags": ["combinational", "boolean-algebra"],
+  "gateBudget": 4,
+  "allowedGateTypes": [0],
+  "inputs": [{ "name": "A" }, { "name": "B" }],
+  "outputs": [{ "name": "Y" }],
+  "testCases": [
+    { "row": { "inputs": { "A": 0, "B": 0 }, "outputs": { "Y": 1 } } },
+    { "row": { "inputs": { "A": 0, "B": 1 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "A": 1, "B": 0 }, "outputs": { "Y": 0 } } },
+    { "row": { "inputs": { "A": 1, "B": 1 }, "outputs": { "Y": 0 } } }
+  ]
+}

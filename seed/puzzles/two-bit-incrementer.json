@@ -1,0 +1,16 @@
+{
+  "slug": "two-bit-incrementer",
+  "title": "2-Bit Incrementer",
+  "description": "Add 1 to a 2-bit number. COUT goes HIGH when the result wraps from 11 back to 00.",
+  "difficulty": "medium",
+  "tags": ["combinational", "arithmetic"],
+  "gateBudget": 4,
+  "inputs": [{ "name": "A1" }, { "name": "A0" }],
+  "outputs": [{ "name": "S1" }, { "name": "S0" }, { "name": "COUT" }],
+  "testCases": [
+    { "row": { "inputs": { "A1": 0, "A0": 0 }, "outputs": { "S1": 0, "S0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 0, "A0": 1 }, "outputs": { "S1": 1, "S0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 0 }, "outputs": { "S1": 1, "S0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A1": 1, "A0": 1 }, "outputs": { "S1": 0, "S0": 0, "COUT": 1 } } }
+  ]
+}

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 import { PuzzleList } from "@/components/puzzles/puzzle-list";
+import { DailyPuzzleCard } from "@/components/puzzles/daily-puzzle-card";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
+import { getDailyPuzzle } from "@/lib/puzzles/puzzle-display";
 import type { PuzzleSpec } from "@/types/puzzle";
 
 export const metadata: Metadata = {
@@ -22,6 +24,8 @@ export default async function PuzzlesPage() {
     puzzles = [];
   }
 
+  const dailyPuzzle = getDailyPuzzle(puzzles);
+
   return (
     <>
       <Navbar />
@@ -37,7 +41,9 @@ export default async function PuzzlesPage() {
           </p>
         </div>
 
-        <PuzzleList puzzles={puzzles} />
+        {dailyPuzzle && <DailyPuzzleCard puzzle={dailyPuzzle} />}
+
+        <PuzzleList puzzles={puzzles} dailyPuzzleSlug={dailyPuzzle?.slug} />
       </main>
     </>
   );

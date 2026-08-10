@@ -1,0 +1,26 @@
+{
+  "slug": "bcd-adder-single-digit",
+  "title": "Single-Digit BCD Adder",
+  "description": "Add two 4-bit BCD digits (0-9) plus a carry-in, producing a valid BCD digit and a carry-out. When the raw binary sum exceeds 9, correct it by adding 6.",
+  "difficulty": "expert",
+  "tags": ["combinational", "arithmetic"],
+  "gateBudget": 40,
+  "inputs": [{ "name": "A3" }, { "name": "A2" }, { "name": "A1" }, { "name": "A0" }, { "name": "B3" }, { "name": "B2" }, { "name": "B1" }, { "name": "B0" }, { "name": "CIN" }],
+  "outputs": [{ "name": "S3" }, { "name": "S2" }, { "name": "S1" }, { "name": "S0" }, { "name": "COUT" }],
+  "testCases": [
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 0, "B0": 1, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 1, "S0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 1, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "S3": 0, "S2": 1, "S1": 0, "S0": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 1, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "S3": 0, "S2": 1, "S1": 0, "S0": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 1, "B2": 0, "B1": 0, "B0": 1, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 1, "B3": 1, "B2": 0, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 1, "B3": 1, "B2": 0, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 1, "B3": 1, "B2": 0, "B1": 0, "B0": 1, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 1, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 0, "A0": 0, "B3": 0, "B2": 1, "B1": 0, "B0": 1, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 0, "S0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 0, "A0": 0, "B3": 1, "B2": 0, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "S3": 0, "S2": 0, "S1": 1, "S0": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 0, "A0": 0, "B3": 1, "B2": 0, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "S3": 0, "S2": 0, "S1": 1, "S0": 1, "COUT": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 0, "A0": 0, "B3": 1, "B2": 0, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "S3": 0, "S2": 0, "S1": 1, "S0": 1, "COUT": 1 } } }
+  ]
+}

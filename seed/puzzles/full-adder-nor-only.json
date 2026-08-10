@@ -1,0 +1,21 @@
+{
+  "slug": "full-adder-nor-only",
+  "title": "Full Adder (NOR only)",
+  "description": "Derive NOT, AND, and OR from NOR first, then build a full adder from nothing else.",
+  "difficulty": "hard",
+  "tags": ["combinational", "arithmetic"],
+  "gateBudget": 30,
+  "allowedGateTypes": [3],
+  "inputs": [{ "name": "A" }, { "name": "B" }, { "name": "CIN" }],
+  "outputs": [{ "name": "SUM" }, { "name": "COUT" }],
+  "testCases": [
+    { "row": { "inputs": { "A": 0, "B": 0, "CIN": 0 }, "outputs": { "SUM": 0, "COUT": 0 } } },
+    { "row": { "inputs": { "A": 0, "B": 0, "CIN": 1 }, "outputs": { "SUM": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A": 0, "B": 1, "CIN": 0 }, "outputs": { "SUM": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A": 0, "B": 1, "CIN": 1 }, "outputs": { "SUM": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A": 1, "B": 0, "CIN": 0 }, "outputs": { "SUM": 1, "COUT": 0 } } },
+    { "row": { "inputs": { "A": 1, "B": 0, "CIN": 1 }, "outputs": { "SUM": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A": 1, "B": 1, "CIN": 0 }, "outputs": { "SUM": 0, "COUT": 1 } } },
+    { "row": { "inputs": { "A": 1, "B": 1, "CIN": 1 }, "outputs": { "SUM": 1, "COUT": 1 } } }
+  ]
+}

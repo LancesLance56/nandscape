@@ -1,0 +1,26 @@
+{
+  "slug": "four-bit-equality-checker",
+  "title": "4-Bit Equality Checker",
+  "description": "Compare two 4-bit values (A3 A2 A1 A0 and B3 B2 B1 B0). Output HIGH only when every bit matches.",
+  "difficulty": "hard",
+  "tags": ["combinational", "comparators"],
+  "gateBudget": 7,
+  "inputs": [{ "name": "A3" }, { "name": "A2" }, { "name": "A1" }, { "name": "A0" }, { "name": "B3" }, { "name": "B2" }, { "name": "B1" }, { "name": "B0" }],
+  "outputs": [{ "name": "EQ" }],
+  "testCases": [
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 0, "B0": 0 }, "outputs": { "EQ": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 0, "B3": 1, "B2": 0, "B1": 0, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 0, "A0": 1, "B3": 0, "B2": 0, "B1": 1, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 0, "A1": 1, "A0": 0, "B3": 1, "B2": 0, "B1": 0, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 1, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 1, "A0": 1, "B3": 0, "B2": 1, "B1": 0, "B0": 0 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 1, "A0": 1, "B3": 1, "B2": 0, "B1": 1, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 1, "A0": 1, "B3": 1, "B2": 1, "B1": 0, "B0": 0 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 1, "A2": 0, "A1": 0, "A0": 0, "B3": 1, "B2": 1, "B1": 0, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 1, "A2": 0, "A1": 1, "A0": 1, "B3": 1, "B2": 0, "B1": 0, "B0": 0 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 1, "A2": 1, "A1": 0, "A0": 0, "B3": 0, "B2": 0, "B1": 1, "B0": 1 }, "outputs": { "EQ": 0 } } },
+    { "row": { "inputs": { "A3": 1, "A2": 1, "A1": 1, "A0": 1, "B3": 1, "B2": 1, "B1": 1, "B0": 1 }, "outputs": { "EQ": 1 } } },
+    { "row": { "inputs": { "A3": 1, "A2": 0, "A1": 1, "A0": 0, "B3": 1, "B2": 0, "B1": 1, "B0": 0 }, "outputs": { "EQ": 1 } } },
+    { "row": { "inputs": { "A3": 0, "A2": 1, "A1": 0, "A0": 1, "B3": 0, "B2": 1, "B1": 0, "B0": 1 }, "outputs": { "EQ": 1 } } }
+  ]
+}

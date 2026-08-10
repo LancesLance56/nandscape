@@ -7,10 +7,10 @@ import type { PuzzleDifficulty, PuzzleSpec } from "@/types/puzzle";
 import { DifficultyTag } from "./difficulty-tag";
 import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
 import { usePuzzleProgressStore } from "@/store/puzzle-progress-store";
+import { shuffleDeterministic } from "@/lib/puzzles/puzzle-display";
 
 type DifficultyFilter = "all" | PuzzleDifficulty;
 
-const DIFFICULTY_ORDER: Record<PuzzleDifficulty, number> = { easy: 0, medium: 1, hard: 2, expert: 3 };
 const DIFFICULTY_FILTERS: DifficultyFilter[] = ["all", "easy", "medium", "hard", "expert"];
 
 function tagColor(tag: string): string {
@@ -84,11 +84,16 @@ function formatRestriction(puzzle: PuzzleSpec): string {
   return "No restriction";
 }
 
-export function PuzzleList({ puzzles }: { puzzles: PuzzleSpec[] }) {
+export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]; dailyPuzzleSlug?: string }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState<DifficultyFilter>("all");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+
+  // Deliberately not sorted by difficulty: order is scrambled once, based on
+  // slug identity, so it looks mixed up but stays put across renders/filters
+  // and matches between server and client.
+  const shuffled = useMemo(() => shuffleDeterministic(puzzles, (p) => p.slug), [puzzles]);
 
   const progressStatus = usePuzzleProgressStore((s) => s.status);
   const progressBySlug = usePuzzleProgressStore((s) => s.bySlug);
@@ -120,14 +125,11 @@ export function PuzzleList({ puzzles }: { puzzles: PuzzleSpec[] }) {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return puzzles
+    return shuffled
       .filter((p) => (difficulty === "all" ? true : p.difficulty === difficulty))
       .filter((p) => (activeTag ? p.tags.includes(activeTag) : true))
-      .filter((p) => (q ? p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) : true))
-      .sort(
-        (a, b) => DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty] || a.title.localeCompare(b.title),
-      );
-  }, [puzzles, query, activeTag, difficulty]);
+      .filter((p) => (q ? p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) : true));
+  }, [shuffled, query, activeTag, difficulty]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -218,8 +220,13 @@ export function PuzzleList({ puzzles }: { puzzles: PuzzleSpec[] }) {
                   <StatusDot solved={progressBySlug[puzzle.slug]?.solved === true} signedOut={signedOut} />
                 </td>
                 <td className="px-4 py-3">
-                  <p className="font-semibold text-ink">
+                  <p className="flex items-center gap-2 font-semibold text-ink">
                     {index + 1}. {puzzle.title}
+                    {puzzle.slug === dailyPuzzleSlug && (
+                      <span className="rounded-full bg-copper/15 px-2 py-0.5 font-mono text-[10px] font-semibold text-copper-dark">
+                        Today
+                      </span>
+                    )}
                   </p>
                   <p className="mt-0.5 line-clamp-1 text-xs text-ink-soft">{puzzle.description}</p>
                 </td>

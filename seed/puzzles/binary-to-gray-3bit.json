@@ -1,0 +1,20 @@
+{
+  "slug": "binary-to-gray-3bit",
+  "title": "3-Bit Binary to Gray Code",
+  "description": "Convert a 3-bit binary number to its Gray code equivalent. Each Gray bit is the XOR of a binary bit and the one above it.",
+  "difficulty": "medium",
+  "tags": ["combinational", "boolean-algebra"],
+  "gateBudget": 3,
+  "inputs": [{ "name": "B2" }, { "name": "B1" }, { "name": "B0" }],
+  "outputs": [{ "name": "G2" }, { "name": "G1" }, { "name": "G0" }],
+  "testCases": [
+    { "row": { "inputs": { "B2": 0, "B1": 0, "B0": 0 }, "outputs": { "G2": 0, "G1": 0, "G0": 0 } } },
+    { "row": { "inputs": { "B2": 0, "B1": 0, "B0": 1 }, "outputs": { "G2": 0, "G1": 0, "G0": 1 } } },
+    { "row": { "inputs": { "B2": 0, "B1": 1, "B0": 0 }, "outputs": { "G2": 0, "G1": 1, "G0": 1 } } },
+    { "row": { "inputs": { "B2": 0, "B1": 1, "B0": 1 }, "outputs": { "G2": 0, "G1": 1, "G0": 0 } } },
+    { "row": { "inputs": { "B2": 1, "B1": 0, "B0": 0 }, "outputs": { "G2": 1, "G1": 1, "G0": 0 } } },
+    { "row": { "inputs": { "B2": 1, "B1": 0, "B0": 1 }, "outputs": { "G2": 1, "G1": 1, "G0": 1 } } },
+    { "row": { "inputs": { "B2": 1, "B1": 1, "B0": 0 }, "outputs": { "G2": 1, "G1": 0, "G0": 1 } } },
+    { "row": { "inputs": { "B2": 1, "B1": 1, "B0": 1 }, "outputs": { "G2": 1, "G1": 0, "G0": 0 } } }
+  ]
+}
