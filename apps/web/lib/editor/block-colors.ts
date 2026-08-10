@@ -22,6 +22,7 @@ export const DEFAULT_BLOCK_COLORS: readonly string[] = [
   "#8A8F5C", // olive
   "#E05C97", // pink
   "#8C8C8C", // neutral gray
+  "#3F7FBF", // blue - unused hue in this set, reads as structured/tabular data
 ];
 
 export function hexToRgba(hex: string, alpha: number): string {

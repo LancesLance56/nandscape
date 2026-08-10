@@ -7,6 +7,7 @@ import { VideoBlockView } from "./video-block";
 import { ButtonBlockView } from "./button-block";
 import { CodeBlockView } from "./code-block";
 import { DividerBlockView } from "./divider-block";
+import { TableBlockView } from "./table-block";
 import { InteractiveBlockView } from "./interactive/interactive-block";
 import {PostBlock} from "@/types/blog";
 
@@ -18,6 +19,7 @@ const blockRegistry: Record<ContentBlock["type"], ComponentType<{ block: never }
   button: ButtonBlockView,
   code: CodeBlockView,
   divider: DividerBlockView,
+  table: TableBlockView,
   interactive: InteractiveBlockView,
 } as unknown as Record<ContentBlock["type"], ComponentType<{ block: never }>>;
 

@@ -59,6 +59,22 @@ export interface DividerBlock {
   type: "divider";
 }
 
+/**
+ * `headers` presence (not a separate boolean) is what decides whether a
+ * header row renders - `undefined`/`[]` means no header row, a populated
+ * array means there is one. Every row in `rows` is expected to have the same
+ * length as `headers` (when present) or each other; the editor is what
+ * keeps that in sync (see table-block-editor.tsx), this type doesn't enforce
+ * it structurally.
+ */
+export interface TableBlock {
+  id: string;
+  type: "table";
+  headers?: string[];
+  rows: string[][];
+  caption?: string;
+}
+
 export interface InteractiveBlock {
   id: string;
   type: "interactive";
@@ -74,4 +90,5 @@ export type ContentBlock =
   | ButtonBlock
   | CodeBlock
   | DividerBlock
+  | TableBlock
   | InteractiveBlock;

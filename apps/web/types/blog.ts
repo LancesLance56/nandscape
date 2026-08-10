@@ -11,6 +11,7 @@ export type {
   ButtonBlock,
   CodeBlock,
   DividerBlock,
+  TableBlock,
   InteractiveBlock,
   ContentBlock as PostBlock,
 } from "./content-block";

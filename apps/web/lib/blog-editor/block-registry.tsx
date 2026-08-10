@@ -8,6 +8,7 @@ import type {
   ButtonBlock,
   CodeBlock,
   DividerBlock,
+  TableBlock,
   InteractiveBlock,
 } from "@/types/content-block";
 
@@ -17,6 +18,7 @@ import { ImageBlockView } from "@/components/content/blocks/image-block";
 import { VideoBlockView } from "@/components/content/blocks/video-block";
 import { ButtonBlockView } from "@/components/content/blocks/button-block";
 import { DividerBlockView } from "@/components/content/blocks/divider-block";
+import { TableBlockView } from "@/components/content/blocks/table-block";
 import { InteractiveBlockView } from "@/components/content/blocks/interactive/interactive-block";
 
 import { PreviewCodeBlock } from "@/components/blog-editor/preview-code-block";
@@ -27,6 +29,7 @@ import { VideoBlockEditor } from "@/components/blog-editor/blocks/video-block-ed
 import { ButtonBlockEditor } from "@/components/blog-editor/blocks/button-block-editor";
 import { CodeBlockEditor } from "@/components/blog-editor/blocks/code-block-editor";
 import { DividerBlockEditor } from "@/components/blog-editor/blocks/divider-block-editor";
+import { TableBlockEditor } from "@/components/blog-editor/blocks/table-block-editor";
 import { InteractiveBlockEditor } from "@/components/blog-editor/blocks/interactive-block-editor";
 import { widgetDefinitions, getWidgetDefinition } from "@/lib/blog-editor/widget-registry";
 
@@ -118,6 +121,19 @@ const registryImpl = {
     createDefault: (): DividerBlock => ({ id: newId("div"), type: "divider" }),
     Renderer: DividerBlockView,
     Editor: DividerBlockEditor,
+  },
+  table: {
+    type: "table",
+    label: "Table",
+    creatable: true,
+    createDefault: (): TableBlock => ({
+      id: newId("table"),
+      type: "table",
+      headers: ["Column 1", "Column 2"],
+      rows: [["", ""]],
+    }),
+    Renderer: TableBlockView,
+    Editor: TableBlockEditor,
   },
   interactive: {
     type: "interactive",
