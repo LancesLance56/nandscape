@@ -132,10 +132,25 @@ export type EditorNodeData =
 
 export type EditorNode = Node<EditorNodeData>;
 
+export interface Waypoint {
+  x: number;
+  y: number;
+  /**
+   * Waypoints sharing a junctionId across different edges are the same
+   * physical tap point, not just two coordinates that happen to match (see
+   * wire-edge.tsx's ensureJunctionWaypoint / editor-store.ts's moveJunction).
+   * Dragging any one of them moves every edge sharing the id together, so a
+   * wire branch behaves like a real shared vertex instead of visually
+   * overlapping wires that silently drift apart the moment either one is
+   * edited. Absent for an ordinary bend point that was never tapped.
+   */
+  junctionId?: string;
+}
+
 export interface WireEdgeData extends Record<string, unknown> {
   /** Live signal drawn from the simulation store; undefined while not simulating. */
   signal?: SignalState;
-  waypoints?: { x: number; y: number }[];
+  waypoints?: Waypoint[];
   /** Set only on the one edge connecting a BusMerge's bus-out to a
    *  BusSplit's bus-in. Doesn't correspond to a single net (it stands in
    *  for `busWidth` parallel ones), so it's rendered as a fixed thick

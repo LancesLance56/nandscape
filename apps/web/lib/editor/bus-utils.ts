@@ -39,20 +39,6 @@ export function laneHandle(prefix: "in" | "out", index: number): string {
   return `${prefix}-${index}`;
 }
 
-/**
- * Below this many lanes, a Bus Output/Bus Input's node height (computed via
- * the exact same margin/spacing/minHeight formula gate-node.tsx uses,  see
- * both nodes' nodeHeight calc) is too short for the full 3-line stacked
- * readout (label, big decimal, binary string). Rather than growing the node
- * taller than that shared formula gives, which would misalign its pins
- * against every other node type sharing the same formula and reintroduce
- * the snap-to-grid bend a straight wire between two grid-aligned nodes
- * should never have, both nodes collapse to one compact row below this
- * threshold instead. Deliberately shared between the two node files so
- * their layouts can never drift out of sync with each other.
- */
-export const COMPACT_BUS_WIDTH_THRESHOLD = 3;
-
 /** a..g order, matching SevenSegmentNodeData.names and the physical layout
  *  in seven-segment-node.tsx (a=top, b=upper-right, c=lower-right,
  *  d=bottom, e=lower-left, f=upper-left, g=middle). */

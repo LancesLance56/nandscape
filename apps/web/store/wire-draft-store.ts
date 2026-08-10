@@ -1,10 +1,11 @@
 import {create} from "zustand";
+import type {Waypoint} from "@/types/editor";
 
 export interface WireDraft {
   sourceNodeId: string;
   sourceHandleId: string | null;
   sourceHandleType: "source" | "target";
-  waypoints: { x: number; y: number }[];
+  waypoints: Waypoint[];
   origin: { x: number; y: number };
   cursor: { x: number; y: number } | null;
   snapTarget: { x: number; y: number } | null;
@@ -20,7 +21,7 @@ export interface WireDraftState {
     origin: { x: number; y: number },
     radius: number
   ) => void;
-  addWaypoint: (point: { x: number; y: number }) => void;
+  addWaypoint: (point: Waypoint) => void;
   updateCursor: (point: { x: number; y: number }) => void;
   setSnapTarget: (point: { x: number; y: number } | null) => void;
   cancel: () => void;

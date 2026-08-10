@@ -1,5 +1,6 @@
 import {defineCommand} from "../command";
 import {useEditorStore} from "@/store/editor-store";
+import type {Waypoint} from "@/types/editor";
 
 /**
  * Inserts a single waypoint into an existing edge at `index` (mirrors the
@@ -11,9 +12,9 @@ import {useEditorStore} from "@/store/editor-store";
 export function createAddEdgeWaypointCommand(
   edgeId: string,
   index: number,
-  point: { x: number; y: number },
+  point: Waypoint,
 ) {
-  let previousWaypoints: { x: number; y: number }[] = [];
+  let previousWaypoints: Waypoint[] = [];
 
   return defineCommand({
     id: "edge.addWaypoint",

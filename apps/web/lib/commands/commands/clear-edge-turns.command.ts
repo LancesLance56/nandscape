@@ -1,8 +1,9 @@
 import {defineCommand} from "../command";
 import {useEditorStore} from "@/store/editor-store";
+import type {Waypoint} from "@/types/editor";
 
 export function createClearEdgeTurnsCommand(edgeId: string) {
-  let previousWaypoints: { x: number; y: number }[] = [];
+  let previousWaypoints: Waypoint[] = [];
 
   return defineCommand({
     id: "edge.clearTurns",

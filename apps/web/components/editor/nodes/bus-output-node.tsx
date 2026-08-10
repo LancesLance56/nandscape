@@ -9,11 +9,23 @@ import { NODE_WIDTH } from "./gate-shapes";
 import { useHandleClick } from "@/hooks/use-handle-click";
 import { useLaneSignals } from "@/hooks/use-lane-signals";
 import { usePreferencesStore } from "@/store/preferences-store";
-import { commonBusLabel, COMPACT_BUS_WIDTH_THRESHOLD } from "@/lib/editor/bus-utils";
+import { commonBusLabel } from "@/lib/editor/bus-utils";
 import type { BusOutputNodeData, EditorNode } from "@/types/editor";
 
 const LABEL_HEIGHT = 13;
 const LABEL_GAP = 3;
+// Matches bus-input-node.tsx's own DIGIT_COLUMN_WIDTH - kept as a separate
+// constant (not imported) since the two files intentionally don't share
+// runtime code, only the layout convention, see BusOutputNodeImpl's doc
+// comment below.
+const DIGIT_COLUMN_WIDTH = 18;
+
+const STATE_TEXT_CLASS: Record<SignalState, string> = {
+  [SignalState.HIGH]: "text-signal-green",
+  [SignalState.LOW]: "text-signal-coral",
+  [SignalState.FLOAT]: "text-ink-soft",
+  [SignalState.UNKNOWN]: "text-copper",
+};
 
 function bitChar(s: SignalState): string {
   if (s === SignalState.HIGH) return "1";
@@ -21,10 +33,21 @@ function bitChar(s: SignalState): string {
   return s === SignalState.FLOAT ? "·" : "?";
 }
 
-/** N single-bit inputs (in-0..in-(N-1), index 0 = MSB) shown as one
- *  combined decimal + binary readout instead of N separate LEDs. Purely a
- *  display sink,  see bus-output-inspector.tsx for how `names` is edited
- *  and compile-circuit.ts for how each lane becomes its own OUTPUT_PIN.
+/** N single-bit inputs (in-0..in-(N-1), index 0 = MSB) shown as a decimal
+ *  readout plus a column of per-lane digits instead of N separate LEDs.
+ *  Purely a display sink,  see bus-output-inspector.tsx for how `names` is
+ *  edited and compile-circuit.ts for how each lane becomes its own
+ *  OUTPUT_PIN.
+ *
+ *  The digit column is vertical, not a horizontal row: each digit sits at
+ *  the exact same y as its own pin (verticalPos(i, width), the same
+ *  function that positions the pins themselves,  mirrors
+ *  bus-input-node.tsx's identical layout), so it's immediately clear which
+ *  digit is which pin's value, and - unlike a horizontal row, which clipped
+ *  against NODE_WIDTH once width passed ~5 - it scales with however tall
+ *  the box already is for `width` lanes instead of needing its own separate
+ *  width budget.
+ *
  *  The label sits outside the box, below it (see io-node.tsx for the same
  *  pattern): the box's own height still drives lane pin spacing, so adding
  *  the label below never moves a pin. */
@@ -52,9 +75,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const decimalValue = allDefined
     ? signals.reduce((acc, s) => (acc << 1) | (s === SignalState.HIGH ? 1 : 0), 0)
     : null;
-  const binaryString = signals.map(bitChar).join("");
   const label = commonBusLabel(busData.names) || "BUS";
-  const compact = width < COMPACT_BUS_WIDTH_THRESHOLD;
 
   return (
     <div style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }} className="relative">
@@ -74,25 +95,31 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
 
       <div
         style={{ top: 0, height: `${boxHeight}px`, width: NODE_WIDTH }}
-        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
-          compact ? "gap-1 px-1.5 py-1" : "flex-col gap-0.5 px-2 py-1.5"
-        } ${selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"}`}
+        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-between gap-1 overflow-hidden rounded-lg border bg-surface-card px-1.5 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+          selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"
+        }`}
       >
-        {compact ? (
-          <>
-            <span className="shrink-0 font-mono text-xs font-bold leading-none text-ink">{binaryString}</span>
-            <span className="shrink-0 font-mono text-[9px] text-ink-soft">
-              ={decimalValue !== null ? decimalValue : "?"}
+        {/* Digits sit next to in-i's own pins (Position.Left), one per
+            lane, each at that lane's exact verticalPos - the same
+            coordinate space the pins above use, since this column spans
+            the same top:0..boxHeight range as the wrapper they're both
+            positioned in. */}
+        <div className="relative h-full shrink-0" style={{ width: `${DIGIT_COLUMN_WIDTH}px` }}>
+          {signals.map((s, i) => (
+            <span
+              key={busData.names[i]}
+              title={busData.names[i]}
+              style={{ top: `${verticalPos(i, width)}px` }}
+              className={`absolute left-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center font-mono text-[10px] font-bold leading-none ${STATE_TEXT_CLASS[s]}`}
+            >
+              {bitChar(s)}
             </span>
-          </>
-        ) : (
-          <>
-            <span className="font-mono text-lg font-bold leading-none text-ink">
-              {decimalValue !== null ? decimalValue : "?"}
-            </span>
-            <span className="font-mono text-[9px] text-ink-soft">{binaryString}</span>
-          </>
-        )}
+          ))}
+        </div>
+
+        <span className="font-mono text-sm font-bold leading-none text-ink">
+          {decimalValue !== null ? decimalValue : "?"}
+        </span>
       </div>
 
       <span

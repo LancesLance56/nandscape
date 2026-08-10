@@ -3,7 +3,7 @@ import type {Connection} from "@xyflow/react";
 import {applyNodeChanges, applyEdgeChanges} from "@xyflow/react";
 import type {NodeChange, EdgeChange} from "@xyflow/react";
 
-import type {EditorNode, EditorEdge, Selection, WireEdgeData} from "@/types/editor";
+import type {EditorNode, EditorEdge, Selection, WireEdgeData, Waypoint} from "@/types/editor";
 import {EMPTY_SELECTION} from "@/types/editor";
 
 export interface EditorState {
@@ -30,9 +30,15 @@ export interface EditorState {
   addEdge: (edge: EditorEdge) => void;
   removeEdges: (edgeIds: string[]) => void;
   updateEdgeData: (edgeId: string, patch: Record<string, unknown>) => void;
+  /** Moves every waypoint tagged with `junctionId`, on every edge that has
+   *  one, to `point` in a single update - see Waypoint's doc comment in
+   *  types/editor.ts for why a shared id (not just matching coordinates) is
+   *  what makes a wire branch move as one instead of only the edge you
+   *  happen to be dragging. */
+  moveJunction: (junctionId: string, point: { x: number; y: number }) => void;
   connect: (
     connection: Connection,
-    waypoints?: { x: number; y: number }[],
+    waypoints?: Waypoint[],
     extraData?: Partial<WireEdgeData>,
   ) => EditorEdge;
 
@@ -99,6 +105,22 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   updateEdgeData: (edgeId, patch) => {
     set((state) => ({
       edges: state.edges.map((e) => (e.id === edgeId ? {...e, data: {...e.data, ...patch}} : e)),
+    }));
+  },
+
+  moveJunction: (junctionId, point) => {
+    set((state) => ({
+      edges: state.edges.map((e) => {
+        const waypoints = e.data?.waypoints;
+        if (!waypoints?.some((w) => w.junctionId === junctionId)) return e;
+        return {
+          ...e,
+          data: {
+            ...e.data,
+            waypoints: waypoints.map((w) => (w.junctionId === junctionId ? {...w, x: point.x, y: point.y} : w)),
+          },
+        };
+      }),
     }));
   },
 

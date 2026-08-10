@@ -11,22 +11,36 @@ import { useHandleClick } from "@/hooks/use-handle-click";
 import { useEditorStore } from "@/store/editor-store";
 import { useSimulationStore } from "@/store/simulation-store";
 import { usePreferencesStore } from "@/store/preferences-store";
-import { commonBusLabel, COMPACT_BUS_WIDTH_THRESHOLD } from "@/lib/editor/bus-utils";
+import { commonBusLabel } from "@/lib/editor/bus-utils";
 import type { BusInputNodeData, EditorNode } from "@/types/editor";
 
 const LABEL_HEIGHT = 13;
 const LABEL_GAP = 3;
+// Just wide enough for one two-character-max digit button - the column
+// sits beside the decimal readout, not stacked under it, so it costs
+// horizontal room instead of the vertical room a wider bus needs for its
+// pins anyway (see BusInputNodeImpl's doc comment below).
+const DIGIT_COLUMN_WIDTH = 18;
 
 function bitChar(s: SignalState): string {
   return s === SignalState.HIGH ? "1" : "0";
 }
 
 /** The source-side mirror of BusOutputNode: N independently toggleable
- *  source pins (out-0..out-(N-1), index 0 = MSB) shown as one combined
- *  decimal + binary readout with clickable digits instead of N separate
- *  Input toggles. See BusInputNodeData's doc comment in types/editor.ts for
- *  why this is a general sandbox tool rather than a puzzle-input node. The
- *  label sits outside the box, below it (see io-node.tsx for the same
+ *  source pins (out-0..out-(N-1), index 0 = MSB) shown as a decimal readout
+ *  plus a column of clickable digit buttons instead of N separate Input
+ *  toggles. See BusInputNodeData's doc comment in types/editor.ts for why
+ *  this is a general sandbox tool rather than a puzzle-input node.
+ *
+ *  The digit column is vertical, not a horizontal row: each digit sits at
+ *  the exact same y as its own pin (verticalPos(i, width), the same
+ *  function that positions the pins themselves), so it's immediately clear
+ *  which digit toggles which pin, and - unlike a horizontal row, which
+ *  clipped against NODE_WIDTH once width passed ~5 - it scales with however
+ *  tall the box already is for `width` lanes instead of needing its own
+ *  separate width budget.
+ *
+ *  The label sits outside the box, below it (see io-node.tsx for the same
  *  pattern): the box's own height still drives lane pin spacing, so adding
  *  the label below never moves a pin. */
 function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
@@ -51,7 +65,6 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
 
   const decimalValue = busData.values.reduce((acc, s) => (acc << 1) | (s === SignalState.HIGH ? 1 : 0), 0);
   const label = commonBusLabel(busData.names) || "BUS";
-  const compact = width < COMPACT_BUS_WIDTH_THRESHOLD;
 
   const toggleLane = (event: React.MouseEvent, i: number) => {
     // A lane toggle is a click inside the node body, not a pin drag or a
@@ -64,26 +77,6 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
     updateNodeData(id, { values: nextValues });
     useSimulationStore.getState().driveInputLane(id, i, next);
   };
-
-  const digits = (
-    <span className="flex shrink-0 gap-0.5 font-mono text-xs font-bold leading-none text-ink">
-      {busData.values.map((v, i) => (
-        <button
-          key={busData.names[i]}
-          type="button"
-          onClick={(event) => toggleLane(event, i)}
-          title={`Toggle ${busData.names[i]}`}
-          className={`min-w-[13px] rounded-sm border px-0.5 py-px text-center transition-colors ${
-            v === SignalState.HIGH
-              ? "border-signal-green/50 bg-signal-green/10 text-signal-green"
-              : "border-signal-coral/40 bg-signal-coral/10 text-signal-coral"
-          } hover:brightness-125 active:scale-95`}
-        >
-          {bitChar(v)}
-        </button>
-      ))}
-    </span>
-  );
 
   return (
     <div style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }} className="relative">
@@ -103,21 +96,35 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
 
       <div
         style={{ top: 0, height: `${boxHeight}px`, width: NODE_WIDTH }}
-        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
-          compact ? "gap-2 px-1.5 py-1" : "flex-col gap-1.5 px-2 py-1.5"
-        } ${selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"}`}
+        className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-between gap-1 overflow-hidden rounded-lg border bg-surface-card px-1.5 shadow-sm transition-[box-shadow,border-color] duration-150 ${
+          selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"
+        }`}
       >
-        {compact ? (
-          <>
-            {digits}
-            <span className="shrink-0 font-mono text-[9px] text-ink-soft">={decimalValue}</span>
-          </>
-        ) : (
-          <>
-            <span className="font-mono text-lg font-bold leading-none text-ink">{decimalValue}</span>
-            {digits}
-          </>
-        )}
+        <span className="font-mono text-sm font-bold leading-none text-ink">{decimalValue}</span>
+
+        {/* Digits sit next to out-i's own pins (Position.Right), one per
+            lane, each at that lane's exact verticalPos - the same
+            coordinate space the pins above use, since this column spans
+            the same top:0..boxHeight range as the wrapper they're both
+            positioned in. */}
+        <div className="relative h-full shrink-0" style={{ width: `${DIGIT_COLUMN_WIDTH}px` }}>
+          {busData.values.map((v, i) => (
+            <button
+              key={busData.names[i]}
+              type="button"
+              onClick={(event) => toggleLane(event, i)}
+              title={`Toggle ${busData.names[i]}`}
+              style={{ top: `${verticalPos(i, width)}px` }}
+              className={`absolute left-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border font-mono text-[10px] font-bold leading-none transition-colors ${
+                v === SignalState.HIGH
+                  ? "border-signal-green/50 bg-signal-green/10 text-signal-green"
+                  : "border-signal-coral/40 bg-signal-coral/10 text-signal-coral"
+              } hover:brightness-125 active:scale-95`}
+            >
+              {bitChar(v)}
+            </button>
+          ))}
+        </div>
       </div>
 
       <span

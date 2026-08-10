@@ -2,15 +2,17 @@
 
 import {ViewportPortal} from "@xyflow/react";
 import {useWireDraftStore} from "@/store/wire-draft-store";
+import {usePreferencesStore} from "@/store/preferences-store";
 import {buildOrthogonalPath, type Point} from "@/lib/editor/edge-path";
 
 export function WireDraftOverlay() {
   const draft = useWireDraftStore((s) => s.draft);
+  const edgeCornerRadius = usePreferencesStore((s) => s.edgeCornerRadius);
   if (!draft) return null;
 
   const cursor = draft.snapTarget ?? draft.cursor;
   const points: Point[] = [draft.origin, ...draft.waypoints, ...(cursor ? [cursor] : [])];
-  const path = buildOrthogonalPath(points);
+  const path = buildOrthogonalPath(points, edgeCornerRadius);
   const isSnapped = draft.snapTarget !== null;
 
   return (

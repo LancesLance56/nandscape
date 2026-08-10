@@ -54,7 +54,7 @@ export const usePreferencesStore = create<PreferencesState>()(
       showGrid: true,
       edgeRouting: "smoothstep",
       edgeMinLength: 8,
-      edgeCornerRadius: 2,
+      edgeCornerRadius: 0,  
       showGateLabels: true,
       animateSignals: true,
       reducedMotion: false,
@@ -90,7 +90,7 @@ export const usePreferencesStore = create<PreferencesState>()(
     }),
     {
       name: "nandscape-editor-preferences",
-      version: 2,
+      version: 3,
       migrate: (persistedState, persistedVersion) => {
         if (persistedVersion < 1) return undefined;
         return persistedState as PreferencesState;

@@ -1,7 +1,7 @@
 import type {Connection} from "@xyflow/react";
 import {defineCommand} from "../command";
 import {useEditorStore} from "@/store/editor-store";
-import type {WireEdgeData} from "@/types/editor";
+import type {WireEdgeData, Waypoint} from "@/types/editor";
 
 /**
  * Validity checks (pin arity, no self-loops, type matching) belong in a
@@ -16,7 +16,7 @@ import type {WireEdgeData} from "@/types/editor";
  */
 export function createConnectEdgeCommand(
   connection: Connection,
-  waypoints?: { x: number; y: number }[],
+  waypoints?: Waypoint[],
   extraData?: Partial<WireEdgeData>,
 ) {
   let createdEdgeId: string | null = null;
