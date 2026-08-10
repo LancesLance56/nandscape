@@ -44,6 +44,7 @@ export function CircuitEditor({ puzzleSlug, projectSlug }: CircuitEditorProps = 
     if (projectSlug) {
       usePuzzleStore.getState().setActivePuzzle(null);
       useProjectStore.getState().setActive(null);
+      useUiStore.getState().setSidebarTab("projects");
       useEditorStore.getState().loadGraph([], []);
 
       void (async () => {
@@ -68,6 +69,7 @@ export function CircuitEditor({ puzzleSlug, projectSlug }: CircuitEditorProps = 
 
     if (!puzzleSlug) {
       usePuzzleStore.getState().setActivePuzzle(null);
+      useUiStore.getState().setSidebarTab("projects");
       const sandbox = useSandboxProgressStore.getState();
       if (sandbox.hasSavedProgress) {
         useEditorStore.getState().loadGraph(sandbox.nodes, sandbox.edges);

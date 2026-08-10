@@ -153,7 +153,7 @@ export interface Selection {
 
 export const EMPTY_SELECTION: Selection = {nodeIds: [], edgeIds: []};
 
-export type SidebarTab = "problem";
+export type SidebarTab = "problem" | "projects";
 export type InspectorTab = "properties" | "truth-table" | "notes" | "palette";
 export type BottomPanelTab = "palette";
 

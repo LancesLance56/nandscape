@@ -2,10 +2,11 @@
 
 import {useUiStore} from "@/store/ui-store";
 import {ProblemPanel} from "./problem-panel";
-import {GatePalette} from "./gate-palette";
+import {ProjectsPanel} from "./projects-panel";
 import type {SidebarTab} from "@/types/editor";
 
 const TABS: { id: SidebarTab; label: string }[] = [
+  {id: "projects", label: "Projects"},
   {id: "problem", label: "Problem"},
 ];
 
@@ -32,8 +33,9 @@ export function Sidebar() {
         ))}
       </div>
 
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-y-auto">
         {activeTab === "problem" && <ProblemPanel/>}
+        {activeTab === "projects" && <ProjectsPanel/>}
       </div>
     </div>
   );
