@@ -4,12 +4,13 @@ import {useEditorStore} from "@/store/editor-store";
 import {useUiStore} from "@/store/ui-store";
 import {useSimulationStore} from "@/store/simulation-store";
 import {useWireDraftStore} from "@/store/wire-draft-store";
-import {createDeleteSelectionCommand} from "@/lib/commands";
+import {createDeleteSelectionCommand, createDuplicateSelectionCommand, createPasteClipboardCommand} from "@/lib/commands";
 import {useCustomCircuitsStore} from "@/store";
 import {createRotateNodesCommand} from "@/lib/commands/commands/rotate-nodes.command";
 import {GateNodeData} from "@/types/editor";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { scopeForPuzzle } from "@/store/custom-circuits-store";
+import { setClipboard, getClipboard } from "@/lib/editor/clipboard";
 
 export const historyUndoCommand = defineCommand({
   id: "history.undo",
@@ -52,23 +53,41 @@ export const clearSelectionCommand = defineCommand({
   },
 });
 
-// --- Placeholders,  wired up once clipboard/duplication logic exists -------
+// Thin dispatch triggers, same shape as deleteSelectionCommand above: each
+// reads whatever live state it needs (current selection, or the clipboard),
+// builds a fresh undoable command carrying a snapshot of that, and runs it
+// through history. The registered command itself is never undoable,  it's
+// not the thing that goes on the undo stack.
 export const duplicateSelectionCommand = defineCommand({
   id: "selection.duplicate",
   label: "Duplicate selection",
-  execute: () => console.info("[nandscape] selection.duplicate: not implemented yet"),
+  execute: () => {
+    const {nodeIds} = useEditorStore.getState().selection;
+    if (nodeIds.length === 0) return;
+    useHistoryStore.getState().run(createDuplicateSelectionCommand(nodeIds));
+  },
 });
 
 export const copySelectionCommand = defineCommand({
   id: "clipboard.copy",
   label: "Copy",
-  execute: () => console.info("[nandscape] clipboard.copy: not implemented yet"),
+  execute: () => {
+    const {nodes, edges, selection} = useEditorStore.getState();
+    const idSet = new Set(selection.nodeIds);
+    const selectedNodes = nodes.filter((n) => idSet.has(n.id));
+    if (selectedNodes.length === 0) return;
+    const selectedEdges = edges.filter((e) => idSet.has(e.source) && idSet.has(e.target));
+    setClipboard(selectedNodes, selectedEdges);
+  },
 });
 
 export const pasteClipboardCommand = defineCommand({
   id: "clipboard.paste",
   label: "Paste",
-  execute: () => console.info("[nandscape] clipboard.paste: not implemented yet"),
+  execute: () => {
+    if (!getClipboard()) return;
+    useHistoryStore.getState().run(createPasteClipboardCommand());
+  },
 });
 
 export const saveCircuitCommand = defineCommand({

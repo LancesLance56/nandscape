@@ -2,19 +2,20 @@
 
 import { useEditorStore } from "@/store/editor-store";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
+import { useResolvedSubcircuit } from "@/hooks/use-resolved-subcircuit";
 import { DEFAULT_BLOCK_COLORS } from "@/lib/editor/block-colors";
 import type { EditorNode, SubcircuitNodeData } from "@/types/editor";
 
 export function SubcircuitInspectorPanel({ node }: { node: EditorNode }) {
   const data = node.data as SubcircuitNodeData;
   const updateNodeData = useEditorStore((s) => s.updateNodeData);
-  const block = useSubcircuitBlocksStore((s) => s.getById(data.circuitId));
+  const { block, isScope } = useResolvedSubcircuit(data.circuitId);
   const setColor = useSubcircuitBlocksStore((s) => s.setColor);
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">Block</span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">{isScope ? "Tab" : "Block"}</span>
         <span
           className="rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold text-white"
           style={{ backgroundColor: block?.color ?? "var(--signal-green-strong)" }}
@@ -34,7 +35,7 @@ export function SubcircuitInspectorPanel({ node }: { node: EditorNode }) {
         />
       </label>
 
-      {block && !block.builtIn && (
+      {block && !block.builtIn && !isScope && (
         <div className="flex flex-col gap-2">
           <span className="text-xs font-medium text-ink-soft">Block color</span>
           <div className="flex items-center gap-2">

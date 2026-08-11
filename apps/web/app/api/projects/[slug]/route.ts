@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { deleteProject, getProjectBySlug, updateProject } from "@/lib/projects/projects";
 import type { ProjectVisibility } from "@/lib/projects/projects";
 import type { EditorNode, EditorEdge } from "@/types/editor";
+import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
+import type { CircuitScope } from "@/types/scope";
 
 const VALID_VISIBILITIES: ProjectVisibility[] = ["PRIVATE", "UNLISTED", "PUBLIC"];
 
@@ -51,11 +53,13 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, description, nodes, edges, visibility } = body as {
+  const { name, description, nodes, edges, scopes, blocks, visibility } = body as {
     name?: unknown;
     description?: unknown;
     nodes?: unknown;
     edges?: unknown;
+    scopes?: unknown;
+    blocks?: unknown;
     visibility?: unknown;
   };
 
@@ -71,12 +75,20 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   if (edges !== undefined && !Array.isArray(edges)) {
     return NextResponse.json({ error: "`edges` must be an array" }, { status: 422 });
   }
+  if (scopes !== undefined && !Array.isArray(scopes)) {
+    return NextResponse.json({ error: "`scopes` must be an array" }, { status: 422 });
+  }
+  if (blocks !== undefined && !Array.isArray(blocks)) {
+    return NextResponse.json({ error: "`blocks` must be an array" }, { status: 422 });
+  }
 
   const project = await updateProject(existing.id, {
     name: typeof name === "string" ? name : undefined,
     description: description as string | null | undefined,
     nodes: nodes as EditorNode[] | undefined,
     edges: edges as EditorEdge[] | undefined,
+    scopes: scopes as CircuitScope[] | undefined,
+    blocks: blocks as SubcircuitBlockDefinition[] | undefined,
     visibility: visibility as ProjectVisibility | undefined,
   });
 

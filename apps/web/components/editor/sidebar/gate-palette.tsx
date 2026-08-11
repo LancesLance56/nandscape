@@ -5,6 +5,7 @@ import { GateType } from "@nandscape/engine";
 import { PaletteItem, type PaletteEntry } from "./palette-item";
 import { useUiStore } from "@/store/ui-store";
 import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
+import { useScopesStore } from "@/store/scopes-store";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { getDefaultPuzzle } from "@/lib/puzzles/default-puzzles";
 import { getGateRestriction } from "@/lib/puzzles/gate-restrictions";
@@ -31,7 +32,19 @@ const STATIC_GROUPS: { title: string; entries: Omit<PaletteEntry, "color">[] }[]
     entries: [
       { kind: "gate", gateType: GateType.D_LATCH, label: "D Latch", symbol: "DL" },
       { kind: "gate", gateType: GateType.FLIP_FLOP, label: "D Flip-Flop", symbol: "FF" },
+      { kind: "gate", gateType: GateType.JK_FLIP_FLOP, label: "JK Flip-Flop", symbol: "JK" },
+      { kind: "gate", gateType: GateType.T_FLIP_FLOP, label: "T Flip-Flop", symbol: "TF" },
       { kind: "gate", gateType: GateType.SR_LATCH, label: "SR Latch", symbol: "SR" },
+      { kind: "gate", gateType: GateType.COUNTER, label: "Counter", symbol: "CT" },
+    ],
+  },
+  {
+    title: "Decoders & Plexers",
+    entries: [
+      { kind: "gate", gateType: GateType.MULTIPLEXER, label: "Multiplexer", symbol: "MX" },
+      { kind: "gate", gateType: GateType.DEMULTIPLEXER, label: "Demultiplexer", symbol: "DX" },
+      { kind: "gate", gateType: GateType.DECODER, label: "Decoder", symbol: "DC" },
+      { kind: "gate", gateType: GateType.PRIORITY_ENCODER, label: "Priority Encoder", symbol: "PE" },
     ],
   },
   {
@@ -39,6 +52,8 @@ const STATIC_GROUPS: { title: string; entries: Omit<PaletteEntry, "color">[] }[]
     entries: [
       { kind: "input", label: "Input", symbol: "IN" },
       { kind: "output", label: "Output", symbol: "OUT" },
+      { kind: "led", label: "LED", symbol: "LED" },
+      { kind: "clock", label: "Clock", symbol: "CLK" },
     ],
   },
   {
@@ -85,6 +100,8 @@ function PaletteGroup({ title, children }: { title: string; children: React.Reac
 export function GatePalette() {
   const customBlocks = useSubcircuitBlocksStore((s) => s.customBlocks);
   const removeBlock = useSubcircuitBlocksStore((s) => s.remove);
+  const scopes = useScopesStore((s) => s.scopes);
+  const activeScopeId = useScopesStore((s) => s.activeScopeId);
   const activePuzzleSlug = usePuzzleStore((s) => s.activePuzzleSlug);
 
   useEffect(() => {
@@ -112,6 +129,32 @@ export function GatePalette() {
         color: b.color,
       })),
     [blocks],
+  );
+
+  // Any OTHER tab in this project can be dropped in as a subcircuit too,
+  // exactly like a saved block (see scope-block.ts) - not the active one,
+  // that'd be an immediate self-reference. Reuses the same kind:"subcircuit"
+  // drag-drop path as blocks: circuit-canvas.tsx's handleDrop and
+  // node-registry.tsx's createSubcircuitNode don't need to know the
+  // difference, a scope id and a block id are interchangeable as circuitId.
+  const otherScopes = useMemo(() => scopes.filter((s) => s.id !== activeScopeId), [scopes, activeScopeId]);
+  const scopeEntries: PaletteEntry[] = useMemo(
+    () =>
+      otherScopes.map((s) => {
+        // `name` should always be set (every constructor - makeScope,
+        // addScope, the sandbox-progress migration - requires one), but
+        // this reads from persisted localStorage / a DB row / an imported
+        // JSON file, none of which the type system can actually guarantee
+        // at runtime - fall back rather than crash on a malformed one.
+        const name = s.name || "Untitled circuit";
+        return {
+          kind: "subcircuit" as const,
+          blockId: s.id,
+          label: name,
+          symbol: name.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase() || "CV",
+        };
+      }),
+    [otherScopes],
   );
 
   return (
@@ -153,6 +196,14 @@ export function GatePalette() {
           onto the canvas some other way (e.g. pasted from a saved graph). */}
       {!activePuzzleSlug && (
         <>
+          {scopeEntries.length > 0 && (
+            <PaletteGroup title="This project's circuits">
+              {scopeEntries.map((entry) => (
+                <PaletteItem key={entry.blockId} entry={entry} />
+              ))}
+            </PaletteGroup>
+          )}
+
           <PaletteGroup title="Circuit blocks">
             {blockEntries.map((entry, i) => {
               const block = blocks[i];

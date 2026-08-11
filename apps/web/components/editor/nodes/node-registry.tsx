@@ -8,7 +8,8 @@ import { BusSplitNode } from "./bus-split-node";
 import { BusInputNode } from "./bus-input-node";
 import { BusOutputNode } from "./bus-output-node";
 import { SevenSegmentNode } from "./seven-segment-node";
-import { defaultInputCountForGateType } from "@/lib/editor/gate-defaults";
+import { ClockNode } from "./clock-node";
+import { defaultInputCountForGateType, isVariableArityGate } from "@/lib/editor/gate-defaults";
 import { DEFAULT_BUS_WIDTH, busOutputLaneNames, sevenSegmentLaneNames, DEFAULT_SEVEN_SEGMENT_PREFIX } from "@/lib/editor/bus-utils";
 import type { EditorNode, EditorNodeData, EditorNodeKind } from "@/types/editor";
 
@@ -22,6 +23,7 @@ export const nodeTypes: NodeTypes = {
   "bus-input": BusInputNode,
   "bus-output": BusOutputNode,
   "seven-segment": SevenSegmentNode,
+  clock: ClockNode,
 };
 
 let nodeIdCounter = 0;
@@ -47,7 +49,12 @@ export function createGateNode(
     data: {
       kind: "gate",
       gateType,
-      inputCount: options.inputCount ?? defaultInputCountForGateType(gateType),
+      // Only meaningful for variable-arity gates (see GateNodeData's doc
+      // comment); leaving it undefined for every other gate type means
+      // inputCountForGate() falls through to its own type-specific default
+      // (selectBits-derived, fixed-shape, etc.) instead of a stray unused
+      // number sitting in this node's data.
+      inputCount: options.inputCount ?? (isVariableArityGate(gateType) ? defaultInputCountForGateType(gateType) : undefined),
       label: options.label,
     } satisfies EditorNodeData,
   };
@@ -67,6 +74,39 @@ export function createIoNode(
       kind === "input"
         ? { kind, name, value: options.value ?? SignalState.LOW }
         : { kind, name },
+  };
+}
+
+/** A display-only variant of Output: same single target pin and compiles
+ *  to the same OUTPUT_PIN gate (see compile-circuit.ts), rendered as a
+ *  glowing dot instead of a 0/1 readout box (see io-node.tsx). Reuses the
+ *  "io-output" node type/IoNode component,  the two only differ by
+ *  `data.kind`. */
+export function createLedNode(
+  position: { x: number; y: number },
+  name: string,
+  options: NodeFactoryOptions = {},
+): EditorNode {
+  return {
+    id: options.id ?? nextNodeId("led"),
+    type: "io-output",
+    position,
+    data: { kind: "led", name },
+  };
+}
+
+export function createClockNode(
+  position: { x: number; y: number },
+  options: NodeFactoryOptions & { halfPeriod?: number } = {},
+): EditorNode {
+  return {
+    id: options.id ?? nextNodeId("clock"),
+    type: "clock",
+    position,
+    data: {
+      kind: "clock",
+      halfPeriod: options.halfPeriod ?? 5,
+    } satisfies EditorNodeData,
   };
 }
 

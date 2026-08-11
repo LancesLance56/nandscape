@@ -22,6 +22,8 @@ import {
   nodeTypes,
   createGateNode,
   createIoNode,
+  createLedNode,
+  createClockNode,
   createSubcircuitNode,
   createBusMergeNode,
   createBusSplitNode,
@@ -136,6 +138,10 @@ export function CircuitCanvas() {
         node = createGateNode(position, entry.gateType);
       } else if (entry.kind === "input" || entry.kind === "output") {
         node = createIoNode(position, entry.kind, entry.kind === "input" ? "A" : "OUT");
+      } else if (entry.kind === "led") {
+        node = createLedNode(position, "LED");
+      } else if (entry.kind === "clock") {
+        node = createClockNode(position);
       } else if (entry.kind === "subcircuit" && entry.blockId) {
         node = createSubcircuitNode(position, entry.blockId);
       } else if (entry.kind === "bus-merge") {

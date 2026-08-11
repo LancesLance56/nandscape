@@ -28,6 +28,17 @@ const STATE_BORDER_CLASS: Record<SignalState, string> = {
   [SignalState.UNKNOWN]: "border-copper/50",
 };
 
+/** An LED reads as "off" (dim, unlit) rather than "0" (coral, same as a
+ *  false readout) when LOW/FLOAT,  a real LED doesn't turn red when
+ *  unpowered, it just doesn't light up. UNKNOWN gets a dim amber tint so
+ *  it's still visually distinct from a clean off state. */
+const LED_DOT_CLASS: Record<SignalState, string> = {
+  [SignalState.HIGH]: "bg-signal-green shadow-[0_0_8px_var(--signal-green)]",
+  [SignalState.LOW]: "bg-surface-2 border border-border-strong",
+  [SignalState.FLOAT]: "bg-surface-2 border border-border-strong",
+  [SignalState.UNKNOWN]: "bg-copper/40 border border-copper/50",
+};
+
 const LABEL_HEIGHT = 13;
 const LABEL_GAP = 3;
 
@@ -50,6 +61,7 @@ const LABEL_GAP = 3;
 function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
   const ioData = data as IoNodeData;
   const isInput = ioData.kind === "input";
+  const isLed = ioData.kind === "led";
   const updateNodeData = useEditorStore((s) => s.updateNodeData);
   const incomingEdgeId = useEditorStore((s) =>
     isInput ? undefined : s.edges.find((e) => e.target === id)?.id,
@@ -131,13 +143,17 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
       <button
         type="button"
         onClick={handleToggle}
-        aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} output`}
+        aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} ${isLed ? "LED" : "output"}`}
         style={{top: 0, height: `${boxHeight}px`, width: `${boxHeight}px`}}
         className={`absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           isInput ? "cursor-pointer active:scale-[0.97]" : "cursor-default"
         } ${selected ? "border-copper ring-2 ring-copper/30" : STATE_BORDER_CLASS[signal]}`}
       >
-        <span className={`font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
+        {isLed ? (
+          <span className={`h-3.5 w-3.5 rounded-full transition-shadow ${LED_DOT_CLASS[signal]}`} />
+        ) : (
+          <span className={`font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
+        )}
       </button>
 
       <span

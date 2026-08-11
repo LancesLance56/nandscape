@@ -9,6 +9,7 @@ import { PreviewGateNode } from "./preview-gate-node";
 import { PreviewIoNode } from "./preview-io-node";
 import { PreviewWireEdge } from "./preview-wire-edge";
 import type { EditorNode, EditorEdge, IoNodeData } from "@/types/editor";
+import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
 
 const nodeTypes: NodeTypes = {
   gate: PreviewGateNode,
@@ -28,6 +29,7 @@ const edgeTypes: EdgeTypes = {
 export function CircuitStage({
   nodes: initialNodes,
   edges,
+  blocks,
   allowScrollZoom = false,
   pannable = true,
   showBackground = true,
@@ -35,6 +37,13 @@ export function CircuitStage({
 }: {
   nodes: EditorNode[];
   edges: EditorEdge[];
+  /** A project's (or imported file's) embedded custom-block snapshot, if
+   *  any - resolved ahead of the viewer's own local block library so a
+   *  public/unlisted project or embed renders its subcircuits correctly
+   *  for anyone, without writing those blocks into the viewer's persisted
+   *  "My Blocks" (see subcircuit-blocks-store's hydrateFromSnapshot for
+   *  the mutating equivalent used by the actual editor). */
+  blocks?: SubcircuitBlockDefinition[];
   allowScrollZoom?: boolean;
   pannable?: boolean;
   showBackground?: boolean;
@@ -49,9 +58,18 @@ export function CircuitStage({
     setNodes(initialNodes);
   }, [initialNodes]);
 
+  const blocksById = useMemo(
+    () => (blocks && blocks.length > 0 ? new Map(blocks.map((b) => [b.id, b])) : undefined),
+    [blocks],
+  );
+  const resolveExtra = useMemo(
+    () => (blocksById ? (id: string) => blocksById.get(id) : undefined),
+    [blocksById],
+  );
+
   useEffect(() => {
-    setEdgeSignals((prev) => evaluateLiveCircuit(nodes, edges, prev));
-  }, [nodes, edges]);
+    setEdgeSignals((prev) => evaluateLiveCircuit(nodes, edges, prev, 0, resolveExtra));
+  }, [nodes, edges, resolveExtra]);
 
   const toggleInput = useCallback((nodeId: string) => {
     setNodes((prev) =>

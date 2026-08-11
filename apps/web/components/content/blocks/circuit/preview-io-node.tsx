@@ -39,12 +39,22 @@ const STATE_BORDER_CLASS: Record<SignalState, string> = {
   [SignalState.UNKNOWN]: "border-copper/50",
 };
 
+/** Mirrors io-node.tsx's LED_DOT_CLASS: an LED reads as "off" (dim) rather
+ *  than "0" (coral) when LOW/FLOAT. */
+const LED_DOT_CLASS: Record<SignalState, string> = {
+  [SignalState.HIGH]: "bg-signal-green shadow-[0_0_8px_var(--signal-green)]",
+  [SignalState.LOW]: "bg-surface-2 border border-border-strong",
+  [SignalState.FLOAT]: "bg-surface-2 border border-border-strong",
+  [SignalState.UNKNOWN]: "bg-copper/40 border border-copper/50",
+};
+
 const LABEL_HEIGHT = 13;
 const LABEL_GAP = 3;
 
 function PreviewIoNodeImpl({ data }: NodeProps<EditorNode>) {
   const ioData = data as PreviewIoData;
   const isInput = ioData.kind === "input";
+  const isLed = ioData.kind === "led";
   // An output with no incoming edge has no value at all (see circuit-stage.tsx),
   // same FLOAT fallback the real io-node.tsx uses for that case.
   const signal = isInput ? (ioData.value ?? SignalState.LOW) : (ioData.value ?? SignalState.FLOAT);
@@ -82,13 +92,17 @@ function PreviewIoNodeImpl({ data }: NodeProps<EditorNode>) {
       <button
         type="button"
         onClick={isInput ? ioData.onToggle : undefined}
-        aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} output`}
+        aria-label={isInput ? `Toggle ${ioData.name}` : `${ioData.name} ${isLed ? "LED" : "output"}`}
         style={{ top: 0, height: boxHeight, width: boxHeight }}
         className={`nodrag nopan pointer-events-auto absolute left-1/2 z-10 flex -translate-x-1/2 items-center justify-center overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           STATE_BORDER_CLASS[signal]
         } ${isInput ? "cursor-pointer active:scale-[0.97]" : "cursor-default"}`}
       >
-        <span className={`font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
+        {isLed ? (
+          <span className={`h-3.5 w-3.5 rounded-full transition-shadow ${LED_DOT_CLASS[signal]}`} />
+        ) : (
+          <span className={`font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
+        )}
       </button>
 
       <span

@@ -1,0 +1,1981 @@
+{
+  "name": "4-bit ALU",
+  "nodes": [
+    {
+      "id": "busA",
+      "type": "bus-input",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "data": {
+        "kind": "bus-input",
+        "names": [
+          "A3",
+          "A2",
+          "A1",
+          "A0"
+        ],
+        "values": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "busB",
+      "type": "bus-input",
+      "position": {
+        "x": 0,
+        "y": 320
+      },
+      "data": {
+        "kind": "bus-input",
+        "names": [
+          "B3",
+          "B2",
+          "B1",
+          "B0"
+        ],
+        "values": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "selS0",
+      "type": "io-input",
+      "position": {
+        "x": 0,
+        "y": 620
+      },
+      "data": {
+        "kind": "input",
+        "name": "SEL0",
+        "value": 0
+      }
+    },
+    {
+      "id": "selS1",
+      "type": "io-input",
+      "position": {
+        "x": 0,
+        "y": 690
+      },
+      "data": {
+        "kind": "input",
+        "name": "SEL1",
+        "value": 0
+      }
+    },
+    {
+      "id": "selS2",
+      "type": "io-input",
+      "position": {
+        "x": 0,
+        "y": 760
+      },
+      "data": {
+        "kind": "input",
+        "name": "SEL2",
+        "value": 0
+      }
+    },
+    {
+      "id": "gnd",
+      "type": "io-input",
+      "position": {
+        "x": 0,
+        "y": 860
+      },
+      "data": {
+        "kind": "input",
+        "name": "GND",
+        "value": 0
+      }
+    },
+    {
+      "id": "notS2",
+      "type": "gate",
+      "position": {
+        "x": 220,
+        "y": 700
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "notS1",
+      "type": "gate",
+      "position": {
+        "x": 220,
+        "y": 780
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "subT",
+      "type": "gate",
+      "position": {
+        "x": 380,
+        "y": 740
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "subCtrl",
+      "type": "gate",
+      "position": {
+        "x": 520,
+        "y": 700
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1,
+        "label": "SUB?"
+      }
+    },
+    {
+      "id": "bxor0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 0
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "B0'"
+      }
+    },
+    {
+      "id": "t1_0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 140
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "sum0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 280
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "SUM0"
+      }
+    },
+    {
+      "id": "andc0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "andt0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 560
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "cout0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 700
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2,
+        "label": "C1"
+      }
+    },
+    {
+      "id": "and0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 840
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "or0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 980
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2
+      }
+    },
+    {
+      "id": "xor0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 1120
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "nota0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 1260
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "mux0",
+      "type": "gate",
+      "position": {
+        "x": 700,
+        "y": 1420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 16,
+        "selectBits": 3,
+        "label": "MUX0"
+      }
+    },
+    {
+      "id": "bxor1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 0
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "B1'"
+      }
+    },
+    {
+      "id": "t1_1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 140
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "sum1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 280
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "SUM1"
+      }
+    },
+    {
+      "id": "andc1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "andt1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 560
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "cout1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 700
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2,
+        "label": "C2"
+      }
+    },
+    {
+      "id": "and1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 840
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "or1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 980
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2
+      }
+    },
+    {
+      "id": "xor1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 1120
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "nota1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 1260
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "mux1",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 1420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 16,
+        "selectBits": 3,
+        "label": "MUX1"
+      }
+    },
+    {
+      "id": "bxor2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 0
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "B2'"
+      }
+    },
+    {
+      "id": "t1_2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 140
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "sum2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 280
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "SUM2"
+      }
+    },
+    {
+      "id": "andc2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "andt2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 560
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "cout2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 700
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2,
+        "label": "C3"
+      }
+    },
+    {
+      "id": "and2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 840
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "or2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 980
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2
+      }
+    },
+    {
+      "id": "xor2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 1120
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "nota2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 1260
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "mux2",
+      "type": "gate",
+      "position": {
+        "x": 1300,
+        "y": 1420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 16,
+        "selectBits": 3,
+        "label": "MUX2"
+      }
+    },
+    {
+      "id": "bxor3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 0
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "B3'"
+      }
+    },
+    {
+      "id": "t1_3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 140
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "sum3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 280
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4,
+        "label": "SUM3"
+      }
+    },
+    {
+      "id": "andc3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "andt3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 560
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "cout3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 700
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2,
+        "label": "C4"
+      }
+    },
+    {
+      "id": "and3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 840
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "or3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 980
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 2
+      }
+    },
+    {
+      "id": "xor3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 1120
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "nota3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 1260
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "mux3",
+      "type": "gate",
+      "position": {
+        "x": 1600,
+        "y": 1420
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 16,
+        "selectBits": 3,
+        "label": "MUX3"
+      }
+    },
+    {
+      "id": "busY",
+      "type": "bus-output",
+      "position": {
+        "x": 1960,
+        "y": 700
+      },
+      "data": {
+        "kind": "bus-output",
+        "names": [
+          "Y3",
+          "Y2",
+          "Y1",
+          "Y0"
+        ]
+      }
+    },
+    {
+      "id": "outCout",
+      "type": "io-output",
+      "position": {
+        "x": 1960,
+        "y": 1900
+      },
+      "data": {
+        "kind": "output",
+        "name": "COUT"
+      }
+    },
+    {
+      "id": "zeroFlag",
+      "type": "gate",
+      "position": {
+        "x": 1960,
+        "y": 2000
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 3,
+        "inputCount": 4,
+        "label": "ZERO"
+      }
+    },
+    {
+      "id": "outZero",
+      "type": "io-output",
+      "position": {
+        "x": 2240,
+        "y": 2000
+      },
+      "data": {
+        "kind": "output",
+        "name": "ZERO"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "selS2",
+      "sourceHandle": "out-0",
+      "target": "notS2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e2",
+      "source": "selS1",
+      "sourceHandle": "out-0",
+      "target": "notS1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e3",
+      "source": "notS2",
+      "sourceHandle": "out-0",
+      "target": "subT",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e4",
+      "source": "notS1",
+      "sourceHandle": "out-0",
+      "target": "subT",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e5",
+      "source": "subT",
+      "sourceHandle": "out-0",
+      "target": "subCtrl",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e6",
+      "source": "selS0",
+      "sourceHandle": "out-0",
+      "target": "subCtrl",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e7",
+      "source": "busB",
+      "sourceHandle": "out-3",
+      "target": "bxor0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e8",
+      "source": "subCtrl",
+      "sourceHandle": "out-0",
+      "target": "bxor0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e9",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "t1_0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e10",
+      "source": "bxor0",
+      "sourceHandle": "out-0",
+      "target": "t1_0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e11",
+      "source": "t1_0",
+      "sourceHandle": "out-0",
+      "target": "sum0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e12",
+      "source": "subCtrl",
+      "sourceHandle": "out-0",
+      "target": "sum0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e13",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "andc0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e14",
+      "source": "bxor0",
+      "sourceHandle": "out-0",
+      "target": "andc0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e15",
+      "source": "subCtrl",
+      "sourceHandle": "out-0",
+      "target": "andt0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e16",
+      "source": "t1_0",
+      "sourceHandle": "out-0",
+      "target": "andt0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e17",
+      "source": "andc0",
+      "sourceHandle": "out-0",
+      "target": "cout0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e18",
+      "source": "andt0",
+      "sourceHandle": "out-0",
+      "target": "cout0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e19",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "and0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e20",
+      "source": "busB",
+      "sourceHandle": "out-3",
+      "target": "and0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e21",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "or0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e22",
+      "source": "busB",
+      "sourceHandle": "out-3",
+      "target": "or0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e23",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "xor0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e24",
+      "source": "busB",
+      "sourceHandle": "out-3",
+      "target": "xor0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e25",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "nota0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e26",
+      "source": "selS0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e27",
+      "source": "selS1",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e28",
+      "source": "selS2",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-2",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e29",
+      "source": "sum0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-3",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e30",
+      "source": "sum0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-4",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e31",
+      "source": "and0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-5",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e32",
+      "source": "or0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-6",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e33",
+      "source": "xor0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-7",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e34",
+      "source": "nota0",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-8",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e35",
+      "source": "gnd",
+      "sourceHandle": "out-0",
+      "target": "mux0",
+      "targetHandle": "in-9",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e36",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "mux0",
+      "targetHandle": "in-10",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e37",
+      "source": "busB",
+      "sourceHandle": "out-2",
+      "target": "bxor1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e38",
+      "source": "subCtrl",
+      "sourceHandle": "out-0",
+      "target": "bxor1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e39",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "t1_1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e40",
+      "source": "bxor1",
+      "sourceHandle": "out-0",
+      "target": "t1_1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e41",
+      "source": "t1_1",
+      "sourceHandle": "out-0",
+      "target": "sum1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e42",
+      "source": "cout0",
+      "sourceHandle": "out-0",
+      "target": "sum1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e43",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "andc1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e44",
+      "source": "bxor1",
+      "sourceHandle": "out-0",
+      "target": "andc1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e45",
+      "source": "cout0",
+      "sourceHandle": "out-0",
+      "target": "andt1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e46",
+      "source": "t1_1",
+      "sourceHandle": "out-0",
+      "target": "andt1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e47",
+      "source": "andc1",
+      "sourceHandle": "out-0",
+      "target": "cout1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e48",
+      "source": "andt1",
+      "sourceHandle": "out-0",
+      "target": "cout1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e49",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "and1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e50",
+      "source": "busB",
+      "sourceHandle": "out-2",
+      "target": "and1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e51",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "or1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e52",
+      "source": "busB",
+      "sourceHandle": "out-2",
+      "target": "or1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e53",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "xor1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e54",
+      "source": "busB",
+      "sourceHandle": "out-2",
+      "target": "xor1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e55",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "nota1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e56",
+      "source": "selS0",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e57",
+      "source": "selS1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e58",
+      "source": "selS2",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-2",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e59",
+      "source": "sum1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-3",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e60",
+      "source": "sum1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-4",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e61",
+      "source": "and1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-5",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e62",
+      "source": "or1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-6",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e63",
+      "source": "xor1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-7",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e64",
+      "source": "nota1",
+      "sourceHandle": "out-0",
+      "target": "mux1",
+      "targetHandle": "in-8",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e65",
+      "source": "busA",
+      "sourceHandle": "out-3",
+      "target": "mux1",
+      "targetHandle": "in-9",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e66",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "mux1",
+      "targetHandle": "in-10",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e67",
+      "source": "busB",
+      "sourceHandle": "out-1",
+      "target": "bxor2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e68",
+      "source": "subCtrl",
+      "sourceHandle": "out-0",
+      "target": "bxor2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e69",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "t1_2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e70",
+      "source": "bxor2",
+      "sourceHandle": "out-0",
+      "target": "t1_2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e71",
+      "source": "t1_2",
+      "sourceHandle": "out-0",
+      "target": "sum2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e72",
+      "source": "cout1",
+      "sourceHandle": "out-0",
+      "target": "sum2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e73",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "andc2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e74",
+      "source": "bxor2",
+      "sourceHandle": "out-0",
+      "target": "andc2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e75",
+      "source": "cout1",
+      "sourceHandle": "out-0",
+      "target": "andt2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e76",
+      "source": "t1_2",
+      "sourceHandle": "out-0",
+      "target": "andt2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e77",
+      "source": "andc2",
+      "sourceHandle": "out-0",
+      "target": "cout2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e78",
+      "source": "andt2",
+      "sourceHandle": "out-0",
+      "target": "cout2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e79",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "and2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e80",
+      "source": "busB",
+      "sourceHandle": "out-1",
+      "target": "and2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e81",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "or2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e82",
+      "source": "busB",
+      "sourceHandle": "out-1",
+      "target": "or2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e83",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "xor2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e84",
+      "source": "busB",
+      "sourceHandle": "out-1",
+      "target": "xor2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e85",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "nota2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e86",
+      "source": "selS0",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e87",
+      "source": "selS1",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e88",
+      "source": "selS2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-2",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e89",
+      "source": "sum2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-3",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e90",
+      "source": "sum2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-4",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e91",
+      "source": "and2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-5",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e92",
+      "source": "or2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-6",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e93",
+      "source": "xor2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-7",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e94",
+      "source": "nota2",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-8",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e95",
+      "source": "busA",
+      "sourceHandle": "out-2",
+      "target": "mux2",
+      "targetHandle": "in-9",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e96",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "mux2",
+      "targetHandle": "in-10",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e97",
+      "source": "busB",
+      "sourceHandle": "out-0",
+      "target": "bxor3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e98",
+      "source": "subCtrl",
+      "sourceHandle": "out-0",
+      "target": "bxor3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e99",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "t1_3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e100",
+      "source": "bxor3",
+      "sourceHandle": "out-0",
+      "target": "t1_3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e101",
+      "source": "t1_3",
+      "sourceHandle": "out-0",
+      "target": "sum3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e102",
+      "source": "cout2",
+      "sourceHandle": "out-0",
+      "target": "sum3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e103",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "andc3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e104",
+      "source": "bxor3",
+      "sourceHandle": "out-0",
+      "target": "andc3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e105",
+      "source": "cout2",
+      "sourceHandle": "out-0",
+      "target": "andt3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e106",
+      "source": "t1_3",
+      "sourceHandle": "out-0",
+      "target": "andt3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e107",
+      "source": "andc3",
+      "sourceHandle": "out-0",
+      "target": "cout3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e108",
+      "source": "andt3",
+      "sourceHandle": "out-0",
+      "target": "cout3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e109",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "and3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e110",
+      "source": "busB",
+      "sourceHandle": "out-0",
+      "target": "and3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e111",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "or3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e112",
+      "source": "busB",
+      "sourceHandle": "out-0",
+      "target": "or3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e113",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "xor3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e114",
+      "source": "busB",
+      "sourceHandle": "out-0",
+      "target": "xor3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e115",
+      "source": "busA",
+      "sourceHandle": "out-0",
+      "target": "nota3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e116",
+      "source": "selS0",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e117",
+      "source": "selS1",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e118",
+      "source": "selS2",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-2",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e119",
+      "source": "sum3",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-3",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e120",
+      "source": "sum3",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-4",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e121",
+      "source": "and3",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-5",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e122",
+      "source": "or3",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-6",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e123",
+      "source": "xor3",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-7",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e124",
+      "source": "nota3",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-8",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e125",
+      "source": "busA",
+      "sourceHandle": "out-1",
+      "target": "mux3",
+      "targetHandle": "in-9",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e126",
+      "source": "gnd",
+      "sourceHandle": "out-0",
+      "target": "mux3",
+      "targetHandle": "in-10",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e127",
+      "source": "mux0",
+      "sourceHandle": "out-0",
+      "target": "busY",
+      "targetHandle": "in-3",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e128",
+      "source": "mux1",
+      "sourceHandle": "out-0",
+      "target": "busY",
+      "targetHandle": "in-2",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e129",
+      "source": "mux2",
+      "sourceHandle": "out-0",
+      "target": "busY",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e130",
+      "source": "mux3",
+      "sourceHandle": "out-0",
+      "target": "busY",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e131",
+      "source": "cout3",
+      "sourceHandle": "out-0",
+      "target": "outCout",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e132",
+      "source": "mux0",
+      "sourceHandle": "out-0",
+      "target": "zeroFlag",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e133",
+      "source": "mux1",
+      "sourceHandle": "out-0",
+      "target": "zeroFlag",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e134",
+      "source": "mux2",
+      "sourceHandle": "out-0",
+      "target": "zeroFlag",
+      "targetHandle": "in-2",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e135",
+      "source": "mux3",
+      "sourceHandle": "out-0",
+      "target": "zeroFlag",
+      "targetHandle": "in-3",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e136",
+      "source": "zeroFlag",
+      "sourceHandle": "out-0",
+      "target": "outZero",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    }
+  ]
+}

@@ -140,6 +140,174 @@ export function evaluateSrLatch(params: {
   return { q: previousQ, qn: invert(previousQ) }; // both de-asserted -> hold
 }
 
+/** Decodes select/address lines into an index, LSB-first (select[0] is the
+ *  least significant bit). Returns null if any bit is UNKNOWN,  the index
+ *  itself is then undecidable, not just one candidate among several. */
+function decodeIndex(bits: readonly SignalState[]): number | null {
+  let index = 0;
+  for (let i = bits.length - 1; i >= 0; i--) {
+    const s = toLogicInput(bits[i]);
+    if (s === UNKNOWN) return null;
+    index = (index << 1) | (s === HIGH ? 1 : 0);
+  }
+  return index;
+}
+
+/** Selects one of `data` by `select` (LSB-first). An undecidable select
+ *  (any bit UNKNOWN) makes the output UNKNOWN,  it's not any one candidate
+ *  line, since we can't tell which one was actually chosen. */
+export function evaluateMultiplexer(select: readonly SignalState[], data: readonly SignalState[]): SignalState {
+  const index = decodeIndex(select);
+  if (index === null) return UNKNOWN;
+  return toLogicInput(data[index]);
+}
+
+/** Routes `data` to exactly one of `outputCount` outputs by `select`
+ *  (LSB-first); every other output is driven LOW (demux outputs aren't
+ *  tristate here, so "not selected" is a defined level, not a float). An
+ *  undecidable select makes every output UNKNOWN, since we can't tell which
+ *  one should have carried `data`. */
+export function evaluateDemultiplexer(
+  select: readonly SignalState[],
+  data: SignalState,
+  outputCount: number,
+): SignalState[] {
+  const index = decodeIndex(select);
+  if (index === null) return Array(outputCount).fill(UNKNOWN);
+  const value = toLogicInput(data);
+  return Array.from({ length: outputCount }, (_, i) => (i === index ? value : LOW));
+}
+
+/** One-hot decodes `inputs` (the address lines, LSB-first) into
+ *  `outputCount` = 2^inputs.length lines. No enable line,  every pin the
+ *  engine allocates must be wired (validateCircuit rejects unconnected
+ *  pins), and an always-required enable tie-high would just be friction for
+ *  no benefit here. */
+export function evaluateDecoder(inputs: readonly SignalState[], outputCount: number): SignalState[] {
+  const index = decodeIndex(inputs);
+  if (index === null) return Array(outputCount).fill(UNKNOWN);
+  return Array.from({ length: outputCount }, (_, i) => (i === index ? HIGH : LOW));
+}
+
+/** Encodes the highest-index active line of `inputs` into `selectBits`
+ *  address bits (LSB-first) plus a trailing VALID bit (HIGH iff any input
+ *  was active). Scans from the top: the first HIGH found wins outright
+ *  (lower-priority lines below it never matter), but an UNKNOWN encountered
+ *  before a winner is found taints the whole result, since that line might
+ *  secretly have been the true highest-priority HIGH. */
+export function evaluatePriorityEncoder(inputs: readonly SignalState[], selectBits: number): SignalState[] {
+  let winner = -1;
+  for (let i = inputs.length - 1; i >= 0; i--) {
+    const s = toLogicInput(inputs[i]);
+    if (s === UNKNOWN) return Array(selectBits + 1).fill(UNKNOWN);
+    if (s === HIGH) {
+      winner = i;
+      break;
+    }
+  }
+  const bits: SignalState[] = [];
+  for (let b = 0; b < selectBits; b++) {
+    bits.push(winner !== -1 && (winner >> b) & 1 ? HIGH : LOW);
+  }
+  bits.push(winner !== -1 ? HIGH : LOW); // VALID
+  return bits;
+}
+
+/** Synchronous up-counter: increments its previous binary value (Q0 = LSB,
+ *  read back from each output pin's own drive state,  the same
+ *  "previousQ" technique evaluateDFlipFlop uses, just generalized to N
+ *  pins) by 1 on a configured clock edge, wrapping at 2^N. `reset` is
+ *  asynchronous and level-sensitive (checked every evaluation, not just on
+ *  an edge) and forces every bit to LOW,  same as evaluateDFlipFlop's
+ *  reset/set handling. Unlike a fresh flip-flop's Q (genuinely arbitrary
+ *  until first written, so it seeds UNKNOWN), a fresh counter seeds to 0
+ *  (see Simulator.seedInitialConditions),  a counter that reads UNKNOWN
+ *  forever until someone happens to pulse reset first isn't usable out of
+ *  the box the way an SR latch's "don't-care until set" genuinely is. */
+export function evaluateCounter(params: {
+  reset: SignalState;
+  clockEdgeOccurred: boolean;
+  previousBits: readonly SignalState[];
+}): SignalState[] {
+  const { reset, clockEdgeOccurred, previousBits } = params;
+  const n = previousBits.length;
+
+  const resetLevel = toLogicInput(reset);
+  if (resetLevel === HIGH) return Array(n).fill(LOW);
+  if (resetLevel === UNKNOWN) return Array(n).fill(UNKNOWN);
+  if (!clockEdgeOccurred) return previousBits.slice();
+
+  let value = 0;
+  for (let i = n - 1; i >= 0; i--) {
+    const bit = previousBits[i];
+    if (bit === UNKNOWN) return Array(n).fill(UNKNOWN); // can't increment an unknown count
+    value = (value << 1) | (bit === HIGH ? 1 : 0);
+  }
+  value = (value + 1) % (1 << n);
+
+  const next: SignalState[] = [];
+  for (let b = 0; b < n; b++) next.push((value >> b) & 1 ? HIGH : LOW);
+  return next;
+}
+
+/** J-K flip-flop: hold (J=K=0), set (J=1,K=0), reset (J=0,K=1), toggle
+ *  (J=K=1) on the configured clock edge. Async reset/set mirror
+ *  evaluateDFlipFlop exactly. */
+export function evaluateJkFlipFlop(params: {
+  j: SignalState;
+  k: SignalState;
+  reset: SignalState;
+  set: SignalState;
+  clockEdgeOccurred: boolean;
+  previousQ: SignalState;
+}): FlipFlopOutputs {
+  const { j, k, reset, set, clockEdgeOccurred, previousQ } = params;
+
+  if (reset === HIGH && set === HIGH) return { q: UNKNOWN, qn: UNKNOWN };
+  if (reset === HIGH) return { q: LOW, qn: HIGH };
+  if (set === HIGH) return { q: HIGH, qn: LOW };
+  if (!clockEdgeOccurred) return { q: previousQ, qn: invert(previousQ) };
+
+  const jj = toLogicInput(j);
+  const kk = toLogicInput(k);
+  if (jj === UNKNOWN || kk === UNKNOWN) return { q: UNKNOWN, qn: UNKNOWN };
+  if (jj === LOW && kk === LOW) return { q: previousQ, qn: invert(previousQ) }; // hold
+  if (jj === HIGH && kk === LOW) return { q: HIGH, qn: LOW }; // set
+  if (jj === LOW && kk === HIGH) return { q: LOW, qn: HIGH }; // reset
+
+  // toggle
+  const prevLogic = toLogicInput(previousQ);
+  if (prevLogic === UNKNOWN) return { q: UNKNOWN, qn: UNKNOWN };
+  const q = prevLogic === HIGH ? LOW : HIGH;
+  return { q, qn: invert(q) };
+}
+
+/** T flip-flop: hold (T=0) or toggle (T=1) on the configured clock edge.
+ *  Async reset/set mirror evaluateDFlipFlop exactly. */
+export function evaluateTFlipFlop(params: {
+  t: SignalState;
+  reset: SignalState;
+  set: SignalState;
+  clockEdgeOccurred: boolean;
+  previousQ: SignalState;
+}): FlipFlopOutputs {
+  const { t, reset, set, clockEdgeOccurred, previousQ } = params;
+
+  if (reset === HIGH && set === HIGH) return { q: UNKNOWN, qn: UNKNOWN };
+  if (reset === HIGH) return { q: LOW, qn: HIGH };
+  if (set === HIGH) return { q: HIGH, qn: LOW };
+  if (!clockEdgeOccurred) return { q: previousQ, qn: invert(previousQ) };
+
+  const tt = toLogicInput(t);
+  if (tt === UNKNOWN) return { q: UNKNOWN, qn: UNKNOWN };
+  if (tt === LOW) return { q: previousQ, qn: invert(previousQ) }; // hold
+
+  const prevLogic = toLogicInput(previousQ);
+  if (prevLogic === UNKNOWN) return { q: UNKNOWN, qn: UNKNOWN };
+  const q = prevLogic === HIGH ? LOW : HIGH;
+  return { q, qn: invert(q) }; // toggle
+}
+
 export interface NetResolution {
   state: SignalState;
   kind: NetResolutionKind;

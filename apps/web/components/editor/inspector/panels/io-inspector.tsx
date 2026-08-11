@@ -7,13 +7,12 @@ export function IoInspectorPanel({ node }: { node: EditorNode }) {
   const data = node.data as IoNodeData;
   const updateNodeData = useEditorStore((s) => s.updateNodeData);
   const isInput = data.kind === "input";
+  const kindLabel = data.kind === "input" ? "Input" : data.kind === "led" ? "LED" : "Output";
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">
-          {isInput ? "Input" : "Output"}
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">{kindLabel}</span>
       </div>
 
       <label className="flex flex-col gap-1.5">

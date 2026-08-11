@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { query } from "@/lib/db/client";
 import { generateProjectSlug } from "./slug";
 import type { EditorNode, EditorEdge } from "@/types/editor";
+import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
+import type { CircuitScope } from "@/types/scope";
 
 export type ProjectVisibility = "PRIVATE" | "UNLISTED" | "PUBLIC";
 
@@ -10,8 +12,20 @@ export interface ProjectRecord {
   slug: string;
   name: string;
   description: string | null;
+  /** Always mirrors `scopes[0]` - kept for readers that predate tabs (embeds,
+   *  thumbnails, the sitemap) so they can keep reading a flat circuit. */
   nodes: EditorNode[];
   edges: EditorEdge[];
+  /** Every tab in this project. Empty for projects saved before tabs existed
+   *  - callers should fall back to wrapping `nodes`/`edges` as a single
+   *  scope in that case (see CircuitEditor's project-load effect). */
+  scopes: CircuitScope[];
+  /** Snapshot of every non-builtin custom block this project's subcircuit
+   *  nodes reference, computed client-side by resolveBlockClosure() at save
+   *  time - see subcircuit-flatten.ts. Keeps the project self-contained: a
+   *  fork, an unlisted-link visitor, or an embed all resolve subcircuits
+   *  correctly without needing anything from the original author's browser. */
+  blocks: SubcircuitBlockDefinition[];
   visibility: ProjectVisibility;
   ownerId: string;
   ownerUsername: string;
@@ -36,6 +50,8 @@ interface ProjectRow {
   description: string | null;
   nodes: EditorNode[];
   edges: EditorEdge[];
+  scopes: CircuitScope[];
+  blocks: SubcircuitBlockDefinition[];
   visibility: ProjectVisibility;
   owner_id: string;
   owner_username: string;
@@ -63,6 +79,8 @@ function toRecord(row: ProjectRow): ProjectRecord {
     description: row.description,
     nodes: row.nodes ?? [],
     edges: row.edges ?? [],
+    scopes: row.scopes ?? [],
+    blocks: row.blocks ?? [],
     visibility: row.visibility,
     ownerId: row.owner_id,
     ownerUsername: row.owner_username,
@@ -84,7 +102,7 @@ function toSummary(row: SummaryRow): ProjectSummary {
 }
 
 const RECORD_SELECT = `
-  SELECT p.id, p.slug, p.name, p.description, p.nodes, p.edges, p.visibility,
+  SELECT p.id, p.slug, p.name, p.description, p.nodes, p.edges, p.scopes, p.blocks, p.visibility,
          p.owner_id, u.username AS owner_username, p.forked_from_id,
          p.created_at, p.updated_at
   FROM projects p
@@ -151,6 +169,12 @@ export interface CreateProjectInput {
   description?: string | null;
   nodes: EditorNode[];
   edges: EditorEdge[];
+  /** Defaults to [] - a project created before tabs, or from a single flat
+   *  circuit, has no tabs of its own yet. */
+  scopes?: CircuitScope[];
+  /** Defaults to [] - callers that never call resolveBlockClosure() (or
+   *  whose graph has no subcircuits) just get an empty snapshot. */
+  blocks?: SubcircuitBlockDefinition[];
   visibility?: ProjectVisibility;
 }
 
@@ -163,15 +187,28 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
   const name = input.name.trim() || "Untitled circuit";
   const description = input.description?.trim() || null;
   const visibility = input.visibility ?? "PRIVATE";
+  const scopes = input.scopes ?? [];
+  const blocks = input.blocks ?? [];
 
   for (let attempt = 0; attempt <= SLUG_COLLISION_RETRIES; attempt++) {
     const slug = generateProjectSlug(name);
     try {
       const rows = await query<{ id: string }>(
-        `INSERT INTO projects (id, slug, name, description, nodes, edges, visibility, owner_id, updated_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, now())
+        `INSERT INTO projects (id, slug, name, description, nodes, edges, scopes, blocks, visibility, owner_id, updated_at)
+         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7::jsonb, $8::jsonb, $9, $10, now())
          RETURNING id`,
-        [randomUUID(), slug, name, description, JSON.stringify(input.nodes), JSON.stringify(input.edges), visibility, ownerId],
+        [
+          randomUUID(),
+          slug,
+          name,
+          description,
+          JSON.stringify(input.nodes),
+          JSON.stringify(input.edges),
+          JSON.stringify(scopes),
+          JSON.stringify(blocks),
+          visibility,
+          ownerId,
+        ],
       );
       const created = await getProjectById(rows[0].id);
       if (!created) throw new Error("Project vanished immediately after insert");
@@ -190,12 +227,20 @@ export interface UpdateProjectInput {
   description?: string | null;
   nodes?: EditorNode[];
   edges?: EditorEdge[];
+  /** Only ever sent alongside `nodes`/`edges` (see share-dialog.tsx) -
+   *  `undefined` leaves whatever's already stored untouched. */
+  scopes?: CircuitScope[];
+  /** Only ever sent alongside `nodes`/`edges` (see share-dialog.tsx) -
+   *  `undefined` leaves whatever snapshot is already stored untouched. */
+  blocks?: SubcircuitBlockDefinition[];
   visibility?: ProjectVisibility;
 }
 
 export async function updateProject(id: string, input: UpdateProjectInput): Promise<ProjectRecord | null> {
   const nodesJson = input.nodes !== undefined ? JSON.stringify(input.nodes) : null;
   const edgesJson = input.edges !== undefined ? JSON.stringify(input.edges) : null;
+  const scopesJson = input.scopes !== undefined ? JSON.stringify(input.scopes) : null;
+  const blocksJson = input.blocks !== undefined ? JSON.stringify(input.blocks) : null;
   const name = input.name !== undefined ? input.name.trim() || "Untitled circuit" : null;
   // description needs to distinguish "leave alone" from "clear it", which a
   // plain COALESCE(new, old) can't do (COALESCE(NULL, old) would keep old,
@@ -209,11 +254,13 @@ export async function updateProject(id: string, input: UpdateProjectInput): Prom
        description = CASE WHEN $3 THEN $4 ELSE description END,
        nodes = COALESCE($5::jsonb, nodes),
        edges = COALESCE($6::jsonb, edges),
-       visibility = COALESCE($7, visibility),
+       scopes = COALESCE($7::jsonb, scopes),
+       blocks = COALESCE($8::jsonb, blocks),
+       visibility = COALESCE($9, visibility),
        updated_at = now()
      WHERE id = $1
      RETURNING id`,
-    [id, name, touchDescription, description, nodesJson, edgesJson, input.visibility ?? null],
+    [id, name, touchDescription, description, nodesJson, edgesJson, scopesJson, blocksJson, input.visibility ?? null],
   );
   if (!rows[0]) return null;
   return getProjectById(rows[0].id);
@@ -231,8 +278,8 @@ export async function forkProject(source: ProjectRecord, newOwnerId: string): Pr
     const slug = generateProjectSlug(name);
     try {
       const rows = await query<{ id: string }>(
-        `INSERT INTO projects (id, slug, name, description, nodes, edges, visibility, owner_id, forked_from_id, updated_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, 'PRIVATE', $7, $8, now())
+        `INSERT INTO projects (id, slug, name, description, nodes, edges, scopes, blocks, visibility, owner_id, forked_from_id, updated_at)
+         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7::jsonb, $8::jsonb, 'PRIVATE', $9, $10, now())
          RETURNING id`,
         [
           randomUUID(),
@@ -241,6 +288,8 @@ export async function forkProject(source: ProjectRecord, newOwnerId: string): Pr
           source.description,
           JSON.stringify(source.nodes),
           JSON.stringify(source.edges),
+          JSON.stringify(source.scopes),
+          JSON.stringify(source.blocks),
           newOwnerId,
           source.id,
         ],
