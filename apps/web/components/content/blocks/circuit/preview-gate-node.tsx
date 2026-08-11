@@ -5,7 +5,7 @@ import type { NodeProps } from "@xyflow/react";
 import { useShallow } from "zustand/react/shallow";
 import { GateType, gateTypeToString, isSequential } from "@nandscape/engine";
 import { NodeHandle, Position } from "@/components/editor/nodes/node-handle";
-import { defaultInputCountForGateType } from "@/lib/editor/gate-defaults";
+import { inputCountForGate, outputCountForGate, inputPinLabel, outputPinLabel } from "@/lib/editor/gate-defaults";
 import {
   GateShape,
   GATE_SHAPE_WIDTH,
@@ -21,8 +21,8 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
   const gateData = data as GateNodeData;
   const typeName = gateData.gateType === GateType.BUFFER ? "" : gateTypeToString(gateData.gateType);
   const sequential = isSequential(gateData.gateType);
-  const inputCount = gateData.inputCount ?? defaultInputCountForGateType(gateData.gateType);
-  const outputCount = sequential ? 2 : 1;
+  const inputCount = inputCountForGate(gateData);
+  const outputCount = outputCountForGate(gateData);
 
   const { margin, spacing, minHeight } = usePreferencesStore(
     useShallow((s) => ({
@@ -65,6 +65,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
           type="target"
           position={Position.Left}
           style={{ top: verticalPos(i, inputCount), pointerEvents: "none" }}
+          title={inputPinLabel(gateData, i)}
         />
       ))}
 
@@ -80,15 +81,17 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
           }}
           diameter={outputDiameter}
           bare={special && inverted}
+          title={outputPinLabel(gateData, 0)}
         />
       ) : (
-        ["Q", "Q̄"].map((label, i) => (
+        Array.from({ length: outputCount }).map((_, i) => (
           <NodeHandle
-            key={label}
+            key={`out-${i}`}
             id={`out-${i}`}
             type="source"
             position={Position.Right}
             style={{ top: verticalPos(i, outputCount), pointerEvents: "none" }}
+            title={outputPinLabel(gateData, i)}
           />
         ))
       )}

@@ -1,5 +1,7 @@
 export * from "./add-node.command";
 export * from "./delete-selection.command";
+export * from "./duplicate-selection.command";
+export * from "./paste-clipboard.command";
 export * from "./connect-edge.command";
 export * from "./delete-edge.command";
 export * from "./clear-edge-turns.command";

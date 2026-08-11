@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useSandboxProgressStore } from "@/store/sandbox-progress-store";
+import { makeScope } from "@/lib/editor/make-scope";
 import { CircuitStage } from "./circuit-stage";
 import type { EditorNode, EditorEdge } from "@/types/editor";
 
@@ -149,7 +150,10 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
   const title = data.title ?? (projectSlug ? linked!.name : undefined) ?? "Circuit";
 
   const handleOpenSandbox = () => {
-    saveSandbox(nodes, edges);
+    // Replaces the sandbox's tabs entirely with this one circuit, same as
+    // the old flat-save behavior did before tabs existed.
+    const scope = makeScope(title, nodes, edges);
+    saveSandbox([scope], scope.id);
     router.push("/nandbox");
   };
 

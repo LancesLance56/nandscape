@@ -20,5 +20,5 @@ export default async function EmbedPage({ params }: { params: Promise<{ slug: st
     );
   }
 
-  return <EmbedStage nodes={project.nodes} edges={project.edges} />;
+  return <EmbedStage nodes={project.nodes} edges={project.edges} blocks={project.blocks} />;
 }

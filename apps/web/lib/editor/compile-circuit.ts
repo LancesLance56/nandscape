@@ -13,7 +13,16 @@ import {
   type NetId,
   type CircuitTopology,
 } from "@nandscape/engine";
-import { defaultInputCountForGateType, isVariableArityGate } from "@/lib/editor/gate-defaults";
+import {
+  inputCountForGate,
+  isVariableArityGate,
+  hasSelectBits,
+  hasCounterBits,
+  clampSelectBits,
+  clampCounterBits,
+  DEFAULT_SELECT_BITS,
+  DEFAULT_COUNTER_BITS,
+} from "@/lib/editor/gate-defaults";
 import { busWidthOf, isBusToBusConnection } from "@/lib/editor/bus-utils";
 import type {
   EditorNode,
@@ -81,6 +90,7 @@ function resolvePin(
     case "input":
       return circuit.pinOf(info.gateId, SOURCE_PIN_OUTPUT);
     case "output":
+    case "led":
       return circuit.pinOf(info.gateId, SINK_PIN_INPUT);
     case "constant":
     case "clock":
@@ -121,15 +131,17 @@ function resolvePin(
   }
 }
 
+/**
+ * Compiles an already-flat editor graph into a CircuitData + topology. This
+ * function knows nothing about subcircuit blocks - any "subcircuit" node
+ * still present here just falls through the switch below and is skipped.
+ * Callers that might have blocks (currently only simulation-store.ts) are
+ * responsible for running flattenSubcircuits() first; see
+ * subcircuit-flatten.ts for why that lives in its own module instead of
+ * being folded in here (it needs to resolve blocks from the local library,
+ * which this module deliberately has no knowledge of).
+ */
 export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): CompileResult {
-  const subcircuitNode = nodes.find((n) => n.data.kind === "subcircuit");
-  if (subcircuitNode) {
-    return {
-      ok: false,
-      issues: ["Subcircuit blocks aren't supported by live simulation yet,  flatten or remove them to run this circuit."],
-    };
-  }
-
   const circuit = new CircuitData();
   const gateByNodeId = new Map<string, GateId>();
   const infoByNodeId = new Map<string, NodeInfo>();
@@ -199,6 +211,7 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
         gateId = circuit.addGate({ type: GateType.INPUT_PIN, name: node.id });
         break;
       case "output":
+      case "led":
         gateId = circuit.addGate({ type: GateType.OUTPUT_PIN, name: node.id });
         break;
       case "constant": {
@@ -218,9 +231,14 @@ export function compileEditorGraph(nodes: EditorNode[], edges: EditorEdge[]): Co
       }
       case "gate": {
         const gateData = node.data as GateNodeData;
-        inputCount = gateData.inputCount ?? defaultInputCountForGateType(gateData.gateType);
+        inputCount = inputCountForGate(gateData);
         const pinCount = isVariableArityGate(gateData.gateType) ? inputCount + 1 : undefined;
-        gateId = circuit.addGate({ type: gateData.gateType, pinCount, delay: gateData.delay, name: node.id });
+        const paramA = hasSelectBits(gateData.gateType)
+          ? clampSelectBits(gateData.selectBits ?? DEFAULT_SELECT_BITS)
+          : hasCounterBits(gateData.gateType)
+            ? clampCounterBits(gateData.bitWidth ?? DEFAULT_COUNTER_BITS)
+            : undefined;
+        gateId = circuit.addGate({ type: gateData.gateType, pinCount, paramA, delay: gateData.delay, name: node.id });
         break;
       }
       default:

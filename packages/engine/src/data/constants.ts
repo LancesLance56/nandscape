@@ -17,6 +17,14 @@ export const DEFAULT_GATE_DELAY: Readonly<Record<GateType, SimTime>> = {
   [GateType.OUTPUT_PIN]: 0,
   [GateType.CONSTANT]: 0,
   [GateType.CLOCK]: 0, // clock period is a separate parameter, see below
+
+  [GateType.MULTIPLEXER]: 2,
+  [GateType.DEMULTIPLEXER]: 2,
+  [GateType.DECODER]: 2,
+  [GateType.PRIORITY_ENCODER]: 3, // priority scan is a bit more work than a straight decode
+  [GateType.COUNTER]: 2,
+  [GateType.JK_FLIP_FLOP]: 2,
+  [GateType.T_FLIP_FLOP]: 2,
 };
 
 /** Minimum legal propagation delay. Zero-delay combinational loops are the

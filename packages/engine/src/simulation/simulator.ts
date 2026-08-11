@@ -1,4 +1,4 @@
-import { CircuitData, DFF_PIN_CLOCK, DFF_PIN_DATA, DFF_PIN_Q, DFF_PIN_QN, DFF_PIN_RESET, DFF_PIN_SET, DLATCH_PIN_DATA, DLATCH_PIN_ENABLE, DLATCH_PIN_Q, DLATCH_PIN_QN, SOURCE_PIN_OUTPUT, SRLATCH_PIN_Q, SRLATCH_PIN_QN, SRLATCH_PIN_R, SRLATCH_PIN_S } from '../data';
+import { CircuitData, DFF_PIN_CLOCK, DFF_PIN_DATA, DFF_PIN_Q, DFF_PIN_QN, DFF_PIN_RESET, DFF_PIN_SET, DLATCH_PIN_DATA, DLATCH_PIN_ENABLE, DLATCH_PIN_Q, DLATCH_PIN_QN, SOURCE_PIN_OUTPUT, SRLATCH_PIN_Q, SRLATCH_PIN_QN, SRLATCH_PIN_R, SRLATCH_PIN_S, JK_PIN_J, JK_PIN_K, JK_PIN_CLOCK, JK_PIN_RESET, JK_PIN_SET, JK_PIN_Q, JK_PIN_QN, T_PIN_T, T_PIN_CLOCK, T_PIN_RESET, T_PIN_SET, T_PIN_Q, T_PIN_QN, COUNTER_PIN_CLOCK, COUNTER_PIN_RESET, COUNTER_PIN_Q0 } from '../data';
 import { CircuitTopology } from '../data';
 import { EventQueue, ScheduledEvent } from '../data';
 import { RuntimeState } from '../data';
@@ -20,10 +20,17 @@ import {
   didClockEdgeOccur,
   evaluateBuffer,
   evaluateCombinationalGate,
+  evaluateCounter,
+  evaluateDecoder,
+  evaluateDemultiplexer,
   evaluateDFlipFlop,
   evaluateDLatch,
+  evaluateJkFlipFlop,
+  evaluateMultiplexer,
   evaluateNot,
+  evaluatePriorityEncoder,
   evaluateSrLatch,
+  evaluateTFlipFlop,
   evaluateTristateBuffer,
   resolveNet,
 } from './gate-evaluators';
@@ -252,6 +259,27 @@ export class Simulator {
           this.scheduleExternal(circuit.pinOf(gate, SRLATCH_PIN_QN), SignalState.UNKNOWN, 0);
           break;
         }
+        case GateType.JK_FLIP_FLOP: {
+          this.scheduleExternal(circuit.pinOf(gate, JK_PIN_Q), SignalState.UNKNOWN, 0);
+          this.scheduleExternal(circuit.pinOf(gate, JK_PIN_QN), SignalState.UNKNOWN, 0);
+          break;
+        }
+        case GateType.T_FLIP_FLOP: {
+          this.scheduleExternal(circuit.pinOf(gate, T_PIN_Q), SignalState.UNKNOWN, 0);
+          this.scheduleExternal(circuit.pinOf(gate, T_PIN_QN), SignalState.UNKNOWN, 0);
+          break;
+        }
+        case GateType.COUNTER: {
+          // Unlike a flip-flop's Q (genuinely arbitrary until first
+          // written), a fresh counter seeds to 0,  see evaluateCounter's
+          // doc comment for why FLOAT/UNKNOWN-until-reset would make it
+          // unusable out of the box.
+          const bitWidth = circuit.gateParamA.get(g);
+          for (let i = 0; i < bitWidth; i++) {
+            this.scheduleExternal(circuit.pinOf(gate, COUNTER_PIN_Q0 + i), SignalState.LOW, 0);
+          }
+          break;
+        }
         default:
           break; // INPUT_PIN starts FLOAT until setInput(); combinational gates settle via propagation.
       }
@@ -460,6 +488,120 @@ export class Simulator {
           s: this.netStateOfPin(sPin),
           r: this.netStateOfPin(rPin),
           kind,
+          previousQ,
+        });
+        return [
+          { pin: qPin, value: result.q },
+          { pin: qnPin, value: result.qn },
+        ];
+      }
+
+      case GateType.MULTIPLEXER: {
+        const n = circuit.gateParamA.get(gate);
+        const dataLines = 1 << n;
+        const select = pins.slice(0, n).map((p) => this.netStateOfPin(p));
+        const data = pins.slice(n, n + dataLines).map((p) => this.netStateOfPin(p));
+        const outputPin = pins[n + dataLines];
+        return [{ pin: outputPin, value: evaluateMultiplexer(select, data) }];
+      }
+
+      case GateType.DEMULTIPLEXER: {
+        const n = circuit.gateParamA.get(gate);
+        const outputs = 1 << n;
+        const data = this.netStateOfPin(pins[0]);
+        const select = pins.slice(1, 1 + n).map((p) => this.netStateOfPin(p));
+        const outputPins = pins.slice(1 + n, 1 + n + outputs);
+        const values = evaluateDemultiplexer(select, data, outputs);
+        return outputPins.map((pin, i) => ({ pin, value: values[i] }));
+      }
+
+      case GateType.DECODER: {
+        const n = circuit.gateParamA.get(gate);
+        const outputs = 1 << n;
+        const address = pins.slice(0, n).map((p) => this.netStateOfPin(p));
+        const outputPins = pins.slice(n, n + outputs);
+        const values = evaluateDecoder(address, outputs);
+        return outputPins.map((pin, i) => ({ pin, value: values[i] }));
+      }
+
+      case GateType.PRIORITY_ENCODER: {
+        const n = circuit.gateParamA.get(gate);
+        const inputCount = 1 << n;
+        const data = pins.slice(0, inputCount).map((p) => this.netStateOfPin(p));
+        const outputPins = pins.slice(inputCount); // n address bits + VALID
+        const values = evaluatePriorityEncoder(data, n);
+        return outputPins.map((pin, i) => ({ pin, value: values[i] }));
+      }
+
+      case GateType.COUNTER: {
+        const n = circuit.gateParamA.get(gate);
+        const clockPin = circuit.pinOf(gate, COUNTER_PIN_CLOCK);
+        const resetPin = circuit.pinOf(gate, COUNTER_PIN_RESET);
+
+        const previousClock = this.previousNetStateOfPin(clockPin, previousNetStates);
+        const currentClock = this.netStateOfPin(clockPin);
+        const configuredEdge = circuit.gateParamB.get(gate) as EdgeType;
+        const edgeOccurred = didClockEdgeOccur(previousClock, currentClock, configuredEdge);
+
+        const qPins = Array.from({ length: n }, (_, i) => circuit.pinOf(gate, COUNTER_PIN_Q0 + i));
+        const previousBits = qPins.map((p) => this.state.getPinDriveState(p));
+
+        const result = evaluateCounter({
+          reset: this.netStateOfPin(resetPin),
+          clockEdgeOccurred: edgeOccurred,
+          previousBits,
+        });
+        return qPins.map((pin, i) => ({ pin, value: result[i] }));
+      }
+
+      case GateType.JK_FLIP_FLOP: {
+        const jPin = circuit.pinOf(gate, JK_PIN_J);
+        const kPin = circuit.pinOf(gate, JK_PIN_K);
+        const clockPin = circuit.pinOf(gate, JK_PIN_CLOCK);
+        const resetPin = circuit.pinOf(gate, JK_PIN_RESET);
+        const setPin = circuit.pinOf(gate, JK_PIN_SET);
+        const qPin = circuit.pinOf(gate, JK_PIN_Q);
+        const qnPin = circuit.pinOf(gate, JK_PIN_QN);
+
+        const previousClock = this.previousNetStateOfPin(clockPin, previousNetStates);
+        const currentClock = this.netStateOfPin(clockPin);
+        const configuredEdge = circuit.gateParamA.get(gate) as EdgeType;
+        const edgeOccurred = didClockEdgeOccur(previousClock, currentClock, configuredEdge);
+        const previousQ = this.state.getPinDriveState(qPin);
+
+        const result = evaluateJkFlipFlop({
+          j: this.netStateOfPin(jPin),
+          k: this.netStateOfPin(kPin),
+          reset: this.netStateOfPin(resetPin),
+          set: this.netStateOfPin(setPin),
+          clockEdgeOccurred: edgeOccurred,
+          previousQ,
+        });
+        return [
+          { pin: qPin, value: result.q },
+          { pin: qnPin, value: result.qn },
+        ];
+      }
+
+      case GateType.T_FLIP_FLOP: {
+        const tPin = circuit.pinOf(gate, T_PIN_T);
+        const clockPin = circuit.pinOf(gate, T_PIN_CLOCK);
+        const resetPin = circuit.pinOf(gate, T_PIN_RESET);
+        const setPin = circuit.pinOf(gate, T_PIN_SET);
+        const qPin = circuit.pinOf(gate, T_PIN_Q);
+        const qnPin = circuit.pinOf(gate, T_PIN_QN);
+
+        const previousClock = this.previousNetStateOfPin(clockPin, previousNetStates);
+        const currentClock = this.netStateOfPin(clockPin);
+        const configuredEdge = circuit.gateParamA.get(gate) as EdgeType;
+        const edgeOccurred = didClockEdgeOccur(previousClock, currentClock, configuredEdge);
+        const previousQ = this.state.getPinDriveState(qPin);
+
+        const result = evaluateTFlipFlop({
+          t: this.netStateOfPin(tPin),
+          reset: this.netStateOfPin(resetPin),
+          set: this.netStateOfPin(setPin),
+          clockEdgeOccurred: edgeOccurred,
           previousQ,
         });
         return [

@@ -8,6 +8,8 @@ import {
   type NetId,
 } from "@nandscape/engine";
 import { compileEditorGraph } from "@/lib/editor/compile-circuit";
+import { flattenSubcircuits } from "@/lib/editor/subcircuit-flatten";
+import { createScopeAwareResolver } from "@/lib/editor/scope-block";
 import { useEditorStore } from "./editor-store";
 import type { BusInputNodeData, IoNodeData } from "@/types/editor";
 
@@ -78,7 +80,26 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
   compile: () => {
     set({ status: "compiling", error: null });
-    const { nodes, edges } = useEditorStore.getState();
+    const { nodes: rawNodes, edges: rawEdges } = useEditorStore.getState();
+
+    // Subcircuit blocks aren't part of this compiler at all (see
+    // compile-circuit.ts's own comment) - inline every instance into plain
+    // gates/wires first, resolving each against this project's own tabs,
+    // then the global block library (see scope-block.ts).
+    const flattened = flattenSubcircuits(rawNodes, rawEdges, createScopeAwareResolver());
+    if (!flattened.ok) {
+      set({
+        status: "error",
+        error: flattened.issues.join(" "),
+        simulator: null,
+        nodeGateMap: null,
+        laneGateMap: null,
+        edgeNetMap: null,
+      });
+      return false;
+    }
+
+    const { nodes, edges } = flattened;
     const outcome = compileEditorGraph(nodes, edges);
 
     if (!outcome.ok) {

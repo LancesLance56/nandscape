@@ -12,6 +12,9 @@ interface NodeHandleProps {
   style?: React.CSSProperties;
   diameter?: number;
   bare?: boolean;
+  /** Tooltip text for pins where position alone doesn't make the role
+   *  obvious (e.g. a multiplexer's select vs. data lines). */
+  title?: string;
   onClick?: (event: React.MouseEvent) => void;
   onMouseEnter?: (event: React.MouseEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
@@ -25,7 +28,7 @@ const SIGNAL_CLASS: Record<SignalState, string> = {
 };
 
 export function NodeHandle({
-  id, type, position, signal, style, diameter = 14, bare = false,
+  id, type, position, signal, style, diameter = 14, bare = false, title,
   onClick, onMouseEnter, onMouseLeave,
 }: NodeHandleProps) {
   const colorClass = signal !== undefined ? SIGNAL_CLASS[signal] : "!bg-surface-2 !border-border-strong";
@@ -36,6 +39,7 @@ export function NodeHandle({
       type={type}
       position={position}
       style={{...style, width: diameter, height: diameter}}
+      title={title}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

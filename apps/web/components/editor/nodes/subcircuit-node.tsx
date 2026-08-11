@@ -5,7 +5,7 @@ import type { NodeProps } from "@xyflow/react";
 import { NodeHandle, Position } from "./node-handle";
 import { useHandleClick } from "@/hooks/use-handle-click";
 import { usePreferencesStore } from "@/store";
-import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
+import { useResolvedSubcircuit } from "@/hooks/use-resolved-subcircuit";
 import type { BlockPort } from "@/types/subcircuit-block";
 import type { EditorNode, SubcircuitNodeData } from "@/types/editor";
 
@@ -18,7 +18,7 @@ function SubcircuitNodeComponent({ id, data, selected }: NodeProps<EditorNode>) 
   const gateMinHeight = usePreferencesStore().gateNodeMinHeight;
 
   const scData = data as SubcircuitNodeData;
-  const block = useSubcircuitBlocksStore((s) => s.getById(scData.circuitId));
+  const { block } = useResolvedSubcircuit(scData.circuitId);
   const { onHandleClick, onHandleMouseEnter, onHandleMouseLeave } = useHandleClick();
 
   const label = scData.label || block?.name || "Missing block";

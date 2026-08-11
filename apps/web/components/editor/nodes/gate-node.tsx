@@ -6,7 +6,7 @@ import type {NodeProps} from "@xyflow/react";
 import {useShallow} from "zustand/react/shallow";
 import {GateType, gateTypeToString, isSequential} from "@nandscape/engine";
 import {NodeHandle, Position} from "./node-handle";
-import {defaultInputCountForGateType} from "@/lib/editor/gate-defaults";
+import {inputCountForGate, outputCountForGate, inputPinLabel, outputPinLabel} from "@/lib/editor/gate-defaults";
 import {
   GateShape, GATE_SHAPE_WIDTH, NODE_WIDTH,
   usesSpecialShape, isInvertedGate, computeGateShapeGeometry,
@@ -28,8 +28,8 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
   // not enough space for BUFFER in the node so its empty
   const typeName = gateData.gateType == GateType.BUFFER ? "" : gateTypeToString(gateData.gateType);
   const sequential = isSequential(gateData.gateType);
-  const inputCount = gateData.inputCount ?? defaultInputCountForGateType(gateData.gateType);
-  const outputCount = sequential ? 2 : 1;
+  const inputCount = inputCountForGate(gateData);
+  const outputCount = outputCountForGate(gateData);
   const rotation = gateData.rotation ?? 0;
   const {onHandleClick, onHandleMouseEnter, onHandleMouseLeave} = useHandleClick();
 
@@ -98,6 +98,7 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           type="target"
           position={inputPosition}
           style={styleForPosition(inputPosition, i, inputCount)}
+          title={inputPinLabel(gateData, i)}
           onClick={(event) => onHandleClick(id, `in-${i}`, "target", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "target", event)}
           onMouseLeave={onHandleMouseLeave}
@@ -112,18 +113,20 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           style={{...styleForPosition(outputPosition, 0, 1), ...outputInsetStyle}}
           diameter={outputDiameter}
           bare={special && inverted}
+          title={outputPinLabel(gateData, 0)}
           onClick={(event) => onHandleClick(id, "out-0", "source", event)}
           onMouseEnter={(event) => onHandleMouseEnter(id, "source", event)}
           onMouseLeave={onHandleMouseLeave}
         />
       ) : (
-        ["Q", "Q̄"].map((label, i) => (
+        Array.from({length: outputCount}).map((_, i) => (
           <NodeHandle
-            key={label}
+            key={`out-${i}`}
             id={`out-${i}`}
             type="source"
             position={outputPosition}
             style={styleForPosition(outputPosition, i, outputCount)}
+            title={outputPinLabel(gateData, i)}
             onClick={(event) => onHandleClick(id, `out-${i}`, "source", event)}
             onMouseEnter={(event) => onHandleMouseEnter(id, "source", event)}
             onMouseLeave={onHandleMouseLeave}
@@ -153,19 +156,13 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
             selected ? "border-copper ring-2 ring-copper/30" : sequential ? "border-signal-green/40" : "border-border-strong"
           }`}
         >
-          <div style={{transform: `rotate(${-rotation}deg)`}} className="flex flex-col items-center gap-0.5">
-            <span
-              className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
-              title={gateData.label || typeName}
-            >
-              {gateData.label || typeName}
-            </span>
-            {sequential && (
-              <span className="mt-0.5 text-center font-mono text-[8px] uppercase tracking-wider text-signal-green">
-                stateful
-              </span>
-            )}
-          </div>
+          <span
+            className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            style={{transform: `rotate(${-rotation}deg)`}}
+            title={gateData.label || typeName}
+          >
+            {gateData.label || typeName}
+          </span>
         </div>
       )}
     </div>

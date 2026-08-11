@@ -4,7 +4,20 @@ import {gateTypeToString, DEFAULT_GATE_DELAY} from "@nandscape/engine";
 import {useEditorStore} from "@/store/editor-store";
 import {useCommandDispatch} from "@/hooks/use-command";
 import {commandRegistry} from "@/lib/commands/registry";
-import {isVariableArityGate, defaultInputCountForGateType} from "@/lib/editor/gate-defaults";
+import {
+  isVariableArityGate,
+  defaultInputCountForGateType,
+  hasSelectBits,
+  hasCounterBits,
+  clampSelectBits,
+  clampCounterBits,
+  DEFAULT_SELECT_BITS,
+  DEFAULT_COUNTER_BITS,
+  MIN_SELECT_BITS,
+  MAX_SELECT_BITS,
+  MIN_COUNTER_BITS,
+  MAX_COUNTER_BITS,
+} from "@/lib/editor/gate-defaults";
 import type {EditorNode, GateNodeData} from "@/types/editor";
 
 export function GateInspectorPanel({node}: { node: EditorNode }) {
@@ -49,6 +62,40 @@ export function GateInspectorPanel({node}: { node: EditorNode }) {
             onChange={(e) => updateNodeData(node.id, {inputCount: Number(e.target.value)})}
             className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
           />
+        </label>
+      )}
+
+      {hasSelectBits(data.gateType) && (
+        <label className="flex flex-col gap-1.5">
+          <span className="text-xs font-medium text-ink-soft">Select bits</span>
+          <input
+            type="number"
+            min={MIN_SELECT_BITS}
+            max={MAX_SELECT_BITS}
+            value={data.selectBits ?? DEFAULT_SELECT_BITS}
+            onChange={(e) => updateNodeData(node.id, {selectBits: clampSelectBits(Number(e.target.value))})}
+            className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
+          />
+          <span className="text-[11px] text-ink-soft">
+            {1 << clampSelectBits(data.selectBits ?? DEFAULT_SELECT_BITS)} data lines.
+          </span>
+        </label>
+      )}
+
+      {hasCounterBits(data.gateType) && (
+        <label className="flex flex-col gap-1.5">
+          <span className="text-xs font-medium text-ink-soft">Bit width</span>
+          <input
+            type="number"
+            min={MIN_COUNTER_BITS}
+            max={MAX_COUNTER_BITS}
+            value={data.bitWidth ?? DEFAULT_COUNTER_BITS}
+            onChange={(e) => updateNodeData(node.id, {bitWidth: clampCounterBits(Number(e.target.value))})}
+            className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
+          />
+          <span className="text-[11px] text-ink-soft">
+            Counts 0..{(1 << clampCounterBits(data.bitWidth ?? DEFAULT_COUNTER_BITS)) - 1} then wraps.
+          </span>
         </label>
       )}
 

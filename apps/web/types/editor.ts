@@ -6,6 +6,7 @@ export type EditorNodeKind =
   | "gate"
   | "input"
   | "output"
+  | "led"
   | "constant"
   | "clock"
   | "subcircuit"
@@ -22,15 +23,12 @@ export interface BaseNodeData extends Record<string, unknown> {
   locked?: boolean;
 }
 
-export interface GateNodeData extends BaseNodeData {
-  kind: "gate";
-  gateType: GateType;
-  /** Only meaningful for variable-arity gates (AND/OR/NAND/NOR/XOR/XNOR). */
-  inputCount?: number;
-}
-
 export interface IoNodeData extends BaseNodeData {
-  kind: "input" | "output";
+  /** "led" is a display-only variant of "output": same single target pin
+   *  and compiles to the same OUTPUT_PIN gate (see compile-circuit.ts), it
+   *  just renders as a glowing dot instead of the 0/1 readout box (see
+   *  io-node.tsx). */
+  kind: "input" | "output" | "led";
   name: string;
   value?: SignalState;
 }
@@ -172,18 +170,23 @@ export type SidebarTab = "problem" | "projects";
 export type InspectorTab = "properties" | "truth-table" | "notes" | "palette";
 export type BottomPanelTab = "palette";
 
-export interface SubcircuitNodeData extends BaseNodeData {
-  kind: "subcircuit";
-  circuitId: string; // -> SubcircuitBlockDefinition.id
-}
-
 export interface GateNodeData extends BaseNodeData {
   kind: "gate";
   gateType: GateType;
+  /** Only meaningful for variable-arity gates (AND/OR/NAND/NOR/XOR/XNOR). */
   inputCount?: number;
+  /** Number of select/address lines for MULTIPLEXER/DEMULTIPLEXER/DECODER/
+   *  PRIORITY_ENCODER,  everything else about their pin count is derived
+   *  from this one number (see gate-defaults.ts's inputCountForGate/
+   *  outputCountForGate). Undefined means DEFAULT_SELECT_BITS. */
+  selectBits?: number;
+  /** Output bit width for COUNTER (Q0..Q(bitWidth-1)). Undefined means
+   *  DEFAULT_COUNTER_BITS. */
+  bitWidth?: number;
   /** Clockwise rotation in degrees. Handles move to the corresponding side; labels stay upright. */
   rotation?: 0 | 90 | 180 | 270;
   /** Propagation delay override, in sim-time units. Undefined means "use the
    *  engine's per-gate-type default" (see DEFAULT_GATE_DELAY in @nandscape/engine). */
   delay?: number;
 }
+

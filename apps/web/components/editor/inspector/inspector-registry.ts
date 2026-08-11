@@ -17,6 +17,7 @@ export const inspectorPanelRegistry: Partial<Record<EditorNodeKind, ComponentTyp
   gate: GateInspectorPanel,
   input: IoInspectorPanel,
   output: IoInspectorPanel,
+  led: IoInspectorPanel,
   subcircuit: SubcircuitInspectorPanel, // was built but never registered
   clock: ClockInspectorPanel,
   "bus-merge": BusInspectorPanel,

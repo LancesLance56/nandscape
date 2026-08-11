@@ -2,6 +2,7 @@
 
 import {ReactFlowProvider} from "@xyflow/react";
 import {Toolbar} from "@/components/editor/toolbar/toolbar";
+import {ScopeTabs} from "@/components/editor/toolbar/scope-tabs";
 import {Sidebar} from "@/components/editor/sidebar/sidebar";
 import {Inspector} from "@/components/editor/inspector/inspector";
 import {CircuitCanvas} from "@/components/editor/canvas/circuit-canvas";
@@ -35,6 +36,8 @@ export function EditorLayout() {
         <div className="shrink-0 rounded-2xl border border-border/60 bg-surface-card/90 backdrop-blur-xl shadow-[0_2px_10px_rgba(21,27,24,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
           <Toolbar/>
         </div>
+
+        <ScopeTabs/>
 
         <div className="flex min-h-0 flex-1 gap-3">
           {sidebarOpen && (

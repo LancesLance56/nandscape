@@ -44,9 +44,16 @@ function bitChar(s: SignalState): string {
  *
  *  Name and decimal value both sit outside the box, below it (see
  *  io-node.tsx for the same pattern): the box's own height still drives
- *  lane pin spacing, so adding text below never moves a pin, and the box
- *  interior is free to give every digit the full node width instead of
- *  splitting it with a value readout. */
+ *  lane pin spacing, so adding text below never moves a pin.
+ *
+ *  The box itself is narrow - a fixed single-lane square, same width
+ *  formula as io-node.tsx's Input/Output box - rather than the shared
+ *  NODE_WIDTH gates and the other bus nodes use: a wide box only made sense
+ *  when it had to fit a value readout beside the digit column, and that
+ *  readout now lives outside the box too, so there's nothing left inside
+ *  wanting the extra width. Only the box narrows; the outer label text
+ *  below it stays NODE_WIDTH-wide (see io-node.tsx again) so a long name
+ *  isn't cramped into a 1-lane-wide column. */
 function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const busData = data as BusOutputNodeData;
   const width = busData.names.length;
@@ -61,6 +68,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
     })),
   );
 
+  const boxWidth = Math.max(minHeight, margin * 2);
   const boxHeight = Math.max(minHeight, margin * 2 + (width - 1) * spacing);
   const nodeHeight = boxHeight + LABEL_GAP + NAME_HEIGHT + VALUE_HEIGHT;
   const availableHeight = boxHeight - margin * 2;
@@ -74,7 +82,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
   const label = commonBusLabel(busData.names) || "BUS";
 
   return (
-    <div style={{ height: `${nodeHeight}px`, width: `${NODE_WIDTH}px` }} className="relative">
+    <div style={{ height: `${nodeHeight}px`, width: `${boxWidth}px` }} className="relative">
       {busData.names.map((name, i) => (
         <NodeHandle
           key={name}
@@ -90,7 +98,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
       ))}
 
       <div
-        style={{ top: 0, height: `${boxHeight}px`, width: NODE_WIDTH }}
+        style={{ top: 0, height: `${boxHeight}px`, width: `${boxWidth}px` }}
         className={`absolute left-1/2 z-10 -translate-x-1/2 overflow-hidden rounded-lg border bg-surface-card shadow-sm transition-[box-shadow,border-color] duration-150 ${
           selected ? "border-copper ring-2 ring-copper/30" : "border-indigo-400/50"
         }`}
@@ -101,7 +109,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
               key={busData.names[i]}
               title={busData.names[i]}
               style={{ top: `${verticalPos(i, width)}px` }}
-              className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[s]}`}
+              className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-xs font-bold leading-none ${STATE_TEXT_CLASS[s]}`}
             >
               {bitChar(s)}
             </span>

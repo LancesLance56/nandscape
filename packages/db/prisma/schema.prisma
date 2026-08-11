@@ -144,8 +144,21 @@ model Project {
   slug         String            @unique
   name         String
   description  String?
+  /** `nodes`/`edges` always mirror `scopes[0]` (the project's first tab), so
+   *  every reader that predates tabs - embeds, thumbnails, the sitemap -
+   *  keeps working unchanged against a single flat circuit. */
   nodes        Json              @default("[]")
   edges        Json              @default("[]")
+  /** Every tab (CircuitVerse calls these "scopes") in this project. Any tab
+   *  can be dropped into another as a subcircuit instance - see
+   *  apps/web/types/scope.ts and apps/web/store/scopes-store.ts. */
+  scopes       Json              @default("[]")
+  /** Snapshot of every non-builtin custom block this project's subcircuit
+   *  nodes reference (transitively), so the project stays self-contained
+   *  regardless of what's in any particular browser's local block library
+   *  - see apps/web/lib/editor/subcircuit-flatten.ts's resolveBlockClosure,
+   *  which computes this at save time. */
+  blocks       Json              @default("[]")
   visibility   ProjectVisibility @default(PRIVATE)
   ownerId      String            @map("owner_id")
   owner        User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)

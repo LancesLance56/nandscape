@@ -14,6 +14,13 @@ export interface SubcircuitBlocksState {
   setColor: (id: string, color: string | undefined) => void;
   remove: (id: string) => void;
   getById: (id: string) => SubcircuitBlockDefinition | undefined;
+  /** Adds every block from a snapshot (a Project's embedded `blocks`, or an
+   *  imported .json file's) that isn't already present by id, so opening
+   *  someone else's project makes its custom blocks available here too -
+   *  the same "you now have your own copy of everything it depends on"
+   *  guarantee forking a Project already gives nodes/edges. Existing local
+   *  blocks are never overwritten: if an id collides, the local one wins. */
+  hydrateFromSnapshot: (blocks: SubcircuitBlockDefinition[]) => void;
 }
 
 function hasDuplicateNames(ports: { name: string }[]): boolean {
@@ -66,6 +73,16 @@ export const useSubcircuitBlocksStore = create<SubcircuitBlocksState>()(
 
       getById: (id) =>
         getBuiltinSubcircuitBlocks().find((b) => b.id === id) ?? get().customBlocks.find((b) => b.id === id),
+
+      hydrateFromSnapshot: (blocks) => {
+        if (blocks.length === 0) return;
+        set((state) => {
+          const existingIds = new Set(state.customBlocks.map((b) => b.id));
+          const missing = blocks.filter((b) => !b.builtIn && !existingIds.has(b.id));
+          if (missing.length === 0) return state;
+          return { customBlocks: [...state.customBlocks, ...missing] };
+        });
+      },
     }),
     { name: "nandscape-subcircuit-blocks" },
   ),

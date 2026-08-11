@@ -63,9 +63,23 @@ export enum GateType {
   OUTPUT_PIN = 13,
   CONSTANT = 14,
   CLOCK = 15,
+
+  // Combinational MSI (medium-scale integration): still stateless, but
+  // variable-shape (pin count depends on a configured `paramA`, see
+  // circuit.ts's pin-role constants and inferPinDirections).
+  MULTIPLEXER = 16,
+  DEMULTIPLEXER = 17,
+  DECODER = 18,
+  PRIORITY_ENCODER = 19,
+
+  // Sequential MSI/additions: clocked, stateful, same "read previous pin
+  // drive state" technique D_LATCH/FLIP_FLOP/SR_LATCH already use.
+  COUNTER = 20,
+  JK_FLIP_FLOP = 21,
+  T_FLIP_FLOP = 22,
 }
 
-export const GATE_TYPE_COUNT = 16;
+export const GATE_TYPE_COUNT = 23;
 
 export function gateTypeToString(t: GateType): string {
   return GateType[t] ?? `UNKNOWN_GATE_TYPE(${t})`;
@@ -82,6 +96,10 @@ export function isCombinational(t: GateType): boolean {
     case GateType.NOT:
     case GateType.BUFFER:
     case GateType.TRISTATE_BUFFER:
+    case GateType.MULTIPLEXER:
+    case GateType.DEMULTIPLEXER:
+    case GateType.DECODER:
+    case GateType.PRIORITY_ENCODER:
       return true;
     default:
       return false;
@@ -93,6 +111,9 @@ export function isSequential(t: GateType): boolean {
     case GateType.D_LATCH:
     case GateType.FLIP_FLOP:
     case GateType.SR_LATCH:
+    case GateType.COUNTER:
+    case GateType.JK_FLIP_FLOP:
+    case GateType.T_FLIP_FLOP:
       return true;
     default:
       return false;

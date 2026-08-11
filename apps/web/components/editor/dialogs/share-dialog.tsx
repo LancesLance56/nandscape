@@ -3,14 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useReactFlow } from "@xyflow/react";
-import { useEditorStore } from "@/store/editor-store";
+import { useScopesStore } from "@/store/scopes-store";
 import { useProjectStore } from "@/store/project-store";
 import { usePreferencesStore } from "@/store/preferences-store";
-import { useCommandDispatch } from "@/hooks/use-command";
-import { createLoadGraphCommand } from "@/lib/commands/commands/load-graph.command";
+import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
 import type { ProjectRecord, ProjectVisibility } from "@/lib/projects/projects";
 import { downloadDataUrl, exportCircuitImage } from "@/lib/editor/export-image";
 import { circuitToJsonDataUrl, parseCircuitJson } from "@/lib/editor/circuit-file";
+import { resolveBlockClosure } from "@/lib/editor/subcircuit-flatten";
+import { createScopeAwareResolver } from "@/lib/editor/scope-block";
+import { makeScope } from "@/lib/editor/make-scope";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 
 interface CurrentUser {
@@ -26,8 +28,6 @@ const VISIBILITY_OPTIONS: { value: ProjectVisibility; label: string; hint: strin
 
 export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   const router = useRouter();
-  const nodes = useEditorStore((s) => s.nodes);
-  const edges = useEditorStore((s) => s.edges);
   const active = useProjectStore((s) => s.active);
   const setActive = useProjectStore((s) => s.setActive);
   const saveStatus = useProjectStore((s) => s.saveStatus);
@@ -35,7 +35,6 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   const showGateLabels = usePreferencesStore((s) => s.showGateLabels);
   const setShowGateLabels = usePreferencesStore((s) => s.setShowGateLabels);
   const reactFlow = useReactFlow();
-  const dispatch = useCommandDispatch();
 
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
   const [name, setName] = useState(active?.name ?? "Untitled circuit");
@@ -60,7 +59,11 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   }, [active]);
 
   const handleSave = async () => {
-    if (nodes.length === 0) {
+    // Fold whatever's on screen back into its tab before reading "all
+    // scopes" - see scopes-store.ts's commitActive doc comment.
+    useScopesStore.getState().commitActive();
+    const scopes = useScopesStore.getState().scopes;
+    if (scopes.every((s) => s.nodes.length === 0)) {
       setError("Build something on the canvas first.");
       return;
     }
@@ -68,14 +71,31 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
     setError(null);
 
     const isNew = !active;
+    const scopeIds = new Set(scopes.map((s) => s.id));
+    // Snapshot every non-builtin block any tab's subcircuits reference
+    // (transitively) so the saved project stays self-contained - a fork, an
+    // unlisted-link visitor, or an embed shouldn't depend on anything in
+    // this browser's local block library. See subcircuit-flatten.ts. Tabs
+    // referencing other tabs are walked into (to find real external
+    // dependencies) but not collected themselves - they're already part of
+    // `scopes`, see resolveBlockClosure's skipCollecting param.
+    const { blocks } = resolveBlockClosure(
+      scopes.flatMap((s) => s.nodes),
+      createScopeAwareResolver(),
+      (id) => scopeIds.has(id),
+    );
     const res = await fetch(isNew ? "/api/projects" : `/api/projects/${active.slug}`, {
       method: isNew ? "POST" : "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: name.trim() || "Untitled circuit",
         description: description.trim() || null,
-        nodes,
-        edges,
+        // Mirror scopes[0] into the back-compat flat columns, same as
+        // CircuitEditor's project-load effect reads them.
+        nodes: scopes[0]?.nodes ?? [],
+        edges: scopes[0]?.edges ?? [],
+        scopes,
+        blocks,
         visibility,
       }),
     });
@@ -140,13 +160,21 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   };
 
   const handleExportJson = () => {
-    if (nodes.length === 0) {
+    useScopesStore.getState().commitActive();
+    const scopes = useScopesStore.getState().scopes;
+    if (scopes.every((s) => s.nodes.length === 0)) {
       setError("Build something on the canvas first.");
       return;
     }
     setError(null);
     const circuitName = (active?.name ?? name).trim() || "circuit";
-    const dataUrl = circuitToJsonDataUrl(circuitName, nodes, edges);
+    const scopeIds = new Set(scopes.map((s) => s.id));
+    const { blocks } = resolveBlockClosure(
+      scopes.flatMap((s) => s.nodes),
+      createScopeAwareResolver(),
+      (id) => scopeIds.has(id),
+    );
+    const dataUrl = circuitToJsonDataUrl(circuitName, scopes[0]?.nodes ?? [], scopes[0]?.edges ?? [], blocks, scopes);
     downloadDataUrl(dataUrl, `${circuitName.replace(/\s+/g, "-")}.json`);
   };
 
@@ -154,7 +182,12 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
     setError(null);
     try {
       const parsed = parseCircuitJson(await file.text());
-      dispatch(createLoadGraphCommand(parsed.nodes, parsed.edges, `Import "${parsed.name ?? file.name}"`));
+      useSubcircuitBlocksStore.getState().hydrateFromSnapshot(parsed.blocks);
+      // Replaces every tab, same as opening a different project would -
+      // older exports predate tabs, so wrap their one flat circuit as a
+      // single "Main" tab.
+      const scopes = parsed.scopes.length > 0 ? parsed.scopes : [makeScope(parsed.name ?? "Main", parsed.nodes, parsed.edges)];
+      useScopesStore.getState().loadScopes(scopes);
       if (parsed.name) setName(parsed.name);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't read that file.");

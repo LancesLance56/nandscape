@@ -2,7 +2,7 @@ import type { BusMergeNodeData, BusSplitNodeData, EditorNode } from "@/types/edi
 
 export const DEFAULT_BUS_WIDTH = 4;
 export const MIN_BUS_WIDTH = 1;
-export const MAX_BUS_WIDTH = 8;
+export const MAX_BUS_WIDTH = 16;
 
 export function clampBusWidth(width: number): number {
   if (!Number.isFinite(width)) return DEFAULT_BUS_WIDTH;
