@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { listAllPosts } from "@/lib/blog/posts";
 import { listTutorialPages } from "@/lib/tutorials/tutorials";
 import { listUsers } from "@repo/auth";
+import { listFeaturedCircuits } from "@/lib/featured-circuits/featured-circuits";
 import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 
 interface AdminSection {
@@ -18,7 +19,12 @@ export default async function AdminIndexPage() {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") redirect("/login");
 
-  const [posts, tutorialPages, users] = await Promise.all([listAllPosts(), listTutorialPages(), listUsers()]);
+  const [posts, tutorialPages, users, featuredCircuits] = await Promise.all([
+    listAllPosts(),
+    listTutorialPages(),
+    listUsers(),
+    listFeaturedCircuits(),
+  ]);
 
   const sections: AdminSection[] = [
     {
@@ -41,6 +47,13 @@ export default async function AdminIndexPage() {
       description: "Manage accounts and admin access.",
       count: users.length,
       countLabel: users.length === 1 ? "user" : "users",
+    },
+    {
+      href: "/admin/featured-circuits",
+      label: "Featured circuits",
+      description: "Choose which project embeds in the homepage live demo.",
+      count: featuredCircuits.length,
+      countLabel: featuredCircuits.length === 1 ? "candidate" : "candidates",
     },
     {
       href: "/admin/database",

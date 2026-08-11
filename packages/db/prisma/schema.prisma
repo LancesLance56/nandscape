@@ -165,6 +165,7 @@ model Project {
   forkedFromId String?           @map("forked_from_id")
   forkedFrom   Project?          @relation("ProjectForks", fields: [forkedFromId], references: [id], onDelete: SetNull)
   forks        Project[]         @relation("ProjectForks")
+  featuredIn   FeaturedCircuit[]
   createdAt    DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
 
@@ -177,6 +178,27 @@ enum ProjectVisibility {
   PRIVATE
   UNLISTED
   PUBLIC
+}
+
+/** Admin-curated candidates for the homepage's live-demo embed (see
+ *  apps/web/components/marketing/live-demo.tsx) - marketing can add several
+ *  projects here over time and switch which one is live without touching
+ *  code. At most one row should have `active = true` at a time; that's
+ *  enforced at the application layer (see featured-circuits.ts's
+ *  setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
+ *  `active` from an `id = $1` comparison), not a DB constraint, matching how
+ *  simple admin toggles are handled elsewhere in this codebase. */
+model FeaturedCircuit {
+  id        String   @id @default(cuid())
+  projectId String   @map("project_id")
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([projectId])
+  @@index([active])
+  @@map("featured_circuits")
 }
 
 enum Role {

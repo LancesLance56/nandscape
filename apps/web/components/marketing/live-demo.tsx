@@ -8,14 +8,17 @@ import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage"
 import { getDefaultCircuit } from "@/lib/editor/default-circuits";
 import { GATE_COLORS } from "@/lib/editor/gate-colors";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import type { EditorNode, EditorEdge } from "@/types/editor";
+import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
 
 // Built once at module scope, CircuitStage resets its live state whenever
 // the nodes/edges array reference changes, so this must stay stable across
 // renders (same reason circuit-demo-card.tsx builds its own demo circuit at
 // module scope). Full Adder rather than Hero's half-adder card, so a
 // visitor who scrolls past both sees two different circuits, not the same
-// one twice.
-const { nodes: demoNodes, edges: demoEdges } = getDefaultCircuit("full-adder")!.build();
+// one twice. Also the fallback when no admin has activated a featured
+// circuit yet (see apps/web/lib/featured-circuits/featured-circuits.ts).
+const { nodes: defaultNodes, edges: defaultEdges } = getDefaultCircuit("full-adder")!.build();
 
 // Decorative-only stand-ins for gate-palette.tsx's chips - real values
 // (color, symbol) so the swatch reads correctly, but no drag handlers or
@@ -58,7 +61,18 @@ function DemoPaletteChip({ gateType, symbol, label }: { gateType: GateType; symb
  * wired into editor-store/ui-store/puzzle-store and have no reason to be
  * mounted on a public marketing page just to look right.
  */
-export function LiveDemo() {
+export function LiveDemo({
+  featured,
+}: {
+  /** An admin-activated FeaturedCircuit, fetched server-side in page.tsx -
+   *  falls back to the hardcoded Full Adder when none is configured yet. */
+  featured?: { name: string; nodes: EditorNode[]; edges: EditorEdge[]; blocks: SubcircuitBlockDefinition[] } | null;
+}) {
+  const nodes = featured?.nodes ?? defaultNodes;
+  const edges = featured?.edges ?? defaultEdges;
+  const blocks = featured?.blocks;
+  const title = featured?.name ?? "Full Adder";
+
   return (
     <section className="py-20">
       <ScrollReveal className="mb-8 flex flex-col items-center gap-2 text-center">
@@ -66,7 +80,7 @@ export function LiveDemo() {
           <span className="h-1.75 w-1.75 rounded-full bg-copper" />
           Try it right here
         </div>
-        <h2 className="font-display text-3xl font-semibold text-ink">This Is the Actual Editor</h2>
+        <h2 className="font-display text-3xl font-semibold text-ink">Editor Preview</h2>
         <p className="max-w-xl text-sm leading-relaxed text-ink-soft">
           Beginner friendly, but featureful enough for experts
         </p>
@@ -79,7 +93,7 @@ export function LiveDemo() {
             <span className="h-2.5 w-2.5 rounded-full bg-copper" />
             <span className="h-2.5 w-2.5 rounded-full bg-signal-green" />
             <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">
-              Full Adder
+              {title}
             </span>
             <Link
               href="/nandbox"
@@ -101,7 +115,7 @@ export function LiveDemo() {
 
             <div className="relative min-w-0 flex-1">
               <ReactFlowProvider>
-                <CircuitStage nodes={demoNodes} edges={demoEdges} fitPadding={0.15} />
+                <CircuitStage nodes={nodes} edges={edges} blocks={blocks} fitPadding={0.15} />
               </ReactFlowProvider>
             </div>
 

@@ -1,19 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useReactFlow } from "@xyflow/react";
 import { useScopesStore } from "@/store/scopes-store";
 import { useProjectStore } from "@/store/project-store";
-import { usePreferencesStore } from "@/store/preferences-store";
-import { useSubcircuitBlocksStore } from "@/store/subcircuit-blocks-store";
 import type { ProjectRecord, ProjectVisibility } from "@/lib/projects/projects";
 import { downloadDataUrl, exportCircuitImage } from "@/lib/editor/export-image";
-import { circuitToJsonDataUrl, parseCircuitJson } from "@/lib/editor/circuit-file";
-import { resolveBlockClosure } from "@/lib/editor/subcircuit-flatten";
+import { circuitToJsonDataUrl } from "@/lib/editor/circuit-file";
+import { resolveBlockClosure, flattenSubcircuits } from "@/lib/editor/subcircuit-flatten";
 import { createScopeAwareResolver } from "@/lib/editor/scope-block";
-import { makeScope } from "@/lib/editor/make-scope";
-import { ToggleSwitch } from "@/components/ui/toggle-switch";
+import { compileEditorGraph } from "@/lib/editor/compile-circuit";
+import { generateVerilog } from "@/lib/editor/export-verilog";
 
 interface CurrentUser {
   id: string;
@@ -32,8 +30,6 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   const setActive = useProjectStore((s) => s.setActive);
   const saveStatus = useProjectStore((s) => s.saveStatus);
   const setSaveStatus = useProjectStore((s) => s.setSaveStatus);
-  const showGateLabels = usePreferencesStore((s) => s.showGateLabels);
-  const setShowGateLabels = usePreferencesStore((s) => s.setShowGateLabels);
   const reactFlow = useReactFlow();
 
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
@@ -43,7 +39,6 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   const [copied, setCopied] = useState<"link" | "embed" | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -178,20 +173,35 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
     downloadDataUrl(dataUrl, `${circuitName.replace(/\s+/g, "-")}.json`);
   };
 
-  const handleImportJson = async (file: File) => {
-    setError(null);
-    try {
-      const parsed = parseCircuitJson(await file.text());
-      useSubcircuitBlocksStore.getState().hydrateFromSnapshot(parsed.blocks);
-      // Replaces every tab, same as opening a different project would -
-      // older exports predate tabs, so wrap their one flat circuit as a
-      // single "Main" tab.
-      const scopes = parsed.scopes.length > 0 ? parsed.scopes : [makeScope(parsed.name ?? "Main", parsed.nodes, parsed.edges)];
-      useScopesStore.getState().loadScopes(scopes);
-      if (parsed.name) setName(parsed.name);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't read that file.");
+  const handleExportVerilog = () => {
+    useScopesStore.getState().commitActive();
+    const { scopes, activeScopeId } = useScopesStore.getState();
+    const activeScope = scopes.find((s) => s.id === activeScopeId) ?? scopes[0];
+    if (!activeScope || activeScope.nodes.length === 0) {
+      setError("Build something on the canvas first.");
+      return;
     }
+    setError(null);
+
+    // Verilog needs a fully self-contained netlist - inline every
+    // subcircuit/tab instance on this tab first, exactly like the real
+    // Play/compile pipeline does (see simulation-store.ts's compile()).
+    const flattened = flattenSubcircuits(activeScope.nodes, activeScope.edges, createScopeAwareResolver());
+    if (!flattened.ok) {
+      setError(flattened.issues[0] ?? "Couldn't resolve this circuit's subcircuits.");
+      return;
+    }
+    const compiled = compileEditorGraph(flattened.nodes, flattened.edges);
+    if (!compiled.ok) {
+      setError(compiled.issues[0] ?? "This circuit isn't valid yet.");
+      return;
+    }
+
+    const circuitName = (active?.name ?? name).trim() || "circuit";
+    const moduleName = circuitName.replace(/[^A-Za-z0-9_]/g, "_").replace(/^(?=[0-9])/, "_") || "circuit";
+    const { verilog, warnings } = generateVerilog(flattened.nodes, compiled.result, moduleName);
+    if (warnings.length > 0) setError(warnings[0]);
+    downloadDataUrl(`data:text/plain;charset=utf-8,${encodeURIComponent(verilog)}`, `${circuitName.replace(/\s+/g, "-")}.v`);
   };
 
   const shareUrl = active ? `${window.location.origin}/projects/${active.slug}` : null;
@@ -282,19 +292,6 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
             </div>
           )}
 
-          <div className="flex items-center justify-between rounded-xl bg-surface-2/60 px-3 py-2">
-            <div>
-              <p className="text-sm text-ink">Show gate labels</p>
-              <p className="text-xs text-slate">Affects the canvas and exported images</p>
-            </div>
-            <ToggleSwitch
-              label="Show gate labels"
-              checked={showGateLabels}
-              onChange={setShowGateLabels}
-              variant="setting"
-            />
-          </div>
-
           <div className="flex flex-col gap-1.5">
             <button
               type="button"
@@ -304,33 +301,21 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
             >
               {exporting ? "Exporting…" : "Download as image"}
             </button>
-            <div className="flex gap-1.5">
-              <button
-                type="button"
-                onClick={handleExportJson}
-                className="flex-1 rounded-lg border border-border-strong px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-surface-2"
-              >
-                Export as JSON
-              </button>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex-1 rounded-lg border border-border-strong px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-surface-2"
-              >
-                Import from JSON
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="application/json"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  e.target.value = "";
-                  if (file) void handleImportJson(file);
-                }}
-              />
-            </div>
+            <button
+              type="button"
+              onClick={handleExportJson}
+              className="rounded-lg border border-border-strong px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-surface-2"
+            >
+              Export as JSON
+            </button>
+            <button
+              type="button"
+              onClick={handleExportVerilog}
+              title="Structural export of the active tab only, with its subcircuits inlined"
+              className="rounded-lg border border-border-strong px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-surface-2"
+            >
+              Export as Verilog
+            </button>
           </div>
 
           {error && <p className="text-xs text-signal-coral">{error}</p>}

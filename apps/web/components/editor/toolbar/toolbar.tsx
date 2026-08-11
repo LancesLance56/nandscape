@@ -13,6 +13,8 @@ import {LoadCircuitMenu} from "@/components/editor/toolbar/load-circuit-menu";
 import {SiteNavMenu} from "@/components/editor/toolbar/site-nav-menu";
 import {BreadcrumbNav} from "@/components/editor/toolbar/breadcrumb-nav";
 import {SimulationSettingsMenu} from "@/components/editor/toolbar/simulation-settings-menu";
+import {ImportCircuitButton} from "@/components/editor/toolbar/import-circuit-button";
+import {GateLabelsToggle} from "@/components/editor/toolbar/gate-labels-toggle";
 
 const Icon = {
   Undo: () => (
@@ -146,6 +148,7 @@ export function Toolbar() {
         {!inPuzzle && (
           <ToolbarGroup>
             <LoadCircuitMenu/>
+            <ImportCircuitButton/>
             <ToolbarButton
               icon={<Icon.Block/>}
               label="Save as circuit block"
@@ -162,6 +165,7 @@ export function Toolbar() {
         </ToolbarGroup>
 
         <ToolbarGroup>
+          <GateLabelsToggle/>
           <ToolbarButton icon={<Icon.Sidebar/>} label="Toggle sidebar" shortcut="⌘B" active={sidebarOpen}
                          onClick={toggleSidebar}/>
           <ToolbarButton icon={<Icon.Inspector/>} label="Toggle inspector" shortcut="⌘I" active={inspectorOpen}

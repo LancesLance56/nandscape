@@ -8,6 +8,7 @@ import {BlogShowcase} from "@/components/marketing/blog-showcase";
 import {SiteGradient} from "@/components/site-gradient";
 import {ScrollReveal} from "@/components/scroll-reveal";
 import {listPublishedPosts} from "@/lib/blog/posts";
+import {getActiveFeaturedProject, type ActiveFeaturedProject} from "@/lib/featured-circuits/featured-circuits";
 import type {PostSummary} from "@/types/blog";
 
 export const revalidate = 60;
@@ -22,6 +23,13 @@ export default async function Home() {
     posts = [];
   }
 
+  let featured: ActiveFeaturedProject | null = null;
+  try {
+    featured = await getActiveFeaturedProject();
+  } catch {
+    featured = null;
+  }
+
   return (
     <>
       <SiteGradient/>
@@ -29,7 +37,7 @@ export default async function Home() {
       <main className="relative mx-auto max-w-330 px-6 sm:px-10">
         <Hero/>
           <FeatureStrip/>
-          <LiveDemo/>
+          <LiveDemo featured={featured}/>
           <PuzzlesShowcase/>
           <TutorialsShowcase/>
           <BlogShowcase posts={posts}/>
