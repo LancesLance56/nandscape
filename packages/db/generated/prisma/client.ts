@@ -55,6 +55,16 @@ export type Session = Prisma.SessionModel
  */
 export type BlogPost = Prisma.BlogPostModel
 /**
+ * Model TutorialSection
+ * 
+ */
+export type TutorialSection = Prisma.TutorialSectionModel
+/**
+ * Model TutorialPage
+ * 
+ */
+export type TutorialPage = Prisma.TutorialPageModel
+/**
  * Model Puzzle
  * 
  */
@@ -69,3 +79,20 @@ export type PuzzleAttempt = Prisma.PuzzleAttemptModel
  * 
  */
 export type PuzzleProgress = Prisma.PuzzleProgressModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel
+/**
+ * Model FeaturedCircuit
+ * * Admin-curated candidates for the homepage's live-demo embed (see
+ *  *  apps/web/components/marketing/live-demo.tsx) - marketing can add several
+ *  *  projects here over time and switch which one is live without touching
+ *  *  code. At most one row should have `active = true` at a time; that's
+ *  *  enforced at the application layer (see featured-circuits.ts's
+ *  *  setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
+ *  *  `active` from an `id = $1` comparison), not a DB constraint, matching how
+ *  *  simple admin toggles are handled elsewhere in this codebase.
+ */
+export type FeaturedCircuit = Prisma.FeaturedCircuitModel

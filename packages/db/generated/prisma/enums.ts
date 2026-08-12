@@ -9,6 +9,15 @@
 * 🟢 You can import this file directly.
 */
 
+export const ProjectVisibility = {
+  PRIVATE: 'PRIVATE',
+  UNLISTED: 'UNLISTED',
+  PUBLIC: 'PUBLIC'
+} as const
+
+export type ProjectVisibility = (typeof ProjectVisibility)[keyof typeof ProjectVisibility]
+
+
 export const Role = {
   USER: 'USER',
   ADMIN: 'ADMIN'
@@ -20,7 +29,8 @@ export type Role = (typeof Role)[keyof typeof Role]
 export const Difficulty = {
   EASY: 'EASY',
   MEDIUM: 'MEDIUM',
-  HARD: 'HARD'
+  HARD: 'HARD',
+  EXPERT: 'EXPERT'
 } as const
 
 export type Difficulty = (typeof Difficulty)[keyof typeof Difficulty]
