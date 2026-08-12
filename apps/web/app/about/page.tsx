@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
-  title: "About,  Nandscape",
+  title: "About Nandscape",
   description: "The story behind Nandscape, and why it starts from a single NAND gate.",
 };
 

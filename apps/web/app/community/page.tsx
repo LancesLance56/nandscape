@@ -11,12 +11,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function CommunityPage() {
-  let projects: PublicProjectSummary[] = [];
-  try {
-    projects = await listPublicProjects();
-  } catch {
-    projects = [];
-  }
+  const projects: PublicProjectSummary[] = await listPublicProjects();
 
   return (
     <>

@@ -53,5 +53,5 @@ const edgeMenu: MenuBuilder = ({edge}) => {
 
 export function buildContextMenuItems(args: ContextMenuBuilderArgs): ContextMenuItem[] {
   const builder = args.targetType === "edge" ? edgeMenu : args.targetType === "node" ? nodeMenu : paneMenu;
-  return builder(args).filter((item) => item.dynamicCommand || commandRegistry.has(item.commandId!) || true);
+  return builder(args).filter((item) => item.dynamicCommand || commandRegistry.has(item.commandId!));
 }

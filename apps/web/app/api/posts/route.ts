@@ -1,27 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { createPost, listAllPosts, listPublishedPosts } from "@/lib/blog/posts";
 import type { NewPostInput } from "@/types/blog";
 
 export async function GET(request: NextRequest) {
   const includeDrafts = request.nextUrl.searchParams.get("status") === "all";
 
-  // TODO: gate `includeDrafts` behind real auth once the admin area exists.
-  // Right now anything other than the public/published view is unauthenticated.
+  if (includeDrafts) {
+    const currentUser = await getCurrentUser();
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+
   const posts = includeDrafts ? await listAllPosts() : await listPublishedPosts();
 
   return NextResponse.json({ posts });
 }
 
 export async function POST(request: NextRequest) {
-  // TODO: require an authenticated session before allowing writes.
-  let input: NewPostInput;
+  const currentUser = await getCurrentUser();
+  if (!currentUser || currentUser.role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  let body: unknown;
   try {
-    input = await request.json();
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!input.slug || !input.title) {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: "Request body must be an object" }, { status: 422 });
+  }
+
+  const input = body as NewPostInput;
+  if (typeof input.slug !== "string" || !input.slug || typeof input.title !== "string" || !input.title) {
     return NextResponse.json({ error: "`slug` and `title` are required" }, { status: 422 });
   }
 

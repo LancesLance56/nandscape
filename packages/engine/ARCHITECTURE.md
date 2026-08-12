@@ -93,7 +93,7 @@ Why each one matters:
 
 Every gate's truth table, and the logic that resolves what a wire's actual
 value is, is defined over all four states,  not bolted on as a special
-case. See [`gate-evaluators.ts`](../src/simulation/gate-evaluators.ts) for
+case. See [`gate-evaluators.ts`](src/simulation/gate-evaluators.ts) for
 the exact rules (summarized in [§5.1](#51-gate-evaluatorsts--pure-truth-tables)
 below).
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { deletePost, getPostBySlug, updatePost } from "@/lib/blog/posts";
 import type { UpdatePostInput } from "@/types/blog";
 
@@ -11,18 +12,25 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   const post = await getPostBySlug(slug);
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  // Public callers only ever get published posts; anything else needs auth
-  // left as a TODO
-  const isPublic = request.nextUrl.searchParams.get("preview") !== "1";
-  if (isPublic && post.status !== "published") {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const isPreview = request.nextUrl.searchParams.get("preview") === "1";
+  if (post.status !== "published") {
+    if (!isPreview) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    const currentUser = await getCurrentUser();
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
   }
 
   return NextResponse.json({ post });
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  // TODO: require an authenticated session before allowing writes.
+  const currentUser = await getCurrentUser();
+  if (!currentUser || currentUser.role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { slug } = await params;
 
   let patch: UpdatePostInput;
@@ -39,7 +47,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
-  // TODO: require an authenticated session before allowing writes.
+  const currentUser = await getCurrentUser();
+  if (!currentUser || currentUser.role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { slug } = await params;
   const deleted = await deletePost(slug);
   if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 });

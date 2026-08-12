@@ -11,7 +11,8 @@ const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
 function resolveVariables(data: Record<string, unknown>): string[] {
   const { variables } = data;
   if (!Array.isArray(variables) || variables.length < 3) return [...DEFAULT_VARS];
-  return variables.every((v): v is string => typeof v === "string") ? variables : [...DEFAULT_VARS];
+  const first3 = variables.slice(0, 3);
+  return first3.every((v): v is string => typeof v === "string") ? first3 : [...DEFAULT_VARS];
 }
 
 export function BlackBoxExplorerWidget({ data }: { data: Record<string, unknown> }) {
