@@ -32,6 +32,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: "Request body must be an object" }, { status: 400 });
+  }
+
   const { nodes, edges, solved } = body as {
     nodes?: unknown;
     edges?: unknown;

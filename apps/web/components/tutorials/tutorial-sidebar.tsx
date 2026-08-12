@@ -84,6 +84,7 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
               <button
                 type="button"
                 onClick={() => toggle(section.id)}
+                aria-expanded={open}
                 className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-slate hover:text-ink"
               >
                 {section.title}

@@ -8,14 +8,19 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  let input: NewTutorialSectionInput;
+  let body: unknown;
   try {
-    input = await request.json();
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!input.slug || !input.title) {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: "Request body must be an object" }, { status: 422 });
+  }
+
+  const input = body as NewTutorialSectionInput;
+  if (typeof input.slug !== "string" || !input.slug || typeof input.title !== "string" || !input.title) {
     return NextResponse.json({ error: "`slug` and `title` are required" }, { status: 422 });
   }
 

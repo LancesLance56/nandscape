@@ -14,12 +14,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function BlogIndexPage() {
-  let posts: PostSummary[] = [];
-  try {
-    posts = await listPublishedPosts();
-  } catch {
-    posts = [];
-  }
+  const posts: PostSummary[] = await listPublishedPosts();
 
   return (
     <>

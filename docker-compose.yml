@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: nandscape
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-LancesLance56}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
       POSTGRES_DB: app_db
     ports:
       - "5432:5432"
@@ -25,7 +25,7 @@ services:
     ports:
       - "${WEB_PORT:-3000}:3000"
     environment:
-      DATABASE_URL: postgres://nandscape:${POSTGRES_PASSWORD:-LancesLance56}@postgres:5432/app_db
+      DATABASE_URL: postgres://nandscape:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}@postgres:5432/app_db
       NODE_ENV: development
       WEB_PORT: "${WEB_PORT:-3000}"
       SITE_URL: "${SITE_URL:-http://localhost:3000}"
@@ -55,7 +55,7 @@ services:
     ports:
       - "${WEB_PORT:-3000}:3000"
     environment:
-      DATABASE_URL: postgres://nandscape:${POSTGRES_PASSWORD:-LancesLance56}@postgres:5432/app_db
+      DATABASE_URL: postgres://nandscape:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}@postgres:5432/app_db
       NODE_ENV: production
       SITE_URL: "${SITE_URL:-http://localhost:3000}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"

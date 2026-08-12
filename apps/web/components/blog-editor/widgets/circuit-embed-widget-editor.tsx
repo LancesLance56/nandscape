@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Field, fieldInputClass } from "@/components/blog-editor/fields/field";
 import { RawJsonField } from "@/components/blog-editor/fields/raw-json-field";
 import { isCircuitEmbedData, type CircuitEmbedData } from "@/components/content/blocks/circuit/circuit-embed";
@@ -41,8 +41,10 @@ export function CircuitEmbedWidgetEditor({ data, onChange }: WidgetEditorProps) 
   const [checking, setChecking] = useState(false);
   const [resolvedName, setResolvedName] = useState<string | null>(null);
   const [linkError, setLinkError] = useState<string | null>(null);
+  const requestVersionRef = useRef(0);
 
   const checkAndApplyLink = async (rawInput: string) => {
+    const version = ++requestVersionRef.current;
     const slug = extractProjectSlug(rawInput);
     setLinkInput(slug);
     if (!slug) {
@@ -56,23 +58,27 @@ export function CircuitEmbedWidgetEditor({ data, onChange }: WidgetEditorProps) 
     setLinkError(null);
     try {
       const res = await fetch(`/api/projects/${encodeURIComponent(slug)}`);
+      if (version !== requestVersionRef.current) return;
       if (!res.ok) {
         setResolvedName(null);
         setLinkError("No public or unlisted circuit found at that link.");
         return;
       }
       const body = (await res.json()) as { project: { name: string } };
+      if (version !== requestVersionRef.current) return;
       setResolvedName(body.project.name);
       onChange({ ...withoutKeys(data, ["nodes", "edges"]), projectSlug: slug });
     } catch {
+      if (version !== requestVersionRef.current) return;
       setResolvedName(null);
       setLinkError("Couldn't check that link.");
     } finally {
-      setChecking(false);
+      if (version === requestVersionRef.current) setChecking(false);
     }
   };
 
   const switchMode = (next: Mode) => {
+    requestVersionRef.current++;
     setMode(next);
     if (next === "json") onChange(withoutKeys(data, ["projectSlug"]));
   };
