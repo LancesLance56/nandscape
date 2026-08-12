@@ -177,7 +177,7 @@ export type PuzzleGroupByOutputType = {
   difficulty: $Enums.Difficulty
   data: runtime.JsonValue
   solution: runtime.JsonValue
-  creatorId: string
+  creatorId: string | null
   createdAt: Date
   updatedAt: Date
   _count: PuzzleCountAggregateOutputType | null
@@ -211,10 +211,10 @@ export type PuzzleWhereInput = {
   difficulty?: Prisma.EnumDifficultyFilter<"Puzzle"> | $Enums.Difficulty
   data?: Prisma.JsonFilter<"Puzzle">
   solution?: Prisma.JsonFilter<"Puzzle">
-  creatorId?: Prisma.StringFilter<"Puzzle"> | string
+  creatorId?: Prisma.StringNullableFilter<"Puzzle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Puzzle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Puzzle"> | Date | string
-  creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   attempts?: Prisma.PuzzleAttemptListRelationFilter
 }
 
@@ -226,7 +226,7 @@ export type PuzzleOrderByWithRelationInput = {
   difficulty?: Prisma.SortOrder
   data?: Prisma.SortOrder
   solution?: Prisma.SortOrder
-  creatorId?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   creator?: Prisma.UserOrderByWithRelationInput
@@ -244,10 +244,10 @@ export type PuzzleWhereUniqueInput = Prisma.AtLeast<{
   difficulty?: Prisma.EnumDifficultyFilter<"Puzzle"> | $Enums.Difficulty
   data?: Prisma.JsonFilter<"Puzzle">
   solution?: Prisma.JsonFilter<"Puzzle">
-  creatorId?: Prisma.StringFilter<"Puzzle"> | string
+  creatorId?: Prisma.StringNullableFilter<"Puzzle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Puzzle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Puzzle"> | Date | string
-  creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   attempts?: Prisma.PuzzleAttemptListRelationFilter
 }, "id" | "slug">
 
@@ -259,7 +259,7 @@ export type PuzzleOrderByWithAggregationInput = {
   difficulty?: Prisma.SortOrder
   data?: Prisma.SortOrder
   solution?: Prisma.SortOrder
-  creatorId?: Prisma.SortOrder
+  creatorId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PuzzleCountOrderByAggregateInput
@@ -278,7 +278,7 @@ export type PuzzleScalarWhereWithAggregatesInput = {
   difficulty?: Prisma.EnumDifficultyWithAggregatesFilter<"Puzzle"> | $Enums.Difficulty
   data?: Prisma.JsonWithAggregatesFilter<"Puzzle">
   solution?: Prisma.JsonWithAggregatesFilter<"Puzzle">
-  creatorId?: Prisma.StringWithAggregatesFilter<"Puzzle"> | string
+  creatorId?: Prisma.StringNullableWithAggregatesFilter<"Puzzle"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Puzzle"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Puzzle"> | Date | string
 }
@@ -293,7 +293,7 @@ export type PuzzleCreateInput = {
   solution: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
-  creator: Prisma.UserCreateNestedOneWithoutPuzzlesInput
+  creator?: Prisma.UserCreateNestedOneWithoutPuzzlesInput
   attempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutPuzzleInput
 }
 
@@ -305,7 +305,7 @@ export type PuzzleUncheckedCreateInput = {
   difficulty?: $Enums.Difficulty
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   solution: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  creatorId: string
+  creatorId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutPuzzleInput
@@ -321,7 +321,7 @@ export type PuzzleUpdateInput = {
   solution?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  creator?: Prisma.UserUpdateOneRequiredWithoutPuzzlesNestedInput
+  creator?: Prisma.UserUpdateOneWithoutPuzzlesNestedInput
   attempts?: Prisma.PuzzleAttemptUpdateManyWithoutPuzzleNestedInput
 }
 
@@ -333,7 +333,7 @@ export type PuzzleUncheckedUpdateInput = {
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   solution?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutPuzzleNestedInput
@@ -347,7 +347,7 @@ export type PuzzleCreateManyInput = {
   difficulty?: $Enums.Difficulty
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   solution: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  creatorId: string
+  creatorId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -372,7 +372,7 @@ export type PuzzleUncheckedUpdateManyInput = {
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   solution?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -550,7 +550,7 @@ export type PuzzleScalarWhereInput = {
   difficulty?: Prisma.EnumDifficultyFilter<"Puzzle"> | $Enums.Difficulty
   data?: Prisma.JsonFilter<"Puzzle">
   solution?: Prisma.JsonFilter<"Puzzle">
-  creatorId?: Prisma.StringFilter<"Puzzle"> | string
+  creatorId?: Prisma.StringNullableFilter<"Puzzle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Puzzle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Puzzle"> | Date | string
 }
@@ -565,7 +565,7 @@ export type PuzzleCreateWithoutAttemptsInput = {
   solution: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
-  creator: Prisma.UserCreateNestedOneWithoutPuzzlesInput
+  creator?: Prisma.UserCreateNestedOneWithoutPuzzlesInput
 }
 
 export type PuzzleUncheckedCreateWithoutAttemptsInput = {
@@ -576,7 +576,7 @@ export type PuzzleUncheckedCreateWithoutAttemptsInput = {
   difficulty?: $Enums.Difficulty
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   solution: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  creatorId: string
+  creatorId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -607,7 +607,7 @@ export type PuzzleUpdateWithoutAttemptsInput = {
   solution?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  creator?: Prisma.UserUpdateOneRequiredWithoutPuzzlesNestedInput
+  creator?: Prisma.UserUpdateOneWithoutPuzzlesNestedInput
 }
 
 export type PuzzleUncheckedUpdateWithoutAttemptsInput = {
@@ -618,7 +618,7 @@ export type PuzzleUncheckedUpdateWithoutAttemptsInput = {
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   solution?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  creatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -715,7 +715,7 @@ export type PuzzleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   creatorId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Puzzle$creatorArgs<ExtArgs>
   attempts?: boolean | Prisma.Puzzle$attemptsArgs<ExtArgs>
   _count?: boolean | Prisma.PuzzleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["puzzle"]>
@@ -731,7 +731,7 @@ export type PuzzleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   creatorId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Puzzle$creatorArgs<ExtArgs>
 }, ExtArgs["result"]["puzzle"]>
 
 export type PuzzleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -745,7 +745,7 @@ export type PuzzleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   creatorId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Puzzle$creatorArgs<ExtArgs>
 }, ExtArgs["result"]["puzzle"]>
 
 export type PuzzleSelectScalar = {
@@ -763,21 +763,21 @@ export type PuzzleSelectScalar = {
 
 export type PuzzleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "description" | "difficulty" | "data" | "solution" | "creatorId" | "createdAt" | "updatedAt", ExtArgs["result"]["puzzle"]>
 export type PuzzleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Puzzle$creatorArgs<ExtArgs>
   attempts?: boolean | Prisma.Puzzle$attemptsArgs<ExtArgs>
   _count?: boolean | Prisma.PuzzleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PuzzleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Puzzle$creatorArgs<ExtArgs>
 }
 export type PuzzleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  creator?: boolean | Prisma.Puzzle$creatorArgs<ExtArgs>
 }
 
 export type $PuzzlePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Puzzle"
   objects: {
-    creator: Prisma.$UserPayload<ExtArgs>
+    creator: Prisma.$UserPayload<ExtArgs> | null
     attempts: Prisma.$PuzzleAttemptPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -788,7 +788,7 @@ export type $PuzzlePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     difficulty: $Enums.Difficulty
     data: runtime.JsonValue
     solution: runtime.JsonValue
-    creatorId: string
+    creatorId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["puzzle"]>
@@ -1185,7 +1185,7 @@ readonly fields: PuzzleFieldRefs;
  */
 export interface Prisma__PuzzleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  creator<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  creator<T extends Prisma.Puzzle$creatorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Puzzle$creatorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   attempts<T extends Prisma.Puzzle$attemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Puzzle$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PuzzleAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1624,6 +1624,25 @@ export type PuzzleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Puzzles to delete.
    */
   limit?: number
+}
+
+/**
+ * Puzzle.creator
+ */
+export type Puzzle$creatorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

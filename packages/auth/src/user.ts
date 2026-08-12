@@ -28,10 +28,6 @@ export async function createUser(input: CreateUserInput): Promise<SessionUser> {
     });
     return toSessionUser(user);
   } catch (error) {
-    // Handled via the DB's unique constraint rather than a pre-check
-    // findUnique + create: a check-then-insert has a race window where two
-    // concurrent signups for the same email both pass the check before
-    // either commits.
     if (isUniqueConstraintViolation(error)) {
       const target = error.meta?.target ?? [];
       if (target.includes("email")) throw new EmailAlreadyExistsError();
@@ -67,20 +63,12 @@ async function generateUniqueUsername(email: string): Promise<string> {
   return candidate;
 }
 
-/**
- * Finds the user for a Google sign-in, linking to an existing
- * password-based account by email where possible, or creating a new
- * (passwordless) account otherwise.
- */
 export async function findOrCreateGoogleUser(profile: GoogleProfile): Promise<SessionUser> {
   const email = profile.email.toLowerCase();
 
   const byGoogleId = await prisma.user.findUnique({ where: { googleId: profile.googleId } });
   if (byGoogleId) return toSessionUser(byGoogleId);
 
-  // Only auto-link to an existing account if Google has actually verified
-  // the email - otherwise anyone could claim someone else's account by
-  // registering an OAuth app that reports a matching but unverified address.
   if (profile.emailVerified) {
     const byEmail = await prisma.user.findUnique({ where: { email } });
     if (byEmail) {
