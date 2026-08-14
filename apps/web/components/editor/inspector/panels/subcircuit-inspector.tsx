@@ -15,9 +15,9 @@ export function SubcircuitInspectorPanel({ node }: { node: EditorNode }) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">{isScope ? "Tab" : "Block"}</span>
+        <span className=" text-[11px] text-slate">{isScope ? "Tab" : "Block"}</span>
         <span
-          className="rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold text-white"
+          className="rounded-full px-2 py-0.5 text-[11px] font-semibold text-white"
           style={{ backgroundColor: block?.color ?? "var(--signal-green-strong)" }}
         >
           {block?.name ?? "Missing"}
@@ -50,7 +50,7 @@ export function SubcircuitInspectorPanel({ node }: { node: EditorNode }) {
               <button
                 type="button"
                 onClick={() => setColor(block.id, undefined)}
-                className="font-mono text-[11px] text-ink-soft hover:text-ink"
+                className=" text-[11px] text-ink-soft hover:text-ink"
               >
                 Reset
               </button>

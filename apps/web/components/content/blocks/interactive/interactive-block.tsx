@@ -8,6 +8,14 @@ import { QuizWidget } from "./quiz-widget";
 import { KMapExplorerWidget } from "./kmap-explorer-widget";
 import { MintermPickerWidget } from "./minterm-picker-widget";
 import { GrayCodeExplorerWidget } from "./gray-code-explorer-widget";
+import { NumberBaseExplorerWidget } from "./number-base-explorer-widget";
+import { TwosComplementWidget } from "./twos-complement-widget";
+import { StateMachineWidget } from "./state-machine-widget";
+import { GraphExplorerWidget } from "./graph/graph-explorer-widget";
+import { GraphTraversalWidget } from "./graph/graph-traversal-widget";
+import { ShortestPathWidget } from "./graph/shortest-path-widget";
+import { MstWidget } from "./graph/mst-widget";
+import { TarjanSccWidget } from "./graph/tarjan-scc-widget";
 import { CircuitEmbedWidget } from "@/components/content/blocks/circuit/circuit-embed";
 import type { InteractiveBlock } from "@/types/blog";
 import type { ComponentType } from "react";
@@ -28,6 +36,14 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "kmap-explorer": KMapExplorerWidget,
   "minterm-picker": MintermPickerWidget,
   "gray-code-explorer": GrayCodeExplorerWidget,
+  "number-base-explorer": NumberBaseExplorerWidget,
+  "twos-complement-explorer": TwosComplementWidget,
+  "state-machine-explorer": StateMachineWidget,
+  "graph-explorer": GraphExplorerWidget,
+  "graph-traversal": GraphTraversalWidget,
+  "shortest-path": ShortestPathWidget,
+  "mst-explorer": MstWidget,
+  "tarjan-scc": TarjanSccWidget,
   "circuit-embed": CircuitEmbedWidget,
 
   // Deprecated aliases

@@ -15,5 +15,5 @@ const LABEL: Record<PuzzleDifficulty, string> = {
 };
 
 export function DifficultyTag({ difficulty }: { difficulty: PuzzleDifficulty }) {
-  return <span className={`font-mono text-xs font-bold ${COLOR[difficulty]}`}>{LABEL[difficulty]}</span>;
+  return <span className={` text-xs font-bold ${COLOR[difficulty]}`}>{LABEL[difficulty]}</span>;
 }

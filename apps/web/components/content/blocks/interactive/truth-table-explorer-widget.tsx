@@ -81,7 +81,7 @@ export function TruthTableExplorerWidget({ data }: { data: Record<string, unknow
             ))}
           </div>
 
-          <div className="flex h-24 w-40 items-center justify-center rounded-xl border-2 border-dashed border-border-strong bg-surface-2 font-mono text-xs font-semibold uppercase tracking-wider text-slate">
+          <div className="flex h-24 w-40 items-center justify-center rounded-xl border-2 border-dashed border-border-strong bg-surface-2 text-xs font-semibold text-slate">
             {mysteryLabel}
           </div>
 
@@ -89,15 +89,15 @@ export function TruthTableExplorerWidget({ data }: { data: Record<string, unknow
         </div>
 
         <div className="flex-1 overflow-hidden rounded-xl border border-border">
-          <table className="w-full border-collapse font-mono text-xs">
+          <table className="w-full border-collapse text-xs">
             <thead>
               <tr className="bg-surface-2 text-slate">
                 {variables.map((v) => (
-                  <th key={v} className="px-3 py-2 text-center font-semibold uppercase tracking-wider">
+                  <th key={v} className="px-3 py-2 text-center font-semibold">
                     {v}
                   </th>
                 ))}
-                <th className="px-3 py-2 text-center font-semibold uppercase tracking-wider">F</th>
+                <th className="px-3 py-2 text-center font-semibold">F</th>
               </tr>
             </thead>
             <tbody>
@@ -142,7 +142,7 @@ export function TruthTableExplorerWidget({ data }: { data: Record<string, unknow
       </div>
 
       {discoveredCount === size && (
-        <p className="mt-5 rounded-lg border border-signal-green/40 bg-signal-green-bg px-4 py-3 font-mono text-xs font-semibold text-signal-green-strong">
+        <p className="mt-5 rounded-lg border border-signal-green/40 bg-signal-green-bg px-4 py-3 text-xs font-semibold text-signal-green-strong">
           {completionMessage}
         </p>
       )}

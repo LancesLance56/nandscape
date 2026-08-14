@@ -20,7 +20,7 @@ export function ViewModeToggle() {
           type="button"
           aria-pressed={viewMode === mode}
           onClick={() => setViewMode(mode)}
-          className={`rounded-md px-3 py-1 font-mono text-xs font-semibold transition-colors ${
+          className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
             viewMode === mode ? "bg-surface-card text-ink shadow-sm" : "text-slate hover:text-ink-soft"
           }`}
         >

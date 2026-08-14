@@ -14,7 +14,7 @@ export function TableBlockView({ block }: { block: TableBlock & { className?: st
                 {headers.map((header, i) => (
                   <th
                     key={i}
-                    className="border-b border-border px-3 py-2 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-slate"
+                    className="border-b border-border px-3 py-2 text-left text-[11px] font-semibold text-slate"
                   >
                     {header}
                   </th>

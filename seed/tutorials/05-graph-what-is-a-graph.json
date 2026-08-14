@@ -1,0 +1,184 @@
+{
+  "slug": "graph-what-is-a-graph",
+  "title": "What a Graph Actually Is",
+  "excerpt": "Dots and lines. That is genuinely the whole idea, and it turns out to describe a startling amount of what computers do.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:00:00Z",
+  "tags": ["graph-theory", "fundamentals"],
+  "sectionSlug": "graph-theory-basics",
+  "position": 10,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A graph is a bunch of dots with lines between some of them. That is the entire definition. If that sounds too simple to deserve a whole branch of mathematics, hang on, because the interesting part is not the definition. It is how many completely unrelated problems turn out to be the same problem once you draw them this way."
+        }
+      ]
+    },
+    {
+      "id": "p-names",
+      "type": "paragraph",
+      "content": [
+        { "text": "The dots are called " },
+        { "text": "vertices", "marks": [{ "kind": "bold" }] },
+        { "text": " (one is a vertex) or " },
+        { "text": "nodes", "marks": [{ "kind": "bold" }] },
+        {
+          "text": ". The lines are called "
+        },
+        { "text": "edges", "marks": [{ "kind": "bold" }] },
+        {
+          "text": ". People use node and vertex interchangeably and nobody will correct you. I will say node from here on because it is shorter."
+        }
+      ]
+    },
+    {
+      "id": "h-why",
+      "type": "heading",
+      "level": 2,
+      "text": "Why you already care about this"
+    },
+    {
+      "id": "p-examples",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every one of these is a graph, and once you notice that, the same handful of algorithms starts solving all of them:"
+        }
+      ]
+    },
+    {
+      "id": "t-examples",
+      "type": "table",
+      "headers": ["Situation", "Nodes are", "Edges are"],
+      "rows": [
+        ["Social network", "people", "friendships"],
+        ["Road map", "intersections", "streets"],
+        ["The web", "pages", "links"],
+        ["npm install", "packages", "dependencies"],
+        ["Git history", "commits", "parent relationships"],
+        ["Your circuit in the logic editor", "gates and IO pins", "wires"]
+      ]
+    },
+    {
+      "id": "p-payoff",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last row is not a stretch. A circuit really is a graph, which is why the same traversal code that finds your friends-of-friends can also work out which gates need re-evaluating when an input flips."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Have a look at one"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Here are six graphs. They all use the same five dots in the same five places, and the only thing that changes is which lines are drawn and what those lines mean. Click through the tabs. Do not worry about understanding every label yet, the next lesson pulls each one apart properly."
+        }
+      ]
+    },
+    {
+      "id": "w-explorer",
+      "type": "interactive",
+      "widget": "graph-explorer",
+      "data": {}
+    },
+    {
+      "id": "h-vocab",
+      "type": "heading",
+      "level": 2,
+      "text": "The words you need"
+    },
+    {
+      "id": "p-vocab-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Graph theory has a lot of vocabulary, and most tutorials dump all of it on you at once. You only need six words to start:"
+        }
+      ]
+    },
+    {
+      "id": "t-vocab",
+      "type": "table",
+      "headers": ["Word", "What it means"],
+      "rows": [
+        ["Neighbour", "A node you can reach in one step"],
+        ["Degree", "How many edges touch a node"],
+        ["Path", "A sequence of nodes where each one connects to the next"],
+        ["Cycle", "A path that ends where it started"],
+        ["Connected", "Every node is reachable from every other node"],
+        ["Component", "One connected island in a graph that has several"]
+      ]
+    },
+    {
+      "id": "p-degree",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Degree is worth a second look because it splits in two the moment edges have direction. A one-way street network gives every intersection an "
+        },
+        { "text": "in-degree", "marks": [{ "kind": "bold" }] },
+        { "text": " (roads arriving) and an " },
+        { "text": "out-degree", "marks": [{ "kind": "bold" }] },
+        {
+          "text": " (roads leaving), and those two numbers have no obligation to match. Flip the explorer above to the directed tab and the degree panel splits into two columns for exactly this reason."
+        }
+      ]
+    },
+    {
+      "id": "h-size",
+      "type": "heading",
+      "level": 2,
+      "text": "Two numbers that show up everywhere"
+    },
+    {
+      "id": "p-size",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When you read about running times later, you will keep seeing V and E. V is the number of nodes, E the number of edges. An algorithm that runs in O(V + E) touches each node and each edge a constant number of times, which is about as good as it gets for anything that has to look at the whole graph."
+        }
+      ]
+    },
+    {
+      "id": "p-density",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The gap between those two numbers matters more than you would expect. A graph where every node connects to every other node has roughly V squared edges. A graph shaped like a tree has V minus 1. Same node count, wildly different edge count, and that difference decides which of the two representations in the next-but-one lesson you should reach for."
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Next up: the different flavours of graph, and why an arrow on an edge changes so much about what you are allowed to conclude."
+        }
+      ]
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to kinds of graphs",
+      "href": "/tutorials/graph-kinds-and-digraphs",
+      "style": "primary"
+    }
+  ]
+}

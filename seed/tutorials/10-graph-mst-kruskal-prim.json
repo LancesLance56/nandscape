@@ -1,0 +1,345 @@
+{
+  "slug": "graph-mst-kruskal-prim",
+  "title": "Minimum Spanning Trees: Kruskal and Prim",
+  "excerpt": "Connect everything for the lowest possible total cost. Two algorithms that look nothing alike, pick edges in a different order, and always agree on the answer.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:50:00Z",
+  "tags": [
+    "graph-theory",
+    "algorithms",
+    "mst",
+    "kruskal",
+    "prim"
+  ],
+  "sectionSlug": "graph-theory-concepts",
+  "position": 30,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Here is a concrete problem. You are laying fibre to six towns. You know the cost of every possible cable run between them. You need every town connected, directly or indirectly, for as little money as possible. Which cables do you lay?"
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is a minimum spanning tree. Spanning because it reaches every node, tree because it has no cycles, minimum because no other spanning tree costs less."
+        }
+      ]
+    },
+    {
+      "id": "h-why-tree",
+      "type": "heading",
+      "level": 2,
+      "text": "Why the answer is always a tree"
+    },
+    {
+      "id": "p-why-tree",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You do not have to take this on faith. Suppose your solution contained a cycle. Then you could delete any one edge from that cycle and everything would still be connected, because the rest of the cycle provides an alternative route. You just saved money for free. So an optimal solution can never contain a cycle, and a connected graph with no cycles is a tree by definition."
+        }
+      ]
+    },
+    {
+      "id": "p-why-tree-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This also tells you the answer's shape before you start. A spanning tree over n nodes uses exactly n minus 1 edges. Six towns, five cables. If your MST code returns a different count, it has a bug or the graph was disconnected."
+        }
+      ]
+    },
+    {
+      "id": "h-kruskal",
+      "type": "heading",
+      "level": 2,
+      "text": "Kruskal: cheapest edge anywhere"
+    },
+    {
+      "id": "p-kruskal",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Kruskal ignores geography entirely. Sort every edge by cost, cheapest first. Walk down that list and take each edge unless it would close a cycle. Stop when you have n minus 1 of them."
+        }
+      ]
+    },
+    {
+      "id": "p-kruskal-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The strange part is that the thing being built is not connected for most of the run. You get scattered clumps that eventually merge. Play the widget below on the Kruskal tab and watch the node colours: each colour is one clump, and taking an edge fuses two clumps into one."
+        }
+      ]
+    },
+    {
+      "id": "w-mst",
+      "type": "interactive",
+      "widget": "mst-explorer",
+      "data": {
+        "mode": "kruskal"
+      }
+    },
+    {
+      "id": "p-kruskal-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch the edge B–E at weight 4. Kruskal considers it and throws it away, because by that point B and E are already in the same clump and adding it would make a loop. The struck-out entry in the edge list is that rejection."
+        }
+      ]
+    },
+    {
+      "id": "p-kruskal-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is easy to assume rejected edges are just the expensive ones, so try the \"Cheap triangle\" example. A–B costs 1 and B–C costs 2, both taken immediately. Then A–C comes up at only 3, one of the cheapest edges in the whole graph, and it gets thrown out anyway, because A and C are already joined through B. Price has nothing to do with it. The only question Kruskal ever asks is whether the two ends are already in the same group."
+        }
+      ]
+    },
+    {
+      "id": "h-union-find",
+      "type": "heading",
+      "level": 2,
+      "text": "The \"would this make a cycle\" question"
+    },
+    {
+      "id": "p-uf",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Kruskal needs to answer one question over and over: are these two nodes already connected through edges I have taken? Running a fresh traversal every time would be slow. The standard trick is a "
+        },
+        {
+          "text": "union-find",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " structure (also called disjoint-set), which does exactly two things: tell you which group a node is in, and merge two groups."
+        }
+      ]
+    },
+    {
+      "id": "code-uf",
+      "type": "code",
+      "language": "javascript",
+      "code": "// Each node points at a parent. Follow the chain up and you\n// reach the group's representative. Same representative means\n// same group, which means adding an edge would close a cycle.\n\nfunction makeUnionFind(nodes) {\n  const parent = new Map(nodes.map((n) => [n, n]));\n\n  function find(x) {\n    while (parent.get(x) !== x) x = parent.get(x);\n    return x;\n  }\n\n  function union(a, b) {\n    parent.set(find(a), find(b));\n  }\n\n  return { find, union };\n}\n\nfunction kruskal(nodes, edges) {\n  const { find, union } = makeUnionFind(nodes);\n  const sorted = [...edges].sort((a, b) => a.weight - b.weight);\n  const tree = [];\n\n  for (const edge of sorted) {\n    if (find(edge.from) === find(edge.to)) continue; // cycle, skip\n    union(edge.from, edge.to);\n    tree.push(edge);\n    if (tree.length === nodes.length - 1) break;     // done early\n  }\n  return tree;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# Each node points at a parent. Follow the chain up and you\n# reach the group's representative. Same representative means\n# same group, which means adding an edge would close a cycle.\n\nclass UnionFind:\n    def __init__(self, nodes):\n        self.parent = {n: n for n in nodes}\n\n    def find(self, x):\n        while self.parent[x] != x:\n            x = self.parent[x]\n        return x\n\n    def union(self, a, b):\n        self.parent[self.find(a)] = self.find(b)\n\n\ndef kruskal(nodes, edges):\n    uf = UnionFind(nodes)\n    tree = []\n\n    for edge in sorted(edges, key=lambda e: e[\"weight\"]):\n        if uf.find(edge[\"from\"]) == uf.find(edge[\"to\"]):\n            continue                       # cycle, skip\n        uf.union(edge[\"from\"], edge[\"to\"])\n        tree.append(edge)\n        if len(tree) == len(nodes) - 1:\n            break                          # done early\n\n    return tree"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <map>\n#include <string>\n#include <vector>\n\n// Each node points at a parent. Follow the chain up and you\n// reach the group's representative. Same representative means\n// same group, which means adding an edge would close a cycle.\n\nstruct Edge { std::string from, to; int weight; };\n\nstruct UnionFind {\n    std::map<std::string, std::string> parent;\n\n    explicit UnionFind(const std::vector<std::string>& nodes) {\n        for (const std::string& n : nodes) parent[n] = n;\n    }\n\n    std::string find(std::string x) {\n        while (parent[x] != x) x = parent[x];\n        return x;\n    }\n\n    // Not named \"union\" - that is a reserved keyword in C++.\n    void unite(const std::string& a, const std::string& b) {\n        parent[find(a)] = find(b);\n    }\n};\n\nstd::vector<Edge> kruskal(const std::vector<std::string>& nodes, std::vector<Edge> edges) {\n    UnionFind uf(nodes);\n    std::sort(edges.begin(), edges.end(),\n              [](const Edge& a, const Edge& b) { return a.weight < b.weight; });\n\n    std::vector<Edge> tree;\n    for (const Edge& e : edges) {\n        if (uf.find(e.from) == uf.find(e.to)) continue;  // cycle, skip\n        uf.unite(e.from, e.to);\n        tree.push_back(e);\n        if (tree.size() == nodes.size() - 1) break;      // done early\n    }\n    return tree;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-uf-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The sort dominates the running time, giving O(E log E). Real union-find implementations add two optimisations, path compression and union by rank, which make find effectively constant time. Look them up when you need the speed, the version above is correct without them."
+        }
+      ]
+    },
+    {
+      "id": "h-prim",
+      "type": "heading",
+      "level": 2,
+      "text": "Prim: grow one blob"
+    },
+    {
+      "id": "p-prim",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Prim comes at it from the opposite direction. Start anywhere. Look at every edge leaving the region you have built so far, take the cheapest one, and swallow whatever node is on the other end. Repeat until everything is inside."
+        }
+      ]
+    },
+    {
+      "id": "p-prim-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the widget to the Prim tab and replay it. There is only ever one connected blob, growing outward, and no cycle check is needed at all: an edge leaving the blob lands on a node outside the blob by definition, so it cannot close a loop."
+        }
+      ]
+    },
+    {
+      "id": "code-prim",
+      "type": "code",
+      "language": "javascript",
+      "code": "function prim(adj, nodes, start) {\n  const inTree = new Set([start]);\n  const tree = [];\n\n  while (inTree.size < nodes.length) {\n    let best = null;\n\n    for (const from of inTree) {\n      for (const { to, weight } of adj.get(from) ?? []) {\n        if (inTree.has(to)) continue;              // stays inside, ignore\n        if (!best || weight < best.weight) best = { from, to, weight };\n      }\n    }\n\n    if (!best) break;  // graph is disconnected, cannot span it\n    inTree.add(best.to);\n    tree.push(best);\n  }\n  return tree;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def prim(adj, nodes, start):\n    in_tree = {start}\n    tree = []\n\n    while len(in_tree) < len(nodes):\n        best = None\n\n        for frm in in_tree:\n            for to, weight in adj.get(frm, []):\n                if to in in_tree:\n                    continue                     # stays inside, ignore\n                if best is None or weight < best[2]:\n                    best = (frm, to, weight)\n\n        if best is None:\n            break  # graph is disconnected, cannot span it\n        in_tree.add(best[1])\n        tree.append(best)\n\n    return tree"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <map>\n#include <set>\n#include <string>\n#include <vector>\n\nstruct Edge { std::string to; int weight; };\nstruct TreeEdge { std::string from, to; int weight; };\n\nstd::vector<TreeEdge> prim(\n    const std::map<std::string, std::vector<Edge>>& adj,\n    const std::vector<std::string>& nodes,\n    const std::string& start) {\n    std::set<std::string> inTree{start};\n    std::vector<TreeEdge> tree;\n\n    while (inTree.size() < nodes.size()) {\n        TreeEdge best{};\n        bool found = false;\n\n        for (const std::string& from : inTree) {\n            auto it = adj.find(from);\n            if (it == adj.end()) continue;\n\n            for (const Edge& e : it->second) {\n                if (inTree.count(e.to)) continue;          // stays inside, ignore\n                if (!found || e.weight < best.weight) {\n                    best = {from, e.to, e.weight};\n                    found = true;\n                }\n            }\n        }\n\n        if (!found) break;  // graph is disconnected, cannot span it\n        inTree.insert(best.to);\n        tree.push_back(best);\n    }\n    return tree;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-same",
+      "type": "heading",
+      "level": 2,
+      "text": "Same total, every time"
+    },
+    {
+      "id": "p-same",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Run both tabs on the example graph and compare the running total at the end. They match. They pick edges in a different order and can even produce different trees when several edges share a weight, but the total cost is always identical."
+        }
+      ]
+    },
+    {
+      "id": "p-same-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both work for the same underlying reason, usually called the cut property. Take any way of splitting the nodes into two halves. The cheapest edge crossing that divide is always safe to include in some minimum spanning tree. Kruskal applies this globally by always taking the cheapest edge that joins two different groups. Prim applies it locally, with the divide being blob versus everything else. Different bookkeeping, same guarantee."
+        }
+      ]
+    },
+    {
+      "id": "h-which",
+      "type": "heading",
+      "level": 2,
+      "text": "Which to reach for"
+    },
+    {
+      "id": "t-which",
+      "type": "table",
+      "headers": [
+        "",
+        "Kruskal",
+        "Prim"
+      ],
+      "rows": [
+        [
+          "Works on",
+          "the sorted edge list",
+          "the growing blob's frontier"
+        ],
+        [
+          "Needs",
+          "union-find",
+          "a priority queue"
+        ],
+        [
+          "Running time",
+          "O(E log E)",
+          "O(E log V) with a heap"
+        ],
+        [
+          "Better when",
+          "the graph is sparse",
+          "the graph is dense"
+        ],
+        [
+          "Handles disconnected input",
+          "gives a forest, one tree per island",
+          "only spans the island it starts on"
+        ]
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Your MST code returns 9 edges for a 12-node connected graph. What is wrong?",
+            "options": [
+              {
+                "label": "It should return exactly 11, so it stopped early or dropped edges",
+                "correct": true
+              },
+              {
+                "label": "Nothing, the count depends on the weights",
+                "correct": false
+              },
+              {
+                "label": "Nothing, 9 is fine if some edges were expensive",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why can Prim skip the cycle check that Kruskal needs?",
+            "options": [
+              {
+                "label": "It only takes edges that land outside the blob, which can't close a loop",
+                "correct": true
+              },
+              {
+                "label": "It sorts the edges first, so cycles are impossible",
+                "correct": false
+              },
+              {
+                "label": "It does check, just with union-find instead",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Kruskal and Prim on the same graph. What is guaranteed to match?",
+            "options": [
+              {
+                "label": "The total weight, though the exact edges can differ on ties",
+                "correct": true
+              },
+              {
+                "label": "Both the edge set and the order they were picked",
+                "correct": false
+              },
+              {
+                "label": "Nothing, they solve different problems",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to the advanced section",
+      "href": "/tutorials/graph-topological-sort",
+      "style": "primary"
+    }
+  ]
+}

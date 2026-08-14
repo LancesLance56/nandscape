@@ -1,0 +1,421 @@
+{
+  "slug": "graph-bfs-dfs",
+  "title": "BFS and DFS: Walking a Graph",
+  "excerpt": "Two ways to visit every node. The code is nearly identical and the only real difference is which container you use, but they behave nothing alike.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:30:00Z",
+  "tags": [
+    "graph-theory",
+    "algorithms",
+    "bfs",
+    "dfs"
+  ],
+  "sectionSlug": "graph-theory-concepts",
+  "position": 10,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You have a graph and you want to visit every node reachable from some starting point. There are two standard ways to do it, and here is the thing nobody tells you up front: they are the same algorithm. The only difference is whether you pull work off the front of the pile or the back."
+        }
+      ]
+    },
+    {
+      "id": "h-idea",
+      "type": "heading",
+      "level": 2,
+      "text": "The shared skeleton"
+    },
+    {
+      "id": "p-idea",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both traversals keep a pile of nodes they know about but have not looked at yet. Repeat until the pile is empty: take one out, mark it visited, and put its unvisited neighbours in. That is the whole algorithm."
+        }
+      ]
+    },
+    {
+      "id": "t-diff",
+      "type": "table",
+      "headers": [
+        "",
+        "BFS",
+        "DFS"
+      ],
+      "rows": [
+        [
+          "Pile is a",
+          "queue (first in, first out)",
+          "stack (last in, first out)"
+        ],
+        [
+          "Behaviour",
+          "spreads out evenly, ring by ring",
+          "runs down one path to the end, then backs up"
+        ],
+        [
+          "Finds",
+          "the fewest-hops path",
+          "some path, no promises about length"
+        ],
+        [
+          "Memory",
+          "everything at the current distance",
+          "the current path plus its branches"
+        ]
+      ]
+    },
+    {
+      "id": "h-watch",
+      "type": "heading",
+      "level": 2,
+      "text": "Watch them race"
+    },
+    {
+      "id": "p-watch",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Same graph, same start node. Hit Play on BFS, then switch the tab to DFS and play it again. Watch the queue and stack panel on the right as you go, because that container is doing all the work of deciding what happens next."
+        }
+      ]
+    },
+    {
+      "id": "w-traversal",
+      "type": "interactive",
+      "widget": "graph-traversal",
+      "data": {
+        "mode": "bfs",
+        "start": "A"
+      }
+    },
+    {
+      "id": "p-watch-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "BFS visits A, then both of A's neighbours, then everything two steps out. It finishes each ring before starting the next. DFS commits to one direction and follows it until it hits a dead end, then reverses back to the last place it had an untaken option."
+        }
+      ]
+    },
+    {
+      "id": "p-watch-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Click a different node to restart from there. Starting somewhere in the middle makes the ring-by-ring pattern of BFS much more obvious than starting at a corner."
+        }
+      ]
+    },
+    {
+      "id": "p-watch-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now switch to the \"Two routes\" example above, which makes the difference impossible to miss. There are two ways from A round to D: a long way over the top through B and C, and a short hop underneath through E. BFS visits E "
+        },
+        {
+          "text": "second",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", because it is one step from A and BFS checks everything one step away before going further. DFS visits E "
+        },
+        {
+          "text": "last",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", because it commits to the top route immediately and only comes back for E once it has run out of everything else. Same graph, same start, and a node that is one hop away gets found either immediately or dead last depending on which container you used."
+        }
+      ]
+    },
+    {
+      "id": "h-bfs-code",
+      "type": "heading",
+      "level": 2,
+      "text": "BFS in code"
+    },
+    {
+      "id": "code-bfs",
+      "type": "code",
+      "language": "javascript",
+      "code": "function bfs(adj, start) {\n  const visited = new Set([start]);\n  const order = [];\n  const queue = [start];\n\n  while (queue.length > 0) {\n    const node = queue.shift();   // <- take from the FRONT\n    order.push(node);\n\n    for (const next of adj.get(node) ?? []) {\n      if (visited.has(next)) continue;\n      visited.add(next);          // mark on the way IN, not on the way out\n      queue.push(next);\n    }\n  }\n  return order;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "from collections import deque\n\ndef bfs(adj, start):\n    visited = {start}\n    order = []\n    # deque, not a list: list.pop(0) has to shift every remaining\n    # element along, which quietly turns this into O(V^2).\n    queue = deque([start])\n\n    while queue:\n        node = queue.popleft()      # <- take from the FRONT\n        order.append(node)\n\n        for nxt in adj.get(node, []):\n            if nxt in visited:\n                continue\n            visited.add(nxt)        # mark on the way IN, not on the way out\n            queue.append(nxt)\n\n    return order"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <map>\n#include <queue>\n#include <set>\n#include <string>\n#include <vector>\n\nstd::vector<std::string> bfs(\n    const std::map<std::string, std::vector<std::string>>& adj,\n    const std::string& start) {\n    std::set<std::string> visited{start};\n    std::vector<std::string> order;\n    std::queue<std::string> queue;\n    queue.push(start);\n\n    while (!queue.empty()) {\n        std::string node = queue.front();  // <- take from the FRONT\n        queue.pop();\n        order.push_back(node);\n\n        auto it = adj.find(node);\n        if (it == adj.end()) continue;\n\n        for (const std::string& next : it->second) {\n            if (visited.count(next)) continue;\n            visited.insert(next);          // mark on the way IN\n            queue.push(next);\n        }\n    }\n    return order;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-bfs-mark",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That comment about marking on the way in matters. If you only mark a node visited when you pull it off the queue, the same node can get queued several times before you ever reach it. The algorithm still terminates, but it does redundant work, and on a dense graph that gets expensive fast."
+        }
+      ]
+    },
+    {
+      "id": "h-dfs-code",
+      "type": "heading",
+      "level": 2,
+      "text": "DFS in code, twice"
+    },
+    {
+      "id": "p-dfs-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Swap the queue for a stack and you have DFS. Literally change shift to pop:"
+        }
+      ]
+    },
+    {
+      "id": "code-dfs-iter",
+      "type": "code",
+      "language": "javascript",
+      "code": "function dfs(adj, start) {\n  const visited = new Set();\n  const order = [];\n  const stack = [start];\n\n  while (stack.length > 0) {\n    const node = stack.pop();     // <- take from the BACK\n    if (visited.has(node)) continue;\n    visited.add(node);\n    order.push(node);\n\n    for (const next of adj.get(node) ?? []) {\n      if (!visited.has(next)) stack.push(next);\n    }\n  }\n  return order;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def dfs(adj, start):\n    visited = set()\n    order = []\n    stack = [start]\n\n    while stack:\n        node = stack.pop()          # <- take from the BACK\n        if node in visited:\n            continue\n        visited.add(node)\n        order.append(node)\n\n        for nxt in adj.get(node, []):\n            if nxt not in visited:\n                stack.append(nxt)\n\n    return order"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <map>\n#include <set>\n#include <string>\n#include <vector>\n\nstd::vector<std::string> dfs(\n    const std::map<std::string, std::vector<std::string>>& adj,\n    const std::string& start) {\n    std::set<std::string> visited;\n    std::vector<std::string> order;\n    std::vector<std::string> stack{start};\n\n    while (!stack.empty()) {\n        std::string node = stack.back();  // <- take from the BACK\n        stack.pop_back();\n        if (visited.count(node)) continue;\n        visited.insert(node);\n        order.push_back(node);\n\n        auto it = adj.find(node);\n        if (it == adj.end()) continue;\n\n        for (const std::string& next : it->second) {\n            if (!visited.count(next)) stack.push_back(next);\n        }\n    }\n    return order;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-dfs-rec",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "DFS is also the one that writes naturally as a recursive function, because the call stack is already a stack. This version is shorter and it is the one you will see most often:"
+        }
+      ]
+    },
+    {
+      "id": "code-dfs-rec",
+      "type": "code",
+      "language": "javascript",
+      "code": "function dfsRecursive(adj, node, visited = new Set(), order = []) {\n  if (visited.has(node)) return order;\n  visited.add(node);\n  order.push(node);\n\n  for (const next of adj.get(node) ?? []) {\n    dfsRecursive(adj, next, visited, order);\n  }\n  return order;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def dfs_recursive(adj, node, visited=None, order=None):\n    # Do not write visited=set() in the signature. Python builds that\n    # default once, at definition time, so every later call would share\n    # the same set and the second traversal would find everything\n    # already visited.\n    if visited is None:\n        visited = set()\n    if order is None:\n        order = []\n\n    if node in visited:\n        return order\n    visited.add(node)\n    order.append(node)\n\n    for nxt in adj.get(node, []):\n        dfs_recursive(adj, nxt, visited, order)\n\n    return order"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <map>\n#include <set>\n#include <string>\n#include <vector>\n\n// visited and order are passed by reference so every level of the\n// recursion shares one copy rather than duplicating them on each call.\nvoid dfsRecursive(\n    const std::map<std::string, std::vector<std::string>>& adj,\n    const std::string& node,\n    std::set<std::string>& visited,\n    std::vector<std::string>& order) {\n    if (visited.count(node)) return;\n    visited.insert(node);\n    order.push_back(node);\n\n    auto it = adj.find(node);\n    if (it == adj.end()) return;\n\n    for (const std::string& next : it->second) {\n        dfsRecursive(adj, next, visited, order);\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-dfs-rec-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Be aware that the recursive version blows the call stack on very deep graphs. A path of a hundred thousand nodes will crash it in most languages. The iterative version has no such limit because its stack lives on the heap, which is why production code sometimes uses the uglier one on purpose."
+        }
+      ]
+    },
+    {
+      "id": "h-bfs-shortest",
+      "type": "heading",
+      "level": 2,
+      "text": "The BFS trick worth remembering"
+    },
+    {
+      "id": "p-bfs-shortest",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "On an unweighted graph, BFS finds the shortest path, and it does so for free. Because it expands ring by ring, the first time it reaches a node is necessarily by a path with the fewest possible hops. There is no way to reach it sooner, because everything closer was already checked."
+        }
+      ]
+    },
+    {
+      "id": "p-bfs-shortest-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "To recover the actual path and not just the distance, remember which node you came from when you first queue each node, then walk those pointers backwards from the destination at the end."
+        }
+      ]
+    },
+    {
+      "id": "code-parent",
+      "type": "code",
+      "language": "javascript",
+      "code": "// inside the neighbour loop:\nparent.set(next, node);\n\n// afterwards, rebuild the route:\nfunction pathTo(parent, target) {\n  const path = [target];\n  while (parent.has(path[0])) path.unshift(parent.get(path[0]));\n  return path;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# inside the neighbour loop:\nparent[nxt] = node\n\n# afterwards, rebuild the route:\ndef path_to(parent, target):\n    path = [target]\n    while path[0] in parent:\n        path.insert(0, parent[path[0]])\n    return path"
+        },
+        {
+          "language": "cpp",
+          "code": "// inside the neighbour loop:\nparent[next] = node;\n\n// afterwards, rebuild the route:\nstd::vector<std::string> pathTo(\n    const std::map<std::string, std::string>& parent,\n    const std::string& target) {\n    std::vector<std::string> path{target};\n    while (parent.count(path.front())) {\n        path.insert(path.begin(), parent.at(path.front()));\n    }\n    return path;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-bfs-shortest-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "DFS gives you no such guarantee. It will happily find a forty-step route to a node that sits two steps away, because it committed to a direction early and kept going. If you need shortest and your edges are all equal, use BFS."
+        }
+      ]
+    },
+    {
+      "id": "h-when",
+      "type": "heading",
+      "level": 2,
+      "text": "Picking one"
+    },
+    {
+      "id": "t-when",
+      "type": "table",
+      "headers": [
+        "You want",
+        "Use"
+      ],
+      "rows": [
+        [
+          "Fewest hops to a target",
+          "BFS"
+        ],
+        [
+          "Shortest path, unweighted",
+          "BFS"
+        ],
+        [
+          "Nodes closest to a source first",
+          "BFS"
+        ],
+        [
+          "Detect a cycle",
+          "DFS"
+        ],
+        [
+          "Topological sort",
+          "DFS"
+        ],
+        [
+          "Explore/backtrack, like a maze solver",
+          "DFS"
+        ],
+        [
+          "Just visit everything, do not care about order",
+          "either, they are both O(V + E)"
+        ]
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "You change queue.shift() to queue.pop() in a BFS. What have you built?",
+            "options": [
+              {
+                "label": "DFS",
+                "correct": true
+              },
+              {
+                "label": "A broken BFS that misses nodes",
+                "correct": false
+              },
+              {
+                "label": "Dijkstra",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Unweighted graph. You need the shortest route from A to Z. Which one?",
+            "options": [
+              {
+                "label": "BFS, it reaches every node by its fewest-hops route",
+                "correct": true
+              },
+              {
+                "label": "DFS, it goes deep so it finds Z sooner",
+                "correct": false
+              },
+              {
+                "label": "Either, they give the same path",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Your recursive DFS crashes with a stack overflow on a big graph. Best fix?",
+            "options": [
+              {
+                "label": "Rewrite it iteratively with an explicit stack",
+                "correct": true
+              },
+              {
+                "label": "Switch to BFS, it is the same result",
+                "correct": false
+              },
+              {
+                "label": "Reduce the number of edges",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "BFS handles shortest paths when every edge costs the same. Put numbers on those edges and it stops working, which is where the next lesson picks up."
+        }
+      ]
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to shortest paths with weights",
+      "href": "/tutorials/graph-dijkstra",
+      "style": "primary"
+    }
+  ]
+}

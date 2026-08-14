@@ -14,8 +14,8 @@ export function SevenSegmentInspectorPanel({ node }: { node: EditorNode }) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">Seven-Segment Display</span>
-        <span className="rounded-full bg-indigo-400/15 px-2 py-0.5 font-mono text-[11px] font-semibold text-indigo-400">
+        <span className=" text-[11px] text-slate">Seven-Segment Display</span>
+        <span className="rounded-full bg-indigo-400/15 px-2 py-0.5 text-[11px] font-semibold text-indigo-400">
           7 in
         </span>
       </div>

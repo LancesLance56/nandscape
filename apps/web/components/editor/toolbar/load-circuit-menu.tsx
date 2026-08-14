@@ -104,13 +104,13 @@ export function LoadCircuitMenu() {
           >
             <div className="flex flex-col gap-1 px-2 pb-2">
               <div className="flex items-center justify-between px-1">
-                <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+                <span className=" text-[11px] font-semibold text-slate">
                   My circuits
                 </span>
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="rounded-md border border-border-strong px-1.5 py-0.5 font-mono text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+                  className="rounded-md border border-border-strong px-1.5 py-0.5 text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
                 >
                   + Save current
                 </button>
@@ -146,7 +146,7 @@ export function LoadCircuitMenu() {
             <div className="h-px bg-border" />
 
             <div className="flex max-h-64 flex-col gap-0.5 overflow-y-auto px-2 pt-2">
-              <span className="px-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+              <span className="px-1 text-[11px] font-semibold text-slate">
                 Starter circuits
               </span>
               {DEFAULT_CIRCUITS.map((circuit) => (

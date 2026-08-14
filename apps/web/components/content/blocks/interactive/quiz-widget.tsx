@@ -101,7 +101,7 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
     >
       {finished ? (
         <div className="flex flex-col items-center gap-4 py-4 text-center">
-          <span className="font-mono text-3xl font-bold text-ink">
+          <span className=" text-3xl font-bold text-ink">
             {score} / {questions.length}
           </span>
           <p className={cn("text-sm font-semibold", passed ? "text-signal-green-strong" : "text-signal-coral-strong")}>
@@ -110,14 +110,14 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
           <button
             type="button"
             onClick={restart}
-            className="rounded-lg border border-border-strong px-4 py-2 font-mono text-xs font-semibold text-ink-soft hover:bg-surface-2"
+            className="rounded-lg border border-border-strong px-4 py-2 text-xs font-semibold text-ink-soft hover:bg-surface-2"
           >
             Retake quiz
           </button>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <div className="font-mono text-xs font-semibold uppercase tracking-wider text-slate">
+          <div className=" text-xs font-semibold text-slate">
             {current.prompt}
           </div>
 
@@ -144,7 +144,7 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
                   )}
                 >
                   {option.code ? (
-                    <span className="block font-mono text-[13px]">{option.code}</span>
+                    <span className="block text-[13px]">{option.code}</span>
                   ) : (
                     <span>{option.label}</span>
                   )}
@@ -161,7 +161,7 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
               <button
                 type="button"
                 onClick={goNext}
-                className="rounded-lg bg-copper px-4 py-2 font-mono text-xs font-semibold text-white hover:bg-copper-dark"
+                className="rounded-lg bg-copper px-4 py-2 text-xs font-semibold text-white hover:bg-copper-dark"
               >
                 {isLast ? "See results" : "Next question"}
               </button>

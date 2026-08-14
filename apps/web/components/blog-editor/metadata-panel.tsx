@@ -19,7 +19,7 @@ const compactInputClass =
 function InlineField({ label, children, className = "" }: { label: string; children: ReactNode; className?: string }) {
   return (
     <label className={`flex items-center gap-1.5 ${className}`}>
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate">{label}</span>
+      <span className=" text-[10px] font-semibold text-slate">{label}</span>
       {children}
     </label>
   );
@@ -53,7 +53,7 @@ export function MetadataPanel({ sections = [] }: { sections?: TutorialSection[] 
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <InlineField label="Slug">
           <input
-            className={`${compactInputClass} w-40 font-mono`}
+            className={`${compactInputClass} w-40`}
             value={metadata.slug}
             onChange={(e) => setMetadata({ slug: slugify(e.target.value) })}
           />
@@ -142,7 +142,7 @@ export function MetadataPanel({ sections = [] }: { sections?: TutorialSection[] 
         <button
           type="button"
           onClick={() => setDetailsOpen((o) => !o)}
-          className="flex items-center gap-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate transition-colors hover:text-ink"
+          className="flex items-center gap-1 text-[11px] font-semibold text-slate transition-colors hover:text-ink"
         >
           More details
           <svg

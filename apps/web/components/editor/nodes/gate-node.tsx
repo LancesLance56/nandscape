@@ -142,7 +142,7 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           <GateShape gateType={gateData.gateType} height={nodeHeight} selected={selected} />
           {showGateLabels && (
             <span
-              className="absolute top-1/2 whitespace-nowrap text-center font-mono text-[11px] font-bold leading-tight text-ink"
+              className="absolute top-1/2 whitespace-nowrap text-center text-[11px] font-bold leading-tight text-white"
               style={{left: geometry!.labelX, transform: `translate(-50%, -50%) rotate(${-rotation}deg)`}}
             >
               {gateData.label || typeName}
@@ -157,7 +157,7 @@ function GateNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
           }`}
         >
           <span
-            className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            className="w-full truncate text-center text-[11px] font-bold leading-tight text-ink"
             style={{transform: `rotate(${-rotation}deg)`}}
             title={gateData.label || typeName}
           >

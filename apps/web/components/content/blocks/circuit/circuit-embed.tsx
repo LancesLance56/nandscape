@@ -132,7 +132,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
           style={{ height }}
           className="my-8 flex animate-pulse items-center justify-center rounded-2xl border border-border bg-surface-card"
         >
-          <span className="font-mono text-xs text-slate">Loading circuit…</span>
+          <span className=" text-xs text-slate">Loading circuit…</span>
         </div>
       );
     }
@@ -154,7 +154,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
     // the old flat-save behavior did before tabs existed.
     const scope = makeScope(title, nodes, edges);
     saveSandbox([scope], scope.id);
-    router.push("/nandbox");
+    router.push("/logic-editor");
   };
 
   return (
@@ -163,11 +163,11 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
         <span className="h-2.5 w-2.5 rounded-full bg-signal-coral" />
         <span className="h-2.5 w-2.5 rounded-full bg-copper" />
         <span className="h-2.5 w-2.5 rounded-full bg-signal-green" />
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">{title}</span>
+        <span className=" text-[11px] font-semibold text-ink">{title}</span>
         {projectSlug && (
           <Link
             href={`/projects/${projectSlug}`}
-            className="font-mono text-[10px] font-medium text-slate underline decoration-border-strong underline-offset-2 hover:text-copper-dark"
+            className=" text-[10px] font-medium text-slate underline decoration-border-strong underline-offset-2 hover:text-copper-dark"
           >
             View original
           </Link>
@@ -175,7 +175,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="ml-auto flex items-center gap-1.5 rounded-md border border-border-strong px-2 py-1 font-mono text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-card hover:text-ink"
+          className="ml-auto flex items-center gap-1.5 rounded-md border border-border-strong px-2 py-1 text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-card hover:text-ink"
         >
           <ExpandIcon />
           Zoom in
@@ -203,7 +203,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
               onClick={(event) => event.stopPropagation()}
             >
               <div className="flex items-center gap-2.5 border-b border-border bg-surface-2 px-4 py-2.5">
-                <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">
+                <span className=" text-[11px] font-semibold text-ink">
                   {title}
                 </span>
                 <div className="ml-auto flex items-center gap-2">
@@ -211,7 +211,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
                     type="button"
                     onClick={handleOpenSandbox}
                     title="Loads this exact circuit into the sandbox editor so you can rewire, extend, or save it"
-                    className="rounded-md bg-copper px-2.5 py-1 font-mono text-[10px] font-semibold text-white transition-colors hover:bg-copper-dark"
+                    className="rounded-md bg-copper px-2.5 py-1 text-[10px] font-semibold text-white transition-colors hover:bg-copper-dark"
                   >
                     Open in sandbox editor →
                   </button>
@@ -219,7 +219,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
                     type="button"
                     onClick={() => setExpanded(false)}
                     aria-label="Close"
-                    className="rounded-md border border-border-strong px-2 py-1 font-mono text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-2"
+                    className="rounded-md border border-border-strong px-2 py-1 text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-2"
                   >
                     ✕
                   </button>

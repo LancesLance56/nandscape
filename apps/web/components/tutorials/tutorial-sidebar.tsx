@@ -70,8 +70,13 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
         <ChevronIcon open={mobileOpen} />
       </button>
 
+      {/* The lg max-height is what makes this rail scroll on its own. A
+          sticky element taller than the viewport can't stay put - the browser
+          drags it along with the page until its bottom edge arrives - so the
+          height is capped to the space below `top-32` and overflow-y-auto
+          takes over from there. */}
       <nav
-        className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto rounded-xl border border-border bg-surface-card px-3 py-3 lg:sticky lg:top-32 lg:mt-0 lg:flex lg:h-fit lg:max-h-none lg:w-64 lg:shrink-0 lg:border-0 lg:bg-transparent lg:px-3 lg:py-4`}
+        className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3 lg:sticky lg:top-32 lg:mt-0 lg:flex lg:h-fit lg:max-h-[calc(100vh-9rem)] lg:w-64 lg:shrink-0 lg:border-0 lg:bg-transparent lg:px-3 lg:py-4`}
       >
         {tree.standalone.map((page) => (
           <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
@@ -85,7 +90,7 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
                 type="button"
                 onClick={() => toggle(section.id)}
                 aria-expanded={open}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-slate hover:text-ink"
+                className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left text-[11px] font-semibold text-slate hover:text-ink"
               >
                 {section.title}
                 <ChevronIcon open={open} />

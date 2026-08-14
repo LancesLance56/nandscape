@@ -19,7 +19,7 @@ const labels: Record<Difficulty, string> = {
 export function DifficultyBadge({level}: DifficultyBadgeProps) {
   return (
     <span
-      className={`rounded-full px-2.5 py-1 font-mono text-xs font-semibold ${styles[level]}`}
+      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${styles[level]}`}
     >
       {labels[level]}
     </span>

@@ -17,7 +17,7 @@ export default async function AccountPage() {
           <div className="mb-6 flex items-center justify-between">
             <h1 className="font-display text-2xl font-bold text-ink">Account</h1>
             {user.role === "ADMIN" && (
-              <Link href="/admin" className="font-mono text-xs text-slate hover:text-copper-dark">
+              <Link href="/admin" className=" text-xs text-slate hover:text-copper-dark">
                 Admin →
               </Link>
             )}

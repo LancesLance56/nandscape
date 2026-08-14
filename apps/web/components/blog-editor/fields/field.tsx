@@ -6,7 +6,7 @@ export const fieldInputClass =
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">{label}</span>
+      <span className=" text-[11px] font-semibold text-slate">{label}</span>
       {children}
     </label>
   );

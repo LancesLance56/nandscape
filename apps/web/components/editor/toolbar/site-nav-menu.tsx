@@ -9,9 +9,8 @@ import { ToolbarButton } from "./toolbar-button";
 const LINKS = [
   { label: "Home", href: "/" },
   { label: "Puzzles", href: "/puzzles" },
-  { label: "Sandbox", href: "/nandbox" },
+  { label: "Logic Editor", href: "/logic-editor" },
   { label: "Blog", href: "/blog" },
-  { label: "About", href: "/about" },
 ];
 
 function MenuIcon() {

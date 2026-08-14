@@ -36,7 +36,7 @@ function HeaderContent() {
     <>
       <header className="mb-8">
         {(date || metadata.authorName) && (
-          <div className="mb-3 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-wider text-slate">
+          <div className="mb-3 flex items-center gap-2 text-[11px] font-medium text-slate">
             {date && <span>{date}</span>}
             {metadata.authorName && (
               <>
@@ -68,7 +68,7 @@ function HeaderContent() {
 export function PreviewHeader() {
   return (
     <div className="flex flex-col gap-4">
-      <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">Live preview</span>
+      <span className=" text-[11px] font-semibold text-slate">Live preview</span>
       <PreviewWidth>
         <HeaderContent />
       </PreviewWidth>
@@ -102,7 +102,7 @@ export function PreviewPane() {
 
   return (
     <div className="flex flex-col gap-4">
-      <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">Live preview</span>
+      <span className=" text-[11px] font-semibold text-slate">Live preview</span>
       <PreviewWidth>
         <article>
           <HeaderContent />

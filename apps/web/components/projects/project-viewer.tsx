@@ -52,7 +52,7 @@ export function ProjectViewer({
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h1 className="font-display text-xl font-bold text-ink">{project.name}</h1>
-          <p className="font-mono text-xs text-slate">by {project.ownerUsername}</p>
+          <p className=" text-xs text-slate">by {project.ownerUsername}</p>
           {project.description && <p className="mt-1.5 max-w-2xl text-sm text-ink-soft">{project.description}</p>}
         </div>
         <div className="flex shrink-0 items-center gap-2">

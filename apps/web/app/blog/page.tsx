@@ -23,7 +23,7 @@ export default async function BlogIndexPage() {
       <main className="relative pb-24">
         <section className="px-6 pb-30 pt-52 sm:px-10">
           <div className="relative z-10 mx-auto max-w-2xl text-center">
-            <div className="mb-5 flex items-center justify-center gap-2 font-mono text-sm font-medium text-copper-dark">
+            <div className="mb-5 flex items-center justify-center gap-2 text-sm font-medium text-copper-dark">
               <span className="h-1.75 w-1.75 rounded-full bg-copper" />
               Nandscape blog
             </div>

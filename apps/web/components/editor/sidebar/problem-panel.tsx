@@ -81,12 +81,12 @@ export function ProblemPanel() {
     <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
       <div>
         <div className="mb-1 flex items-center justify-between gap-2">
-          <span className="truncate font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+          <span className="truncate text-[11px] font-semibold text-slate">
             {puzzle.tags.join(" · ") || "puzzle"}
           </span>
           <div className="flex items-center gap-2">
             {isSolved && (
-              <span className="rounded-full bg-signal-green-bg px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-signal-green-strong">
+              <span className="rounded-full bg-signal-green-bg px-2 py-0.5 text-[10px] font-bold text-signal-green-strong">
                 Solved
               </span>
             )}
@@ -98,7 +98,7 @@ export function ProblemPanel() {
 
       <p className="text-sm leading-relaxed text-ink-soft">{puzzle.description}</p>
 
-      <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-surface-2 p-3 font-mono text-xs text-ink-soft">
+      <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-surface-2 p-3 text-xs text-ink-soft">
         <div>Inputs: {puzzle.inputs.map((p) => p.name).join(", ") || "-"}</div>
         <div>Outputs: {puzzle.outputs.map((p) => p.name).join(", ") || "-"}</div>
         <div>Gate budget: {puzzle.gateBudget ?? "unlimited"}</div>
@@ -155,7 +155,7 @@ export function ProblemPanel() {
           {caseResults.map((c) => (
             <li
               key={c.index}
-              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] ${
+              className={`rounded-lg border px-2.5 py-1.5 text-[11px] ${
                 c.passed
                   ? "border-signal-green/30 bg-signal-green-bg/60 text-signal-green-strong"
                   : "border-signal-coral/30 bg-signal-coral-bg/60 text-signal-coral-strong"

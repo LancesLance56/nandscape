@@ -1,53 +1,35 @@
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { Card } from "@/components/ui/card";
 
 const STATS = [
   {
-    value: "Custom Blocks",
     label: "Personalize your workspace",
+    title: "Custom blocks",
     body: "Create your own custom blocks to help solve puzzles and create complex projects, accessible each time you sign in.",
   },
   {
-    value: "Live Simulation",
-    label: "Instant Feedback",
+    label: "Instant feedback",
+    title: "Live simulation",
     body: "Every wire and gate updates instantly as you build and experiment.",
   },
   {
-    value: "Track Your Progress",
-    label: "Learn Interactively",
+    label: "Learn interactively",
+    title: "Track your progress",
     body: "Practice through hands-on experience by doing puzzles, assigned tasks, and interactive tutorials.",
   },
 ];
 
 export function FeatureStrip() {
   return (
-    <section className="relative py-14">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border-strong/50 to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-border-strong/50 to-transparent"
-      />
-
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+    <section className="py-14">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {STATS.map((stat, i) => (
-          <ScrollReveal
-            key={stat.label}
-            delay={i * 100}
-            className="flex flex-col"
-          >
-            <span className="font-display text-4xl font-bold text-copper">
-              {stat.value}
-            </span>
-
-            <h3 className="mt-2 text-lg font-semibold text-ink">
-              {stat.label}
-            </h3>
-
-            <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-              {stat.body}
-            </p>
+          <ScrollReveal key={stat.title} delay={i * 100}>
+            <Card className="flex h-full flex-col p-6">
+              <span className="text-xs font-semibold text-copper-dark">{stat.label}</span>
+              <h3 className="mt-2 text-lg font-semibold text-ink">{stat.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-ink-soft">{stat.body}</p>
+            </Card>
           </ScrollReveal>
         ))}
       </div>

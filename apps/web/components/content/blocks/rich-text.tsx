@@ -14,7 +14,7 @@ function applyMarks(text: string, marks: TextMark[] | undefined, key: string): R
         return <em key={markKey}>{node}</em>;
       case "code":
         return (
-          <code key={markKey} className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em] text-copper-dark">
+          <code key={markKey} className="rounded-md bg-surface-2 px-1.5 py-0.5 text-[0.9em] text-copper-dark">
             {node}
           </code>
         );

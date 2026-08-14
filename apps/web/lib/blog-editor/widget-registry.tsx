@@ -10,6 +10,14 @@ import { ComparisonSliderWidget } from "@/components/content/blocks/interactive/
 import { KMapExplorerWidget } from "@/components/content/blocks/interactive/kmap-explorer-widget";
 import { MintermPickerWidget } from "@/components/content/blocks/interactive/minterm-picker-widget";
 import { GrayCodeExplorerWidget } from "@/components/content/blocks/interactive/gray-code-explorer-widget";
+import { NumberBaseExplorerWidget } from "@/components/content/blocks/interactive/number-base-explorer-widget";
+import { TwosComplementWidget } from "@/components/content/blocks/interactive/twos-complement-widget";
+import { StateMachineWidget } from "@/components/content/blocks/interactive/state-machine-widget";
+import { GraphExplorerWidget } from "@/components/content/blocks/interactive/graph/graph-explorer-widget";
+import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
+import { ShortestPathWidget } from "@/components/content/blocks/interactive/graph/shortest-path-widget";
+import { MstWidget } from "@/components/content/blocks/interactive/graph/mst-widget";
+import { TarjanSccWidget } from "@/components/content/blocks/interactive/graph/tarjan-scc-widget";
 import { CircuitEmbedWidget, isCircuitEmbedData } from "@/components/content/blocks/circuit/circuit-embed";
 
 import { RawJsonField } from "@/components/blog-editor/fields/raw-json-field";
@@ -137,6 +145,73 @@ const registryImpl: Record<string, WidgetDefinition> = {
     Renderer: GrayCodeExplorerWidget,
     Editor: (props) => <RawJsonField {...props} />,
     createDefault: () => ({ bits: 3 }),
+  },
+  "number-base-explorer": {
+    name: "number-base-explorer",
+    label: "Number Base Explorer",
+    Renderer: NumberBaseExplorerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ bits: 8, initial: 156, title: "Number Base Explorer" }),
+  },
+  "twos-complement-explorer": {
+    name: "twos-complement-explorer",
+    label: "Two's Complement Explorer",
+    Renderer: TwosComplementWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ bits: 8, initial: 5 }),
+  },
+  "state-machine-explorer": {
+    name: "state-machine-explorer",
+    label: "State Machine Explorer",
+    Renderer: StateMachineWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({
+      title: "Turnstile",
+      states: ["Locked", "Unlocked"],
+      inputs: ["Coin", "Push"],
+      initial: "Locked",
+      transitions: {
+        "Locked|Coin": "Unlocked",
+        "Locked|Push": "Locked",
+        "Unlocked|Coin": "Unlocked",
+        "Unlocked|Push": "Locked",
+      },
+    }),
+  },
+  "graph-explorer": {
+    name: "graph-explorer",
+    label: "Graph Explorer (graph types)",
+    Renderer: GraphExplorerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({}),
+  },
+  "graph-traversal": {
+    name: "graph-traversal",
+    label: "Graph Traversal (BFS/DFS)",
+    Renderer: GraphTraversalWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "bfs" }),
+  },
+  "shortest-path": {
+    name: "shortest-path",
+    label: "Shortest Path (Dijkstra)",
+    Renderer: ShortestPathWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ start: "A" }),
+  },
+  "mst-explorer": {
+    name: "mst-explorer",
+    label: "Minimum Spanning Tree (Kruskal/Prim)",
+    Renderer: MstWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "kruskal" }),
+  },
+  "tarjan-scc": {
+    name: "tarjan-scc",
+    label: "Tarjan Strongly Connected Components",
+    Renderer: TarjanSccWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({}),
   },
   "circuit-embed": {
     name: "circuit-embed",

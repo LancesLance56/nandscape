@@ -48,7 +48,7 @@ export function RevealWidgetEditor({
       <Field label="Before code (optional)">
         <textarea
           rows={4}
-          className={`${fieldInputClass} resize-y font-mono text-xs`}
+          className={`${fieldInputClass} resize-y text-xs`}
           value={text(reveal.beforeCode)}
           onChange={(e) => set({ beforeCode: e.target.value || undefined })}
         />
@@ -56,7 +56,7 @@ export function RevealWidgetEditor({
       <Field label="After code">
         <textarea
           rows={4}
-          className={`${fieldInputClass} resize-y font-mono text-xs`}
+          className={`${fieldInputClass} resize-y text-xs`}
           value={text(reveal.afterCode)}
           onChange={(e) => set({ afterCode: e.target.value })}
         />

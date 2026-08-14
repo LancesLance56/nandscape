@@ -14,7 +14,7 @@ export default async function EmbedPage({ params }: { params: Promise<{ slug: st
 
   if (!project || project.visibility === "PRIVATE") {
     return (
-      <div className="flex h-screen items-center justify-center font-mono text-sm text-slate">
+      <div className="flex h-screen items-center justify-center text-sm text-slate">
         This circuit isn&apos;t available for embedding.
       </div>
     );

@@ -18,7 +18,7 @@ export default async function AdminTutorialsIndexPage() {
       <div className="mb-6 mt-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-ink">Tutorial pages</h1>
-          <Link href="/admin/blog" className="font-mono text-xs text-slate hover:text-copper-dark">
+          <Link href="/admin/blog" className=" text-xs text-slate hover:text-copper-dark">
             View posts →
           </Link>
         </div>

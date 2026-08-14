@@ -149,7 +149,7 @@ export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "men
 
       {menuOpen && (
         <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border bg-surface-card/95 p-1.5 shadow-xl backdrop-blur-md">
-          <p className="truncate px-2.5 py-1.5 font-mono text-[11px] font-semibold text-slate">{user.username}</p>
+          <p className="truncate px-2.5 py-1.5 text-[11px] font-semibold text-slate">{user.username}</p>
           <Link
             href="/account"
             onClick={() => setMenuOpen(false)}

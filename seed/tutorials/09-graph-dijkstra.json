@@ -1,0 +1,301 @@
+{
+  "slug": "graph-dijkstra",
+  "title": "Shortest Paths with Dijkstra",
+  "excerpt": "When edges have costs, fewest hops stops meaning cheapest. Dijkstra fixes that with one greedy rule that turns out to be provably safe.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:40:00Z",
+  "tags": [
+    "graph-theory",
+    "algorithms",
+    "shortest-path",
+    "dijkstra"
+  ],
+  "sectionSlug": "graph-theory-concepts",
+  "position": 20,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "BFS finds the route with the fewest edges. That is the right answer only when every edge costs the same. Put real numbers on them, distances, latencies, fares, and the fewest-hops route is frequently the expensive one. Two short hops beat one long haul all the time."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Dijkstra's algorithm handles this. It is the thing inside your maps app, and the idea behind it is smaller than its reputation suggests."
+        }
+      ]
+    },
+    {
+      "id": "h-idea",
+      "type": "heading",
+      "level": 2,
+      "text": "The one rule"
+    },
+    {
+      "id": "p-idea",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Keep a best-known cost for every node. The source starts at 0 because standing still is free, and everything else starts at infinity because you have not found any route to it yet. Then repeat:"
+        }
+      ]
+    },
+    {
+      "id": "p-idea-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Pick the cheapest node you have not finalised yet. Lock its number in permanently. Then look at its neighbours and ask, for each one, whether going through this node beats the best route you knew about. If it does, write down the better number."
+        }
+      ]
+    },
+    {
+      "id": "p-idea-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last step has a name you will see everywhere: "
+        },
+        {
+          "text": "relaxing",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " an edge. It sounds mysterious and means \"check whether this edge gives a cheaper route, and update if so\". That is all."
+        }
+      ]
+    },
+    {
+      "id": "h-watch",
+      "type": "heading",
+      "level": 2,
+      "text": "Watch the numbers fall"
+    },
+    {
+      "id": "p-watch",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The number floating above each node is its current best-known cost. Play this through and watch them drop from infinity as better routes get discovered. The panel on the right shows which ones are locked in."
+        }
+      ]
+    },
+    {
+      "id": "w-dijkstra",
+      "type": "interactive",
+      "widget": "shortest-path",
+      "data": {
+        "start": "A"
+      }
+    },
+    {
+      "id": "p-watch-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Look at what happens to B specifically. It starts at 4, because the direct edge A→B costs 4. Then C gets finalised at 2, and suddenly B improves to 3, because going A→C→B costs 2 plus 1. The direct edge was not the cheapest route to a direct neighbour. That is the whole reason this algorithm has to exist."
+        }
+      ]
+    },
+    {
+      "id": "p-watch-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second example, \"The long way is cheaper\", pushes that idea as far as it will go. There is a direct A→B edge costing 10, sitting right next to a three-hop detour A→C→D→B costing 1 plus 1 plus 1. Watch B start at 10 and fall to 3, and E start at 20 and fall to 5. A route with three times as many edges wins by a factor of three. If you had reached for BFS here, it would have confidently handed you the one-hop path and been wrong by 7."
+        }
+      ]
+    },
+    {
+      "id": "h-why-safe",
+      "type": "heading",
+      "level": 2,
+      "text": "Why locking a node in is safe"
+    },
+    {
+      "id": "p-why-safe",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is the part that deserves a minute. Why can Dijkstra permanently commit to a node's cost without ever revisiting it? What if a better route shows up later?"
+        }
+      ]
+    },
+    {
+      "id": "p-why-safe-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It cannot. Suppose we are about to lock in node X at cost 7, meaning X is the cheapest unfinalised node. Any alternative route to X has to leave the finalised set at some point, through some unfinalised node Y. But we picked X because it was the cheapest unfinalised node, so Y already costs at least 7. Then you would still have to travel from Y onwards to X, adding more. So the alternative is at least as expensive. There is no room for a surprise."
+        }
+      ]
+    },
+    {
+      "id": "p-why-safe-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice the hidden assumption: adding more edges only ever makes a route more expensive. That holds because weights are not negative. Break that assumption and the proof falls apart, which is exactly what happens next."
+        }
+      ]
+    },
+    {
+      "id": "h-negative",
+      "type": "heading",
+      "level": 2,
+      "text": "Dijkstra breaks on negative weights"
+    },
+    {
+      "id": "p-negative",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If an edge can have a negative weight, going further can make a route cheaper. Now locking a node in is no longer safe, because a bargain edge further out could undercut a decision you already made and refuse to revisit."
+        }
+      ]
+    },
+    {
+      "id": "code-negative",
+      "type": "code",
+      "language": "text",
+      "code": "A --(2)--> B\nA --(5)--> C\nB --(-4)-> C\n\nDijkstra locks C at 5, because 5 beats the other options it can see.\nThe real answer is 2 + (-4) = -2, via B.\nBy the time B is processed, C is already finalised and never reconsidered."
+    },
+    {
+      "id": "p-negative-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is not a bug you can patch. It is the price of the greedy shortcut that makes Dijkstra fast. For negative weights you need Bellman-Ford, which is slower and gets its own lesson in the advanced section."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-dijkstra",
+      "type": "code",
+      "language": "javascript",
+      "code": "function dijkstra(adj, nodes, start) {\n  const dist = new Map(nodes.map((n) => [n, Infinity]));\n  const parent = new Map();\n  const done = new Set();\n  dist.set(start, 0);\n\n  while (done.size < nodes.length) {\n    // Cheapest unfinalised node. A real implementation uses a\n    // priority queue here; this scan is O(V) and easier to read.\n    let current = null;\n    let best = Infinity;\n    for (const [node, d] of dist) {\n      if (!done.has(node) && d < best) {\n        best = d;\n        current = node;\n      }\n    }\n\n    if (current === null) break; // rest of the graph is unreachable\n    done.add(current);\n\n    for (const { to, weight } of adj.get(current) ?? []) {\n      if (done.has(to)) continue;\n      const candidate = best + weight;\n      if (candidate < dist.get(to)) {\n        dist.set(to, candidate);   // relax the edge\n        parent.set(to, current);\n      }\n    }\n  }\n\n  return { dist, parent };\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "import math\n\ndef dijkstra(adj, nodes, start):\n    dist = {n: math.inf for n in nodes}\n    parent = {}\n    done = set()\n    dist[start] = 0\n\n    while len(done) < len(nodes):\n        # Cheapest unfinalised node. A real implementation uses heapq\n        # here; this scan is O(V) and easier to read.\n        current = None\n        best = math.inf\n        for node, d in dist.items():\n            if node not in done and d < best:\n                best = d\n                current = node\n\n        if current is None:\n            break  # rest of the graph is unreachable\n        done.add(current)\n\n        for to, weight in adj.get(current, []):\n            if to in done:\n                continue\n            candidate = best + weight\n            if candidate < dist[to]:\n                dist[to] = candidate   # relax the edge\n                parent[to] = current\n\n    return dist, parent"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <limits>\n#include <map>\n#include <set>\n#include <string>\n#include <vector>\n\nstruct Edge { std::string to; int weight; };\n\nstd::map<std::string, double> dijkstra(\n    const std::map<std::string, std::vector<Edge>>& adj,\n    const std::vector<std::string>& nodes,\n    const std::string& start,\n    std::map<std::string, std::string>& parent) {\n    const double INF = std::numeric_limits<double>::infinity();\n\n    std::map<std::string, double> dist;\n    for (const std::string& n : nodes) dist[n] = INF;\n    std::set<std::string> done;\n    dist[start] = 0;\n\n    while (done.size() < nodes.size()) {\n        // Cheapest unfinalised node. A real implementation uses a\n        // priority_queue here; this scan is O(V) and easier to read.\n        std::string current;\n        bool found = false;\n        double best = INF;\n        for (const auto& [node, d] : dist) {\n            if (!done.count(node) && d < best) {\n                best = d;\n                current = node;\n                found = true;\n            }\n        }\n\n        if (!found) break;  // rest of the graph is unreachable\n        done.insert(current);\n\n        auto it = adj.find(current);\n        if (it == adj.end()) continue;\n\n        for (const Edge& e : it->second) {\n            if (done.count(e.to)) continue;\n            double candidate = best + e.weight;\n            if (candidate < dist[e.to]) {\n                dist[e.to] = candidate;   // relax the edge\n                parent[e.to] = current;\n            }\n        }\n    }\n\n    return dist;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That inner scan for the cheapest node is the slow part, giving O(V²) overall. Swap it for a binary heap and you get O((V + E) log V), which is what any serious implementation does. The logic does not change, only how fast you can find the minimum."
+        }
+      ]
+    },
+    {
+      "id": "p-code-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Also worth noticing: if every weight is 1, Dijkstra degenerates into BFS. The cheapest unfinalised node is always the one at the current ring. Same algorithm underneath, which is a satisfying thing to realise."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "What does \"relaxing an edge\" mean?",
+            "options": [
+              {
+                "label": "Checking whether that edge gives a cheaper route, and updating if it does",
+                "correct": true
+              },
+              {
+                "label": "Removing the edge from the graph",
+                "correct": false
+              },
+              {
+                "label": "Reducing the edge's weight",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why can't Dijkstra handle negative edge weights?",
+            "options": [
+              {
+                "label": "Going further could get cheaper, so a locked-in node might turn out to be wrong",
+                "correct": true
+              },
+              {
+                "label": "Negative numbers break the priority queue",
+                "correct": false
+              },
+              {
+                "label": "It can, it just runs slower",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Every edge in your graph has weight 1. What does Dijkstra do?",
+            "options": [
+              {
+                "label": "The same thing BFS does",
+                "correct": true
+              },
+              {
+                "label": "Fails, it needs varied weights",
+                "correct": false
+              },
+              {
+                "label": "Returns the fewest-hops path but takes exponential time",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to minimum spanning trees",
+      "href": "/tutorials/graph-mst-kruskal-prim",
+      "style": "primary"
+    }
+  ]
+}

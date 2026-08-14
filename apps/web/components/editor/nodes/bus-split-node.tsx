@@ -89,10 +89,10 @@ function BusSplitNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
         style={{ top: `${boxHeight + LABEL_GAP}px`, width: NODE_WIDTH }}
         className="absolute left-1/2 -translate-x-1/2 text-center leading-tight"
       >
-        <div style={{ height: `${NAME_HEIGHT}px` }} className="truncate font-mono text-[10px] font-semibold text-indigo-400">
+        <div style={{ height: `${NAME_HEIGHT}px` }} className="truncate text-[10px] font-semibold text-indigo-400">
           {busData.label || "BUS"}
         </div>
-        <div style={{ height: `${KIND_HEIGHT}px` }} className="font-mono text-[8px] uppercase tracking-wider text-ink-soft">
+        <div style={{ height: `${KIND_HEIGHT}px` }} className=" text-[8px] text-ink-soft">
           split ×{width}
         </div>
       </div>

@@ -7,7 +7,7 @@ export interface BreadcrumbItem {
 
 export function AdminBreadcrumb({ trail }: { trail: BreadcrumbItem[] }) {
   return (
-    <nav className="flex flex-wrap items-center gap-1.5 font-mono text-xs text-slate">
+    <nav className="flex flex-wrap items-center gap-1.5 text-xs text-slate">
       <Link href="/" className="transition-colors hover:text-copper-dark">
         Nandscape
       </Link>

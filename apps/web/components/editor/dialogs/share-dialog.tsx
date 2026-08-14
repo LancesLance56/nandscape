@@ -275,14 +275,14 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
           {active && shareUrl && embedCode && (
             <div className="flex flex-col gap-2 rounded-xl bg-surface-2/60 p-3">
               <div className="flex items-center gap-2">
-                <input readOnly value={shareUrl} className="min-w-0 flex-1 truncate rounded-md border border-border-strong bg-surface px-2 py-1 font-mono text-[11px] text-ink-soft" />
-                <button type="button" onClick={() => copy(shareUrl, "link")} className="shrink-0 rounded-md border border-border-strong px-2 py-1 font-mono text-[10px] font-semibold text-ink-soft hover:bg-surface-card">
+                <input readOnly value={shareUrl} className="min-w-0 flex-1 truncate rounded-md border border-border-strong bg-surface px-2 py-1 text-[11px] text-ink-soft" />
+                <button type="button" onClick={() => copy(shareUrl, "link")} className="shrink-0 rounded-md border border-border-strong px-2 py-1 text-[10px] font-semibold text-ink-soft hover:bg-surface-card">
                   {copied === "link" ? "Copied" : "Copy link"}
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <input readOnly value={embedCode} className="min-w-0 flex-1 truncate rounded-md border border-border-strong bg-surface px-2 py-1 font-mono text-[11px] text-ink-soft" />
-                <button type="button" onClick={() => copy(embedCode, "embed")} className="shrink-0 rounded-md border border-border-strong px-2 py-1 font-mono text-[10px] font-semibold text-ink-soft hover:bg-surface-card">
+                <input readOnly value={embedCode} className="min-w-0 flex-1 truncate rounded-md border border-border-strong bg-surface px-2 py-1 text-[11px] text-ink-soft" />
+                <button type="button" onClick={() => copy(embedCode, "embed")} className="shrink-0 rounded-md border border-border-strong px-2 py-1 text-[10px] font-semibold text-ink-soft hover:bg-surface-card">
                   {copied === "embed" ? "Copied" : "Copy embed"}
                 </button>
               </div>

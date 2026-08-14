@@ -82,7 +82,7 @@ export default async function AdminIndexPage() {
                 {section.label}
               </span>
               {section.count !== undefined && (
-                <span className="font-mono text-xs text-slate">
+                <span className=" text-xs text-slate">
                   {section.count} {section.countLabel}
                 </span>
               )}

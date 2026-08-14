@@ -123,7 +123,7 @@ export function BlockCard({ block, index, total }: { block: ContentBlock; index:
           author should notice, not a control. */}
       <div className="absolute -top-8 right-1 z-10 flex items-center gap-1 rounded-md border border-border bg-surface-card/95 opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
         <span
-          className="px-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider"
+          className="px-1.5 text-[10px] font-semibold"
           style={accent ? { color: accent } : undefined}
         >
           {definition.label}
@@ -188,7 +188,7 @@ export function BlockCardGhost({ block }: { block: ContentBlock }) {
     >
       <GripIcon />
       <span
-        className="font-mono text-[11px] font-semibold uppercase tracking-wider"
+        className=" text-[11px] font-semibold"
         style={accent ? { color: accent } : undefined}
       >
         {definition.label}

@@ -187,7 +187,7 @@ export function FormatToolbarPlugin() {
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => toggleFormat(format)}
-          className={`rounded-md px-2 py-1 font-mono text-xs font-semibold transition-colors ${
+          className={`rounded-md px-2 py-1 text-xs font-semibold transition-colors ${
             activeFormats.has(format) ? "bg-copper-bg text-copper-dark" : "text-ink-soft hover:bg-surface-2"
           }`}
         >
@@ -202,7 +202,7 @@ export function FormatToolbarPlugin() {
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => setColorMenuOpen((o) => !o)}
-          className="rounded-md px-2 py-1 font-mono text-xs font-semibold text-ink-soft hover:bg-surface-2"
+          className="rounded-md px-2 py-1 text-xs font-semibold text-ink-soft hover:bg-surface-2"
         >
           Color
         </button>
@@ -234,7 +234,7 @@ export function FormatToolbarPlugin() {
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={removeLink}
-          className="rounded-md px-2 py-1 font-mono text-xs font-semibold text-signal-coral hover:bg-surface-2"
+          className="rounded-md px-2 py-1 text-xs font-semibold text-signal-coral hover:bg-surface-2"
         >
           Unlink
         </button>
@@ -249,13 +249,13 @@ export function FormatToolbarPlugin() {
               if (e.key === "Escape") setLinkInputOpen(false);
             }}
             placeholder="https://…"
-            className="w-40 rounded-md border border-border-strong bg-surface px-2 py-1 font-mono text-xs text-ink outline-none focus:border-copper"
+            className="w-40 rounded-md border border-border-strong bg-surface px-2 py-1 text-xs text-ink outline-none focus:border-copper"
           />
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}
             onClick={submitLink}
-            className="rounded-md px-2 py-1 font-mono text-xs font-semibold text-copper-dark hover:bg-surface-2"
+            className="rounded-md px-2 py-1 text-xs font-semibold text-copper-dark hover:bg-surface-2"
           >
             Set
           </button>
@@ -268,7 +268,7 @@ export function FormatToolbarPlugin() {
             setLinkValue("");
             setLinkInputOpen(true);
           }}
-          className="rounded-md px-2 py-1 font-mono text-xs font-semibold text-ink-soft hover:bg-surface-2"
+          className="rounded-md px-2 py-1 text-xs font-semibold text-ink-soft hover:bg-surface-2"
         >
           Link
         </button>

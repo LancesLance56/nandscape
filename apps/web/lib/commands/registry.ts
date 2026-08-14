@@ -6,7 +6,7 @@ import type {Command} from "./command";
  *   - keyboard shortcuts can bind by id without importing every command
  *   - a future command palette can list/search all registered commands
  *   - commands can be registered by feature code outside this folder
- *     (e.g. a puzzle-specific command added only on the Nandbox route)
+ *     (e.g. a puzzle-specific command added only on the Logic Editor route)
  */
 export class CommandRegistry {
   private commands = new Map<string, Command<unknown>>();

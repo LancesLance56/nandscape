@@ -57,7 +57,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <main className="mx-auto max-w-4xl px-6 pb-24 pt-32 sm:px-10">
         <article>
           <header className="mb-8">
-            <div className="mb-3 flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-wider text-slate">
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-medium text-slate">
               {date && <span>{date}</span>}
               {post.authorName && (
                 <>

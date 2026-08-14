@@ -147,7 +147,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
           />
         </div>
 
-        <div className="flex items-center gap-2 font-mono text-xs text-slate">
+        <div className="flex items-center gap-2 text-xs text-slate">
           <ProgressRing solved={solvedCount} total={puzzles.length} signedOut={signedOut} />
           {solvedCount} / {puzzles.length} Solved
         </div>
@@ -167,7 +167,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
                 borderColor: active ? color : hexToRgba(color, 0.35),
                 backgroundColor: active ? hexToRgba(color, 0.18) : hexToRgba(color, 0.08),
               }}
-              className="rounded-full border px-3 py-1 font-mono text-[11px] font-medium transition-colors hover:brightness-110"
+              className="rounded-full border px-3 py-1 text-[11px] font-medium transition-colors hover:brightness-110"
             >
               {tag} <span className="opacity-70">{count}</span>
             </button>
@@ -181,7 +181,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
             key={d}
             type="button"
             onClick={() => setDifficulty(d)}
-            className={`rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${
+            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
               difficulty === d ? "bg-surface-2 text-ink" : "text-ink-soft hover:bg-surface-2/60 hover:text-ink"
             }`}
           >
@@ -193,7 +193,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
       <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
         <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="bg-surface-2 font-mono text-[11px] uppercase tracking-wider text-slate">
+            <tr className="bg-surface-2 text-[11px] text-slate">
               <th className="w-10 px-4 py-3" aria-label="Status" />
               <th className="px-4 py-3">Title</th>
               <th className="hidden px-4 py-3 md:table-cell">Tags</th>
@@ -223,7 +223,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
                   <p className="flex items-center gap-2 font-semibold text-ink">
                     {index + 1}. {puzzle.title}
                     {puzzle.slug === dailyPuzzleSlug && (
-                      <span className="rounded-full bg-copper/15 px-2 py-0.5 font-mono text-[10px] font-semibold text-copper-dark">
+                      <span className="rounded-full bg-copper/15 px-2 py-0.5 text-[10px] font-semibold text-copper-dark">
                         Today
                       </span>
                     )}
@@ -238,7 +238,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
                         <span
                           key={tag}
                           style={{ backgroundColor: hexToRgba(color, 0.14), color }}
-                          className="rounded-full px-2 py-0.5 font-mono text-[10px] font-medium"
+                          className="rounded-full px-2 py-0.5 text-[10px] font-medium"
                         >
                           {tag}
                         </span>
@@ -246,7 +246,7 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
                     })}
                   </div>
                 </td>
-                <td className="hidden px-4 py-3 font-mono text-xs text-slate lg:table-cell">
+                <td className="hidden px-4 py-3 text-xs text-slate lg:table-cell">
                   {formatRestriction(puzzle)}
                   {puzzle.gateBudget !== null && (
                     <span className="text-border-strong"> · budget {puzzle.gateBudget}</span>

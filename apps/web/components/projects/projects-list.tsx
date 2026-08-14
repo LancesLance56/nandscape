@@ -97,12 +97,12 @@ export function ProjectsList({ initial }: { initial: ProjectSummary[] }) {
             </Link>
           )}
 
-          <span className="font-mono text-[11px] text-slate">{formatDate(project.updatedAt)}</span>
+          <span className=" text-[11px] text-slate">{formatDate(project.updatedAt)}</span>
 
           <select
             value={project.visibility}
             onChange={(e) => changeVisibility(project, e.target.value as ProjectVisibility)}
-            className="rounded-md border border-border-strong bg-surface px-1.5 py-1 font-mono text-[11px] font-semibold text-ink-soft outline-none"
+            className="rounded-md border border-border-strong bg-surface px-1.5 py-1 text-[11px] font-semibold text-ink-soft outline-none"
           >
             {(Object.keys(VISIBILITY_LABEL) as ProjectVisibility[]).map((v) => (
               <option key={v} value={v}>

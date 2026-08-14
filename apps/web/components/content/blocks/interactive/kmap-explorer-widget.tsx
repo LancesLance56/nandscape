@@ -108,7 +108,16 @@ function termFor(cells: number[], variables: string[]): string {
     .join("");
 }
 
-export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) {
+export function KMapExplorerWidget({
+  data,
+  frame = true,
+}: {
+  data: Record<string, unknown>;
+  /** Set false to skip the WidgetFrame chrome (window-dot header) - for
+   *  contexts like the homepage hero that already provide their own frame
+   *  and shouldn't stack a second one. */
+  frame?: boolean;
+}) {
   const variables = resolveVariables(data);
   const totalBits = variables.length;
   const rowBits = Math.floor(totalBits / 2);
@@ -200,9 +209,8 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
   const rowVarLabel = rowVariables.join("");
   const colVarLabel = colVariables.join("");
 
-  return (
-    <WidgetFrame title={title} subtitle={`${covered} / ${onesTotal} ones covered`} className={className}>
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+  const content = (
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="flex flex-col items-center gap-8">
           <div
             className="grid gap-1 mr-auto"
@@ -210,23 +218,23 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
           >
             <svg viewBox="0 0 52 52" className="h-13 w-13" preserveAspectRatio="none">
               <line x1="0" y1="0" x2="52" y2="52" stroke="var(--border-strong)" strokeWidth="1.5" />
-              <text x="47" y="15" textAnchor="end" className="font-mono text-[11px] font-bold fill-slate">
+              <text x="47" y="15" textAnchor="end" className=" text-[11px] font-bold fill-slate">
                 {colVarLabel}
               </text>
-              <text x="5" y="45" textAnchor="start" className="font-mono text-[11px] font-bold fill-slate">
+              <text x="5" y="45" textAnchor="start" className=" text-[11px] font-bold fill-slate">
                 {rowVarLabel}
               </text>
             </svg>
 
             {colCodes.map((code) => (
-              <div key={`col-${code}`} className="text-center font-mono text-[11px] font-semibold text-slate mt-auto">
+              <div key={`col-${code}`} className="text-center text-[11px] font-semibold text-slate mt-auto">
                 {toBinaryLabel(code, colBits)}
               </div>
             ))}
 
             {rowCodes.map((rowCode) => (
               <Fragment key={`row-${rowCode}`}>
-                <div className="flex items-center justify-center font-mono text-[11px] font-semibold text-slate ml-auto">
+                <div className="flex items-center justify-center text-[11px] font-semibold text-slate ml-auto">
                   {toBinaryLabel(rowCode, rowBits)}
                 </div>
                 {colCodes.map((colCode) => {
@@ -241,7 +249,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
                       type="button"
                       onClick={() => toggleCell(minterm)}
                       className={cn(
-                        "flex h-16 w-16 items-center justify-center rounded-lg border-2 font-mono text-lg font-bold transition-all",
+                        "flex h-16 w-16 items-center justify-center rounded-lg border-2 text-lg font-bold transition-all",
                         isSelected
                           ? "border-copper bg-copper-bg text-copper-dark"
                           : value
@@ -263,14 +271,14 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
             <button
               type="button"
               onClick={checkGroup}
-              className="rounded-lg bg-copper px-3 py-1.5 font-mono text-[11px] font-semibold text-white hover:bg-copper-dark"
+              className="rounded-lg bg-copper px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-copper-dark"
             >
               Check group
             </button>
             <button
               type="button"
               onClick={() => setSelected([])}
-              className="rounded-lg border border-border-strong px-3 py-1.5 font-mono text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
+              className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
             >
               Clear selection
             </button>
@@ -278,7 +286,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
               <button
                 type="button"
                 onClick={showHint}
-                className="rounded-lg border border-border-strong px-3 py-1.5 font-mono text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
+                className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
               >
                 Hint
               </button>
@@ -286,7 +294,7 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
             <button
               type="button"
               onClick={reset}
-              className="rounded-lg border border-border-strong px-3 py-1.5 font-mono text-[11px] font-semibold text-signal-coral hover:bg-surface-2"
+              className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-signal-coral hover:bg-surface-2"
             >
               Reset
             </button>
@@ -294,13 +302,13 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
         </div>
 
         <div className="flex-1 rounded-xl border border-border bg-surface-card p-4 pb-8">
-          <p className="min-h-10 font-mono text-xs text-ink-soft">{message}</p>
+          <p className="min-h-10 text-xs text-ink-soft">{message}</p>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {confirmed.map((g) => (
               <span
                 key={g.term}
-                className="rounded-full px-2.5 py-1 font-mono text-xs font-bold text-white"
+                className="rounded-full px-2.5 py-1 text-xs font-bold text-white"
                 style={{ backgroundColor: g.color }}
               >
                 {g.term}
@@ -309,15 +317,22 @@ export function KMapExplorerWidget({ data }: { data: Record<string, unknown> }) 
             {confirmed.length === 0 && <span className="text-xs text-slate">No groups confirmed yet.</span>}
           </div>
 
-          <p className="mt-4 font-mono text-sm font-semibold text-ink">F = {expression || "?"}</p>
+          <p className="mt-4 text-sm font-semibold text-ink">F = {expression || "?"}</p>
 
           {covered === onesTotal && onesTotal > 0 && (
-            <p className="mt-3 rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 font-mono text-xs font-semibold text-signal-green-strong">
+            <p className="mt-3 rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 text-xs font-semibold text-signal-green-strong">
               Every 1 in the map is covered. That&#39;s the function: F = {expression}.
             </p>
           )}
         </div>
       </div>
+  );
+
+  if (!frame) return content;
+
+  return (
+    <WidgetFrame title={title} subtitle={`${covered} / ${onesTotal} ones covered`} className={className}>
+      {content}
     </WidgetFrame>
   );
 }

@@ -23,8 +23,8 @@ export function WidgetFrame({ title, subtitle, children, className, contentClass
         <span className="h-2.5 w-2.5 rounded-full bg-signal-coral" />
         <span className="h-2.5 w-2.5 rounded-full bg-copper" />
         <span className="h-2.5 w-2.5 rounded-full bg-signal-green" />
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">{title}</span>
-        {subtitle && <span className="ml-auto font-mono text-[10px] text-slate">{subtitle}</span>}
+        <span className=" text-[11px] font-semibold text-ink">{title}</span>
+        {subtitle && <span className="ml-auto text-[10px] text-slate">{subtitle}</span>}
       </div>
       <div
         className={cn(
