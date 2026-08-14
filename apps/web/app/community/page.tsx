@@ -3,6 +3,8 @@ import { Navbar } from "@/components/navbar";
 import { listPublicProjects, type PublicProjectSummary } from "@/lib/projects/projects";
 import { CommunityCircuitsList } from "@/components/projects/community-circuits-list";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Community circuits,  Nandscape",
   description: "Circuits the Nandscape community has made public.",
