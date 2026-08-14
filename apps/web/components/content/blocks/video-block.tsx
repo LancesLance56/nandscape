@@ -22,7 +22,7 @@ export function VideoBlockView({ block }: { block: VideoBlock & { className?: st
         />
       </div>
       {block.caption && (
-        <figcaption className="mt-2 text-center font-mono text-xs text-slate">{block.caption}</figcaption>
+        <figcaption className="mt-2 text-center text-xs text-slate">{block.caption}</figcaption>
       )}
     </figure>
   );

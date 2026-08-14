@@ -6,7 +6,7 @@ const cellInputClass =
   "w-full min-w-28 rounded-md border border-border-strong bg-surface-card px-2 py-1 text-sm text-ink outline-none focus:border-copper";
 
 const gridButtonClass =
-  "rounded-md border border-border-strong px-2 py-1 font-mono text-xs text-slate transition-colors hover:bg-surface-2 hover:text-ink disabled:pointer-events-none disabled:opacity-30";
+  "rounded-md border border-border-strong px-2 py-1 text-xs text-slate transition-colors hover:bg-surface-2 hover:text-ink disabled:pointer-events-none disabled:opacity-30";
 
 /**
  * `block.headers`'s presence, not a separate stored flag, is the header-row

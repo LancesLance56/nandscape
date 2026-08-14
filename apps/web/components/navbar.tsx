@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Logo, LogoIcon } from "@/components/icons";
+import { Logo } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthStatus } from "@/components/auth-status";
 
@@ -12,12 +12,11 @@ import { AuthStatus } from "@/components/auth-status";
 // separate text link would just duplicate it and eat width.
 const links = [
   { label: "Puzzles", href: "/puzzles" },
-  { label: "Sandbox", href: "/nandbox" },
+  { label: "Logic Editor", href: "/logic-editor" },
   { label: "Projects", href: "/projects" },
   { label: "Community", href: "/community" },
   { label: "Blog", href: "/blog" },
   { label: "Tutorials", href: "/tutorials" },
-  { label: "About", href: "/about" },
 ];
 
 function MenuIcon({ open }: { open: boolean }) {
@@ -39,91 +38,78 @@ export function Navbar() {
   }, [pathname]);
 
   return (
-    <header className="fixed inset-x-0 top-5 z-50 flex justify-center px-4">
-      <div className="w-full max-w-7xl">
-        <nav className="flex h-16 w-full items-center justify-between rounded-full border bg-surface-card/85 px-6 shadow-xl backdrop-blur-md transition-all duration-300 will-change-transform sm:px-10 md:grid md:grid-cols-[1fr_auto_1fr]">
-          <Link href="/" className="flex items-center gap-2.5 justify-self-start">
-            {/* Full wordmark takes up to 224px, too wide once the nav links
-                collapse into the hamburger below md, so it shrinks to just
-                the mark then. */}
-            <Logo className="h-8 w-8 text-ink md:hidden" />
-            <div className="hidden md:block md:w-48 lg:w-56">
-              <LogoIcon />
-            </div>
-          </Link>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-surface/90 backdrop-blur-md">
+      <nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6 sm:px-10">
+        <Link href="/" className="flex items-center gap-2.5">
+          <Logo className="h-7 w-7 shrink-0 text-ink" />
+          <span className="text-lg font-bold text-ink">Nandscape</span>
+        </Link>
 
-          <div className="hidden items-center gap-6 justify-self-center md:flex">
-            {links.map((link) => {
-              const active = pathname.startsWith(link.href);
+        <div className="hidden items-center gap-7 md:flex">
+          {links.map((link) => {
+            const active = pathname.startsWith(link.href);
 
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative py-1.5 text-sm font-bold transition-colors ${
-                    active
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {link.label}
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  active ? "text-ink" : "text-ink-soft hover:text-ink"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
 
-                  {active && (
-                    <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-copper" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+        <div className="flex items-center gap-4 sm:gap-5">
+          <ThemeToggle />
+          {/* AuthStatus itself hides its logged-out Log in/Start solving
+              buttons below md (they move into the dropdown below
+              instead) - the avatar it renders when logged in isn't
+              touched by that, so it still shows on every breakpoint. */}
+          <AuthStatus />
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((open) => !open)}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink md:hidden"
+          >
+            <MenuIcon open={mobileOpen} />
+          </button>
+        </div>
+      </nav>
 
-          <div className="flex items-center gap-4 justify-self-end sm:gap-5">
-            <ThemeToggle />
-            {/* AuthStatus itself hides its logged-out Log in/Start solving
-                buttons below md (they move into the dropdown below
-                instead) - the avatar it renders when logged in isn't
-                touched by that, so it still shows on every breakpoint. */}
-            <AuthStatus />
-            <button
-              type="button"
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              aria-expanded={mobileOpen}
-              onClick={() => setMobileOpen((open) => !open)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink md:hidden"
-            >
-              <MenuIcon open={mobileOpen} />
-            </button>
-          </div>
-        </nav>
+      {mobileOpen && (
+        <div className="flex flex-col gap-1 border-t border-border bg-surface p-3 md:hidden">
+          {links.map((link) => {
+            const active = pathname.startsWith(link.href);
 
-        {mobileOpen && (
-          <div className="mt-2 flex flex-col gap-1 rounded-2xl border bg-surface-card/95 p-3 shadow-xl backdrop-blur-md md:hidden">
-            {links.map((link) => {
-              const active = pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+                  active
+                    ? "bg-surface-2 text-ink"
+                    : "text-ink-soft hover:bg-surface-2 hover:text-ink"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`rounded-lg px-3 py-2.5 text-sm font-bold transition-colors ${
-                    active
-                      ? "bg-surface-2 text-foreground"
-                      : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-
-            {/* Log in / Start solving, moved here from the pill (see the
-                AuthStatus usage above) - logged-in users don't get
-                anything extra here, their avatar's own menu already
-                covers Account/Log out, so AuthStatus renders nothing at
-                all in that case (no empty divider left behind). */}
-            <AuthStatus variant="menu" />
-          </div>
-        )}
-      </div>
+          {/* Log in / Start solving, moved here from the pill (see the
+              AuthStatus usage above) - logged-in users don't get
+              anything extra here, their avatar's own menu already
+              covers Account/Log out, so AuthStatus renders nothing at
+              all in that case (no empty divider left behind). */}
+          <AuthStatus variant="menu" />
+        </div>
+      )}
     </header>
   );
 }

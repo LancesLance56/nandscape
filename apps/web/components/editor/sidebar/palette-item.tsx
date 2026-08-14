@@ -45,8 +45,8 @@ export function PaletteItem({
   };
 
   const swatchClass = entry.color
-    ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md font-mono text-[11px] font-bold text-white shadow-sm ring-1 ring-black/5"
-    : "flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-surface-2 font-mono text-[11px] font-bold text-copper-dark";
+    ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[11px] font-bold text-white shadow-sm ring-1 ring-black/5"
+    : "flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-surface-2 text-[11px] font-bold text-copper-dark";
 
   return (
     <div

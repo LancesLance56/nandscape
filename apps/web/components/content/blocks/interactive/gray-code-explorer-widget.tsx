@@ -50,7 +50,7 @@ function CodeDisplay({
           <span
             key={i}
             className={cn(
-              "flex h-12 w-9 items-center justify-center rounded-md border-2 font-mono text-xl font-bold transition-colors",
+              "flex h-12 w-9 items-center justify-center rounded-md border-2 text-xl font-bold transition-colors",
               isChanged
                 ? "border-copper bg-copper-bg text-copper-dark"
                 : "border-border-strong bg-surface-card text-ink",
@@ -93,17 +93,17 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
           <button
             type="button"
             onClick={() => setIndex((i) => (i - 1 + size) % size)}
-            className="rounded-lg border border-border-strong px-3 py-1.5 font-mono text-xs font-semibold text-ink-soft hover:bg-surface-2"
+            className="rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft hover:bg-surface-2"
           >
             ← Prev
           </button>
-          <span className="font-mono text-xs text-slate">
+          <span className=" text-xs text-slate">
             {isWrap ? "wrapping from the last row back to the first" : `row ${prevIndex} → row ${index}`}
           </span>
           <button
             type="button"
             onClick={() => setIndex((i) => (i + 1) % size)}
-            className="rounded-lg border border-border-strong px-3 py-1.5 font-mono text-xs font-semibold text-ink-soft hover:bg-surface-2"
+            className="rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft hover:bg-surface-2"
           >
             Next →
           </button>
@@ -111,13 +111,13 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface-2 p-4">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+            <span className=" text-[11px] font-semibold text-slate">
               Binary counting order
             </span>
             <CodeDisplay value={binaryNow} bits={bits} changed={binaryChanged} />
             <span
               className={cn(
-                "font-mono text-xs font-semibold",
+                " text-xs font-semibold",
                 binaryChanged.size === 1 ? "text-signal-green-strong" : "text-signal-coral-strong",
               )}
             >
@@ -126,11 +126,11 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
           </div>
 
           <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface-2 p-4">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+            <span className=" text-[11px] font-semibold text-slate">
               Gray code order
             </span>
             <CodeDisplay value={grayNow} bits={bits} changed={grayChanged} />
-            <span className="font-mono text-xs font-semibold text-signal-green-strong">
+            <span className=" text-xs font-semibold text-signal-green-strong">
               {grayChanged.size} bit changed
             </span>
           </div>

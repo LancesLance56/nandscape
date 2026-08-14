@@ -4,6 +4,7 @@ import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
 import { gateTypeToString } from "@nandscape/engine";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { CardLink } from "@/components/ui/card";
 import type { PuzzleSpec } from "@/types/puzzle";
 
 function tagColor(tag: string): string {
@@ -45,7 +46,7 @@ export async function PuzzlesShowcase() {
     <section className="py-20">
       <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="mb-2 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
+          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
             Practice
           </div>
@@ -62,13 +63,10 @@ export async function PuzzlesShowcase() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {featured.map((puzzle, i) => (
           <ScrollReveal key={puzzle.slug} delay={i * 60}>
-            <Link
-              href={`/puzzles/${puzzle.slug}`}
-              className="group flex h-full flex-col gap-3 rounded-2xl border border-border/70 bg-surface-card/85 p-5 shadow-sm backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md active:scale-[0.98]"
-            >
+            <CardLink href={`/puzzles/${puzzle.slug}`} className="flex h-full flex-col gap-3 p-5">
               <div className="flex items-center justify-between">
                 <DifficultyTag difficulty={puzzle.difficulty} />
-                <span className="font-mono text-[11px] text-slate">
+                <span className=" text-[11px] text-slate">
                   {puzzle.gateBudget !== null ? `≤${puzzle.gateBudget} gates` : "no budget"}
                 </span>
               </div>
@@ -85,17 +83,17 @@ export async function PuzzlesShowcase() {
                     <span
                       key={tag}
                       style={{ backgroundColor: hexToRgba(color, 0.12), color }}
-                      className="rounded-full px-2 py-0.5 font-mono text-[10px] font-medium"
+                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
                     >
                       {tag}
                     </span>
                   );
                 })}
                 {restriction(puzzle) && (
-                  <span className="ml-auto font-mono text-[10px] text-border-strong">{restriction(puzzle)}</span>
+                  <span className="ml-auto text-[10px] text-border-strong">{restriction(puzzle)}</span>
                 )}
               </div>
-            </Link>
+            </CardLink>
           </ScrollReveal>
         ))}
       </div>

@@ -89,7 +89,7 @@ export function ArticleEditor({
           </div>
           <ViewModeToggle />
           {viewMode === "split" && (
-            <label className="flex items-center gap-1.5 font-mono text-xs text-slate" title="Line each block up with its rendered preview, sharing one scroll">
+            <label className="flex items-center gap-1.5 text-xs text-slate" title="Line each block up with its rendered preview, sharing one scroll">
               <input
                 type="checkbox"
                 checked={alignBlocks}
@@ -99,7 +99,7 @@ export function ArticleEditor({
               Align blocks
             </label>
           )}
-          <span className="font-mono text-xs text-slate">
+          <span className=" text-xs text-slate">
             {saveStatus === "saving" && "Saving…"}
             {saveStatus === "saved" && "Saved"}
             {saveStatus === "error" && saveError}

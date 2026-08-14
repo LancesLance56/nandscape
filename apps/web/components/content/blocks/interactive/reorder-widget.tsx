@@ -90,9 +90,9 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
             key={item.id}
             className="flex items-center gap-3 rounded-lg border border-border bg-surface-2 px-3 py-2.5"
           >
-            <span className="w-5 font-mono text-xs text-slate">{i + 1}</span>
-            <span className="flex-1 font-mono text-sm text-ink">{item.name}</span>
-            <span className="font-mono text-[11px] text-slate">cost ~{item.cost}</span>
+            <span className="w-5 text-xs text-slate">{i + 1}</span>
+            <span className="flex-1 text-sm text-ink">{item.name}</span>
+            <span className=" text-[11px] text-slate">cost ~{item.cost}</span>
             <span className="flex gap-1">
               <button
                 type="button"
@@ -115,7 +115,7 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
         ))}
       </ul>
 
-      <div className="mb-3 flex flex-wrap justify-between gap-2 font-mono text-[13px] text-ink-soft">
+      <div className="mb-3 flex flex-wrap justify-between gap-2 text-[13px] text-ink-soft">
         <span>
           expected cost per check, current order:{" "}
           <span className={isOptimal ? "text-copper" : "text-ink"}>{current.toFixed(1)} units</span>
@@ -126,7 +126,7 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
       </div>
 
       <div className="mb-4 flex flex-col gap-2">
-        <div className="flex items-center gap-2.5 font-mono text-xs">
+        <div className="flex items-center gap-2.5 text-xs">
           <span className="w-16 shrink-0 text-slate">current</span>
           <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
             <div
@@ -136,7 +136,7 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
           </div>
           <span className="w-16 shrink-0 text-right text-slate">{current.toFixed(1)}</span>
         </div>
-        <div className="flex items-center gap-2.5 font-mono text-xs">
+        <div className="flex items-center gap-2.5 text-xs">
           <span className="w-16 shrink-0 text-slate">optimal</span>
           <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
             <div
@@ -151,7 +151,7 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
       <button
         type="button"
         onClick={checkOrder}
-        className="rounded-lg bg-copper px-4 py-2 font-mono text-xs font-semibold text-white hover:bg-copper-dark"
+        className="rounded-lg bg-copper px-4 py-2 text-xs font-semibold text-white hover:bg-copper-dark"
       >
         Check order
       </button>
@@ -159,12 +159,12 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
       {checked && (
         <div className="mt-4 border-t border-dashed border-border pt-4">
           {solved ? (
-            <p className="font-mono text-[13px] text-copper">
+            <p className=" text-[13px] text-copper">
               Cheapest to most expensive. That minimizes the expected cost per check, since whichever one
               fails, you paid the least to find out.
             </p>
           ) : (
-            <p className="font-mono text-[13px] text-signal-coral">
+            <p className=" text-[13px] text-signal-coral">
               Not quite optimal yet. Compare the expected cost above to the best possible, then keep
               swapping.
             </p>

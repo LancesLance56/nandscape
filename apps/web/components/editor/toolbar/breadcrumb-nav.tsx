@@ -19,11 +19,11 @@ export function BreadcrumbNav() {
   return (
     <Link
       href="/puzzles"
-      className="flex min-w-0 items-center gap-1.5 rounded-md py-1 pl-1 pr-2 font-mono text-[13px] font-medium text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+      className="flex min-w-0 items-center gap-1.5 rounded-md py-1 pl-1 pr-2 text-[13px] font-medium text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
     >
       <BackIcon />
       <span className="truncate" title={puzzle ? puzzle.title : "Back to puzzles"}>
-        {puzzle ? puzzle.title : "Sandbox"}
+        {puzzle ? puzzle.title : "Logic Editor"}
       </span>
     </Link>
   );

@@ -88,7 +88,7 @@ export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedC
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="Project slug"
-          className="flex-1 rounded-md border border-border-strong bg-surface-card px-3 py-2 font-mono text-xs text-ink outline-none focus:border-copper"
+          className="flex-1 rounded-md border border-border-strong bg-surface-card px-3 py-2 text-xs text-ink outline-none focus:border-copper"
         />
         <button
           type="submit"
@@ -104,7 +104,7 @@ export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedC
       <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
         <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="bg-surface-2 font-mono text-[11px] uppercase tracking-wider text-slate">
+            <tr className="bg-surface-2 text-[11px] text-slate">
               <th className="px-4 py-3">Project</th>
               <th className="px-4 py-3">Added</th>
               <th className="px-4 py-3">Status</th>
@@ -116,9 +116,9 @@ export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedC
               <tr key={row.id} className="border-t border-border">
                 <td className="px-4 py-3">
                   <span className="font-semibold text-ink">{row.projectName}</span>
-                  <span className="ml-2 font-mono text-xs text-slate">/{row.projectSlug}</span>
+                  <span className="ml-2 text-xs text-slate">/{row.projectSlug}</span>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-slate">{formatDate(row.createdAt)}</td>
+                <td className="px-4 py-3 text-xs text-slate">{formatDate(row.createdAt)}</td>
                 <td className="px-4 py-3">
                   {row.active ? (
                     <span className="rounded-full bg-copper/15 px-2 py-0.5 text-xs font-semibold text-copper-dark">

@@ -58,13 +58,13 @@ export function ProjectsPanel() {
   return (
     <div className="flex flex-col gap-2 p-3">
       <div className="flex items-center justify-between px-1">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+        <span className=" text-[11px] font-semibold text-slate">
           My projects
         </span>
         <button
           type="button"
           onClick={() => openDialog("share")}
-          className="rounded-md border border-border-strong px-2 py-0.5 font-mono text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+          className="rounded-md border border-border-strong px-2 py-0.5 text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
         >
           + Save current
         </button>
@@ -103,7 +103,7 @@ export function ProjectsPanel() {
             }`}
           >
             <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink">{project.name}</span>
-            <span className="shrink-0 font-mono text-[10px] text-slate">{formatDate(project.updatedAt)}</span>
+            <span className="shrink-0 text-[10px] text-slate">{formatDate(project.updatedAt)}</span>
           </Link>
         ))}
 

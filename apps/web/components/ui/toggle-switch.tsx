@@ -39,7 +39,7 @@ export function ToggleSwitch({label, checked, onChange, variant = "signal"}: Tog
   return (
     <div className="flex flex-col items-center gap-2">
       {button}
-      <span className="font-mono text-xs font-medium text-slate">
+      <span className=" text-xs font-medium text-slate">
         {label} = {checked ? 1 : 0}
       </span>
     </div>

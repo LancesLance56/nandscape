@@ -1,0 +1,220 @@
+{
+  "slug": "graph-kinds-and-digraphs",
+  "title": "Directed, Weighted, and Other Flavours",
+  "excerpt": "Digraphs, DAGs, trees and weights are not six separate data structures. They are options you switch on, and each one changes what you are allowed to conclude.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:10:00Z",
+  "tags": ["graph-theory", "digraphs", "fundamentals"],
+  "sectionSlug": "graph-theory-basics",
+  "position": 20,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "People talk about digraphs, DAGs, trees and weighted graphs as though they were four different things you have to learn separately. They are not. They are the same dots-and-lines idea with different rules bolted on, and each rule buys you something specific."
+        }
+      ]
+    },
+    {
+      "id": "h-directed",
+      "type": "heading",
+      "level": 2,
+      "text": "Direction: the arrow that changes everything"
+    },
+    {
+      "id": "p-directed-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In an undirected graph, an edge between A and B means A and B are connected, full stop. Friendship works like this. If you are my friend, I am yours."
+        }
+      ]
+    },
+    {
+      "id": "p-directed-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        { "text": "directed graph", "marks": [{ "kind": "bold" }] },
+        {
+          "text": " (a digraph, if you want to sound like you have read a textbook) puts an arrowhead on each edge. Now A → B tells you absolutely nothing about whether you can get from B back to A. Following someone on social media works like this. So do one-way streets, so do function calls, so do web links."
+        }
+      ]
+    },
+    {
+      "id": "p-directed-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the widget below to the directed tab and trace it with your finger. Starting at A you can reach every other node. Starting at C you can reach nothing at all, because every arrow touching C points inward. That asymmetry is impossible in an undirected graph and it is the single most important consequence of adding arrows."
+        }
+      ]
+    },
+    {
+      "id": "w-explorer",
+      "type": "interactive",
+      "widget": "graph-explorer",
+      "data": {}
+    },
+    {
+      "id": "h-weighted",
+      "type": "heading",
+      "level": 2,
+      "text": "Weights: when edges are not all equal"
+    },
+    {
+      "id": "p-weighted",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A weight is just a number attached to an edge. Distance in kilometres, latency in milliseconds, cost in dollars, whatever you are actually measuring. The moment weights exist, \"shortest path\" stops meaning \"fewest hops\" and starts meaning \"smallest total\", and those two can give completely different answers. Three short hops often beat one long one."
+        }
+      ]
+    },
+    {
+      "id": "p-weighted-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is why there are separate algorithms for the two cases. Plain BFS finds the fewest-hops path and is fast. Dijkstra finds the smallest-total path and does more work. Reach for the cheap one when your edges are all equivalent."
+        }
+      ]
+    },
+    {
+      "id": "h-dag",
+      "type": "heading",
+      "level": 2,
+      "text": "DAGs: directed, and no going in circles"
+    },
+    {
+      "id": "p-dag-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A DAG is a Directed Acyclic Graph. Directed, you have met. Acyclic means there is no way to follow arrows and end up back where you started."
+        }
+      ]
+    },
+    {
+      "id": "p-dag-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That restriction sounds like a limitation and is actually a gift. If nothing loops, then there is always a valid order to process everything in: do the things that depend on nothing, then the things that only depended on those, and so on. That is what a build system does with your source files, what a package manager does with dependencies, and what a spreadsheet does when you change one cell."
+        }
+      ]
+    },
+    {
+      "id": "p-dag-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When a dependency graph does contain a cycle, you get the error every developer has seen at least once: circular dependency. There is no valid order, because each thing is waiting on the other. Detecting that is a graph problem, and we come back to it in the advanced section."
+        }
+      ]
+    },
+    {
+      "id": "h-tree",
+      "type": "heading",
+      "level": 2,
+      "text": "Trees: the tidiest possible connected graph"
+    },
+    {
+      "id": "p-tree",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A tree is a connected graph with no cycles. Equivalently, there is exactly one path between any two nodes, no choices and no shortcuts. A tree over n nodes always has exactly n minus 1 edges, and that number is worth memorising because it shows up again the moment we talk about spanning trees."
+        }
+      ]
+    },
+    {
+      "id": "p-tree-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Trees are so common in programming that people forget they are graphs at all. Your file system is a tree. The DOM is a tree. A binary search tree is, obviously, a tree. Anything you have written a recursive function over was probably a tree."
+        }
+      ]
+    },
+    {
+      "id": "h-disconnected",
+      "type": "heading",
+      "level": 2,
+      "text": "Disconnected graphs, and the bug they cause"
+    },
+    {
+      "id": "p-disc",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Nothing requires a graph to be one piece. The last tab in the widget shows two separate islands, and no amount of walking gets you from A to E."
+        }
+      ]
+    },
+    {
+      "id": "p-disc-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This causes a specific, very common bug. A traversal started at A only ever finds A's island. If you wrote \"visit every node\" but implemented \"traverse from node zero\", your code silently ignores everything else. The fix is a loop over all nodes that starts a fresh traversal from any node you have not seen yet. Keep that in the back of your mind for the next section."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "You are modelling \"who follows whom\" on a social app. Which kind of graph?",
+            "options": [
+              { "label": "Directed, because following is one-way", "correct": true },
+              { "label": "Undirected, because both people are involved", "correct": false },
+              { "label": "A tree, because there is a root user", "correct": false }
+            ]
+          },
+          {
+            "prompt": "A graph has 7 nodes and is a tree. How many edges does it have?",
+            "options": [
+              { "label": "6", "correct": true },
+              { "label": "7", "correct": false },
+              { "label": "It depends on the shape", "correct": false }
+            ]
+          },
+          {
+            "prompt": "Your package manager reports a circular dependency. In graph terms, what happened?",
+            "options": [
+              { "label": "The dependency graph has a cycle, so it is not a DAG", "correct": true },
+              { "label": "The graph became disconnected", "correct": false },
+              { "label": "Two edges have the same weight", "correct": false }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to storing a graph in code",
+      "href": "/tutorials/graph-representations",
+      "style": "primary"
+    }
+  ]
+}

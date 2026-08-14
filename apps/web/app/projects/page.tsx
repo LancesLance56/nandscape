@@ -18,7 +18,7 @@ export default async function ProjectsPage() {
         <div className="mb-8 flex items-center justify-between">
           <h1 className="font-display text-2xl font-bold text-ink">My projects</h1>
           <Link
-            href="/nandbox"
+            href="/logic-editor"
             className="rounded-lg bg-copper px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-copper-dark"
           >
             + New project

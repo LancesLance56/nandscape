@@ -23,7 +23,7 @@ export function BlockInspector({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate transition-colors hover:text-ink"
+        className="flex items-center gap-1 text-[10px] font-semibold text-slate transition-colors hover:text-ink"
       >
         Advanced
         <svg
@@ -40,7 +40,7 @@ export function BlockInspector({
         <div className="mt-2 max-w-sm">
           <Field label="Custom class name (optional)">
             <input
-              className={`${fieldInputClass} font-mono`}
+              className={`${fieldInputClass}`}
               value={readClassName(block)}
               onChange={(e) => onChange({ className: e.target.value || undefined })}
               placeholder="text-copper-dark"

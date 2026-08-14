@@ -22,7 +22,7 @@ const theme = {
   text: {
     bold: "font-bold",
     italic: "italic",
-    code: "rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em] text-copper-dark",
+    code: "rounded-md bg-surface-2 px-1.5 py-0.5 text-[0.9em] text-copper-dark",
   },
   link: "font-medium text-copper underline decoration-copper/40 underline-offset-2 hover:text-copper-dark",
 };

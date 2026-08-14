@@ -11,7 +11,7 @@ export function ImageBlockView({ block }: { block: ImageBlock & { className?: st
         className="w-full rounded-xl border border-border object-cover"
       />
       {block.caption && (
-        <figcaption className="mt-2 text-center font-mono text-xs text-slate">{block.caption}</figcaption>
+        <figcaption className="mt-2 text-center text-xs text-slate">{block.caption}</figcaption>
       )}
     </figure>
   );

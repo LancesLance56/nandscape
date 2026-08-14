@@ -40,7 +40,7 @@ export function ScopeTabs() {
   };
 
   return (
-    <div className="flex shrink-0 items-center gap-1 overflow-x-auto rounded-2xl border border-border/60 bg-surface-card/90 px-2 py-1.5 backdrop-blur-xl shadow-[0_2px_10px_rgba(21,27,24,0.06)] [scrollbar-width:none] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)] [&::-webkit-scrollbar]:hidden">
+    <div className="flex shrink-0 items-center gap-1 overflow-x-auto border-t border-border/60 bg-surface-card px-2 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {scopes.map((scope) => {
         const active = scope.id === activeScopeId;
         return (
@@ -77,7 +77,7 @@ export function ScopeTabs() {
         type="button"
         onClick={() => addScope()}
         aria-label="Add a new circuit tab"
-        className="shrink-0 rounded-lg px-2 py-1 font-mono text-sm font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+        className="shrink-0 rounded-lg px-2 py-1 text-sm font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
       >
         +
       </button>

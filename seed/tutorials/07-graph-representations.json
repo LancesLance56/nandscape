@@ -1,0 +1,238 @@
+{
+  "slug": "graph-representations",
+  "title": "Storing a Graph in Code",
+  "excerpt": "Adjacency list or adjacency matrix. The choice comes down to one question about your graph, and getting it wrong costs you real time.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:20:00Z",
+  "tags": [
+    "graph-theory",
+    "data-structures",
+    "fundamentals"
+  ],
+  "sectionSlug": "graph-theory-basics",
+  "position": 30,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Drawing a graph on paper is easy. Getting it into a program means picking a data structure, and there are two you will meet constantly. Neither is better. They are good at opposite things."
+        }
+      ]
+    },
+    {
+      "id": "h-list",
+      "type": "heading",
+      "level": 2,
+      "text": "Adjacency list"
+    },
+    {
+      "id": "p-list",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "For each node, keep a list of its neighbours. That is it. In most languages this is a map from node to array, or just an array of arrays if your nodes are numbered."
+        }
+      ]
+    },
+    {
+      "id": "code-list",
+      "type": "code",
+      "language": "javascript",
+      "code": "// A -- B,  A -- C,  B -- C\nconst graph = {\n  A: [\"B\", \"C\"],\n  B: [\"A\", \"C\"],\n  C: [\"A\", \"B\"],\n};\n\n// Undirected means you store the edge twice, once from each end.\n// Forgetting the second one is the most common graph bug there is.\n\nfor (const neighbour of graph[\"A\"]) {\n  console.log(neighbour); // B, then C\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# A -- B,  A -- C,  B -- C\ngraph = {\n    \"A\": [\"B\", \"C\"],\n    \"B\": [\"A\", \"C\"],\n    \"C\": [\"A\", \"B\"],\n}\n\n# Undirected means you store the edge twice, once from each end.\n# Forgetting the second one is the most common graph bug there is.\n\nfor neighbour in graph[\"A\"]:\n    print(neighbour)  # B, then C"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <iostream>\n#include <map>\n#include <string>\n#include <vector>\n\n// A -- B,  A -- C,  B -- C\nstd::map<std::string, std::vector<std::string>> graph = {\n    {\"A\", {\"B\", \"C\"}},\n    {\"B\", {\"A\", \"C\"}},\n    {\"C\", {\"A\", \"B\"}},\n};\n\n// Undirected means you store the edge twice, once from each end.\n// Forgetting the second one is the most common graph bug there is.\n\nint main() {\n    for (const std::string& neighbour : graph[\"A\"]) {\n        std::cout << neighbour << std::endl;  // B, then C\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-list-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Looping over a node's neighbours is the single most common thing any graph algorithm does, and the adjacency list makes it as cheap as possible: you touch exactly the neighbours that exist and nothing else."
+        }
+      ]
+    },
+    {
+      "id": "h-matrix",
+      "type": "heading",
+      "level": 2,
+      "text": "Adjacency matrix"
+    },
+    {
+      "id": "p-matrix",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Make a V by V grid of booleans. Cell [i][j] is true when there is an edge from i to j. For a weighted graph, store the weight instead of true, and use infinity or null for \"no edge\"."
+        }
+      ]
+    },
+    {
+      "id": "code-matrix",
+      "type": "code",
+      "language": "javascript",
+      "code": "//     A  B  C\n// A [ 0, 1, 1 ]\n// B [ 1, 0, 1 ]\n// C [ 1, 1, 0 ]\n\nconst matrix = [\n  [0, 1, 1],\n  [1, 0, 1],\n  [1, 1, 0],\n];\n\n// \"Is there an edge from A to C?\" is one array lookup.\nconst hasEdge = matrix[0][2] === 1; // instant\n\n// But \"who are A's neighbours?\" means scanning the whole row,\n// including all the zeroes for edges that do not exist.",
+      "variants": [
+        {
+          "language": "python",
+          "code": "#     A  B  C\n# A [ 0, 1, 1 ]\n# B [ 1, 0, 1 ]\n# C [ 1, 1, 0 ]\n\nmatrix = [\n    [0, 1, 1],\n    [1, 0, 1],\n    [1, 1, 0],\n]\n\n# \"Is there an edge from A to C?\" is one lookup.\nhas_edge = matrix[0][2] == 1  # instant\n\n# But \"who are A's neighbours?\" means scanning the whole row,\n# including all the zeroes for edges that do not exist."
+        },
+        {
+          "language": "cpp",
+          "code": "#include <array>\n\n//     A  B  C\n// A [ 0, 1, 1 ]\n// B [ 1, 0, 1 ]\n// C [ 1, 1, 0 ]\n\nstd::array<std::array<int, 3>, 3> matrix = {{\n    {0, 1, 1},\n    {1, 0, 1},\n    {1, 1, 0},\n}};\n\n// \"Is there an edge from A to C?\" is one lookup.\nbool hasEdge = matrix[0][2] == 1;  // instant\n\n// But \"who are A's neighbours?\" means scanning the whole row,\n// including all the zeroes for edges that do not exist."
+        }
+      ]
+    },
+    {
+      "id": "p-matrix-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice the matrix above is symmetric across the diagonal. That is what undirected means in matrix form. If you build a matrix for a digraph, that symmetry disappears, and the diagonal itself is where you would record a node pointing at itself."
+        }
+      ]
+    },
+    {
+      "id": "h-choose",
+      "type": "heading",
+      "level": 2,
+      "text": "So which one"
+    },
+    {
+      "id": "t-compare",
+      "type": "table",
+      "headers": [
+        "",
+        "Adjacency list",
+        "Adjacency matrix"
+      ],
+      "rows": [
+        [
+          "Memory",
+          "O(V + E)",
+          "O(V²) always"
+        ],
+        [
+          "List a node's neighbours",
+          "O(degree), optimal",
+          "O(V), scans empty cells too"
+        ],
+        [
+          "Check if edge i→j exists",
+          "O(degree)",
+          "O(1)"
+        ],
+        [
+          "Add an edge",
+          "O(1)",
+          "O(1)"
+        ],
+        [
+          "Good when",
+          "Few edges (sparse)",
+          "Many edges (dense)"
+        ]
+      ]
+    },
+    {
+      "id": "p-choose",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In practice, use the adjacency list. Real graphs are almost always sparse: your friends number in the hundreds, not the billions, and a road intersection has four roads rather than one to every other intersection on Earth. A matrix for a million-node social network would need a trillion cells, nearly all of them zero."
+        }
+      ]
+    },
+    {
+      "id": "p-choose-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The matrix earns its keep when the graph is genuinely dense, when V is small enough that V² does not hurt, or when you need constant-time edge lookups over and over. Some algorithms, Floyd-Warshall being the classic, are written directly against a matrix because they touch every pair anyway."
+        }
+      ]
+    },
+    {
+      "id": "h-see",
+      "type": "heading",
+      "level": 2,
+      "text": "See both at once"
+    },
+    {
+      "id": "p-see",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The panel on the right of this widget is a live adjacency list. Switch between undirected and directed and watch what happens to it. In the undirected graphs every relationship appears twice, once from each end. In the directed ones it appears only once, on the node the arrow leaves from."
+        }
+      ]
+    },
+    {
+      "id": "w-explorer",
+      "type": "interactive",
+      "widget": "graph-explorer",
+      "data": {}
+    },
+    {
+      "id": "h-gotcha",
+      "type": "heading",
+      "level": 2,
+      "text": "The bug that gets everyone"
+    },
+    {
+      "id": "p-gotcha",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When you build an undirected graph from a list of edges, you have to insert each edge twice. Miss it and your graph quietly becomes directed. Your code will run, produce plausible-looking output, and be wrong in a way that is genuinely painful to track down."
+        }
+      ]
+    },
+    {
+      "id": "code-gotcha",
+      "type": "code",
+      "language": "javascript",
+      "code": "function buildUndirected(nodes, edges) {\n  const adj = new Map(nodes.map((n) => [n, []]));\n  for (const [from, to] of edges) {\n    adj.get(from).push(to);\n    adj.get(to).push(from); // <- the line people forget\n  }\n  return adj;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def build_undirected(nodes, edges):\n    adj = {n: [] for n in nodes}\n    for frm, to in edges:\n        adj[frm].append(to)\n        adj[to].append(frm)  # <- the line people forget\n    return adj"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <map>\n#include <string>\n#include <utility>\n#include <vector>\n\nstd::map<std::string, std::vector<std::string>> buildUndirected(\n    const std::vector<std::string>& nodes,\n    const std::vector<std::pair<std::string, std::string>>& edges) {\n    std::map<std::string, std::vector<std::string>> adj;\n    for (const std::string& n : nodes) adj[n] = {};\n\n    for (const auto& [from, to] : edges) {\n        adj[from].push_back(to);\n        adj[to].push_back(from);  // <- the line people forget\n    }\n    return adj;\n}"
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You now have a graph in memory. The next section is about actually walking it."
+        }
+      ]
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to BFS and DFS",
+      "href": "/tutorials/graph-bfs-dfs",
+      "style": "primary"
+    }
+  ]
+}

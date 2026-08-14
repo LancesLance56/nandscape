@@ -92,7 +92,7 @@ export function CircuitEmbedWidgetEditor({ data, onChange }: WidgetEditorProps) 
             type="button"
             aria-pressed={mode === m}
             onClick={() => switchMode(m)}
-            className={`rounded-md px-3 py-1 font-mono text-xs font-semibold transition-colors ${
+            className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
               mode === m ? "bg-surface-card text-ink shadow-sm" : "text-slate hover:text-ink-soft"
             }`}
           >

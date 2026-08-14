@@ -57,7 +57,7 @@ function ClockNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
 
       <span
         style={{ top: `${boxHeight + LABEL_GAP}px`, height: `${LABEL_HEIGHT}px`, width: `${boxHeight}px` }}
-        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[9px] font-semibold text-slate"
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center text-[9px] font-semibold text-slate"
         title={`Half-period ${halfPeriod}`}
       >
         ±{halfPeriod}

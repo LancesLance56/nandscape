@@ -47,11 +47,23 @@ export interface ButtonBlock {
   style?: "primary" | "secondary";
 }
 
+export interface CodeVariant {
+  language: string;
+  code: string;
+}
+
+/**
+ * `language`/`code` is the primary listing and renders on its own when
+ * `variants` is absent, which keeps every block written before multi-language
+ * support valid. When variants are present the block renders as tabs, with the
+ * primary as the first tab.
+ */
 export interface CodeBlock {
   id: string;
   type: "code";
   language?: string;
   code: string;
+  variants?: CodeVariant[];
 }
 
 export interface DividerBlock {

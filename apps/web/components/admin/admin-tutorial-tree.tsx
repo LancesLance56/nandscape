@@ -31,8 +31,8 @@ function PageRow({ page }: { page: TutorialPageSummary }) {
       className="grid grid-cols-[1fr_auto_auto] items-center gap-4 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-2"
     >
       <span className="truncate font-medium text-ink">{page.title}</span>
-      <span className="font-mono text-xs text-slate">{page.status}</span>
-      <span className="w-20 text-right font-mono text-xs text-slate">{formatDate(page.publishedAt)}</span>
+      <span className=" text-xs text-slate">{page.status}</span>
+      <span className="w-20 text-right text-xs text-slate">{formatDate(page.publishedAt)}</span>
     </Link>
   );
 }
@@ -101,7 +101,7 @@ function NewSectionForm({
           value={slug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           placeholder="slug"
-          className="w-40 rounded-md border border-border-strong bg-surface px-2 py-1.5 font-mono text-xs text-ink outline-none focus:border-copper"
+          className="w-40 rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
         />
       </div>
       {error && <p className="text-xs text-signal-coral">{error}</p>}
@@ -177,11 +177,11 @@ export function AdminTutorialTree({
               <button
                 type="button"
                 onClick={() => toggle(section.id)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-slate transition-colors hover:bg-surface-2 hover:text-ink"
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[11px] font-semibold text-slate transition-colors hover:bg-surface-2 hover:text-ink"
               >
                 <span>
                   {section.title}
-                  <span className="ml-2 font-mono text-[11px] font-normal normal-case tracking-normal text-border-strong">
+                  <span className="ml-2 text-[11px] font-normal normal-case tracking-normal text-border-strong">
                     {sectionPages.length} page{sectionPages.length === 1 ? "" : "s"}
                   </span>
                 </span>
@@ -202,7 +202,7 @@ export function AdminTutorialTree({
 
         {standalone.length > 0 && (
           <div className={sections.length > 0 ? "mt-1" : undefined}>
-            <div className="px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+            <div className="px-3 py-2 text-[11px] font-semibold text-slate">
               No section
             </div>
             <div className="flex flex-col gap-0.5">

@@ -52,7 +52,7 @@ export function QuizWidgetEditor({
       {questions.map((question, qIndex) => (
         <div key={qIndex} className="flex flex-col gap-2 rounded-lg border border-border-strong p-3">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+            <span className=" text-[11px] font-semibold text-slate">
               Question {qIndex + 1}
             </span>
             <Button variant="ghost" size="sm" onClick={() => setQuestions(questions.filter((_, j) => j !== qIndex))}>

@@ -10,6 +10,7 @@ export type {
   VideoBlock,
   ButtonBlock,
   CodeBlock,
+  CodeVariant,
   DividerBlock,
   TableBlock,
   InteractiveBlock,

@@ -85,15 +85,15 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
         <p className="text-sm text-ink-soft">{instructions}</p>
 
         <div className="overflow-hidden rounded-xl border border-border">
-          <table className="w-full border-collapse font-mono text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="bg-surface-2 text-slate">
                 {variables.map((v) => (
-                  <th key={v} className="px-4 py-2 text-center font-semibold uppercase tracking-wider">
+                  <th key={v} className="px-4 py-2 text-center font-semibold">
                     {v}
                   </th>
                 ))}
-                <th className="px-4 py-2 text-center font-semibold uppercase tracking-wider">F</th>
+                <th className="px-4 py-2 text-center font-semibold">F</th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +138,7 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
           <button
             type="button"
             onClick={() => setChecked(true)}
-            className="rounded-lg bg-copper px-3 py-1.5 font-mono text-[11px] font-semibold text-white hover:bg-copper-dark"
+            className="rounded-lg bg-copper px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-copper-dark"
           >
             Check my answer
           </button>
@@ -148,7 +148,7 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
               setPicked(new Set());
               setChecked(false);
             }}
-            className="rounded-lg border border-border-strong px-3 py-1.5 font-mono text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
+            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
           >
             Clear
           </button>
@@ -157,7 +157,7 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
         {checked && (
           <p
             className={cn(
-              "rounded-lg border px-3 py-2 font-mono text-xs font-semibold",
+              "rounded-lg border px-3 py-2 text-xs font-semibold",
               correct
                 ? "border-signal-green/40 bg-signal-green-bg text-signal-green-strong"
                 : "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",

@@ -52,7 +52,7 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
 
   return (
     <div className={cn("rounded-xl border border-border bg-surface-card p-5 ", data.className)}>
-      <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-slate">{prompt}</div>
+      <div className="mb-3 text-xs font-semibold text-slate">{prompt}</div>
       <div className="mb-5 flex items-center gap-4">
         <input
           type="range"
@@ -62,18 +62,18 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
           onChange={(e) => setPct(Number(e.target.value))}
           className="flex-1 accent-copper"
         />
-        <span className="w-14 text-right font-mono text-sm font-semibold text-copper">{pct}%</span>
+        <span className="w-14 text-right text-sm font-semibold text-copper">{pct}%</span>
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <div className="flex items-center gap-2.5 font-mono text-xs">
+        <div className="flex items-center gap-2.5 text-xs">
           <span className="w-20 shrink-0 text-slate">{badLabel}</span>
           <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
             <div className="h-full bg-signal-coral" style={{ width: "100%" }} />
           </div>
           <span className="w-24 shrink-0 text-right text-slate">{total.toLocaleString()}</span>
         </div>
-        <div className="flex items-center gap-2.5 font-mono text-xs">
+        <div className="flex items-center gap-2.5 text-xs">
           <span className="w-20 shrink-0 text-slate">{goodLabel}</span>
           <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
             <div

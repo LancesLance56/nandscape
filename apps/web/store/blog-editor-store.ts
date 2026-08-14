@@ -58,7 +58,7 @@ export const useBlogEditorStore = create<BlogEditorState>((set, get) => ({
   loadDocument: (kind, originalSlug, metadata, blocks) => {
     // Undo history is a process-wide singleton shared with the circuit
     // editor (see history-store.ts) - clear it on every document load so
-    // switching documents (or arriving here from /nandbox) can't leave a
+    // switching documents (or arriving here from /logic-editor) can't leave a
     // stale, cross-document command on the stack.
     useHistoryStore.getState().clear();
     set({

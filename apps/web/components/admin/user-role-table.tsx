@@ -47,7 +47,7 @@ export function UserRoleTable({ users, currentUserId }: { users: AdminUserRow[];
       <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
         <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="bg-surface-2 font-mono text-[11px] uppercase tracking-wider text-slate">
+            <tr className="bg-surface-2 text-[11px] text-slate">
               <th className="px-4 py-3">User</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Joined</th>
@@ -63,15 +63,15 @@ export function UserRoleTable({ users, currentUserId }: { users: AdminUserRow[];
                     <span className="font-semibold text-ink">{user.username}</span>
                     {user.name && <span className="ml-2 text-xs text-slate">{user.name}</span>}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-slate">{user.email}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-slate">{formatDate(user.createdAt)}</td>
+                  <td className="px-4 py-3 text-xs text-slate">{user.email}</td>
+                  <td className="px-4 py-3 text-xs text-slate">{formatDate(user.createdAt)}</td>
                   <td className="px-4 py-3">
                     <select
                       value={user.role}
                       disabled={isSelf || pendingId === user.id}
                       onChange={(e) => handleRoleChange(user.id, e.target.value as "USER" | "ADMIN")}
                       title={isSelf ? "You can't change your own role" : undefined}
-                      className="rounded-md border border-border-strong bg-surface-card px-2 py-1 font-mono text-xs text-ink outline-none focus:border-copper disabled:opacity-50"
+                      className="rounded-md border border-border-strong bg-surface-card px-2 py-1 text-xs text-ink outline-none focus:border-copper disabled:opacity-50"
                     >
                       <option value="USER">USER</option>
                       <option value="ADMIN">ADMIN</option>

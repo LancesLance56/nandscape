@@ -87,7 +87,7 @@ function SubcircuitNodeComponent({ id, data, selected }: NodeProps<EditorNode>) 
             />
           )}
           <span
-            className="line-clamp-3 whitespace-normal break-words text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            className="line-clamp-3 whitespace-normal break-words text-center text-[11px] font-bold leading-tight text-ink"
             title={label}
           >
             {label}

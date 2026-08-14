@@ -80,14 +80,14 @@ export function SimulationSettingsMenu() {
             style={{ position: "fixed", left: coords.left, top: coords.top, zIndex: 999 }}
             className="w-72 rounded-xl border border-border bg-surface-card p-4 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
           >
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate">
+            <span className=" text-[11px] font-semibold text-slate">
               Simulation settings
             </span>
 
             <label className="mt-3 flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-ink-soft">Playback speed</span>
-                <span className="font-mono text-xs text-ink">{speed}/s</span>
+                <span className=" text-xs text-ink">{speed}/s</span>
               </div>
               <input
                 type="range"

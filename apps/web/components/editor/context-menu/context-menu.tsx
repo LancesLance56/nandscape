@@ -62,7 +62,7 @@ export function ContextMenu() {
           }`}
         >
           {item.label}
-          {item.shortcut && <span className="font-mono text-[11px] text-slate">{item.shortcut}</span>}
+          {item.shortcut && <span className=" text-[11px] text-slate">{item.shortcut}</span>}
         </button>
       ))}
     </div>

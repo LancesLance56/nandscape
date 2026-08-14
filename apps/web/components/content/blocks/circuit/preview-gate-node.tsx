@@ -103,7 +103,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
         >
           <GateShape gateType={gateData.gateType} height={nodeHeight} />
           <span
-            className="absolute top-1/2 whitespace-nowrap text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            className="absolute top-1/2 whitespace-nowrap text-center text-[11px] font-bold leading-tight text-ink"
             style={{ left: geometry!.labelX, transform: "translate(-50%, -50%)" }}
           >
             {gateData.label || typeName}
@@ -117,7 +117,7 @@ function PreviewGateNodeImpl({ data }: NodeProps<EditorNode>) {
           }`}
         >
           <span
-            className="w-full truncate text-center font-mono text-[11px] font-bold leading-tight text-ink"
+            className="w-full truncate text-center text-[11px] font-bold leading-tight text-ink"
             title={gateData.label || typeName}
           >
             {gateData.label || typeName}

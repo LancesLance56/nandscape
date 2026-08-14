@@ -91,7 +91,7 @@ function SevenSegmentNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
 
       <div
         style={{ top: `${BOX_HEIGHT + LABEL_GAP}px`, height: `${NAME_HEIGHT}px`, width: NODE_WIDTH }}
-        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[10px] font-semibold text-indigo-400"
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center text-[10px] font-semibold text-indigo-400"
       >
         {name}
       </div>

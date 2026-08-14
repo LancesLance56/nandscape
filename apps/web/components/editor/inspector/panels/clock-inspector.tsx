@@ -13,8 +13,8 @@ export function ClockInspectorPanel({ node }: { node: EditorNode }) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">Clock</span>
-        <span className="rounded-full bg-copper-bg px-2 py-0.5 font-mono text-[11px] font-semibold text-copper-dark">
+        <span className=" text-[11px] text-slate">Clock</span>
+        <span className="rounded-full bg-copper-bg px-2 py-0.5 text-[11px] font-semibold text-copper-dark">
           CLOCK
         </span>
       </div>

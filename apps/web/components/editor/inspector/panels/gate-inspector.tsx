@@ -34,8 +34,8 @@ export function GateInspectorPanel({node}: { node: EditorNode }) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-slate">Gate</span>
-        <span className="rounded-full bg-copper-bg px-2 py-0.5 font-mono text-[11px] font-semibold text-copper-dark">
+        <span className=" text-[11px] text-slate">Gate</span>
+        <span className="rounded-full bg-copper-bg px-2 py-0.5 text-[11px] font-semibold text-copper-dark">
           {typeName}
         </span>
       </div>
@@ -123,7 +123,7 @@ export function GateInspectorPanel({node}: { node: EditorNode }) {
         <button
           type="button"
           onClick={handleRotate}
-          className="rounded-md border border-border-strong px-2 py-1 font-mono text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+          className="rounded-md border border-border-strong px-2 py-1 text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
         >
           {data.rotation ?? 0}° ↻
         </button>

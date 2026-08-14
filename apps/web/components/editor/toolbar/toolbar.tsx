@@ -144,17 +144,22 @@ export function Toolbar() {
             unavailable inside puzzles,  same rule as the palette's "Circuit
             blocks" section (gate-palette.tsx) and grade-puzzle.ts's matching
             structural check. Sharing doesn't grant that kind of shortcut, so
-            it stays available in both modes. */}
+            it stays available in both modes. Hidden below md along with the
+            sidebar/inspector toggles - those panels don't render on mobile
+            (see editor-layout.tsx), so a toggle for them would just look
+            broken there. */}
         {!inPuzzle && (
-          <ToolbarGroup>
-            <LoadCircuitMenu/>
-            <ImportCircuitButton/>
-            <ToolbarButton
-              icon={<Icon.Block/>}
-              label="Save as circuit block"
-              onClick={() => runById("circuit.saveAsBlock")}
-            />
-          </ToolbarGroup>
+          <div className="hidden items-center gap-1 md:flex">
+            <ToolbarGroup>
+              <LoadCircuitMenu/>
+              <ImportCircuitButton/>
+              <ToolbarButton
+                icon={<Icon.Block/>}
+                label="Save as circuit block"
+                onClick={() => runById("circuit.saveAsBlock")}
+              />
+            </ToolbarGroup>
+          </div>
         )}
         <ToolbarGroup>
           <ToolbarButton
@@ -164,13 +169,15 @@ export function Toolbar() {
           />
         </ToolbarGroup>
 
-        <ToolbarGroup>
-          <GateLabelsToggle/>
-          <ToolbarButton icon={<Icon.Sidebar/>} label="Toggle sidebar" shortcut="⌘B" active={sidebarOpen}
-                         onClick={toggleSidebar}/>
-          <ToolbarButton icon={<Icon.Inspector/>} label="Toggle inspector" shortcut="⌘I" active={inspectorOpen}
-                         onClick={toggleInspector}/>
-        </ToolbarGroup>
+        <div className="hidden items-center gap-1 md:flex">
+          <ToolbarGroup>
+            <GateLabelsToggle/>
+            <ToolbarButton icon={<Icon.Sidebar/>} label="Toggle sidebar" shortcut="⌘B" active={sidebarOpen}
+                           onClick={toggleSidebar}/>
+            <ToolbarButton icon={<Icon.Inspector/>} label="Toggle inspector" shortcut="⌘I" active={inspectorOpen}
+                           onClick={toggleInspector}/>
+          </ToolbarGroup>
+        </div>
         <ThemeToggle/>
       </div>
     </div>

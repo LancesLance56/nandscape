@@ -74,7 +74,7 @@ export function AddBlockMenu({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-1.5 rounded-md px-2 py-1.5 font-mono text-xs font-semibold text-slate transition-colors hover:bg-surface-2 hover:text-copper-dark"
+          className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-slate transition-colors hover:bg-surface-2 hover:text-copper-dark"
         >
           <PlusIcon />
           Add block

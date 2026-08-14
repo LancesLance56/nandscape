@@ -456,7 +456,7 @@ function WireEdgeImpl({
               borderRadius: 9999,
               background: BUS_STROKE,
               color: "white",
-              fontFamily: "var(--font-mono, monospace)",
+              fontFamily: "var(--, monospace)",
               fontSize: 10,
               fontWeight: 700,
               boxShadow: "0 1px 3px rgba(0,0,0,0.3)",

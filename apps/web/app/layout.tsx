@@ -1,17 +1,11 @@
 import type {Metadata, Viewport} from "next";
-import {Space_Grotesk, Inter, JetBrains_Mono} from "next/font/google";
+import {Inter, JetBrains_Mono} from "next/font/google";
 import "./globals.css";
 import {ThemeProvider} from "@/components/theme-provider";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-space-grotesk",
-});
-
 const interSans = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-inter-sans",
 });
 
@@ -22,9 +16,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nandscape,  learn logic gates by building them",
+  title: "Nandscape, learn computer science by building it",
   description:
-    "Nandscape teaches digital logic through puzzles. Build every gate, starting from NAND alone.",
+    "Nandscape teaches computer science through interactive tools and puzzles, starting with digital logic: build real circuits and watch them run.",
 };
 
 export const viewport: Viewport = {
@@ -38,7 +32,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${interSans.variable} ${jetbrainsMono.variable}`}
+      className={`${interSans.variable} ${jetbrainsMono.variable}`}
     >
     <body className="font-body antialiased bg-surface text-ink">
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

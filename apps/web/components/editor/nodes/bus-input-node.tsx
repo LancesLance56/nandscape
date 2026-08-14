@@ -113,7 +113,7 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
               onClick={(event) => toggleLane(event, i)}
               title={`Toggle ${busData.names[i]}`}
               style={{ top: `${verticalPos(i, width)}px` }}
-              className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 rounded px-1 font-mono text-xs font-bold leading-none transition-colors hover:bg-surface-2 active:scale-95 ${
+              className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 rounded px-1 text-xs font-bold leading-none transition-colors hover:bg-surface-2 active:scale-95 ${
                 v === SignalState.HIGH ? "text-signal-green" : "text-signal-coral"
               }`}
             >
@@ -127,10 +127,10 @@ function BusInputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
         style={{ top: `${boxHeight + LABEL_GAP}px`, width: NODE_WIDTH }}
         className="absolute left-1/2 -translate-x-1/2 text-center leading-tight"
       >
-        <div style={{ height: `${NAME_HEIGHT}px` }} className="truncate font-mono text-[10px] font-semibold text-indigo-400">
+        <div style={{ height: `${NAME_HEIGHT}px` }} className="truncate text-[10px] font-semibold text-indigo-400">
           {label}
         </div>
-        <div style={{ height: `${VALUE_HEIGHT}px` }} className="font-mono text-[10px] font-bold text-ink">
+        <div style={{ height: `${VALUE_HEIGHT}px` }} className=" text-[10px] font-bold text-ink">
           {decimalValue}
         </div>
       </div>

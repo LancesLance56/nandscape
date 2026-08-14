@@ -21,7 +21,7 @@ export default async function AdminBlogIndexPage() {
       <div className="mb-6 mt-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-ink">Posts</h1>
-          <Link href="/admin/tutorials" className="font-mono text-xs text-slate hover:text-copper-dark">
+          <Link href="/admin/tutorials" className=" text-xs text-slate hover:text-copper-dark">
             View tutorial pages →
           </Link>
         </div>
@@ -36,7 +36,7 @@ export default async function AdminBlogIndexPage() {
       <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
         <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="bg-surface-2 font-mono text-[11px] uppercase tracking-wider text-slate">
+            <tr className="bg-surface-2 text-[11px] text-slate">
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Published</th>
@@ -50,8 +50,8 @@ export default async function AdminBlogIndexPage() {
                     {post.title}
                   </Link>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-slate">{post.status}</td>
-                <td className="px-4 py-3 font-mono text-xs text-slate">{formatDate(post.publishedAt)}</td>
+                <td className="px-4 py-3 text-xs text-slate">{post.status}</td>
+                <td className="px-4 py-3 text-xs text-slate">{formatDate(post.publishedAt)}</td>
               </tr>
             ))}
             {posts.length === 0 && (

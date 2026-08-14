@@ -1,0 +1,236 @@
+{
+  "slug": "graph-topological-sort",
+  "title": "Topological Sort and Cycle Detection",
+  "excerpt": "Putting a dependency graph into a valid order, and finding out when no valid order exists.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T10:00:00Z",
+  "tags": [
+    "graph-theory",
+    "algorithms",
+    "dag",
+    "topological-sort"
+  ],
+  "sectionSlug": "graph-theory-advanced",
+  "position": 10,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You have a list of tasks and some of them depend on others. You want an order to do them in where nothing starts before the things it needs are finished. That is a topological sort, and it only works on a DAG, for a reason that becomes obvious the moment you try it on something with a loop."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every build system does this. So does npm, so does a spreadsheet recalculating cells, so does a course catalogue working out prerequisites."
+        }
+      ]
+    },
+    {
+      "id": "h-see",
+      "type": "heading",
+      "level": 2,
+      "text": "The graph you are sorting"
+    },
+    {
+      "id": "p-see",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch this to the DAG tab. Every arrow means \"must come before\". A points at B and D, so A has to be done first. E has arrows coming in from both B and D, so it waits for both."
+        }
+      ]
+    },
+    {
+      "id": "w-explorer",
+      "type": "interactive",
+      "widget": "graph-explorer",
+      "data": {}
+    },
+    {
+      "id": "p-see-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One valid order here is A, B, D, E, C. So is A, D, B, E, C. Topological orders are usually not unique, and any of them is a correct answer. When two tasks have no dependency between them, their relative order genuinely does not matter."
+        }
+      ]
+    },
+    {
+      "id": "h-kahn",
+      "type": "heading",
+      "level": 2,
+      "text": "Kahn's algorithm: peel off what is ready"
+    },
+    {
+      "id": "p-kahn",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The in-degree of a node is how many arrows point at it, which here means how many unfinished things it is waiting on. A node with in-degree 0 is waiting on nothing, so it is ready to go right now."
+        }
+      ]
+    },
+    {
+      "id": "p-kahn-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So: collect every node with in-degree 0. Take one, output it, and remove its outgoing arrows. Removing those arrows might drop some other node to in-degree 0, which means that node just became ready. Repeat until you run out."
+        }
+      ]
+    },
+    {
+      "id": "code-kahn",
+      "type": "code",
+      "language": "javascript",
+      "code": "function topologicalSort(nodes, adj) {\n  const inDegree = new Map(nodes.map((n) => [n, 0]));\n  for (const node of nodes) {\n    for (const next of adj.get(node) ?? []) {\n      inDegree.set(next, inDegree.get(next) + 1);\n    }\n  }\n\n  // Everything that depends on nothing can start immediately.\n  const ready = nodes.filter((n) => inDegree.get(n) === 0);\n  const order = [];\n\n  while (ready.length > 0) {\n    const node = ready.shift();\n    order.push(node);\n\n    for (const next of adj.get(node) ?? []) {\n      inDegree.set(next, inDegree.get(next) - 1);\n      if (inDegree.get(next) === 0) ready.push(next); // now unblocked\n    }\n  }\n\n  // Anything left still has an unmet dependency, which on a finite\n  // graph can only mean those nodes depend on each other in a loop.\n  if (order.length !== nodes.length) {\n    throw new Error(\"Cycle detected: no valid order exists\");\n  }\n  return order;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "from collections import deque\n\ndef topological_sort(nodes, adj):\n    in_degree = {n: 0 for n in nodes}\n    for node in nodes:\n        for nxt in adj.get(node, []):\n            in_degree[nxt] += 1\n\n    # Everything that depends on nothing can start immediately.\n    ready = deque(n for n in nodes if in_degree[n] == 0)\n    order = []\n\n    while ready:\n        node = ready.popleft()\n        order.append(node)\n\n        for nxt in adj.get(node, []):\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)   # now unblocked\n\n    # Anything left still has an unmet dependency, which on a finite\n    # graph can only mean those nodes depend on each other in a loop.\n    if len(order) != len(nodes):\n        raise ValueError(\"Cycle detected: no valid order exists\")\n\n    return order"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <map>\n#include <queue>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nstd::vector<std::string> topologicalSort(\n    const std::vector<std::string>& nodes,\n    const std::map<std::string, std::vector<std::string>>& adj) {\n    std::map<std::string, int> inDegree;\n    for (const std::string& n : nodes) inDegree[n] = 0;\n\n    for (const std::string& node : nodes) {\n        auto it = adj.find(node);\n        if (it == adj.end()) continue;\n        for (const std::string& next : it->second) inDegree[next]++;\n    }\n\n    // Everything that depends on nothing can start immediately.\n    std::queue<std::string> ready;\n    for (const std::string& n : nodes) {\n        if (inDegree[n] == 0) ready.push(n);\n    }\n\n    std::vector<std::string> order;\n    while (!ready.empty()) {\n        std::string node = ready.front();\n        ready.pop();\n        order.push_back(node);\n\n        auto it = adj.find(node);\n        if (it == adj.end()) continue;\n        for (const std::string& next : it->second) {\n            if (--inDegree[next] == 0) ready.push(next);  // now unblocked\n        }\n    }\n\n    // Anything left still has an unmet dependency, which on a finite\n    // graph can only mean those nodes depend on each other in a loop.\n    if (order.size() != nodes.size()) {\n        throw std::runtime_error(\"Cycle detected: no valid order exists\");\n    }\n    return order;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-cycle",
+      "type": "heading",
+      "level": 2,
+      "text": "The cycle check is free"
+    },
+    {
+      "id": "p-cycle",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last check is worth dwelling on, because you get cycle detection without writing any extra code. If the loop finishes and some nodes never made it out, those nodes are all still waiting on something. On a finite graph, the only way for that to happen is for them to be waiting on each other, directly or through a chain."
+        }
+      ]
+    },
+    {
+      "id": "code-cycle",
+      "type": "code",
+      "language": "text",
+      "code": "auth  →  logger\nlogger →  config\nconfig →  auth\n\nEvery one of these has in-degree 1. Nothing ever reaches 0,\nso the ready list starts empty and the algorithm outputs nothing.\nThat is your circular dependency error, and this is how your\npackage manager finds it."
+    },
+    {
+      "id": "h-dfs-version",
+      "type": "heading",
+      "level": 2,
+      "text": "The DFS version"
+    },
+    {
+      "id": "p-dfs",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a second way that some people find neater. Run a DFS. When a node has finished exploring all of its descendants, push it onto a list. Reverse the list at the end and you have a topological order."
+        }
+      ]
+    },
+    {
+      "id": "p-dfs-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The reason it works: a node is only finished after everything it points to is finished, so it lands earlier in the finish list than all of its dependencies. Reversing puts it in front of them, which is exactly what you wanted."
+        }
+      ]
+    },
+    {
+      "id": "code-dfs",
+      "type": "code",
+      "language": "javascript",
+      "code": "function topoDfs(nodes, adj) {\n  const state = new Map(nodes.map((n) => [n, \"unseen\"]));\n  const finished = [];\n\n  function visit(node) {\n    if (state.get(node) === \"done\") return;\n    // Meeting a node we're still in the middle of means we\n    // walked in a circle and came back to it.\n    if (state.get(node) === \"visiting\") throw new Error(\"Cycle detected\");\n\n    state.set(node, \"visiting\");\n    for (const next of adj.get(node) ?? []) visit(next);\n    state.set(node, \"done\");\n    finished.push(node);\n  }\n\n  for (const node of nodes) visit(node);\n  return finished.reverse();\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "UNSEEN, VISITING, DONE = 0, 1, 2\n\ndef topo_dfs(nodes, adj):\n    state = {n: UNSEEN for n in nodes}\n    finished = []\n\n    def visit(node):\n        if state[node] == DONE:\n            return\n        # Meeting a node we're still in the middle of means we\n        # walked in a circle and came back to it.\n        if state[node] == VISITING:\n            raise ValueError(\"Cycle detected\")\n\n        state[node] = VISITING\n        for nxt in adj.get(node, []):\n            visit(nxt)\n        state[node] = DONE\n        finished.append(node)\n\n    for node in nodes:\n        visit(node)\n\n    return finished[::-1]"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <functional>\n#include <map>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nenum class State { Unseen, Visiting, Done };\n\nstd::vector<std::string> topoDfs(\n    const std::vector<std::string>& nodes,\n    const std::map<std::string, std::vector<std::string>>& adj) {\n    std::map<std::string, State> state;\n    for (const std::string& n : nodes) state[n] = State::Unseen;\n    std::vector<std::string> finished;\n\n    // std::function so the lambda can call itself.\n    std::function<void(const std::string&)> visit = [&](const std::string& node) {\n        if (state[node] == State::Done) return;\n        // Meeting a node we're still in the middle of means we\n        // walked in a circle and came back to it.\n        if (state[node] == State::Visiting) throw std::runtime_error(\"Cycle detected\");\n\n        state[node] = State::Visiting;\n        auto it = adj.find(node);\n        if (it != adj.end()) {\n            for (const std::string& next : it->second) visit(next);\n        }\n        state[node] = State::Done;\n        finished.push_back(node);\n    };\n\n    for (const std::string& node : nodes) visit(node);\n\n    std::reverse(finished.begin(), finished.end());\n    return finished;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-dfs-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three states rather than a plain visited set is the important detail here. \"Visiting\" means this node is on the current path, still in progress. Bumping into one of those is a back edge, which is a cycle. Bumping into a \"done\" node is fine, that is just a shortcut to something already handled."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Kahn's algorithm outputs 8 nodes but the graph has 11. What does that mean?",
+            "options": [
+              {
+                "label": "The remaining 3 are in a cycle, so no valid order exists",
+                "correct": true
+              },
+              {
+                "label": "The graph is disconnected",
+                "correct": false
+              },
+              {
+                "label": "The output is fine, some nodes have no dependencies",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "In the DFS version, why track \"visiting\" separately from \"done\"?",
+            "options": [
+              {
+                "label": "Reaching a \"visiting\" node means you looped back onto your own path, a cycle",
+                "correct": true
+              },
+              {
+                "label": "To output nodes in the correct order",
+                "correct": false
+              },
+              {
+                "label": "To avoid visiting a node twice",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to strongly connected components",
+      "href": "/tutorials/graph-tarjan-scc",
+      "style": "primary"
+    }
+  ]
+}

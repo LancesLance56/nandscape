@@ -20,7 +20,7 @@ export function CanvasControls() {
         type="button"
         aria-label="Fit view"
         onClick={() => fitView({duration: 200, padding: 0.2})}
-        className="flex h-7 items-center justify-center rounded-lg px-2 font-mono text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+        className="flex h-7 items-center justify-center rounded-lg px-2 text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
       >
         FIT
       </button>

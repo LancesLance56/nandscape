@@ -31,7 +31,7 @@ export default async function PuzzlesPage() {
       <Navbar />
       <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
         <div className="mb-8 max-w-2xl">
-          <div className="mb-3 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
+          <div className="mb-3 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
             Nandscape puzzles
           </div>

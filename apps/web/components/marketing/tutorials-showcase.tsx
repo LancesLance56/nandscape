@@ -1,12 +1,25 @@
 import Link from "next/link";
 import { listTutorialNav } from "@/lib/tutorials/tutorials";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
+import { hexToRgba } from "@/lib/editor/block-colors";
+import { CardLink } from "@/components/ui/card";
+
+// A warm, on-brand palette for tutorial path badges - deliberately separate
+// from DEFAULT_BLOCK_COLORS (which includes a blue for tabular/data
+// contexts), so the tutorials section stays in the orange/copper family
+// rather than picking up cool tones.
+const PATH_COLORS: readonly string[] = [
+  "#C15A2A", // copper
+  "#E0A339", // amber
+  "#B25A3B", // rust
+  "#D9694F", // signal coral
+  "#8A8F5C", // olive
+];
 
 function pathColor(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  return DEFAULT_BLOCK_COLORS[hash % DEFAULT_BLOCK_COLORS.length];
+  return PATH_COLORS[hash % PATH_COLORS.length];
 }
 
 export async function TutorialsShowcase() {
@@ -24,11 +37,11 @@ export async function TutorialsShowcase() {
     <section className="py-20">
       <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="mb-2 flex items-center gap-2 font-mono text-sm font-medium text-copper-dark">
+          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
             {tree.sections.length} guided path{tree.sections.length === 1 ? "" : "s"}
           </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">Learn Step by Step</h2>
+          <h2 className="text-3xl font-semibold text-ink">Learn Step by Step</h2>
         </div>
         <Link
           href="/tutorials"
@@ -38,73 +51,73 @@ export async function TutorialsShowcase() {
         </Link>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {tree.sections.map((section, i) => {
           const color = pathColor(section.slug);
           const firstPage = section.pages[0];
-          const previewPages = section.pages.slice(0, 4);
-          const remaining = section.pages.length - previewPages.length;
 
           return (
             <ScrollReveal key={section.id} delay={i * 60}>
-              <Link
+              <CardLink
                 href={firstPage ? `/tutorials/${firstPage.slug}` : "/tutorials"}
-                className="group flex h-full flex-col gap-3 rounded-2xl border border-border/70 bg-surface-card/85 p-5 shadow-sm backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md active:scale-[0.98]"
+                className="flex items-start gap-4 p-6"
               >
-                <div className="flex items-center justify-between">
-                  <span
-                    style={{ backgroundColor: hexToRgba(color, 0.12), color }}
-                    className="rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider"
-                  >
-                    {section.slug}
-                  </span>
-                  <span className="font-mono text-[11px] text-slate">
-                    {section.pages.length} lesson{section.pages.length === 1 ? "" : "s"}
-                  </span>
+                <div
+                  style={{ backgroundColor: hexToRgba(color, 0.12), color }}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-bold"
+                >
+                  {section.pages.length}
                 </div>
 
-                <h3 className="font-display text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
-                  {section.title}
-                </h3>
+                <div className="min-w-0 flex-1">
+                  <span style={{ color }} className="text-xs font-semibold">
+                    {section.slug}
+                  </span>
+                  <h3 className="mt-1 text-lg font-bold text-ink transition-colors group-hover:text-copper-dark">
+                    {section.title}
+                  </h3>
+                  <p className="mt-1 truncate text-sm text-ink-soft">
+                    Starts with &ldquo;{firstPage?.title ?? "the first lesson"}&rdquo;
+                  </p>
 
-                <ul className="mt-1 flex flex-col gap-1.5">
-                  {previewPages.map((page, idx) => (
-                    <li key={page.slug} className="flex items-center gap-2 text-xs text-ink-soft">
-                      <span className="w-4 shrink-0 text-right font-mono text-[10px] text-border-strong">
-                        {String(idx + 1).padStart(2, "0")}
-                      </span>
-                      <span className="truncate">{page.title}</span>
-                    </li>
-                  ))}
-                  {remaining > 0 && (
-                    <li className="pl-6 font-mono text-[11px] text-slate">+{remaining} more</li>
-                  )}
-                </ul>
+                  <div className="mt-4 flex gap-1" aria-hidden="true">
+                    {section.pages.map((page, idx) => (
+                      <span
+                        key={page.slug}
+                        style={{ backgroundColor: idx === 0 ? color : hexToRgba(color, 0.2) }}
+                        className="h-1.5 flex-1 rounded-full"
+                      />
+                    ))}
+                  </div>
 
-                <span className="mt-auto flex items-center gap-1 pt-1 font-mono text-xs font-semibold text-copper-dark opacity-80 transition-opacity group-hover:opacity-100">
-                  Start learning →
-                </span>
-              </Link>
+                  <span
+                    style={{ color }}
+                    className="mt-4 inline-flex items-center gap-1 text-sm font-semibold opacity-80 transition-opacity group-hover:opacity-100"
+                  >
+                    Start learning →
+                  </span>
+                </div>
+              </CardLink>
             </ScrollReveal>
           );
         })}
 
         {tree.standalone.map((page, i) => (
           <ScrollReveal key={page.slug} delay={(tree.sections.length + i) * 60}>
-            <Link
-              href={`/tutorials/${page.slug}`}
-              className="group flex h-full flex-col gap-3 rounded-2xl border border-border/70 bg-surface-card/85 p-5 shadow-sm backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md active:scale-[0.98]"
-            >
-              <span className="w-fit rounded-full bg-surface-2 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate">
-                Lesson
-              </span>
-              <h3 className="font-display text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
-                {page.title}
-              </h3>
-              <span className="mt-auto flex items-center gap-1 pt-1 font-mono text-xs font-semibold text-copper-dark opacity-0 transition-opacity group-hover:opacity-100">
-                Read lesson →
-              </span>
-            </Link>
+            <CardLink href={`/tutorials/${page.slug}`} className="flex items-start gap-4 p-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-base font-bold text-slate">
+                1
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-xs font-semibold text-slate">Standalone lesson</span>
+                <h3 className="mt-1 text-lg font-bold text-ink transition-colors group-hover:text-copper-dark">
+                  {page.title}
+                </h3>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-copper-dark opacity-0 transition-opacity group-hover:opacity-100">
+                  Read lesson →
+                </span>
+              </div>
+            </CardLink>
           </ScrollReveal>
         ))}
       </div>

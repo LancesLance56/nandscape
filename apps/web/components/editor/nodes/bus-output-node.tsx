@@ -109,7 +109,7 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
               key={busData.names[i]}
               title={busData.names[i]}
               style={{ top: `${verticalPos(i, width)}px` }}
-              className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-xs font-bold leading-none ${STATE_TEXT_CLASS[s]}`}
+              className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold leading-none ${STATE_TEXT_CLASS[s]}`}
             >
               {bitChar(s)}
             </span>
@@ -121,10 +121,10 @@ function BusOutputNodeImpl({ id, data, selected }: NodeProps<EditorNode>) {
         style={{ top: `${boxHeight + LABEL_GAP}px`, width: NODE_WIDTH }}
         className="absolute left-1/2 -translate-x-1/2 text-center leading-tight"
       >
-        <div style={{ height: `${NAME_HEIGHT}px` }} className="truncate font-mono text-[10px] font-semibold text-indigo-400">
+        <div style={{ height: `${NAME_HEIGHT}px` }} className="truncate text-[10px] font-semibold text-indigo-400">
           {label}
         </div>
-        <div style={{ height: `${VALUE_HEIGHT}px` }} className="font-mono text-[10px] font-bold text-ink">
+        <div style={{ height: `${VALUE_HEIGHT}px` }} className=" text-[10px] font-bold text-ink">
           {decimalValue !== null ? decimalValue : "?"}
         </div>
       </div>

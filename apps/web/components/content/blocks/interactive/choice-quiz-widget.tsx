@@ -53,7 +53,7 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
 
   return (
     <div className={cn("rounded-xl border border-border bg-surface-card p-5", data.className)}>
-      <div className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-slate">
+      <div className="mb-3 text-xs font-semibold text-slate">
         {data.prompt}
       </div>
       <div className="flex flex-wrap gap-3">
@@ -79,10 +79,10 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
               )}
             >
               {option.code ? (
-                <span className="block font-mono text-[13px]">{option.code}</span>
+                <span className="block text-[13px]">{option.code}</span>
               ) : (
                 <span>
-                  <span className="font-mono font-semibold">{option.label}</span> {option.sublabel}
+                  <span className=" font-semibold">{option.label}</span> {option.sublabel}
                 </span>
               )}
             </button>
@@ -91,7 +91,7 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
       </div>
       {answered !== null && (
         <div className="mt-4 border-t border-dashed border-border pt-4">
-          <div className="mb-2 font-mono text-xs font-semibold tracking-wide text-copper">
+          <div className="mb-2 text-xs font-semibold tracking-wide text-copper">
             {data.verdictGood}
           </div>
           <p className="text-sm leading-relaxed text-ink-soft">{data.explanation}</p>

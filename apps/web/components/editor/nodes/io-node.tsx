@@ -152,13 +152,13 @@ function IoNodeImpl({id, data, selected}: NodeProps<EditorNode>) {
         {isLed ? (
           <span className={`h-3.5 w-3.5 rounded-full transition-shadow ${LED_DOT_CLASS[signal]}`} />
         ) : (
-          <span className={`font-mono text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
+          <span className={` text-sm font-bold leading-none ${STATE_TEXT_CLASS[signal]}`}>{stateChar}</span>
         )}
       </button>
 
       <span
         style={{top: `${boxHeight + LABEL_GAP}px`, height: `${LABEL_HEIGHT}px`, width: NODE_WIDTH}}
-        className="absolute left-1/2 -translate-x-1/2 truncate text-center font-mono text-[10px] font-semibold text-slate"
+        className="absolute left-1/2 -translate-x-1/2 truncate text-center text-[10px] font-semibold text-slate"
       >
         {ioData.name}
       </span>
