@@ -609,5 +609,13 @@
       "href": "/nandbox",
       "style": "primary"
     }
+  ],
+  "seoTitle": "D Flip-Flop Explained: Edge-Triggered vs Level-Sensitive",
+  "seoDescription": "How a D flip-flop samples one clock edge instead of a level, how master-slave construction achieves it, and why registers use flip-flops.",
+  "keywords": [
+    "d flip flop",
+    "edge triggered flip flop",
+    "master slave flip flop",
+    "flip flop vs latch"
   ]
 }

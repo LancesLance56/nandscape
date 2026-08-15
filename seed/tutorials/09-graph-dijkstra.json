@@ -297,5 +297,14 @@
       "href": "/tutorials/graph-mst-kruskal-prim",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Dijkstra's Algorithm Explained With a Worked Example",
+  "seoDescription": "How Dijkstra's algorithm finds shortest paths on weighted graphs, why locking in the nearest node is provably safe, and where negative weights break it.",
+  "keywords": [
+    "dijkstra's algorithm",
+    "shortest path algorithm",
+    "weighted graph",
+    "priority queue",
+    "dijkstra example"
   ]
 }

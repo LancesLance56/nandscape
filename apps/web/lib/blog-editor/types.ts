@@ -9,6 +9,12 @@ export interface DocumentMetadata {
   authorName: string;
   status: DocumentStatus;
   tags: string[];
+  /** Search-result copy, distinct from title/excerpt above (which are
+   *  written for someone already on the page). Empty means "fall back to
+   *  the on-page version",  see lib/seo/metadata.ts. */
+  seoTitle: string;
+  seoDescription: string;
+  keywords: string[];
   publishedAt: string | null;
   /** Tutorial-only. Ignored when documentKind === "post". */
   sectionId: string | null;
@@ -25,6 +31,9 @@ export function emptyMetadata(): DocumentMetadata {
     authorName: "",
     status: "draft",
     tags: [],
+    seoTitle: "",
+    seoDescription: "",
+    keywords: [],
     publishedAt: null,
     sectionId: null,
     position: 0,

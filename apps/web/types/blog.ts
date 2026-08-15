@@ -17,7 +17,17 @@ export type {
   ContentBlock as PostBlock,
 } from "./content-block";
 
-export interface PostSummary {
+/** SEO metadata shared by blog posts and tutorial pages. Every field is
+ *  optional and falls back to the on-page equivalent (seoTitle -> title,
+ *  seoDescription -> excerpt), so content written before these existed still
+ *  produces sensible tags,  see lib/seo/metadata.ts. */
+export interface SeoFields {
+  seoTitle: string | null;
+  seoDescription: string | null;
+  keywords: string[];
+}
+
+export interface PostSummary extends SeoFields {
   id: string;
   slug: string;
   title: string;
@@ -44,6 +54,9 @@ export interface NewPostInput {
   status?: PostStatus;
   body?: ContentBlock[];
   tags?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
+  keywords?: string[];
   publishedAt?: string | null;
 }
 

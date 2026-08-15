@@ -134,5 +134,13 @@
       "href": "/tutorials/kmap-four-variable",
       "style": "primary"
     }
+  ],
+  "seoTitle": "3-Variable Karnaugh Maps and the Wraparound Rule",
+  "seoDescription": "Why 3-variable Karnaugh maps use Gray code column order, and how wraparound groups work, with a worked example that crosses the map edge.",
+  "keywords": [
+    "3 variable karnaugh map",
+    "karnaugh map wraparound",
+    "gray code",
+    "k-map grouping rules"
   ]
 }

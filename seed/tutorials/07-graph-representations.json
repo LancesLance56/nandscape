@@ -234,5 +234,13 @@
       "href": "/tutorials/graph-bfs-dfs",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Adjacency List vs Adjacency Matrix: Which to Use",
+  "seoDescription": "Compare adjacency list and adjacency matrix on memory and lookup speed, with the one question about graph density that decides it for you.",
+  "keywords": [
+    "adjacency list vs adjacency matrix",
+    "graph representation",
+    "adjacency list",
+    "sparse vs dense graph"
   ]
 }

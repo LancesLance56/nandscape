@@ -324,5 +324,14 @@
       "href": "/tutorials",
       "style": "secondary"
     }
+  ],
+  "seoTitle": "Bellman-Ford and Floyd-Warshall: Negative Weight Paths",
+  "seoDescription": "When Dijkstra stops being safe, Bellman-Ford handles negative edges and detects negative cycles. Floyd-Warshall solves every pair at once.",
+  "keywords": [
+    "bellman-ford algorithm",
+    "floyd-warshall",
+    "negative weight edges",
+    "negative cycle",
+    "all pairs shortest path"
   ]
 }

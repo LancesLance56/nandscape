@@ -5,7 +5,11 @@
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T09:10:00Z",
-  "tags": ["graph-theory", "digraphs", "fundamentals"],
+  "tags": [
+    "graph-theory",
+    "digraphs",
+    "fundamentals"
+  ],
   "sectionSlug": "graph-theory-basics",
   "position": 20,
   "body": [
@@ -40,7 +44,14 @@
         {
           "text": "A "
         },
-        { "text": "directed graph", "marks": [{ "kind": "bold" }] },
+        {
+          "text": "directed graph",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
         {
           "text": " (a digraph, if you want to sound like you have read a textbook) puts an arrowhead on each edge. Now A → B tells you absolutely nothing about whether you can get from B back to A. Following someone on social media works like this. So do one-way streets, so do function calls, so do web links."
         }
@@ -181,25 +192,52 @@
           {
             "prompt": "You are modelling \"who follows whom\" on a social app. Which kind of graph?",
             "options": [
-              { "label": "Directed, because following is one-way", "correct": true },
-              { "label": "Undirected, because both people are involved", "correct": false },
-              { "label": "A tree, because there is a root user", "correct": false }
+              {
+                "label": "Directed, because following is one-way",
+                "correct": true
+              },
+              {
+                "label": "Undirected, because both people are involved",
+                "correct": false
+              },
+              {
+                "label": "A tree, because there is a root user",
+                "correct": false
+              }
             ]
           },
           {
             "prompt": "A graph has 7 nodes and is a tree. How many edges does it have?",
             "options": [
-              { "label": "6", "correct": true },
-              { "label": "7", "correct": false },
-              { "label": "It depends on the shape", "correct": false }
+              {
+                "label": "6",
+                "correct": true
+              },
+              {
+                "label": "7",
+                "correct": false
+              },
+              {
+                "label": "It depends on the shape",
+                "correct": false
+              }
             ]
           },
           {
             "prompt": "Your package manager reports a circular dependency. In graph terms, what happened?",
             "options": [
-              { "label": "The dependency graph has a cycle, so it is not a DAG", "correct": true },
-              { "label": "The graph became disconnected", "correct": false },
-              { "label": "Two edges have the same weight", "correct": false }
+              {
+                "label": "The dependency graph has a cycle, so it is not a DAG",
+                "correct": true
+              },
+              {
+                "label": "The graph became disconnected",
+                "correct": false
+              },
+              {
+                "label": "Two edges have the same weight",
+                "correct": false
+              }
             ]
           }
         ]
@@ -216,5 +254,15 @@
       "href": "/tutorials/graph-representations",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Types of Graphs: Directed, Weighted, DAG, and Tree",
+  "seoDescription": "Directed, weighted, acyclic and tree graphs are options you switch on, not separate structures. See what each one lets you conclude.",
+  "keywords": [
+    "types of graphs",
+    "directed graph",
+    "digraph",
+    "weighted graph",
+    "dag",
+    "graph vs tree"
   ]
 }

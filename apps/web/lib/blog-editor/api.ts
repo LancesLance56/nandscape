@@ -15,6 +15,9 @@ function toPayload(kind: DocumentKind, metadata: DocumentMetadata, blocks: Conte
     authorName: metadata.authorName || undefined,
     status: metadata.status,
     tags: metadata.tags,
+    seoTitle: metadata.seoTitle || undefined,
+    seoDescription: metadata.seoDescription || undefined,
+    keywords: metadata.keywords,
     publishedAt: metadata.publishedAt,
     body: blocks,
   };

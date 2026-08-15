@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { BlockRenderer } from "@/components/content/blocks/block-renderer";
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
+import { buildContentMetadata } from "@/lib/seo/metadata";
 import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog/posts";
 
 export const revalidate = 60;
@@ -28,15 +30,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = await getPublishedPostBySlug(slug);
   if (!post) return {};
 
-  return {
-    title: `${post.title} - Nandscape`,
-    description: post.excerpt ?? undefined,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt ?? undefined,
-      images: post.coverImage ? [post.coverImage] : undefined,
-    },
-  };
+  return buildContentMetadata({
+    title: post.title,
+    seoTitle: post.seoTitle,
+    excerpt: post.excerpt,
+    seoDescription: post.seoDescription,
+    keywords: post.keywords,
+    path: `/blog/${post.slug}`,
+    coverImage: post.coverImage,
+    publishedAt: post.publishedAt,
+    updatedAt: post.updatedAt,
+    authorName: post.authorName,
+  });
 }
 
 function formatDate(iso: string | null): string | null {
@@ -56,6 +61,22 @@ export default async function BlogPostPage({ params }: PageProps) {
       <Navbar />
       <main className="mx-auto max-w-4xl px-6 pb-24 pt-32 sm:px-10">
         <article>
+          <ArticleJsonLd
+            headline={post.title}
+            description={post.seoDescription ?? post.excerpt}
+            path={`/blog/${post.slug}`}
+            publishedAt={post.publishedAt}
+            updatedAt={post.updatedAt}
+            authorName={post.authorName}
+            image={post.coverImage}
+            keywords={post.keywords}
+          />
+          <BreadcrumbJsonLd
+            items={[
+              { name: "Blog", path: "/blog" },
+              { name: post.title, path: `/blog/${post.slug}` },
+            ]}
+          />
           <header className="mb-8">
             <div className="mb-3 flex items-center gap-2 text-[11px] font-medium text-slate">
               {date && <span>{date}</span>}

@@ -341,5 +341,14 @@
       "href": "/tutorials/graph-topological-sort",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Kruskal vs Prim: Minimum Spanning Tree Algorithms",
+  "seoDescription": "Two ways to build a minimum spanning tree. Compare Kruskal's edge sorting with Prim's growing frontier, and see why both reach the same total cost.",
+  "keywords": [
+    "minimum spanning tree",
+    "kruskal's algorithm",
+    "prim's algorithm",
+    "kruskal vs prim",
+    "union find"
   ]
 }

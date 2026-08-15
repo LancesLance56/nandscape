@@ -5,7 +5,10 @@
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T09:00:00Z",
-  "tags": ["graph-theory", "fundamentals"],
+  "tags": [
+    "graph-theory",
+    "fundamentals"
+  ],
   "sectionSlug": "graph-theory-basics",
   "position": 10,
   "body": [
@@ -22,14 +25,39 @@
       "id": "p-names",
       "type": "paragraph",
       "content": [
-        { "text": "The dots are called " },
-        { "text": "vertices", "marks": [{ "kind": "bold" }] },
-        { "text": " (one is a vertex) or " },
-        { "text": "nodes", "marks": [{ "kind": "bold" }] },
+        {
+          "text": "The dots are called "
+        },
+        {
+          "text": "vertices",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " (one is a vertex) or "
+        },
+        {
+          "text": "nodes",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
         {
           "text": ". The lines are called "
         },
-        { "text": "edges", "marks": [{ "kind": "bold" }] },
+        {
+          "text": "edges",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
         {
           "text": ". People use node and vertex interchangeably and nobody will correct you. I will say node from here on because it is shorter."
         }
@@ -53,14 +81,42 @@
     {
       "id": "t-examples",
       "type": "table",
-      "headers": ["Situation", "Nodes are", "Edges are"],
+      "headers": [
+        "Situation",
+        "Nodes are",
+        "Edges are"
+      ],
       "rows": [
-        ["Social network", "people", "friendships"],
-        ["Road map", "intersections", "streets"],
-        ["The web", "pages", "links"],
-        ["npm install", "packages", "dependencies"],
-        ["Git history", "commits", "parent relationships"],
-        ["Your circuit in the logic editor", "gates and IO pins", "wires"]
+        [
+          "Social network",
+          "people",
+          "friendships"
+        ],
+        [
+          "Road map",
+          "intersections",
+          "streets"
+        ],
+        [
+          "The web",
+          "pages",
+          "links"
+        ],
+        [
+          "npm install",
+          "packages",
+          "dependencies"
+        ],
+        [
+          "Git history",
+          "commits",
+          "parent relationships"
+        ],
+        [
+          "Your circuit in the logic editor",
+          "gates and IO pins",
+          "wires"
+        ]
       ]
     },
     {
@@ -111,14 +167,35 @@
     {
       "id": "t-vocab",
       "type": "table",
-      "headers": ["Word", "What it means"],
+      "headers": [
+        "Word",
+        "What it means"
+      ],
       "rows": [
-        ["Neighbour", "A node you can reach in one step"],
-        ["Degree", "How many edges touch a node"],
-        ["Path", "A sequence of nodes where each one connects to the next"],
-        ["Cycle", "A path that ends where it started"],
-        ["Connected", "Every node is reachable from every other node"],
-        ["Component", "One connected island in a graph that has several"]
+        [
+          "Neighbour",
+          "A node you can reach in one step"
+        ],
+        [
+          "Degree",
+          "How many edges touch a node"
+        ],
+        [
+          "Path",
+          "A sequence of nodes where each one connects to the next"
+        ],
+        [
+          "Cycle",
+          "A path that ends where it started"
+        ],
+        [
+          "Connected",
+          "Every node is reachable from every other node"
+        ],
+        [
+          "Component",
+          "One connected island in a graph that has several"
+        ]
       ]
     },
     {
@@ -128,9 +205,25 @@
         {
           "text": "Degree is worth a second look because it splits in two the moment edges have direction. A one-way street network gives every intersection an "
         },
-        { "text": "in-degree", "marks": [{ "kind": "bold" }] },
-        { "text": " (roads arriving) and an " },
-        { "text": "out-degree", "marks": [{ "kind": "bold" }] },
+        {
+          "text": "in-degree",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " (roads arriving) and an "
+        },
+        {
+          "text": "out-degree",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
         {
           "text": " (roads leaving), and those two numbers have no obligation to match. Flip the explorer above to the directed tab and the degree panel splits into two columns for exactly this reason."
         }
@@ -180,5 +273,13 @@
       "href": "/tutorials/graph-kinds-and-digraphs",
       "style": "primary"
     }
+  ],
+  "seoTitle": "What Is a Graph in Data Structures? Vertices and Edges",
+  "seoDescription": "A graph is just vertices connected by edges. Learn the vocabulary, what degree means, and why graphs model so much of what software does.",
+  "keywords": [
+    "what is a graph in data structure",
+    "vertices and edges",
+    "graph theory basics",
+    "degree of a vertex"
   ]
 }

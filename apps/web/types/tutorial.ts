@@ -1,4 +1,7 @@
 import type { ContentBlock } from "./content-block";
+import type { SeoFields } from "./blog";
+
+export type { SeoFields };
 
 export type TutorialStatus = "draft" | "published" | "archived";
 
@@ -9,7 +12,7 @@ export interface TutorialSection {
   position: number;
 }
 
-export interface TutorialPageSummary {
+export interface TutorialPageSummary extends SeoFields {
   id: string;
   slug: string;
   title: string;
@@ -63,6 +66,9 @@ export interface NewTutorialPageInput {
   status?: TutorialStatus;
   body?: ContentBlock[];
   tags?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
+  keywords?: string[];
   sectionId?: string | null;
   position?: number;
   publishedAt?: string | null;

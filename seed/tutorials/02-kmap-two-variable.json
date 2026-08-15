@@ -143,5 +143,13 @@
       "href": "/tutorials/kmap-three-variable-wraparound",
       "style": "primary"
     }
+  ],
+  "seoTitle": "2-Variable Karnaugh Map: Worked Example and Rules",
+  "seoDescription": "Learn 2-variable Karnaugh maps with a complete worked example: how to fill the grid, group the 1s, and why each group matches boolean algebra.",
+  "keywords": [
+    "2 variable karnaugh map",
+    "k-map example",
+    "karnaugh map grouping",
+    "boolean simplification"
   ]
 }

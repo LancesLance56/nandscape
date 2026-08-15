@@ -19,6 +19,9 @@ interface TutorialPageRow {
   status: TutorialStatus;
   body: ContentBlock[];
   tags: string[];
+  seo_title: string | null;
+  seo_description: string | null;
+  keywords: string[] | null;
   position: number;
   section_id: string | null;
   published_at: string | null;
@@ -37,6 +40,9 @@ function toSummary(row: TutorialPageRow): TutorialPageSummary {
     authorName: row.author_name,
     status: row.status,
     tags: row.tags,
+    seoTitle: row.seo_title,
+    seoDescription: row.seo_description,
+    keywords: row.keywords ?? [],
     sectionId: row.section_id,
     position: row.position,
     publishedAt: row.published_at,
@@ -51,6 +57,7 @@ function toPage(row: TutorialPageRow): TutorialPage {
 
 const SUMMARY_COLUMNS = `
   id, slug, title, excerpt, cover_image, author_name, status, tags, section_id, position,
+  seo_title, seo_description, keywords,
   published_at, created_at, updated_at
 `;
 
@@ -84,8 +91,9 @@ export async function getPublishedTutorialPageBySlug(slug: string): Promise<Tuto
 export async function createTutorialPage(input: NewTutorialPageInput): Promise<TutorialPage> {
   const rows = await query<TutorialPageRow>(
     `INSERT INTO tutorial_pages
-       (slug, title, excerpt, cover_image, author_name, status, body, tags, section_id, position, published_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11)
+       (slug, title, excerpt, cover_image, author_name, status, body, tags, section_id, position,
+        seo_title, seo_description, keywords, published_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, $12, $13, $14)
      RETURNING *`,
     [
       input.slug,
@@ -98,6 +106,9 @@ export async function createTutorialPage(input: NewTutorialPageInput): Promise<T
       input.tags ?? [],
       input.sectionId ?? null,
       input.position ?? 0,
+      input.seoTitle ?? null,
+      input.seoDescription ?? null,
+      input.keywords ?? [],
       input.publishedAt ?? null,
     ],
   );
@@ -117,6 +128,9 @@ export async function updateTutorialPage(
     status: patch.status,
     body: patch.body !== undefined ? JSON.stringify(patch.body) : undefined,
     tags: patch.tags,
+    seo_title: patch.seoTitle,
+    seo_description: patch.seoDescription,
+    keywords: patch.keywords,
     section_id: patch.sectionId,
     position: patch.position,
     published_at: patch.publishedAt,

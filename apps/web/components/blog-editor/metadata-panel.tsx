@@ -4,9 +4,25 @@ import { useState, type ReactNode } from "react";
 import { useBlogEditorStore } from "@/store/blog-editor-store";
 import { slugify, type DocumentStatus } from "@/lib/blog-editor/types";
 import { Field, fieldInputClass } from "@/components/blog-editor/fields/field";
+import { MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } from "@/lib/seo/metadata";
 import type { TutorialSection } from "@/types/tutorial";
 
 const STATUS_OPTIONS: DocumentStatus[] = ["draft", "published", "archived"];
+
+/** Search engines cut these off at a known width, and a truncated title or
+ *  description is a wasted result - show the budget while writing rather
+ *  than discovering it in a crawl report. Empty is fine (it falls back), so
+ *  only a value that's actually over the line is flagged. */
+function LengthHint({ value, max }: { value: string; max: number }) {
+  if (!value) return null;
+  const over = value.length > max;
+  return (
+    <span className={`mt-1 block text-[10px] ${over ? "text-signal-coral" : "text-slate"}`}>
+      {value.length} / {max}
+      {over ? " - will be truncated in results" : ""}
+    </span>
+  );
+}
 
 // Lighter than fieldInputClass on purpose - this strip sits directly under
 // the title with no card around it, so a full boxed input per field would
@@ -182,6 +198,55 @@ export function MetadataPanel({ sections = [] }: { sections?: TutorialSection[] 
                 onChange={(e) => setMetadata({ authorName: e.target.value })}
               />
             </Field>
+
+            <div className="sm:col-span-2">
+              <div className="mb-2 mt-1 border-t border-border pt-3 text-[10px] font-semibold uppercase tracking-wide text-slate">
+                Search appearance
+              </div>
+            </div>
+
+            <div className="sm:col-span-2">
+              <Field label="SEO title">
+                <input
+                  className={fieldInputClass}
+                  placeholder={metadata.title || "Falls back to the title above"}
+                  value={metadata.seoTitle}
+                  onChange={(e) => setMetadata({ seoTitle: e.target.value })}
+                />
+                <LengthHint value={metadata.seoTitle} max={MAX_TITLE_LENGTH} />
+              </Field>
+            </div>
+
+            <div className="sm:col-span-2">
+              <Field label="Meta description">
+                <textarea
+                  className={`${fieldInputClass} resize-y`}
+                  rows={2}
+                  placeholder={metadata.excerpt || "Falls back to the excerpt above"}
+                  value={metadata.seoDescription}
+                  onChange={(e) => setMetadata({ seoDescription: e.target.value })}
+                />
+                <LengthHint value={metadata.seoDescription} max={MAX_DESCRIPTION_LENGTH} />
+              </Field>
+            </div>
+
+            <div className="sm:col-span-2">
+              <Field label="Target keywords (comma separated)">
+                <input
+                  className={fieldInputClass}
+                  placeholder="binary to decimal, number bases"
+                  value={metadata.keywords.join(", ")}
+                  onChange={(e) =>
+                    setMetadata({
+                      keywords: e.target.value
+                        .split(",")
+                        .map((k) => k.trim())
+                        .filter(Boolean),
+                    })
+                  }
+                />
+              </Field>
+            </div>
           </div>
         )}
       </div>

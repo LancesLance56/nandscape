@@ -6,12 +6,16 @@
   "status": "published",
   "coverImage": "/images/blog/boolean-algebra-for-programmers/cover.jpg",
   "publishedAt": "2026-07-31T09:00:00Z",
-  "tags": ["fundamentals", "boolean-algebra", "performance"],
+  "tags": [
+    "fundamentals",
+    "boolean-algebra",
+    "performance"
+  ],
   "body": [
     {
       "id": "h-intro",
       "type": "heading",
-      "level": 1,
+      "level": 2,
       "text": "Why Every Programmer Should Learn Boolean Algebra",
       "className": "text-copper-dark"
     },
@@ -52,8 +56,16 @@
       "data": {
         "prompt": "Which one is faster?",
         "options": [
-          { "label": "Option A", "sublabel": "is faster", "correct": false },
-          { "label": "Option B", "sublabel": "is faster", "correct": true }
+          {
+            "label": "Option A",
+            "sublabel": "is faster",
+            "correct": false
+          },
+          {
+            "label": "Option B",
+            "sublabel": "is faster",
+            "correct": true
+          }
         ],
         "verdictGood": "Option B wins.",
         "explanation": "Both conditions do identical work in the worst case. But && short-circuits: the moment the left side is false, the right side never runs. In Option A, the expensive function always executes first, whether or not the user is even logged in. In Option B, it only runs after you already know the user is logged in. Same logic, same result, different amount of work done to get there.",
@@ -73,12 +85,39 @@
         {
           "text": "Most people stop thinking about Boolean algebra the day the digital logic final ends. That's a mistake, because it never actually left your code. Every "
         },
-        { "text": "if", "marks": [{ "kind": "code" }] },
-        { "text": ", every " },
-        { "text": "while", "marks": [{ "kind": "code" }] },
-        { "text": ", every SQL " },
-        { "text": "WHERE", "marks": [{ "kind": "code" }] },
-        { "text": " clause, every search filter your product runs is a Boolean expression evaluating true or false against real data." }
+        {
+          "text": "if",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", every "
+        },
+        {
+          "text": "while",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", every SQL "
+        },
+        {
+          "text": "WHERE",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " clause, every search filter your product runs is a Boolean expression evaluating true or false against real data."
+        }
       ]
     },
     {
@@ -94,7 +133,9 @@
       "id": "p-nh-3",
       "type": "paragraph",
       "content": [
-        { "text": "The rest of this post is three of those rules, applied to code you'd actually write." }
+        {
+          "text": "The rest of this post is three of those rules, applied to code you'd actually write."
+        }
       ]
     },
     {
@@ -107,11 +148,31 @@
       "id": "p-p1-1",
       "type": "paragraph",
       "content": [
-        { "text": "Short-circuit evaluation means " },
-        { "text": "&&", "marks": [{ "kind": "code" }] },
-        { "text": " stops at the first false, and " },
-        { "text": "||", "marks": [{ "kind": "code" }] },
-        { "text": " stops at the first true. Whatever comes after that point never executes. Since you would rather short circuit from the less expensive function, the order matters." }
+        {
+          "text": "Short-circuit evaluation means "
+        },
+        {
+          "text": "&&",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " stops at the first false, and "
+        },
+        {
+          "text": "||",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " stops at the first true. Whatever comes after that point never executes. Since you would rather short circuit from the less expensive function, the order matters."
+        }
       ]
     },
     {
@@ -155,12 +216,33 @@
       "widget": "boolean-reorder",
       "data": {
         "items": [
-          { "id": "api", "name": "API call", "cost": 200 },
-          { "id": "db", "name": "Database query", "cost": 80 },
-          { "id": "flag", "name": "Boolean flag", "cost": 1 },
-          { "id": "regex", "name": "Regex", "cost": 15 }
+          {
+            "id": "api",
+            "name": "API call",
+            "cost": 200
+          },
+          {
+            "id": "db",
+            "name": "Database query",
+            "cost": 80
+          },
+          {
+            "id": "flag",
+            "name": "Boolean flag",
+            "cost": 1
+          },
+          {
+            "id": "regex",
+            "name": "Regex",
+            "cost": 15
+          }
         ],
-        "correctOrder": ["flag", "regex", "db", "api"],
+        "correctOrder": [
+          "flag",
+          "regex",
+          "db",
+          "api"
+        ],
         "opsOnSolve": 2
       }
     },
@@ -192,10 +274,22 @@
       "data": {
         "prompt": "Which of these is an equivalent, simpler rewrite?",
         "options": [
-          { "code": "isAdmin && (canEdit || canDelete)", "correct": true },
-          { "code": "isAdmin || (canEdit && canDelete)", "correct": false },
-          { "code": "(isAdmin || canEdit) && (isAdmin || canDelete)", "correct": false },
-          { "code": "isAdmin && canEdit && canDelete", "correct": false }
+          {
+            "code": "isAdmin && (canEdit || canDelete)",
+            "correct": true
+          },
+          {
+            "code": "isAdmin || (canEdit && canDelete)",
+            "correct": false
+          },
+          {
+            "code": "(isAdmin || canEdit) && (isAdmin || canDelete)",
+            "correct": false
+          },
+          {
+            "code": "isAdmin && canEdit && canDelete",
+            "correct": false
+          }
         ],
         "verdictGood": "isAdmin && (canEdit || canDelete)",
         "explanation": "This is the same distributive identity from the very first Karnaugh map tutorial: AB + AC = A(B + C). Here A is isAdmin, and it no longer gets checked twice. Beyond the runtime savings, which are real but small for a single boolean, the bigger win is maintenance: there is now exactly one place that says \"you have to be an admin,\" instead of two places that could quietly drift apart.",
@@ -255,7 +349,14 @@
       "id": "p-consequences-db",
       "type": "paragraph",
       "content": [
-        { "text": "WHERE indexed_col = ? AND slow_col LIKE ?", "marks": [{ "kind": "code" }] },
+        {
+          "text": "WHERE indexed_col = ? AND slow_col LIKE ?",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
         {
           "text": " versus the same clauses reversed can be the difference between a query that hits an index and one that scans every row before it even gets to the cheap comparison. Query planners are smart, but they're not always smart enough to reorder around an expensive function call."
         }
@@ -339,27 +440,54 @@
           {
             "prompt": "Why does putting isLoggedIn() before expensivePermissionCheck() help?",
             "options": [
-              { "label": "&& short-circuits, so the expensive call never runs once the cheap one is false", "correct": true },
-              { "label": "JavaScript automatically reorders conditions for you", "correct": false },
-              { "label": "It changes the result of the expression", "correct": false }
+              {
+                "label": "&& short-circuits, so the expensive call never runs once the cheap one is false",
+                "correct": true
+              },
+              {
+                "label": "JavaScript automatically reorders conditions for you",
+                "correct": false
+              },
+              {
+                "label": "It changes the result of the expression",
+                "correct": false
+              }
             ],
             "explanation": "Short-circuiting is the whole mechanism: the moment the left side of && is false, the right side never executes, regardless of order elsewhere in the file."
           },
           {
             "prompt": "isAdmin && canEdit || isAdmin && canDelete simplifies to which factored form?",
             "options": [
-              { "code": "isAdmin && (canEdit || canDelete)", "correct": true },
-              { "code": "isAdmin || (canEdit && canDelete)", "correct": false },
-              { "code": "isAdmin && canEdit && canDelete", "correct": false }
+              {
+                "code": "isAdmin && (canEdit || canDelete)",
+                "correct": true
+              },
+              {
+                "code": "isAdmin || (canEdit && canDelete)",
+                "correct": false
+              },
+              {
+                "code": "isAdmin && canEdit && canDelete",
+                "correct": false
+              }
             ],
             "explanation": "Same distributive identity as the Karnaugh map tutorials: AB + AC = A(B + C). isAdmin is now checked exactly once."
           },
           {
             "prompt": "In a WHERE clause, why can column order matter for performance?",
             "options": [
-              { "label": "Query planners are always smart enough to reorder around it, so it never matters", "correct": false },
-              { "label": "An indexed, cheap comparison first can avoid a full scan before an expensive comparison runs", "correct": true },
-              { "label": "SQL evaluates every clause in alphabetical order", "correct": false }
+              {
+                "label": "Query planners are always smart enough to reorder around it, so it never matters",
+                "correct": false
+              },
+              {
+                "label": "An indexed, cheap comparison first can avoid a full scan before an expensive comparison runs",
+                "correct": true
+              },
+              {
+                "label": "SQL evaluates every clause in alphabetical order",
+                "correct": false
+              }
             ],
             "explanation": "Query planners are smart, but not always smart enough to reorder around an expensive function call, so putting the indexed/cheap condition first still matters in practice."
           }
@@ -380,28 +508,36 @@
       "id": "p-takeaway-1",
       "type": "paragraph",
       "content": [
-        { "text": "- Put cheap conditions first, expensive ones last. Short-circuiting does the rest." }
+        {
+          "text": "- Put cheap conditions first, expensive ones last. Short-circuiting does the rest."
+        }
       ]
     },
     {
       "id": "p-takeaway-2",
       "type": "paragraph",
       "content": [
-        { "text": "- Factor repeated logic instead of duplicating it. Less work, and one source of truth." }
+        {
+          "text": "- Factor repeated logic instead of duplicating it. Less work, and one source of truth."
+        }
       ]
     },
     {
       "id": "p-takeaway-3",
       "type": "paragraph",
       "content": [
-        { "text": "- Remove evaluations you don't need before you optimize the ones you do." }
+        {
+          "text": "- Remove evaluations you don't need before you optimize the ones you do."
+        }
       ]
     },
     {
       "id": "p-takeaway-4",
       "type": "paragraph",
       "content": [
-        { "text": "- You can even do a simpler check before doing an expensive one to sift unlikely candidates, kind of like what we discussed with the hitboxes earlier." }
+        {
+          "text": "- You can even do a simpler check before doing an expensive one to sift unlikely candidates, kind of like what we discussed with the hitboxes earlier."
+        }
       ]
     },
     {
@@ -418,5 +554,13 @@
       "href": "/puzzles",
       "style": "secondary"
     }
+  ],
+  "seoTitle": "Boolean Algebra for Programmers: Write Faster Conditions",
+  "seoDescription": "Boolean algebra is not just hardware theory. Use short-circuit order, De Morgan's laws and simplification to cut real work out of hot code paths.",
+  "keywords": [
+    "boolean algebra for programmers",
+    "short circuit evaluation",
+    "de morgan's laws",
+    "conditional optimization"
   ]
 }

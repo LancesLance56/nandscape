@@ -360,5 +360,14 @@
       "href": "/tutorials/graph-bellman-ford",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Tarjan's Algorithm: Strongly Connected Components",
+  "seoDescription": "Find every strongly connected component in one DFS pass. How Tarjan's discovery and low-link numbers work, and why the stack is not the DFS path.",
+  "keywords": [
+    "tarjan's algorithm",
+    "strongly connected components",
+    "scc",
+    "low link value",
+    "directed graph"
   ]
 }
