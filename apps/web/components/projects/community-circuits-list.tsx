@@ -24,6 +24,7 @@ export function CommunityCircuitsList({ projects }: { projects: PublicProjectSum
             nodes={project.nodes}
             edges={project.edges}
             blocks={project.blocks}
+            scopes={project.scopes}
             className="h-36 border-b border-border"
           />
           <div className="flex flex-col gap-0.5 px-4 py-3">

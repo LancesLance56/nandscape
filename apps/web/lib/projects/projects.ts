@@ -130,6 +130,11 @@ export interface PublicProjectSummary extends ProjectSummary {
    *  named blocks in their own local library). For anyone else, the
    *  subcircuit nodes render blank. */
   blocks: SubcircuitBlockDefinition[];
+  /** The project's tabs. `blocks` alone isn't enough: a subcircuit built
+   *  from another tab of the same project is deliberately never copied into
+   *  `blocks`, so the thumbnail needs the tabs themselves to resolve it -
+   *  see CircuitStage's `scopes` prop. */
+  scopes: CircuitScope[];
 }
 
 interface PublicSummaryRow extends SummaryRow {
@@ -137,6 +142,7 @@ interface PublicSummaryRow extends SummaryRow {
   nodes: EditorNode[];
   edges: EditorEdge[];
   blocks: SubcircuitBlockDefinition[];
+  scopes: CircuitScope[];
 }
 
 // Reasonable upper bound so the community page never has to render an
@@ -145,7 +151,7 @@ const PUBLIC_LISTING_LIMIT = 200;
 
 export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
   const rows = await query<PublicSummaryRow>(
-    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, p.blocks, u.username AS owner_username
+    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, p.blocks, p.scopes, u.username AS owner_username
      FROM projects p
      JOIN "User" u ON u.id = p.owner_id
      WHERE p.visibility = 'PUBLIC'
@@ -159,6 +165,7 @@ export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
     nodes: row.nodes ?? [],
     edges: row.edges ?? [],
     blocks: row.blocks ?? [],
+    scopes: row.scopes ?? [],
   }));
 }
 

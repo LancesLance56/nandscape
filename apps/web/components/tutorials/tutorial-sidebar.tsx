@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { TutorialNavTree } from "@/types/tutorial";
@@ -35,19 +35,64 @@ function NavLink({ href, label }: { href: string; label: string }) {
   );
 }
 
+interface NavListProps {
+  tree: TutorialNavTree;
+  collapsed: Set<string>;
+  onToggle: (sectionId: string) => void;
+}
+
+/** The actual link tree, shared by the mobile collapsible panel and the
+ *  desktop fixed rail below so the two don't drift out of sync. */
+function NavList({ tree, collapsed, onToggle }: NavListProps): ReactNode {
+  return (
+    <>
+      {tree.standalone.map((page) => (
+        <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
+      ))}
+
+      {tree.sections.map((section) => {
+        const open = !collapsed.has(section.id);
+        return (
+          <div key={section.id} className="mt-2">
+            <button
+              type="button"
+              onClick={() => onToggle(section.id)}
+              aria-expanded={open}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left text-[11px] font-semibold text-slate hover:text-ink"
+            >
+              {section.title}
+              <ChevronIcon open={open} />
+            </button>
+            {open && (
+              <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
+                {section.pages.map((page) => (
+                  <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  // Below lg the sidebar collapses into a toggleable panel instead of its
-  // own sticky column - there's no room for both a 256px rail and readable
-  // tutorial text on a phone-width screen. Closed by default there; the
-  // lg+ nav below ignores this state entirely (always visible, see the
-  // className below).
+  // Below lg the sidebar collapses into a toggleable panel instead of the
+  // fixed rail - there's no room for a permanent 256px column and readable
+  // tutorial text on a phone-width screen. Closed by default there.
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => {
+  // Reset during render rather than in an effect (React's recommended
+  // pattern for "state derived from a prop change") - collapses the two
+  // renders an effect-based reset would cause into one.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   const toggle = (sectionId: string) => {
     setCollapsed((prev) => {
@@ -59,53 +104,48 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
   };
 
   return (
-    <div className="lg:mr-4">
-      <button
-        type="button"
-        onClick={() => setMobileOpen((o) => !o)}
-        aria-expanded={mobileOpen}
-        className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-card px-4 py-3 text-sm font-semibold text-ink lg:hidden"
-      >
-        Contents
-        <ChevronIcon open={mobileOpen} />
-      </button>
+    <>
+      {/* Reserves the rail's horizontal space in the flex row at lg+ (the
+          actual rail below is `fixed`, so it no longer occupies flex space
+          on its own) so <main> keeps the same left offset it always had.
+          Below lg this *is* the sidebar: the toggle button plus an inline
+          collapsible panel, in normal document flow. */}
+      <div className="lg:w-64 lg:shrink-0">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((o) => !o)}
+          aria-expanded={mobileOpen}
+          className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-card px-4 py-3 text-sm font-semibold text-ink lg:hidden"
+        >
+          Contents
+          <ChevronIcon open={mobileOpen} />
+        </button>
 
-      {/* The lg max-height is what makes this rail scroll on its own. A
-          sticky element taller than the viewport can't stay put - the browser
-          drags it along with the page until its bottom edge arrives - so the
-          height is capped to the space below `top-32` and overflow-y-auto
-          takes over from there. */}
-      <nav
-        className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3 lg:sticky lg:top-32 lg:mt-0 lg:flex lg:h-fit lg:max-h-[calc(100vh-9rem)] lg:w-64 lg:shrink-0 lg:border-0 lg:bg-transparent lg:px-3 lg:py-4`}
-      >
-        {tree.standalone.map((page) => (
-          <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
-        ))}
+        <nav
+          className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3 lg:hidden`}
+        >
+          <NavList tree={tree} collapsed={collapsed} onToggle={toggle} />
+        </nav>
+      </div>
 
-        {tree.sections.map((section) => {
-          const open = !collapsed.has(section.id);
-          return (
-            <div key={section.id} className="mt-2">
-              <button
-                type="button"
-                onClick={() => toggle(section.id)}
-                aria-expanded={open}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left text-[11px] font-semibold text-slate hover:text-ink"
-              >
-                {section.title}
-                <ChevronIcon open={open} />
-              </button>
-              {open && (
-                <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
-                  {section.pages.map((page) => (
-                    <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-    </div>
+      {/* Desktop: pinned to the viewport instead of `sticky` within the flex
+          row, so it can't partially unstick and trail the page scroll once
+          the row's bottom edge nears the viewport (what a `sticky` rail
+          does once the content below it runs out of room - visible as the
+          nav "scrolling along with the page a little" near the bottom of a
+          long tutorial). The outer layer re-runs the page's own
+          mx-auto/max-w-330/px-* centering across the full viewport width so
+          the rail lands at the exact spot it would have in-flow, without
+          hand-computing a pixel `left` offset; it's pointer-events-none so
+          it never blocks clicks over the content beside it, and only the
+          rail itself re-enables pointer events. */}
+      <div className="pointer-events-none fixed inset-x-0 top-32 bottom-6 z-10 hidden lg:block">
+        <div className="mx-auto h-full max-w-330 px-4 sm:px-10">
+          <nav className="pointer-events-auto flex h-full w-64 flex-col gap-1 overflow-y-auto overscroll-contain py-4">
+            <NavList tree={tree} collapsed={collapsed} onToggle={toggle} />
+          </nav>
+        </div>
+      </div>
+    </>
   );
 }

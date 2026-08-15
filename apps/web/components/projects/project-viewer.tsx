@@ -82,7 +82,13 @@ export function ProjectViewer({
 
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-border bg-surface-card">
         <ReactFlowProvider>
-          <CircuitStage nodes={project.nodes} edges={project.edges} blocks={project.blocks} allowScrollZoom />
+          <CircuitStage
+            nodes={project.nodes}
+            edges={project.edges}
+            blocks={project.blocks}
+            scopes={project.scopes}
+            allowScrollZoom
+          />
         </ReactFlowProvider>
       </div>
     </main>

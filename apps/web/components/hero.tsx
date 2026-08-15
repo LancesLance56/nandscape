@@ -10,9 +10,9 @@ export function Hero() {
   return (
     <section className="relative grid gap-14 overflow-hidden pb-20 pt-36 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10">
       <div className="relative z-10">
-        <h1 className="max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-ink lg:text-6xl lg:leading-[1.08]">
+        <h1 className="max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-copper-dark lg:text-6xl lg:leading-[1.08]">
           Computer Science Taught {" "}
-          <span className="relative inline-block whitespace-nowrap">
+          <span className="relative inline-block whitespace-nowrap text-ink">
             <span
               aria-hidden="true"
               className="absolute inset-x-0 bottom-0.5 top-2 -z-10 -rotate-1 rounded-sm bg-yellow-300/70 dark:bg-yellow-400/35"
