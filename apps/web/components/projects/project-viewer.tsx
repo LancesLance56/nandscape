@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ReactFlowProvider } from "@xyflow/react";
 import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage";
+import { EmbedSnippet } from "@/components/projects/embed-snippet";
 import type { ProjectRecord } from "@/lib/projects/projects";
 
 export function ProjectViewer({
@@ -55,8 +56,9 @@ export function ProjectViewer({
           <p className=" text-xs text-slate">by {project.ownerUsername}</p>
           {project.description && <p className="mt-1.5 max-w-2xl text-sm text-ink-soft">{project.description}</p>}
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-start gap-2">
           {error && <span className="text-xs text-signal-coral">{error}</span>}
+          <EmbedSnippet slug={project.slug} name={project.name} />
           {canFork && (
             <button
               type="button"

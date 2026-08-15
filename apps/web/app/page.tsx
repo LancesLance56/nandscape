@@ -1,5 +1,6 @@
 import {Hero} from "@/components/hero";
 import {Navbar} from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import {FeatureStrip} from "@/components/marketing/feature-strip";
 import {LiveDemo} from "@/components/marketing/live-demo";
 import {PuzzlesShowcase} from "@/components/marketing/puzzles-showcase";
@@ -33,6 +34,7 @@ export default async function Home() {
           <PuzzlesShowcase/>
           <BlogShowcase posts={posts}/>
       </main>
+      <Footer />
     </>
   );
 }

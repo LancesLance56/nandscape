@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { deleteTutorialPage, getTutorialPageBySlug, updateTutorialPage } from "@/lib/tutorials/tutorials";
 import { getTutorialSectionBySlug } from "@/lib/tutorials/tutorial-sections";
 import type { UpdateTutorialPageInput } from "@/types/tutorial";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 
 interface SeedTutorialPagePatch extends UpdateTutorialPageInput {
   sectionSlug?: string;
@@ -19,6 +20,10 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
+  if (!(await isAuthorizedAdminRequest(request))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { slug } = await params;
 
   let patch: SeedTutorialPagePatch;
@@ -38,7 +43,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   return NextResponse.json({ page: updated });
 }
 
-export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  if (!(await isAuthorizedAdminRequest(request))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { slug } = await params;
   const deleted = await deleteTutorialPage(slug);
   if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 });

@@ -11,12 +11,13 @@ import { AuthStatus } from "@/components/auth-status";
 // "Home" is intentionally omitted,  the logo already links there, so a
 // separate text link would just duplicate it and eat width.
 const links = [
+  { label: "Tutorials", href: "/tutorials" },
   { label: "Puzzles", href: "/puzzles" },
   { label: "Logic Editor", href: "/logic-editor" },
+  { label: "Tools", href: "/tools" },
   { label: "Projects", href: "/projects" },
   { label: "Community", href: "/community" },
   { label: "Blog", href: "/blog" },
-  { label: "Tutorials", href: "/tutorials" },
 ];
 
 function MenuIcon({ open }: { open: boolean }) {

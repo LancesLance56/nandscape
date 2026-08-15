@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { TutorialNavTree } from "@/types/tutorial";
+import type { TutorialNavTree, TutorialTrackTree } from "@/types/tutorial";
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -37,20 +37,65 @@ function NavLink({ href, label }: { href: string; label: string }) {
 
 interface NavListProps {
   tree: TutorialNavTree;
+  tracks: TutorialTrackTree[];
   collapsed: Set<string>;
   onToggle: (sectionId: string) => void;
 }
 
 /** The actual link tree, shared by the mobile collapsible panel and the
  *  desktop fixed rail below so the two don't drift out of sync. */
-function NavList({ tree, collapsed, onToggle }: NavListProps): ReactNode {
+function NavList({ tree, tracks, collapsed, onToggle }: NavListProps): ReactNode {
+  // Sections that belong to a track render under that track's heading
+  // below; anything left over (a section with no track yet) still needs a
+  // home, so it falls through to the flat list underneath.
+  const trackedSectionIds = new Set(tracks.flatMap((t) => t.sections.map((s) => s.id)));
+  const looseSections = tree.sections.filter((s) => !trackedSectionIds.has(s.id));
+
   return (
     <>
+      <NavLink href="/tutorials" label="All tutorials" />
+
+      {tracks
+        .filter((track) => track.pageCount > 0)
+        .map((track) => (
+          <div key={track.id} className="mt-3">
+            <Link
+              href={`/tutorials/${track.slug}`}
+              className="block px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-copper-dark hover:text-copper"
+            >
+              {track.title}
+            </Link>
+            {track.sections.map((section) => {
+              const open = !collapsed.has(section.id);
+              return (
+                <div key={section.id} className="mt-1">
+                  <button
+                    type="button"
+                    onClick={() => onToggle(section.id)}
+                    aria-expanded={open}
+                    className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left text-[11px] font-semibold text-slate hover:text-ink"
+                  >
+                    {section.title}
+                    <ChevronIcon open={open} />
+                  </button>
+                  {open && (
+                    <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
+                      {section.pages.map((page) => (
+                        <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+
       {tree.standalone.map((page) => (
         <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
       ))}
 
-      {tree.sections.map((section) => {
+      {looseSections.map((section) => {
         const open = !collapsed.has(section.id);
         return (
           <div key={section.id} className="mt-2">
@@ -77,7 +122,13 @@ function NavList({ tree, collapsed, onToggle }: NavListProps): ReactNode {
   );
 }
 
-export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
+export function TutorialSidebar({
+  tree,
+  tracks = [],
+}: {
+  tree: TutorialNavTree;
+  tracks?: TutorialTrackTree[];
+}) {
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   // Below lg the sidebar collapses into a toggleable panel instead of the
   // fixed rail - there's no room for a permanent 256px column and readable
@@ -124,7 +175,7 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
         <nav
           className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3 lg:hidden`}
         >
-          <NavList tree={tree} collapsed={collapsed} onToggle={toggle} />
+          <NavList tree={tree} tracks={tracks} collapsed={collapsed} onToggle={toggle} />
         </nav>
       </div>
 
@@ -142,7 +193,7 @@ export function TutorialSidebar({ tree }: { tree: TutorialNavTree }) {
       <div className="pointer-events-none fixed inset-x-0 top-32 bottom-6 z-10 hidden lg:block">
         <div className="mx-auto h-full max-w-330 px-4 sm:px-10">
           <nav className="pointer-events-auto flex h-full w-64 flex-col gap-1 overflow-y-auto overscroll-contain py-4">
-            <NavList tree={tree} collapsed={collapsed} onToggle={toggle} />
+            <NavList tree={tree} tracks={tracks} collapsed={collapsed} onToggle={toggle} />
           </nav>
         </div>
       </div>

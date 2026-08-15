@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPuzzleRecord, listPuzzleRecords } from "@/lib/puzzles/puzzle-records";
 import type { PuzzleSeedInput } from "@/lib/puzzles/puzzle-records";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 
 export async function GET() {
   const puzzles = await listPuzzleRecords();
@@ -8,6 +9,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await isAuthorizedAdminRequest(request))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   let input: PuzzleSeedInput;
   try {
     input = await request.json();

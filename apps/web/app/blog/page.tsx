@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { SiteGradient } from "@/components/site-gradient";
 import { PostListItem } from "@/components/blog/post-list-item";
 import { BlogSidebar } from "@/components/blog/blog-sidebar";
@@ -53,6 +54,7 @@ export default async function BlogIndexPage() {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }

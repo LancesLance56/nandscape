@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPuzzleRecordBySlug, updatePuzzleRecord } from "@/lib/puzzles/puzzle-records";
 import type { PuzzleSeedInput } from "@/lib/puzzles/puzzle-records";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 
 interface RouteParams {
   params: Promise<{ slug: string }>;
@@ -14,6 +15,10 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
+  if (!(await isAuthorizedAdminRequest(request))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { slug } = await params;
 
   let patch: Partial<PuzzleSeedInput>;

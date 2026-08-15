@@ -4,6 +4,8 @@ import { BlockRenderer } from "@/components/content/blocks/block-renderer";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { getPublishedTutorialPageBySlug, listTutorialPages } from "@/lib/tutorials/tutorials";
+import { getTutorialTrackTree, listTutorialTracks } from "@/lib/tutorials/tutorial-tracks";
+import { TrackLanding, trackMetadata } from "./track-landing";
 
 export const revalidate = 60;
 
@@ -16,8 +18,11 @@ export async function generateStaticParams() {
   // Docker image before postgres is networked in) - fall back to generating
   // no static params rather than failing the whole build.
   try {
-    const pages = await listTutorialPages();
-    return pages.filter((p) => p.status === "published").map((p) => ({ slug: p.slug }));
+    const [pages, tracks] = await Promise.all([listTutorialPages(), listTutorialTracks()]);
+    return [
+      ...pages.filter((p) => p.status === "published").map((p) => ({ slug: p.slug })),
+      ...tracks.map((t) => ({ slug: t.slug })),
+    ];
   } catch {
     return [];
   }
@@ -25,6 +30,15 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+
+  // One segment serves two things: a track landing page and a lesson. Track
+  // first, because lesson URLs already exist and are indexed - keeping them
+  // at /tutorials/<slug> avoids a site-wide redirect just to add a layer of
+  // navigation above them. Track slugs are curated, so a collision would be
+  // a deliberate act rather than an accident.
+  const track = await getTutorialTrackTree(slug);
+  if (track) return trackMetadata(track);
+
   const page = await getPublishedTutorialPageBySlug(slug);
   if (!page) return {};
 
@@ -45,6 +59,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TutorialPage({ params }: PageProps) {
   const { slug } = await params;
+
+  const track = await getTutorialTrackTree(slug);
+  if (track) return <TrackLanding track={track} />;
+
   const page = await getPublishedTutorialPageBySlug(slug);
   if (!page) notFound();
 

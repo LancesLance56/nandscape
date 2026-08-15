@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site-url";
 import { listPublishedPosts } from "@/lib/blog/posts";
 import { listPublishedTutorialPages } from "@/lib/tutorials/tutorials";
+import { listTutorialTracks } from "@/lib/tutorials/tutorial-tracks";
+import { TOOLS } from "@/lib/tools/tools";
 import { listPuzzleRecords } from "@/lib/puzzles/puzzle-records";
 import { listPublicProjects } from "@/lib/projects/projects";
 
@@ -18,6 +20,9 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
   { path: "/tutorials", changeFrequency: "weekly", priority: 0.8 },
   { path: "/blog", changeFrequency: "daily", priority: 0.8 },
   { path: "/community", changeFrequency: "daily", priority: 0.6 },
+  { path: "/tools", changeFrequency: "monthly", priority: 0.9 },
+  { path: "/about", changeFrequency: "yearly", priority: 0.4 },
+  { path: "/contact", changeFrequency: "yearly", priority: 0.3 },
 ];
 
 /**
@@ -32,9 +37,10 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
 
-  const [posts, tutorialPages, puzzleRecords, publicProjects] = await Promise.all([
+  const [posts, tutorialPages, tutorialTracks, puzzleRecords, publicProjects] = await Promise.all([
     listPublishedPosts().catch(() => []),
     listPublishedTutorialPages().catch(() => []),
+    listTutorialTracks().catch(() => []),
     listPuzzleRecords().catch(() => []),
     listPublicProjects().catch(() => []),
   ]);
@@ -59,6 +65,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // Tool pages are static (defined in code, not the DB) and are the pages
+  // most likely to attract an inbound link, so they rank alongside the
+  // track hubs rather than below the lessons.
+  const toolEntries: MetadataRoute.Sitemap = TOOLS.map((tool) => ({
+    url: `${base}/tools/${tool.slug}`,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  // Track landing pages are the broad-topic entry points ("Digital Logic"),
+  // so they rank for wider queries than any single lesson and sit high in
+  // the internal link graph - worth a higher priority than the lessons.
+  const trackEntries: MetadataRoute.Sitemap = tutorialTracks.map((track) => ({
+    url: `${base}/tutorials/${track.slug}`,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  }));
+
   // listPuzzles() (used by the /puzzles listing itself) discards
   // createdAt/updatedAt by the time it returns PuzzleSpec - pulling the
   // records directly here instead, purely for lastModified.
@@ -79,5 +103,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticEntries, ...postEntries, ...tutorialEntries, ...puzzleEntries, ...projectEntries];
+  return [
+    ...staticEntries,
+    ...postEntries,
+    ...toolEntries,
+    ...trackEntries,
+    ...tutorialEntries,
+    ...puzzleEntries,
+    ...projectEntries,
+  ];
 }

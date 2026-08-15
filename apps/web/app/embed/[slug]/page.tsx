@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getProjectBySlug } from "@/lib/projects/projects";
 import { EmbedStage } from "@/components/projects/embed-stage";
+import { siteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -26,6 +27,8 @@ export default async function EmbedPage({ params }: { params: Promise<{ slug: st
       edges={project.edges}
       blocks={project.blocks}
       scopes={project.scopes}
+      name={project.name}
+      href={`${siteUrl()}/projects/${project.slug}`}
     />
   );
 }

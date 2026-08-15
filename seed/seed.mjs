@@ -110,6 +110,9 @@ async function main() {
   }
 
   await seedResource("posts", path.join(here, "posts"), "/api/posts", seedHeaders());
+  // Tracks before sections before pages: each layer resolves its parent by
+  // slug (trackSlug / sectionSlug), so the parent has to exist first.
+  await seedResource("tutorial-tracks", path.join(here, "tutorial-tracks"), "/api/tutorial-tracks", seedHeaders());
   await seedResource("tutorial-sections", path.join(here, "tutorial-sections"), "/api/tutorial-sections", seedHeaders());
   await seedResource("tutorials", path.join(here, "tutorials"), "/api/tutorials", seedHeaders());
   await seedResource("puzzles", path.join(here, "puzzles"), "/api/puzzles", seedHeaders());

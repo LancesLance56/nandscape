@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { BlockRenderer } from "@/components/content/blocks/block-renderer";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
@@ -102,6 +103,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <BlockRenderer blocks={post.body} />
         </article>
       </main>
+      <Footer />
     </>
   );
 }

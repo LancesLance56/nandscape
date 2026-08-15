@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createTutorialPage, listTutorialPages } from "@/lib/tutorials/tutorials";
 import { getTutorialSectionBySlug } from "@/lib/tutorials/tutorial-sections";
 import type { NewTutorialPageInput } from "@/types/tutorial";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 
 interface SeedTutorialPageInput extends NewTutorialPageInput {
   sectionSlug?: string;
@@ -13,6 +14,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await isAuthorizedAdminRequest(request))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   let body: SeedTutorialPageInput;
   try {
     body = await request.json();

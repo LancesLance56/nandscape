@@ -1,5 +1,6 @@
 {
   "slug": "sequential-logic",
   "title": "Understanding Sequential Logic",
-  "position": 20
+  "position": 20,
+  "trackSlug": "digital-logic"
 }
