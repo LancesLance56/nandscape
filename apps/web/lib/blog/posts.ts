@@ -11,6 +11,9 @@ interface PostRow {
   status: PostStatus;
   body: PostBlock[];
   tags: string[];
+  seo_title: string | null;
+  seo_description: string | null;
+  keywords: string[] | null;
   published_at: string | null;
   created_at: string;
   updated_at: string;
@@ -27,6 +30,9 @@ function toSummary(row: PostRow): PostSummary {
     authorName: row.author_name,
     status: row.status,
     tags: row.tags,
+    seoTitle: row.seo_title,
+    seoDescription: row.seo_description,
+    keywords: row.keywords ?? [],
     publishedAt: row.published_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -39,6 +45,7 @@ function toPost(row: PostRow): Post {
 
 const SUMMARY_COLUMNS = `
   id, slug, title, excerpt, cover_image, author_name, status, tags,
+  seo_title, seo_description, keywords,
   published_at, created_at, updated_at
 `;
 
@@ -74,8 +81,9 @@ export async function getPublishedPostBySlug(slug: string): Promise<Post | null>
 export async function createPost(input: NewPostInput): Promise<Post> {
   const rows = await query<PostRow>(
     `INSERT INTO blog_posts
-       (slug, title, excerpt, cover_image, author_name, status, body, tags, published_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9)
+       (slug, title, excerpt, cover_image, author_name, status, body, tags,
+        seo_title, seo_description, keywords, published_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, $12)
      RETURNING *`,
     [
       input.slug,
@@ -86,6 +94,9 @@ export async function createPost(input: NewPostInput): Promise<Post> {
       input.status ?? "draft",
       JSON.stringify(input.body ?? []),
       input.tags ?? [],
+      input.seoTitle ?? null,
+      input.seoDescription ?? null,
+      input.keywords ?? [],
       input.publishedAt ?? null,
     ],
   );
@@ -102,6 +113,9 @@ export async function updatePost(slug: string, patch: UpdatePostInput): Promise<
     status: patch.status,
     body: patch.body !== undefined ? JSON.stringify(patch.body) : undefined,
     tags: patch.tags,
+    seo_title: patch.seoTitle,
+    seo_description: patch.seoDescription,
+    keywords: patch.keywords,
     published_at: patch.publishedAt,
   };
 

@@ -232,5 +232,14 @@
       "href": "/tutorials/graph-tarjan-scc",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Topological Sort: Kahn's Algorithm and Cycle Detection",
+  "seoDescription": "Order a dependency graph with Kahn's algorithm or DFS, and detect the cycles that make a valid ordering impossible, all in the same pass.",
+  "keywords": [
+    "topological sort",
+    "kahn's algorithm",
+    "cycle detection",
+    "dag",
+    "dependency graph"
   ]
 }

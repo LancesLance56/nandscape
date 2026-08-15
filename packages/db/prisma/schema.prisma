@@ -64,6 +64,18 @@ model BlogPost {
   status      String    @default("draft")
   body        Json      @default("[]")
   tags        String[]  @default([])
+  /** The <title> tag, which wants ~50-60 characters and the target keyword
+   *  near the front - a different job from `title`, the on-page H1, which is
+   *  written for a reader already on the page. Null falls back to `title`. */
+  seoTitle       String?  @map("seo_title")
+  /** The meta description (~150-160 chars). Distinct from `excerpt`, which
+   *  is card/listing copy; this one is written to earn the click from a
+   *  search result. Null falls back to `excerpt`. */
+  seoDescription String?  @map("seo_description")
+  /** Target search keywords, most important first. Not emitted as the
+   *  long-dead <meta keywords> tag - it's editorial intent, used to keep
+   *  headings/copy honest and to fill schema.org `keywords`. */
+  keywords       String[] @default([])
   publishedAt DateTime? @map("published_at") @db.Timestamptz(6)
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
@@ -93,6 +105,10 @@ model TutorialPage {
   status      String           @default("draft")
   body        Json             @default("[]")
   tags        String[]         @default([])
+  /** See the matching fields on BlogPost for what each is for. */
+  seoTitle       String?       @map("seo_title")
+  seoDescription String?       @map("seo_description")
+  keywords       String[]      @default([])
   position    Int              @default(0)
   sectionId   String?          @map("section_id") @db.Uuid
   section     TutorialSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)

@@ -332,5 +332,14 @@
       "href": "/tutorials/gated-d-latch",
       "style": "primary"
     }
+  ],
+  "seoTitle": "SR Latch Explained: NOR Gates, Truth Table, Forbidden State",
+  "seoDescription": "How an SR latch stores one bit with two cross-coupled NOR gates, what each input combination does, and why S=1, R=1 is genuinely forbidden.",
+  "keywords": [
+    "sr latch",
+    "nor latch",
+    "sr latch truth table",
+    "sr latch forbidden state",
+    "set reset latch"
   ]
 }

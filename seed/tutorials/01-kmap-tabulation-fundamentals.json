@@ -113,7 +113,7 @@
     {
       "id": "h-intro-2",
       "type": "heading",
-      "level": 1,
+      "level": 2,
       "text": "The One Identity Behind Every Simplification"
     },
     {
@@ -187,7 +187,7 @@
     {
       "id": "h-intro-3",
       "type": "heading",
-      "level": 1,
+      "level": 2,
       "text": "The Problem With an Ordinary Truth Table"
     },
     {
@@ -239,7 +239,7 @@
     {
       "id": "h-intro-4",
       "type": "heading",
-      "level": 1,
+      "level": 2,
       "text": "The Fix: Gray Code Ordering"
     },
     {
@@ -308,5 +308,13 @@
       "href": "/tutorials/what-a-kmap-is",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Truth Table to Boolean Expression: Sum of Products",
+  "seoDescription": "Convert any truth table into a boolean expression by hand using minterms and sum of products, the method Karnaugh maps later make fast.",
+  "keywords": [
+    "truth table to boolean expression",
+    "sum of products",
+    "minterm",
+    "boolean algebra"
   ]
 }

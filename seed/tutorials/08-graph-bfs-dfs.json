@@ -332,6 +332,77 @@
       ]
     },
     {
+      "id": "h-takeaway",
+      "type": "heading",
+      "level": 2,
+      "text": "What to take away"
+    },
+    {
+      "id": "p-takeaway-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "BFS and DFS share one skeleton and differ by a single choice: take from the front of the queue and you explore in rings, take from the back and you explore in one long dive. That choice is the whole algorithm. If you remember nothing else, remember that BFS on an "
+        },
+        {
+          "text": "unweighted",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " graph gives you shortest paths for free, because it reaches every node in the fewest possible hops."
+        }
+      ]
+    },
+    {
+      "id": "p-takeaway-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both run in O(V + E) when your graph is stored as an "
+        },
+        {
+          "text": "adjacency list",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/graph-representations"
+            }
+          ]
+        },
+        {
+          "text": ". The moment edges carry different costs, fewest hops stops meaning cheapest and you need "
+        },
+        {
+          "text": "Dijkstra's algorithm",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/graph-dijkstra"
+            }
+          ]
+        },
+        {
+          "text": " instead. If any of the vocabulary here felt shaky, "
+        },
+        {
+          "text": "what a graph actually is",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/graph-what-is-a-graph"
+            }
+          ]
+        },
+        {
+          "text": " covers the groundwork."
+        }
+      ]
+    },
+    {
       "id": "h-quiz",
       "type": "heading",
       "level": 2,
@@ -398,6 +469,77 @@
       }
     },
     {
+      "id": "h-sources",
+      "type": "heading",
+      "level": 2,
+      "text": "Sources and further reading"
+    },
+    {
+      "id": "p-source-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Wikipedia's "
+        },
+        {
+          "text": "breadth-first search",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Breadth-first_search"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "depth-first search",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Depth-first_search"
+            }
+          ]
+        },
+        {
+          "text": " articles both include the original references, including Edward F. Moore's 1959 paper, which is where BFS in its modern form comes from."
+        }
+      ]
+    },
+    {
+      "id": "p-source-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The Python examples use "
+        },
+        {
+          "text": "collections.deque",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://docs.python.org/3/library/collections.html#collections.deque"
+            }
+          ]
+        },
+        {
+          "text": ", which pops from either end in O(1). Using a plain list and calling "
+        },
+        {
+          "text": "pop(0)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is O(n) per step and quietly turns a linear traversal into a quadratic one."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },
@@ -417,5 +559,14 @@
       "href": "/tutorials/graph-dijkstra",
       "style": "primary"
     }
+  ],
+  "seoTitle": "BFS vs DFS Explained: Graph Traversal With Code",
+  "seoDescription": "Breadth-first and depth-first search differ by one line, a queue instead of a stack. See both traversals run step by step, with Python and C++ code.",
+  "keywords": [
+    "bfs vs dfs",
+    "breadth first search",
+    "depth first search",
+    "graph traversal",
+    "shortest path unweighted"
   ]
 }

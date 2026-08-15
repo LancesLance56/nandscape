@@ -171,5 +171,13 @@
       "href": "/tutorials/sr-latch",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Combinational vs Sequential Logic: Why Circuits Remember",
+  "seoDescription": "Combinational circuits forget their inputs instantly. See how feedback turns gates into memory, and why the loop settles instead of oscillating.",
+  "keywords": [
+    "combinational vs sequential logic",
+    "sequential logic",
+    "feedback circuit",
+    "digital logic memory"
   ]
 }

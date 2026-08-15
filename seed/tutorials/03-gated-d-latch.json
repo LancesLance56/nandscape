@@ -434,5 +434,14 @@
       "href": "/tutorials/d-flip-flop",
       "style": "primary"
     }
+  ],
+  "seoTitle": "Gated D Latch: How It Works and Why It Is Transparent",
+  "seoDescription": "The gated D latch removes the SR latch's forbidden state using one data input and an enable, but stays level-sensitive, causing race-through.",
+  "keywords": [
+    "gated d latch",
+    "d latch",
+    "transparent latch",
+    "level sensitive latch",
+    "enable input"
   ]
 }

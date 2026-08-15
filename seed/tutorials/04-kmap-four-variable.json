@@ -149,5 +149,13 @@
       "href": "/puzzles",
       "style": "secondary"
     }
+  ],
+  "seoTitle": "4-Variable Karnaugh Map: Groups and the Four Corners",
+  "seoDescription": "How 4-variable Karnaugh maps work, why group sizes must be powers of two, and why the four corner cells form one legal group.",
+  "keywords": [
+    "4 variable karnaugh map",
+    "four corners karnaugh map",
+    "k-map group size",
+    "boolean simplification"
   ]
 }

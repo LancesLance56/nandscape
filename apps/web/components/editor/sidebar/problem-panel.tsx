@@ -10,8 +10,40 @@ import { usePuzzleDataStore } from "@/store/puzzle-data-store";
 import { gradePuzzle } from "@/lib/puzzles/grade-puzzle";
 import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import Link from "next/link";
+import type { PuzzleSpec } from "@/types/puzzle";
 
-const STEP_DELAY_MS = 350;
+// Stepping through cases one at a time is what makes a run readable - you
+// watch the inputs change and the signals settle. But it's a fixed cost per
+// case, and case count climbs with input count (a 2-input truth table is 4
+// rows; the 4-bit adder is 14), so a flat delay made the big puzzles crawl
+// for half a minute. Spread one budget across however many steps this
+// puzzle actually takes instead, floored so a large run still reads as an
+// animation rather than a flicker.
+const RUN_ANIMATION_BUDGET_MS = 2600;
+const MIN_STEP_DELAY_MS = 70;
+const MAX_STEP_DELAY_MS = 350;
+
+/** Mirrors what grade-puzzle.ts will actually call onStep for: one per truth
+ *  table row, one per sequential step, plus one extra for each pulsed clock
+ *  (it evaluates the rising edge separately,  see gradeSequence). */
+function countRunSteps(puzzle: PuzzleSpec): number {
+  let steps = 0;
+  for (const testCase of puzzle.testCases) {
+    if (testCase.row) {
+      steps += 1;
+    } else if (testCase.sequence) {
+      for (const step of testCase.sequence) steps += step.pulseClock ? 2 : 1;
+    }
+  }
+  return steps;
+}
+
+function stepDelayFor(puzzle: PuzzleSpec): number {
+  const steps = countRunSteps(puzzle);
+  if (steps <= 0) return MAX_STEP_DELAY_MS;
+  const budgeted = Math.round(RUN_ANIMATION_BUDGET_MS / steps);
+  return Math.min(MAX_STEP_DELAY_MS, Math.max(MIN_STEP_DELAY_MS, budgeted));
+}
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -53,12 +85,13 @@ export function ProblemPanel() {
     startRun();
 
     const { nodes: originalNodes, edges } = useEditorStore.getState();
+    const stepDelay = stepDelayFor(puzzle);
 
     const result = await gradePuzzle(puzzle, originalNodes, edges, {
       onStep: async (patchedNodes, signals) => {
         useEditorStore.getState().setNodes(patchedNodes);
         useLiveSignalsStore.getState().setEdgeSignals(signals);
-        await delay(STEP_DELAY_MS);
+        await delay(stepDelay);
       },
     });
 
