@@ -6,23 +6,32 @@ interface TutorialSectionRow {
   slug: string;
   title: string;
   position: number;
+  track_id: string | null;
   [key: string]: unknown;
 }
 
 function toSection(row: TutorialSectionRow): TutorialSection {
-  return { id: row.id, slug: row.slug, title: row.title, position: row.position };
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    position: row.position,
+    trackId: row.track_id,
+  };
 }
+
+const COLUMNS = `id, slug, title, position, track_id`;
 
 export async function listTutorialSections(): Promise<TutorialSection[]> {
   const rows = await query<TutorialSectionRow>(
-    `SELECT id, slug, title, position FROM tutorial_sections ORDER BY position ASC, title ASC`,
+    `SELECT ${COLUMNS} FROM tutorial_sections ORDER BY position ASC, title ASC`,
   );
   return rows.map(toSection);
 }
 
 export async function getTutorialSectionBySlug(slug: string): Promise<TutorialSection | null> {
   const rows = await query<TutorialSectionRow>(
-    `SELECT id, slug, title, position FROM tutorial_sections WHERE slug = $1 LIMIT 1`,
+    `SELECT ${COLUMNS} FROM tutorial_sections WHERE slug = $1 LIMIT 1`,
     [slug],
   );
   return rows[0] ? toSection(rows[0]) : null;
@@ -30,10 +39,10 @@ export async function getTutorialSectionBySlug(slug: string): Promise<TutorialSe
 
 export async function createTutorialSection(input: NewTutorialSectionInput): Promise<TutorialSection> {
   const rows = await query<TutorialSectionRow>(
-    `INSERT INTO tutorial_sections (slug, title, position)
-     VALUES ($1, $2, $3)
-     RETURNING id, slug, title, position`,
-    [input.slug, input.title, input.position ?? 0],
+    `INSERT INTO tutorial_sections (slug, title, position, track_id)
+     VALUES ($1, $2, $3, $4)
+     RETURNING ${COLUMNS}`,
+    [input.slug, input.title, input.position ?? 0, input.trackId ?? null],
   );
   return toSection(rows[0]);
 }
@@ -46,6 +55,7 @@ export async function updateTutorialSection(
     slug: patch.slug,
     title: patch.title,
     position: patch.position,
+    track_id: patch.trackId,
   };
 
   const entries = Object.entries(columnMap).filter(([, value]) => value !== undefined);
@@ -55,7 +65,7 @@ export async function updateTutorialSection(
   const values = entries.map(([, value]) => value);
 
   const rows = await query<TutorialSectionRow>(
-    `UPDATE tutorial_sections SET ${setClauses.join(", ")} WHERE slug = $1 RETURNING id, slug, title, position`,
+    `UPDATE tutorial_sections SET ${setClauses.join(", ")} WHERE slug = $1 RETURNING ${COLUMNS}`,
     [slug, ...values],
   );
   return rows[0] ? toSection(rows[0]) : null;

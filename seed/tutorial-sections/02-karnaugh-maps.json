@@ -1,5 +1,6 @@
 {
   "slug": "karnaugh-maps",
   "title": "Intro To Karnaugh Maps",
-  "position": 10
+  "position": 10,
+  "trackSlug": "digital-logic"
 }

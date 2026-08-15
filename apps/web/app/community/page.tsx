@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { listPublicProjects, type PublicProjectSummary } from "@/lib/projects/projects";
 import { CommunityCircuitsList } from "@/components/projects/community-circuits-list";
 
@@ -27,6 +28,7 @@ export default async function CommunityPage() {
         </div>
         <CommunityCircuitsList projects={projects} />
       </main>
+      <Footer />
     </>
   );
 }

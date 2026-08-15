@@ -1,0 +1,316 @@
+{
+  "slug": "implementation-of-or-from-nor",
+  "title": "Implementation of OR Gate from NOR Gate",
+  "excerpt": "NOR is functionally complete, so a OR gate can be built from it alone. Here is the construction, and why it works.",
+  "status": "published",
+  "sectionSlug": "gate-implementations",
+  "position": 70,
+  "tags": [
+    "digital-logic",
+    "logic-gates",
+    "implementation"
+  ],
+  "seoTitle": "OR Gate Using NOR Gates: Circuit and Truth Table",
+  "seoDescription": "How to implement a OR gate using only NOR gates, with the step-by-step construction, boolean expression and full truth table.",
+  "keywords": [
+    "or gate using nor gate",
+    "or from nor",
+    "implementation of or from nor"
+  ],
+  "authorName": "Nandscape",
+  "publishedAt": "2026-08-15T14:28:40.362Z",
+  "body": [
+    {
+      "id": "p-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The NOR gate is "
+        },
+        {
+          "text": "functionally complete",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", which means every other gate can be built from it alone. This page shows how to build a OR gate using only NOR gates, why the construction works, and how many gates it costs."
+        }
+      ]
+    },
+    {
+      "id": "h-why",
+      "type": "heading",
+      "level": 2,
+      "text": "Why OR can be built from NOR"
+    },
+    {
+      "id": "p-why",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A NOR gate is an OR gate with an inverter on the end, so cancelling that inverter gets OR straight back."
+        }
+      ]
+    },
+    {
+      "id": "p-why-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Functional completeness is the reason chip designers care: a fab only has to get one gate right, and every circuit can be built from copies of it. "
+        },
+        {
+          "text": "NAND and NOR are both functionally complete",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Functional_completeness"
+            }
+          ]
+        },
+        {
+          "text": "; no other two-input gate is, on its own."
+        }
+      ]
+    },
+    {
+      "id": "h-steps",
+      "type": "heading",
+      "level": 2,
+      "text": "Step-by-step construction"
+    },
+    {
+      "id": "h-step-1",
+      "type": "heading",
+      "level": 3,
+      "text": "Step 1"
+    },
+    {
+      "id": "p-step-1",
+      "type": "paragraph",
+      "content": [
+        "NOR A and B, producing ",
+        {
+          "text": "NOT (A OR B)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-step-2",
+      "type": "heading",
+      "level": 3,
+      "text": "Step 2"
+    },
+    {
+      "id": "p-step-2",
+      "type": "paragraph",
+      "content": [
+        "Invert that with a second NOR whose inputs are tied together."
+      ]
+    },
+    {
+      "id": "h-step-3",
+      "type": "heading",
+      "level": 3,
+      "text": "Step 3"
+    },
+    {
+      "id": "p-step-3",
+      "type": "paragraph",
+      "content": [
+        "The two inversions cancel, leaving ",
+        {
+          "text": "A OR B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-expression",
+      "type": "heading",
+      "level": 2,
+      "text": "The boolean expression"
+    },
+    {
+      "id": "p-expression",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A OR B = NOR(NOR(A, B), NOR(A, B))",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h-truth",
+      "type": "heading",
+      "level": 2,
+      "text": "Truth table"
+    },
+    {
+      "id": "t-truth",
+      "type": "table",
+      "headers": [
+        "A",
+        "B",
+        "OR"
+      ],
+      "rows": [
+        [
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "p-truth",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Build the circuit, then check every row. If all four match, the construction is correct: a truth table is a complete specification for a combinational circuit, so agreeing on every row means the two circuits are the same function."
+        }
+      ]
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "Gate count"
+    },
+    {
+      "id": "p-cost",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This construction uses "
+        },
+        {
+          "text": "2 NOR gates",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Gate count matters in real hardware because every gate costs area, power and a small propagation delay, which is why a circuit built entirely from one gate type is usually larger than the same logic built from mixed gates."
+        }
+      ]
+    },
+    {
+      "id": "h-build",
+      "type": "heading",
+      "level": 2,
+      "text": "Build it yourself"
+    },
+    {
+      "id": "p-build",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reading the construction is not the same as getting it working. Open the editor, drop in the gates, and watch the output change as you toggle the inputs."
+        }
+      ]
+    },
+    {
+      "id": "b-build",
+      "type": "button",
+      "label": "Open the logic editor",
+      "href": "/logic-editor",
+      "style": "primary"
+    },
+    {
+      "id": "h-related",
+      "type": "heading",
+      "level": 2,
+      "text": "Related pages"
+    },
+    {
+      "id": "p-related",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every conversion follows the same two moves: get the un-inverted version, then cancel or add an inversion. Once you have seen "
+        },
+        {
+          "text": "AND from NAND",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/implementation-of-and-from-nand"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "OR from NAND",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/implementation-of-or-from-nand"
+            }
+          ]
+        },
+        {
+          "text": ", the rest are variations. The wider "
+        },
+        {
+          "text": "digital logic track",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/digital-logic"
+            }
+          ]
+        },
+        {
+          "text": " covers where these gates end up: adders, latches and memory."
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    }
+  ]
+}

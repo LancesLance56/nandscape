@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { listTutorialPages } from "@/lib/tutorials/tutorials";
 import { listTutorialSections } from "@/lib/tutorials/tutorial-sections";
+import { listTutorialTracks } from "@/lib/tutorials/tutorial-tracks";
 import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { AdminTutorialTree } from "@/components/admin/admin-tutorial-tree";
 
@@ -10,7 +11,11 @@ export default async function AdminTutorialsIndexPage() {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") redirect("/login");
 
-  const [pages, sections] = await Promise.all([listTutorialPages(), listTutorialSections()]);
+  const [pages, sections, tracks] = await Promise.all([
+    listTutorialPages(),
+    listTutorialSections(),
+    listTutorialTracks(),
+  ]);
 
   return (
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-16">
@@ -30,7 +35,7 @@ export default async function AdminTutorialsIndexPage() {
         </Link>
       </div>
 
-      <AdminTutorialTree pages={pages} sections={sections} />
+      <AdminTutorialTree pages={pages} sections={sections} tracks={tracks} />
     </main>
   );
 }

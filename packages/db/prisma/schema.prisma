@@ -85,13 +85,32 @@ model BlogPost {
   @@map("blog_posts")
 }
 
+/** The top level of the tutorial library: a broad subject area ("Digital
+ *  Logic", "Data Structures & Algorithms") that owns several sections, each
+ *  of which owns its pages. Sections existed first and were flat, so
+ *  `trackId` is nullable - an untracked section still renders, it just sits
+ *  outside the directory listing rather than breaking it. */
+model TutorialTrack {
+  id          String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String            @unique
+  title       String
+  description String?
+  position    Int               @default(0)
+  sections    TutorialSection[]
+
+  @@map("tutorial_tracks")
+}
+
 model TutorialSection {
   id       String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   slug     String         @unique
   title    String
   position Int            @default(0)
+  trackId  String?        @map("track_id") @db.Uuid
+  track    TutorialTrack? @relation(fields: [trackId], references: [id], onDelete: SetNull)
   pages    TutorialPage[]
 
+  @@index([trackId, position])
   @@map("tutorial_sections")
 }
 

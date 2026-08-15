@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { PuzzleList } from "@/components/puzzles/puzzle-list";
 import { DailyPuzzleCard } from "@/components/puzzles/daily-puzzle-card";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
@@ -45,6 +46,7 @@ export default async function PuzzlesPage() {
 
         <PuzzleList puzzles={puzzles} dailyPuzzleSlug={dailyPuzzle?.slug} />
       </main>
+      <Footer />
     </>
   );
 }

@@ -1,0 +1,213 @@
+{
+  "slug": "multiplexer-2to1-implementation",
+  "title": "Implementation of a 2:1 Multiplexer Using Logic Gates",
+  "excerpt": "A select line, two inputs, one output. The hardware version of a ternary expression.",
+  "status": "published",
+  "sectionSlug": "gate-implementations",
+  "position": 150,
+  "tags": [
+    "digital-logic",
+    "logic-gates",
+    "implementation"
+  ],
+  "seoTitle": "2:1 Multiplexer Using Logic Gates: Circuit and Truth Table",
+  "seoDescription": "Implement a 2:1 multiplexer from an inverter, two AND gates and an OR gate. Truth table, boolean expression and why muxes matter.",
+  "keywords": [
+    "2 to 1 multiplexer",
+    "multiplexer using logic gates",
+    "mux implementation",
+    "2:1 mux circuit"
+  ],
+  "authorName": "Nandscape",
+  "publishedAt": "2026-08-15T14:28:40.367Z",
+  "body": [
+    {
+      "id": "p-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        {
+          "text": "2:1 multiplexer",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " picks one of two inputs and forwards it to a single output. A select line decides which. It is the hardware equivalent of a ternary expression: "
+        },
+        {
+          "text": "Y = SEL ? B : A",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-truth",
+      "type": "heading",
+      "level": 2,
+      "text": "Truth table"
+    },
+    {
+      "id": "t-truth",
+      "type": "table",
+      "headers": [
+        "SEL",
+        "Y"
+      ],
+      "rows": [
+        [
+          "0",
+          "A"
+        ],
+        [
+          "1",
+          "B"
+        ]
+      ]
+    },
+    {
+      "id": "p-truth",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Written out over all three inputs it is eight rows, but the behaviour compresses to those two lines: SEL chooses the source, and the unselected input has no effect on the output at all."
+        }
+      ]
+    },
+    {
+      "id": "h-expression",
+      "type": "heading",
+      "level": 2,
+      "text": "The boolean expression"
+    },
+    {
+      "id": "p-expression",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Y = (A AND NOT SEL) OR (B AND SEL)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h-gates",
+      "type": "heading",
+      "level": 2,
+      "text": "Step-by-step construction"
+    },
+    {
+      "id": "h-inv",
+      "type": "heading",
+      "level": 3,
+      "text": "Invert the select line"
+    },
+    {
+      "id": "p-inv",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You need both SEL and NOT SEL, so start with a single inverter."
+        }
+      ]
+    },
+    {
+      "id": "h-and",
+      "type": "heading",
+      "level": 3,
+      "text": "Two AND gates act as gates in the literal sense"
+    },
+    {
+      "id": "p-and",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "AND A with NOT SEL, and B with SEL. Exactly one of these can be non-zero at a time, so one branch is always forced to 0 while the other passes its input straight through."
+        }
+      ]
+    },
+    {
+      "id": "h-or",
+      "type": "heading",
+      "level": 3,
+      "text": "OR the branches"
+    },
+    {
+      "id": "p-or",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Since one branch is always 0, ORing them just forwards whichever branch is live. That is the output."
+        }
+      ]
+    },
+    {
+      "id": "h-why",
+      "type": "heading",
+      "level": 2,
+      "text": "Why multiplexers matter"
+    },
+    {
+      "id": "p-why",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Selection is everywhere in hardware: choosing which register feeds an ALU, which result to write back, which instruction to run next. A multiplexer is also functionally complete on its own, which is why "
+        },
+        {
+          "text": "lookup-table based FPGAs",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Field-programmable_gate_array"
+            }
+          ]
+        },
+        {
+          "text": " can implement arbitrary logic from little more than muxes and memory."
+        }
+      ]
+    },
+    {
+      "id": "h-build",
+      "type": "heading",
+      "level": 2,
+      "text": "Build it yourself"
+    },
+    {
+      "id": "p-build",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Four gates. Then try building a 4:1 mux from three 2:1 muxes, which is the standard way to scale it."
+        }
+      ]
+    },
+    {
+      "id": "b-build",
+      "type": "button",
+      "label": "Solve the 2-to-1 multiplexer puzzle",
+      "href": "/puzzles/two-to-one-multiplexer",
+      "style": "primary"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    }
+  ]
+}

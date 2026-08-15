@@ -1,0 +1,303 @@
+{
+  "slug": "full-adder-implementation",
+  "title": "Full Adder: Implementation and Truth Table",
+  "excerpt": "Three inputs, two outputs, and the building block every multi-bit adder is made from.",
+  "status": "published",
+  "sectionSlug": "gate-implementations",
+  "position": 120,
+  "tags": [
+    "digital-logic",
+    "logic-gates",
+    "implementation"
+  ],
+  "seoTitle": "Full Adder: Circuit, Truth Table and Implementation",
+  "seoDescription": "How a full adder works: the eight-row truth table, building one from two half adders, and how chaining them makes a ripple-carry adder.",
+  "keywords": [
+    "full adder",
+    "full adder truth table",
+    "full adder circuit",
+    "carry in carry out"
+  ],
+  "authorName": "Nandscape",
+  "publishedAt": "2026-08-15T14:28:40.365Z",
+  "body": [
+    {
+      "id": "p-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        {
+          "text": "full adder",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " adds three bits: two operand bits and a carry from the previous column. It is the building block every multi-bit adder is made of."
+        }
+      ]
+    },
+    {
+      "id": "h-why",
+      "type": "heading",
+      "level": 2,
+      "text": "Why three inputs"
+    },
+    {
+      "id": "p-why",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When you add binary numbers column by column, every column except the rightmost can receive a carry. A "
+        },
+        {
+          "text": "half adder",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/half-adder-implementation"
+            }
+          ]
+        },
+        {
+          "text": " has no input for that, so it can only handle the first column. The full adder adds a "
+        },
+        {
+          "text": "CIN",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " input to fix exactly that."
+        }
+      ]
+    },
+    {
+      "id": "h-truth",
+      "type": "heading",
+      "level": 2,
+      "text": "Truth table"
+    },
+    {
+      "id": "t-truth",
+      "type": "table",
+      "headers": [
+        "A",
+        "B",
+        "CIN",
+        "SUM",
+        "COUT"
+      ],
+      "rows": [
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "1",
+          "1",
+          "0",
+          "0",
+          "1"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "1",
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "0",
+          "1",
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "h-gates",
+      "type": "heading",
+      "level": 2,
+      "text": "Building it from two half adders"
+    },
+    {
+      "id": "h-first",
+      "type": "heading",
+      "level": 3,
+      "text": "First half adder"
+    },
+    {
+      "id": "p-first",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Add A and B. This gives a partial sum and a first carry."
+        }
+      ]
+    },
+    {
+      "id": "h-second",
+      "type": "heading",
+      "level": 3,
+      "text": "Second half adder"
+    },
+    {
+      "id": "p-second",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Add that partial sum to CIN. This produces the final SUM and a second carry."
+        }
+      ]
+    },
+    {
+      "id": "h-or",
+      "type": "heading",
+      "level": 3,
+      "text": "OR the two carries"
+    },
+    {
+      "id": "p-or",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A carry out happens if either half adder generated one. They can never both be 1, so a single OR gate combines them: "
+        },
+        {
+          "text": "COUT = C1 OR C2",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-expression",
+      "type": "heading",
+      "level": 2,
+      "text": "The boolean expressions"
+    },
+    {
+      "id": "p-expression",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "SUM = A XOR B XOR CIN",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "  and  "
+        },
+        {
+          "text": "COUT = (A AND B) OR (CIN AND (A XOR B))",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h-chaining",
+      "type": "heading",
+      "level": 2,
+      "text": "Chaining full adders"
+    },
+    {
+      "id": "p-chaining",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Wire each adder's COUT into the next one's CIN and you have a "
+        },
+        {
+          "text": "ripple-carry adder",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", the simplest way to add multi-bit numbers. The name comes from the carry having to ripple through every stage before the answer is final, which is what limits its speed."
+        }
+      ]
+    },
+    {
+      "id": "h-build",
+      "type": "heading",
+      "level": 2,
+      "text": "Build it yourself"
+    },
+    {
+      "id": "p-build",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Start from two half adders rather than trying to wire all five gates at once."
+        }
+      ]
+    },
+    {
+      "id": "b-build",
+      "type": "button",
+      "label": "Solve the full adder puzzle",
+      "href": "/puzzles/full-adder",
+      "style": "primary"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    }
+  ]
+}

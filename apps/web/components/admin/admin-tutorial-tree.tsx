@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { slugify } from "@/lib/blog-editor/types";
-import type { TutorialPageSummary, TutorialSection } from "@/types/tutorial";
+import type { TutorialPageSummary, TutorialSection, TutorialTrack } from "@/types/tutorial";
 
 function formatDate(iso: string | null): string {
   if (!iso) return "-";
@@ -40,15 +40,18 @@ function PageRow({ page }: { page: TutorialPageSummary }) {
 /** Inline "+ New section" row - title + auto-derived slug, same follow-until-diverged pattern metadata-panel.tsx uses for post/page slugs. */
 function NewSectionForm({
   nextPosition,
+  tracks,
   onCreated,
   onCancel,
 }: {
   nextPosition: number;
+  tracks: TutorialTrack[];
   onCreated: (section: TutorialSection) => void;
   onCancel: () => void;
 }) {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
+  const [trackId, setTrackId] = useState<string>(tracks[0]?.id ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const slugFollowsTitle = slug === slugify(title);
@@ -67,7 +70,12 @@ function NewSectionForm({
       const res = await fetch("/api/tutorial-sections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: trimmedTitle, slug: trimmedSlug, position: nextPosition }),
+        body: JSON.stringify({
+          title: trimmedTitle,
+          slug: trimmedSlug,
+          position: nextPosition,
+          trackId: trackId || null,
+        }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -103,6 +111,19 @@ function NewSectionForm({
           placeholder="slug"
           className="w-40 rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
         />
+        <select
+          value={trackId}
+          onChange={(e) => setTrackId(e.target.value)}
+          aria-label="Track"
+          className="rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
+        >
+          <option value="">No track</option>
+          {tracks.map((track) => (
+            <option key={track.id} value={track.id}>
+              {track.title}
+            </option>
+          ))}
+        </select>
       </div>
       {error && <p className="text-xs text-signal-coral">{error}</p>}
       <div className="flex items-center gap-2">
@@ -137,9 +158,11 @@ function NewSectionForm({
 export function AdminTutorialTree({
   pages,
   sections: initialSections,
+  tracks = [],
 }: {
   pages: TutorialPageSummary[];
   sections: TutorialSection[];
+  tracks?: TutorialTrack[];
 }) {
   const [sections, setSections] = useState(initialSections);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
@@ -169,7 +192,65 @@ export function AdminTutorialTree({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-0.5 rounded-2xl border border-border bg-surface-card p-2">
-        {sections.map((section) => {
+        {renderSections(
+          sections.filter((s) => !s.trackId),
+          "No track",
+        )}
+        {tracks.map((track) =>
+          renderSections(
+            sections.filter((s) => s.trackId === track.id),
+            track.title,
+          ),
+        )}
+
+        {standalone.length > 0 && (
+          <div className="mb-1">
+            <div className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-wide text-slate">
+              No section
+            </div>
+            <div className="flex flex-col gap-0.5">
+              {standalone.map((page) => (
+                <PageRow key={page.id} page={page} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {sections.length === 0 && pages.length === 0 && (
+          <p className="px-3 py-6 text-center text-sm text-slate">No tutorial pages yet.</p>
+        )}
+      </div>
+
+      {creating ? (
+        <NewSectionForm
+          nextPosition={sections.length}
+          tracks={tracks}
+          onCreated={(section) => {
+            setSections((prev) => [...prev, section]);
+            setCreating(false);
+          }}
+          onCancel={() => setCreating(false)}
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setCreating(true)}
+          className="self-start rounded-lg border border-dashed border-border-strong px-3 py-2 text-xs font-semibold text-slate transition-colors hover:border-copper hover:text-copper-dark"
+        >
+          + New section
+        </button>
+      )}
+    </div>
+  );
+
+  function renderSections(list: TutorialSection[], label: string) {
+    if (list.length === 0) return null;
+    return (
+      <div key={label} className="mb-1">
+        <div className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-wide text-copper-dark">
+          {label}
+        </div>
+        {list.map((section) => {
           const sectionPages = pagesBySection.get(section.id) ?? [];
           const open = !collapsed.has(section.id);
           return (
@@ -200,42 +281,7 @@ export function AdminTutorialTree({
           );
         })}
 
-        {standalone.length > 0 && (
-          <div className={sections.length > 0 ? "mt-1" : undefined}>
-            <div className="px-3 py-2 text-[11px] font-semibold text-slate">
-              No section
-            </div>
-            <div className="flex flex-col gap-0.5">
-              {standalone.map((page) => (
-                <PageRow key={page.id} page={page} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {sections.length === 0 && pages.length === 0 && (
-          <p className="px-3 py-6 text-center text-sm text-slate">No tutorial pages yet.</p>
-        )}
       </div>
-
-      {creating ? (
-        <NewSectionForm
-          nextPosition={sections.length}
-          onCreated={(section) => {
-            setSections((prev) => [...prev, section]);
-            setCreating(false);
-          }}
-          onCancel={() => setCreating(false)}
-        />
-      ) : (
-        <button
-          type="button"
-          onClick={() => setCreating(true)}
-          className="self-start rounded-lg border border-dashed border-border-strong px-3 py-2 text-xs font-semibold text-slate transition-colors hover:border-copper hover:text-copper-dark"
-        >
-          + New section
-        </button>
-      )}
-    </div>
-  );
+    );
+  }
 }

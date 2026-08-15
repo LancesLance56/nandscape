@@ -1,0 +1,246 @@
+{
+  "slug": "half-adder-implementation",
+  "title": "Half Adder: Implementation and Truth Table",
+  "excerpt": "Two gates that add two bits. The smallest piece of arithmetic hardware there is, and the basis of every larger adder.",
+  "status": "published",
+  "sectionSlug": "gate-implementations",
+  "position": 110,
+  "tags": [
+    "digital-logic",
+    "logic-gates",
+    "implementation"
+  ],
+  "seoTitle": "Half Adder: Circuit, Truth Table and Implementation",
+  "seoDescription": "How a half adder works: the truth table, why SUM is XOR and CARRY is AND, and the two-gate circuit that implements it.",
+  "keywords": [
+    "half adder",
+    "half adder truth table",
+    "half adder circuit",
+    "sum and carry"
+  ],
+  "authorName": "Nandscape",
+  "publishedAt": "2026-08-15T14:28:40.365Z",
+  "body": [
+    {
+      "id": "p-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        {
+          "text": "half adder",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " adds two single bits and produces two outputs: a "
+        },
+        {
+          "text": "SUM",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " bit and a "
+        },
+        {
+          "text": "CARRY",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " bit. It is the smallest piece of arithmetic hardware there is, and every larger adder is built from copies of it."
+        }
+      ]
+    },
+    {
+      "id": "h-why",
+      "type": "heading",
+      "level": 2,
+      "text": "Why two outputs are necessary"
+    },
+    {
+      "id": "p-why",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Adding two bits can produce 2, which does not fit in one bit. "
+        },
+        {
+          "text": "1 + 1 = 10",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " in binary: a sum of 0 and a carry of 1. That overflow is exactly what the carry output is for."
+        }
+      ]
+    },
+    {
+      "id": "h-truth",
+      "type": "heading",
+      "level": 2,
+      "text": "Truth table"
+    },
+    {
+      "id": "t-truth",
+      "type": "table",
+      "headers": [
+        "A",
+        "B",
+        "SUM",
+        "CARRY"
+      ],
+      "rows": [
+        [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "1",
+          "0"
+        ],
+        [
+          "1",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "1",
+          "1",
+          "0",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "h-gates",
+      "type": "heading",
+      "level": 2,
+      "text": "Which gates produce each output"
+    },
+    {
+      "id": "h-sum",
+      "type": "heading",
+      "level": 3,
+      "text": "SUM is XOR"
+    },
+    {
+      "id": "p-sum",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Look at the SUM column: it is 1 exactly when the inputs differ. That is the definition of XOR, so "
+        },
+        {
+          "text": "SUM = A XOR B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-carry",
+      "type": "heading",
+      "level": 3,
+      "text": "CARRY is AND"
+    },
+    {
+      "id": "p-carry",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "CARRY is 1 only when both inputs are 1, which is AND. So "
+        },
+        {
+          "text": "CARRY = A AND B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". The entire half adder is two gates."
+        }
+      ]
+    },
+    {
+      "id": "h-limit",
+      "type": "heading",
+      "level": 2,
+      "text": "The limitation: no carry in"
+    },
+    {
+      "id": "p-limit",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A half adder has nowhere to accept a carry from a previous column, so it can only ever add the rightmost bit of a number. Fixing that is what the "
+        },
+        {
+          "text": "full adder",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/full-adder-implementation"
+            }
+          ]
+        },
+        {
+          "text": " is for."
+        }
+      ]
+    },
+    {
+      "id": "h-build",
+      "type": "heading",
+      "level": 2,
+      "text": "Build it yourself"
+    },
+    {
+      "id": "p-build",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two gates, four rows to check. This is the best possible first circuit to build from scratch."
+        }
+      ]
+    },
+    {
+      "id": "b-build",
+      "type": "button",
+      "label": "Solve the half adder puzzle",
+      "href": "/puzzles/half-adder",
+      "style": "primary"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    }
+  ]
+}
