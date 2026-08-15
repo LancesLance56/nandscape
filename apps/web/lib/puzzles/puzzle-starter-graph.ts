@@ -8,11 +8,32 @@ const OUTPUT_X = 640;
 
 export function buildPuzzleStarterGraph(puzzle: PuzzleSpec): { nodes: EditorNode[]; edges: EditorEdge[] } {
   const builder = new CircuitBuilder();
-  puzzle.inputs.forEach((port, i) =>
-    builder.input(port.name, 40, 40 + i * ROW_SPACING, {
-      value: port.defaultValue === 1 ? SignalState.HIGH : SignalState.LOW,
-    }),
-  );
+
+  // inputDisplay is purely a starter-canvas grouping hint (see its doc
+  // comment in types/puzzle.ts): named ports it covers get one combined
+  // Bus Input node instead of one Input toggle each. Grading still resolves
+  // every name independently, so this never changes what counts as correct,
+  // only how the blank canvas looks.
+  const groupedInputNames = new Set<string>();
+  let inputRow = 0;
+  for (const group of puzzle.inputDisplay ?? []) {
+    const values = group.names.map((name) => {
+      const port = puzzle.inputs.find((p) => p.name === name);
+      return port?.defaultValue === 1 ? SignalState.HIGH : SignalState.LOW;
+    });
+    builder.busInput(group.names, 40, 40 + inputRow * ROW_SPACING, { values });
+    group.names.forEach((name) => groupedInputNames.add(name));
+    inputRow += 1;
+  }
+
+  puzzle.inputs
+    .filter((port) => !groupedInputNames.has(port.name))
+    .forEach((port) => {
+      builder.input(port.name, 40, 40 + inputRow * ROW_SPACING, {
+        value: port.defaultValue === 1 ? SignalState.HIGH : SignalState.LOW,
+      });
+      inputRow += 1;
+    });
 
   // outputDisplay is purely a starter-canvas grouping hint (see its doc
   // comment in types/puzzle.ts): named ports it covers get one combined

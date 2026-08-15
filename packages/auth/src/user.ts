@@ -74,7 +74,7 @@ export async function findOrCreateGoogleUser(profile: GoogleProfile): Promise<Se
     if (byEmail) {
       const linked = await prisma.user.update({
         where: { id: byEmail.id },
-        data: { googleId: profile.googleId },
+        data: { googleId: profile.googleId, emailVerifiedAt: byEmail.emailVerifiedAt ?? new Date() },
       });
       return toSessionUser(linked);
     }
@@ -84,7 +84,16 @@ export async function findOrCreateGoogleUser(profile: GoogleProfile): Promise<Se
 
   try {
     const user = await prisma.user.create({
-      data: { email, username, googleId: profile.googleId, name: profile.name, avatarUrl: profile.avatarUrl },
+      data: {
+        email,
+        username,
+        googleId: profile.googleId,
+        name: profile.name,
+        avatarUrl: profile.avatarUrl,
+        // Google already confirmed this address, so there's nothing for our
+        // own verification email to add - skip straight to verified.
+        emailVerifiedAt: profile.emailVerified ? new Date() : null,
+      },
     });
     return toSessionUser(user);
   } catch (error) {
@@ -129,6 +138,7 @@ function toSessionUser(user: {
   name: string | null;
   avatarUrl: string | null;
   role: SessionUser["role"];
+  emailVerifiedAt: Date | null;
 }): SessionUser {
   return {
     id: user.id,
@@ -137,6 +147,7 @@ function toSessionUser(user: {
     name: user.name,
     avatarUrl: user.avatarUrl,
     role: user.role,
+    emailVerified: user.emailVerifiedAt !== null,
   };
 }
 
@@ -148,11 +159,26 @@ export interface UpdateProfileInput {
 }
 
 export async function updateUserProfile(userId: string, input: UpdateProfileInput): Promise<SessionUser> {
-  const data: { name?: string | null; username?: string; email?: string; avatarUrl?: string | null } = {};
+  const data: {
+    name?: string | null;
+    username?: string;
+    email?: string;
+    avatarUrl?: string | null;
+    emailVerifiedAt?: Date | null;
+  } = {};
   if (input.name !== undefined) data.name = input.name;
   if (input.username !== undefined) data.username = input.username;
-  if (input.email !== undefined) data.email = input.email.toLowerCase();
   if (input.avatarUrl !== undefined) data.avatarUrl = input.avatarUrl;
+
+  if (input.email !== undefined) {
+    const nextEmail = input.email.toLowerCase();
+    data.email = nextEmail;
+    // Changing the address unverifies it - the old address's verification
+    // says nothing about who controls the new one, so carrying it forward
+    // would let someone claim an unowned inbox as "verified" for free.
+    const current = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+    if (current && current.email !== nextEmail) data.emailVerifiedAt = null;
+  }
 
   try {
     const user = await prisma.user.update({ where: { id: userId }, data });

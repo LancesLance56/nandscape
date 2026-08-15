@@ -6,6 +6,7 @@ import type {
   EditorEdge,
   GateNodeData,
   IoNodeData,
+  BusInputNodeData,
   BusOutputNodeData,
   SevenSegmentNodeData,
 } from "@/types/editor";
@@ -41,31 +42,53 @@ function signalMatchesBit(signal: SignalState | undefined, bit: 0 | 1): boolean 
   return signal === bitToSignal(bit);
 }
 
+/** Every named input port's owning node. Spans plain "input" nodes (one
+ *  name -> IoNodeData.value) and multi-lane "bus-input" nodes (each
+ *  names[i] -> values[i]), since a puzzle's `inputDisplay` hint can put a
+ *  given port name on either kind of node,  see puzzle-starter-graph.ts.
+ *  Grading and the missing-input structural check both resolve input names
+ *  through this map, never by assuming one node = one port,  mirrors
+ *  outputNamesOf/findOutputPins below for the output side. */
+function inputNamesOf(node: EditorNode): string[] {
+  if (node.data.kind === "input") return [(node.data as IoNodeData).name];
+  if (node.data.kind === "bus-input") return (node.data as BusInputNodeData).names;
+  return [];
+}
+
 function setInputValues(nodes: EditorNode[], values: Record<string, 0 | 1>): EditorNode[] {
   return nodes.map((n) => {
-    if (n.data.kind !== "input") return n;
-    const name = (n.data as IoNodeData).name;
-    if (!(name in values)) return n;
-    return { ...n, data: { ...n.data, value: bitToSignal(values[name]) } };
+    if (n.data.kind === "input") {
+      const name = (n.data as IoNodeData).name;
+      if (!(name in values)) return n;
+      return { ...n, data: { ...n.data, value: bitToSignal(values[name]) } };
+    }
+    if (n.data.kind === "bus-input") {
+      const data = n.data as BusInputNodeData;
+      if (!data.names.some((name) => name in values)) return n;
+      const nextValues = data.values.map((v, i) =>
+        data.names[i] in values ? bitToSignal(values[data.names[i]]) : v,
+      );
+      return { ...n, data: { ...data, values: nextValues } };
+    }
+    return n;
   });
 }
 
-function findIoNodesByName(nodes: EditorNode[], kind: "input"): Map<string, EditorNode> {
-  const map = new Map<string, EditorNode>();
+function findInputNames(nodes: EditorNode[]): Set<string> {
+  const set = new Set<string>();
   for (const node of nodes) {
-    if (node.data.kind !== kind) continue;
-    map.set((node.data as IoNodeData).name, node);
+    for (const name of inputNamesOf(node)) set.add(name);
   }
-  return map;
+  return set;
 }
 
-function findDuplicateName(nodes: EditorNode[], kind: "input"): string | null {
+function findDuplicateInputName(nodes: EditorNode[]): string | null {
   const seen = new Set<string>();
   for (const node of nodes) {
-    if (node.data.kind !== kind) continue;
-    const name = (node.data as IoNodeData).name;
-    if (seen.has(name)) return name;
-    seen.add(name);
+    for (const name of inputNamesOf(node)) {
+      if (seen.has(name)) return name;
+      seen.add(name);
+    }
   }
   return null;
 }
@@ -142,13 +165,13 @@ function checkStructure(puzzle: PuzzleSpec, nodes: EditorNode[]): string | null 
     }
   }
 
-  const dupInput = findDuplicateName(nodes, "input");
-  if (dupInput) return `Multiple input nodes are named "${dupInput}",  names must be unique.`;
+  const dupInput = findDuplicateInputName(nodes);
+  if (dupInput) return `Multiple input ports are named "${dupInput}",  names must be unique.`;
   const dupOutput = findDuplicateOutputName(nodes);
   if (dupOutput) return `Multiple output ports are named "${dupOutput}",  names must be unique.`;
 
-  const inputsByName = findIoNodesByName(nodes, "input");
-  const missingInputs = puzzle.inputs.filter((p) => !inputsByName.has(p.name));
+  const inputNames = findInputNames(nodes);
+  const missingInputs = puzzle.inputs.filter((p) => !inputNames.has(p.name));
   if (missingInputs.length > 0) {
     return `Missing input node(s) named: ${missingInputs.map((p) => p.name).join(", ")}.`;
   }

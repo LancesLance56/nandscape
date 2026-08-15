@@ -1,5 +1,11 @@
 import { GateType, SignalState } from "@nandscape/engine";
-import { createGateNode, createIoNode, createBusOutputNode, createSevenSegmentNode } from "@/components/editor/nodes/node-registry";
+import {
+  createGateNode,
+  createIoNode,
+  createBusInputNode,
+  createBusOutputNode,
+  createSevenSegmentNode,
+} from "@/components/editor/nodes/node-registry";
 import type { EditorNode, EditorEdge } from "@/types/editor";
 
 export interface Port {
@@ -57,6 +63,18 @@ export class CircuitBuilder {
   public gate(type: GateType, x: number, y: number, options?: NodeOptions): NodeHandle {
     const id = options?.id || this.nextNodeId("gate");
     const node = createGateNode({ x, y }, type, { id });
+    this.nodes.push(node);
+    return new NodeHandle(node.id);
+  }
+
+  public busInput(
+    names: string[],
+    x: number,
+    y: number,
+    options?: NodeOptions & { values?: SignalState[] },
+  ): NodeHandle {
+    const id = options?.id || this.nextNodeId("bus-input");
+    const node = createBusInputNode({ x, y }, { id, names, values: options?.values });
     this.nodes.push(node);
     return new NodeHandle(node.id);
   }

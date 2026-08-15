@@ -5,7 +5,8 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "@repo/db": "workspace:*"
+    "@repo/db": "workspace:*",
+    "resend": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",

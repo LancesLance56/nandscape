@@ -7,6 +7,7 @@
   "gateBudget": 35,
   "inputs": [{ "name": "A1" }, { "name": "A0" }, { "name": "B1" }, { "name": "B0" }, { "name": "OP1" }, { "name": "OP0" }],
   "outputs": [{ "name": "Y1" }, { "name": "Y0" }, { "name": "COUT" }],
+  "inputDisplay": [{ "type": "bus", "names": ["A1", "A0"] }, { "type": "bus", "names": ["B1", "B0"] }, { "type": "bus", "names": ["OP1", "OP0"] }],
   "outputDisplay": [{ "type": "bus", "names": ["Y1", "Y0"] }],
   "testCases": [
     { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "OP1": 0, "OP0": 0 }, "outputs": { "Y1": 0, "Y0": 0, "COUT": 0 } } },

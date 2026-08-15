@@ -6,6 +6,8 @@ import { BlogSidebar } from "@/components/blog/blog-sidebar";
 import { listPublishedPosts } from "@/lib/blog/posts";
 import type { PostSummary } from "@/types/blog";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Blog,  Nandscape",
   description: "Notes on logic gates, puzzles, and building Nandscape.",

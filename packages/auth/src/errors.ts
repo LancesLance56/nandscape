@@ -17,3 +17,15 @@ export class UsernameAlreadyExistsError extends AuthError {
     super("This username is already taken");
   }
 }
+
+export class InvalidVerificationTokenError extends AuthError {
+  constructor() {
+    super("This verification link is invalid or has expired");
+  }
+}
+
+export class VerificationCooldownError extends AuthError {
+  constructor() {
+    super("A verification email was already sent recently,  check your inbox or try again shortly");
+  }
+}

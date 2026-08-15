@@ -124,12 +124,19 @@ export interface PublicProjectSummary extends ProjectSummary {
   ownerUsername: string;
   nodes: EditorNode[];
   edges: EditorEdge[];
+  /** Same self-contained snapshot as ProjectRecord.blocks - without it, a
+   *  preview of a project using custom subcircuit blocks can only resolve
+   *  those blocks by luck (the viewer happening to already have identically
+   *  named blocks in their own local library). For anyone else, the
+   *  subcircuit nodes render blank. */
+  blocks: SubcircuitBlockDefinition[];
 }
 
 interface PublicSummaryRow extends SummaryRow {
   owner_username: string;
   nodes: EditorNode[];
   edges: EditorEdge[];
+  blocks: SubcircuitBlockDefinition[];
 }
 
 // Reasonable upper bound so the community page never has to render an
@@ -138,7 +145,7 @@ const PUBLIC_LISTING_LIMIT = 200;
 
 export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
   const rows = await query<PublicSummaryRow>(
-    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, u.username AS owner_username
+    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, p.blocks, u.username AS owner_username
      FROM projects p
      JOIN "User" u ON u.id = p.owner_id
      WHERE p.visibility = 'PUBLIC'
@@ -151,6 +158,7 @@ export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
     ownerUsername: row.owner_username,
     nodes: row.nodes ?? [],
     edges: row.edges ?? [],
+    blocks: row.blocks ?? [],
   }));
 }
 

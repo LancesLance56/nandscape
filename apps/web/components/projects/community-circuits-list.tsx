@@ -20,7 +20,12 @@ export function CommunityCircuitsList({ projects }: { projects: PublicProjectSum
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {projects.map((project) => (
         <CardLink key={project.id} href={`/projects/${project.slug}`} className="flex flex-col overflow-hidden">
-          <CircuitPreviewThumbnail nodes={project.nodes} edges={project.edges} className="h-36 border-b border-border" />
+          <CircuitPreviewThumbnail
+            nodes={project.nodes}
+            edges={project.edges}
+            blocks={project.blocks}
+            className="h-36 border-b border-border"
+          />
           <div className="flex flex-col gap-0.5 px-4 py-3">
             <span className="truncate text-sm font-medium text-ink group-hover:text-copper-dark">{project.name}</span>
             {project.description && (

@@ -7,6 +7,7 @@
   "gateBudget": 8,
   "inputs": [{ "name": "D3" }, { "name": "D2" }, { "name": "D1" }, { "name": "D0" }],
   "outputs": [{ "name": "Y1" }, { "name": "Y0" }],
+  "inputDisplay": [{ "type": "bus", "names": ["D3", "D2", "D1", "D0"] }],
   "outputDisplay": [{ "type": "bus", "names": ["Y1", "Y0"] }],
   "testCases": [
     { "row": { "inputs": { "D3": 1, "D2": 0, "D1": 0, "D0": 0 }, "outputs": { "Y1": 1, "Y0": 1 } } },

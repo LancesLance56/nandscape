@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { query } from "@/lib/db/client";
 import { difficultyFromPrisma, difficultyToPrisma } from "@/types/puzzle";
-import type { PrismaDifficulty, PuzzleDifficulty, PuzzleSpec, OutputDisplayGroup } from "@/types/puzzle";
+import type { PrismaDifficulty, PuzzleDifficulty, PuzzleSpec, InputDisplayGroup, OutputDisplayGroup } from "@/types/puzzle";
 
 export interface PuzzleRecord {
   id: string;
@@ -22,6 +22,7 @@ interface PuzzleData {
   gateRestrictionDisplay: string | null;
   inputs: PuzzleSpec["inputs"];
   outputs: PuzzleSpec["outputs"];
+  inputDisplay?: InputDisplayGroup[] | null;
   outputDisplay?: OutputDisplayGroup[] | null;
 }
 
@@ -55,6 +56,7 @@ function toSpec(row: PuzzleRow): PuzzleSpec {
     gateRestrictionDisplay: (row.data.gateRestrictionDisplay ?? undefined) as PuzzleSpec["gateRestrictionDisplay"],
     inputs: row.data.inputs,
     outputs: row.data.outputs,
+    inputDisplay: (row.data.inputDisplay ?? undefined) as PuzzleSpec["inputDisplay"],
     outputDisplay: (row.data.outputDisplay ?? undefined) as PuzzleSpec["outputDisplay"],
     testCases: row.solution.testCases,
   };
@@ -105,6 +107,7 @@ export interface PuzzleSeedInput {
   gateRestrictionDisplay?: "hide" | "disable";
   inputs: PuzzleSpec["inputs"];
   outputs: PuzzleSpec["outputs"];
+  inputDisplay?: InputDisplayGroup[] | null;
   outputDisplay?: OutputDisplayGroup[] | null;
   testCases: PuzzleSpec["testCases"];
 }
@@ -118,6 +121,7 @@ function buildData(input: PuzzleSeedInput): PuzzleData {
     gateRestrictionDisplay: input.gateRestrictionDisplay ?? null,
     inputs: input.inputs,
     outputs: input.outputs,
+    inputDisplay: input.inputDisplay ?? null,
     outputDisplay: input.outputDisplay ?? null,
   };
 }
@@ -173,6 +177,10 @@ export async function updatePuzzleRecord(
     gateRestrictionDisplay: patch.gateRestrictionDisplay ?? existing.spec.gateRestrictionDisplay,
     inputs: patch.inputs ?? existing.spec.inputs,
     outputs: patch.outputs ?? existing.spec.outputs,
+    inputDisplay:
+      patch.inputDisplay !== undefined
+        ? patch.inputDisplay
+        : (existing.spec.inputDisplay as InputDisplayGroup[] | null | undefined) ?? null,
     outputDisplay:
       patch.outputDisplay !== undefined
         ? patch.outputDisplay

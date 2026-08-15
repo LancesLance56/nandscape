@@ -51,7 +51,7 @@ export async function TutorialsShowcase() {
         </Link>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tree.sections.map((section, i) => {
           const color = pathColor(section.slug);
           const firstPage = section.pages[0];
@@ -60,11 +60,11 @@ export async function TutorialsShowcase() {
             <ScrollReveal key={section.id} delay={i * 60}>
               <CardLink
                 href={firstPage ? `/tutorials/${firstPage.slug}` : "/tutorials"}
-                className="flex items-start gap-4 p-6"
+                className="flex items-center gap-3.5 p-5"
               >
                 <div
                   style={{ backgroundColor: hexToRgba(color, 0.12), color }}
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-bold"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold"
                 >
                   {section.pages.length}
                 </div>
@@ -73,29 +73,9 @@ export async function TutorialsShowcase() {
                   <span style={{ color }} className="text-xs font-semibold">
                     {section.slug}
                   </span>
-                  <h3 className="mt-1 text-lg font-bold text-ink transition-colors group-hover:text-copper-dark">
+                  <h3 className="mt-0.5 truncate text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
                     {section.title}
                   </h3>
-                  <p className="mt-1 truncate text-sm text-ink-soft">
-                    Starts with &ldquo;{firstPage?.title ?? "the first lesson"}&rdquo;
-                  </p>
-
-                  <div className="mt-4 flex gap-1" aria-hidden="true">
-                    {section.pages.map((page, idx) => (
-                      <span
-                        key={page.slug}
-                        style={{ backgroundColor: idx === 0 ? color : hexToRgba(color, 0.2) }}
-                        className="h-1.5 flex-1 rounded-full"
-                      />
-                    ))}
-                  </div>
-
-                  <span
-                    style={{ color }}
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-semibold opacity-80 transition-opacity group-hover:opacity-100"
-                  >
-                    Start learning →
-                  </span>
                 </div>
               </CardLink>
             </ScrollReveal>
@@ -104,18 +84,15 @@ export async function TutorialsShowcase() {
 
         {tree.standalone.map((page, i) => (
           <ScrollReveal key={page.slug} delay={(tree.sections.length + i) * 60}>
-            <CardLink href={`/tutorials/${page.slug}`} className="flex items-start gap-4 p-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-base font-bold text-slate">
+            <CardLink href={`/tutorials/${page.slug}`} className="flex items-center gap-3.5 p-5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-sm font-bold text-slate">
                 1
               </div>
               <div className="min-w-0 flex-1">
                 <span className="text-xs font-semibold text-slate">Standalone lesson</span>
-                <h3 className="mt-1 text-lg font-bold text-ink transition-colors group-hover:text-copper-dark">
+                <h3 className="mt-0.5 truncate text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
                   {page.title}
                 </h3>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-copper-dark opacity-0 transition-opacity group-hover:opacity-100">
-                  Read lesson →
-                </span>
               </div>
             </CardLink>
           </ScrollReveal>

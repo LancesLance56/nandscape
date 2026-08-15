@@ -8,6 +8,7 @@
   "allowedGateTypes": [0],
   "inputs": [{ "name": "SEL1" }, { "name": "SEL0" }, { "name": "A" }, { "name": "B" }, { "name": "C" }, { "name": "D" }],
   "outputs": [{ "name": "Y" }],
+  "inputDisplay": [{ "type": "bus", "names": ["SEL1", "SEL0"] }],
   "testCases": [
     { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 0, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
     { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 1, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },

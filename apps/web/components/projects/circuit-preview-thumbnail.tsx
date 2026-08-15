@@ -4,6 +4,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage";
 import { LazyMount } from "@/components/lazy-mount";
 import type { EditorNode, EditorEdge } from "@/types/editor";
+import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
 
 /**
  * A read-only, non-interactive glimpse of a circuit for use in list/card
@@ -17,10 +18,15 @@ import type { EditorNode, EditorEdge } from "@/types/editor";
 export function CircuitPreviewThumbnail({
   nodes,
   edges,
+  blocks,
   className = "h-40",
 }: {
   nodes: EditorNode[];
   edges: EditorEdge[];
+  /** The project's own embedded custom-block snapshot, if any - required for
+   *  a subcircuit node to render as anything but a blank box for a viewer
+   *  who isn't the owner (see the doc comment on ProjectRecord.blocks). */
+  blocks?: SubcircuitBlockDefinition[];
   className?: string;
 }) {
   return (
@@ -30,7 +36,14 @@ export function CircuitPreviewThumbnail({
     >
       <div className="pointer-events-none h-full w-full">
         <ReactFlowProvider>
-          <CircuitStage nodes={nodes} edges={edges} pannable={false} allowScrollZoom={false} fitPadding={0.2} />
+          <CircuitStage
+            nodes={nodes}
+            edges={edges}
+            blocks={blocks}
+            pannable={false}
+            allowScrollZoom={false}
+            fitPadding={0.2}
+          />
         </ReactFlowProvider>
       </div>
     </LazyMount>

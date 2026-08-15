@@ -1,14 +1,24 @@
 import Link from "next/link";
 import type { PostSummary } from "@/types/blog";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { Card } from "@/components/ui/card";
+import { CardLink } from "@/components/ui/card";
+import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
+
+// Same hashed-palette pattern as puzzles-showcase's tagColor - keeps a
+// post's accent consistent across renders without needing per-post color
+// data in the DB.
+function tagColor(tag: string): string {
+  let hash = 0;
+  for (let i = 0; i < tag.length; i++) hash = (hash * 31 + tag.charCodeAt(i)) >>> 0;
+  return DEFAULT_BLOCK_COLORS[hash % DEFAULT_BLOCK_COLORS.length];
+}
 
 export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
-  const featured = posts.slice(0, 5);
+  const featured = posts.slice(0, 4);
 
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-6 flex items-end justify-between gap-4">
+      <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
@@ -18,57 +28,55 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
         </div>
         <Link
           href="/blog"
-          className="hidden shrink-0 rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97] sm:block"
+          className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
         >
-          Read the blog -{">"}
+          Read the blog →
         </Link>
       </ScrollReveal>
 
-      <ScrollReveal delay={80}>
-        <Card className="overflow-hidden">
-          {featured.length === 0 && (
-            <p className="px-5 py-6 text-sm text-ink-soft">Nothing published yet, check back soon.</p>
-          )}
+      {featured.length === 0 ? (
+        <p className="text-sm text-ink-soft">Nothing published yet, check back soon.</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {featured.map((post, i) => {
+            const color = tagColor(post.tags[0] ?? post.slug);
 
-          {featured.map((post, i) => (
-            <Link
-              key={post.id}
-              href={`/blog/${post.slug}`}
-              className="group flex items-center gap-4 border-b border-border px-5 py-3.5 text-sm transition-colors last:border-b-0 hover:bg-surface-2/70"
-            >
-              <span className="w-6 shrink-0 text-right text-[11px] text-border-strong">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+            return (
+              <ScrollReveal key={post.id} delay={i * 60}>
+                <CardLink href={`/blog/${post.slug}`} className="flex h-full flex-col gap-3 p-5">
+                  <div className="flex items-center justify-between">
+                    <span
+                      style={{ backgroundColor: hexToRgba(color, 0.12), color }}
+                      className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                    >
+                      {post.tags[0] ?? "Article"}
+                    </span>
+                    {post.publishedAt && (
+                      <span className="text-[11px] text-slate">
+                        {new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </span>
+                    )}
+                  </div>
 
-              <span
-                className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal-green transition-shadow group-hover:shadow-[0_0_0_4px_var(--signal-green-bg)]"
-                aria-hidden="true"
-              />
+                  <h3 className="font-display text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p className="line-clamp-2 text-xs leading-relaxed text-ink-soft">{post.excerpt}</p>
+                  )}
 
-              <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-ink group-hover:text-copper-dark">
-                {post.title}
-              </span>
-
-              {post.tags.length > 0 && (
-                <span className="hidden shrink-0 text-[11px] text-slate sm:block">
-                  {post.tags.slice(0, 2).join(" · ")}
-                </span>
-              )}
-
-              <span className="shrink-0 text-[11px] text-border-strong transition-transform group-hover:translate-x-0.5">
-                →
-              </span>
-            </Link>
-          ))}
-        </Card>
-      </ScrollReveal>
-
-      <Link
-        href="/blog"
-        className="mt-4 flex items-center justify-center rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2.5 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97] sm:hidden"
-      >
-        Read the blog →
-      </Link>
+                  <span
+                    style={{ color }}
+                    className="mt-auto inline-flex items-center gap-1 pt-1 text-xs font-semibold opacity-80 transition-opacity group-hover:opacity-100"
+                  >
+                    Read article →
+                  </span>
+                </CardLink>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }
