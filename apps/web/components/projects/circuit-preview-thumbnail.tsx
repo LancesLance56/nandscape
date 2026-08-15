@@ -5,6 +5,7 @@ import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage"
 import { LazyMount } from "@/components/lazy-mount";
 import type { EditorNode, EditorEdge } from "@/types/editor";
 import type { SubcircuitBlockDefinition } from "@/types/subcircuit-block";
+import type { CircuitScope } from "@/types/scope";
 
 /**
  * A read-only, non-interactive glimpse of a circuit for use in list/card
@@ -19,6 +20,7 @@ export function CircuitPreviewThumbnail({
   nodes,
   edges,
   blocks,
+  scopes,
   className = "h-40",
 }: {
   nodes: EditorNode[];
@@ -27,6 +29,10 @@ export function CircuitPreviewThumbnail({
    *  a subcircuit node to render as anything but a blank box for a viewer
    *  who isn't the owner (see the doc comment on ProjectRecord.blocks). */
   blocks?: SubcircuitBlockDefinition[];
+  /** The project's tabs - needed for the same reason as `blocks`, and for
+   *  the common case: a block built from another tab of this same project
+   *  lives here, not in `blocks` (see CircuitStage's `scopes` prop). */
+  scopes?: CircuitScope[];
   className?: string;
 }) {
   return (
@@ -40,6 +46,7 @@ export function CircuitPreviewThumbnail({
             nodes={nodes}
             edges={edges}
             blocks={blocks}
+            scopes={scopes}
             pannable={false}
             allowScrollZoom={false}
             fitPadding={0.2}

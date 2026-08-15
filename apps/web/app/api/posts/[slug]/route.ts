@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 import { deletePost, getPostBySlug, updatePost } from "@/lib/blog/posts";
 import type { UpdatePostInput } from "@/types/blog";
 
@@ -26,8 +27,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const currentUser = await getCurrentUser();
-  if (!currentUser || currentUser.role !== "ADMIN") {
+  if (!(await isAuthorizedAdminRequest(request))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

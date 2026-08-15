@@ -9,7 +9,7 @@ const baseArgIndex = args.indexOf("--base");
 const base = baseArgIndex !== -1 ? args[baseArgIndex + 1] : "http://localhost:3000";
 const force = args.includes("--force");
 
-async function seedResource(label, dir, apiPath) {
+async function seedResource(label, dir, apiPath, headers) {
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".json")).sort();
 
   if (files.length === 0) {
@@ -23,7 +23,7 @@ async function seedResource(label, dir, apiPath) {
 
     const res = await fetch(`${base}${apiPath}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: raw,
     });
 
@@ -40,7 +40,7 @@ async function seedResource(label, dir, apiPath) {
 
       const patchRes = await fetch(`${base}${apiPath}/${payload.slug}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: raw,
       });
       if (patchRes.ok) {
@@ -87,12 +87,32 @@ async function seedAdmin() {
   console.error(`✗ failed       admin/${username},  ${res.status} ${body}`);
 }
 
+/**
+ * POST /api/posts requires an authenticated ADMIN session - but this script
+ * has no login of its own, and tying it to one specific admin's password
+ * would break the moment that password changes (or for anyone else who
+ * doesn't know it). SEED_SECRET is a separate, seed-only credential the
+ * posts route also accepts (see isAuthorizedAdminRequest in
+ * apps/web/lib/auth/seed-secret.ts) via this header, sidestepping real user
+ * credentials entirely.
+ */
+function seedHeaders() {
+  const headers = { "Content-Type": "application/json" };
+  if (process.env.SEED_SECRET) headers["x-seed-secret"] = process.env.SEED_SECRET;
+  return headers;
+}
+
 async function main() {
-  await seedResource("posts", path.join(here, "posts"), "/api/posts");
-  await seedResource("tutorial-sections", path.join(here, "tutorial-sections"), "/api/tutorial-sections");
-  await seedResource("tutorials", path.join(here, "tutorials"), "/api/tutorials");
-  await seedResource("puzzles", path.join(here, "puzzles"), "/api/puzzles");
   await seedAdmin();
+
+  if (!process.env.SEED_SECRET) {
+    console.log("- warning      SEED_SECRET not set,  posts/route.ts requires an admin session or this secret, seeding posts will 403 without it");
+  }
+
+  await seedResource("posts", path.join(here, "posts"), "/api/posts", seedHeaders());
+  await seedResource("tutorial-sections", path.join(here, "tutorial-sections"), "/api/tutorial-sections", seedHeaders());
+  await seedResource("tutorials", path.join(here, "tutorials"), "/api/tutorials", seedHeaders());
+  await seedResource("puzzles", path.join(here, "puzzles"), "/api/puzzles", seedHeaders());
 
   console.log(`\nDone. Visit ${base}/blog, ${base}/tutorials, and ${base}/puzzles`);
 }

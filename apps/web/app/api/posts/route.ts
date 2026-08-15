@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 import { createPost, listAllPosts, listPublishedPosts } from "@/lib/blog/posts";
 import type { NewPostInput } from "@/types/blog";
 
@@ -19,8 +20,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const currentUser = await getCurrentUser();
-  if (!currentUser || currentUser.role !== "ADMIN") {
+  if (!(await isAuthorizedAdminRequest(request))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
