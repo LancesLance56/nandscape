@@ -1,0 +1,242 @@
+{
+  "slug": "sr-latch-from-nand-implementation",
+  "title": "Implementation of an SR Latch Using NAND Gates",
+  "excerpt": "Two cross-coupled NAND gates, and the moment a circuit starts having memory.",
+  "status": "published",
+  "sectionSlug": "gate-implementations",
+  "position": 140,
+  "tags": [
+    "digital-logic",
+    "logic-gates",
+    "implementation"
+  ],
+  "seoTitle": "SR Latch Using NAND Gates: Circuit and Truth Table",
+  "seoDescription": "Build an SR latch from two cross-coupled NAND gates. Why the NAND version is active low, and why both inputs low is forbidden.",
+  "keywords": [
+    "sr latch using nand gates",
+    "nand latch",
+    "sr latch implementation",
+    "active low sr latch"
+  ],
+  "authorName": "Nandscape",
+  "publishedAt": "2026-08-15T14:28:40.366Z",
+  "body": [
+    {
+      "id": "p-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "An "
+        },
+        {
+          "text": "SR latch",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " is the smallest circuit that can remember a bit. Built from two cross-coupled NAND gates, it is the point where a circuit stops being a pure function of its inputs and starts having state."
+        }
+      ]
+    },
+    {
+      "id": "h-cross",
+      "type": "heading",
+      "level": 2,
+      "text": "What cross-coupled means"
+    },
+    {
+      "id": "p-cross",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Each NAND gate's output is wired back into the other gate's input. That feedback loop is what stores the value: once the outputs settle into a stable pair, they hold it with no further input. "
+        },
+        {
+          "text": "Why this does not oscillate forever",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/why-circuits-need-memory"
+            }
+          ]
+        },
+        {
+          "text": " is worth reading if the loop bothers you."
+        }
+      ]
+    },
+    {
+      "id": "h-active-low",
+      "type": "heading",
+      "level": 2,
+      "text": "The NAND version is active low"
+    },
+    {
+      "id": "p-active-low",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is the detail that trips people up. In the NAND version the inputs are usually labelled "
+        },
+        {
+          "text": "S'",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "R'",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", and they act when pulled "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", not high. Holding both at 1 is the idle state where the latch remembers."
+        }
+      ]
+    },
+    {
+      "id": "h-truth",
+      "type": "heading",
+      "level": 2,
+      "text": "Behaviour table"
+    },
+    {
+      "id": "t-truth",
+      "type": "table",
+      "headers": [
+        "S'",
+        "R'",
+        "Q",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "1",
+          "1",
+          "holds",
+          "Idle: the latch keeps its previous value"
+        ],
+        [
+          "0",
+          "1",
+          "1",
+          "Set the stored bit to 1"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "Reset the stored bit to 0"
+        ],
+        [
+          "0",
+          "0",
+          "invalid",
+          "Both outputs forced to 1, breaking the Q/Q' relationship"
+        ]
+      ]
+    },
+    {
+      "id": "h-forbidden",
+      "type": "heading",
+      "level": 2,
+      "text": "Why S' = 0, R' = 0 is forbidden"
+    },
+    {
+      "id": "p-forbidden",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Pulling both inputs low forces both outputs to 1, which contradicts the invariant that Q and Q' are opposites. Worse, when you release both at once the latch settles into whichever state wins a race, so the result is genuinely unpredictable rather than merely undefined on paper."
+        }
+      ]
+    },
+    {
+      "id": "h-next",
+      "type": "heading",
+      "level": 2,
+      "text": "Where this leads"
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Removing that forbidden combination is what motivates the "
+        },
+        {
+          "text": "gated D latch",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/gated-d-latch"
+            }
+          ]
+        },
+        {
+          "text": ", and making it update on a clock edge instead of a level gives you the "
+        },
+        {
+          "text": "D flip-flop",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/d-flip-flop"
+            }
+          ]
+        },
+        {
+          "text": ", the element real registers are made of."
+        }
+      ]
+    },
+    {
+      "id": "h-build",
+      "type": "heading",
+      "level": 2,
+      "text": "Build it yourself"
+    },
+    {
+      "id": "p-build",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two NAND gates, cross-wired. Toggle the inputs and watch the output stay put when both return to 1."
+        }
+      ]
+    },
+    {
+      "id": "b-build",
+      "type": "button",
+      "label": "Solve the 1-bit memory puzzle",
+      "href": "/puzzles/sr-latch-1-bit-memory",
+      "style": "primary"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    }
+  ]
+}

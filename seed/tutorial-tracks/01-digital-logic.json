@@ -1,0 +1,6 @@
+{
+  "slug": "digital-logic",
+  "title": "Digital Logic",
+  "description": "Gates, boolean simplification and memory, built from the ground up. Start with a single NAND gate and end up with circuits that remember.",
+  "position": 10
+}

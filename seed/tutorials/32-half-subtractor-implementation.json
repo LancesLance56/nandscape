@@ -1,0 +1,247 @@
+{
+  "slug": "half-subtractor-implementation",
+  "title": "Half Subtractor: Implementation and Truth Table",
+  "excerpt": "Binary subtraction for two bits, and the one inverter that separates it from a half adder.",
+  "status": "published",
+  "sectionSlug": "gate-implementations",
+  "position": 130,
+  "tags": [
+    "digital-logic",
+    "logic-gates",
+    "implementation"
+  ],
+  "seoTitle": "Half Subtractor: Circuit, Truth Table and Borrow Bit",
+  "seoDescription": "How a half subtractor works: the truth table, why BORROW needs an inverter, and how it differs from a half adder by one gate.",
+  "keywords": [
+    "half subtractor",
+    "half subtractor truth table",
+    "borrow bit",
+    "binary subtraction"
+  ],
+  "authorName": "Nandscape",
+  "publishedAt": "2026-08-15T14:28:40.366Z",
+  "body": [
+    {
+      "id": "p-intro",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        {
+          "text": "half subtractor",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " computes "
+        },
+        {
+          "text": "A - B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for two single bits, producing a "
+        },
+        {
+          "text": "DIFFERENCE",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and a "
+        },
+        {
+          "text": "BORROW",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". It mirrors the half adder almost exactly, with one revealing difference."
+        }
+      ]
+    },
+    {
+      "id": "h-truth",
+      "type": "heading",
+      "level": 2,
+      "text": "Truth table"
+    },
+    {
+      "id": "t-truth",
+      "type": "table",
+      "headers": [
+        "A",
+        "B",
+        "DIFF",
+        "BORROW"
+      ],
+      "rows": [
+        [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "1",
+          "1",
+          "0",
+          "0"
+        ]
+      ]
+    },
+    {
+      "id": "h-gates",
+      "type": "heading",
+      "level": 2,
+      "text": "Which gates produce each output"
+    },
+    {
+      "id": "h-diff",
+      "type": "heading",
+      "level": 3,
+      "text": "DIFFERENCE is XOR"
+    },
+    {
+      "id": "p-diff",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Exactly as in the half adder, the difference bit is 1 when the inputs differ: "
+        },
+        {
+          "text": "DIFF = A XOR B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-borrow",
+      "type": "heading",
+      "level": 3,
+      "text": "BORROW needs an inverter"
+    },
+    {
+      "id": "p-borrow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You borrow only when subtracting 1 from 0, so "
+        },
+        {
+          "text": "BORROW = (NOT A) AND B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". This is the one asymmetry with the half adder, whose carry is a plain "
+        },
+        {
+          "text": "A AND B",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " with no inversion."
+        }
+      ]
+    },
+    {
+      "id": "h-compare",
+      "type": "heading",
+      "level": 2,
+      "text": "Half adder vs half subtractor"
+    },
+    {
+      "id": "t-compare",
+      "type": "table",
+      "headers": [
+        "",
+        "Half adder",
+        "Half subtractor"
+      ],
+      "rows": [
+        [
+          "Main output",
+          "SUM = A XOR B",
+          "DIFF = A XOR B"
+        ],
+        [
+          "Second output",
+          "CARRY = A AND B",
+          "BORROW = (NOT A) AND B"
+        ],
+        [
+          "Gate count",
+          "2",
+          "3"
+        ]
+      ]
+    },
+    {
+      "id": "h-build",
+      "type": "heading",
+      "level": 2,
+      "text": "Build it yourself"
+    },
+    {
+      "id": "p-build",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Build the half adder first, then change the carry branch. It is a one-inverter edit."
+        }
+      ]
+    },
+    {
+      "id": "b-build",
+      "type": "button",
+      "label": "Solve the half subtractor puzzle",
+      "href": "/puzzles/half-subtractor",
+      "style": "primary"
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    }
+  ]
+}
