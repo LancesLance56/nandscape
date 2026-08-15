@@ -15,6 +15,7 @@
     { "name": "SEG_F" },
     { "name": "SEG_G" }
   ],
+  "inputDisplay": [{ "type": "bus", "names": ["D3", "D2", "D1", "D0"] }],
   "outputDisplay": [
     { "type": "seven-segment", "names": ["SEG_A", "SEG_B", "SEG_C", "SEG_D", "SEG_E", "SEG_F", "SEG_G"] }
   ],

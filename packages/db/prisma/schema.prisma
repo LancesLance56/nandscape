@@ -8,23 +8,39 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(cuid())
-  email          String           @unique
-  username       String           @unique
-  passwordHash   String?
-  googleId       String?          @unique
-  name           String?
-  avatarUrl      String?
-  role           Role             @default(USER)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  puzzles        Puzzle[]
-  puzzleAttempts PuzzleAttempt[]
-  puzzleProgress PuzzleProgress[]
-  sessions       Session[]
-  projects       Project[]
+  id                      String                   @id @default(cuid())
+  email                   String                   @unique
+  username                String                   @unique
+  passwordHash            String?
+  googleId                String?                  @unique
+  /** Null until the address is confirmed via the emailed verification link
+   *  (or, for Google sign-in, immediately set at creation when Google
+   *  already reports the address verified - see findOrCreateGoogleUser). */
+  emailVerifiedAt         DateTime?
+  name                    String?
+  avatarUrl               String?
+  role                    Role                     @default(USER)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  puzzles                 Puzzle[]
+  puzzleAttempts          PuzzleAttempt[]
+  puzzleProgress          PuzzleProgress[]
+  sessions                Session[]
+  projects                Project[]
+  emailVerificationTokens EmailVerificationToken[]
 
   @@index([email])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Session {

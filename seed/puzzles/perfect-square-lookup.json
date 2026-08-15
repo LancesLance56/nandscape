@@ -30,6 +30,7 @@
       "name": "SQ0"
     }
   ],
+  "inputDisplay": [{ "type": "bus", "names": ["N1", "N0"] }],
   "outputDisplay": [
     {
       "type": "bus",

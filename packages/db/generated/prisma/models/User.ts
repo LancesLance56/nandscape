@@ -30,6 +30,7 @@ export type UserMinAggregateOutputType = {
   username: string | null
   passwordHash: string | null
   googleId: string | null
+  emailVerifiedAt: Date | null
   name: string | null
   avatarUrl: string | null
   role: $Enums.Role | null
@@ -43,6 +44,7 @@ export type UserMaxAggregateOutputType = {
   username: string | null
   passwordHash: string | null
   googleId: string | null
+  emailVerifiedAt: Date | null
   name: string | null
   avatarUrl: string | null
   role: $Enums.Role | null
@@ -56,6 +58,7 @@ export type UserCountAggregateOutputType = {
   username: number
   passwordHash: number
   googleId: number
+  emailVerifiedAt: number
   name: number
   avatarUrl: number
   role: number
@@ -71,6 +74,7 @@ export type UserMinAggregateInputType = {
   username?: true
   passwordHash?: true
   googleId?: true
+  emailVerifiedAt?: true
   name?: true
   avatarUrl?: true
   role?: true
@@ -84,6 +88,7 @@ export type UserMaxAggregateInputType = {
   username?: true
   passwordHash?: true
   googleId?: true
+  emailVerifiedAt?: true
   name?: true
   avatarUrl?: true
   role?: true
@@ -97,6 +102,7 @@ export type UserCountAggregateInputType = {
   username?: true
   passwordHash?: true
   googleId?: true
+  emailVerifiedAt?: true
   name?: true
   avatarUrl?: true
   role?: true
@@ -183,6 +189,7 @@ export type UserGroupByOutputType = {
   username: string
   passwordHash: string | null
   googleId: string | null
+  emailVerifiedAt: Date | null
   name: string | null
   avatarUrl: string | null
   role: $Enums.Role
@@ -217,6 +224,7 @@ export type UserWhereInput = {
   username?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   googleId?: Prisma.StringNullableFilter<"User"> | string | null
+  emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
@@ -227,6 +235,7 @@ export type UserWhereInput = {
   puzzleProgress?: Prisma.PuzzleProgressListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
+  emailVerificationTokens?: Prisma.EmailVerificationTokenListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -235,6 +244,7 @@ export type UserOrderByWithRelationInput = {
   username?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -245,6 +255,7 @@ export type UserOrderByWithRelationInput = {
   puzzleProgress?: Prisma.PuzzleProgressOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   projects?: Prisma.ProjectOrderByRelationAggregateInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -256,6 +267,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
+  emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
@@ -266,6 +278,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   puzzleProgress?: Prisma.PuzzleProgressListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
+  emailVerificationTokens?: Prisma.EmailVerificationTokenListRelationFilter
 }, "id" | "email" | "username" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
@@ -274,6 +287,7 @@ export type UserOrderByWithAggregationInput = {
   username?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -293,6 +307,7 @@ export type UserScalarWhereWithAggregatesInput = {
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  emailVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
@@ -306,6 +321,7 @@ export type UserCreateInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -316,6 +332,7 @@ export type UserCreateInput = {
   puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -324,6 +341,7 @@ export type UserUncheckedCreateInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -334,6 +352,7 @@ export type UserUncheckedCreateInput = {
   puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -342,6 +361,7 @@ export type UserUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -352,6 +372,7 @@ export type UserUpdateInput = {
   puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -360,6 +381,7 @@ export type UserUncheckedUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -370,6 +392,7 @@ export type UserUncheckedUpdateInput = {
   puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -378,6 +401,7 @@ export type UserCreateManyInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -391,6 +415,7 @@ export type UserUpdateManyMutationInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -404,6 +429,7 @@ export type UserUncheckedUpdateManyInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -417,6 +443,7 @@ export type UserCountOrderByAggregateInput = {
   username?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -430,6 +457,7 @@ export type UserMaxOrderByAggregateInput = {
   username?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -443,6 +471,7 @@ export type UserMinOrderByAggregateInput = {
   username?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -468,12 +497,30 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutEmailVerificationTokensInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationTokensInput, Prisma.UserUncheckedCreateWithoutEmailVerificationTokensInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmailVerificationTokensInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutEmailVerificationTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationTokensInput, Prisma.UserUncheckedCreateWithoutEmailVerificationTokensInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmailVerificationTokensInput
+  upsert?: Prisma.UserUpsertWithoutEmailVerificationTokensInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEmailVerificationTokensInput, Prisma.UserUpdateWithoutEmailVerificationTokensInput>, Prisma.UserUncheckedUpdateWithoutEmailVerificationTokensInput>
 }
 
 export type UserCreateNestedOneWithoutSessionsInput = {
@@ -548,12 +595,105 @@ export type UserUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProjectsInput, Prisma.UserUpdateWithoutProjectsInput>, Prisma.UserUncheckedUpdateWithoutProjectsInput>
 }
 
+export type UserCreateWithoutEmailVerificationTokensInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationTokensInput, Prisma.UserUncheckedCreateWithoutEmailVerificationTokensInput>
+}
+
+export type UserUpsertWithoutEmailVerificationTokensInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEmailVerificationTokensInput, Prisma.UserUncheckedUpdateWithoutEmailVerificationTokensInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationTokensInput, Prisma.UserUncheckedCreateWithoutEmailVerificationTokensInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEmailVerificationTokensInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEmailVerificationTokensInput, Prisma.UserUncheckedUpdateWithoutEmailVerificationTokensInput>
+}
+
+export type UserUpdateWithoutEmailVerificationTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   email: string
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -563,6 +703,7 @@ export type UserCreateWithoutSessionsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
   puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -571,6 +712,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -580,6 +722,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
   puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -604,6 +747,7 @@ export type UserUpdateWithoutSessionsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -613,6 +757,7 @@ export type UserUpdateWithoutSessionsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
   puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -621,6 +766,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -630,6 +776,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
   puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPuzzlesInput = {
@@ -638,6 +785,7 @@ export type UserCreateWithoutPuzzlesInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -647,6 +795,7 @@ export type UserCreateWithoutPuzzlesInput = {
   puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPuzzlesInput = {
@@ -655,6 +804,7 @@ export type UserUncheckedCreateWithoutPuzzlesInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -664,6 +814,7 @@ export type UserUncheckedCreateWithoutPuzzlesInput = {
   puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPuzzlesInput = {
@@ -688,6 +839,7 @@ export type UserUpdateWithoutPuzzlesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -697,6 +849,7 @@ export type UserUpdateWithoutPuzzlesInput = {
   puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzlesInput = {
@@ -705,6 +858,7 @@ export type UserUncheckedUpdateWithoutPuzzlesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -714,6 +868,7 @@ export type UserUncheckedUpdateWithoutPuzzlesInput = {
   puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPuzzleAttemptsInput = {
@@ -722,6 +877,7 @@ export type UserCreateWithoutPuzzleAttemptsInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -731,6 +887,7 @@ export type UserCreateWithoutPuzzleAttemptsInput = {
   puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
@@ -739,6 +896,7 @@ export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -748,6 +906,7 @@ export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
   puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPuzzleAttemptsInput = {
@@ -772,6 +931,7 @@ export type UserUpdateWithoutPuzzleAttemptsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -781,6 +941,7 @@ export type UserUpdateWithoutPuzzleAttemptsInput = {
   puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
@@ -789,6 +950,7 @@ export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -798,6 +960,7 @@ export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
   puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPuzzleProgressInput = {
@@ -806,6 +969,7 @@ export type UserCreateWithoutPuzzleProgressInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -815,6 +979,7 @@ export type UserCreateWithoutPuzzleProgressInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPuzzleProgressInput = {
@@ -823,6 +988,7 @@ export type UserUncheckedCreateWithoutPuzzleProgressInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -832,6 +998,7 @@ export type UserUncheckedCreateWithoutPuzzleProgressInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPuzzleProgressInput = {
@@ -856,6 +1023,7 @@ export type UserUpdateWithoutPuzzleProgressInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -865,6 +1033,7 @@ export type UserUpdateWithoutPuzzleProgressInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
@@ -873,6 +1042,7 @@ export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -882,6 +1052,7 @@ export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -890,6 +1061,7 @@ export type UserCreateWithoutProjectsInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -899,6 +1071,7 @@ export type UserCreateWithoutProjectsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
   puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -907,6 +1080,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   username: string
   passwordHash?: string | null
   googleId?: string | null
+  emailVerifiedAt?: Date | string | null
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
@@ -916,6 +1090,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
   puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -940,6 +1115,7 @@ export type UserUpdateWithoutProjectsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -949,6 +1125,7 @@ export type UserUpdateWithoutProjectsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
   puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -957,6 +1134,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -966,6 +1144,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
   puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -979,6 +1158,7 @@ export type UserCountOutputType = {
   puzzleProgress: number
   sessions: number
   projects: number
+  emailVerificationTokens: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -987,6 +1167,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   puzzleProgress?: boolean | UserCountOutputTypeCountPuzzleProgressArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   projects?: boolean | UserCountOutputTypeCountProjectsArgs
+  emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
 }
 
 /**
@@ -1034,6 +1215,13 @@ export type UserCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.ProjectWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEmailVerificationTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmailVerificationTokenWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1041,6 +1229,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   username?: boolean
   passwordHash?: boolean
   googleId?: boolean
+  emailVerifiedAt?: boolean
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
@@ -1051,6 +1240,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   puzzleProgress?: boolean | Prisma.User$puzzleProgressArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
+  emailVerificationTokens?: boolean | Prisma.User$emailVerificationTokensArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1060,6 +1250,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   passwordHash?: boolean
   googleId?: boolean
+  emailVerifiedAt?: boolean
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
@@ -1073,6 +1264,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   passwordHash?: boolean
   googleId?: boolean
+  emailVerifiedAt?: boolean
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
@@ -1086,6 +1278,7 @@ export type UserSelectScalar = {
   username?: boolean
   passwordHash?: boolean
   googleId?: boolean
+  emailVerifiedAt?: boolean
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
@@ -1093,13 +1286,14 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "passwordHash" | "googleId" | "name" | "avatarUrl" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "passwordHash" | "googleId" | "emailVerifiedAt" | "name" | "avatarUrl" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   puzzles?: boolean | Prisma.User$puzzlesArgs<ExtArgs>
   puzzleAttempts?: boolean | Prisma.User$puzzleAttemptsArgs<ExtArgs>
   puzzleProgress?: boolean | Prisma.User$puzzleProgressArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
+  emailVerificationTokens?: boolean | Prisma.User$emailVerificationTokensArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1113,6 +1307,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     puzzleProgress: Prisma.$PuzzleProgressPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     projects: Prisma.$ProjectPayload<ExtArgs>[]
+    emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1120,6 +1315,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     username: string
     passwordHash: string | null
     googleId: string | null
+    /**
+     * * Null until the address is confirmed via the emailed verification link
+     *    *  (or, for Google sign-in, immediately set at creation when Google
+     *    *  already reports the address verified - see findOrCreateGoogleUser).
+     */
+    emailVerifiedAt: Date | null
     name: string | null
     avatarUrl: string | null
     role: $Enums.Role
@@ -1524,6 +1725,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   puzzleProgress<T extends Prisma.User$puzzleProgressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$puzzleProgressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PuzzleProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projects<T extends Prisma.User$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  emailVerificationTokens<T extends Prisma.User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1558,6 +1760,7 @@ export interface UserFieldRefs {
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly googleId: Prisma.FieldRef<"User", 'String'>
+  readonly emailVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
@@ -2073,6 +2276,30 @@ export type User$projectsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * User.emailVerificationTokens
+ */
+export type User$emailVerificationTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmailVerificationToken
+   */
+  select?: Prisma.EmailVerificationTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmailVerificationToken
+   */
+  omit?: Prisma.EmailVerificationTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmailVerificationTokenInclude<ExtArgs> | null
+  where?: Prisma.EmailVerificationTokenWhereInput
+  orderBy?: Prisma.EmailVerificationTokenOrderByWithRelationInput | Prisma.EmailVerificationTokenOrderByWithRelationInput[]
+  cursor?: Prisma.EmailVerificationTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmailVerificationTokenScalarFieldEnum | Prisma.EmailVerificationTokenScalarFieldEnum[]
 }
 
 /**

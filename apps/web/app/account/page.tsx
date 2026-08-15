@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { ProfileForm } from "@/components/account/profile-form";
 import { PasswordForm } from "@/components/account/password-form";
+import { EmailVerificationStatus } from "@/components/account/email-verification-status";
 
 export default async function AccountPage() {
   const user = await getCurrentUser();
@@ -22,6 +23,7 @@ export default async function AccountPage() {
               </Link>
             )}
           </div>
+          <EmailVerificationStatus initial={user.emailVerified} />
           <ProfileForm
             initial={{
               name: user.name,

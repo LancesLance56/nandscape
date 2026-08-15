@@ -7,6 +7,7 @@
   "gateBudget": 3,
   "inputs": [{ "name": "W" }, { "name": "X" }, { "name": "Y" }, { "name": "Z" }],
   "outputs": [{ "name": "INVALID" }],
+  "inputDisplay": [{ "type": "bus", "names": ["W", "X", "Y", "Z"] }],
   "testCases": [
     { "row": { "inputs": { "W": 0, "X": 0, "Y": 0, "Z": 0 }, "outputs": { "INVALID": 0 } } },
     { "row": { "inputs": { "W": 0, "X": 0, "Y": 0, "Z": 1 }, "outputs": { "INVALID": 0 } } },

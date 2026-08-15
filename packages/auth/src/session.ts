@@ -11,6 +11,7 @@ export interface SessionUser {
   name: string | null;
   avatarUrl: string | null;
   role: Role;
+  emailVerified: boolean;
 }
 
 export interface CreatedSession {
@@ -71,6 +72,7 @@ export async function validateSessionToken(token: string): Promise<ValidatedSess
       name: user.name,
       avatarUrl: user.avatarUrl,
       role: user.role,
+      emailVerified: user.emailVerifiedAt !== null,
     },
   };
 }

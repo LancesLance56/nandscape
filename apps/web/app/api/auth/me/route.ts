@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateUserProfile, EmailAlreadyExistsError, UsernameAlreadyExistsError } from "@repo/auth";
+import {
+  createEmailVerificationToken,
+  sendVerificationEmail,
+  updateUserProfile,
+  EmailAlreadyExistsError,
+  UsernameAlreadyExistsError,
+} from "@repo/auth";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { validateUpdateProfileInput } from "@/lib/auth/validation";
+import { siteUrl } from "@/lib/site-url";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -26,6 +33,19 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const updated = await updateUserProfile(user.id, validation.data);
+
+    // Email changed and now needs its own confirmation - same best-effort
+    // send as signup (see app/api/auth/signup/route.ts), a Resend hiccup
+    // shouldn't fail the profile update itself.
+    if (validation.data.email !== undefined && !updated.emailVerified) {
+      try {
+        const token = await createEmailVerificationToken(updated.id);
+        await sendVerificationEmail(updated.email, `${siteUrl()}/verify-email?token=${token}`);
+      } catch (emailError) {
+        console.error("[auth] failed to send verification email", emailError);
+      }
+    }
+
     return NextResponse.json({ user: updated });
   } catch (error) {
     if (error instanceof EmailAlreadyExistsError || error instanceof UsernameAlreadyExistsError) {
