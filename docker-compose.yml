@@ -31,6 +31,10 @@ services:
       SITE_URL: "${SITE_URL:-http://localhost:3000}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
       GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"
+      SEED_SECRET: "${SEED_SECRET:-}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
+      ADMIN_USERNAME: "${ADMIN_USERNAME:-}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
       CI: "true"
       WATCHPACK_POLLING: "1000"
     depends_on:
@@ -60,6 +64,10 @@ services:
       SITE_URL: "${SITE_URL:-http://localhost:3000}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
       GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"
+      SEED_SECRET: "${SEED_SECRET:-}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
+      ADMIN_USERNAME: "${ADMIN_USERNAME:-}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
     depends_on:
       postgres:
         condition: service_healthy
