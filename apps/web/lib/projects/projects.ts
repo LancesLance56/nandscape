@@ -26,6 +26,9 @@ export interface ProjectRecord {
    *  fork, an unlisted-link visitor, or an embed all resolve subcircuits
    *  correctly without needing anything from the original author's browser. */
   blocks: SubcircuitBlockDefinition[];
+  /** Freeform, owner- or seed-set - see the schema doc comment on
+   *  Project.tags. */
+  tags: string[];
   visibility: ProjectVisibility;
   ownerId: string;
   ownerUsername: string;
@@ -52,6 +55,7 @@ interface ProjectRow {
   edges: EditorEdge[];
   scopes: CircuitScope[];
   blocks: SubcircuitBlockDefinition[];
+  tags: string[];
   visibility: ProjectVisibility;
   owner_id: string;
   owner_username: string;
@@ -81,6 +85,7 @@ function toRecord(row: ProjectRow): ProjectRecord {
     edges: row.edges ?? [],
     scopes: row.scopes ?? [],
     blocks: row.blocks ?? [],
+    tags: row.tags ?? [],
     visibility: row.visibility,
     ownerId: row.owner_id,
     ownerUsername: row.owner_username,
@@ -102,7 +107,7 @@ function toSummary(row: SummaryRow): ProjectSummary {
 }
 
 const RECORD_SELECT = `
-  SELECT p.id, p.slug, p.name, p.description, p.nodes, p.edges, p.scopes, p.blocks, p.visibility,
+  SELECT p.id, p.slug, p.name, p.description, p.nodes, p.edges, p.scopes, p.blocks, p.tags, p.visibility,
          p.owner_id, u.username AS owner_username, p.forked_from_id,
          p.created_at, p.updated_at
   FROM projects p
@@ -135,6 +140,7 @@ export interface PublicProjectSummary extends ProjectSummary {
    *  `blocks`, so the thumbnail needs the tabs themselves to resolve it -
    *  see CircuitStage's `scopes` prop. */
   scopes: CircuitScope[];
+  tags: string[];
 }
 
 interface PublicSummaryRow extends SummaryRow {
@@ -143,6 +149,7 @@ interface PublicSummaryRow extends SummaryRow {
   edges: EditorEdge[];
   blocks: SubcircuitBlockDefinition[];
   scopes: CircuitScope[];
+  tags: string[];
 }
 
 // Reasonable upper bound so the community page never has to render an
@@ -151,7 +158,7 @@ const PUBLIC_LISTING_LIMIT = 200;
 
 export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
   const rows = await query<PublicSummaryRow>(
-    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, p.blocks, p.scopes, u.username AS owner_username
+    `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, p.blocks, p.scopes, p.tags, u.username AS owner_username
      FROM projects p
      JOIN "User" u ON u.id = p.owner_id
      WHERE p.visibility = 'PUBLIC'
@@ -166,6 +173,7 @@ export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
     edges: row.edges ?? [],
     blocks: row.blocks ?? [],
     scopes: row.scopes ?? [],
+    tags: row.tags ?? [],
   }));
 }
 
@@ -190,7 +198,14 @@ export interface CreateProjectInput {
   /** Defaults to [] - callers that never call resolveBlockClosure() (or
    *  whose graph has no subcircuits) just get an empty snapshot. */
   blocks?: SubcircuitBlockDefinition[];
+  tags?: string[];
   visibility?: ProjectVisibility;
+  /** Seed-only: a fixed slug instead of a name-derived random one. A
+   *  tutorial's circuit-embed block links a specific projectSlug, so that
+   *  slug has to be predictable across re-seeds rather than freshly
+   *  randomized each time (see POST /api/projects's seed-auth branch,
+   *  which is the only caller that ever sets this). */
+  slug?: string;
 }
 
 // Slugs are name-derived and only collide when two projects share a name AND
@@ -204,13 +219,19 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
   const visibility = input.visibility ?? "PRIVATE";
   const scopes = input.scopes ?? [];
   const blocks = input.blocks ?? [];
+  const tags = input.tags ?? [];
 
-  for (let attempt = 0; attempt <= SLUG_COLLISION_RETRIES; attempt++) {
-    const slug = generateProjectSlug(name);
+  // A caller-supplied slug is used as-is (and any collision surfaces
+  // directly rather than silently retrying under a different slug, which
+  // would break the very predictability it exists for).
+  const attempts = input.slug ? 1 : SLUG_COLLISION_RETRIES + 1;
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const slug = input.slug ?? generateProjectSlug(name);
     try {
       const rows = await query<{ id: string }>(
-        `INSERT INTO projects (id, slug, name, description, nodes, edges, scopes, blocks, visibility, owner_id, updated_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7::jsonb, $8::jsonb, $9, $10, now())
+        `INSERT INTO projects (id, slug, name, description, nodes, edges, scopes, blocks, tags, visibility, owner_id, updated_at)
+         VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7::jsonb, $8::jsonb, $9, $10, $11, now())
          RETURNING id`,
         [
           randomUUID(),
@@ -221,6 +242,7 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
           JSON.stringify(input.edges),
           JSON.stringify(scopes),
           JSON.stringify(blocks),
+          tags,
           visibility,
           ownerId,
         ],
@@ -229,7 +251,7 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
       if (!created) throw new Error("Project vanished immediately after insert");
       return created;
     } catch (error) {
-      if (isUniqueViolation(error) && attempt < SLUG_COLLISION_RETRIES) continue;
+      if (isUniqueViolation(error) && attempt < attempts - 1) continue;
       throw error;
     }
   }
@@ -248,6 +270,7 @@ export interface UpdateProjectInput {
   /** Only ever sent alongside `nodes`/`edges` (see share-dialog.tsx) -
    *  `undefined` leaves whatever snapshot is already stored untouched. */
   blocks?: SubcircuitBlockDefinition[];
+  tags?: string[];
   visibility?: ProjectVisibility;
 }
 
@@ -272,10 +295,22 @@ export async function updateProject(id: string, input: UpdateProjectInput): Prom
        scopes = COALESCE($7::jsonb, scopes),
        blocks = COALESCE($8::jsonb, blocks),
        visibility = COALESCE($9, visibility),
+       tags = COALESCE($10, tags),
        updated_at = now()
      WHERE id = $1
      RETURNING id`,
-    [id, name, touchDescription, description, nodesJson, edgesJson, scopesJson, blocksJson, input.visibility ?? null],
+    [
+      id,
+      name,
+      touchDescription,
+      description,
+      nodesJson,
+      edgesJson,
+      scopesJson,
+      blocksJson,
+      input.visibility ?? null,
+      input.tags ?? null,
+    ],
   );
   if (!rows[0]) return null;
   return getProjectById(rows[0].id);

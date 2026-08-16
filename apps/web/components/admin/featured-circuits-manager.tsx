@@ -15,7 +15,13 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
-export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedCircuitRow[] }) {
+export function FeaturedCircuitsManager({
+  placement,
+  featured,
+}: {
+  placement: "HOMEPAGE_DEMO" | "COMMUNITY_WEEKLY";
+  featured: AdminFeaturedCircuitRow[];
+}) {
   const router = useRouter();
   const [slug, setSlug] = useState("");
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -31,7 +37,7 @@ export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedC
       const res = await fetch("/api/admin/featured-circuits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: slug.trim() }),
+        body: JSON.stringify({ slug: slug.trim(), placement }),
       });
       const body = await res.json();
       if (!res.ok) {
@@ -52,7 +58,7 @@ export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedC
       const res = await fetch(`/api/admin/featured-circuits/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ active: true }),
+        body: JSON.stringify({ active: true, placement }),
       });
       const body = await res.json();
       if (!res.ok) {
@@ -122,7 +128,7 @@ export function FeaturedCircuitsManager({ featured }: { featured: AdminFeaturedC
                 <td className="px-4 py-3">
                   {row.active ? (
                     <span className="rounded-full bg-copper/15 px-2 py-0.5 text-xs font-semibold text-copper-dark">
-                      Live on homepage
+                      Active
                     </span>
                   ) : (
                     <span className="text-xs text-slate">Candidate</span>

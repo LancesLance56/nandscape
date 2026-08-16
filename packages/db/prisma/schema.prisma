@@ -210,6 +210,11 @@ model Project {
    *  - see apps/web/lib/editor/subcircuit-flatten.ts's resolveBlockClosure,
    *  which computes this at save time. */
   blocks       Json              @default("[]")
+  /** Freeform, owner- or seed-set (e.g. "tutorial" marks a tutorial's
+   *  companion circuit - see FeaturedCircuit's doc comment for the parallel
+   *  curated-pick concept). Drives the community page's filter chips and
+   *  its "From the Tutorials" section. */
+  tags         String[]          @default([])
   visibility   ProjectVisibility @default(PRIVATE)
   ownerId      String            @map("owner_id")
   owner        User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -239,16 +244,27 @@ enum ProjectVisibility {
  *  setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
  *  `active` from an `id = $1` comparison), not a DB constraint, matching how
  *  simple admin toggles are handled elsewhere in this codebase. */
+/** `placement` scopes the "exactly one active row" invariant: setting one
+ *  HOMEPAGE_DEMO row active never touches a COMMUNITY_WEEKLY row's active
+ *  state, and vice versa - two independent admin-curated single-picks
+ *  sharing one table and one UI pattern, see
+ *  lib/featured-circuits/featured-circuits.ts's setActiveFeaturedCircuit. */
+enum FeaturedPlacement {
+  HOMEPAGE_DEMO
+  COMMUNITY_WEEKLY
+}
+
 model FeaturedCircuit {
-  id        String   @id @default(cuid())
-  projectId String   @map("project_id")
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  active    Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String            @id @default(cuid())
+  projectId String            @map("project_id")
+  project   Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  placement FeaturedPlacement @default(HOMEPAGE_DEMO)
+  active    Boolean           @default(false)
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
 
   @@index([projectId])
-  @@index([active])
+  @@index([placement, active])
   @@map("featured_circuits")
 }
 

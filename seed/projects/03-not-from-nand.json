@@ -1,0 +1,80 @@
+{
+  "slug": "not-from-nand",
+  "name": "NOT Gate from a NAND Gate",
+  "description": "An inverter built from a single NAND gate with both inputs tied together.",
+  "tags": [
+    "tutorial",
+    "not",
+    "nand",
+    "gate-implementation"
+  ],
+  "visibility": "PUBLIC",
+  "nodes": [
+    {
+      "id": "in_1",
+      "type": "io-input",
+      "position": {
+        "x": 40,
+        "y": 140
+      },
+      "data": {
+        "kind": "input",
+        "name": "A",
+        "value": 0
+      }
+    },
+    {
+      "id": "gate_2",
+      "type": "gate",
+      "position": {
+        "x": 280,
+        "y": 140
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 0
+      }
+    },
+    {
+      "id": "out_3",
+      "type": "io-output",
+      "position": {
+        "x": 500,
+        "y": 140
+      },
+      "data": {
+        "kind": "output",
+        "name": "Y"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "in_1",
+      "sourceHandle": "out-0",
+      "target": "gate_2",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e2",
+      "source": "in_1",
+      "sourceHandle": "out-0",
+      "target": "gate_2",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e3",
+      "source": "gate_2",
+      "sourceHandle": "out-0",
+      "target": "out_3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    }
+  ]
+}

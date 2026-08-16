@@ -369,7 +369,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/graph-representations"
+              "href": "/tutorials/dsa/graph-representations"
             }
           ]
         },
@@ -381,7 +381,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/graph-dijkstra"
+              "href": "/tutorials/dsa/graph-dijkstra"
             }
           ]
         },
@@ -393,7 +393,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/graph-what-is-a-graph"
+              "href": "/tutorials/dsa/graph-what-is-a-graph"
             }
           ]
         },
@@ -556,7 +556,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to shortest paths with weights",
-      "href": "/tutorials/graph-dijkstra",
+      "href": "/tutorials/dsa/graph-dijkstra",
       "style": "primary"
     }
   ],

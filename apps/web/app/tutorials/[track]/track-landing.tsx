@@ -55,7 +55,7 @@ export function TrackLanding({ track }: { track: TutorialTrackTree }) {
         </p>
         {firstLesson && (
           <Link
-            href={`/tutorials/${firstLesson.slug}`}
+            href={`/tutorials/${track.slug}/${firstLesson.slug}`}
             className="mt-5 inline-block rounded-xl bg-copper px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-copper-dark"
           >
             Start with {firstLesson.title} →
@@ -71,7 +71,7 @@ export function TrackLanding({ track }: { track: TutorialTrackTree }) {
               {section.pages.map((page, i) => (
                 <li key={page.slug}>
                   <Link
-                    href={`/tutorials/${page.slug}`}
+                    href={`/tutorials/${track.slug}/${page.slug}`}
                     className="group flex items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2/70"
                   >
                     <span className="w-5 shrink-0 text-right text-[11px] text-border-strong">{i + 1}</span>

@@ -199,6 +199,15 @@
       ]
     },
     {
+      "id": "w-companion",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "projectSlug": "multiplexer-2to1",
+        "height": 260
+      }
+    },
+    {
       "id": "b-build",
       "type": "button",
       "label": "Solve the 2-to-1 multiplexer puzzle",

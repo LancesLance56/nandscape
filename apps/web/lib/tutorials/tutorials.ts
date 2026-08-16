@@ -162,12 +162,15 @@ export async function listTutorialNav(): Promise<TutorialNavTree> {
     section_id: string | null;
     section_slug: string | null;
     section_title: string | null;
+    track_slug: string | null;
   }>(
     `SELECT
        p.slug, p.title, p.position,
-       s.id AS section_id, s.slug AS section_slug, s.title AS section_title
+       s.id AS section_id, s.slug AS section_slug, s.title AS section_title,
+       t.slug AS track_slug
      FROM tutorial_pages p
      LEFT JOIN tutorial_sections s ON s.id = p.section_id
+     LEFT JOIN tutorial_tracks t ON t.id = s.track_id
      WHERE p.status = 'published'
      ORDER BY s.position ASC NULLS FIRST, p.position ASC, p.title ASC`,
   );
@@ -177,7 +180,7 @@ export async function listTutorialNav(): Promise<TutorialNavTree> {
 
   for (const row of rows) {
     if (!row.section_id) {
-      standalone.push({ slug: row.slug, title: row.title });
+      standalone.push({ slug: row.slug, title: row.title, trackSlug: null });
       continue;
     }
 
@@ -186,7 +189,7 @@ export async function listTutorialNav(): Promise<TutorialNavTree> {
       section = { id: row.section_id, slug: row.section_slug!, title: row.section_title!, pages: [] };
       sectionsById.set(row.section_id, section);
     }
-    section.pages.push({ slug: row.slug, title: row.title });
+    section.pages.push({ slug: row.slug, title: row.title, trackSlug: row.track_slug });
   }
 
   return { standalone, sections: Array.from(sectionsById.values()) };

@@ -294,7 +294,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to minimum spanning trees",
-      "href": "/tutorials/graph-mst-kruskal-prim",
+      "href": "/tutorials/dsa/graph-mst-kruskal-prim",
       "style": "primary"
     }
   ],

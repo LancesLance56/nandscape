@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site-url";
 import { listPublishedPosts } from "@/lib/blog/posts";
 import { listPublishedTutorialPages } from "@/lib/tutorials/tutorials";
-import { listTutorialTracks } from "@/lib/tutorials/tutorial-tracks";
+import { listTutorialTracks, listTutorialTrackTrees } from "@/lib/tutorials/tutorial-tracks";
 import { TOOLS } from "@/lib/tools/tools";
 import { listPuzzleRecords } from "@/lib/puzzles/puzzle-records";
 import { listPublicProjects } from "@/lib/projects/projects";
@@ -37,13 +37,23 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
 
-  const [posts, tutorialPages, tutorialTracks, puzzleRecords, publicProjects] = await Promise.all([
+  const [posts, tutorialPages, tutorialTracks, trackTrees, puzzleRecords, publicProjects] = await Promise.all([
     listPublishedPosts().catch(() => []),
     listPublishedTutorialPages().catch(() => []),
     listTutorialTracks().catch(() => []),
+    listTutorialTrackTrees().catch(() => []),
     listPuzzleRecords().catch(() => []),
     listPublicProjects().catch(() => []),
   ]);
+
+  // page slug -> its track slug, so each lesson can be listed at its
+  // canonical nested URL rather than the legacy flat one (which redirects).
+  const trackByPageSlug = new Map<string, string>();
+  for (const track of trackTrees) {
+    for (const section of track.sections) {
+      for (const page of section.pages) trackByPageSlug.set(page.slug, track.slug);
+    }
+  }
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ path, changeFrequency, priority }) => ({
     url: `${base}${path}`,
@@ -58,12 +68,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const tutorialEntries: MetadataRoute.Sitemap = tutorialPages.map((page) => ({
-    url: `${base}/tutorials/${page.slug}`,
-    lastModified: page.updatedAt,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  // Only pages whose track is known get a sitemap entry - the nested URL
+  // is the canonical one, and a page with no track has no nested URL to
+  // point at yet.
+  const tutorialEntries: MetadataRoute.Sitemap = tutorialPages
+    .map((page) => ({ page, track: trackByPageSlug.get(page.slug) }))
+    .filter((entry): entry is { page: (typeof tutorialPages)[number]; track: string } => Boolean(entry.track))
+    .map(({ page, track }) => ({
+      url: `${base}/tutorials/${track}/${page.slug}`,
+      lastModified: page.updatedAt,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
 
   // Tool pages are static (defined in code, not the DB) and are the pages
   // most likely to attract an inbound link, so they rank alongside the

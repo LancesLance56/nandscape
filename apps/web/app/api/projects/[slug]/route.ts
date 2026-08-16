@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 import { deleteProject, getProjectBySlug, updateProject } from "@/lib/projects/projects";
 import type { ProjectVisibility } from "@/lib/projects/projects";
 import type { EditorNode, EditorEdge } from "@/types/editor";
@@ -32,18 +33,23 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const user = await getCurrentUser();
-  if (!user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
   const { slug } = await params;
   const existing = await getProjectBySlug(slug);
   if (!existing) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
-  if (existing.ownerId !== user.id) {
-    return NextResponse.json({ error: "You don't own this project" }, { status: 403 });
+
+  // Either the real owner, or the seed script re-running over its own
+  // seeded projects (see seed/seed.mjs's --force overwrite path,  the same
+  // shape posts/tutorials already use). An admin session alone doesn't
+  // grant this - editing someone else's circuit is not an admin power
+  // anywhere else in the app, so it isn't here either.
+  const user = await getCurrentUser();
+  const isOwner = user?.id === existing.ownerId;
+  if (!isOwner && !(await isAuthorizedAdminRequest(request))) {
+    return NextResponse.json({ error: user ? "You don't own this project" : "Not authenticated" }, {
+      status: user ? 403 : 401,
+    });
   }
 
   let body: unknown;
@@ -53,13 +59,14 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, description, nodes, edges, scopes, blocks, visibility } = body as {
+  const { name, description, nodes, edges, scopes, blocks, tags, visibility } = body as {
     name?: unknown;
     description?: unknown;
     nodes?: unknown;
     edges?: unknown;
     scopes?: unknown;
     blocks?: unknown;
+    tags?: unknown;
     visibility?: unknown;
   };
 
@@ -81,6 +88,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   if (blocks !== undefined && !Array.isArray(blocks)) {
     return NextResponse.json({ error: "`blocks` must be an array" }, { status: 422 });
   }
+  if (tags !== undefined && (!Array.isArray(tags) || !tags.every((t) => typeof t === "string"))) {
+    return NextResponse.json({ error: "`tags` must be an array of strings" }, { status: 422 });
+  }
 
   const project = await updateProject(existing.id, {
     name: typeof name === "string" ? name : undefined,
@@ -89,6 +99,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     edges: edges as EditorEdge[] | undefined,
     scopes: scopes as CircuitScope[] | undefined,
     blocks: blocks as SubcircuitBlockDefinition[] | undefined,
+    tags: tags as string[] | undefined,
     visibility: visibility as ProjectVisibility | undefined,
   });
 

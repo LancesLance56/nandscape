@@ -148,7 +148,7 @@ export async function listTutorialTrackTrees(): Promise<TutorialTrackTree[]> {
     }
 
     if (!row.page_slug) continue;
-    section.pages.push({ slug: row.page_slug, title: row.page_title! });
+    section.pages.push({ slug: row.page_slug, title: row.page_title!, trackSlug: row.track_slug });
     track.pageCount += 1;
   }
 
@@ -158,4 +158,23 @@ export async function listTutorialTrackTrees(): Promise<TutorialTrackTree[]> {
 export async function getTutorialTrackTree(slug: string): Promise<TutorialTrackTree | null> {
   const trees = await listTutorialTrackTrees();
   return trees.find((t) => t.slug === slug) ?? null;
+}
+
+/**
+ * The track a given lesson lives under. Used to turn a legacy flat URL
+ * (/tutorials/<page>) into its current nested one, so links published
+ * before the restructure - including anything already indexed or linked
+ * from elsewhere - keep resolving instead of 404ing.
+ */
+export async function getTrackSlugForPage(pageSlug: string): Promise<string | null> {
+  const rows = await query<{ track_slug: string | null }>(
+    `SELECT t.slug AS track_slug
+     FROM tutorial_pages p
+     JOIN tutorial_sections s ON s.id = p.section_id
+     JOIN tutorial_tracks t ON t.id = s.track_id
+     WHERE p.slug = $1
+     LIMIT 1`,
+    [pageSlug],
+  );
+  return rows[0]?.track_slug ?? null;
 }

@@ -1,9 +1,42 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { TutorialNavTree, TutorialTrackTree } from "@/types/tutorial";
+import { tutorialPath, type TutorialTrackTree } from "@/types/tutorial";
+
+const COLLAPSE_STORAGE_KEY = "nandscape:tutorial-sidebar-collapsed";
+
+/**
+ * The collapsed preference lives in localStorage, which is an external
+ * store, so it's read through useSyncExternalStore rather than an effect
+ * that calls setState. That's what keeps the server render (always
+ * expanded, via getServerSnapshot) from mismatching hydration, without the
+ * extra render an effect-based read would cost.
+ */
+let collapseListeners: (() => void)[] = [];
+
+function subscribeToCollapse(callback: () => void): () => void {
+  collapseListeners.push(callback);
+  return () => {
+    collapseListeners = collapseListeners.filter((l) => l !== callback);
+  };
+}
+
+function getCollapseSnapshot(): boolean {
+  return window.localStorage.getItem(COLLAPSE_STORAGE_KEY) === "1";
+}
+
+/** There is no localStorage on the server, and no user preference to
+ *  honour yet, so the rail always renders expanded there. */
+function getCollapseServerSnapshot(): boolean {
+  return false;
+}
+
+function setCollapsed(value: boolean): void {
+  window.localStorage.setItem(COLLAPSE_STORAGE_KEY, value ? "1" : "0");
+  for (const listener of collapseListeners) listener();
+}
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -15,6 +48,15 @@ function ChevronIcon({ open }: { open: boolean }) {
       strokeWidth="1.6"
     >
       <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PanelIcon() {
+  return (
+    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="2" y="3" width="12" height="10" rx="2" />
+      <path d="M6.5 3v10" />
     </svg>
   );
 }
@@ -36,21 +78,14 @@ function NavLink({ href, label }: { href: string; label: string }) {
 }
 
 interface NavListProps {
-  tree: TutorialNavTree;
   tracks: TutorialTrackTree[];
   collapsed: Set<string>;
   onToggle: (sectionId: string) => void;
 }
 
-/** The actual link tree, shared by the mobile collapsible panel and the
- *  desktop fixed rail below so the two don't drift out of sync. */
-function NavList({ tree, tracks, collapsed, onToggle }: NavListProps): ReactNode {
-  // Sections that belong to a track render under that track's heading
-  // below; anything left over (a section with no track yet) still needs a
-  // home, so it falls through to the flat list underneath.
-  const trackedSectionIds = new Set(tracks.flatMap((t) => t.sections.map((s) => s.id)));
-  const looseSections = tree.sections.filter((s) => !trackedSectionIds.has(s.id));
-
+/** The link tree, shared by the mobile panel and the desktop rail so the
+ *  two can't drift apart. */
+function NavList({ tracks, collapsed, onToggle }: NavListProps): ReactNode {
   return (
     <>
       <NavLink href="/tutorials" label="All tutorials" />
@@ -81,7 +116,11 @@ function NavList({ tree, tracks, collapsed, onToggle }: NavListProps): ReactNode
                   {open && (
                     <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
                       {section.pages.map((page) => (
-                        <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
+                        <NavLink
+                          key={page.slug}
+                          href={tutorialPath(track.slug, page.slug)}
+                          label={page.title}
+                        />
                       ))}
                     </div>
                   )}
@@ -90,63 +129,33 @@ function NavList({ tree, tracks, collapsed, onToggle }: NavListProps): ReactNode
             })}
           </div>
         ))}
-
-      {tree.standalone.map((page) => (
-        <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
-      ))}
-
-      {looseSections.map((section) => {
-        const open = !collapsed.has(section.id);
-        return (
-          <div key={section.id} className="mt-2">
-            <button
-              type="button"
-              onClick={() => onToggle(section.id)}
-              aria-expanded={open}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left text-[11px] font-semibold text-slate hover:text-ink"
-            >
-              {section.title}
-              <ChevronIcon open={open} />
-            </button>
-            {open && (
-              <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
-                {section.pages.map((page) => (
-                  <NavLink key={page.slug} href={`/tutorials/${page.slug}`} label={page.title} />
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
     </>
   );
 }
 
-export function TutorialSidebar({
-  tree,
-  tracks = [],
-}: {
-  tree: TutorialNavTree;
-  tracks?: TutorialTrackTree[];
-}) {
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  // Below lg the sidebar collapses into a toggleable panel instead of the
-  // fixed rail - there's no room for a permanent 256px column and readable
-  // tutorial text on a phone-width screen. Closed by default there.
+export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] }) {
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const [mobileOpen, setMobileOpen] = useState(false);
+  const railCollapsed = useSyncExternalStore(
+    subscribeToCollapse,
+    getCollapseSnapshot,
+    getCollapseServerSnapshot,
+  );
   const pathname = usePathname();
 
-  // Reset during render rather than in an effect (React's recommended
-  // pattern for "state derived from a prop change") - collapses the two
-  // renders an effect-based reset would cause into one.
+  const toggleRail = () => setCollapsed(!railCollapsed);
+
+  // Reset during render rather than in an effect (React's documented
+  // pattern for state derived from a changing prop) - one render instead
+  // of two.
   const [prevPathname, setPrevPathname] = useState(pathname);
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
     setMobileOpen(false);
   }
 
-  const toggle = (sectionId: string) => {
-    setCollapsed((prev) => {
+  const toggleSection = (sectionId: string) => {
+    setCollapsedSections((prev) => {
       const next = new Set(prev);
       if (next.has(sectionId)) next.delete(sectionId);
       else next.add(sectionId);
@@ -156,47 +165,60 @@ export function TutorialSidebar({
 
   return (
     <>
-      {/* Reserves the rail's horizontal space in the flex row at lg+ (the
-          actual rail below is `fixed`, so it no longer occupies flex space
-          on its own) so <main> keeps the same left offset it always had.
-          Below lg this *is* the sidebar: the toggle button plus an inline
-          collapsible panel, in normal document flow. */}
-      <div className="lg:w-64 lg:shrink-0">
+      {/* Mobile: a plain collapsible panel in normal flow. */}
+      <div className="lg:hidden">
         <button
           type="button"
           onClick={() => setMobileOpen((o) => !o)}
           aria-expanded={mobileOpen}
-          className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-card px-4 py-3 text-sm font-semibold text-ink lg:hidden"
+          className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-card px-4 py-3 text-sm font-semibold text-ink"
         >
           Contents
           <ChevronIcon open={mobileOpen} />
         </button>
 
         <nav
-          className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3 lg:hidden`}
+          className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3`}
         >
-          <NavList tree={tree} tracks={tracks} collapsed={collapsed} onToggle={toggle} />
+          <NavList tracks={tracks} collapsed={collapsedSections} onToggle={toggleSection} />
         </nav>
       </div>
 
-      {/* Desktop: pinned to the viewport instead of `sticky` within the flex
-          row, so it can't partially unstick and trail the page scroll once
-          the row's bottom edge nears the viewport (what a `sticky` rail
-          does once the content below it runs out of room - visible as the
-          nav "scrolling along with the page a little" near the bottom of a
-          long tutorial). The outer layer re-runs the page's own
-          mx-auto/max-w-330/px-* centering across the full viewport width so
-          the rail lands at the exact spot it would have in-flow, without
-          hand-computing a pixel `left` offset; it's pointer-events-none so
-          it never blocks clicks over the content beside it, and only the
-          rail itself re-enables pointer events. */}
-      <div className="pointer-events-none fixed inset-x-0 top-32 bottom-6 z-10 hidden lg:block">
-        <div className="mx-auto h-full max-w-330 px-4 sm:px-10">
-          <nav className="pointer-events-auto flex h-full w-64 flex-col gap-1 overflow-y-auto overscroll-contain py-4">
-            <NavList tree={tree} tracks={tracks} collapsed={collapsed} onToggle={toggle} />
+      {/* Desktop: sticky rather than fixed. Fixed took the rail out of
+          flow entirely, so it floated over whatever it happened to be on
+          top of - which is how it ended up covering the footer. Sticky
+          keeps it in the flex row, so it scrolls away naturally when the
+          page runs out, and `top`/`max-h`/`overflow-y-auto` still give it
+          its own independent scrollbar while a lesson is on screen. */}
+      {railCollapsed ? (
+        <button
+          type="button"
+          onClick={toggleRail}
+          aria-label="Show tutorial navigation"
+          title="Show tutorial navigation"
+          className="sticky top-32 hidden shrink-0 rounded-lg border border-border bg-surface-card p-2 text-ink-soft transition-colors hover:text-copper-dark lg:block"
+        >
+          <PanelIcon />
+        </button>
+      ) : (
+        <aside className="sticky top-32 hidden max-h-[calc(100vh-10rem)] w-64 shrink-0 flex-col overflow-y-auto overscroll-contain pb-4 lg:flex">
+          <div className="mb-1 flex items-center justify-between pl-3">
+            <span className="text-[10px] font-bold uppercase tracking-wide text-slate">Contents</span>
+            <button
+              type="button"
+              onClick={toggleRail}
+              aria-label="Hide tutorial navigation"
+              title="Hide tutorial navigation"
+              className="rounded-md p-1 text-slate transition-colors hover:bg-surface-2 hover:text-ink"
+            >
+              <PanelIcon />
+            </button>
+          </div>
+          <nav className="flex flex-col gap-1">
+            <NavList tracks={tracks} collapsed={collapsedSections} onToggle={toggleSection} />
           </nav>
-        </div>
-      </div>
+        </aside>
+      )}
     </>
   );
 }

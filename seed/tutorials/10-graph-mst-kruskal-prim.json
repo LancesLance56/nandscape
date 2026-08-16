@@ -338,7 +338,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to the advanced section",
-      "href": "/tutorials/graph-topological-sort",
+      "href": "/tutorials/dsa/graph-topological-sort",
       "style": "primary"
     }
   ],

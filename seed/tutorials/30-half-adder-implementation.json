@@ -207,7 +207,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/full-adder-implementation"
+              "href": "/tutorials/digital-logic/full-adder-implementation"
             }
           ]
         },
@@ -230,6 +230,15 @@
           "text": "Two gates, four rows to check. This is the best possible first circuit to build from scratch."
         }
       ]
+    },
+    {
+      "id": "w-companion",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "projectSlug": "half-adder",
+        "height": 260
+      }
     },
     {
       "id": "b-build",

@@ -3,6 +3,7 @@ import { listTutorialNav } from "@/lib/tutorials/tutorials";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { hexToRgba } from "@/lib/editor/block-colors";
 import { CardLink } from "@/components/ui/card";
+import { tutorialPath } from "@/types/tutorial";
 
 // A warm, on-brand palette for tutorial path badges - deliberately separate
 // from DEFAULT_BLOCK_COLORS (which includes a blue for tabular/data
@@ -59,7 +60,7 @@ export async function TutorialsShowcase() {
           return (
             <ScrollReveal key={section.id} delay={i * 60}>
               <CardLink
-                href={firstPage ? `/tutorials/${firstPage.slug}` : "/tutorials"}
+                href={firstPage ? tutorialPath(firstPage.trackSlug, firstPage.slug) : "/tutorials"}
                 className="flex items-center gap-3.5 p-5"
               >
                 <div
@@ -84,7 +85,7 @@ export async function TutorialsShowcase() {
 
         {tree.standalone.map((page, i) => (
           <ScrollReveal key={page.slug} delay={(tree.sections.length + i) * 60}>
-            <CardLink href={`/tutorials/${page.slug}`} className="flex items-center gap-3.5 p-5">
+            <CardLink href={tutorialPath(page.trackSlug, page.slug)} className="flex items-center gap-3.5 p-5">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-sm font-bold text-slate">
                 1
               </div>

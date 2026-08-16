@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import Link from "next/link";
+import { notFound, permanentRedirect } from "next/navigation";
 import { BlockRenderer } from "@/components/content/blocks/block-renderer";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { getPublishedTutorialPageBySlug, listTutorialPages } from "@/lib/tutorials/tutorials";
-import { getTutorialTrackTree, listTutorialTracks } from "@/lib/tutorials/tutorial-tracks";
-import { TrackLanding, trackMetadata } from "./track-landing";
+import { getTrackSlugForPage, getTutorialTrackBySlug } from "@/lib/tutorials/tutorial-tracks";
 
 export const revalidate = 60;
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ track: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -18,27 +18,22 @@ export async function generateStaticParams() {
   // Docker image before postgres is networked in) - fall back to generating
   // no static params rather than failing the whole build.
   try {
-    const [pages, tracks] = await Promise.all([listTutorialPages(), listTutorialTracks()]);
-    return [
-      ...pages.filter((p) => p.status === "published").map((p) => ({ slug: p.slug })),
-      ...tracks.map((t) => ({ slug: t.slug })),
-    ];
+    const pages = await listTutorialPages();
+    const published = pages.filter((p) => p.status === "published");
+    const params = await Promise.all(
+      published.map(async (p) => {
+        const track = await getTrackSlugForPage(p.slug);
+        return track ? { track, slug: p.slug } : null;
+      }),
+    );
+    return params.filter((p): p is { track: string; slug: string } => p !== null);
   } catch {
     return [];
   }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-
-  // One segment serves two things: a track landing page and a lesson. Track
-  // first, because lesson URLs already exist and are indexed - keeping them
-  // at /tutorials/<slug> avoids a site-wide redirect just to add a layer of
-  // navigation above them. Track slugs are curated, so a collision would be
-  // a deliberate act rather than an accident.
-  const track = await getTutorialTrackTree(slug);
-  if (track) return trackMetadata(track);
-
+  const { track, slug } = await params;
   const page = await getPublishedTutorialPageBySlug(slug);
   if (!page) return {};
 
@@ -48,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     excerpt: page.excerpt,
     seoDescription: page.seoDescription,
     keywords: page.keywords,
-    path: `/tutorials/${page.slug}`,
+    path: `/tutorials/${track}/${page.slug}`,
     suffix: "Nandscape Tutorials",
     coverImage: page.coverImage,
     publishedAt: page.publishedAt,
@@ -58,15 +53,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function TutorialPage({ params }: PageProps) {
-  const { slug } = await params;
-
-  const track = await getTutorialTrackTree(slug);
-  if (track) return <TrackLanding track={track} />;
+  const { track, slug } = await params;
 
   const page = await getPublishedTutorialPageBySlug(slug);
   if (!page) notFound();
 
-  const path = `/tutorials/${page.slug}`;
+  // A lesson has exactly one correct URL. Reaching it under the wrong
+  // track would otherwise serve identical content on two paths, which is
+  // duplicate content as far as a crawler is concerned - send it to the
+  // canonical one instead.
+  const realTrack = await getTrackSlugForPage(slug);
+  if (realTrack && realTrack !== track) permanentRedirect(`/tutorials/${realTrack}/${slug}`);
+
+  const trackRecord = realTrack ? await getTutorialTrackBySlug(realTrack) : null;
+  const path = `/tutorials/${track}/${page.slug}`;
 
   return (
     <article>
@@ -87,9 +87,25 @@ export default async function TutorialPage({ params }: PageProps) {
       <BreadcrumbJsonLd
         items={[
           { name: "Tutorials", path: "/tutorials" },
+          ...(trackRecord ? [{ name: trackRecord.title, path: `/tutorials/${trackRecord.slug}` }] : []),
           { name: page.title, path },
         ]}
       />
+
+      <nav aria-label="Breadcrumb" className="mb-3 text-xs text-slate">
+        <Link href="/tutorials" className="hover:text-copper-dark">
+          Tutorials
+        </Link>
+        {trackRecord && (
+          <>
+            <span className="mx-1.5 text-border-strong">/</span>
+            <Link href={`/tutorials/${trackRecord.slug}`} className="hover:text-copper-dark">
+              {trackRecord.title}
+            </Link>
+          </>
+        )}
+      </nav>
+
       <h1 className="font-display text-3xl font-bold leading-tight text-ink">{page.title}</h1>
       <div className="mt-8">
         <BlockRenderer blocks={page.body} />

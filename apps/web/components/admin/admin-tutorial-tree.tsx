@@ -24,16 +24,89 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-function PageRow({ page }: { page: TutorialPageSummary }) {
+function ArrowIcon({ direction }: { direction: "up" | "down" }) {
   return (
-    <Link
-      href={`/admin/tutorials/${page.slug}`}
-      className="grid grid-cols-[1fr_auto_auto] items-center gap-4 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-2"
-    >
-      <span className="truncate font-medium text-ink">{page.title}</span>
-      <span className=" text-xs text-slate">{page.status}</span>
+    <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d={direction === "up" ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Up/down pair reused for tracks, sections, and pages - the three levels
+ *  that carry a `position` column. Both buttons live outside any enclosing
+ *  <Link> (see PageRow) since a button nested inside an anchor is invalid
+ *  HTML and eats the click before stopPropagation can run in some browsers. */
+function MoveButtons({
+  label,
+  isFirst,
+  isLast,
+  disabled,
+  onUp,
+  onDown,
+}: {
+  label: string;
+  isFirst: boolean;
+  isLast: boolean;
+  disabled: boolean;
+  onUp: () => void;
+  onDown: () => void;
+}) {
+  const btnClass =
+    "rounded p-1 text-slate transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate";
+  return (
+    <div className="flex shrink-0 items-center gap-0.5">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onUp();
+        }}
+        disabled={disabled || isFirst}
+        aria-label={`Move ${label} up`}
+        className={btnClass}
+      >
+        <ArrowIcon direction="up" />
+      </button>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onDown();
+        }}
+        disabled={disabled || isLast}
+        aria-label={`Move ${label} down`}
+        className={btnClass}
+      >
+        <ArrowIcon direction="down" />
+      </button>
+    </div>
+  );
+}
+
+function PageRow({
+  page,
+  isFirst,
+  isLast,
+  disabled,
+  onMove,
+}: {
+  page: TutorialPageSummary;
+  isFirst: boolean;
+  isLast: boolean;
+  disabled: boolean;
+  onMove: (direction: "up" | "down") => void;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-3 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-surface-2">
+      <Link href={`/admin/tutorials/${page.slug}`} className="truncate font-medium text-ink">
+        {page.title}
+      </Link>
+      <span className="text-xs text-slate">{page.status}</span>
       <span className="w-20 text-right text-xs text-slate">{formatDate(page.publishedAt)}</span>
-    </Link>
+      <MoveButtons label={page.title} isFirst={isFirst} isLast={isLast} disabled={disabled} onUp={() => onMove("up")} onDown={() => onMove("down")} />
+    </div>
   );
 }
 
@@ -147,26 +220,65 @@ function NewSectionForm({
   );
 }
 
+const byPosition = <T extends { position: number; title: string }>(a: T, b: T): number =>
+  a.position - b.position || a.title.localeCompare(b.title);
+
+/** Swaps two rows' `position` values on the server and returns both rows with
+ *  their new positions, or null if either request failed. Existing positions
+ *  are spaced 10 apart (see tutorial seed files), so a plain swap between two
+ *  already-adjacent rows is enough to flip their order - no renumbering of
+ *  the rest of the list needed. */
+async function swapPositions<T extends { slug: string; position: number }>(
+  apiPath: string,
+  a: T,
+  b: T,
+): Promise<[T, T] | null> {
+  const patch = (item: T, position: number) =>
+    fetch(`${apiPath}/${item.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ position }),
+    });
+
+  const [resA, resB] = await Promise.all([patch(a, b.position), patch(b, a.position)]);
+  if (!resA.ok || !resB.ok) return null;
+  return [
+    { ...a, position: b.position },
+    { ...b, position: a.position },
+  ];
+}
+
 /**
  * Chapter/section tree, mirroring tutorial-sidebar.tsx's collapsible-section
  * pattern (same chevron, same border-l indent) so the admin list reads as
  * the same hierarchy readers actually see, instead of a flat table with a
- * "Section" column you had to scan and mentally regroup. Sections are local
- * state seeded from the server-fetched prop (same pattern as
- * projects-list.tsx) so a newly created one shows up immediately.
+ * "Section" column you had to scan and mentally regroup. Sections, pages,
+ * and tracks are all local state seeded from server-fetched props (same
+ * pattern as projects-list.tsx) so a newly created section, or a reorder,
+ * shows up immediately without a full page refetch.
+ *
+ * Reordering swaps `position` between adjacent siblings within the same
+ * parent (a track's sections, or a section's pages) rather than any
+ * free-form drag - it's the smallest interaction that satisfies "move this
+ * section above that one," and it maps directly onto the existing PATCH
+ * endpoints without adding a bulk-reorder API.
  */
 export function AdminTutorialTree({
-  pages,
+  pages: initialPages,
   sections: initialSections,
-  tracks = [],
+  tracks: initialTracks = [],
 }: {
   pages: TutorialPageSummary[];
   sections: TutorialSection[];
   tracks?: TutorialTrack[];
 }) {
   const [sections, setSections] = useState(initialSections);
+  const [pages, setPages] = useState(initialPages);
+  const [tracks, setTracks] = useState(initialTracks);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const [creating, setCreating] = useState(false);
+  const [moving, setMoving] = useState(false);
+  const [moveError, setMoveError] = useState<string | null>(null);
 
   const toggle = (id: string) => {
     setCollapsed((prev) => {
@@ -176,6 +288,42 @@ export function AdminTutorialTree({
       return next;
     });
   };
+
+  const runMove = async <T extends { slug: string; position: number }>(
+    apiPath: string,
+    list: T[],
+    item: T,
+    direction: "up" | "down",
+    apply: (updater: (prev: T[]) => T[]) => void,
+  ) => {
+    const idx = list.findIndex((x) => x.slug === item.slug);
+    const neighbor = list[direction === "up" ? idx - 1 : idx + 1];
+    if (!neighbor) return;
+
+    setMoving(true);
+    setMoveError(null);
+    const result = await swapPositions(apiPath, item, neighbor);
+    setMoving(false);
+    if (!result) {
+      setMoveError("Couldn't save that reorder. Try again.");
+      return;
+    }
+    const [updatedItem, updatedNeighbor] = result;
+    apply((prev) =>
+      prev
+        .map((x) => (x.slug === updatedItem.slug ? updatedItem : x.slug === updatedNeighbor.slug ? updatedNeighbor : x))
+        .sort(byPosition as (a: T, b: T) => number),
+    );
+  };
+
+  const moveTrack = (track: TutorialTrack, direction: "up" | "down") =>
+    runMove("/api/tutorial-tracks", tracks, track, direction, setTracks);
+
+  const moveSection = (section: TutorialSection, group: TutorialSection[], direction: "up" | "down") =>
+    runMove("/api/tutorial-sections", group, section, direction, setSections);
+
+  const movePage = (page: TutorialPageSummary, group: TutorialPageSummary[], direction: "up" | "down") =>
+    runMove("/api/tutorials", group, page, direction, setPages);
 
   const pagesBySection = new Map<string, TutorialPageSummary[]>();
   const standalone: TutorialPageSummary[] = [];
@@ -191,16 +339,19 @@ export function AdminTutorialTree({
 
   return (
     <div className="flex flex-col gap-3">
+      {moveError && <p className="text-xs text-signal-coral">{moveError}</p>}
+
       <div className="flex flex-col gap-0.5 rounded-2xl border border-border bg-surface-card p-2">
         {renderSections(
           sections.filter((s) => !s.trackId),
           "No track",
         )}
-        {tracks.map((track) =>
-          renderSections(
-            sections.filter((s) => s.trackId === track.id),
-            track.title,
-          ),
+        {tracks.map((track, i) =>
+          renderSections(sections.filter((s) => s.trackId === track.id), track.title, {
+            track,
+            isFirst: i === 0,
+            isLast: i === tracks.length - 1,
+          }),
         )}
 
         {standalone.length > 0 && (
@@ -209,8 +360,15 @@ export function AdminTutorialTree({
               No section
             </div>
             <div className="flex flex-col gap-0.5">
-              {standalone.map((page) => (
-                <PageRow key={page.id} page={page} />
+              {standalone.map((page, i) => (
+                <PageRow
+                  key={page.id}
+                  page={page}
+                  isFirst={i === 0}
+                  isLast={i === standalone.length - 1}
+                  disabled={moving}
+                  onMove={(direction) => movePage(page, standalone, direction)}
+                />
               ))}
             </div>
           </div>
@@ -243,35 +401,68 @@ export function AdminTutorialTree({
     </div>
   );
 
-  function renderSections(list: TutorialSection[], label: string) {
+  function renderSections(
+    list: TutorialSection[],
+    label: string,
+    trackMove?: { track: TutorialTrack; isFirst: boolean; isLast: boolean },
+  ) {
     if (list.length === 0) return null;
     return (
       <div key={label} className="mb-1">
-        <div className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-wide text-copper-dark">
-          {label}
+        <div className="flex items-center justify-between px-3 pb-1 pt-2">
+          <span className="text-[10px] font-bold uppercase tracking-wide text-copper-dark">{label}</span>
+          {trackMove && (
+            <MoveButtons
+              label={label}
+              isFirst={trackMove.isFirst}
+              isLast={trackMove.isLast}
+              disabled={moving}
+              onUp={() => moveTrack(trackMove.track, "up")}
+              onDown={() => moveTrack(trackMove.track, "down")}
+            />
+          )}
         </div>
-        {list.map((section) => {
+        {list.map((section, i) => {
           const sectionPages = pagesBySection.get(section.id) ?? [];
           const open = !collapsed.has(section.id);
           return (
             <div key={section.id}>
-              <button
-                type="button"
-                onClick={() => toggle(section.id)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[11px] font-semibold text-slate transition-colors hover:bg-surface-2 hover:text-ink"
-              >
-                <span>
-                  {section.title}
-                  <span className="ml-2 text-[11px] font-normal normal-case tracking-normal text-border-strong">
-                    {sectionPages.length} page{sectionPages.length === 1 ? "" : "s"}
+              <div className="flex items-center gap-1 rounded-lg pr-2 transition-colors hover:bg-surface-2">
+                <button
+                  type="button"
+                  onClick={() => toggle(section.id)}
+                  className="flex flex-1 items-center justify-between px-3 py-2 text-left text-[11px] font-semibold text-slate hover:text-ink"
+                >
+                  <span>
+                    {section.title}
+                    <span className="ml-2 text-[11px] font-normal normal-case tracking-normal text-border-strong">
+                      {sectionPages.length} page{sectionPages.length === 1 ? "" : "s"}
+                    </span>
                   </span>
-                </span>
-                <ChevronIcon open={open} />
-              </button>
+                  <ChevronIcon open={open} />
+                </button>
+                <MoveButtons
+                  label={section.title}
+                  isFirst={i === 0}
+                  isLast={i === list.length - 1}
+                  disabled={moving}
+                  onUp={() => moveSection(section, list, "up")}
+                  onDown={() => moveSection(section, list, "down")}
+                />
+              </div>
               {open && (
                 <div className="ml-3 flex flex-col gap-0.5 border-l border-border py-0.5 pl-3">
                   {sectionPages.length > 0 ? (
-                    sectionPages.map((page) => <PageRow key={page.id} page={page} />)
+                    sectionPages.map((page, j) => (
+                      <PageRow
+                        key={page.id}
+                        page={page}
+                        isFirst={j === 0}
+                        isLast={j === sectionPages.length - 1}
+                        disabled={moving}
+                        onMove={(direction) => movePage(page, sectionPages, direction)}
+                      />
+                    ))
                   ) : (
                     <p className="px-3 py-2 text-xs text-slate">No pages in this section yet.</p>
                   )}
@@ -280,7 +471,6 @@ export function AdminTutorialTree({
             </div>
           );
         })}
-
       </div>
     );
   }

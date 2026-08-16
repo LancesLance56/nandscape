@@ -270,7 +270,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to kinds of graphs",
-      "href": "/tutorials/graph-kinds-and-digraphs",
+      "href": "/tutorials/dsa/graph-kinds-and-digraphs",
       "style": "primary"
     }
   ],

@@ -229,7 +229,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to strongly connected components",
-      "href": "/tutorials/graph-tarjan-scc",
+      "href": "/tutorials/dsa/graph-tarjan-scc",
       "style": "primary"
     }
   ],

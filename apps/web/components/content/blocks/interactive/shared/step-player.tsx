@@ -6,11 +6,14 @@ import { cn } from "@/lib/cn";
 const PLAY_INTERVAL_MS = 1400;
 
 /**
- * Transport controls shared by every algorithm widget: play/pause, single
- * step either direction, reset, and a scrubber. Owns the "which frame are we
- * on" state so each widget only has to hand over a list of steps.
+ * Transport controls shared by every stepped algorithm widget: play/pause,
+ * single step either direction, reset, and a scrubber. Owns the "which frame
+ * are we on" state so each widget only has to hand over a list of steps.
+ *
+ * Used by both the graph widgets and the backtracking widgets, which is why
+ * it lives here rather than beside either of them.
  */
-export function useStepPlayer(total: number) {
+export function useStepPlayer(total: number, intervalMs: number = PLAY_INTERVAL_MS) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const totalRef = useRef(total);
@@ -38,10 +41,10 @@ export function useStepPlayer(total: number) {
         }
         return i + 1;
       });
-    }, PLAY_INTERVAL_MS);
+    }, intervalMs);
 
     return () => window.clearInterval(id);
-  }, [playing]);
+  }, [playing, intervalMs]);
 
   const atEnd = index >= total - 1;
 
@@ -81,6 +84,8 @@ interface StepControlsProps {
   onPrev: () => void;
   onReset: () => void;
   onScrub: (i: number) => void;
+  /** Extra control rendered inline, e.g. a playback-speed selector. */
+  extra?: React.ReactNode;
 }
 
 export function StepControls({
@@ -93,6 +98,7 @@ export function StepControls({
   onPrev,
   onReset,
   onScrub,
+  extra,
 }: StepControlsProps) {
   const btn =
     "rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40";
@@ -133,6 +139,8 @@ export function StepControls({
           Reset
         </button>
 
+        {extra}
+
         <span className="ml-auto text-xs text-slate">
           Step {index + 1} of {total}
         </span>
@@ -141,7 +149,7 @@ export function StepControls({
   );
 }
 
-/** The narration line under the graph. Fixed height so the layout doesn't jump. */
+/** The narration line under the diagram. Fixed height so the layout doesn't jump. */
 export function StepCaption({ text }: { text: string }) {
   return (
     <p className="min-h-[3.5rem] rounded-lg border border-border bg-surface-2/50 px-3 py-2.5 text-sm leading-relaxed text-ink-soft">

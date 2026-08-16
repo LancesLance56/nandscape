@@ -59,7 +59,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/why-circuits-need-memory"
+              "href": "/tutorials/digital-logic/why-circuits-need-memory"
             }
           ]
         },
@@ -191,7 +191,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/gated-d-latch"
+              "href": "/tutorials/digital-logic/gated-d-latch"
             }
           ]
         },
@@ -203,7 +203,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/d-flip-flop"
+              "href": "/tutorials/digital-logic/d-flip-flop"
             }
           ]
         },
@@ -226,6 +226,15 @@
           "text": "Two NAND gates, cross-wired. Toggle the inputs and watch the output stay put when both return to 1."
         }
       ]
+    },
+    {
+      "id": "w-companion",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "projectSlug": "sr-latch-from-nand",
+        "height": 260
+      }
     },
     {
       "id": "b-build",

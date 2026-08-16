@@ -4,7 +4,11 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import type { AlgorithmStep, GraphSpec } from "@/lib/graph/types";
 import { GraphCanvas } from "./graph-canvas";
-import { StepCaption, StepControls, useStepPlayer } from "./step-player";
+import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+
+// The graph widgets import these from here rather than from ../shared, so
+// they stay re-exported for those callers.
+export { ChipRow, PanelBox } from "../shared/panel-ui";
 
 interface AlgorithmRunnerProps {
   graph: GraphSpec;
@@ -137,31 +141,3 @@ export function AlgorithmRunner({
   );
 }
 
-/** Small labelled box used by the algorithm side panels. */
-export function PanelBox({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface-2/50 p-3">
-      <div className="mb-2 text-[11px] font-semibold text-slate">{title}</div>
-      {children}
-    </div>
-  );
-}
-
-/** Horizontal row of node chips, used for queues, stacks and candidate sets. */
-export function ChipRow({ items, emptyLabel }: { items: string[]; emptyLabel: string }) {
-  if (items.length === 0) {
-    return <span className="text-xs italic text-slate">{emptyLabel}</span>;
-  }
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {items.map((item, i) => (
-        <span
-          key={`${item}-${i}`}
-          className="rounded-md bg-copper-bg px-2 py-1 text-xs font-bold text-copper-dark"
-        >
-          {item}
-        </span>
-      ))}
-    </div>
-  );
-}

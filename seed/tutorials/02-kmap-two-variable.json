@@ -140,7 +140,7 @@
       "id": "b1",
       "type": "button",
       "label": "Continue to 3-variable maps",
-      "href": "/tutorials/kmap-three-variable-wraparound",
+      "href": "/tutorials/digital-logic/kmap-three-variable-wraparound",
       "style": "primary"
     }
   ],

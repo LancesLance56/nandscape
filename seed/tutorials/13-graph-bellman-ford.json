@@ -320,9 +320,9 @@
     {
       "id": "b-back",
       "type": "button",
-      "label": "Back to all tutorials",
-      "href": "/tutorials",
-      "style": "secondary"
+      "label": "Continue to backtracking",
+      "href": "/tutorials/dsa/backtracking-introduction",
+      "style": "primary"
     }
   ],
   "seoTitle": "Bellman-Ford and Floyd-Warshall: Negative Weight Paths",

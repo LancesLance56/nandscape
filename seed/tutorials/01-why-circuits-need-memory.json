@@ -168,7 +168,7 @@
       "id": "b1",
       "type": "button",
       "label": "Start with the SR Latch",
-      "href": "/tutorials/sr-latch",
+      "href": "/tutorials/digital-logic/sr-latch",
       "style": "primary"
     }
   ],

@@ -1,0 +1,367 @@
+{
+  "slug": "d-flip-flop",
+  "name": "D Flip-Flop (Master-Slave)",
+  "description": "Two gated D latches with an inverted clock between them, sampling D on a clock edge instead of holding a level.",
+  "tags": [
+    "tutorial",
+    "flip-flop",
+    "memory",
+    "sequential",
+    "gate-implementation"
+  ],
+  "visibility": "PUBLIC",
+  "nodes": [
+    {
+      "id": "in_1",
+      "type": "io-input",
+      "position": {
+        "x": 40,
+        "y": 100
+      },
+      "data": {
+        "kind": "input",
+        "name": "D",
+        "value": 0
+      }
+    },
+    {
+      "id": "in_2",
+      "type": "io-input",
+      "position": {
+        "x": 40,
+        "y": 620
+      },
+      "data": {
+        "kind": "input",
+        "name": "CLK",
+        "value": 0
+      }
+    },
+    {
+      "id": "gate_3",
+      "type": "gate",
+      "position": {
+        "x": 260,
+        "y": 620
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "gate_4",
+      "type": "gate",
+      "position": {
+        "x": 260,
+        "y": 100
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "gate_5",
+      "type": "gate",
+      "position": {
+        "x": 480,
+        "y": 200
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "gate_6",
+      "type": "gate",
+      "position": {
+        "x": 480,
+        "y": 480
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "gate_7",
+      "type": "gate",
+      "position": {
+        "x": 760,
+        "y": 280
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 3
+      }
+    },
+    {
+      "id": "gate_8",
+      "type": "gate",
+      "position": {
+        "x": 760,
+        "y": 560
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 3
+      }
+    },
+    {
+      "id": "gate_9",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 200
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "gate_10",
+      "type": "gate",
+      "position": {
+        "x": 1000,
+        "y": 480
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "gate_11",
+      "type": "gate",
+      "position": {
+        "x": 1260,
+        "y": 280
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 3
+      }
+    },
+    {
+      "id": "gate_12",
+      "type": "gate",
+      "position": {
+        "x": 1260,
+        "y": 560
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 3
+      }
+    },
+    {
+      "id": "out_13",
+      "type": "io-output",
+      "position": {
+        "x": 1500,
+        "y": 280
+      },
+      "data": {
+        "kind": "output",
+        "name": "Q"
+      }
+    },
+    {
+      "id": "out_14",
+      "type": "io-output",
+      "position": {
+        "x": 1500,
+        "y": 560
+      },
+      "data": {
+        "kind": "output",
+        "name": "Q'"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "in_2",
+      "sourceHandle": "out-0",
+      "target": "gate_3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e2",
+      "source": "in_1",
+      "sourceHandle": "out-0",
+      "target": "gate_4",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e3",
+      "source": "in_1",
+      "sourceHandle": "out-0",
+      "target": "gate_5",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e4",
+      "source": "gate_3",
+      "sourceHandle": "out-0",
+      "target": "gate_5",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e5",
+      "source": "gate_4",
+      "sourceHandle": "out-0",
+      "target": "gate_6",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e6",
+      "source": "gate_3",
+      "sourceHandle": "out-0",
+      "target": "gate_6",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e7",
+      "source": "gate_6",
+      "sourceHandle": "out-0",
+      "target": "gate_7",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e8",
+      "source": "gate_8",
+      "sourceHandle": "out-0",
+      "target": "gate_7",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e9",
+      "source": "gate_5",
+      "sourceHandle": "out-0",
+      "target": "gate_8",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e10",
+      "source": "gate_7",
+      "sourceHandle": "out-0",
+      "target": "gate_8",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e11",
+      "source": "gate_7",
+      "sourceHandle": "out-0",
+      "target": "gate_9",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e12",
+      "source": "in_2",
+      "sourceHandle": "out-0",
+      "target": "gate_9",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e13",
+      "source": "gate_8",
+      "sourceHandle": "out-0",
+      "target": "gate_10",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e14",
+      "source": "in_2",
+      "sourceHandle": "out-0",
+      "target": "gate_10",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e15",
+      "source": "gate_10",
+      "sourceHandle": "out-0",
+      "target": "gate_11",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e16",
+      "source": "gate_12",
+      "sourceHandle": "out-0",
+      "target": "gate_11",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e17",
+      "source": "gate_9",
+      "sourceHandle": "out-0",
+      "target": "gate_12",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e18",
+      "source": "gate_11",
+      "sourceHandle": "out-0",
+      "target": "gate_12",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e19",
+      "source": "gate_11",
+      "sourceHandle": "out-0",
+      "target": "out_13",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e20",
+      "source": "gate_12",
+      "sourceHandle": "out-0",
+      "target": "out_14",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    }
+  ]
+}

@@ -357,7 +357,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to negative weights",
-      "href": "/tutorials/graph-bellman-ford",
+      "href": "/tutorials/dsa/graph-bellman-ford",
       "style": "primary"
     }
   ],

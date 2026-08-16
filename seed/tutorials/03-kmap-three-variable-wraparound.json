@@ -131,7 +131,7 @@
       "id": "b1",
       "type": "button",
       "label": "Continue to 4-variable maps",
-      "href": "/tutorials/kmap-four-variable",
+      "href": "/tutorials/digital-logic/kmap-four-variable",
       "style": "primary"
     }
   ],

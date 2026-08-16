@@ -62,6 +62,17 @@ export interface TutorialPage extends TutorialPageSummary {
 export interface TutorialNavPage {
   slug: string;
   title: string;
+  /** The track this page's section belongs to. Null for a page with no
+   *  section, or a section not yet assigned to a track - those fall back to
+   *  the legacy flat URL, which redirects. */
+  trackSlug?: string | null;
+}
+
+/** Lesson URLs are `/tutorials/<track>/<page>`. Anything without a known
+ *  track still has to produce a working link, so it falls back to the flat
+ *  form, which app/tutorials/[track]/page.tsx redirects to the real one. */
+export function tutorialPath(trackSlug: string | null | undefined, pageSlug: string): string {
+  return trackSlug ? `/tutorials/${trackSlug}/${pageSlug}` : `/tutorials/${pageSlug}`;
 }
 
 export interface TutorialNavSection {

@@ -35,6 +35,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
   const [name, setName] = useState(active?.name ?? "Untitled circuit");
   const [description, setDescription] = useState(active?.description ?? "");
+  const [tagsInput, setTagsInput] = useState((active?.tags ?? []).join(", "));
   const [visibility, setVisibility] = useState<ProjectVisibility>(active?.visibility ?? "PRIVATE");
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -50,8 +51,13 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
   useEffect(() => {
     setName(active?.name ?? "Untitled circuit");
     setDescription(active?.description ?? "");
+    setTagsInput((active?.tags ?? []).join(", "));
     setVisibility(active?.visibility ?? "PRIVATE");
   }, [active]);
+
+  function parseTags(input: string): string[] {
+    return [...new Set(input.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean))];
+  }
 
   const handleSave = async () => {
     // Fold whatever's on screen back into its tab before reading "all
@@ -91,6 +97,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
         edges: scopes[0]?.edges ?? [],
         scopes,
         blocks,
+        tags: parseTags(tagsInput),
         visibility,
       }),
     });
@@ -108,6 +115,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
       name: project.name,
       description: project.description,
       visibility: project.visibility,
+      tags: project.tags,
     });
     setSaveStatus("saved");
     if (isNew) router.replace(`/projects/${project.slug}`);
@@ -129,6 +137,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
         name: project.name,
         description: project.description,
         visibility: project.visibility,
+        tags: project.tags,
       });
     }
   };
@@ -251,6 +260,19 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
               placeholder="What does this circuit do?"
               className="resize-y rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
             />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-ink-soft">Tags (comma separated, optional)</span>
+            <input
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="adder, alu, memory"
+              className="rounded-lg border border-border-strong bg-surface px-2.5 py-1.5 text-sm text-ink outline-none focus:border-copper"
+            />
+            <span className="text-[11px] text-slate">
+              Shown on the community page and used for its tag filter,  only matters if this is Public.
+            </span>
           </label>
 
           <div className="flex flex-col gap-1.5">

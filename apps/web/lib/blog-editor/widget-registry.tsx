@@ -18,6 +18,12 @@ import { GraphTraversalWidget } from "@/components/content/blocks/interactive/gr
 import { ShortestPathWidget } from "@/components/content/blocks/interactive/graph/shortest-path-widget";
 import { MstWidget } from "@/components/content/blocks/interactive/graph/mst-widget";
 import { TarjanSccWidget } from "@/components/content/blocks/interactive/graph/tarjan-scc-widget";
+import { BacktrackingTreeWidget } from "@/components/content/blocks/interactive/backtracking/backtracking-tree-widget";
+import { PermutationsWidget } from "@/components/content/blocks/interactive/backtracking/permutations-widget";
+import { NQueensWidget } from "@/components/content/blocks/interactive/backtracking/n-queens-widget";
+import { PalindromePartitionWidget } from "@/components/content/blocks/interactive/backtracking/palindrome-partition-widget";
+import { GraphColoringWidget } from "@/components/content/blocks/interactive/backtracking/graph-coloring-widget";
+import { SudokuWidget } from "@/components/content/blocks/interactive/backtracking/sudoku-widget";
 import { CircuitEmbedWidget, isCircuitEmbedData } from "@/components/content/blocks/circuit/circuit-embed";
 
 import { RawJsonField } from "@/components/blog-editor/fields/raw-json-field";
@@ -212,6 +218,48 @@ const registryImpl: Record<string, WidgetDefinition> = {
     Renderer: TarjanSccWidget,
     Editor: (props) => <RawJsonField {...props} />,
     createDefault: () => ({}),
+  },
+  "backtracking-tree": {
+    name: "backtracking-tree",
+    label: "Backtracking Tree (subsets / combination sum)",
+    Renderer: BacktrackingTreeWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({}),
+  },
+  "permutations-explorer": {
+    name: "permutations-explorer",
+    label: "Permutations (swap vs used array)",
+    Renderer: PermutationsWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "used" }),
+  },
+  "n-queens": {
+    name: "n-queens",
+    label: "N-Queens Board",
+    Renderer: NQueensWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ n: 6 }),
+  },
+  "palindrome-partition": {
+    name: "palindrome-partition",
+    label: "Palindrome Partitioning",
+    Renderer: PalindromePartitionWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ text: "aabaa" }),
+  },
+  "graph-coloring": {
+    name: "graph-coloring",
+    label: "Graph M-Coloring",
+    Renderer: GraphColoringWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ m: 3 }),
+  },
+  "sudoku-solver": {
+    name: "sudoku-solver",
+    label: "Sudoku Solver (cell ordering)",
+    Renderer: SudokuWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ strategy: "first" }),
   },
   "circuit-embed": {
     name: "circuit-embed",

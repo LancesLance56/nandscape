@@ -1,0 +1,370 @@
+{
+  "slug": "backtracking-sudoku",
+  "title": "Sudoku, and Where Plain Backtracking Runs Out",
+  "excerpt": "A sudoku solver is twenty lines of backtracking. Making it fast is a different question, and the answer is about which cell you ask about next.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-16T10:00:00Z",
+  "tags": [
+    "backtracking",
+    "sudoku",
+    "constraint-propagation",
+    "heuristics",
+    "dsa"
+  ],
+  "sectionSlug": "backtracking",
+  "position": 70,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sudoku is the natural end of this section. The rules are three constraints, the search is the same template as every other page here, and a working solver is about twenty lines."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is also where the template alone stops being enough, and the interesting decisions move somewhere else entirely."
+        }
+      ]
+    },
+    {
+      "id": "h-naive",
+      "type": "heading",
+      "level": 2,
+      "text": "The obvious solver"
+    },
+    {
+      "id": "p-naive",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Find a blank cell. Try 1 through 9 in it. For each value that does not already appear in the same row, column or 3 by 3 box, place it and recurse. If nothing works, blank the cell and report failure upward."
+        }
+      ]
+    },
+    {
+      "id": "p-naive-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is correct and complete. Given enough time it solves any solvable grid, and given a nearly empty grid it will take a very long time indeed."
+        }
+      ]
+    },
+    {
+      "id": "h-order",
+      "type": "heading",
+      "level": 2,
+      "text": "Which blank cell, though?"
+    },
+    {
+      "id": "p-order",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "\"Find a blank cell\" hides the only decision that matters. Taking the next one in reading order is the obvious choice and a poor one."
+        }
+      ]
+    },
+    {
+      "id": "p-order-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The alternative is to take the blank cell with the fewest legal values remaining. If some cell has only one candidate, filling it is not a guess at all. If some cell has zero, the branch is already dead and you have just found that out without exploring it. This is the most constrained variable heuristic, and it is the same idea as colouring the most constrained node first on the previous page."
+        }
+      ]
+    },
+    {
+      "id": "p-order-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch between the two below on the same puzzle. The counters at the right report both."
+        }
+      ]
+    },
+    {
+      "id": "w-sudoku",
+      "type": "interactive",
+      "widget": "sudoku-solver",
+      "data": {
+        "strategy": "first"
+      }
+    },
+    {
+      "id": "p-order-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reading order fills 185 cells and hits 56 dead ends. Fewest candidates fills 49 and hits none, meaning it never once guessed wrong on this grid. Same algorithm, same finished grid, roughly a quarter of the work."
+        }
+      ]
+    },
+    {
+      "id": "p-order-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step through the reading-order run and watch what a dead end costs. The solver commits to a value near the top of the grid, descends a long way on the strength of it, discovers a cell with no candidates, and unwinds everything in between. The heuristic version asks about that cell while the guess is still fresh."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-sudoku",
+      "type": "code",
+      "language": "javascript",
+      "code": "// board is a flat array of 81 numbers, 0 for blank.\nfunction solveSudoku(board) {\n  function candidates(cell) {\n    const row = Math.floor(cell / 9);\n    const col = cell % 9;\n    const boxRow = Math.floor(row / 3) * 3;\n    const boxCol = Math.floor(col / 3) * 3;\n    const taken = new Set();\n\n    for (let i = 0; i < 9; i++) {\n      taken.add(board[row * 9 + i]);                                   // row\n      taken.add(board[i * 9 + col]);                                   // column\n      taken.add(board[(boxRow + Math.floor(i / 3)) * 9 + boxCol + (i % 3)]);  // box\n    }\n\n    const out = [];\n    for (let v = 1; v <= 9; v++) if (!taken.has(v)) out.push(v);\n    return out;\n  }\n\n  // The heuristic: fewest options first. A cell with one candidate is\n  // forced, and a cell with none kills the branch immediately.\n  function pickCell() {\n    let best = null;\n    let bestCount = 10;\n    for (let i = 0; i < 81; i++) {\n      if (board[i] !== 0) continue;\n      const count = candidates(i).length;\n      if (count < bestCount) {\n        best = i;\n        bestCount = count;\n        if (count === 0) break;      // nothing beats finding this out now\n      }\n    }\n    return best;\n  }\n\n  function solve() {\n    const cell = pickCell();\n    if (cell === null) return true;  // no blanks left\n\n    for (const v of candidates(cell)) {\n      board[cell] = v;               // choose\n      if (solve()) return true;      // explore\n      board[cell] = 0;               // un-choose\n    }\n\n    return false;\n  }\n\n  return solve();\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# board is a flat list of 81 numbers, 0 for blank.\ndef solve_sudoku(board):\n    def candidates(cell):\n        row, col = divmod(cell, 9)\n        box_row, box_col = (row // 3) * 3, (col // 3) * 3\n        taken = set()\n\n        for i in range(9):\n            taken.add(board[row * 9 + i])                                  # row\n            taken.add(board[i * 9 + col])                                  # column\n            taken.add(board[(box_row + i // 3) * 9 + box_col + i % 3])     # box\n\n        return [v for v in range(1, 10) if v not in taken]\n\n    # The heuristic: fewest options first. A cell with one candidate is\n    # forced, and a cell with none kills the branch immediately.\n    def pick_cell():\n        best, best_count = None, 10\n        for i in range(81):\n            if board[i] != 0:\n                continue\n            count = len(candidates(i))\n            if count < best_count:\n                best, best_count = i, count\n                if count == 0:\n                    break            # nothing beats finding this out now\n        return best\n\n    def solve():\n        cell = pick_cell()\n        if cell is None:\n            return True              # no blanks left\n\n        for v in candidates(cell):\n            board[cell] = v          # choose\n            if solve():\n                return True          # explore\n            board[cell] = 0          # un-choose\n\n        return False\n\n    return solve()"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <array>\n#include <functional>\n#include <set>\n#include <vector>\n\n// board is a flat array of 81 numbers, 0 for blank.\nbool solveSudoku(std::array<int, 81>& board) {\n    auto candidates = [&](int cell) {\n        int row = cell / 9, col = cell % 9;\n        int boxRow = (row / 3) * 3, boxCol = (col / 3) * 3;\n        std::set<int> taken;\n\n        for (int i = 0; i < 9; i++) {\n            taken.insert(board[row * 9 + i]);                              // row\n            taken.insert(board[i * 9 + col]);                              // column\n            taken.insert(board[(boxRow + i / 3) * 9 + boxCol + i % 3]);    // box\n        }\n\n        std::vector<int> out;\n        for (int v = 1; v <= 9; v++)\n            if (!taken.count(v)) out.push_back(v);\n        return out;\n    };\n\n    // The heuristic: fewest options first.\n    auto pickCell = [&]() {\n        int best = -1, bestCount = 10;\n        for (int i = 0; i < 81; i++) {\n            if (board[i] != 0) continue;\n            int count = (int)candidates(i).size();\n            if (count < bestCount) {\n                best = i;\n                bestCount = count;\n                if (count == 0) break;   // nothing beats finding this out now\n            }\n        }\n        return best;\n    };\n\n    std::function<bool()> solve = [&]() -> bool {\n        int cell = pickCell();\n        if (cell == -1) return true;     // no blanks left\n\n        for (int v : candidates(cell)) {\n            board[cell] = v;             // choose\n            if (solve()) return true;    // explore\n            board[cell] = 0;             // un-choose\n        }\n\n        return false;\n    };\n\n    return solve();\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-code-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The heuristic costs a scan of all 81 cells per step, which sounds expensive and is not. Recomputing candidates 81 times is cheap next to descending forty levels into a branch that was doomed at the top."
+        }
+      ]
+    },
+    {
+      "id": "h-propagation",
+      "type": "heading",
+      "level": 2,
+      "text": "Constraint propagation, the step beyond"
+    },
+    {
+      "id": "p-propagation",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a further idea that changes the character of the solver rather than tuning it."
+        }
+      ]
+    },
+    {
+      "id": "p-propagation-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Instead of searching and checking, keep a set of candidates for every cell and shrink those sets as facts arrive. Assigning a value removes it from every peer's candidate set. That removal can leave some peer with a single candidate, which is now forced, so assign it too, which removes more, and so on. The consequences cascade without any guessing at all."
+        }
+      ]
+    },
+    {
+      "id": "p-propagation-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "On easy puzzles that alone finishes the grid. On hard ones it runs out, at which point you guess a value, propagate again, and back out if the propagation reaches a contradiction. Search becomes the fallback rather than the main strategy."
+        }
+      ]
+    },
+    {
+      "id": "p-propagation-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Peter Norvig's essay "
+        },
+        {
+          "text": "Solving Every Sudoku Puzzle",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://norvig.com/sudoku.html"
+            }
+          ]
+        },
+        {
+          "text": " is the standard treatment, and worth reading in full once this section makes sense. His opening claim is that it takes about a page of code using two ideas, constraint propagation and search, which is a fair summary of where this material ends up."
+        }
+      ]
+    },
+    {
+      "id": "t-levels",
+      "type": "table",
+      "headers": [
+        "Approach",
+        "What it does when stuck",
+        "Roughly"
+      ],
+      "rows": [
+        [
+          "Naive backtracking, reading order",
+          "Guesses the next blank cell",
+          "Correct, slow on sparse grids"
+        ],
+        [
+          "Most constrained cell first",
+          "Guesses the tightest cell",
+          "Usually a large improvement for a small cost"
+        ],
+        [
+          "Constraint propagation plus search",
+          "Propagates until forced moves run out, then guesses",
+          "Solves typical puzzles with little or no guessing"
+        ],
+        [
+          "Exact cover with dancing links",
+          "Reformulates the whole puzzle as a cover problem",
+          "Fast and general, and a much bigger implementation"
+        ]
+      ]
+    },
+    {
+      "id": "p-levels-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last row is Knuth's "
+        },
+        {
+          "text": "Dancing Links",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://arxiv.org/abs/cs/0011047"
+            }
+          ]
+        },
+        {
+          "text": " again. Sudoku, n-queens and polyomino tiling all turn out to be the same exact cover problem underneath, which is a satisfying place for this section to land: six problems that looked different have been the same search the whole way."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why does picking the blank cell with the fewest candidates help so much?",
+            "options": [
+              {
+                "label": "Contradictions surface near the top of the tree, so a wrong guess is cheap to undo",
+                "correct": true
+              },
+              {
+                "label": "It reduces the number of cells that need filling",
+                "correct": false
+              },
+              {
+                "label": "It makes each individual candidate check faster",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A cell has exactly one candidate. What does that mean?",
+            "options": [
+              {
+                "label": "The value is forced, so filling it in is deduction rather than a guess",
+                "correct": true
+              },
+              {
+                "label": "The puzzle has no solution",
+                "correct": false
+              },
+              {
+                "label": "You should skip that cell and come back later",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What is constraint propagation doing that plain backtracking is not?",
+            "options": [
+              {
+                "label": "Shrinking candidate sets as facts arrive, cascading forced moves without guessing",
+                "correct": true
+              },
+              {
+                "label": "Trying values in a random order to avoid worst cases",
+                "correct": false
+              },
+              {
+                "label": "Caching solved subgrids for reuse",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "h-practice",
+      "type": "heading",
+      "level": 2,
+      "text": "Where to go next"
+    },
+    {
+      "id": "p-practice",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The best way to make this stick is volume. The "
+        },
+        {
+          "text": "CSES Problem Set",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://cses.fi/problemset/"
+            }
+          ]
+        },
+        {
+          "text": " has a free graded collection with judged submissions, and its introductory section includes the classic grid-path and permutation-search problems this section prepares you for."
+        }
+      ]
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Back to the algorithms track",
+      "href": "/tutorials/dsa",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Sudoku Solver with Backtracking: Cell Ordering and Constraint Propagation",
+  "seoDescription": "Write a sudoku solver with backtracking, then cut its work by three quarters with the most-constrained-cell heuristic. Covers constraint propagation and exact cover.",
+  "keywords": [
+    "sudoku solver backtracking",
+    "sudoku algorithm",
+    "constraint propagation sudoku",
+    "most constrained variable heuristic",
+    "sudoku solver python"
+  ]
+}

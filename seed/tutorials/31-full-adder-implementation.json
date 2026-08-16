@@ -59,7 +59,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/half-adder-implementation"
+              "href": "/tutorials/digital-logic/half-adder-implementation"
             }
           ]
         },
@@ -287,6 +287,15 @@
           "text": "Start from two half adders rather than trying to wire all five gates at once."
         }
       ]
+    },
+    {
+      "id": "w-companion",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "projectSlug": "full-adder",
+        "height": 260
+      }
     },
     {
       "id": "b-build",

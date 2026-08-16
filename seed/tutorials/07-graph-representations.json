@@ -231,7 +231,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to BFS and DFS",
-      "href": "/tutorials/graph-bfs-dfs",
+      "href": "/tutorials/dsa/graph-bfs-dfs",
       "style": "primary"
     }
   ],

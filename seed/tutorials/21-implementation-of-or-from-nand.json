@@ -274,6 +274,15 @@
       ]
     },
     {
+      "id": "w-companion",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "projectSlug": "or-from-nand",
+        "height": 260
+      }
+    },
+    {
       "id": "b-build",
       "type": "button",
       "label": "Solve this as a puzzle",
@@ -298,7 +307,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/implementation-of-and-from-nand"
+              "href": "/tutorials/digital-logic/implementation-of-and-from-nand"
             }
           ]
         },
@@ -310,7 +319,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/implementation-of-or-from-nand"
+              "href": "/tutorials/digital-logic/implementation-of-or-from-nand"
             }
           ]
         },

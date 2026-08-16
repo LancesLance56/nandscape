@@ -1,0 +1,165 @@
+{
+  "slug": "half-subtractor",
+  "name": "Half Subtractor",
+  "description": "Computes A minus B for two bits, producing a DIFFERENCE and a BORROW.",
+  "tags": [
+    "tutorial",
+    "subtractor",
+    "arithmetic",
+    "gate-implementation"
+  ],
+  "visibility": "PUBLIC",
+  "nodes": [
+    {
+      "id": "in_1",
+      "type": "io-input",
+      "position": {
+        "x": 40,
+        "y": 60
+      },
+      "data": {
+        "kind": "input",
+        "name": "A",
+        "value": 0
+      }
+    },
+    {
+      "id": "in_2",
+      "type": "io-input",
+      "position": {
+        "x": 40,
+        "y": 340
+      },
+      "data": {
+        "kind": "input",
+        "name": "B",
+        "value": 0
+      }
+    },
+    {
+      "id": "gate_3",
+      "type": "gate",
+      "position": {
+        "x": 260,
+        "y": 60
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 4
+      }
+    },
+    {
+      "id": "gate_4",
+      "type": "gate",
+      "position": {
+        "x": 260,
+        "y": 260
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 6
+      }
+    },
+    {
+      "id": "gate_5",
+      "type": "gate",
+      "position": {
+        "x": 480,
+        "y": 340
+      },
+      "data": {
+        "kind": "gate",
+        "gateType": 1
+      }
+    },
+    {
+      "id": "out_6",
+      "type": "io-output",
+      "position": {
+        "x": 480,
+        "y": 60
+      },
+      "data": {
+        "kind": "output",
+        "name": "DIFF"
+      }
+    },
+    {
+      "id": "out_7",
+      "type": "io-output",
+      "position": {
+        "x": 700,
+        "y": 340
+      },
+      "data": {
+        "kind": "output",
+        "name": "BORROW"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "in_1",
+      "sourceHandle": "out-0",
+      "target": "gate_3",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e2",
+      "source": "in_2",
+      "sourceHandle": "out-0",
+      "target": "gate_3",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e3",
+      "source": "in_1",
+      "sourceHandle": "out-0",
+      "target": "gate_4",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e4",
+      "source": "gate_4",
+      "sourceHandle": "out-0",
+      "target": "gate_5",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e5",
+      "source": "in_2",
+      "sourceHandle": "out-0",
+      "target": "gate_5",
+      "targetHandle": "in-1",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e6",
+      "source": "gate_3",
+      "sourceHandle": "out-0",
+      "target": "out_6",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    },
+    {
+      "id": "e7",
+      "source": "gate_5",
+      "sourceHandle": "out-0",
+      "target": "out_7",
+      "targetHandle": "in-0",
+      "type": "wire",
+      "data": {}
+    }
+  ]
+}

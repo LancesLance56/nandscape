@@ -19,12 +19,14 @@ export default async function AdminIndexPage() {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") redirect("/login");
 
-  const [posts, tutorialPages, users, featuredCircuits] = await Promise.all([
+  const [posts, tutorialPages, users, homepageFeatured, communityFeatured] = await Promise.all([
     listAllPosts(),
     listTutorialPages(),
     listUsers(),
-    listFeaturedCircuits(),
+    listFeaturedCircuits("HOMEPAGE_DEMO"),
+    listFeaturedCircuits("COMMUNITY_WEEKLY"),
   ]);
+  const featuredCircuitCount = homepageFeatured.length + communityFeatured.length;
 
   const sections: AdminSection[] = [
     {
@@ -51,9 +53,9 @@ export default async function AdminIndexPage() {
     {
       href: "/admin/featured-circuits",
       label: "Featured circuits",
-      description: "Choose which project embeds in the homepage live demo.",
-      count: featuredCircuits.length,
-      countLabel: featuredCircuits.length === 1 ? "candidate" : "candidates",
+      description: "Pick the homepage live demo and the community page's Circuit of the Week.",
+      count: featuredCircuitCount,
+      countLabel: featuredCircuitCount === 1 ? "candidate" : "candidates",
     },
     {
       href: "/admin/database",

@@ -251,7 +251,7 @@
       "id": "b-next",
       "type": "button",
       "label": "Continue to storing a graph in code",
-      "href": "/tutorials/graph-representations",
+      "href": "/tutorials/dsa/graph-representations",
       "style": "primary"
     }
   ],

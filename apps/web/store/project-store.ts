@@ -9,6 +9,7 @@ export interface ActiveProject {
   name: string;
   description: string | null;
   visibility: ProjectVisibility;
+  tags: string[];
 }
 
 interface ProjectState {

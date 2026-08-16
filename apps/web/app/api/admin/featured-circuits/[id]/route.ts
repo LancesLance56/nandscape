@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { removeFeaturedCircuit, setActiveFeaturedCircuit } from "@/lib/featured-circuits/featured-circuits";
+import type { FeaturedPlacement } from "@/lib/featured-circuits/featured-circuits";
+
+const VALID_PLACEMENTS: FeaturedPlacement[] = ["HOMEPAGE_DEMO", "COMMUNITY_WEEKLY"];
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const currentUser = await getCurrentUser();
@@ -17,11 +20,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if ((body as Record<string, unknown> | null)?.active !== true) {
+  const { active, placement } = (body as Record<string, unknown> | null) ?? {};
+  if (active !== true) {
     return NextResponse.json({ error: "Only { active: true } is supported" }, { status: 422 });
   }
+  if (!VALID_PLACEMENTS.includes(placement as FeaturedPlacement)) {
+    return NextResponse.json({ error: "`placement` must be HOMEPAGE_DEMO or COMMUNITY_WEEKLY" }, { status: 422 });
+  }
 
-  await setActiveFeaturedCircuit(id);
+  await setActiveFeaturedCircuit(id, placement as FeaturedPlacement);
   return NextResponse.json({ ok: true });
 }
 

@@ -110,6 +110,13 @@ async function main() {
   }
 
   await seedResource("posts", path.join(here, "posts"), "/api/posts", seedHeaders());
+  // Projects before tutorials: several tutorial pages embed a companion
+  // circuit by projectSlug (see components/content/blocks/circuit/circuit-embed.tsx),
+  // so the project it points at should exist first, even though the embed
+  // itself resolves lazily client-side and wouldn't hard-fail on order.
+  // createProject() needs resolveSeedOwnerId() to find an admin to own
+  // these, which is why this also has to come after seedAdmin().
+  await seedResource("projects", path.join(here, "projects"), "/api/projects", seedHeaders());
   // Tracks before sections before pages: each layer resolves its parent by
   // slug (trackSlug / sectionSlug), so the parent has to exist first.
   await seedResource("tutorial-tracks", path.join(here, "tutorial-tracks"), "/api/tutorial-tracks", seedHeaders());

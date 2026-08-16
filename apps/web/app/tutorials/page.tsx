@@ -61,7 +61,7 @@ export default async function TutorialsIndexPage() {
   const withContent = tracks.filter((t) => t.pageCount > 0);
 
   return (
-    <div>
+    <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
       <header className="mb-8">
         <h1 className="font-display text-3xl font-bold leading-tight text-ink">Tutorials</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
@@ -91,6 +91,6 @@ export default async function TutorialsIndexPage() {
         </Link>
         .
       </p>
-    </div>
+    </main>
   );
 }

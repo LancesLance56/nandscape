@@ -1,0 +1,347 @@
+{
+  "slug": "backtracking-palindrome-partitioning",
+  "title": "Palindrome Partitioning",
+  "excerpt": "Cut a string so every piece reads the same both ways. The choice at each step is where to put the next cut, and the palindrome test is what stops the search exploding.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-16T09:40:00Z",
+  "tags": [
+    "backtracking",
+    "palindrome",
+    "strings",
+    "dynamic-programming",
+    "dsa"
+  ],
+  "sectionSlug": "backtracking",
+  "position": 50,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Given a string, list every way to cut it into pieces where each piece is a palindrome. For \"aab\" the answers are \"a | a | b\" and \"aa | b\"."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This one is worth doing after n-queens because the constraint has a different character. A queen placement is rejected by comparing against other placements. A cut is rejected by looking at the piece itself, which means the test is independent of everything else on the path, and that opens an optimisation the earlier problems did not have."
+        }
+      ]
+    },
+    {
+      "id": "h-shape",
+      "type": "heading",
+      "level": 2,
+      "text": "What the choices are"
+    },
+    {
+      "id": "p-shape",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "At each step you are standing at some position in the string and deciding where the next piece ends. If the piece from here to there is a palindrome, cut it and carry on from the next character. If not, that cut is impossible, so try a longer piece."
+        }
+      ]
+    },
+    {
+      "id": "p-shape-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A string of length n has n-1 gaps, so there are 2^(n-1) possible cut patterns. The palindrome test rejects most of them long before they are fully built, which is why the tree stays small."
+        }
+      ]
+    },
+    {
+      "id": "p-shape-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is always at least one answer, because single characters are palindromes. The all-singletons partition is the floor."
+        }
+      ]
+    },
+    {
+      "id": "h-watch",
+      "type": "heading",
+      "level": 2,
+      "text": "Step through it"
+    },
+    {
+      "id": "p-watch",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The strip shows the string. Green pieces are cut and locked in for the current branch. The copper block is the piece being tested right now, and it turns coral when the test fails."
+        }
+      ]
+    },
+    {
+      "id": "w-palindrome",
+      "type": "interactive",
+      "widget": "palindrome-partition",
+      "data": {
+        "text": "aabaa"
+      }
+    },
+    {
+      "id": "p-watch-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch the first branch: it tries \"a\", which passes, then from position 2 tries \"a\" again, then \"b\", and so on down to the all-singletons answer. Then it backs all the way up and tries \"aa\" as the first piece instead."
+        }
+      ]
+    },
+    {
+      "id": "p-watch-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The rejections are the interesting frames. \"aab\" fails, so the entire family of partitions starting with \"aab\" is never built. On this five-character string that is a handful of branches; on a twenty-character string it is most of the search."
+        }
+      ]
+    },
+    {
+      "id": "p-watch-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try \"banana\" too. It has far fewer partitions than \"aabaa\" despite being longer, because it has fewer palindromic substrings to cut on."
+        }
+      ]
+    },
+    {
+      "id": "h-dp",
+      "type": "heading",
+      "level": 2,
+      "text": "The repeated-work problem"
+    },
+    {
+      "id": "p-dp",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Turn on the palindrome table in the widget. Every cell is one substring, marked T if it reads the same both ways."
+        }
+      ]
+    },
+    {
+      "id": "p-dp-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now notice how often the naive version recomputes those. The piece \"aa\" at position 1 gets tested on the branch that starts with \"a\", and again on a branch that reached position 1 by a different route. Each test walks the substring, so it is O(k) for a piece of length k, done over and over for the same k."
+        }
+      ]
+    },
+    {
+      "id": "p-dp-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Precomputing the whole table costs O(n^2) time and O(n^2) space, and turns every later test into a single lookup. The recurrence is short: "
+        },
+        {
+          "text": "isPal[i][j]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is true when "
+        },
+        {
+          "text": "s[i] === s[j]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and the inside "
+        },
+        {
+          "text": "isPal[i+1][j-1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is also true, with pieces of length 1 and 2 as the base cases."
+        }
+      ]
+    },
+    {
+      "id": "p-dp-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This does not change the worst case, because the output can still be exponential in size and you have to write all of it. It removes a factor of n from the work spent deciding, which in practice is the part that hurts."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-palindrome",
+      "type": "code",
+      "language": "javascript",
+      "code": "function partition(s) {\n  const n = s.length;\n\n  // isPal[i][j]: does s[i..j] read the same both ways?\n  // Built by increasing length so the inside is always known first.\n  const isPal = Array.from({ length: n }, () => new Array(n).fill(false));\n  for (let i = 0; i < n; i++) isPal[i][i] = true;\n  for (let len = 2; len <= n; len++) {\n    for (let i = 0; i + len - 1 < n; i++) {\n      const j = i + len - 1;\n      isPal[i][j] = s[i] === s[j] && (len === 2 || isPal[i + 1][j - 1]);\n    }\n  }\n\n  const out = [];\n  const parts = [];\n\n  function backtrack(start) {\n    if (start === n) {\n      out.push([...parts]);\n      return;\n    }\n\n    for (let end = start; end < n; end++) {\n      if (!isPal[start][end]) continue;      // prune: no cut here can work\n\n      parts.push(s.slice(start, end + 1));   // choose\n      backtrack(end + 1);                    // explore\n      parts.pop();                           // un-choose\n    }\n  }\n\n  backtrack(0);\n  return out;\n}\n\n// partition(\"aab\") -> [[\"a\", \"a\", \"b\"], [\"aa\", \"b\"]]",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def partition(s):\n    n = len(s)\n\n    # is_pal[i][j]: does s[i..j] read the same both ways?\n    # Built by increasing length so the inside is always known first.\n    is_pal = [[False] * n for _ in range(n)]\n    for i in range(n):\n        is_pal[i][i] = True\n    for length in range(2, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            is_pal[i][j] = s[i] == s[j] and (length == 2 or is_pal[i + 1][j - 1])\n\n    out = []\n    parts = []\n\n    def backtrack(start):\n        if start == n:\n            out.append(list(parts))\n            return\n\n        for end in range(start, n):\n            if not is_pal[start][end]:\n                continue                       # prune: no cut here can work\n\n            parts.append(s[start:end + 1])     # choose\n            backtrack(end + 1)                 # explore\n            parts.pop()                        # un-choose\n\n    backtrack(0)\n    return out\n\n\n# partition(\"aab\") -> [['a', 'a', 'b'], ['aa', 'b']]"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <functional>\n#include <string>\n#include <vector>\n\nstd::vector<std::vector<std::string>> partition(const std::string& s) {\n    int n = s.size();\n\n    // isPal[i][j]: does s[i..j] read the same both ways?\n    std::vector<std::vector<bool>> isPal(n, std::vector<bool>(n, false));\n    for (int i = 0; i < n; i++) isPal[i][i] = true;\n    for (int len = 2; len <= n; len++) {\n        for (int i = 0; i + len - 1 < n; i++) {\n            int j = i + len - 1;\n            isPal[i][j] = s[i] == s[j] && (len == 2 || isPal[i + 1][j - 1]);\n        }\n    }\n\n    std::vector<std::vector<std::string>> out;\n    std::vector<std::string> parts;\n\n    std::function<void(int)> backtrack = [&](int start) {\n        if (start == n) {\n            out.push_back(parts);\n            return;\n        }\n\n        for (int end = start; end < n; end++) {\n            if (!isPal[start][end]) continue;   // prune: no cut here can work\n\n            parts.push_back(s.substr(start, end - start + 1));  // choose\n            backtrack(end + 1);                                 // explore\n            parts.pop_back();                                   // un-choose\n        }\n    };\n\n    backtrack(0);\n    return out;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-related",
+      "type": "heading",
+      "level": 2,
+      "text": "The related question that is not backtracking"
+    },
+    {
+      "id": "p-related",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A common follow-up asks for the "
+        },
+        {
+          "text": "minimum",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " number of cuts rather than every partition. That question should not be answered with this algorithm."
+        }
+      ]
+    },
+    {
+      "id": "p-related-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Enumerating all partitions and taking the smallest works but is exponential for no reason. The minimum-cuts version only needs one number per position, so it is a straight O(n^2) dynamic program: the best cut count ending at position j is one more than the best ending just before some palindromic piece that finishes at j."
+        }
+      ]
+    },
+    {
+      "id": "p-related-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is the boundary described on the introduction page. Wanting every answer points at backtracking. Wanting the best answer, with subproblems that repeat, points at dynamic programming."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why is a partition always guaranteed to exist?",
+            "options": [
+              {
+                "label": "Single characters are palindromes, so cutting between every character always works",
+                "correct": true
+              },
+              {
+                "label": "Every string contains at least one palindrome of length 2",
+                "correct": false
+              },
+              {
+                "label": "It is not guaranteed; some strings have no valid partition",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What does precomputing the isPalindrome table change?",
+            "options": [
+              {
+                "label": "Each palindrome test becomes O(1) instead of O(k), removing a factor of n from the work",
+                "correct": true
+              },
+              {
+                "label": "It makes the overall complexity polynomial",
+                "correct": false
+              },
+              {
+                "label": "It reduces the number of partitions found",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "You only need the minimum number of cuts. What should you use?",
+            "options": [
+              {
+                "label": "An O(n^2) dynamic program, not this enumeration",
+                "correct": true
+              },
+              {
+                "label": "The same backtracking, taking the shortest result",
+                "correct": false
+              },
+              {
+                "label": "A greedy scan taking the longest palindrome each time",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "divider-1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to graph m-coloring",
+      "href": "/tutorials/dsa/backtracking-m-coloring",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Palindrome Partitioning: Backtracking Solution with DP Optimization",
+  "seoDescription": "Find every way to cut a string into palindromic pieces using backtracking, then speed the palindrome check up with an O(n^2) precomputed table. Code in three languages.",
+  "keywords": [
+    "palindrome partitioning",
+    "palindromic partition",
+    "backtracking string problems",
+    "palindrome partitioning dp",
+    "minimum palindrome cuts"
+  ]
+}

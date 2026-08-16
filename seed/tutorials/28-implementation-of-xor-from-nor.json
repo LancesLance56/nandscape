@@ -264,6 +264,15 @@
       ]
     },
     {
+      "id": "w-companion",
+      "type": "interactive",
+      "widget": "circuit-embed",
+      "data": {
+        "projectSlug": "xor-from-nor",
+        "height": 260
+      }
+    },
+    {
       "id": "b-build",
       "type": "button",
       "label": "Open the logic editor",
@@ -288,7 +297,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/implementation-of-and-from-nand"
+              "href": "/tutorials/digital-logic/implementation-of-and-from-nand"
             }
           ]
         },
@@ -300,7 +309,7 @@
           "marks": [
             {
               "kind": "link",
-              "href": "/tutorials/implementation-of-or-from-nand"
+              "href": "/tutorials/digital-logic/implementation-of-or-from-nand"
             }
           ]
         },
