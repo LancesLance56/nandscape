@@ -128,6 +128,63 @@
       ]
     },
     {
+      "id": "h-ex2",
+      "type": "heading",
+      "level": 2,
+      "text": "A second example: a block of four plus a leftover"
+    },
+    {
+      "id": "p-ex2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Five 1s this time. Four of them form a block, and the fifth needs a group of its own."
+        }
+      ]
+    },
+    {
+      "id": "w-ex2",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ],
+        "cells": [
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "mode": "practice",
+        "title": "Group it yourself"
+      }
+    },
+    {
+      "id": "p-ex2b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try grouping it before reading on. The minimal answer is B' + A'C'."
+        }
+      ]
+    },
+    {
+      "id": "p-ex2c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The trap here is grabbing the leftover 1 as a group of one. It has a neighbour, so it belongs in a pair, and taking the pair costs one literal less than taking the single cell."
+        }
+      ]
+    },
+    {
       "id": "b1",
       "type": "button",
       "label": "Continue to 4-variable maps",

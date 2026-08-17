@@ -1,0 +1,433 @@
+{
+  "slug": "kmap-dont-cares",
+  "title": "Don't-Care Conditions",
+  "excerpt": "Some input combinations can never happen. Marking them X instead of 0 lets your groups grow through them, and often removes a whole term from the answer.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-16T11:00:00Z",
+  "tags": [
+    "karnaugh-map",
+    "dont-care",
+    "boolean-algebra",
+    "digital-logic"
+  ],
+  "sectionSlug": "karnaugh-maps",
+  "position": 50,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Up to now every cell in the map has been a 0 or a 1. Real circuits have a third case: input combinations that cannot occur, so their output genuinely does not matter."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "These are "
+        },
+        {
+          "text": "don't-care conditions",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", written X on the map. They are not a shortcut or an approximation. They are a statement that the specification never says what should happen for that input, which leaves you free to pick whichever answer makes the circuit smaller."
+        }
+      ]
+    },
+    {
+      "id": "h-where",
+      "type": "heading",
+      "level": 2,
+      "text": "Where they come from"
+    },
+    {
+      "id": "p-where",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The most common source is a code that does not use its full range."
+        }
+      ]
+    },
+    {
+      "id": "t-where",
+      "type": "table",
+      "headers": [
+        "Situation",
+        "Inputs that never occur"
+      ],
+      "rows": [
+        [
+          "Binary-coded decimal: 4 bits holding one decimal digit",
+          "1010 through 1111, since digits stop at 9"
+        ],
+        [
+          "A 7-segment display driven from BCD",
+          "The same six patterns"
+        ],
+        [
+          "A one-hot signal where exactly one line is high",
+          "Every combination with two or more high"
+        ],
+        [
+          "A state machine with unreachable states",
+          "Any encoding no transition can produce"
+        ]
+      ]
+    },
+    {
+      "id": "p-where-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In each case the hardware will never see those inputs. Forcing the output to 0 there is a choice, and usually a needlessly expensive one."
+        }
+      ]
+    },
+    {
+      "id": "h-worked",
+      "type": "heading",
+      "level": 2,
+      "text": "Worked example: is the digit 5 or more?"
+    },
+    {
+      "id": "p-worked",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Four bits "
+        },
+        {
+          "text": "ABCD",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " carry one BCD digit, so only 0000 through 1001 ever appear. The output should be 1 when the digit is 5 or more, which means minterms 5, 6, 7, 8 and 9."
+        }
+      ]
+    },
+    {
+      "id": "p-worked-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "First, the cautious version. Treat the six impossible inputs as 0, because that feels safe:"
+        }
+      ]
+    },
+    {
+      "id": "w-bcd-strict",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "mode": "solve",
+        "title": "Impossible inputs forced to 0"
+      }
+    },
+    {
+      "id": "p-worked-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That gives A'BD + A'BC + AB'C': 3 terms and 9 literals. Every group is boxed in by the zeros around it."
+        }
+      ]
+    },
+    {
+      "id": "p-worked-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now mark those six as don't-cares instead, and watch what the groups do:"
+        }
+      ]
+    },
+    {
+      "id": "w-bcd-dc",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ],
+        "mode": "solve",
+        "title": "Impossible inputs marked X"
+      }
+    },
+    {
+      "id": "p-worked-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now it is BD + BC + A: 3 terms and 5 literals. Same circuit behaviour for every input that can actually happen, built from noticeably less logic."
+        }
+      ]
+    },
+    {
+      "id": "p-worked-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The groups were able to expand into the X cells because nothing stops them there. A group is only illegal if it covers a 0."
+        }
+      ]
+    },
+    {
+      "id": "h-rules",
+      "type": "heading",
+      "level": 2,
+      "text": "The rules"
+    },
+    {
+      "id": "t-rules",
+      "type": "table",
+      "headers": [
+        "Cell",
+        "Must be covered?",
+        "May be covered?"
+      ],
+      "rows": [
+        [
+          "1",
+          "Yes, by at least one group",
+          "Yes"
+        ],
+        [
+          "0",
+          "No",
+          "Never"
+        ],
+        [
+          "X",
+          "No",
+          "Yes, whenever it helps"
+        ]
+      ]
+    },
+    {
+      "id": "p-rules",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That middle row is the one to internalise. A don't-care is worth including when it enlarges a group, and worth ignoring when it does not. A group made entirely of don't-cares is legal but pointless: it covers nothing that needed covering, and adds a term to your expression for no reason."
+        }
+      ]
+    },
+    {
+      "id": "h-danger",
+      "type": "heading",
+      "level": 2,
+      "text": "The catch"
+    },
+    {
+      "id": "p-danger",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Don't-care means the input cannot occur, not that you have not thought about it. Those are very different claims, and confusing them produces a circuit that behaves arbitrarily on inputs that turn out to be reachable after all."
+        }
+      ]
+    },
+    {
+      "id": "p-danger-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If a malformed input is merely unlikely rather than impossible, it is not a don't-care. Decide what should happen and write that down as a 0 or a 1. The extra gate is cheaper than the bug."
+        }
+      ]
+    },
+    {
+      "id": "h-practice",
+      "type": "heading",
+      "level": 2,
+      "text": "Try it"
+    },
+    {
+      "id": "p-practice",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This map has don't-cares in it. Group it yourself, then check whether you used them to your advantage."
+        }
+      ]
+    },
+    {
+      "id": "w-practice",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ],
+        "mode": "practice",
+        "title": "Group it yourself"
+      }
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "What does an X in a Karnaugh map mean?",
+            "options": [
+              {
+                "label": "That input combination cannot occur, so the output for it does not matter",
+                "correct": true
+              },
+              {
+                "label": "The output is unknown and should be treated as 0",
+                "correct": false
+              },
+              {
+                "label": "The cell has not been filled in yet",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "May a group include a don't-care cell?",
+            "options": [
+              {
+                "label": "Yes, whenever including it makes the group larger",
+                "correct": true
+              },
+              {
+                "label": "No, groups may only contain 1s",
+                "correct": false
+              },
+              {
+                "label": "Only if the group is otherwise all don't-cares",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "You form a group made entirely of don't-cares. What is wrong with it?",
+            "options": [
+              {
+                "label": "It covers no 1s, so it adds a term to the expression without doing any work",
+                "correct": true
+              },
+              {
+                "label": "It is illegal and the map cannot be solved",
+                "correct": false
+              },
+              {
+                "label": "Nothing, it is a useful simplification",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to worked examples",
+      "href": "/tutorials/digital-logic/kmap-worked-examples",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Don't-Care Conditions in Karnaugh Maps Explained",
+  "seoDescription": "What don't-care conditions are, where they come from, and how marking impossible inputs as X instead of 0 shrinks the simplified expression. With a worked BCD example.",
+  "keywords": [
+    "don't care conditions",
+    "karnaugh map don't care",
+    "dont care kmap",
+    "bcd don't care",
+    "incompletely specified function"
+  ]
+}

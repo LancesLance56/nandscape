@@ -143,11 +143,77 @@
       ]
     },
     {
+      "id": "h-ex2",
+      "type": "heading",
+      "level": 2,
+      "text": "A second example: overlapping groups"
+    },
+    {
+      "id": "p-ex2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Six 1s. The largest groups available share cells, and that is fine: covering a 1 twice costs nothing."
+        }
+      ]
+    },
+    {
+      "id": "w-ex2",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "mode": "solve",
+        "title": "Overlapping groups"
+      }
+    },
+    {
+      "id": "p-ex2b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The answer is A'B + BD. Both groups are blocks of four, and they intersect."
+        }
+      ]
+    },
+    {
+      "id": "p-ex2c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "People often try to partition the 1s into non-overlapping blocks, as though the map were a jigsaw. It is not. The only requirements are that every 1 is inside some group, no group touches a 0, and no group is redundant."
+        }
+      ]
+    },
+    {
       "id": "b1",
       "type": "button",
-      "label": "Try it on a real puzzle",
-      "href": "/puzzles",
-      "style": "secondary"
+      "label": "Continue to don't-care conditions",
+      "href": "/tutorials/digital-logic/kmap-dont-cares",
+      "style": "primary"
     }
   ],
   "seoTitle": "4-Variable Karnaugh Map: Groups and the Four Corners",

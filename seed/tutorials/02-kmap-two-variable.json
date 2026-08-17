@@ -137,6 +137,58 @@
       ]
     },
     {
+      "id": "h-ex2",
+      "type": "heading",
+      "level": 2,
+      "text": "A second example: when nothing simplifies"
+    },
+    {
+      "id": "p-ex2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Not every function gets smaller. This map has two 1s sitting diagonally, which means they are not adjacent: diagonal cells differ in two variables, not one."
+        }
+      ]
+    },
+    {
+      "id": "w-ex2",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B"
+        ],
+        "cells": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "mode": "solve",
+        "title": "Diagonal 1s"
+      }
+    },
+    {
+      "id": "p-ex2b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The answer is A'B + AB', which is exactly the sum of minterms you started with. No pair can be formed, so no variable can be eliminated."
+        }
+      ]
+    },
+    {
+      "id": "p-ex2c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is exclusive-or, and its resistance to simplification is the reason XOR gets its own gate symbol instead of being built from AND and OR every time it appears."
+        }
+      ]
+    },
+    {
       "id": "b1",
       "type": "button",
       "label": "Continue to 3-variable maps",

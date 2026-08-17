@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { InteractiveBlockView } from "@/components/content/blocks/interactive/interactive-block";
-import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
+import { BreadcrumbJsonLd, FaqJsonLd, SoftwareAppJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { TOOLS, getTool } from "@/lib/tools/tools";
 
@@ -48,6 +48,8 @@ export default async function ToolPage({ params }: PageProps) {
             { name: tool.title, path: `/tools/${tool.slug}` },
           ]}
         />
+        <SoftwareAppJsonLd name={tool.title} description={tool.seoDescription} path={`/tools/${tool.slug}`} />
+        {tool.faq && <FaqJsonLd entries={tool.faq} />}
 
         <nav aria-label="Breadcrumb" className="mb-3 text-xs text-slate">
           <Link href="/tools" className="hover:text-copper-dark">
@@ -77,6 +79,28 @@ export default async function ToolPage({ params }: PageProps) {
             ))}
           </ul>
         </section>
+
+        {tool.faq && tool.faq.length > 0 && (
+          <section className="mt-10">
+            <h2 className="font-display text-lg font-bold text-ink">Common questions</h2>
+            <div className="mt-4 flex flex-col gap-3">
+              {tool.faq.map((entry) => (
+                <details
+                  key={entry.question}
+                  className="group rounded-xl border border-border bg-surface-card px-4 py-3 transition-colors hover:border-border-strong"
+                >
+                  <summary className="cursor-pointer list-none text-sm font-semibold text-ink marker:hidden">
+                    <span className="flex items-center justify-between gap-3">
+                      {entry.question}
+                      <span className="shrink-0 text-slate transition-transform group-open:rotate-45">+</span>
+                    </span>
+                  </summary>
+                  <p className="mt-2.5 text-sm leading-relaxed text-ink-soft">{entry.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="mt-10">
           <h2 className="font-display text-lg font-bold text-ink">Learn the theory</h2>

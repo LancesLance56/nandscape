@@ -82,6 +82,67 @@ export interface Breadcrumb {
   path: string;
 }
 
+export interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+/**
+ * FAQPage markup for the tool pages.
+ *
+ * Worth having because these questions ("how do you group a K-map?", "what
+ * is a don't-care?") are things people type into a search box verbatim, and
+ * an FAQ block is one of the few structured-data types that can put the
+ * answer directly on the results page. The questions have to be genuinely
+ * answered in the visible page content, which is why the tool page renders
+ * the same list it passes here rather than hiding it in a script tag.
+ */
+export function FaqJsonLd({ entries }: { entries: FaqEntry[] }) {
+  if (entries.length === 0) return null;
+
+  return (
+    <JsonLdScript
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: entries.map((e) => ({
+          "@type": "Question",
+          name: e.question,
+          acceptedAnswer: { "@type": "Answer", text: e.answer },
+        })),
+      }}
+    />
+  );
+}
+
+/** Marks a tool page as a usable web application rather than an article. */
+export function SoftwareAppJsonLd({
+  name,
+  description,
+  path,
+}: {
+  name: string;
+  description: string;
+  path: string;
+}) {
+  return (
+    <JsonLdScript
+      data={{
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name,
+        description,
+        url: `${siteUrl()}${path}`,
+        applicationCategory: "EducationalApplication",
+        operatingSystem: "Any",
+        // Free and browser-based, which is what people filter for when they
+        // search "<thing> calculator online free".
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      }}
+    />
+  );
+}
+
 /** Turns the trail into the breadcrumb line Google shows above a result in
  *  place of the raw URL. */
 export function BreadcrumbJsonLd({ items }: { items: Breadcrumb[] }) {

@@ -5,7 +5,8 @@ import { RevealWidget } from "./reveal-widget";
 import { ChoiceQuizWidget } from "./choice-quiz-widget";
 import { ComparisonSliderWidget } from "./comparison-slider-widget";
 import { QuizWidget } from "./quiz-widget";
-import { KMapExplorerWidget } from "./kmap-explorer-widget";
+import { KMapExplorerWidget } from "./kmap/kmap-explorer-widget";
+import { KMapPracticeWidget } from "./kmap/kmap-practice-widget";
 import { MintermPickerWidget } from "./minterm-picker-widget";
 import { GrayCodeExplorerWidget } from "./gray-code-explorer-widget";
 import { NumberBaseExplorerWidget } from "./number-base-explorer-widget";
@@ -40,6 +41,7 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "comparison-slider": ComparisonSliderWidget,
   quiz: QuizWidget,
   "kmap-explorer": KMapExplorerWidget,
+  "kmap-practice": KMapPracticeWidget,
   "minterm-picker": MintermPickerWidget,
   "gray-code-explorer": GrayCodeExplorerWidget,
   "number-base-explorer": NumberBaseExplorerWidget,

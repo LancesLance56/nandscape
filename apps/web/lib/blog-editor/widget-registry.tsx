@@ -7,7 +7,8 @@ import { TruthTableExplorerWidget } from "@/components/content/blocks/interactiv
 import { ReorderWidget } from "@/components/content/blocks/interactive/reorder-widget";
 import { ChoiceQuizWidget } from "@/components/content/blocks/interactive/choice-quiz-widget";
 import { ComparisonSliderWidget } from "@/components/content/blocks/interactive/comparison-slider-widget";
-import { KMapExplorerWidget } from "@/components/content/blocks/interactive/kmap-explorer-widget";
+import { KMapExplorerWidget } from "@/components/content/blocks/interactive/kmap/kmap-explorer-widget";
+import { KMapPracticeWidget } from "@/components/content/blocks/interactive/kmap/kmap-practice-widget";
 import { MintermPickerWidget } from "@/components/content/blocks/interactive/minterm-picker-widget";
 import { GrayCodeExplorerWidget } from "@/components/content/blocks/interactive/gray-code-explorer-widget";
 import { NumberBaseExplorerWidget } from "@/components/content/blocks/interactive/number-base-explorer-widget";
@@ -133,10 +134,17 @@ const registryImpl: Record<string, WidgetDefinition> = {
   },
   "kmap-explorer": {
     name: "kmap-explorer",
-    label: "K-Map Explorer",
+    label: "K-Map Explorer (solve / practice)",
     Renderer: KMapExplorerWidget,
     Editor: (props) => <RawJsonField {...props} />,
     createDefault: () => ({ variables: ["A", "B", "C"], truthTable: Array(8).fill(0), title: "Karnaugh Map" }),
+  },
+  "kmap-practice": {
+    name: "kmap-practice",
+    label: "K-Map Practice (random problems)",
+    Renderer: KMapPracticeWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ difficulty: "easy" }),
   },
   "minterm-picker": {
     name: "minterm-picker",

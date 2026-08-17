@@ -1,0 +1,605 @@
+{
+  "slug": "kmap-worked-examples",
+  "title": "Karnaugh Map Worked Examples",
+  "excerpt": "Six maps solved end to end, from a single big group to four corners and a function with two equally minimal answers. Then an endless supply of random ones to practise on.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-16T11:10:00Z",
+  "tags": [
+    "karnaugh-map",
+    "worked-examples",
+    "boolean-algebra",
+    "digital-logic",
+    "practice"
+  ],
+  "sectionSlug": "karnaugh-maps",
+  "position": 60,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The rules for Karnaugh maps take five minutes to learn and considerably longer to apply well. What follows is six maps solved in full, chosen because each one is where a particular mistake usually happens."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every map below is live. Groups are outlined and labelled with their product term, and you can click cells to change the function and watch the answer move."
+        }
+      ]
+    },
+    {
+      "id": "h-1",
+      "type": "heading",
+      "level": 2,
+      "text": "Example 1: one group is the whole answer"
+    },
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Four 1s, all in the cells where C is 0. They form one block of four."
+        }
+      ]
+    },
+    {
+      "id": "w-1",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ],
+        "cells": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "mode": "solve",
+        "title": "Example 1"
+      }
+    },
+    {
+      "id": "p-1b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The answer is C'. A group of four on a three-variable map eliminates two of the three variables, and the one left is the only variable that holds the same value across every cell in the group. Here that is C, which is 0 throughout, so the term is C'."
+        }
+      ]
+    },
+    {
+      "id": "p-1c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The common error is grouping these as two pairs. That is not wrong, it is just twice the size: two terms of two literals each instead of one term of one literal."
+        }
+      ]
+    },
+    {
+      "id": "h-2",
+      "type": "heading",
+      "level": 2,
+      "text": "Example 2: the group that wraps"
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Same map with one extra 1 added at minterm 1."
+        }
+      ]
+    },
+    {
+      "id": "w-2",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ],
+        "cells": [
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "mode": "solve",
+        "title": "Example 2"
+      }
+    },
+    {
+      "id": "p-2b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The answer is A'B' + C'. The new cell cannot join the block of four, so it needs a group of its own, and the largest one available runs off the edge of the map and continues on the other side."
+        }
+      ]
+    },
+    {
+      "id": "p-2c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Edges wrap because the columns are labelled in Gray code. The first and last columns differ in exactly one bit, which is the same relationship any two side-by-side columns have. Nothing special is happening; the map is just drawn flat when it is really a cylinder."
+        }
+      ]
+    },
+    {
+      "id": "h-3",
+      "type": "heading",
+      "level": 2,
+      "text": "Example 3: four corners"
+    },
+    {
+      "id": "p-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Four 1s, one in each corner of a 4-variable map, touching nothing else."
+        }
+      ]
+    },
+    {
+      "id": "w-3",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "mode": "solve",
+        "title": "Example 3"
+      }
+    },
+    {
+      "id": "p-3b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "They are one group, and the answer is B'D'. Both axes wrap, so the corners are all mutually adjacent. The widget draws this as four dashed pieces to show they belong to a single group."
+        }
+      ]
+    },
+    {
+      "id": "p-3c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If you can see this one without help, you have understood the wraparound rule. It is the standard exam question for exactly that reason."
+        }
+      ]
+    },
+    {
+      "id": "h-4",
+      "type": "heading",
+      "level": 2,
+      "text": "Example 4: groups are allowed to overlap"
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Seven 1s in an L-shaped arrangement. There is no way to cover them with non-overlapping blocks without using more groups than necessary."
+        }
+      ]
+    },
+    {
+      "id": "w-4",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "mode": "solve",
+        "title": "Example 4"
+      }
+    },
+    {
+      "id": "p-4b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The answer is A'B' + A'D + A'C, in 3 terms. Notice that some cells sit inside two groups at once."
+        }
+      ]
+    },
+    {
+      "id": "p-4c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Overlap costs nothing. A 1 covered twice is still just a 1: in Boolean algebra "
+        },
+        {
+          "text": "x + x = x",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", so repeating coverage never changes the function. What matters is that every 1 is covered at least once and that no group is redundant."
+        }
+      ]
+    },
+    {
+      "id": "h-5",
+      "type": "heading",
+      "level": 2,
+      "text": "Example 5: don't-cares change the shape"
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The BCD comparison from the previous lesson. Six inputs cannot occur, so they are marked X."
+        }
+      ]
+    },
+    {
+      "id": "w-5",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "cells": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ],
+        "mode": "solve",
+        "title": "Example 5"
+      }
+    },
+    {
+      "id": "p-5b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The answer is BD + BC + A. Treating those six cells as 0 instead would give A'BD + A'BC + AB'C', which is 3 terms and 9 literals against 3 and 5."
+        }
+      ]
+    },
+    {
+      "id": "h-6",
+      "type": "heading",
+      "level": 2,
+      "text": "Example 6: two answers, both minimal"
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This one has a property that surprises people the first time: there is more than one correct minimal answer."
+        }
+      ]
+    },
+    {
+      "id": "w-6",
+      "type": "interactive",
+      "widget": "kmap-explorer",
+      "data": {
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ],
+        "cells": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "mode": "solve",
+        "title": "Example 6"
+      }
+    },
+    {
+      "id": "p-6b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The solver reports A'C + AC' + A'B', and there is one other grouping with exactly the same number of terms and literals. None of them is more correct than the others."
+        }
+      ]
+    },
+    {
+      "id": "p-6c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is why a grader that compares your answer against one stored solution is unreliable. The practice tool below checks the two things that actually define a right answer: that your groups reproduce the function, and that no smaller grouping exists."
+        }
+      ]
+    },
+    {
+      "id": "h-order",
+      "type": "heading",
+      "level": 2,
+      "text": "A procedure that works"
+    },
+    {
+      "id": "p-order",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When a map does not fall out by inspection, this order rarely goes wrong."
+        }
+      ]
+    },
+    {
+      "id": "t-order",
+      "type": "table",
+      "headers": [
+        "Step",
+        "What to do"
+      ],
+      "rows": [
+        [
+          "1",
+          "Find any 1 that can only be covered one way. The group covering it is forced, so commit to it."
+        ],
+        [
+          "2",
+          "Repeat until no forced 1s remain."
+        ],
+        [
+          "3",
+          "For whatever is left, take the largest legal group that covers an uncovered 1."
+        ],
+        [
+          "4",
+          "Stop as soon as every 1 is covered."
+        ],
+        [
+          "5",
+          "Check each group: if all its 1s are covered by others, delete it."
+        ]
+      ]
+    },
+    {
+      "id": "p-order-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step 5 is the one people skip. A redundant group produces a correct expression with an extra term in it, which is the most common way to lose marks on an otherwise right answer."
+        }
+      ]
+    },
+    {
+      "id": "h-practice",
+      "type": "heading",
+      "level": 2,
+      "text": "Now do it yourself"
+    },
+    {
+      "id": "p-practice",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A new random map every time, marked against the true minimum. Start on easy and move up when the 3-variable maps stop being interesting."
+        }
+      ]
+    },
+    {
+      "id": "w-practice",
+      "type": "interactive",
+      "widget": "kmap-practice",
+      "data": {
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "p-practice-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a full-page version at "
+        },
+        {
+          "text": "the K-map practice generator",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tools/karnaugh-map-practice"
+            }
+          ]
+        },
+        {
+          "text": ", and a "
+        },
+        {
+          "text": "solver",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tools/karnaugh-map-solver"
+            }
+          ]
+        },
+        {
+          "text": " if you want to check a map of your own."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Two of your groups overlap. What does that mean for the expression?",
+            "options": [
+              {
+                "label": "Nothing is wrong. Covering a 1 twice does not change the function",
+                "correct": true
+              },
+              {
+                "label": "The expression is invalid and must be regrouped",
+                "correct": false
+              },
+              {
+                "label": "The overlapping cells must be removed from one group",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "On a 4-variable map, how many literals does a group of 8 cells have?",
+            "options": [
+              {
+                "label": "1, since each doubling of the group removes one literal",
+                "correct": true
+              },
+              {
+                "label": "3",
+                "correct": false
+              },
+              {
+                "label": "8",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Every 1 is covered and no group covers a 0, but one group's 1s are all covered by other groups too. What should you do?",
+            "options": [
+              {
+                "label": "Delete that group. It is redundant and only adds a term",
+                "correct": true
+              },
+              {
+                "label": "Keep it, since more coverage is safer",
+                "correct": false
+              },
+              {
+                "label": "Merge it with an adjacent group",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Practise with random maps",
+      "href": "/tools/karnaugh-map-practice",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Karnaugh Map Examples: 6 Solved K-Maps with Explanations",
+  "seoDescription": "Six Karnaugh map examples worked end to end: single groups, wraparound, four corners, overlapping groups, don't-cares, and a map with two equally minimal answers.",
+  "keywords": [
+    "karnaugh map examples",
+    "k-map solved examples",
+    "karnaugh map problems with solutions",
+    "4 variable karnaugh map examples",
+    "karnaugh map practice",
+    "kmap examples with answers"
+  ]
+}
