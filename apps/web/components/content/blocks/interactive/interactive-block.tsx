@@ -23,6 +23,14 @@ import { NQueensWidget } from "./backtracking/n-queens-widget";
 import { PalindromePartitionWidget } from "./backtracking/palindrome-partition-widget";
 import { GraphColoringWidget } from "./backtracking/graph-coloring-widget";
 import { SudokuWidget } from "./backtracking/sudoku-widget";
+import { SortingVisualizerWidget } from "./sorting/sorting-visualizer-widget";
+import {
+  PartitionExplorerWidget,
+  MergeExplorerWidget,
+  IntervalExplorerWidget,
+  PairingExplorerWidget,
+} from "./sorting/pattern-widgets";
+import { FlowchartWidget, FlowchartMakerWidget } from "./flowchart/flowchart-widgets";
 import { CircuitEmbedWidget } from "@/components/content/blocks/circuit/circuit-embed";
 import type { InteractiveBlock } from "@/types/blog";
 import type { ComponentType } from "react";
@@ -58,6 +66,13 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "palindrome-partition": PalindromePartitionWidget,
   "graph-coloring": GraphColoringWidget,
   "sudoku-solver": SudokuWidget,
+  "sorting-visualizer": SortingVisualizerWidget,
+  "partition-explorer": PartitionExplorerWidget,
+  "merge-explorer": MergeExplorerWidget,
+  "interval-explorer": IntervalExplorerWidget,
+  "pairing-explorer": PairingExplorerWidget,
+  flowchart: FlowchartWidget,
+  "flowchart-maker": FlowchartMakerWidget,
   "circuit-embed": CircuitEmbedWidget,
 
   // Deprecated aliases

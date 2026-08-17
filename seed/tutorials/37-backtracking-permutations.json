@@ -317,6 +317,69 @@
       }
     },
     {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "As a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The used-array version, drawn out:"
+        }
+      ]
+    },
+    {
+      "id": "w-flow-perms",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "permutations"
+      }
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Compare it against the subsets chart. The loop runs over all n characters instead of a suffix, because any unused character may come next, and there is an extra "
+        },
+        {
+          "text": "used[i] ?",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " decision whose \"yes\" branch skips the character entirely. The choose step now sets two things rather than one, and the un-choose step has to undo both."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The stopping test also moved: it is "
+        },
+        {
+          "text": "current.length == n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " at the top rather than a record-on-entry, which is the structural expression of \"only the leaves are answers here\"."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

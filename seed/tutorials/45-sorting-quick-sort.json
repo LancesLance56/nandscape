@@ -1,0 +1,759 @@
+{
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "sectionSlug": "sorting",
+  "slug": "sorting-quick-sort",
+  "title": "Quick Sort, Step by Step",
+  "excerpt": "A complete partition trace showing what the two pointers mean at every moment, why the pivot lands in its final position, and how sorted input becomes the worst case.",
+  "publishedAt": "2026-08-16T12:30:00Z",
+  "tags": [
+    "sorting",
+    "quick-sort",
+    "partitioning",
+    "recursion",
+    "dsa"
+  ],
+  "position": 40,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Quick sort is merge sort inverted. Merge sort splits trivially and does all the work combining; quick sort does all the work splitting and nothing at all on the way back up."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Choose a value from the array, called the "
+        },
+        {
+          "text": "pivot",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Rearrange the array so everything smaller than the pivot sits to its left and everything larger sits to its right. The pivot is now exactly where it belongs in the final sorted array, and it never moves again. Then repeat on the left part and the right part."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is no merge step. Once every element has been a pivot, or has landed in a range of size one, the array is sorted."
+        }
+      ]
+    },
+    {
+      "id": "h-partition",
+      "type": "heading",
+      "level": 2,
+      "text": "Partitioning, traced completely"
+    },
+    {
+      "id": "p-partition",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Partitioning is the whole algorithm, so it is worth walking through in full. The scheme below is Lomuto's, which takes the last element as the pivot."
+        }
+      ]
+    },
+    {
+      "id": "p-partition-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Take this array, with 6 as the pivot:"
+        }
+      ]
+    },
+    {
+      "id": "code-part-input",
+      "type": "code",
+      "language": "text",
+      "code": "[7, 2, 9, 4, 3, 7, 6]      pivot = 6 (the last element)",
+      "variants": []
+    },
+    {
+      "id": "p-partition-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two indices do the work, and understanding what each one means is the key to the whole thing:"
+        }
+      ]
+    },
+    {
+      "id": "t-pointers",
+      "type": "table",
+      "headers": [
+        "Index",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "i",
+          "The end of the \"smaller than the pivot\" region. Everything from the start up to and including i is smaller than the pivot. It starts at -1, because that region is empty."
+        ],
+        [
+          "j",
+          "The scanner. It walks every element from the start up to (but not including) the pivot."
+        ]
+      ]
+    },
+    {
+      "id": "p-partition-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "For each element the rule is: if "
+        },
+        {
+          "text": "a[j]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is smaller than the pivot, grow the smaller region by one and swap this element into it. Otherwise do nothing and move on."
+        }
+      ]
+    },
+    {
+      "id": "t-trace",
+      "type": "table",
+      "headers": [
+        "j",
+        "a[j]",
+        "Test",
+        "Action",
+        "Array after"
+      ],
+      "rows": [
+        [
+          "0",
+          "7",
+          "7 >= 6",
+          "nothing, i stays -1",
+          "[7, 2, 9, 4, 3, 7, 6]"
+        ],
+        [
+          "1",
+          "2",
+          "2 < 6",
+          "i becomes 0, swap positions 0 and 1",
+          "[2, 7, 9, 4, 3, 7, 6]"
+        ],
+        [
+          "2",
+          "9",
+          "9 >= 6",
+          "nothing, i stays 0",
+          "[2, 7, 9, 4, 3, 7, 6]"
+        ],
+        [
+          "3",
+          "4",
+          "4 < 6",
+          "i becomes 1, swap positions 1 and 3",
+          "[2, 4, 9, 7, 3, 7, 6]"
+        ],
+        [
+          "4",
+          "3",
+          "3 < 6",
+          "i becomes 2, swap positions 2 and 4",
+          "[2, 4, 3, 7, 9, 7, 6]"
+        ],
+        [
+          "5",
+          "7",
+          "7 >= 6",
+          "nothing, i stays 2",
+          "[2, 4, 3, 7, 9, 7, 6]"
+        ]
+      ]
+    },
+    {
+      "id": "p-partition-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The scan is finished. At this point positions 0 to 2 hold "
+        },
+        {
+          "text": "[2, 4, 3]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", all smaller than 6, and positions 3 to 5 hold "
+        },
+        {
+          "text": "[7, 9, 7]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", all at least 6. The pivot is still sitting at the end."
+        }
+      ]
+    },
+    {
+      "id": "p-partition-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One final swap puts it in place: exchange the pivot with position "
+        },
+        {
+          "text": "i + 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", which is 3."
+        }
+      ]
+    },
+    {
+      "id": "code-part-out",
+      "type": "code",
+      "language": "text",
+      "code": "[2, 4, 3, 7, 9, 7, 6]      swap positions 3 and 6\n[2, 4, 3, 6, 9, 7, 7]\n          ^\n       pivot, now at index 3 and permanently in place",
+      "variants": []
+    },
+    {
+      "id": "p-partition-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Position 3 is correct in the final sorted array, and nothing will ever move it again. Everything to its left is smaller; everything to its right is larger. Those two sides can now be sorted independently, and neither can affect the other."
+        }
+      ]
+    },
+    {
+      "id": "p-partition-8",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch the pointers move for yourself:"
+        }
+      ]
+    },
+    {
+      "id": "w-vis",
+      "type": "interactive",
+      "widget": "sorting-visualizer",
+      "data": {
+        "algorithm": "quick",
+        "preset": "random",
+        "size": 10,
+        "showComparison": false
+      }
+    },
+    {
+      "id": "p-partition-9",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Each time a bar turns green, a pivot has just landed. Unlike merge sort, where nothing is final until the very end, quick sort finishes elements one at a time as it goes."
+        }
+      ]
+    },
+    {
+      "id": "h-invariant",
+      "type": "heading",
+      "level": 2,
+      "text": "The invariant"
+    },
+    {
+      "id": "p-invariant",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What makes the trace above easy to follow is that one statement is true before and after every single iteration:"
+        }
+      ]
+    },
+    {
+      "id": "code-inv",
+      "type": "code",
+      "language": "text",
+      "code": "a[low .. i]        all values < pivot\na[i+1 .. j-1]      all values >= pivot\na[j .. high-1]     not yet examined\na[high]            the pivot",
+      "variants": []
+    },
+    {
+      "id": "p-invariant-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is the invariant. When the loop ends, "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " has reached the pivot, so the \"not yet examined\" region is empty and the array is split into exactly two parts plus the pivot. Swapping the pivot to "
+        },
+        {
+          "text": "i+1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " drops it precisely on the boundary."
+        }
+      ]
+    },
+    {
+      "id": "p-invariant-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If you ever need to reconstruct this algorithm from memory, reconstruct the invariant first. The code follows from it."
+        }
+      ]
+    },
+    {
+      "id": "h-recursion",
+      "type": "heading",
+      "level": 2,
+      "text": "The recursion"
+    },
+    {
+      "id": "p-recursion",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "After partitioning our example we have "
+        },
+        {
+          "text": "[2, 4, 3]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "[9, 7, 7]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " on either side of the pivot at index 3. Quick sort calls itself on each, excluding the pivot:"
+        }
+      ]
+    },
+    {
+      "id": "code-rec",
+      "type": "code",
+      "language": "text",
+      "code": "quickSort([7,2,9,4,3,7,6], 0, 6)\n  partition -> pivot lands at 3, array now [2,4,3,6,9,7,7]\n  quickSort(a, 0, 2)      on [2,4,3]\n    partition -> pivot 3 lands at 1, giving [2,3,4]\n    quickSort(a, 0, 0)    single element, returns\n    quickSort(a, 2, 2)    single element, returns\n  quickSort(a, 4, 6)      on [9,7,7]\n    partition -> pivot 7 lands at 4, giving [7,7,9]\n    quickSort(a, 4, 3)    empty, returns\n    quickSort(a, 5, 6)    on [7,9] -> sorts to [7,9]\n-> [2,3,4,6,7,7,9]",
+      "variants": []
+    },
+    {
+      "id": "p-recursion-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Note that index "
+        },
+        {
+          "text": "p",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is excluded from both recursive calls. Including it would be a correctness bug in the making and, in the worst case, an infinite loop: a range that never shrinks."
+        }
+      ]
+    },
+    {
+      "id": "h-worst",
+      "type": "heading",
+      "level": 2,
+      "text": "The worst case, and why sorted input triggers it"
+    },
+    {
+      "id": "p-worst",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Partitioning is O(n) and there are, on a good day, log n levels of recursion, giving O(n log n). That depends entirely on the pivot splitting the array somewhere near the middle."
+        }
+      ]
+    },
+    {
+      "id": "p-worst-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Suppose the pivot is always the largest remaining value. Then everything goes to its left, the right side is empty, and the next call gets a range only one element shorter. That is n levels of recursion instead of log n, and O(n²) total."
+        }
+      ]
+    },
+    {
+      "id": "p-worst-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "With last-element pivoting, that is exactly what already-sorted input does: the last element is the largest every time. The most natural-looking implementation has its worst case on the most natural-looking data, which is a genuinely nasty trap."
+        }
+      ]
+    },
+    {
+      "id": "p-worst-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Set the input to \"already sorted\" below and compare quick sort's comparison count against merge sort's:"
+        }
+      ]
+    },
+    {
+      "id": "w-compare",
+      "type": "interactive",
+      "widget": "sorting-visualizer",
+      "data": {
+        "algorithms": [
+          "quick",
+          "merge",
+          "heap"
+        ],
+        "preset": "sorted",
+        "size": 12
+      }
+    },
+    {
+      "id": "t-fix",
+      "type": "table",
+      "headers": [
+        "Fix",
+        "What it does"
+      ],
+      "rows": [
+        [
+          "Median-of-three",
+          "Use the median of the first, middle and last elements. Cheap, and removes the sorted-input case."
+        ],
+        [
+          "Random pivot",
+          "The worst case now depends on the random seed rather than the input, so it cannot be triggered deliberately."
+        ],
+        [
+          "Introsort",
+          "Track recursion depth and switch to heap sort past a limit. Caps the worst case at O(n log n). This is what C++'s std::sort does."
+        ],
+        [
+          "Three-way partition",
+          "Group values equal to the pivot into their own middle region. Essential when there are many duplicates."
+        ]
+      ]
+    },
+    {
+      "id": "p-fix-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last one matters more than it sounds. With a two-way partition and an array where every value is identical, each partition splits off nothing and the algorithm is O(n²). A three-way partition finishes that same array in O(n). It is the "
+        },
+        {
+          "text": "Dutch national flag problem",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Dutch_national_flag_problem"
+            }
+          ]
+        },
+        {
+          "text": ", covered later in this section."
+        }
+      ]
+    },
+    {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "The algorithm as a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "As with merge sort, a flowchart cannot express recursion, so this is one call with the recursive steps drawn as ordinary boxes."
+        }
+      ]
+    },
+    {
+      "id": "w-flow-qs",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "quick"
+      }
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Partition, however, is a plain loop and maps onto a flowchart exactly. Compare it against the trace table above: the decision box is the "
+        },
+        {
+          "text": "a[j] < pivot",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " test, and the dashed arrow is the "
+        },
+        {
+          "text": "j = j + 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " loop."
+        }
+      ]
+    },
+    {
+      "id": "w-flow-part",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "partition"
+      }
+    },
+    {
+      "id": "h-vs",
+      "type": "heading",
+      "level": 2,
+      "text": "Against merge sort"
+    },
+    {
+      "id": "t-vs",
+      "type": "table",
+      "headers": [
+        "",
+        "Quick sort",
+        "Merge sort"
+      ],
+      "rows": [
+        [
+          "Worst case",
+          "O(n²) with a bad pivot",
+          "O(n log n) always"
+        ],
+        [
+          "Average",
+          "O(n log n), with a small constant",
+          "O(n log n), larger constant"
+        ],
+        [
+          "Extra memory",
+          "O(log n) for the stack",
+          "O(n) for the buffer"
+        ],
+        [
+          "Stable",
+          "No",
+          "Yes"
+        ],
+        [
+          "Work happens",
+          "Before the recursive calls, in partition",
+          "After them, in merge"
+        ],
+        [
+          "Elements finalised",
+          "One pivot at a time, as it goes",
+          "All at once, at the very end"
+        ]
+      ]
+    },
+    {
+      "id": "p-vs-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In practice quick sort usually wins on wall-clock time despite the worse worst case, because partitioning is a tight linear scan with excellent cache behaviour, and it needs no extra buffer. That is why it is the default for primitives in most standard libraries, with the safeguards above bolted on."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-quick",
+      "type": "code",
+      "language": "javascript",
+      "code": "function quickSort(a, low = 0, high = a.length - 1) {\n  if (low >= high) return a;         // 0 or 1 elements: already sorted\n\n  const p = partition(a, low, high);\n  quickSort(a, low, p - 1);          // p is excluded: it is already final\n  quickSort(a, p + 1, high);\n  return a;\n}\n\nfunction partition(a, low, high) {\n  const pivot = a[high];\n  let i = low - 1;                   // end of the \"smaller\" region, empty so far\n\n  for (let j = low; j < high; j++) {\n    if (a[j] < pivot) {\n      i++;\n      [a[i], a[j]] = [a[j], a[i]];   // grow the region and move a[j] into it\n    }\n  }\n\n  [a[i + 1], a[high]] = [a[high], a[i + 1]];   // pivot onto the boundary\n  return i + 1;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def quick_sort(a, low=0, high=None):\n    if high is None:\n        high = len(a) - 1\n    if low >= high:\n        return a                     # 0 or 1 elements: already sorted\n\n    p = partition(a, low, high)\n    quick_sort(a, low, p - 1)        # p is excluded: it is already final\n    quick_sort(a, p + 1, high)\n    return a\n\n\ndef partition(a, low, high):\n    pivot = a[high]\n    i = low - 1                      # end of the \"smaller\" region, empty so far\n\n    for j in range(low, high):\n        if a[j] < pivot:\n            i += 1\n            a[i], a[j] = a[j], a[i]  # grow the region, move a[j] into it\n\n    a[i + 1], a[high] = a[high], a[i + 1]      # pivot onto the boundary\n    return i + 1"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n#include <utility>\n\nint partition(std::vector<int>& a, int low, int high) {\n    int pivot = a[high];\n    int i = low - 1;                 // end of the \"smaller\" region, empty so far\n\n    for (int j = low; j < high; j++) {\n        if (a[j] < pivot) std::swap(a[++i], a[j]);   // grow and move in\n    }\n\n    std::swap(a[i + 1], a[high]);    // pivot onto the boundary\n    return i + 1;\n}\n\nvoid quickSort(std::vector<int>& a, int low, int high) {\n    if (low >= high) return;         // 0 or 1 elements: already sorted\n    int p = partition(a, low, high);\n    quickSort(a, low, p - 1);        // p excluded: already final\n    quickSort(a, p + 1, high);\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "During partitioning, what does the index i mean?",
+            "options": [
+              {
+                "label": "The end of the region holding everything smaller than the pivot",
+                "correct": true
+              },
+              {
+                "label": "The current element being examined",
+                "correct": false
+              },
+              {
+                "label": "The position of the pivot",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why is index p excluded from both recursive calls?",
+            "options": [
+              {
+                "label": "The pivot is already in its final position, and including it could stop the range from shrinking",
+                "correct": true
+              },
+              {
+                "label": "To save memory",
+                "correct": false
+              },
+              {
+                "label": "It is not excluded; both calls include it",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "With last-element pivoting, why is already-sorted input the worst case?",
+            "options": [
+              {
+                "label": "The last element is the largest every time, so each partition peels off one element and the recursion is n deep",
+                "correct": true
+              },
+              {
+                "label": "Because sorted input has the most duplicate values",
+                "correct": false
+              },
+              {
+                "label": "Because partitioning cannot handle sorted input correctly",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Where does quick sort do its work relative to the recursive calls?",
+            "options": [
+              {
+                "label": "Before them, in partition. Nothing happens on the way back up",
+                "correct": true
+              },
+              {
+                "label": "After them, when the sorted halves are combined",
+                "correct": false
+              },
+              {
+                "label": "Both before and after, equally",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to heap and linear-time sorts",
+      "href": "/tutorials/dsa/sorting-heap-and-linear",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Quick Sort Step by Step: Full Partition Trace and the Invariant",
+  "seoDescription": "Quick sort traced completely: what both partition pointers mean, the loop invariant, why the pivot is final, why sorted input is the worst case, and flowcharts of both parts.",
+  "keywords": [
+    "quick sort",
+    "quicksort step by step",
+    "lomuto partition",
+    "quicksort example",
+    "partition invariant",
+    "quicksort flowchart"
+  ]
+}

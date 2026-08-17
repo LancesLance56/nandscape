@@ -1,0 +1,272 @@
+{
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "sectionSlug": "sorting",
+  "slug": "sorting-interval-problems",
+  "title": "Interval Problems: Merging and Minimum Platforms",
+  "excerpt": "Sorting by the right endpoint turns an all-pairs overlap question into a single left-to-right sweep.",
+  "publishedAt": "2026-08-16T13:10:00Z",
+  "tags": [
+    "sorting",
+    "intervals",
+    "sweep-line",
+    "greedy",
+    "dsa"
+  ],
+  "position": 80,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Interval problems look like they need every pair compared: does booking A clash with booking B, for all A and B? That is O(n²). Sorting by start time removes the need entirely, because once the intervals are in time order you only ever have to compare against what you are currently holding."
+        }
+      ]
+    },
+    {
+      "id": "w-intervals",
+      "type": "interactive",
+      "widget": "interval-explorer",
+      "data": {
+        "mode": "merge"
+      }
+    },
+    {
+      "id": "h-merge",
+      "type": "heading",
+      "level": 2,
+      "text": "Merging overlapping intervals"
+    },
+    {
+      "id": "p-merge",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sort by start time. Walk the list holding one \"current\" interval. For each next interval, either it starts after the current one ends, in which case the current interval is finished and you emit it and start a new one, or it overlaps, in which case you extend the current end to the maximum of the two."
+        }
+      ]
+    },
+    {
+      "id": "p-merge-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The reason sorting by start makes one pass sufficient: any interval that could overlap the current one must start at or before the current end, and since starts are ascending, once you find one that starts later, no later interval can overlap either."
+        }
+      ]
+    },
+    {
+      "id": "p-merge-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two details catch people out. Use "
+        },
+        {
+          "text": "max(current.end, next.end)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " rather than "
+        },
+        {
+          "text": "next.end",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", because the next interval may be entirely contained within the current one. And decide explicitly whether touching intervals like [1,3] and [3,5] count as overlapping; that is a specification question, not an algorithmic one, and it changes "
+        },
+        {
+          "text": ">",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " to "
+        },
+        {
+          "text": ">=",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-platforms",
+      "type": "heading",
+      "level": 2,
+      "text": "Minimum platforms"
+    },
+    {
+      "id": "p-plat",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Given arrival and departure times, how many platforms does a station need so no train ever waits? Equivalently: how many meeting rooms, how many servers, what is the peak concurrency."
+        }
+      ]
+    },
+    {
+      "id": "p-plat-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The insight is that arrivals and departures can be considered separately. Sort both lists, then walk them together in time order: an arrival increments the count of things in use, a departure decrements it. The answer is the maximum the counter ever reaches."
+        }
+      ]
+    },
+    {
+      "id": "p-plat-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the widget above to \"Minimum platforms\" and watch the counter. This is the merge two-pointer sweep again, over two sorted lists of times."
+        }
+      ]
+    },
+    {
+      "id": "p-plat-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Note that you never need to know which train is which. Only the times matter, which is what allows the two lists to be sorted independently and destroys the pairing entirely."
+        }
+      ]
+    },
+    {
+      "id": "p-plat-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The tie-breaking rule matters: if a departure and an arrival happen at the same instant, does the platform free up in time? Handle the departure first and it does; handle the arrival first and it does not. Both are defensible, and the problem statement has to say which."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-int",
+      "type": "code",
+      "language": "javascript",
+      "code": "function mergeIntervals(intervals) {\n  if (intervals.length === 0) return [];\n  const sorted = [...intervals].sort((a, b) => a.start - b.start);\n  const out = [{ ...sorted[0] }];\n\n  for (const cur of sorted.slice(1)) {\n    const last = out[out.length - 1];\n    if (cur.start > last.end) {\n      out.push({ ...cur });          // no overlap: start a new interval\n    } else {\n      // max, not cur.end: cur may be entirely inside last.\n      last.end = Math.max(last.end, cur.end);\n    }\n  }\n  return out;\n}\n\nfunction minimumPlatforms(intervals) {\n  const arrivals = intervals.map((i) => i.start).sort((a, b) => a - b);\n  const departures = intervals.map((i) => i.end).sort((a, b) => a - b);\n\n  let i = 0, j = 0, inUse = 0, peak = 0;\n  while (i < arrivals.length) {\n    if (arrivals[i] <= departures[j]) {\n      inUse++;\n      peak = Math.max(peak, inUse);\n      i++;\n    } else {\n      inUse--;\n      j++;\n    }\n  }\n  return peak;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    ordered = sorted(intervals, key=lambda iv: iv[0])\n    out = [list(ordered[0])]\n\n    for start, end in ordered[1:]:\n        if start > out[-1][1]:\n            out.append([start, end])       # no overlap: new interval\n        else:\n            # max, not end: this interval may be entirely inside the last.\n            out[-1][1] = max(out[-1][1], end)\n    return out\n\n\ndef minimum_platforms(intervals):\n    arrivals = sorted(iv[0] for iv in intervals)\n    departures = sorted(iv[1] for iv in intervals)\n\n    i = j = in_use = peak = 0\n    while i < len(arrivals):\n        if arrivals[i] <= departures[j]:\n            in_use += 1\n            peak = max(peak, in_use)\n            i += 1\n        else:\n            in_use -= 1\n            j += 1\n    return peak"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n#include <algorithm>\n\nstruct Interval { int start, end; };\n\nstd::vector<Interval> mergeIntervals(std::vector<Interval> iv) {\n    if (iv.empty()) return {};\n    std::sort(iv.begin(), iv.end(), [](auto& a, auto& b) { return a.start < b.start; });\n\n    std::vector<Interval> out{iv[0]};\n    for (size_t k = 1; k < iv.size(); k++) {\n        if (iv[k].start > out.back().end) out.push_back(iv[k]);\n        // max, not iv[k].end: it may be entirely inside the last one.\n        else out.back().end = std::max(out.back().end, iv[k].end);\n    }\n    return out;\n}\n\nint minimumPlatforms(const std::vector<Interval>& iv) {\n    std::vector<int> arr, dep;\n    for (auto& x : iv) { arr.push_back(x.start); dep.push_back(x.end); }\n    std::sort(arr.begin(), arr.end());\n    std::sort(dep.begin(), dep.end());\n\n    size_t i = 0, j = 0;\n    int inUse = 0, peak = 0;\n    while (i < arr.size()) {\n        if (arr[i] <= dep[j]) { inUse++; peak = std::max(peak, inUse); i++; }\n        else { inUse--; j++; }\n    }\n    return peak;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why does sorting by start time make a single pass sufficient?",
+            "options": [
+              {
+                "label": "Once an interval starts after the current end, no later interval can overlap either",
+                "correct": true
+              },
+              {
+                "label": "Because sorting removes duplicate intervals",
+                "correct": false
+              },
+              {
+                "label": "Because the intervals become disjoint after sorting",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why is max(last.end, cur.end) needed rather than just cur.end?",
+            "options": [
+              {
+                "label": "The next interval may be entirely contained inside the current one",
+                "correct": true
+              },
+              {
+                "label": "Because the list is sorted by end time",
+                "correct": false
+              },
+              {
+                "label": "To handle negative times",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "In the minimum-platforms sweep, why can arrivals and departures be sorted independently?",
+            "options": [
+              {
+                "label": "Only the times matter, not which train each belongs to",
+                "correct": true
+              },
+              {
+                "label": "Because every train arrives before any train departs",
+                "correct": false
+              },
+              {
+                "label": "They cannot; they must stay paired",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to sort-then-pair problems",
+      "href": "/tutorials/dsa/sorting-pairing-problems",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Merge Overlapping Intervals and Minimum Platforms Explained",
+  "seoDescription": "Sort by start time and sweep: merge overlapping intervals in O(n log n), and find the minimum number of platforms with a two-pointer sweep over arrivals and departures.",
+  "keywords": [
+    "merge overlapping intervals",
+    "minimum platforms problem",
+    "interval scheduling",
+    "sweep line algorithm",
+    "meeting rooms problem"
+  ]
+}

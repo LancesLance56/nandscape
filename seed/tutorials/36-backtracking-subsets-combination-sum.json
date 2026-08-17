@@ -361,6 +361,69 @@
       }
     },
     {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "As a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Subsets is the template with the recording step moved to the top, because here every node is an answer rather than only the leaves."
+        }
+      ]
+    },
+    {
+      "id": "w-flow-subsets",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "subsets"
+      }
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The detail worth noticing is "
+        },
+        {
+          "text": "i = start",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " rather than "
+        },
+        {
+          "text": "i = 0",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Starting the loop at the parent's index is what stops {a, b} and {b, a} both being generated, and it is why this tree has 2^n nodes instead of n! ones."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Combination sum is this same chart with one extra decision inserted before the recursive call: if the running total already exceeds the target, cut the branch. That single diamond is the difference between the 29-node and the 13-node run above."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

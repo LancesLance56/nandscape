@@ -1,0 +1,496 @@
+{
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "sectionSlug": "sorting",
+  "slug": "sorting-introduction",
+  "title": "Introduction to Sorting",
+  "excerpt": "Why sorting matters more for what it enables than for itself, what stability and in-place actually mean, and the proof that no comparison sort can beat n log n.",
+  "publishedAt": "2026-08-16T12:00:00Z",
+  "tags": [
+    "sorting",
+    "algorithms",
+    "complexity",
+    "dsa"
+  ],
+  "position": 10,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sorting is the most studied problem in computing, and the reason is not that ordered data is pretty. It is that an enormous number of problems become easy once the input is sorted, and stay hard otherwise."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Finding a duplicate, finding the closest pair, merging two datasets, answering \"is this value present\" quickly, detecting overlapping bookings: all of these are awkward on unordered data and nearly trivial on sorted data. Most of this section is really about that second effect."
+        }
+      ]
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "What sorting buys you"
+    },
+    {
+      "id": "t-cost",
+      "type": "table",
+      "headers": [
+        "Question",
+        "Unsorted",
+        "Sorted"
+      ],
+      "rows": [
+        [
+          "Is x present?",
+          "O(n) scan",
+          "O(log n) binary search"
+        ],
+        [
+          "What is the median?",
+          "O(n) with quickselect, fiddly",
+          "O(1) lookup"
+        ],
+        [
+          "Are there duplicates?",
+          "O(n) with a hash set",
+          "O(n) scan of neighbours, no extra memory"
+        ],
+        [
+          "Which two values are closest?",
+          "O(n²) over all pairs",
+          "O(n) scan of neighbours"
+        ],
+        [
+          "Do any of these intervals overlap?",
+          "O(n²) pairwise",
+          "O(n) sweep"
+        ]
+      ]
+    },
+    {
+      "id": "p-cost-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The last two rows are the whole of the later pages in this section. The pattern is always the same: sorting costs O(n log n) once, and turns a quadratic question into a linear one."
+        }
+      ]
+    },
+    {
+      "id": "h-watch",
+      "type": "heading",
+      "level": 2,
+      "text": "Watch them run"
+    },
+    {
+      "id": "p-watch",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Before the theory, some evidence. Pick an algorithm and press play. Then switch the input to \"nearly sorted\" and run insertion sort and selection sort in turn; the counters tell the story better than any complexity table."
+        }
+      ]
+    },
+    {
+      "id": "w-vis",
+      "type": "interactive",
+      "widget": "sorting-visualizer",
+      "data": {
+        "algorithm": "bubble",
+        "preset": "random",
+        "size": 12
+      }
+    },
+    {
+      "id": "h-props",
+      "type": "heading",
+      "level": 2,
+      "text": "The three properties that actually matter"
+    },
+    {
+      "id": "p-props",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Textbooks lead with time complexity. In practice you choose a sort on three axes, and the complexity is only the first."
+        }
+      ]
+    },
+    {
+      "id": "h-stable",
+      "type": "heading",
+      "level": 3,
+      "text": "Stability"
+    },
+    {
+      "id": "p-stable",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A sort is "
+        },
+        {
+          "text": "stable",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " when equal elements come out in the same relative order they went in. With bare numbers this is invisible, because two equal numbers are indistinguishable. It matters the moment you sort records."
+        }
+      ]
+    },
+    {
+      "id": "p-stable-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Suppose you have employees sorted by name, and you now sort them by department. With a stable sort, each department's employees remain in name order and you have effectively sorted by two keys for the price of one. With an unstable sort, that ordering is destroyed and the second sort has to compare both fields."
+        }
+      ]
+    },
+    {
+      "id": "t-stable",
+      "type": "table",
+      "headers": [
+        "Stable",
+        "Not stable"
+      ],
+      "rows": [
+        [
+          "Insertion, bubble, merge, counting, Timsort",
+          "Selection, quick, heap"
+        ]
+      ]
+    },
+    {
+      "id": "h-inplace",
+      "type": "heading",
+      "level": 3,
+      "text": "Memory"
+    },
+    {
+      "id": "p-inplace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "An "
+        },
+        {
+          "text": "in-place",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " sort uses O(1) or O(log n) extra memory beyond the array itself. Merge sort does not: it needs a scratch buffer as large as the input. On a large dataset that is the difference between fitting in memory and not."
+        }
+      ]
+    },
+    {
+      "id": "h-adaptive",
+      "type": "heading",
+      "level": 3,
+      "text": "Adaptivity"
+    },
+    {
+      "id": "p-adaptive",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "An "
+        },
+        {
+          "text": "adaptive",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " sort runs faster on input that is already partly ordered. Insertion sort is strongly adaptive and runs in O(n) on sorted input; selection sort is not adaptive at all and does the same n²/2 comparisons no matter what you feed it. Real-world data is very often partly ordered, so this is worth more than it looks."
+        }
+      ]
+    },
+    {
+      "id": "p-adaptive-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try it above: run selection sort on \"already sorted\" and watch the comparison count refuse to drop."
+        }
+      ]
+    },
+    {
+      "id": "h-bound",
+      "type": "heading",
+      "level": 2,
+      "text": "Why nothing beats n log n"
+    },
+    {
+      "id": "p-bound",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every algorithm on this page except counting sort is a "
+        },
+        {
+          "text": "comparison sort",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ": it learns about the input only by asking \"is a bigger than b?\". That restriction alone forces a lower bound, and the argument is short enough to follow completely."
+        }
+      ]
+    },
+    {
+      "id": "p-bound-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A run of the algorithm is a sequence of yes/no answers. With c comparisons there are at most 2^c distinct answer sequences, so the algorithm can distinguish at most 2^c different inputs. There are n! possible orderings of n distinct values, and the algorithm must produce a different output for each, so:"
+        }
+      ]
+    },
+    {
+      "id": "code-bound",
+      "type": "code",
+      "language": "text",
+      "code": "2^c  >=  n!\n c   >=  log2(n!)\n c   >=  n log2(n) - n/ln(2)      (Stirling's approximation)\n c   =   Omega(n log n)",
+      "variants": []
+    },
+    {
+      "id": "p-bound-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So no comparison sort can do better than n log n comparisons in the worst case, and merge sort and heap sort achieve it. This is a statement about the problem, not about anyone's cleverness. The "
+        },
+        {
+          "text": "comparison sort lower bound",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Comparison_sort"
+            }
+          ]
+        },
+        {
+          "text": " has the full derivation via information theory."
+        }
+      ]
+    },
+    {
+      "id": "p-bound-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Counting sort escapes it by never comparing anything, which is covered later in this section."
+        }
+      ]
+    },
+    {
+      "id": "h-real",
+      "type": "heading",
+      "level": 2,
+      "text": "What real languages actually use"
+    },
+    {
+      "id": "p-real",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "No production sort is a textbook algorithm. They are hybrids, and the hybrid is instructive."
+        }
+      ]
+    },
+    {
+      "id": "p-real-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Timsort",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Timsort"
+            }
+          ]
+        },
+        {
+          "text": " was written by Tim Peters in 2002 for Python. It is a merge sort that first scans for runs of already-ordered elements, extends short runs using insertion sort, then merges the runs. It is stable, and it is close to O(n) on data that is nearly sorted, which real data often is. It became the default sort in Python, in Java SE 7 for objects, on Android, in V8, and in Swift."
+        }
+      ]
+    },
+    {
+      "id": "p-real-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "C++'s "
+        },
+        {
+          "text": "std::sort",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " typically uses introsort: quick sort, switching to heap sort if the recursion goes too deep (which caps the worst case at O(n log n)), and to insertion sort on small partitions."
+        }
+      ]
+    },
+    {
+      "id": "p-real-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The shared lesson is that insertion sort is not a toy. Every one of these falls back to it for small inputs, because at that size its low constant factor beats an asymptotically better algorithm."
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why can no comparison sort beat O(n log n) in the worst case?",
+            "options": [
+              {
+                "label": "c comparisons distinguish at most 2^c inputs, and there are n! orderings to tell apart",
+                "correct": true
+              },
+              {
+                "label": "Because merge sort is the best algorithm anyone has found so far",
+                "correct": false
+              },
+              {
+                "label": "Because reading n elements takes O(n log n) time",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "You sort records by name, then by department. When does the name order survive?",
+            "options": [
+              {
+                "label": "When the second sort is stable",
+                "correct": true
+              },
+              {
+                "label": "When the second sort is in place",
+                "correct": false
+              },
+              {
+                "label": "Always, since sorting never reorders equal elements",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What does it mean for a sort to be adaptive?",
+            "options": [
+              {
+                "label": "It runs faster when the input is already partly ordered",
+                "correct": true
+              },
+              {
+                "label": "It changes algorithm depending on the data type",
+                "correct": false
+              },
+              {
+                "label": "It uses no extra memory",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "h-sources",
+      "type": "heading",
+      "level": 2,
+      "text": "Sources"
+    },
+    {
+      "id": "p-sources",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sedgewick and Wayne's "
+        },
+        {
+          "text": "Algorithms, 4th edition sorting chapter",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://algs4.cs.princeton.edu/20sorting/"
+            }
+          ]
+        },
+        {
+          "text": " is the standard free reference for this material, with Java implementations and analysis for every algorithm here. Antti Laaksonen's "
+        },
+        {
+          "text": "Competitive Programmer's Handbook",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://cses.fi/book/book.pdf"
+            }
+          ]
+        },
+        {
+          "text": " covers the same ground far more briefly, aimed at people writing code under time pressure."
+        }
+      ]
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to the elementary sorts",
+      "href": "/tutorials/dsa/sorting-elementary",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Introduction to Sorting Algorithms: Stability, Memory and the n log n Bound",
+  "seoDescription": "What sorting actually buys you, what stable, in-place and adaptive mean, and the full proof that no comparison sort can beat O(n log n). With an interactive visualizer.",
+  "keywords": [
+    "sorting algorithms",
+    "introduction to sorting",
+    "stable sort",
+    "comparison sort lower bound",
+    "n log n lower bound"
+  ]
+}

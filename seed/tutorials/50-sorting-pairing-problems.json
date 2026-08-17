@@ -1,0 +1,411 @@
+{
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "sectionSlug": "sorting",
+  "slug": "sorting-pairing-problems",
+  "title": "Sort, Then One Pass",
+  "excerpt": "Five problems where the algorithm is trivial once the data is sorted. The interesting part is proving the sorted pairing is the best one.",
+  "publishedAt": "2026-08-16T13:20:00Z",
+  "tags": [
+    "sorting",
+    "greedy",
+    "exchange-argument",
+    "dsa"
+  ],
+  "position": 90,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This page is about a habit rather than an algorithm. A large class of problems has no obvious approach until you sort the input, at which point the answer is a single loop."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What makes them worth studying is not the loop, which is trivial, but the argument for why the sorted arrangement is optimal. That argument is nearly always an "
+        },
+        {
+          "text": "exchange argument",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ": assume an optimal solution that differs from the sorted one, find two elements that are \"crossed\", and show that uncrossing them does not make the answer worse. Repeat until you have the sorted arrangement, which is therefore also optimal."
+        }
+      ]
+    },
+    {
+      "id": "w-pair",
+      "type": "interactive",
+      "widget": "pairing-explorer",
+      "data": {
+        "mode": "minDiff"
+      }
+    },
+    {
+      "id": "h-mindiff",
+      "type": "heading",
+      "level": 2,
+      "text": "Minimum difference pair"
+    },
+    {
+      "id": "p-mindiff",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Find the two values in an array with the smallest difference. Checking all pairs is O(n²)."
+        }
+      ]
+    },
+    {
+      "id": "p-mindiff-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sort, and the closest pair must be adjacent. If two values are closest but not adjacent after sorting, then something sits between them, and that something is closer to each of them than they are to each other, which contradicts the assumption. So only the n-1 adjacent pairs need checking, giving O(n log n) dominated by the sort."
+        }
+      ]
+    },
+    {
+      "id": "h-wave",
+      "type": "heading",
+      "level": 2,
+      "text": "Wave form"
+    },
+    {
+      "id": "p-wave",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Rearrange so the array alternates up and down: a[0] ≥ a[1] ≤ a[2] ≥ a[3] and so on."
+        }
+      ]
+    },
+    {
+      "id": "p-wave-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sort ascending, then swap each adjacent pair. After sorting, a[i] ≤ a[i+1] everywhere; swapping positions 0 and 1, 2 and 3, and so on makes every even index hold the larger of its pair, which is enough to satisfy the pattern on both sides."
+        }
+      ]
+    },
+    {
+      "id": "p-wave-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is also an O(n) solution that skips the sort entirely: walk the array and swap any adjacent pair that violates the pattern. It works, and it produces a different valid answer. Worth knowing that \"sort first\" is the obvious approach here rather than the only one."
+        }
+      ]
+    },
+    {
+      "id": "h-index",
+      "type": "heading",
+      "level": 2,
+      "text": "Maximum sum of i × arr[i]"
+    },
+    {
+      "id": "p-index",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Choose an arrangement maximising the sum of each element multiplied by its index."
+        }
+      ]
+    },
+    {
+      "id": "p-index-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sort ascending. The largest index carries the most weight, so it should hold the largest value. The exchange argument: if a larger value sits at a smaller index than some smaller value, swapping them increases the sum, because the larger value gains more weight than the smaller one loses. So no arrangement other than the sorted one can be optimal."
+        }
+      ]
+    },
+    {
+      "id": "h-tywin",
+      "type": "heading",
+      "level": 2,
+      "text": "Tywin's war strategy"
+    },
+    {
+      "id": "p-tywin",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two armies of units with strength values, paired one-to-one. A matchup is won when your unit is strictly stronger. Maximise the number of matchups won."
+        }
+      ]
+    },
+    {
+      "id": "p-tywin-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sort both. Then walk the enemy from weakest upward, and against each one spend the "
+        },
+        {
+          "text": "cheapest",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " of your units that can still beat it. Units too weak to beat the current enemy can never beat any later one either, since the enemies only get stronger, so they are spent as sacrifices."
+        }
+      ]
+    },
+    {
+      "id": "p-tywin-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The greedy choice is safe because using a stronger unit than necessary can only reduce your options later, never improve them. This is the same shape of argument as the interval-scheduling greedy."
+        }
+      ]
+    },
+    {
+      "id": "p-tywin-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the widget above to see it run, and note that the answer is a count of wins rather than an arrangement."
+        }
+      ]
+    },
+    {
+      "id": "h-moves",
+      "type": "heading",
+      "level": 2,
+      "text": "Minimum moves to seat everyone"
+    },
+    {
+      "id": "p-moves",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Given passenger positions and chair positions on a line, assign each passenger a chair minimising the total distance moved."
+        }
+      ]
+    },
+    {
+      "id": "p-moves-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sort both and pair them in order. The exchange argument again: suppose two assignments cross, so passenger at p1 < p2 goes to chair c2 > c1. Uncrossing them, so p1 takes c1 and p2 takes c2, never increases the total distance, and often reduces it. Since any assignment can be uncrossed pair by pair without getting worse, the fully uncrossed one, which is the sorted pairing, is optimal."
+        }
+      ]
+    },
+    {
+      "id": "h-summary",
+      "type": "heading",
+      "level": 2,
+      "text": "The pattern"
+    },
+    {
+      "id": "t-sum",
+      "type": "table",
+      "headers": [
+        "Problem",
+        "After sorting",
+        "Why it is optimal"
+      ],
+      "rows": [
+        [
+          "Minimum difference pair",
+          "Check adjacent pairs",
+          "Anything between two values is closer to both"
+        ],
+        [
+          "Wave form",
+          "Swap adjacent pairs",
+          "Sorting makes each pair already ordered"
+        ],
+        [
+          "Max sum of i × arr[i]",
+          "Pair ascending with index",
+          "Bigger values gain more from bigger indices"
+        ],
+        [
+          "Tywin's strategy",
+          "Spend the cheapest winning unit",
+          "Stronger units are never worth wasting early"
+        ],
+        [
+          "Minimum moves",
+          "Pair in order",
+          "Crossed assignments can be uncrossed for free"
+        ]
+      ]
+    },
+    {
+      "id": "p-sum-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In every row the code is a loop of two or three lines. If a problem feels like it needs to try every arrangement, it is worth asking whether sorting first makes one particular arrangement provably best."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-pair",
+      "type": "code",
+      "language": "javascript",
+      "code": "function minimumDifference(a) {\n  const s = [...a].sort((x, y) => x - y);\n  let best = Infinity;\n  for (let i = 0; i + 1 < s.length; i++) best = Math.min(best, s[i + 1] - s[i]);\n  return best;\n}\n\nfunction waveForm(a) {\n  const s = [...a].sort((x, y) => x - y);\n  for (let i = 0; i + 1 < s.length; i += 2) [s[i], s[i + 1]] = [s[i + 1], s[i]];\n  return s;\n}\n\nfunction maxIndexSum(a) {\n  const s = [...a].sort((x, y) => x - y);          // biggest value, biggest index\n  return s.reduce((total, v, i) => total + i * v, 0);\n}\n\nfunction maxWins(mine, theirs) {\n  const a = [...mine].sort((x, y) => x - y);\n  const e = [...theirs].sort((x, y) => x - y);\n  let wins = 0, i = 0;\n\n  for (let j = 0; j < e.length && i < a.length; j++) {\n    // Skip units too weak to beat this enemy: they cannot beat any later one.\n    while (i < a.length && a[i] <= e[j]) i++;\n    if (i < a.length) { wins++; i++; }\n  }\n  return wins;\n}\n\nfunction minimumMoves(people, chairs) {\n  const p = [...people].sort((x, y) => x - y);\n  const c = [...chairs].sort((x, y) => x - y);\n  return p.reduce((total, v, i) => total + Math.abs(v - c[i]), 0);\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def minimum_difference(a):\n    s = sorted(a)\n    return min(s[i + 1] - s[i] for i in range(len(s) - 1))\n\n\ndef wave_form(a):\n    s = sorted(a)\n    for i in range(0, len(s) - 1, 2):\n        s[i], s[i + 1] = s[i + 1], s[i]\n    return s\n\n\ndef max_index_sum(a):\n    s = sorted(a)                       # biggest value, biggest index\n    return sum(i * v for i, v in enumerate(s))\n\n\ndef max_wins(mine, theirs):\n    a, e = sorted(mine), sorted(theirs)\n    wins = i = 0\n\n    for j in range(len(e)):\n        if i >= len(a):\n            break\n        # Skip units too weak to beat this enemy: later enemies are stronger.\n        while i < len(a) and a[i] <= e[j]:\n            i += 1\n        if i < len(a):\n            wins += 1\n            i += 1\n    return wins\n\n\ndef minimum_moves(people, chairs):\n    return sum(abs(p - c) for p, c in zip(sorted(people), sorted(chairs)))"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n#include <algorithm>\n#include <numeric>\n#include <cmath>\n\nint minimumDifference(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    int best = INT_MAX;\n    for (size_t i = 0; i + 1 < a.size(); i++) best = std::min(best, a[i + 1] - a[i]);\n    return best;\n}\n\nstd::vector<int> waveForm(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    for (size_t i = 0; i + 1 < a.size(); i += 2) std::swap(a[i], a[i + 1]);\n    return a;\n}\n\nlong long maxIndexSum(std::vector<int> a) {\n    std::sort(a.begin(), a.end());       // biggest value, biggest index\n    long long total = 0;\n    for (size_t i = 0; i < a.size(); i++) total += (long long)i * a[i];\n    return total;\n}\n\nint maxWins(std::vector<int> mine, std::vector<int> theirs) {\n    std::sort(mine.begin(), mine.end());\n    std::sort(theirs.begin(), theirs.end());\n    int wins = 0;\n    size_t i = 0;\n    for (size_t j = 0; j < theirs.size() && i < mine.size(); j++) {\n        // Units too weak here cannot beat any later enemy either.\n        while (i < mine.size() && mine[i] <= theirs[j]) i++;\n        if (i < mine.size()) { wins++; i++; }\n    }\n    return wins;\n}\n\nlong long minimumMoves(std::vector<int> people, std::vector<int> chairs) {\n    std::sort(people.begin(), people.end());\n    std::sort(chairs.begin(), chairs.end());\n    long long total = 0;\n    for (size_t i = 0; i < people.size(); i++) total += std::abs(people[i] - chairs[i]);\n    return total;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "After sorting, why must the closest pair be adjacent?",
+            "options": [
+              {
+                "label": "Anything sitting between two values is closer to each of them than they are to each other",
+                "correct": true
+              },
+              {
+                "label": "Because sorting removes duplicates",
+                "correct": false
+              },
+              {
+                "label": "It need not be; you still have to check all pairs",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What is an exchange argument?",
+            "options": [
+              {
+                "label": "Show any optimal solution can be rearranged toward the sorted one without getting worse",
+                "correct": true
+              },
+              {
+                "label": "A proof that sorting is O(n log n)",
+                "correct": false
+              },
+              {
+                "label": "Swapping two algorithms to compare their runtime",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "To maximise the sum of i × arr[i], how should values be arranged?",
+            "options": [
+              {
+                "label": "Ascending, so the largest values get the largest indices",
+                "correct": true
+              },
+              {
+                "label": "Descending, so the largest values come first",
+                "correct": false
+              },
+              {
+                "label": "In the original order; sorting does not help",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "h-sources",
+      "type": "heading",
+      "level": 2,
+      "text": "Sources and practice"
+    },
+    {
+      "id": "p-sources",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sedgewick and Wayne's "
+        },
+        {
+          "text": "Algorithms sorting chapter",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://algs4.cs.princeton.edu/20sorting/"
+            }
+          ]
+        },
+        {
+          "text": " covers the algorithms in this section with full analysis. For drilling the problem patterns under time pressure, the "
+        },
+        {
+          "text": "CSES Problem Set",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://cses.fi/problemset/"
+            }
+          ]
+        },
+        {
+          "text": " has a sorting and searching section built almost entirely from the techniques on these pages."
+        }
+      ]
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Open the sorting visualizer",
+      "href": "/tools/sorting-algorithm-visualizer",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Sort Then One Pass: Greedy Pairing Problems and Exchange Arguments",
+  "seoDescription": "Five problems that become trivial after sorting: minimum difference pair, wave form, max sum of i*arr[i], Tywin's war strategy and minimum moves, each with its optimality proof.",
+  "keywords": [
+    "minimum difference pair",
+    "sort array in wave form",
+    "maximum sum of i*arr[i]",
+    "tywin war strategy",
+    "exchange argument greedy"
+  ]
+}

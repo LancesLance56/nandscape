@@ -324,6 +324,47 @@
       }
     },
     {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "As a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Again the same skeleton, with the choice being where to end the next piece:"
+        }
+      ]
+    },
+    {
+      "id": "w-flow-pal",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "palindrome"
+      }
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The difference from n-queens is what the prune depends on. A queen placement is rejected by comparing it against the other queens, so the test depends on the whole path. A cut is rejected by looking at the substring alone, and nothing else on the path affects the answer."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That independence is exactly what makes the precomputed table possible. A test that depends only on its own inputs can be computed once for every input and looked up thereafter; a test that depends on the path cannot."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

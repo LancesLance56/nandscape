@@ -547,6 +547,100 @@
       ]
     },
     {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "The template as a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The seven lines above, drawn out. This one chart is the whole section: every problem that follows is this shape with different boxes."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A flowchart has no symbol for \"call yourself\", so what is drawn is a "
+        },
+        {
+          "text": "single call",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", with the recursive step shown as an ordinary process box. Click any box with a dot to see what it is for."
+        }
+      ]
+    },
+    {
+      "id": "w-flow-template",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "backtracking-template"
+      }
+    },
+    {
+      "id": "p-flow-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three things are worth locating on it. The "
+        },
+        {
+          "text": "is state a solution ?",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " test at the top is the only thing that stops the recursion. The "
+        },
+        {
+          "text": "choice[i] legal ?",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " diamond is the prune, and its \"no\" branch skips straight to the next choice without ever building anything below it. And the dashed copper arrow at the bottom is the loop that tries the next choice at this level."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice that "
+        },
+        {
+          "text": "choose, explore and un-choose sit in a straight line",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " with no branching between them. That is the invariant to hold onto: whatever the problem, those three always run together, in that order, and skipping the third is the bug described above."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

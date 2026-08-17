@@ -462,6 +462,144 @@
       }
     },
     {
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "A complete trace on the 4 by 4 board"
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The widget shows the search running, but it is worth reading the first stretch of it written out, because the backtracks are where the algorithm earns its name and they go past quickly on screen."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Columns are lettered a to d, rows numbered 1 to 4. The solver fills one row at a time, top down."
+        }
+      ]
+    },
+    {
+      "id": "code-trace",
+      "type": "code",
+      "language": "text",
+      "code": " 1. Row 1: try a -> safe, place queen.            board: a1\n 2. Row 2: try a -> rejected, a1 shares the column\n 3. Row 2: try b -> rejected, a1 shares a diagonal\n 4. Row 2: try c -> safe, place queen.            board: a1 c2\n 5. Row 3: try a -> rejected, a1 shares the column\n 6. Row 3: try b -> rejected, c2 shares a diagonal\n 7. Row 3: try c -> rejected, a1 shares a diagonal\n 8. Row 3: try d -> rejected, c2 shares a diagonal\n 9. Row 2: nothing worked below c2, lift that queen      <- BACKTRACK\n10. Row 2: try d -> safe, place queen.            board: a1 d2\n11. Row 3: try a -> rejected, a1 shares the column\n12. Row 3: try b -> safe, place queen.            board: a1 d2 b3\n13. Row 4: try a -> rejected, a1 shares the column\n14. Row 4: try b -> rejected, d2 shares a diagonal\n15. Row 4: try c -> rejected, b3 shares a diagonal\n16. Row 4: try d -> rejected, a1 shares a diagonal\n17. Row 3: nothing worked below b3, lift that queen      <- BACKTRACK\n18. Row 3: try c -> rejected, a1 shares a diagonal\n19. Row 3: try d -> rejected, d2 shares the column\n20. Row 2: nothing worked below d2, lift that queen      <- BACKTRACK\n21. Row 1: nothing worked below a1, lift that queen      <- BACKTRACK\n22. Row 1: try b -> safe, place queen.            board: b1"
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Steps 5 to 8 are the pattern in miniature. Every column in row 3 is attacked, so the loop finishes having placed nothing, and the call returns. That return "
+        },
+        {
+          "text": "is",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " the backtrack: there is no special instruction for it, just a function running out of choices and handing control back to its caller."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step 21 is the important one. After three nested backtracks the solver concludes that no arrangement at all begins with a queen on a1, and abandons that entire branch. Twenty steps of work have proved a single fact about the first row, and every one of those steps was necessary to prove it."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It reaches the first solution at step 31. Brute force over all 4-square placements would test 1,820 arrangements to get there."
+        }
+      ]
+    },
+    {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "As a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The same algorithm drawn out. Compare it against the template chart from the introduction: it is the identical shape."
+        }
+      ]
+    },
+    {
+      "id": "w-flow-nq",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "n-queens"
+      }
+    },
+    {
+      "id": "t-map",
+      "type": "table",
+      "headers": [
+        "Template",
+        "N-Queens"
+      ],
+      "rows": [
+        [
+          "is state a solution ?",
+          "row == n, meaning every row has a queen"
+        ],
+        [
+          "choices at this level",
+          "the n columns of the current row"
+        ],
+        [
+          "choice legal ?",
+          "is (row, col) attacked by an existing queen"
+        ],
+        [
+          "choose",
+          "place a queen at (row, col)"
+        ],
+        [
+          "explore",
+          "placeQueens(row + 1)"
+        ],
+        [
+          "un-choose",
+          "remove the queen from (row, col)"
+        ],
+        [
+          "return with no choices left",
+          "the backtrack at steps 9, 17, 20 and 21 above"
+        ]
+      ]
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The one-queen-per-row decision does not appear anywhere in the chart, because it is not a step. It is a choice about how the problem is represented, made before any code runs, and it is what turns \"choose 8 squares from 64\" into \"choose a column for each row\"."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

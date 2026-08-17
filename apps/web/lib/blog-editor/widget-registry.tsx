@@ -25,6 +25,14 @@ import { NQueensWidget } from "@/components/content/blocks/interactive/backtrack
 import { PalindromePartitionWidget } from "@/components/content/blocks/interactive/backtracking/palindrome-partition-widget";
 import { GraphColoringWidget } from "@/components/content/blocks/interactive/backtracking/graph-coloring-widget";
 import { SudokuWidget } from "@/components/content/blocks/interactive/backtracking/sudoku-widget";
+import { SortingVisualizerWidget } from "@/components/content/blocks/interactive/sorting/sorting-visualizer-widget";
+import {
+  PartitionExplorerWidget,
+  MergeExplorerWidget,
+  IntervalExplorerWidget,
+  PairingExplorerWidget,
+} from "@/components/content/blocks/interactive/sorting/pattern-widgets";
+import { FlowchartWidget, FlowchartMakerWidget } from "@/components/content/blocks/interactive/flowchart/flowchart-widgets";
 import { CircuitEmbedWidget, isCircuitEmbedData } from "@/components/content/blocks/circuit/circuit-embed";
 
 import { RawJsonField } from "@/components/blog-editor/fields/raw-json-field";
@@ -268,6 +276,55 @@ const registryImpl: Record<string, WidgetDefinition> = {
     Renderer: SudokuWidget,
     Editor: (props) => <RawJsonField {...props} />,
     createDefault: () => ({ strategy: "first" }),
+  },
+  "sorting-visualizer": {
+    name: "sorting-visualizer",
+    label: "Sorting Visualizer",
+    Renderer: SortingVisualizerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ algorithm: "bubble", preset: "random" }),
+  },
+  "partition-explorer": {
+    name: "partition-explorer",
+    label: "Partition Explorer (0s/1s/2s)",
+    Renderer: PartitionExplorerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "ternary" }),
+  },
+  "merge-explorer": {
+    name: "merge-explorer",
+    label: "Merge Explorer (union / intersection / inversions)",
+    Renderer: MergeExplorerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "merge" }),
+  },
+  "interval-explorer": {
+    name: "interval-explorer",
+    label: "Interval Sweep (merge / platforms)",
+    Renderer: IntervalExplorerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "merge" }),
+  },
+  "pairing-explorer": {
+    name: "pairing-explorer",
+    label: "Sort-then-Pair Explorer",
+    Renderer: PairingExplorerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ mode: "minDiff" }),
+  },
+  flowchart: {
+    name: "flowchart",
+    label: "Flowchart",
+    Renderer: FlowchartWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ preset: "bubble" }),
+  },
+  "flowchart-maker": {
+    name: "flowchart-maker",
+    label: "Flowchart Maker (editable)",
+    Renderer: FlowchartMakerWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({}),
   },
   "circuit-embed": {
     name: "circuit-embed",

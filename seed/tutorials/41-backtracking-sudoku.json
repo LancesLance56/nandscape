@@ -347,6 +347,58 @@
       ]
     },
     {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "As a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The solver, with the cell-choosing step called out as its own box:"
+        }
+      ]
+    },
+    {
+      "id": "w-flow-sudoku",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "sudoku"
+      }
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That first box, "
+        },
+        {
+          "text": "pick an empty cell",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", is drawn separately for a reason. Nothing else in the chart changes between the naive version and the heuristic one. The entire four-times difference in work comes from what that single box decides."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is worth comparing this chart against the m-coloring one. They are the same graph: both stop at the first success, both have a decision for the recursive call, both undo their guess on failure. Sudoku is graph colouring on a graph with 81 nodes and 9 colours, and the flowcharts make that visible in a way the code does not."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

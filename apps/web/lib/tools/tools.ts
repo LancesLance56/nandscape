@@ -200,6 +200,119 @@ export const TOOLS: ToolDefinition[] = [
     ],
   },
   {
+    slug: "sorting-algorithm-visualizer",
+    title: "Sorting Algorithm Visualizer",
+    seoTitle: "Sorting Algorithm Visualizer: Compare 7 Sorts Step by Step",
+    seoDescription:
+      "Free sorting algorithm visualizer. Watch bubble, selection, insertion, merge, quick, heap and counting sort run step by step, with live comparison and write counts on the same input.",
+    keywords: [
+      "sorting algorithm visualizer",
+      "sorting visualizer",
+      "merge sort visualization",
+      "quick sort visualization",
+      "bubble sort animation",
+      "compare sorting algorithms",
+      "heap sort visualizer",
+    ],
+    intro:
+      "Seven sorting algorithms on the input of your choice, one frame at a time. The counters underneath show exactly how many comparisons and writes each one spends, so the difference between them is a number rather than a claim.",
+    widget: "sorting-visualizer",
+    widgetData: { algorithm: "quick", preset: "random", size: 16 },
+    howTo: [
+      "Pick an algorithm, then press Play or step through one frame at a time.",
+      "Change the input shape: nearly sorted, reversed and few-unique inputs are where the algorithms stop looking alike.",
+      "Watch the colours: copper is a comparison, coral is a write, green means the value is in its final position.",
+      "The table at the bottom runs every algorithm on the identical input so the costs can be compared directly.",
+    ],
+    related: [
+      { label: "How sorting works, and the n log n limit", href: "/tutorials/dsa/sorting-introduction" },
+      { label: "Merge sort explained", href: "/tutorials/dsa/sorting-merge-sort" },
+      { label: "Quick sort and partitioning", href: "/tutorials/dsa/sorting-quick-sort" },
+      { label: "Graph algorithm visualizer", href: "/tools/graph-algorithm-visualizer" },
+    ],
+    faq: [
+      {
+        question: "Which sorting algorithm is the fastest?",
+        answer:
+          "For general use, quick sort is usually fastest in practice because its inner loop is tight and cache-friendly, even though its worst case is O(n²). Merge sort matches it asymptotically and is stable but needs O(n) extra memory. Real language runtimes mostly use hybrids: Timsort in Python and Java for objects, and introsort (quick sort that falls back to heap sort) in C++.",
+      },
+      {
+        question: "What does it mean for a sort to be stable?",
+        answer:
+          "A stable sort keeps equal elements in their original relative order. It matters whenever records are sorted by more than one field: sort by name, then stably by department, and within each department the names are still in order. Merge, insertion, bubble and counting sort are stable; quick, heap and selection sort are not.",
+      },
+      {
+        question: "Why can't any comparison sort beat O(n log n)?",
+        answer:
+          "A comparison sort learns about the input only through yes/no comparisons, so a run of c comparisons can distinguish at most 2^c different orderings. There are n! possible orderings, so 2^c must be at least n!, which gives c ≥ log2(n!) ≈ n log n. Counting and radix sort get around this by not comparing elements at all.",
+      },
+      {
+        question: "When should I use insertion sort?",
+        answer:
+          "On small arrays and on nearly-sorted data, where it runs in close to linear time. That is why production sorts switch to insertion sort once a partition drops below roughly 10 to 30 elements: at that size its low overhead beats the recursion of an asymptotically better algorithm.",
+      },
+      {
+        question: "What is the difference between comparisons and writes?",
+        answer:
+          "A comparison asks which of two elements is larger; a write stores a value into the array. They are counted separately because they can cost very different amounts. Selection sort does O(n²) comparisons but only n-1 swaps, which makes it attractive when writing is expensive, such as to flash memory.",
+      },
+    ],
+  },
+  {
+    slug: "flowchart-maker",
+    title: "Flowchart Maker",
+    seoTitle: "Free Flowchart Maker for Algorithms: Build and Edit Online",
+    seoDescription:
+      "Free online flowchart maker with automatic layout. Add process, decision and terminal boxes, connect them, and the chart arranges itself. Includes ready-made sorting algorithm flowcharts.",
+    keywords: [
+      "flowchart maker",
+      "algorithm flowchart",
+      "free flowchart tool",
+      "flowchart generator online",
+      "sorting algorithm flowchart",
+      "bubble sort flowchart",
+      "pseudocode flowchart",
+    ],
+    intro:
+      "Build a flowchart by adding boxes and connecting them. The layout is computed for you, so there is nothing to drag and nothing to align. Start from a blank chart or load one of the sorting algorithms.",
+    widget: "flowchart-maker",
+    howTo: [
+      "Add boxes with the buttons on the right: start and end are pills, process is a rectangle, decision is a diamond.",
+      "Click a box in the chart to rename it, change its shape, add a note, or delete it.",
+      "Connect two boxes with the from/to selectors. Label the branches out of a decision, usually yes and no.",
+      "Arrows that point back up the chart are drawn dashed, so loops are visible at a glance.",
+      "Warnings appear under the chart for common mistakes: a decision with one exit, an unreachable box, a missing start.",
+      "Copy the chart as JSON to save it or paste it into a tutorial page.",
+    ],
+    related: [
+      { label: "Merge sort, step by step", href: "/tutorials/dsa/sorting-merge-sort" },
+      { label: "Quick sort, step by step", href: "/tutorials/dsa/sorting-quick-sort" },
+      { label: "Sorting algorithm visualizer", href: "/tools/sorting-algorithm-visualizer" },
+    ],
+    faq: [
+      {
+        question: "What do the different flowchart shapes mean?",
+        answer:
+          "A rounded pill is a terminal, meaning start or end. A rectangle is a process: a step that does something. A diamond is a decision, which asks a yes/no question and has one arrow leaving it per answer. A parallelogram is input or output. These shapes come from the ANSI and ISO 5807 flowchart conventions and are near-universal.",
+      },
+      {
+        question: "How do you draw a loop in a flowchart?",
+        answer:
+          "A loop is an arrow that points back to an earlier box. There is no special symbol for it: a while loop is a decision box whose 'yes' branch runs the body and then returns to the decision, and whose 'no' branch continues past it. This tool draws those back edges dashed and routes them down the side so they do not cross the main flow.",
+      },
+      {
+        question: "Can a flowchart show recursion?",
+        answer:
+          "Not directly. A flowchart describes one pass through a procedure, and recursion means the procedure invokes itself, which the notation has no symbol for. The usual convention is to draw a single call and show the recursive step as an ordinary process box, which is how the merge sort and quick sort charts here are drawn.",
+      },
+      {
+        question: "Why can I not drag the boxes around?",
+        answer:
+          "Positions are computed rather than stored. The tool works out how many layers deep the chart is, places each box on its layer, and routes the arrows. That means a chart can never end up overlapping or tangled, and adding a box in the middle rearranges everything automatically instead of requiring you to move the rest by hand.",
+      },
+    ],
+  },
+  {
     slug: "graph-algorithm-visualizer",
     title: "Graph Algorithm Visualizer",
     seoTitle: "Graph Algorithm Visualizer: BFS, DFS and Dijkstra",

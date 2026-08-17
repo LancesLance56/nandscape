@@ -1,11 +1,13 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import type { BacktrackRun, BacktrackStep } from "@/lib/backtracking/types";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
 import { ChipRow, PanelBox, StatReadout } from "../shared/panel-ui";
 import { SearchTreeCanvas, TreeLegend } from "./search-tree-canvas";
+
+export type TreeView = "tree" | "profile";
 
 export interface ToggleGroup {
   id: string;
@@ -28,6 +30,16 @@ interface BacktrackingRunnerProps<P> {
   solutionsLabel?: string;
   /** Hidden when a problem has no meaningful "explored but empty" branch. */
   showDeadInLegend?: boolean;
+  /**
+   * Which view the tree area opens on.
+   *
+   * Set by the widget rather than inferred from the node count. Inferring it
+   * meant the view silently flipped between a drawn tree and a depth profile
+   * as the search happened to get luckier or unluckier on different inputs,
+   * which reads as the component behaving at random. A widget knows its own
+   * problem sizes and can make the choice predictable.
+   */
+  defaultTreeView?: TreeView;
   hint?: string;
   frame?: boolean;
   className?: string;
@@ -47,22 +59,38 @@ export function BacktrackingRunner<P>({
   showTree = true,
   solutionsLabel = "Solutions found",
   showDeadInLegend = true,
+  defaultTreeView = "tree",
   hint,
   frame = true,
   className,
 }: BacktrackingRunnerProps<P>) {
   const player = useStepPlayer(run.steps.length);
+  const [treeView, setTreeView] = useState<TreeView>(defaultTreeView);
   const step = run.steps[Math.min(player.index, run.steps.length - 1)];
 
   if (!step) {
     return <p className="text-sm text-signal-coral">Backtracking widget: nothing to run.</p>;
   }
 
+  const treeToggle: ToggleGroup | null = showTree
+    ? {
+        id: "tree-view",
+        label: "Search view",
+        active: treeView,
+        onChange: (id) => setTreeView(id as TreeView),
+        options: [
+          { id: "tree", label: "Tree" },
+          { id: "profile", label: "Depth profile" },
+        ],
+      }
+    : null;
+  const allToggles = treeToggle ? [...(toggles ?? []), treeToggle] : (toggles ?? []);
+
   return (
     <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      {toggles && toggles.length > 0 && (
+      {allToggles.length > 0 && (
         <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {toggles.map((group) => (
+          {allToggles.map((group) => (
             <div key={group.id} className="flex flex-wrap items-center gap-1.5">
               <span className="text-[11px] font-semibold text-slate">{group.label}</span>
               {group.options.map((opt) => (
@@ -86,21 +114,46 @@ export function BacktrackingRunner<P>({
         </div>
       )}
 
-      <div className={cn("grid gap-4", visual && showTree ? "lg:grid-cols-[1fr_1fr]" : "lg:grid-cols-[1.7fr_1fr]")}>
-        <div className="flex flex-col gap-3">
-          {visual && <div>{visual(step)}</div>}
-          {showTree && (
-            <div>
-              <SearchTreeCanvas nodes={run.nodes} step={step as BacktrackStep<unknown>} />
-              <div className="mt-2">
-                <TreeLegend showDead={showDeadInLegend} />
-              </div>
-            </div>
-          )}
-          {hint && <p className="text-[11px] text-slate">{hint}</p>}
+      {/* The board sits in an `auto` column so the panels start right beside
+          it instead of leaving dead space, and the tree moves out of this
+          grid entirely (below) because it is a wide element and was being
+          squeezed into half the width.
+
+          min-w-0 on the panel column is load-bearing: grid and flex children
+          default to min-width:auto and refuse to shrink below their content,
+          which previously let the tree stretch the page to tens of thousands
+          of pixels instead of scrolling inside its own box. */}
+      <div
+        className={cn(
+          "grid gap-4 lg:items-start",
+          visual ? "lg:grid-cols-[auto_minmax(0,1fr)]" : "lg:grid-cols-[1.7fr_minmax(0,1fr)]",
+        )}
+      >
+        <div className="flex min-w-0 flex-col gap-2">
+          {/* Centred because a small board (4x4) is narrower than the hint
+              beneath it, and left-aligning it leaves all the slack on one
+              side. */}
+          {visual && <div className="flex justify-center">{visual(step)}</div>}
+          {/* With no board to show, the tree is the visual, so it stays in
+              the left column rather than dropping below an empty space. */}
+          {!visual && showTree && <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} />}
+          {/* Capped to the widest a board gets. An `auto` grid column is
+              sized by its widest child, so a roomier cap here would widen
+              the column and reopen the gap between board and panels. */}
+          {hint && <p className="max-w-[21rem] text-[11px] leading-relaxed text-slate">{hint}</p>}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex min-w-0 flex-col gap-2.5">
+          <PanelBox title="Work done">
+            <StatReadout
+              stats={[
+                { label: "nodes entered", value: step.visited },
+                { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
+                { label: solutionsLabel.toLowerCase().includes("solution") ? "solutions" : "found", value: step.solutions.length, tone: "good" },
+              ]}
+            />
+          </PanelBox>
+
           <PanelBox title="Call stack (root to current)">
             <ChipRow items={step.path} emptyLabel="back at the root" />
           </PanelBox>
@@ -111,7 +164,7 @@ export function BacktrackingRunner<P>({
             {step.solutions.length === 0 ? (
               <span className="text-xs italic text-slate">none yet</span>
             ) : (
-              <div className="flex max-h-40 flex-col gap-1 overflow-y-auto">
+              <div className="flex max-h-32 flex-col gap-1 overflow-y-auto">
                 {step.solutions.map((s, i) => (
                   <span key={`${s}-${i}`} className="font-mono text-xs font-semibold text-signal-green">
                     {s}
@@ -120,20 +173,14 @@ export function BacktrackingRunner<P>({
               </div>
             )}
           </PanelBox>
-
-          <PanelBox title="Work done">
-            <StatReadout
-              stats={[
-                { label: "nodes entered", value: step.visited },
-                { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
-                { label: solutionsLabel.toLowerCase().includes("solution") ? "solutions" : "found", value: step.solutions.length, tone: "good" },
-              ]}
-            />
-          </PanelBox>
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-3">
+      {/* Narration and transport sit directly under the board rather than
+          below the tree. Driving the widget is the main interaction, and it
+          was previously pushed a full screen down by a block of secondary
+          reference material. */}
+      <div className="mt-4 flex flex-col gap-2.5">
         <StepCaption text={step.caption} />
         <StepControls
           index={player.index}
@@ -153,6 +200,47 @@ export function BacktrackingRunner<P>({
           </p>
         )}
       </div>
+
+      {/* Last, and collapsible: the search view is reference material you
+          consult, not something you drive, so it should not stand between
+          the board and its controls. */}
+      {visual && showTree && (
+        <details open className="group mt-4">
+          <summary className="mb-2 cursor-pointer list-none text-[11px] font-semibold text-slate marker:hidden hover:text-ink">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="transition-transform group-open:rotate-90">&rsaquo;</span>
+              Search view
+            </span>
+          </summary>
+          <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} />
+        </details>
+      )}
+    </div>
+  );
+}
+
+/** The tree (or its depth-profile stand-in) plus the legend that belongs with it. */
+function TreeBlock<P>({
+  run,
+  step,
+  showDeadInLegend,
+  view,
+}: {
+  run: BacktrackRun<P>;
+  step: BacktrackStep<P>;
+  showDeadInLegend: boolean;
+  view: TreeView;
+}) {
+  return (
+    <div>
+      <SearchTreeCanvas nodes={run.nodes} step={step as BacktrackStep<unknown>} view={view} />
+      {/* The legend names node colours, so it only belongs alongside an
+          actual tree, not the depth profile. */}
+      {view === "tree" && (
+        <div className="mt-2">
+          <TreeLegend showDead={showDeadInLegend} />
+        </div>
+      )}
     </div>
   );
 }

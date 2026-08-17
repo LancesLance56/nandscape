@@ -332,6 +332,58 @@
       }
     },
     {
+      "id": "h-flow",
+      "type": "heading",
+      "level": 2,
+      "text": "As a flowchart"
+    },
+    {
+      "id": "p-flow",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Colouring stops at the first success rather than enumerating everything, and that shows up in the chart:"
+        }
+      ]
+    },
+    {
+      "id": "w-flow-color",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "m-coloring"
+      }
+    },
+    {
+      "id": "p-flow-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The explore step is a "
+        },
+        {
+          "text": "decision",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " here, not a process box. The recursive call returns true or false, and its answer decides whether this call returns immediately or undoes its colour and tries the next one. In the enumeration problems the recursive call returns nothing and the loop always continues."
+        }
+      ]
+    },
+    {
+      "id": "p-flow-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That difference propagates all the way up: a failure at the deepest node travels back through every caller until one of them still has a colour left to try."
+        }
+      ]
+    },
+    {
       "id": "divider-1",
       "type": "divider"
     },

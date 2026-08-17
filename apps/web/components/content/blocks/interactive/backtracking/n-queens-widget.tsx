@@ -41,14 +41,42 @@ function attackedSquares(queens: number[], n: number): Set<string> {
   return out;
 }
 
+/**
+ * Board sizing.
+ *
+ * The board must do two things at once: not balloon to fill a wide column,
+ * and not overflow a narrow phone. `width: min(cap, 100%)` on the container
+ * with fractional columns inside does both. Left to `1fr` alone the board
+ * grows to whatever width the column has, so its height ends up equal to
+ * that width and a 4 by 4 board is as tall as an 8 by 8 one; pinned to fixed
+ * pixels instead, it cannot shrink and runs off the side of a phone.
+ */
+const MAX_CELL = 52;
+const MAX_BOARD = 336;
+
+/** Cap for the whole board, so a small board stays small. */
+function boardWidth(n: number): number {
+  return Math.min(MAX_BOARD, n * MAX_CELL);
+}
+
+/** Nominal cell size, used only to scale the glyph. */
+function cellSize(n: number): number {
+  return Math.floor(boardWidth(n) / n);
+}
+
 function QueensBoard({ n, queens, tryCol, tryRow, tryOk, blockedBy, showAttacks = true }: BoardProps) {
   const attacked = showAttacks ? attackedSquares(queens, n) : new Set<string>();
   const queenAt = new Map(queens.map((c, r) => [`${r},${c}`, r]));
+  const cell = cellSize(n);
+  const glyph = Math.round(cell * 0.52);
 
   return (
     <div
       className="grid gap-0.5 rounded-lg border border-border bg-surface-2/40 p-2"
-      style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
+      style={{
+        gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`,
+        width: `min(${boardWidth(n)}px, 100%)`,
+      }}
       role="grid"
       aria-label={`${n} by ${n} chessboard with ${queens.length} queens placed`}
     >
@@ -62,21 +90,40 @@ function QueensBoard({ n, queens, tryCol, tryRow, tryOk, blockedBy, showAttacks 
         const isDark = (row + col) % 2 === 1;
         const isAttacked = attacked.has(key) && !hasQueen;
 
+        // Exactly one background class. Stacking several bg-* utilities on
+        // one element and relying on the order they appear in className does
+        // not work: Tailwind resolves the conflict by stylesheet order, so a
+        // queen would get its copper fill on some squares and the plain
+        // square colour on others depending only on which utility happened
+        // to be emitted later.
+        const background = hasQueen
+          ? "bg-copper"
+          : isTry && !tryOk
+            ? "bg-signal-coral/40"
+            : isAttacked
+              ? "bg-signal-coral/15"
+              : isDark
+                ? "bg-surface-3"
+                : "bg-surface";
+
         return (
           <div
             key={key}
             role="gridcell"
+            style={{ fontSize: glyph }}
             className={cn(
-              "relative flex aspect-square items-center justify-center rounded-[3px] text-lg leading-none transition-colors",
-              isDark ? "bg-surface-3" : "bg-surface",
-              isAttacked && "bg-signal-coral/15",
-              hasQueen && "bg-copper",
+              "relative flex aspect-square items-center justify-center rounded-[3px] leading-none transition-colors",
+              background,
               isBlocker && "ring-2 ring-signal-coral",
-              isTry && !hasQueen && (tryOk ? "ring-2 ring-signal-green" : "bg-signal-coral/40 ring-2 ring-signal-coral"),
+              isTry && !hasQueen && (tryOk ? "ring-2 ring-signal-green" : "ring-2 ring-signal-coral"),
             )}
           >
             {hasQueen && <span className="select-none text-white">♛</span>}
-            {isTry && !hasQueen && !tryOk && <span className="select-none text-sm text-signal-coral">✕</span>}
+            {isTry && !hasQueen && !tryOk && (
+              <span className="select-none text-signal-coral" style={{ fontSize: glyph * 0.75 }}>
+                ✕
+              </span>
+            )}
           </div>
         );
       })}
@@ -138,9 +185,17 @@ export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
 
   return (
     <BacktrackingRunner
+      // Remount on a size or run-scope change so the search view resets to
+      // the default for the new board instead of carrying over a choice made
+      // for a different one.
+      key={`${n}-${stopAtFirst}`}
       run={run}
       toggles={toggles}
       solutionsLabel="Solutions found"
+      // Keyed on board size, which the reader controls, rather than on leaf
+      // count, which they cannot see. Only the 4x4 and 5x5 trees are narrow
+      // enough to read; past that the depth profile is the honest default.
+      defaultTreeView={n <= 5 ? "tree" : "profile"}
       hint={`${n}×${n} has ${solutions.length} solution${solutions.length === 1 ? "" : "s"} in total. Red squares are attacked by a queen already on the board.`}
       visual={(step) => {
         const p = step.payload as QueensPayload | undefined;
@@ -159,14 +214,16 @@ export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
         const p = step.payload as QueensPayload | undefined;
         return (
           <PanelBox title="Rows filled">
-            <div className="flex flex-col gap-1">
+            {/* Two columns: eight stacked rows made this the tallest thing
+                on the card, for information that is one letter per row. */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
               {Array.from({ length: n }).map((_, r) => {
                 const col = p?.queens[r];
                 return (
-                  <div key={r} className="flex items-center justify-between text-xs">
-                    <span className="text-slate">row {r + 1}</span>
+                  <div key={r} className="flex items-baseline justify-between gap-2 text-[11px]">
+                    <span className="text-slate">r{r + 1}</span>
                     <span className={cn("font-mono font-bold", col === undefined ? "text-border-strong" : "text-copper-dark")}>
-                      {col === undefined ? "empty" : `column ${"abcdefgh"[col]}`}
+                      {col === undefined ? "-" : "abcdefgh"[col]}
                     </span>
                   </div>
                 );
@@ -305,10 +362,16 @@ function ManualBoard({
     });
   });
 
+  const cell = cellSize(n);
+  const glyph = Math.round(cell * 0.52);
+
   return (
     <div
       className="grid gap-0.5 rounded-lg border border-border bg-surface-2/40 p-2"
-      style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
+      style={{
+        gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`,
+        width: `min(${boardWidth(n)}px, 100%)`,
+      }}
     >
       {Array.from({ length: n * n }).map((_, i) => {
         const row = Math.floor(i / n);
@@ -318,16 +381,25 @@ function ManualBoard({
         const bad = conflicted.has(key);
         const isDark = (row + col) % 2 === 1;
 
+        // One background class only, for the reason described in QueensBoard.
+        const background = hasQueen
+          ? bad
+            ? "bg-signal-coral"
+            : "bg-signal-green"
+          : isDark
+            ? "bg-surface-3"
+            : "bg-surface";
+
         return (
           <button
             key={key}
             type="button"
             onClick={() => onSquareClick(row, col)}
             aria-label={`Row ${row + 1}, column ${col + 1}${hasQueen ? ", has a queen" : ""}`}
+            style={{ fontSize: glyph }}
             className={cn(
-              "flex aspect-square cursor-pointer items-center justify-center rounded-[3px] text-lg leading-none transition-colors hover:brightness-95",
-              isDark ? "bg-surface-3" : "bg-surface",
-              hasQueen && (bad ? "bg-signal-coral" : "bg-signal-green"),
+              "flex aspect-square cursor-pointer items-center justify-center rounded-[3px] leading-none transition-colors hover:brightness-95",
+              background,
             )}
           >
             {hasQueen && <span className="select-none text-white">♛</span>}

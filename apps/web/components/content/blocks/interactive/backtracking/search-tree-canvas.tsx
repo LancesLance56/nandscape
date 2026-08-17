@@ -2,9 +2,27 @@
 
 import { useEffect, useRef } from "react";
 import { TREE_WIDTH, type BacktrackStep, type NodeStatus, type SearchNode } from "@/lib/backtracking/types";
+import { cn } from "@/lib/cn";
 
 /** Horizontal room per leaf. Below this, sibling labels start colliding. */
 const LEAF_SPACING = 44;
+/** Above this the drawn tree stops being readable and becomes a summary. */
+const MAX_DRAWABLE_LEAVES = 60;
+
+/** Which of the two views the canvas renders. */
+export type TreeView = "tree" | "profile";
+
+/**
+ * Whether a drawn tree would still be legible at this size. Used only to
+ * warn, never to switch views: choosing automatically made the component
+ * appear to alternate between two visualisations for no reason the reader
+ * could see, because leaf count varies with how lucky the search gets.
+ */
+export function isTreeDrawable(nodes: SearchNode[]): boolean {
+  if (nodes.length === 0) return false;
+  const hasChild = new Set(nodes.map((n) => n.parentId).filter((id): id is string => Boolean(id)));
+  return nodes.filter((n) => !hasChild.has(n.id)).length <= MAX_DRAWABLE_LEAVES;
+}
 const NODE_H = 24;
 const MIN_NODE_W = 26;
 
@@ -45,6 +63,8 @@ interface SearchTreeCanvasProps {
    *  shape from frame one instead of jumping around as it grows. */
   showGhosts?: boolean;
   maxHeight?: number;
+  /** Which view to render. Chosen by the caller, never inferred here. */
+  view?: TreeView;
 }
 
 /**
@@ -57,7 +77,7 @@ interface SearchTreeCanvasProps {
  * labels along with the spacing, and a wide tree would end up unreadable
  * instead of merely scrollable.
  */
-export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 340 }: SearchTreeCanvasProps) {
+export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 300, view = "tree" }: SearchTreeCanvasProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const revealed = new Set(step.revealed);
 
@@ -69,6 +89,10 @@ export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 3
   const hasChild = new Set(nodes.map((n) => n.parentId).filter((id): id is string => Boolean(id)));
   const leafCount = Math.max(nodes.filter((n) => !hasChild.has(n.id)).length, 1);
   const maxDepth = nodes.reduce((m, n) => Math.max(m, n.depth), 0);
+
+  if (view === "profile") {
+    return <TreeShapeSummary nodes={nodes} step={step} maxDepth={maxDepth} leafCount={leafCount} />;
+  }
 
   const renderWidth = Math.max(360, leafCount * LEAF_SPACING);
   const renderHeight = (maxDepth + 1) * 62 + 20;
@@ -163,6 +187,96 @@ export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 3
         })}
       </svg>
     </TreeScroller>
+  );
+}
+
+/**
+ * What replaces the tree once it is too wide to draw: one bar per level,
+ * showing how many nodes the search has opened at that depth so far.
+ *
+ * This is not a consolation prize. On a large run the interesting question
+ * is not what any individual node holds, it is where the work is going, and
+ * a depth profile answers that directly: a search that keeps failing near
+ * the top looks completely different from one grinding away at the bottom.
+ */
+function TreeShapeSummary({
+  nodes,
+  step,
+  maxDepth,
+  leafCount,
+}: {
+  nodes: SearchNode[];
+  step: BacktrackStep<unknown>;
+  maxDepth: number;
+  leafCount: number;
+}) {
+  const revealed = new Set(step.revealed);
+  const total = new Array(maxDepth + 1).fill(0);
+  const seen = new Array(maxDepth + 1).fill(0);
+  const cut = new Array(maxDepth + 1).fill(0);
+
+  for (const n of nodes) {
+    total[n.depth] += 1;
+    if (!revealed.has(n.id)) continue;
+    seen[n.depth] += 1;
+    if (step.status[n.id] === "pruned") cut[n.depth] += 1;
+  }
+
+  const widest = Math.max(...total, 1);
+  const activeDepth = step.activeId ? (nodes.find((n) => n.id === step.activeId)?.depth ?? null) : null;
+
+  return (
+    <div className="rounded-lg border border-border bg-surface-2/30 p-3">
+      <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <span className="text-[11px] font-semibold text-slate">Where the search is spending its time</span>
+        <span className="text-[10px] text-slate">
+          {nodes.length} nodes, {leafCount} leaves, {maxDepth + 1} levels
+        </span>
+      </div>
+
+      {/* Capped rather than full-bleed: stretched across a wide card the
+          bars would be metres from their own counts. */}
+      <div className="flex max-w-2xl flex-col gap-0.5">
+        {total.map((count, depth) => {
+          const openedPct = (seen[depth] / widest) * 100;
+          const cutPct = (cut[depth] / widest) * 100;
+          const isActive = depth === activeDepth;
+
+          return (
+            <div key={depth} className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "w-12 shrink-0 text-right font-mono text-[10px] tabular-nums",
+                  isActive ? "font-bold text-copper-dark" : "text-slate",
+                )}
+              >
+                depth {depth}
+              </span>
+              <div className="relative h-3 min-w-0 flex-1 overflow-hidden rounded-[3px] bg-surface-3/60">
+                <div
+                  className={cn("absolute inset-y-0 left-0 transition-all duration-200", isActive ? "bg-copper" : "bg-border-strong")}
+                  style={{ width: `${openedPct}%` }}
+                />
+                {/* Rejected branches sit on the right of the opened bar, so
+                    the split between explored and cut is readable per level. */}
+                <div
+                  className="absolute inset-y-0 bg-signal-coral/70 transition-all duration-200"
+                  style={{ left: `${openedPct - cutPct}%`, width: `${cutPct}%` }}
+                />
+              </div>
+              <span className="w-14 shrink-0 font-mono text-[10px] tabular-nums text-slate">
+                {seen[depth]}/{total[depth]}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-2 max-w-2xl text-[11px] leading-relaxed text-slate">
+        One bar per level of the search. Copper is the level being worked on now, grey is opened, coral is rejected
+        before exploring. Useful when the tree itself is too wide to read: this one is {leafCount} leaves across.
+      </p>
+    </div>
   );
 }
 

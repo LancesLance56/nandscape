@@ -1,0 +1,393 @@
+{
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "sectionSlug": "sorting",
+  "slug": "sorting-partition-problems",
+  "title": "Partition Problems: 0s, 1s and 2s",
+  "excerpt": "When the values come from a tiny fixed set, sorting is overkill. Two or three pointers do the job in one pass with no extra memory.",
+  "publishedAt": "2026-08-16T12:50:00Z",
+  "tags": [
+    "sorting",
+    "two-pointers",
+    "dutch-national-flag",
+    "partitioning",
+    "dsa"
+  ],
+  "position": 60,
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A family of interview problems asks you to rearrange an array whose values come from a very small set: separate 0s from 1s, push all zeroes to the end, sort an array of 0s, 1s and 2s."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sorting solves all of them in O(n log n). All of them can be done in O(n) with a single pass and no extra memory, because with only a handful of distinct values you do not need to compare anything: you can decide where a value belongs just by looking at it."
+        }
+      ]
+    },
+    {
+      "id": "w-partition",
+      "type": "interactive",
+      "widget": "partition-explorer",
+      "data": {
+        "mode": "ternary"
+      }
+    },
+    {
+      "id": "h-binary",
+      "type": "heading",
+      "level": 2,
+      "text": "Segregating 0s and 1s"
+    },
+    {
+      "id": "p-binary",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two pointers walking inward. The left pointer advances while it sees 0s, the right advances backward while it sees 1s, and when both stop you have a 1 on the left and a 0 on the right, so swap them."
+        }
+      ]
+    },
+    {
+      "id": "p-binary-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A counting approach also works: count the zeroes, then write that many 0s followed by 1s. It is equally O(n) and arguably simpler, but it destroys any other data attached to the elements, so it only works when the values really are just 0 and 1."
+        }
+      ]
+    },
+    {
+      "id": "h-zeroes",
+      "type": "heading",
+      "level": 2,
+      "text": "Moving zeroes to the end"
+    },
+    {
+      "id": "p-zeroes",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The catch here is that the non-zero values must keep their original relative order, so the two-pointer swap-from-both-ends trick is wrong: it would scramble them."
+        }
+      ]
+    },
+    {
+      "id": "p-zeroes-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Instead use a read pointer and a write pointer. Scan with the read pointer; every time you find a non-zero value, place it at the write pointer and advance the write pointer. Zeroes are simply skipped, and fall to the back as a consequence."
+        }
+      ]
+    },
+    {
+      "id": "p-zeroes-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the widget above to \"Move zeroes\" and watch the two pointers separate: the gap between them is exactly the number of zeroes seen so far."
+        }
+      ]
+    },
+    {
+      "id": "h-dnf",
+      "type": "heading",
+      "level": 2,
+      "text": "The Dutch national flag problem"
+    },
+    {
+      "id": "p-dnf",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three values, one pass. This is "
+        },
+        {
+          "text": "Dijkstra's Dutch national flag problem",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "https://en.wikipedia.org/wiki/Dutch_national_flag_problem"
+            }
+          ]
+        },
+        {
+          "text": ", named for the flag's three horizontal bands, and it is the one genuinely tricky member of the family."
+        }
+      ]
+    },
+    {
+      "id": "p-dnf-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Keep three pointers. Everything before "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is 0, everything after "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is 2, and "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " scans the unknown middle:"
+        }
+      ]
+    },
+    {
+      "id": "t-dnf",
+      "type": "table",
+      "headers": [
+        "a[mid] is",
+        "Do",
+        "Then"
+      ],
+      "rows": [
+        [
+          "0",
+          "swap a[low] and a[mid]",
+          "advance both low and mid"
+        ],
+        [
+          "1",
+          "nothing, it is already in the right region",
+          "advance mid"
+        ],
+        [
+          "2",
+          "swap a[mid] and a[high]",
+          "decrement high, and do NOT advance mid"
+        ]
+      ]
+    },
+    {
+      "id": "p-dnf-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last row is where almost everyone gets it wrong. The value swapped in from "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " has never been examined, so "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " must stay put and look at it on the next iteration. Advancing past it can leave a 0 or a 2 stranded in the middle region."
+        }
+      ]
+    },
+    {
+      "id": "p-dnf-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The loop ends when "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " passes "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", not when it reaches the end of the array: everything above "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is already known to be 2."
+        }
+      ]
+    },
+    {
+      "id": "h-why",
+      "type": "heading",
+      "level": 2,
+      "text": "Why this matters beyond the puzzle"
+    },
+    {
+      "id": "p-why",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three-way partitioning is exactly what quick sort needs when the input has many duplicate keys. A standard two-way partition puts values equal to the pivot on one side, so an array of all-equal elements produces maximally unbalanced splits and degrades to O(n²). Partitioning into less-than, equal-to and greater-than instead makes that same input O(n), because the entire equal region is finished in one step."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "In code"
+    },
+    {
+      "id": "code-dnf",
+      "type": "code",
+      "language": "javascript",
+      "code": "// Dutch national flag: 0s, 1s and 2s in a single pass.\nfunction sortColors(a) {\n  let low = 0, mid = 0, high = a.length - 1;\n\n  while (mid <= high) {\n    if (a[mid] === 0) {\n      [a[low], a[mid]] = [a[mid], a[low]];\n      low++; mid++;\n    } else if (a[mid] === 2) {\n      [a[mid], a[high]] = [a[high], a[mid]];\n      high--;\n      // mid does NOT advance: the value swapped in is still unexamined.\n    } else {\n      mid++;\n    }\n  }\n  return a;\n}\n\n// Move zeroes to the end, keeping the other values in order.\nfunction moveZeroes(a) {\n  let write = 0;\n  for (let read = 0; read < a.length; read++) {\n    if (a[read] !== 0) {\n      [a[write], a[read]] = [a[read], a[write]];\n      write++;\n    }\n  }\n  return a;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# Dutch national flag: 0s, 1s and 2s in a single pass.\ndef sort_colors(a):\n    low = mid = 0\n    high = len(a) - 1\n\n    while mid <= high:\n        if a[mid] == 0:\n            a[low], a[mid] = a[mid], a[low]\n            low += 1\n            mid += 1\n        elif a[mid] == 2:\n            a[mid], a[high] = a[high], a[mid]\n            high -= 1\n            # mid does NOT advance: the value swapped in is unexamined.\n        else:\n            mid += 1\n    return a\n\n\n# Move zeroes to the end, keeping the other values in order.\ndef move_zeroes(a):\n    write = 0\n    for read in range(len(a)):\n        if a[read] != 0:\n            a[write], a[read] = a[read], a[write]\n            write += 1\n    return a"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n#include <utility>\n\n// Dutch national flag: 0s, 1s and 2s in a single pass.\nvoid sortColors(std::vector<int>& a) {\n    int low = 0, mid = 0, high = (int)a.size() - 1;\n\n    while (mid <= high) {\n        if (a[mid] == 0) {\n            std::swap(a[low++], a[mid++]);\n        } else if (a[mid] == 2) {\n            std::swap(a[mid], a[high--]);\n            // mid does NOT advance: the value swapped in is unexamined.\n        } else {\n            mid++;\n        }\n    }\n}\n\n// Move zeroes to the end, keeping the other values in order.\nvoid moveZeroes(std::vector<int>& a) {\n    size_t write = 0;\n    for (size_t read = 0; read < a.size(); read++)\n        if (a[read] != 0) std::swap(a[write++], a[read]);\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-quiz",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-quiz",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "In the Dutch national flag algorithm, why does mid not advance after swapping with high?",
+            "options": [
+              {
+                "label": "The value swapped in from high has never been examined",
+                "correct": true
+              },
+              {
+                "label": "Because high has already been decremented",
+                "correct": false
+              },
+              {
+                "label": "It should advance; not advancing is a common bug",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why can't you use the two-pointer swap-from-both-ends trick for 'move zeroes to the end'?",
+            "options": [
+              {
+                "label": "It would scramble the relative order of the non-zero values",
+                "correct": true
+              },
+              {
+                "label": "It would not terminate",
+                "correct": false
+              },
+              {
+                "label": "It uses too much memory",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "How does three-way partitioning help quick sort?",
+            "options": [
+              {
+                "label": "Arrays with many duplicates finish the whole equal region in one step instead of degrading to O(n^2)",
+                "correct": true
+              },
+              {
+                "label": "It makes quick sort stable",
+                "correct": false
+              },
+              {
+                "label": "It removes the need for a pivot",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d1",
+      "type": "divider"
+    },
+    {
+      "id": "b-next",
+      "type": "button",
+      "label": "Continue to merge-based problems",
+      "href": "/tutorials/dsa/sorting-merge-problems",
+      "style": "primary"
+    }
+  ],
+  "seoTitle": "Sort 0s 1s and 2s: Dutch National Flag and One-Pass Partitioning",
+  "seoDescription": "Segregate binary arrays, move zeroes to the end, and solve the Dutch national flag problem in one pass with no extra memory. With an interactive pointer visualizer.",
+  "keywords": [
+    "sort 0s 1s 2s",
+    "dutch national flag problem",
+    "move zeroes to end",
+    "segregate 0s and 1s",
+    "three way partitioning"
+  ]
+}
