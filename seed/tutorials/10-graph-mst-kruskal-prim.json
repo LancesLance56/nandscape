@@ -94,7 +94,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Watch the edge B–E at weight 4. Kruskal considers it and throws it away, because by that point B and E are already in the same clump and adding it would make a loop. The struck-out entry in the edge list is that rejection."
+          "text": "Watch the edge B-E at weight 4. Kruskal considers it and throws it away, because by that point B and E are already in the same clump and adding it would make a loop. The struck-out entry in the edge list is that rejection."
         }
       ]
     },
@@ -103,7 +103,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is easy to assume rejected edges are just the expensive ones, so try the \"Cheap triangle\" example. A–B costs 1 and B–C costs 2, both taken immediately. Then A–C comes up at only 3, one of the cheapest edges in the whole graph, and it gets thrown out anyway, because A and C are already joined through B. Price has nothing to do with it. The only question Kruskal ever asks is whether the two ends are already in the same group."
+          "text": "It is easy to assume rejected edges are just the expensive ones, so try the \"Cheap triangle\" example. A-B costs 1 and B-C costs 2, both taken immediately. Then A-C comes up at only 3, one of the cheapest edges in the whole graph, and it gets thrown out anyway, because A and C are already joined through B. Price has nothing to do with it. The only question Kruskal ever asks is whether the two ends are already in the same group."
         }
       ]
     },

@@ -1,12 +1,25 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Nandscape palette.
+
+   These named tokens are the source of truth for every colour on the site.
+   shadcn's own token names (--background, --primary, --muted, and so on) are
+   defined further down as *aliases* onto these, so an imported shadcn
+   component lands in the site's palette instead of the default neutral grey,
+   and there is still exactly one place to change a colour.
+   --------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
   --surface: #f6f8f3;
   --surface-2: #edf2e8;
+  --surface-3: #e2e9db;
   --surface-card: #ffffff;
 
   --ink: #151b18;
@@ -19,6 +32,7 @@
   --copper: #c15a2a;
   --copper-dark: #9c4720;
   --copper-bg: #f5dfce;
+  --copper-ink: #ffffff;
 
   --signal-green: #1ca463;
   --signal-green-strong: #0f7e4a;
@@ -33,10 +47,10 @@
 
 .dark {
   color-scheme: dark;
-  --background: #141414;
   --surface: #141414;
   --surface-card: #1c1c1c;
   --surface-2: #242424;
+  --surface-3: #2e2e2e;
 
   --border: #2a2a2a;
   --border-strong: #3a3a3a;
@@ -48,6 +62,7 @@
   --copper: #e07a46;
   --copper-dark: #f0966a;
   --copper-bg: #3a2317;
+  --copper-ink: #1a0f08;
 
   --signal-green: #2ece86;
   --signal-green-strong: #6ee7b0;
@@ -60,9 +75,65 @@
   --signal-unknown: #ff00ff;
 }
 
+/* ---------------------------------------------------------------------------
+   shadcn compatibility layer.
+
+   Every one of these is an alias, never a new colour. Both themes get the same
+   mapping because the palette above already swaps itself per theme.
+   --------------------------------------------------------------------------- */
+
+:root,
+.dark {
+  --background: var(--surface);
+  --foreground: var(--ink);
+
+  --card: var(--surface-card);
+  --card-foreground: var(--ink);
+
+  --popover: var(--surface-card);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--copper);
+  --primary-foreground: var(--copper-ink);
+
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--ink);
+
+  --muted: var(--surface-2);
+  --muted-foreground: var(--slate);
+
+  --accent: var(--surface-2);
+  --accent-foreground: var(--ink);
+
+  --destructive: var(--signal-coral);
+  --destructive-foreground: var(--copper-ink);
+
+  --input: var(--border-strong);
+  --ring: var(--copper);
+
+  --chart-1: var(--copper);
+  --chart-2: var(--signal-green);
+  --chart-3: var(--signal-coral);
+  --chart-4: var(--copper-dark);
+  --chart-5: var(--slate);
+
+  --sidebar: var(--surface-2);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--copper);
+  --sidebar-primary-foreground: var(--copper-ink);
+  --sidebar-accent: var(--surface-3);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--copper);
+
+  /* Matches the rounded-xl the hand-written cards already use. */
+  --radius: 0.75rem;
+}
+
 @theme inline {
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-surface-card: var(--surface-card);
 
   --color-ink: var(--ink);
@@ -75,6 +146,7 @@
   --color-copper: var(--copper);
   --color-copper-dark: var(--copper-dark);
   --color-copper-bg: var(--copper-bg);
+  --color-copper-ink: var(--copper-ink);
 
   --color-signal-green: var(--signal-green);
   --color-signal-green-strong: var(--signal-green-strong);
@@ -87,6 +159,52 @@
   --font-display: var(--font-inter-sans), sans-serif;
   --font-body: var(--font-inter-sans), sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
+  /* shadcn components reach for font-sans; point it at the site's body face
+     rather than letting it fall through to the Tailwind default stack. */
+  --font-sans: var(--font-inter-sans), sans-serif;
+  --font-heading: var(--font-inter-sans), sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 body {
@@ -94,8 +212,15 @@ body {
   color: var(--ink);
 }
 
-* {
-  border-color: var(--border);
+/* Inside @layer base on purpose. Unlayered CSS outranks everything Tailwind
+   emits into @layer utilities, so as a bare rule this quietly overrode every
+   border-<colour> utility on the site: `border-copper` and friends set the
+   class but rendered the default border grey. In the base layer it still
+   supplies the default, and utilities win when they are asked for. */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
 }
 
 @keyframes nandscape-wire-flow {

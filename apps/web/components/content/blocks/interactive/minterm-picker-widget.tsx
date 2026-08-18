@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { WidgetFrame } from "./widget-frame";
 import { cn } from "@/lib/cn";
+import { WidgetButton } from "./shared/widget-ui";
 
 interface MintermPickerData {
   variables?: unknown;
@@ -135,23 +136,17 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setChecked(true)}
-            className="rounded-lg bg-copper px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-copper-dark"
-          >
+          <WidgetButton tone="primary" onClick={() => setChecked(true)}>
             Check my answer
-          </button>
-          <button
-            type="button"
+          </WidgetButton>
+          <WidgetButton
             onClick={() => {
               setPicked(new Set());
               setChecked(false);
             }}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
           >
             Clear
-          </button>
+          </WidgetButton>
         </div>
 
         {checked && (

@@ -104,7 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch pruning off and on below. Same candidates, same target, same answers. Watch the node counter."
+          "text": "Switch pruning off and on below. The candidates, the target and the answers all stay the same, so the only thing worth watching is the node counter."
         }
       ]
     },

@@ -1,9 +1,11 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import { useState, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { tutorialPath, type TutorialTrackTree } from "@/types/tutorial";
+import { ChevronDown } from "lucide-react";
 
 const COLLAPSE_STORAGE_KEY = "nandscape:tutorial-sidebar-collapsed";
 
@@ -36,20 +38,6 @@ function getCollapseServerSnapshot(): boolean {
 function setCollapsed(value: boolean): void {
   window.localStorage.setItem(COLLAPSE_STORAGE_KEY, value ? "1" : "0");
   for (const listener of collapseListeners) listener();
-}
-
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      className={`h-3.5 w-3.5 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-    >
-      <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
 }
 
 function PanelIcon() {
@@ -111,7 +99,7 @@ function NavList({ tracks, collapsed, onToggle }: NavListProps): ReactNode {
                     className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-left text-[11px] font-semibold text-slate hover:text-ink"
                   >
                     {section.title}
-                    <ChevronIcon open={open} />
+                    <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 transition-transform", open && "rotate-180")} />
                   </button>
                   {open && (
                     <div className="mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
@@ -174,7 +162,7 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
           className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-card px-4 py-3 text-sm font-semibold text-ink"
         >
           Contents
-          <ChevronIcon open={mobileOpen} />
+          <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 transition-transform", mobileOpen && "rotate-180")} />
         </button>
 
         <nav

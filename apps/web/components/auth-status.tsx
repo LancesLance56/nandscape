@@ -121,7 +121,7 @@ export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "men
         >
           Log in
         </Link>
-        <Button variant="primary" size="sm" onClick={() => router.push("/signup")}>
+        <Button variant="default" size="app" onClick={() => router.push("/signup")}>
           Start solving
         </Button>
       </div>

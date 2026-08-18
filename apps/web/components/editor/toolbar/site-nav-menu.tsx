@@ -5,21 +5,14 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ToolbarButton } from "./toolbar-button";
+import { Menu } from "lucide-react";
 
 const LINKS = [
   { label: "Home", href: "/" },
-  { label: "Puzzles", href: "/puzzles" },
+  { label: "Practice", href: "/puzzles" },
   { label: "Logic Editor", href: "/logic-editor" },
   { label: "Blog", href: "/blog" },
 ];
-
-function MenuIcon() {
-  return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 /**
  * The editor's toolbar previously had no way to reach anything but Home
@@ -72,7 +65,7 @@ export function SiteNavMenu() {
 
   return (
     <div ref={anchorRef} className="relative">
-      <ToolbarButton icon={<MenuIcon />} label="Site navigation" active={open} onClick={() => setOpen((o) => !o)} />
+      <ToolbarButton icon={<Menu className="h-4 w-4" />} label="Site navigation" active={open} onClick={() => setOpen((o) => !o)} />
 
       {open &&
         coords &&

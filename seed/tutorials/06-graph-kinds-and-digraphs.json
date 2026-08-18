@@ -33,7 +33,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In an undirected graph, an edge between A and B means A and B are connected, full stop. Friendship works like this. If you are my friend, I am yours."
+          "text": "In an undirected graph, an edge between A and B means the two are connected, with no direction attached. Friendship works like this: if you are my friend, then I am yours."
         }
       ]
     },
@@ -149,7 +149,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Trees are so common in programming that people forget they are graphs at all. Your file system is a tree. The DOM is a tree. A binary search tree is, obviously, a tree. Anything you have written a recursive function over was probably a tree."
+          "text": "Trees are so common in programming that people forget they are graphs at all. Your file system is one, the DOM is another, and a binary search tree is obviously one. Anything you have written a recursive function over was probably a tree."
         }
       ]
     },

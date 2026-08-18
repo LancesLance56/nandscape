@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { permutationsSteps, type PermutationMode } from "@/lib/backtracking/algorithms";
 import { cn } from "@/lib/cn";
-import { PanelBox } from "../shared/panel-ui";
-import { BacktrackingRunner, type ToggleGroup } from "./backtracking-runner";
+import { PanelBox, type SegmentedGroup } from "../shared/widget-ui";
+import { BacktrackingRunner } from "./backtracking-runner";
 
 const PRESETS = [
   { id: "abc", label: "ABC", letters: ["A", "B", "C"] },
@@ -45,7 +45,7 @@ export function PermutationsWidget({ data }: { data: Record<string, unknown> }) 
   const hasRepeat = new Set(letters).size !== letters.length;
   const expected = factorial(letters.length);
 
-  const toggles: ToggleGroup[] = [
+  const toggles: SegmentedGroup[] = [
     {
       id: "input",
       label: "Input",

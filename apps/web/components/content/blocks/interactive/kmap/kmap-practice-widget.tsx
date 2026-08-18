@@ -16,8 +16,8 @@ import {
 import { gradeCover } from "@/lib/kmap/solve";
 import { generateProblem, randomSeed, type Difficulty } from "@/lib/kmap/random";
 import { WidgetFrame } from "../widget-frame";
-import { cn } from "@/lib/cn";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
+import { Banner, Segmented, Stat, WidgetButton } from "../shared/widget-ui";
 
 const DIFFICULTIES: { id: Difficulty; label: string; blurb: string }[] = [
   { id: "easy", label: "Easy", blurb: "3 variables, no don't-cares" },
@@ -158,34 +158,16 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
     >
       <div className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-semibold text-slate">Difficulty</span>
-            {DIFFICULTIES.map((d) => (
-              <button
-                key={d.id}
-                type="button"
-                onClick={() => newProblem(d.id)}
-                aria-pressed={d.id === difficulty}
-                title={d.blurb}
-                className={cn(
-                  "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                  d.id === difficulty
-                    ? "border-copper bg-copper-bg text-copper-dark"
-                    : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-                )}
-              >
-                {d.label}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            label="Difficulty"
+            value={difficulty}
+            onChange={newProblem}
+            options={DIFFICULTIES.map((d) => ({ id: d.id, label: d.label, hint: d.blurb }))}
+          />
 
-          <button
-            type="button"
-            onClick={() => newProblem()}
-            className="ml-auto rounded-lg bg-copper px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-copper-dark"
-          >
+          <WidgetButton tone="primary" className="ml-auto" onClick={() => newProblem()}>
             New random problem
-          </button>
+          </WidgetButton>
         </div>
 
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:gap-8">
@@ -201,41 +183,25 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
             <KMapCellLegend showDontCare={dontCares.length > 0} />
 
             <div className="flex flex-wrap justify-center gap-2">
-              <button
-                type="button"
-                onClick={confirmGroup}
-                disabled={selected.length === 0 || revealed}
-                className="rounded-lg bg-copper px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-copper-dark disabled:opacity-40"
-              >
+              <WidgetButton tone="primary" onClick={confirmGroup} disabled={selected.length === 0 || revealed}>
                 Confirm group
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelected([])}
-                disabled={selected.length === 0}
-                className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2 disabled:opacity-40"
-              >
+              </WidgetButton>
+              <WidgetButton onClick={() => setSelected([])} disabled={selected.length === 0}>
                 Clear selection
-              </button>
-              <button
-                type="button"
+              </WidgetButton>
+              <WidgetButton
                 onClick={() => {
                   setConfirmed([]);
                   setSelected([]);
                   setRevealed(false);
                   setError(null);
                 }}
-                className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
               >
                 Start over
-              </button>
-              <button
-                type="button"
-                onClick={() => setRevealed((v) => !v)}
-                className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-signal-coral hover:bg-surface-2"
-              >
+              </WidgetButton>
+              <WidgetButton tone="danger" onClick={() => setRevealed((v) => !v)}>
                 {revealed ? "Hide answer" : "Give up"}
-              </button>
+              </WidgetButton>
             </div>
           </div>
 
@@ -332,29 +298,5 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
         </div>
       </div>
     </WidgetFrame>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface-2/40 px-2.5 py-2 text-center">
-      <div className="font-display text-lg font-bold leading-none tabular-nums text-ink">{value}</div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate">{label}</div>
-    </div>
-  );
-}
-
-function Banner({ tone, children }: { tone: "info" | "good" | "bad"; children: React.ReactNode }) {
-  return (
-    <p
-      className={cn(
-        "rounded-lg border px-3 py-2 text-xs font-medium leading-relaxed",
-        tone === "good" && "border-signal-green/40 bg-signal-green-bg text-signal-green-strong",
-        tone === "bad" && "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",
-        tone === "info" && "border-border bg-surface-2/60 text-ink-soft",
-      )}
-    >
-      {children}
-    </p>
   );
 }

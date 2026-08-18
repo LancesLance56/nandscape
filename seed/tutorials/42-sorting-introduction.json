@@ -94,7 +94,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Before the theory, some evidence. Pick an algorithm and press play. Then switch the input to \"nearly sorted\" and run insertion sort and selection sort in turn; the counters tell the story better than any complexity table."
+          "text": "It is worth seeing this before reading any of the theory. Pick an algorithm and press play, then switch the input to \"nearly sorted\" and run insertion sort and selection sort in turn. The counters tell the story better than any complexity table does."
         }
       ]
     },

@@ -3,8 +3,13 @@
 import { useMemo, useState } from "react";
 import { defaultSudoku, sudokuSteps, type SudokuPayload, type SudokuStrategy } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox, StatReadout } from "../shared/panel-ui";
+import { PanelBox, Segmented, StatReadout, type SegmentedOption } from "../shared/widget-ui";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+
+const STRATEGY_OPTIONS: readonly SegmentedOption<SudokuStrategy>[] = [
+  { id: "first", label: "Next blank in reading order" },
+  { id: "mrv", label: "Fewest candidates first" },
+];
 
 function SudokuBoard({ payload }: { payload: SudokuPayload | undefined }) {
   const board = payload?.board ?? new Array(81).fill(0);
@@ -83,30 +88,13 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
 
   return (
     <div className="rounded-xl border border-border bg-surface-card p-5">
-      <div className="mb-4 flex flex-wrap items-center gap-1.5">
-        <span className="text-[11px] font-semibold text-slate">Which cell to fill next</span>
-        {(
-          [
-            { id: "first", label: "Next blank in reading order" },
-            { id: "mrv", label: "Fewest candidates first" },
-          ] as const
-        ).map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => setStrategy(opt.id)}
-            aria-pressed={opt.id === strategy}
-            className={cn(
-              "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-              opt.id === strategy
-                ? "border-copper bg-copper-bg text-copper-dark"
-                : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-            )}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
+      <Segmented
+        className="mb-4"
+        label="Which cell to fill next"
+        value={strategy}
+        onChange={setStrategy}
+        options={STRATEGY_OPTIONS}
+      />
 
       <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
         <div className="overflow-x-auto">

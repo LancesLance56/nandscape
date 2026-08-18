@@ -1,35 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import { useState } from "react";
 import Link from "next/link";
 import { slugify } from "@/lib/blog-editor/types";
 import type { TutorialPageSummary, TutorialSection, TutorialTrack } from "@/types/tutorial";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 function formatDate(iso: string | null): string {
   if (!iso) return "-";
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-}
-
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      className={`h-3.5 w-3.5 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-    >
-      <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ArrowIcon({ direction }: { direction: "up" | "down" }) {
-  return (
-    <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d={direction === "up" ? "M4 10l4-4 4 4" : "M4 6l4 4 4-4"} strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
 }
 
 /** Up/down pair reused for tracks, sections, and pages - the three levels
@@ -66,7 +46,7 @@ function MoveButtons({
         aria-label={`Move ${label} up`}
         className={btnClass}
       >
-        <ArrowIcon direction="up" />
+        <ChevronUp className="h-3 w-3" />
       </button>
       <button
         type="button"
@@ -79,7 +59,7 @@ function MoveButtons({
         aria-label={`Move ${label} down`}
         className={btnClass}
       >
-        <ArrowIcon direction="down" />
+        <ChevronDown className="h-3 w-3" />
       </button>
     </div>
   );
@@ -439,7 +419,7 @@ export function AdminTutorialTree({
                       {sectionPages.length} page{sectionPages.length === 1 ? "" : "s"}
                     </span>
                   </span>
-                  <ChevronIcon open={open} />
+                  <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 transition-transform", open && "rotate-180")} />
                 </button>
                 <MoveButtons
                   label={section.title}

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/cn";
+import { WidgetButton } from "./shared/widget-ui";
 
 interface ReorderItem {
   id: string;
@@ -94,22 +95,12 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
             <span className="flex-1 text-sm text-ink">{item.name}</span>
             <span className=" text-[11px] text-slate">cost ~{item.cost}</span>
             <span className="flex gap-1">
-              <button
-                type="button"
-                aria-label="Move up"
-                onClick={() => move(i, -1)}
-                className="rounded-md border border-border-strong px-2 py-0.5 text-xs text-ink-soft hover:border-copper"
-              >
+              <WidgetButton size="xs" aria-label="Move up" onClick={() => move(i, -1)}>
                 ↑
-              </button>
-              <button
-                type="button"
-                aria-label="Move down"
-                onClick={() => move(i, 1)}
-                className="rounded-md border border-border-strong px-2 py-0.5 text-xs text-ink-soft hover:border-copper"
-              >
+              </WidgetButton>
+              <WidgetButton size="xs" aria-label="Move down" onClick={() => move(i, 1)}>
                 ↓
-              </button>
+              </WidgetButton>
             </span>
           </li>
         ))}
@@ -148,13 +139,9 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={checkOrder}
-        className="rounded-lg bg-copper px-4 py-2 text-xs font-semibold text-white hover:bg-copper-dark"
-      >
+      <WidgetButton tone="primary" size="md" onClick={checkOrder}>
         Check order
-      </button>
+      </WidgetButton>
 
       {checked && (
         <div className="mt-4 border-t border-dashed border-border pt-4">

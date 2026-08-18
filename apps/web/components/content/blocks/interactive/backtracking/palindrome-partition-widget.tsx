@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { isPalindrome, palindromePartitionSteps, type PalindromePayload } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox } from "../shared/panel-ui";
-import { BacktrackingRunner, type ToggleGroup } from "./backtracking-runner";
+import { PanelBox, type SegmentedGroup } from "../shared/widget-ui";
+import { BacktrackingRunner } from "./backtracking-runner";
 
 const PRESETS = [
   { id: "aabaa", label: "aabaa" },
@@ -31,7 +31,7 @@ export function PalindromePartitionWidget({ data }: { data: Record<string, unkno
 
   const run = useMemo(() => palindromePartitionSteps(text), [text]);
 
-  const toggles: ToggleGroup[] = [
+  const toggles: SegmentedGroup[] = [
     {
       id: "text",
       label: "String",

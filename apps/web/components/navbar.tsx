@@ -7,26 +7,18 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthStatus } from "@/components/auth-status";
+import { Menu, X } from "lucide-react";
 
 // "Home" is intentionally omitted,  the logo already links there, so a
 // separate text link would just duplicate it and eat width.
 const links = [
   { label: "Tutorials", href: "/tutorials" },
-  { label: "Puzzles", href: "/puzzles" },
+  { label: "Practice", href: "/puzzles" },
   { label: "Logic Editor", href: "/logic-editor" },
   { label: "Tools", href: "/tools" },
   { label: "Projects", href: "/projects" },
   { label: "Community", href: "/community" },
-  { label: "Blog", href: "/blog" },
 ];
-
-function MenuIcon({ open }: { open: boolean }) {
-  return (
-    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      {open ? <path d="M5 5l10 10M15 5L5 15" /> : <path d="M3 6h14M3 10h14M3 14h14" />}
-    </svg>
-  );
-}
 
 export function Navbar() {
   const pathname = usePathname();
@@ -78,7 +70,7 @@ export function Navbar() {
             onClick={() => setMobileOpen((open) => !open)}
             className="flex h-9 w-9 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink md:hidden"
           >
-            <MenuIcon open={mobileOpen} />
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </nav>

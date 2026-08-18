@@ -145,7 +145,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That's the entire mechanism. Two minterms merge into one shorter term whenever they differ in exactly one bit position,  no more, no less. A Karnaugh map doesn't add any new math on top of this identity, it just makes it fast to spot which pairs (and later, quads, and larger groups) of minterms qualify, by eye instead of by hand-manipulating algebra every time."
+          "text": "The merging rule is just this: two minterms combine into one shorter term whenever they differ in exactly one bit position. A Karnaugh map adds no new mathematics on top of that identity. What it adds is speed, making the qualifying pairs, and later the quads and larger groups, visible by eye rather than something you derive algebraically every time."
         }
       ]
     },

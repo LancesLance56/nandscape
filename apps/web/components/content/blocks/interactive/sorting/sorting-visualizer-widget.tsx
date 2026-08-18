@@ -15,6 +15,7 @@ import { WidgetFrame } from "../widget-frame";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
 import { cn } from "@/lib/cn";
 import { SortingBars, SortingLegend } from "./sorting-bars";
+import { Segmented, Stat, WidgetButton } from "../shared/widget-ui";
 
 const SPEEDS = [
   { id: "slow", label: "Slow", ms: 700 },
@@ -85,49 +86,22 @@ export function SortingVisualizerWidget({
   const content = (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-semibold text-slate">Algorithm</span>
-          {available.map((id) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setAlgorithm(id)}
-              aria-pressed={id === algorithm}
-              className={cn(
-                "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                id === algorithm
-                  ? "border-copper bg-copper-bg text-copper-dark"
-                  : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-              )}
-            >
-              {algorithmMeta(id).label.replace(" sort", "")}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          label="Algorithm"
+          value={algorithm}
+          onChange={setAlgorithm}
+          options={available.map((id) => ({ id, label: algorithmMeta(id).label.replace(" sort", "") }))}
+        />
       </div>
 
       {!compact && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-semibold text-slate">Input</span>
-            {PRESETS.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setPreset(p.id)}
-                aria-pressed={p.id === preset}
-                title={p.note}
-                className={cn(
-                  "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                  p.id === preset
-                    ? "border-copper bg-copper-bg text-copper-dark"
-                    : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-                )}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            label="Input"
+            value={preset}
+            onChange={setPreset}
+            options={PRESETS.map((p) => ({ id: p.id, label: p.label, hint: p.note }))}
+          />
 
           <label className="flex items-center gap-2 text-[11px] font-semibold text-slate">
             Size
@@ -142,13 +116,9 @@ export function SortingVisualizerWidget({
             <span className="w-5 tabular-nums text-ink">{size}</span>
           </label>
 
-          <button
-            type="button"
-            onClick={shuffle}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2 hover:text-ink"
-          >
+          <WidgetButton onClick={shuffle}>
             Shuffle
-          </button>
+          </WidgetButton>
         </div>
       )}
 
@@ -266,21 +236,5 @@ export function SortingVisualizerWidget({
     <WidgetFrame title="Sorting visualizer" subtitle={`${meta.label} · ${PRESETS.find((p) => p.id === preset)?.label}`}>
       {content}
     </WidgetFrame>
-  );
-}
-
-function Stat({ label, value, tone }: { label: string; value: string | number; tone?: "good" }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface-2/40 px-2.5 py-2 text-center">
-      <div
-        className={cn(
-          "font-display text-lg font-bold leading-none tabular-nums",
-          tone === "good" ? "text-signal-green" : "text-ink",
-        )}
-      >
-        {value}
-      </div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate">{label}</div>
-    </div>
   );
 }

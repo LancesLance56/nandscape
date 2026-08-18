@@ -106,7 +106,7 @@ export default function SignupPage() {
 
           {error && <p className="text-sm text-signal-coral">{error}</p>}
 
-          <Button type="submit" variant="primary" size="lg" disabled={submitting}>
+          <Button type="submit" variant="default" size="app-lg" disabled={submitting}>
             {submitting ? "Creating account…" : "Create account"}
           </Button>
         </form>

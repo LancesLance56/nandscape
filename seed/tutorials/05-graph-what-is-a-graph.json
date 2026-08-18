@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A graph is a bunch of dots with lines between some of them. That is the entire definition. If that sounds too simple to deserve a whole branch of mathematics, hang on, because the interesting part is not the definition. It is how many completely unrelated problems turn out to be the same problem once you draw them this way."
+          "text": "A graph is a bunch of dots with lines between some of them, and the definition really does stop there. If that sounds too simple to deserve a branch of mathematics, the interest lies elsewhere: a surprising number of completely unrelated problems turn out to be the same problem once you draw them this way."
         }
       ]
     },

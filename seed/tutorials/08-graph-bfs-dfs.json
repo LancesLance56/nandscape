@@ -34,7 +34,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Both traversals keep a pile of nodes they know about but have not looked at yet. Repeat until the pile is empty: take one out, mark it visited, and put its unvisited neighbours in. That is the whole algorithm."
+          "text": "Both traversals keep a pile of nodes they know about but have not looked at yet. The procedure is to take one out, mark it visited, put its unvisited neighbours in, and repeat until the pile is empty."
         }
       ]
     },

@@ -89,7 +89,7 @@ export function PasswordForm() {
       {success && !error && <p className="text-sm text-signal-green">Password changed.</p>}
 
       <div>
-        <Button type="submit" variant="primary" size="sm" disabled={submitting}>
+        <Button type="submit" variant="default" size="app" disabled={submitting}>
           {submitting ? "Changing…" : "Change password"}
         </Button>
       </div>

@@ -3,8 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { allQueensSolutions, nQueensSteps, type QueensPayload } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox, StatReadout } from "../shared/panel-ui";
-import { BacktrackingRunner, type ToggleGroup } from "./backtracking-runner";
+import { PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
+import { BacktrackingRunner } from "./backtracking-runner";
 
 const SIZES = [4, 5, 6, 7, 8];
 
@@ -148,7 +148,7 @@ export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
   const run = useMemo(() => nQueensSteps(n, stopAtFirst), [n, stopAtFirst]);
   const solutions = useMemo(() => allQueensSolutions(n), [n]);
 
-  const toggles: ToggleGroup[] = [
+  const toggles: SegmentedGroup[] = [
     {
       id: "size",
       label: "Board",
@@ -237,7 +237,7 @@ export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
 }
 
 /** The hands-on board: place queens anywhere, get told what conflicts. */
-function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: ToggleGroup[]; totalSolutions: number }) {
+function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: SegmentedGroup[]; totalSolutions: number }) {
   const [placed, setPlaced] = useState<string[]>([]);
 
   const toggle = useCallback((row: number, col: number) => {
@@ -261,29 +261,7 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Togg
 
   return (
     <div className="rounded-xl border border-border bg-surface-card p-5">
-      <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-        {toggles.map((group) => (
-          <div key={group.id} className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-semibold text-slate">{group.label}</span>
-            {group.options.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => group.onChange(opt.id)}
-                aria-pressed={opt.id === group.active}
-                className={cn(
-                  "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                  opt.id === group.active
-                    ? "border-copper bg-copper-bg text-copper-dark"
-                    : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-                )}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
+      <SegmentedRow groups={toggles} className="mb-4" />
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
         <div>

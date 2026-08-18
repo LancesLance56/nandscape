@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { combinationSumSteps, subsetsSteps } from "@/lib/backtracking/algorithms";
-import { PanelBox } from "../shared/panel-ui";
-import { BacktrackingRunner, type ToggleGroup } from "./backtracking-runner";
+import { PanelBox, type SegmentedGroup } from "../shared/widget-ui";
+import { BacktrackingRunner } from "./backtracking-runner";
 
 type Problem = "subsets" | "combination-sum";
 
@@ -49,7 +49,7 @@ export function BacktrackingTreeWidget({ data }: { data: Record<string, unknown>
   // that could drift out of step with the tree.
   const partialById = useMemo(() => new Map(run.nodes.map((n) => [n.id, n.partial])), [run]);
 
-  const toggles: ToggleGroup[] = [];
+  const toggles: SegmentedGroup[] = [];
   if (!pinned) {
     toggles.push({
       id: "problem",

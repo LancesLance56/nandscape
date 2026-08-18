@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { WidgetFrame } from "./widget-frame";
 import { cn } from "@/lib/cn";
+import { WidgetButton } from "./shared/widget-ui";
 
 interface GrayCodeData {
   bits?: unknown;
@@ -90,23 +91,15 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
     <WidgetFrame title={title} subtitle={`step ${index + 1} of ${size}`} className={className}>
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIndex((i) => (i - 1 + size) % size)}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft hover:bg-surface-2"
-          >
+          <WidgetButton onClick={() => setIndex((i) => (i - 1 + size) % size)}>
             ← Prev
-          </button>
+          </WidgetButton>
           <span className=" text-xs text-slate">
             {isWrap ? "wrapping from the last row back to the first" : `row ${prevIndex} → row ${index}`}
           </span>
-          <button
-            type="button"
-            onClick={() => setIndex((i) => (i + 1) % size)}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft hover:bg-surface-2"
-          >
+          <WidgetButton onClick={() => setIndex((i) => (i + 1) % size)}>
             Next →
-          </button>
+          </WidgetButton>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

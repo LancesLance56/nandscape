@@ -4,18 +4,10 @@ import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import type { BacktrackRun, BacktrackStep } from "@/lib/backtracking/types";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { ChipRow, PanelBox, StatReadout } from "../shared/panel-ui";
+import { ChipRow, PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { SearchTreeCanvas, TreeLegend } from "./search-tree-canvas";
 
 export type TreeView = "tree" | "profile";
-
-export interface ToggleGroup {
-  id: string;
-  label: string;
-  options: { id: string; label: string }[];
-  active: string;
-  onChange: (id: string) => void;
-}
 
 interface BacktrackingRunnerProps<P> {
   run: BacktrackRun<P>;
@@ -24,7 +16,7 @@ interface BacktrackingRunnerProps<P> {
   /** Extra readouts beside the standard path/solutions/counters. */
   panel?: (step: BacktrackStep<P>) => ReactNode;
   /** Switchers rendered above the visual, e.g. mode or size pickers. */
-  toggles?: ToggleGroup[];
+  toggles?: SegmentedGroup[];
   showTree?: boolean;
   /** Label for the solutions box, e.g. "Subsets found". */
   solutionsLabel?: string;
@@ -72,7 +64,7 @@ export function BacktrackingRunner<P>({
     return <p className="text-sm text-signal-coral">Backtracking widget: nothing to run.</p>;
   }
 
-  const treeToggle: ToggleGroup | null = showTree
+  const treeToggle: SegmentedGroup | null = showTree
     ? {
         id: "tree-view",
         label: "Search view",
@@ -88,31 +80,7 @@ export function BacktrackingRunner<P>({
 
   return (
     <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      {allToggles.length > 0 && (
-        <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {allToggles.map((group) => (
-            <div key={group.id} className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-slate">{group.label}</span>
-              {group.options.map((opt) => (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => group.onChange(opt.id)}
-                  aria-pressed={opt.id === group.active}
-                  className={cn(
-                    "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                    opt.id === group.active
-                      ? "border-copper bg-copper-bg text-copper-dark"
-                      : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      <SegmentedRow groups={allToggles} className="mb-4" />
 
       {/* The board sits in an `auto` column so the panels start right beside
           it instead of leaving dead space, and the tree moves out of this

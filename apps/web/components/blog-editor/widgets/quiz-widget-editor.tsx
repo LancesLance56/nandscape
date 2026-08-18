@@ -55,7 +55,7 @@ export function QuizWidgetEditor({
             <span className=" text-[11px] font-semibold text-slate">
               Question {qIndex + 1}
             </span>
-            <Button variant="ghost" size="sm" onClick={() => setQuestions(questions.filter((_, j) => j !== qIndex))}>
+            <Button variant="ghost" size="app" onClick={() => setQuestions(questions.filter((_, j) => j !== qIndex))}>
               Remove question
             </Button>
           </div>
@@ -85,7 +85,7 @@ export function QuizWidgetEditor({
                 />
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="app"
                   onClick={() =>
                     updateQuestion(qIndex, { options: question.options.filter((_, j) => j !== oIndex) })
                   }
@@ -95,8 +95,8 @@ export function QuizWidgetEditor({
               </div>
             ))}
             <Button
-              variant="secondary"
-              size="sm"
+              variant="outline"
+              size="app"
               onClick={() => updateQuestion(qIndex, { options: [...question.options, { label: "", correct: false }] })}
             >
               + Add option
@@ -114,7 +114,7 @@ export function QuizWidgetEditor({
         </div>
       ))}
 
-      <Button variant="secondary" size="sm" onClick={() => setQuestions([...questions, emptyQuestion()])}>
+      <Button variant="outline" size="app" onClick={() => setQuestions([...questions, emptyQuestion()])}>
         + Add question
       </Button>
     </div>

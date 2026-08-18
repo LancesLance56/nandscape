@@ -13,6 +13,7 @@ import { bfsSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
 import { cn } from "@/lib/cn";
 import { Card } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const AUTO_ADVANCE_MS = 7000;
 const SLIDE_HEIGHT = 340;
@@ -254,18 +255,6 @@ const ITEMS: ShowcaseItem[] = [
   },
 ];
 
-function ArrowIcon({ direction }: { direction: "prev" | "next" }) {
-  return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path
-        d={direction === "prev" ? "M10 3.5L5 8l5 4.5" : "M6 3.5l5 4.5-5 4.5"}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function HeroShowcase() {
   const [active, setActive] = useState(0);
   const pausedRef = useRef(false);
@@ -318,7 +307,7 @@ export function HeroShowcase() {
           onClick={() => goTo(active - 1)}
           className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface-card text-ink-soft shadow-sm transition-colors hover:text-ink"
         >
-          <ArrowIcon direction="prev" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
         <button
           type="button"
@@ -326,7 +315,7 @@ export function HeroShowcase() {
           onClick={() => goTo(active + 1)}
           className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface-card text-ink-soft shadow-sm transition-colors hover:text-ink"
         >
-          <ArrowIcon direction="next" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
 

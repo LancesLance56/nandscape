@@ -18,7 +18,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Drawing a graph on paper is easy. Getting it into a program means picking a data structure, and there are two you will meet constantly. Neither is better. They are good at opposite things."
+          "text": "Drawing a graph on paper is easy. Getting it into a program means picking a data structure, and there are two you will meet constantly. Neither one is better than the other, since they are good at opposite things."
         }
       ]
     },
@@ -33,7 +33,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "For each node, keep a list of its neighbours. That is it. In most languages this is a map from node to array, or just an array of arrays if your nodes are numbered."
+          "text": "An adjacency list stores, for each node, a list of its neighbours. In most languages that is a map from node to array, or just an array of arrays if your nodes are numbered."
         }
       ]
     },

@@ -1,31 +1,29 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { gateTypeToString } from "@nandscape/engine";
-import type { PuzzleDifficulty, PuzzleSpec } from "@/types/puzzle";
+import { Search, X } from "lucide-react";
+import type { PuzzleSpec } from "@/types/puzzle";
 import { DifficultyTag } from "./difficulty-tag";
+import { PuzzleFilterPanel } from "./puzzle-filter-panel";
+import { Pagination, type PageSize } from "@/components/ui/pagination";
 import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
 import { usePuzzleProgressStore } from "@/store/puzzle-progress-store";
 import { shuffleDeterministic } from "@/lib/puzzles/puzzle-display";
-
-type DifficultyFilter = "all" | PuzzleDifficulty;
-
-const DIFFICULTY_FILTERS: DifficultyFilter[] = ["all", "easy", "medium", "hard", "expert"];
+import {
+  EMPTY_FILTERS,
+  activeChips,
+  applyPuzzleFilters,
+  countActive,
+  formatRestriction,
+  type PuzzleFilterState,
+} from "@/lib/puzzles/puzzle-filters";
+import { cn } from "@/lib/cn";
 
 function tagColor(tag: string): string {
   let hash = 0;
   for (let i = 0; i < tag.length; i++) hash = (hash * 31 + tag.charCodeAt(i)) >>> 0;
   return DEFAULT_BLOCK_COLORS[hash % DEFAULT_BLOCK_COLORS.length];
-}
-
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" aria-hidden="true">
-      <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M13.2 13.2 18 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
 }
 
 function CheckIcon() {
@@ -74,21 +72,19 @@ function ProgressRing({ solved, total, signedOut }: { solved: number; total: num
   );
 }
 
-function formatRestriction(puzzle: PuzzleSpec): string {
-  if (puzzle.allowedGateTypes && puzzle.allowedGateTypes.length > 0) {
-    return `${puzzle.allowedGateTypes.map(gateTypeToString).join(", ")} only`;
-  }
-  if (puzzle.disallowedGateTypes && puzzle.disallowedGateTypes.length > 0) {
-    return `No ${puzzle.disallowedGateTypes.map(gateTypeToString).join(", ")}`;
-  }
-  return "No restriction";
-}
-
 export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]; dailyPuzzleSlug?: string }) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [difficulty, setDifficulty] = useState<DifficultyFilter>("all");
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [filters, setFiltersRaw] = useState<PuzzleFilterState>(EMPTY_FILTERS);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<PageSize>(25);
+
+  // Every filter change goes through here so the view returns to page 1.
+  // Doing that in an effect would trip the repo's set-state-in-effect rule,
+  // and would also flash a page of stale rows before correcting itself.
+  const setFilters = useCallback((next: PuzzleFilterState) => {
+    setFiltersRaw(next);
+    setPage(1);
+  }, []);
 
   // Deliberately not sorted by difficulty: order is scrambled once, based on
   // slug identity, so it looks mixed up but stays put across renders/filters
@@ -104,170 +100,225 @@ export function PuzzleList({ puzzles, dailyPuzzleSlug }: { puzzles: PuzzleSpec[]
     void loadAllProgress();
   }, [loadAllProgress]);
 
-  const solvedCount = useMemo(
-    () => puzzles.filter((p) => progressBySlug[p.slug]?.solved).length,
-    [puzzles, progressBySlug],
+  const isSolved = useCallback(
+    (slug: string) => progressBySlug[slug]?.solved === true,
+    [progressBySlug],
   );
 
-  const tagCounts = useMemo(() => {
+  const solvedCount = useMemo(
+    () => puzzles.filter((p) => isSolved(p.slug)).length,
+    [puzzles, isSolved],
+  );
+
+  const tagOptions = useMemo(() => {
     const counts = new Map<string, number>();
     for (const puzzle of puzzles) {
       for (const tag of puzzle.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
     }
-    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([tag]) => tag);
   }, [puzzles]);
 
-  const difficultyCounts = useMemo(() => {
-    const counts: Record<DifficultyFilter, number> = { all: puzzles.length, easy: 0, medium: 0, hard: 0, expert: 0 };
-    for (const puzzle of puzzles) counts[puzzle.difficulty]++;
-    return counts;
-  }, [puzzles]);
+  const filtered = useMemo(
+    () => applyPuzzleFilters(shuffled, filters, isSolved),
+    [shuffled, filters, isSolved],
+  );
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return shuffled
-      .filter((p) => (difficulty === "all" ? true : p.difficulty === difficulty))
-      .filter((p) => (activeTag ? p.tags.includes(activeTag) : true))
-      .filter((p) => (q ? p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) : true));
-  }, [shuffled, query, activeTag, difficulty]);
+  const chips = activeChips(filters);
+  const activeCount = countActive(filters);
+
+  // Clamped during render rather than corrected in an effect: filtering can
+  // shrink the list under the current page at any time, and a page number
+  // past the end should simply resolve to the last page.
+  const perPage = pageSize === "all" ? Math.max(filtered.length, 1) : pageSize;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * perPage;
+  const visible = filtered.slice(start, start + perPage);
+
+  const removeChip = (group: keyof PuzzleFilterState, value: string) => {
+    const current = filters[group] as unknown as string[];
+    setFilters({ ...filters, [group]: current.filter((v) => v !== value) });
+  };
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full max-w-sm">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate">
-            <SearchIcon />
-          </span>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search puzzles"
-            className="w-full rounded-xl border border-border-strong bg-surface-card py-2 pl-9 pr-3 text-sm text-ink outline-none"
-          />
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-8">
+      <div className="flex min-w-0 flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:max-w-md">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate">
+              <Search className="h-4 w-4" aria-hidden />
+            </span>
+            <input
+              type="search"
+              value={filters.query}
+              onChange={(e) => setFilters({ ...filters, query: e.target.value })}
+              placeholder="Search logic problems…"
+              aria-label="Search logic problems"
+              className="w-full rounded-xl border border-border-strong bg-surface-card py-2.5 pl-10 pr-3 text-sm text-ink outline-none transition-colors focus:border-copper"
+            />
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 text-xs text-slate">
+            <ProgressRing solved={solvedCount} total={puzzles.length} signedOut={signedOut} />
+            {solvedCount} / {puzzles.length} solved
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-slate">
-          <ProgressRing solved={solvedCount} total={puzzles.length} signedOut={signedOut} />
-          {solvedCount} / {puzzles.length} Solved
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        {tagCounts.map(([tag, count]) => {
-          const color = tagColor(tag);
-          const active = activeTag === tag;
-          return (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => setActiveTag((prev) => (prev === tag ? null : tag))}
-              style={{
-                color,
-                borderColor: active ? color : hexToRgba(color, 0.35),
-                backgroundColor: active ? hexToRgba(color, 0.18) : hexToRgba(color, 0.08),
-              }}
-              className="rounded-full border px-3 py-1 text-[11px] font-medium transition-colors hover:brightness-110"
-            >
-              {tag} <span className="opacity-70">{count}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center gap-2 border-b border-border pb-1">
-        {DIFFICULTY_FILTERS.map((d) => (
-          <button
-            key={d}
-            type="button"
-            onClick={() => setDifficulty(d)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-              difficulty === d ? "bg-surface-2 text-ink" : "text-ink-soft hover:bg-surface-2/60 hover:text-ink"
-            }`}
-          >
-            {d === "all" ? "All" : d[0].toUpperCase() + d.slice(1)} ({difficultyCounts[d]})
-          </button>
-        ))}
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
-            <tr className="bg-surface-2 text-[11px] text-slate">
-              <th className="w-10 px-4 py-3" aria-label="Status" />
-              <th className="px-4 py-3">Title</th>
-              <th className="hidden px-4 py-3 md:table-cell">Tags</th>
-              <th className="hidden px-4 py-3 lg:table-cell">Restriction</th>
-              <th className="px-4 py-3 text-right">Difficulty</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((puzzle, index) => (
-              <tr
-                key={puzzle.slug}
-                onClick={() => router.push(`/puzzles/${puzzle.slug}`)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    router.push(`/puzzles/${puzzle.slug}`);
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="cursor-pointer border-t border-border transition-colors hover:bg-surface-2/60 focus-visible:outline-none focus-visible:bg-surface-2/60"
+        {/* What is currently on, and one click to take any of it off. The
+            sidebar says which groups are active; this says which options. */}
+        {chips.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {chips.map((chip) => (
+              <button
+                key={`${chip.group}-${chip.value}`}
+                type="button"
+                onClick={() => removeChip(chip.group, chip.value)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-copper bg-copper-bg/60 px-2.5 py-1 text-[11px] font-semibold text-copper-dark transition-colors hover:bg-copper-bg"
               >
-                <td className="px-4 py-3">
-                  <StatusDot solved={progressBySlug[puzzle.slug]?.solved === true} signedOut={signedOut} />
-                </td>
-                <td className="px-4 py-3">
-                  <p className="flex items-center gap-2 font-semibold text-ink">
-                    {index + 1}. {puzzle.title}
-                    {puzzle.slug === dailyPuzzleSlug && (
-                      <span className="rounded-full bg-copper/15 px-2 py-0.5 text-[10px] font-semibold text-copper-dark">
-                        Today
-                      </span>
-                    )}
-                  </p>
-                  <p className="mt-0.5 line-clamp-1 text-xs text-ink-soft">{puzzle.description}</p>
-                </td>
-                <td className="hidden px-4 py-3 md:table-cell">
-                  <div className="flex flex-wrap gap-1.5">
-                    {puzzle.tags.map((tag) => {
-                      const color = tagColor(tag);
-                      return (
-                        <span
-                          key={tag}
-                          style={{ backgroundColor: hexToRgba(color, 0.14), color }}
-                          className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                        >
-                          {tag}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </td>
-                <td className="hidden px-4 py-3 text-xs text-slate lg:table-cell">
-                  {formatRestriction(puzzle)}
-                  {puzzle.gateBudget !== null && (
-                    <span className="text-border-strong"> · budget {puzzle.gateBudget}</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <DifficultyTag difficulty={puzzle.difficulty} />
-                </td>
-              </tr>
+                {chip.label}
+                <X className="h-3 w-3" aria-hidden />
+                <span className="sr-only">Remove filter</span>
+              </button>
             ))}
+            <button
+              type="button"
+              onClick={() => setFilters(EMPTY_FILTERS)}
+              className="ml-1 text-[11px] font-semibold text-slate underline-offset-2 hover:text-ink hover:underline"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
 
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate">
-                  No puzzles match your filters.
-                </td>
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          pageSize={pageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          totalItems={filtered.length}
+        />
+
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="bg-surface-2 text-[11px] text-slate">
+                <th className="w-10 px-4 py-3" aria-label="Status" />
+                <th className="px-4 py-3">Title</th>
+                <th className="hidden px-4 py-3 md:table-cell">Topics</th>
+                <th className="hidden px-4 py-3 lg:table-cell">Constraint</th>
+                <th className="px-4 py-3 text-right">Difficulty</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {visible.map((puzzle, index) => (
+                <tr
+                  key={puzzle.slug}
+                  onClick={() => router.push(`/puzzles/${puzzle.slug}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      router.push(`/puzzles/${puzzle.slug}`);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  className="cursor-pointer border-t border-border transition-colors hover:bg-surface-2/60 focus-visible:bg-surface-2/60 focus-visible:outline-none"
+                >
+                  <td className="px-4 py-3">
+                    <StatusDot solved={isSolved(puzzle.slug)} signedOut={signedOut} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <p className="flex items-center gap-2 font-semibold text-ink">
+                      {start + index + 1}. {puzzle.title}
+                      {puzzle.slug === dailyPuzzleSlug && (
+                        <span className="rounded-full bg-copper/15 px-2 py-0.5 text-[10px] font-semibold text-copper-dark">
+                          Today
+                        </span>
+                      )}
+                    </p>
+                    <p className="mt-0.5 line-clamp-1 text-xs text-ink-soft">{puzzle.description}</p>
+                  </td>
+                  <td className="hidden px-4 py-3 md:table-cell">
+                    <div className="flex flex-wrap gap-1.5">
+                      {puzzle.tags.map((tag) => {
+                        const color = tagColor(tag);
+                        const active = filters.tags.includes(tag);
+                        return (
+                          <span
+                            key={tag}
+                            style={{ backgroundColor: hexToRgba(color, active ? 0.3 : 0.14), color }}
+                            className={cn(
+                              "rounded-full px-2 py-0.5 text-[10px] font-medium",
+                              active && "ring-1 ring-inset",
+                            )}
+                          >
+                            {tag}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </td>
+                  <td className="hidden px-4 py-3 text-xs text-slate lg:table-cell">
+                    {formatRestriction(puzzle)}
+                    {puzzle.gateBudget !== null && (
+                      <span className="text-border-strong"> · budget {puzzle.gateBudget}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <DifficultyTag difficulty={puzzle.difficulty} />
+                  </td>
+                </tr>
+              ))}
+
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-12 text-center">
+                    <p className="text-sm text-ink-soft">No problems match these filters.</p>
+                    <button
+                      type="button"
+                      onClick={() => setFilters(EMPTY_FILTERS)}
+                      className="mt-3 text-xs font-semibold text-copper-dark hover:text-copper"
+                    >
+                      Reset filters
+                    </button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {totalPages > 1 && (
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            pageSize={pageSize}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+            totalItems={filtered.length}
+          />
+        )}
       </div>
+
+      <PuzzleFilterPanel
+        puzzles={shuffled}
+        filters={filters}
+        setFilters={setFilters}
+        isSolved={isSolved}
+        tagOptions={tagOptions}
+        signedOut={signedOut}
+        onReset={() => setFilters(EMPTY_FILTERS)}
+        activeCount={activeCount}
+      />
     </div>
   );
 }

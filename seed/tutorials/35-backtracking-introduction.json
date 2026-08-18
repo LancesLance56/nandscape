@@ -63,7 +63,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every backtracking problem describes a tree, whether or not you ever draw it. The root is the empty attempt. Each edge is one decision. Each node is the partial answer you have built so far."
+          "text": "Every backtracking problem describes a tree, whether or not you ever draw it. The root is the empty attempt, each edge is one decision, and each node holds the partial answer built so far."
         }
       ]
     },

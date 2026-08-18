@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { WidgetButton } from "./shared/widget-ui";
 
 export interface RevealData {
   prompt: string;
@@ -44,13 +45,9 @@ export function RevealWidget({ data }: { data: Record<string, unknown> }) {
       <div className="mb-3 text-xs font-semibold text-slate">
         {data.prompt}
       </div>
-      <button
-        type="button"
-        onClick={handleReveal}
-        className="rounded-lg bg-copper px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-copper-dark"
-      >
+      <WidgetButton tone="primary" size="md" onClick={handleReveal}>
         {data.buttonLabel}
-      </button>
+      </WidgetButton>
       {revealed && (
         <div className="mt-4 border-t border-dashed border-border pt-4">
           {data.beforeCode && (

@@ -99,7 +99,7 @@ export function ProfileForm({ initial }: ProfileFormProps) {
       {success && !error && <p className="text-sm text-signal-green">Profile updated.</p>}
 
       <div>
-        <Button type="submit" variant="primary" size="sm" disabled={submitting}>
+        <Button type="submit" variant="default" size="app" disabled={submitting}>
           {submitting ? "Saving…" : "Save changes"}
         </Button>
       </div>

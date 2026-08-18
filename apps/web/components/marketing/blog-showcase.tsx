@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { PostSummary } from "@/types/blog";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { CardLink } from "@/components/ui/card";
+import { NodeGrid, NodeTile, NodeTitle } from "@/components/ui/rail";
 import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
 
 // Same hashed-palette pattern as puzzles-showcase's tagColor - keeps a
@@ -37,13 +37,13 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
       {featured.length === 0 ? (
         <p className="text-sm text-ink-soft">Nothing published yet, check back soon.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <NodeGrid columns={2}>
           {featured.map((post, i) => {
             const color = tagColor(post.tags[0] ?? post.slug);
 
             return (
               <ScrollReveal key={post.id} delay={i * 60}>
-                <CardLink href={`/blog/${post.slug}`} className="flex h-full flex-col gap-3 p-5">
+                <NodeTile href={`/blog/${post.slug}`} accent={color}>
                   <div className="flex items-center justify-between">
                     <span
                       style={{ backgroundColor: hexToRgba(color, 0.12), color }}
@@ -58,9 +58,7 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
                     )}
                   </div>
 
-                  <h3 className="font-display text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
-                    {post.title}
-                  </h3>
+                  <NodeTitle>{post.title}</NodeTitle>
                   {post.excerpt && (
                     <p className="line-clamp-2 text-xs leading-relaxed text-ink-soft">{post.excerpt}</p>
                   )}
@@ -71,11 +69,11 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
                   >
                     Read article →
                   </span>
-                </CardLink>
+                </NodeTile>
               </ScrollReveal>
             );
           })}
-        </div>
+        </NodeGrid>
       )}
     </section>
   );

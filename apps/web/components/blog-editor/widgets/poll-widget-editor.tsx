@@ -35,12 +35,12 @@ export function PollWidgetEditor({
                 value={option}
                 onChange={(e) => setOptions(options.map((o, j) => (j === i ? e.target.value : o)))}
               />
-              <Button variant="ghost" size="sm" onClick={() => setOptions(options.filter((_, j) => j !== i))}>
+              <Button variant="ghost" size="app" onClick={() => setOptions(options.filter((_, j) => j !== i))}>
                 Remove
               </Button>
             </div>
           ))}
-          <Button variant="secondary" size="sm" onClick={() => setOptions([...options, ""])}>
+          <Button variant="outline" size="app" onClick={() => setOptions([...options, ""])}>
             + Add option
           </Button>
         </div>

@@ -20,8 +20,8 @@ import {
 } from "@/lib/kmap/kmap";
 import { gradeCover, solveKMap } from "@/lib/kmap/solve";
 import { WidgetFrame } from "../widget-frame";
-import { cn } from "@/lib/cn";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
+import { Banner, Stat, WidgetButton } from "../shared/widget-ui";
 
 type Mode = "solve" | "practice";
 
@@ -211,46 +211,28 @@ export function KMapExplorerWidget({
         <div className="flex flex-wrap justify-center gap-2">
           {mode === "practice" && (
             <>
-              <button
-                type="button"
-                onClick={confirmGroup}
-                disabled={selected.length === 0}
-                className="rounded-lg bg-copper px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-copper-dark disabled:opacity-40"
-              >
+              <WidgetButton tone="primary" onClick={confirmGroup} disabled={selected.length === 0}>
                 Confirm group
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelected([])}
-                className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
-              >
+              </WidgetButton>
+              <WidgetButton onClick={() => setSelected([])}>
                 Clear selection
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowAnswer((v) => !v)}
-                className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
-              >
+              </WidgetButton>
+              <WidgetButton onClick={() => setShowAnswer((v) => !v)}>
                 {showAnswer ? "Hide answer" : "Show answer"}
-              </button>
+              </WidgetButton>
             </>
           )}
           {mode === "solve" && (
-            <button
-              type="button"
-              onClick={() => setCells(emptyCells(varCount))}
-              className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
-            >
+            <WidgetButton onClick={() => setCells(emptyCells(varCount))}>
               Clear map
-            </button>
+            </WidgetButton>
           )}
-          <button
-            type="button"
+          <WidgetButton
+            tone="danger"
             onClick={mode === "solve" ? () => setCells(initialCells ?? emptyCells(varCount)) : reset}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-signal-coral hover:bg-surface-2"
           >
             Reset
-          </button>
+          </WidgetButton>
         </div>
       </div>
 
@@ -359,17 +341,6 @@ function ExpressionPanel({
   );
 }
 
-function Stat({ label, value, tone }: { label: string; value: string | number; tone?: "good" }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface-2/40 px-2.5 py-2 text-center">
-      <div className={cn("font-display text-lg font-bold leading-none tabular-nums", tone === "good" ? "text-signal-green" : "text-ink")}>
-        {value}
-      </div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate">{label}</div>
-    </div>
-  );
-}
-
 function GroupChips({ groups }: { groups: { term: string; color: string; size: number }[] }) {
   if (groups.length === 0) return <span className="text-xs italic text-slate">none</span>;
   return (
@@ -437,19 +408,4 @@ function PracticeFeedback({
     );
   }
   return <Banner tone="good">That is a minimal solution: every 1 covered, no redundancy, fewest possible literals.</Banner>;
-}
-
-function Banner({ tone, children }: { tone: "info" | "good" | "bad"; children: React.ReactNode }) {
-  return (
-    <p
-      className={cn(
-        "rounded-lg border px-3 py-2 text-xs font-medium leading-relaxed",
-        tone === "good" && "border-signal-green/40 bg-signal-green-bg text-signal-green-strong",
-        tone === "bad" && "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",
-        tone === "info" && "border-border bg-surface-2/60 text-ink-soft",
-      )}
-    >
-      {children}
-    </p>
-  );
 }

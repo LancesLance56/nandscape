@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { WidgetFrame } from "./widget-frame";
 import { cn } from "@/lib/cn";
+import { WidgetButton } from "./shared/widget-ui";
 
 export interface QuizOption {
   label?: string;
@@ -107,13 +108,9 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
           <p className={cn("text-sm font-semibold", passed ? "text-signal-green-strong" : "text-signal-coral-strong")}>
             {passed ? passMessage : failMessage}
           </p>
-          <button
-            type="button"
-            onClick={restart}
-            className="rounded-lg border border-border-strong px-4 py-2 text-xs font-semibold text-ink-soft hover:bg-surface-2"
-          >
+          <WidgetButton size="md" onClick={restart}>
             Retake quiz
-          </button>
+          </WidgetButton>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -158,13 +155,9 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
               {current.explanation && (
                 <p className="mb-3 text-sm leading-relaxed text-ink-soft">{current.explanation}</p>
               )}
-              <button
-                type="button"
-                onClick={goNext}
-                className="rounded-lg bg-copper px-4 py-2 text-xs font-semibold text-white hover:bg-copper-dark"
-              >
+              <WidgetButton tone="primary" size="md" onClick={goNext}>
                 {isLast ? "See results" : "Next question"}
-              </button>
+              </WidgetButton>
             </div>
           )}
         </div>

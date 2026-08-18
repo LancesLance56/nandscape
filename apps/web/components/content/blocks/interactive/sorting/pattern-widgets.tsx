@@ -17,44 +17,11 @@ import { WidgetFrame } from "../widget-frame";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
 import { cn } from "@/lib/cn";
 import { SortingBars } from "./sorting-bars";
+import { Segmented, Stat, WidgetButton } from "../shared/widget-ui";
 
 /* -------------------------------------------------------------------------
  * Shared bits
  * ---------------------------------------------------------------------- */
-
-function Toggles<T extends string>({
-  label,
-  options,
-  active,
-  onChange,
-}: {
-  label: string;
-  options: { id: T; label: string }[];
-  active: T;
-  onChange: (id: T) => void;
-}) {
-  return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="text-[11px] font-semibold text-slate">{label}</span>
-      {options.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          onClick={() => onChange(o.id)}
-          aria-pressed={o.id === active}
-          className={cn(
-            "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-            o.id === active
-              ? "border-copper bg-copper-bg text-copper-dark"
-              : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-          )}
-        >
-          {o.label}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function Chips({ values, highlight, tone = "muted" }: { values: number[]; highlight?: number[]; tone?: "muted" | "green" }) {
   const hi = new Set(highlight ?? []);
@@ -117,14 +84,10 @@ export function PartitionExplorerWidget({ data }: { data: Record<string, unknown
     <WidgetFrame title="One-pass partitioning" subtitle={PARTITION_MODES.find((m) => m.id === mode)?.label}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Toggles label="Problem" options={PARTITION_MODES.map((m) => ({ id: m.id, label: m.label }))} active={mode} onChange={setMode} />
-          <button
-            type="button"
-            onClick={() => setSeed(Math.floor(Math.random() * 1e9))}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
-          >
+          <Segmented label="Problem" options={PARTITION_MODES.map((m) => ({ id: m.id, label: m.label }))} value={mode} onChange={setMode} />
+          <WidgetButton onClick={() => setSeed(Math.floor(Math.random() * 1e9))}>
             Shuffle
-          </button>
+          </WidgetButton>
         </div>
 
         <p className="text-[11px] text-slate">{blurb}</p>
@@ -189,7 +152,7 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
   return (
     <WidgetFrame title="Two-pointer merge" subtitle={MERGE_MODES.find((m) => m.id === mode)?.label}>
       <div className="flex flex-col gap-4">
-        <Toggles label="Operation" options={MERGE_MODES} active={mode} onChange={setMode} />
+        <Segmented label="Operation" options={MERGE_MODES} value={mode} onChange={setMode} />
 
         <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface-2/40 p-3">
           <Row label="left" values={step.left} pointer={step.i} />
@@ -307,13 +270,13 @@ export function IntervalExplorerWidget({ data }: { data: Record<string, unknown>
       subtitle={mode === "merge" ? "Merging overlaps" : `Peak overlap: ${step.maxConcurrent ?? 0}`}
     >
       <div className="flex flex-col gap-4">
-        <Toggles
+        <Segmented
           label="Problem"
           options={[
             { id: "merge" as const, label: "Merge overlapping" },
             { id: "platforms" as const, label: "Minimum platforms" },
           ]}
-          active={mode}
+          value={mode}
           onChange={setMode}
         />
 
@@ -415,14 +378,10 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
     <WidgetFrame title="Sort, then one pass" subtitle={PAIRING_MODES.find((m) => m.id === mode)?.label}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Toggles label="Problem" options={PAIRING_MODES.map((m) => ({ id: m.id, label: m.label }))} active={mode} onChange={setMode} />
-          <button
-            type="button"
-            onClick={() => setSeed(Math.floor(Math.random() * 1e9))}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2"
-          >
+          <Segmented label="Problem" options={PAIRING_MODES.map((m) => ({ id: m.id, label: m.label }))} value={mode} onChange={setMode} />
+          <WidgetButton onClick={() => setSeed(Math.floor(Math.random() * 1e9))}>
             Shuffle
-          </button>
+          </WidgetButton>
         </div>
 
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-2/40 p-3">
@@ -472,21 +431,5 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
         </p>
       </div>
     </WidgetFrame>
-  );
-}
-
-function Stat({ label, value, tone }: { label: string; value: string | number; tone?: "good" }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface-2/40 px-2.5 py-2 text-center">
-      <div
-        className={cn(
-          "font-display text-lg font-bold leading-none tabular-nums",
-          tone === "good" ? "text-signal-green" : "text-ink",
-        )}
-      >
-        {value}
-      </div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate">{label}</div>
-    </div>
   );
 }

@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Take two NOR gates. Feed the first gate's output into the second gate's input, and the second gate's output back into the first gate's input. That's it, no other components. This two-gate loop is the smallest circuit that can genuinely store one bit, and it's the direct application of the feedback idea from the previous tutorial."
+          "text": "Take two NOR gates and wire them into a loop: the first gate's output feeds the second gate's input, and the second gate's output feeds back into the first. The circuit needs no other components. Those two gates are the smallest arrangement that can genuinely store one bit, and the loop applies the feedback idea from the previous tutorial directly."
         }
       ]
     },

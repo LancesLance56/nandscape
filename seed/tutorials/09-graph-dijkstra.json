@@ -104,7 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Look at what happens to B specifically. It starts at 4, because the direct edge A→B costs 4. Then C gets finalised at 2, and suddenly B improves to 3, because going A→C→B costs 2 plus 1. The direct edge was not the cheapest route to a direct neighbour. That is the whole reason this algorithm has to exist."
+          "text": "Look at what happens to B specifically. It starts at 4, because the direct edge A→B costs 4. Then C gets finalised at 2, and suddenly B improves to 3, because going A→C→B costs 2 plus 1. The direct edge was not the cheapest route to a direct neighbour, and that possibility is the reason the algorithm has to exist at all."
         }
       ]
     },

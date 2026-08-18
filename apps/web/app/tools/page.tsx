@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { CardLink } from "@/components/ui/card";
+import { AccentTile, SplitIndex } from "@/components/ui/rail";
+import { accentsFor } from "@/lib/ui/accent-palette";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { TOOLS } from "@/lib/tools/tools";
 
@@ -19,36 +20,41 @@ export const metadata: Metadata = buildContentMetadata({
 });
 
 export default function ToolsIndexPage() {
+  const accents = accentsFor(TOOLS.map((t) => t.slug));
+
   return (
     <>
       <Navbar />
       <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
-        <header className="mb-8">
-          <h1 className="font-display text-3xl font-bold leading-tight text-ink">Tools</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            Small, focused tools that do one job. All free, all in the browser, none of them ask you to sign up.
-          </p>
-        </header>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {TOOLS.map((tool) => (
-            <CardLink key={tool.slug} href={`/tools/${tool.slug}`} className="flex h-full flex-col p-5">
-              <h2 className="font-display text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
-                {tool.title}
-              </h2>
-              <p className="mt-2 text-xs leading-relaxed text-ink-soft">{tool.intro}</p>
-              <span className="mt-auto pt-4 text-xs font-semibold text-copper-dark">Open tool →</span>
-            </CardLink>
+        <SplitIndex
+          title={<h1 className="font-display text-3xl font-bold leading-tight text-ink">Tools</h1>}
+          intro={
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+              Small, focused tools that do one job. All free, all in the browser, none of them ask you to sign up.
+            </p>
+          }
+          aside={
+            <p className="mt-5 text-sm text-ink-soft">
+              Want the full sandbox instead?{" "}
+              <Link href="/logic-editor" className="font-medium text-copper hover:text-copper-dark">
+                Open the logic gate editor
+              </Link>
+              .
+            </p>
+          }
+        >
+          {TOOLS.map((tool, i) => (
+            <AccentTile
+              key={tool.slug}
+              href={`/tools/${tool.slug}`}
+              index={String(i + 1).padStart(2, "0")}
+              title={tool.title}
+              accent={accents[i]}
+            >
+              <span className="mt-1 line-clamp-3 text-xs leading-relaxed text-ink-soft">{tool.intro}</span>
+            </AccentTile>
           ))}
-        </div>
-
-        <p className="mt-10 text-sm text-ink-soft">
-          Want the full sandbox instead?{" "}
-          <Link href="/logic-editor" className="font-medium text-copper hover:text-copper-dark">
-            Open the logic gate editor
-          </Link>
-          .
-        </p>
+        </SplitIndex>
       </main>
       <Footer />
     </>

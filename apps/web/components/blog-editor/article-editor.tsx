@@ -70,7 +70,7 @@ export function ArticleEditor({
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
-              size="sm"
+              size="app"
               disabled={!canUndo}
               onClick={() => useHistoryStore.getState().undo()}
               title="Undo (⌘Z)"
@@ -79,7 +79,7 @@ export function ArticleEditor({
             </Button>
             <Button
               variant="ghost"
-              size="sm"
+              size="app"
               disabled={!canRedo}
               onClick={() => useHistoryStore.getState().redo()}
               title="Redo (⌘⇧Z)"

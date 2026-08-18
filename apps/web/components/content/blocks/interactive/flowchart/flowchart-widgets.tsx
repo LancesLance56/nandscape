@@ -6,6 +6,7 @@ import { ALL_CHARTS, CHART_GROUPS, STARTER_CHART } from "@/lib/flowchart/charts"
 import { WidgetFrame } from "../widget-frame";
 import { cn } from "@/lib/cn";
 import { FlowchartCanvas, FlowchartLegend } from "./flowchart-canvas";
+import { WidgetButton } from "../shared/widget-ui";
 
 /* -------------------------------------------------------------------------
  * Display widget
@@ -198,14 +199,9 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
           <Panel title="Add a box">
             <div className="flex flex-wrap gap-1.5">
               {NODE_TYPES.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => addNode(t.id)}
-                  className="rounded-md border border-border-strong px-2.5 py-1 text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
-                >
+                <WidgetButton key={t.id} onClick={() => addNode(t.id)}>
                   + {t.label}
-                </button>
+                </WidgetButton>
               ))}
             </div>
           </Panel>
@@ -299,14 +295,9 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
                   aria-label="Edge label"
                   className="min-w-0 flex-1 rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
                 />
-                <button
-                  type="button"
-                  onClick={addEdge}
-                  disabled={!edgeFrom || !edgeTo || edgeFrom === edgeTo}
-                  className="rounded-md bg-copper px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-copper-dark disabled:opacity-40"
-                >
+                <WidgetButton tone="primary" onClick={addEdge} disabled={!edgeFrom || !edgeTo || edgeFrom === edgeTo}>
                   Connect
-                </button>
+                </WidgetButton>
               </div>
             </div>
           </Panel>
@@ -333,13 +324,9 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
             </div>
           </Panel>
 
-          <button
-            type="button"
-            onClick={copyJson}
-            className="rounded-lg border border-border-strong px-3 py-1.5 text-[11px] font-semibold text-ink-soft hover:bg-surface-2 hover:text-ink"
-          >
+          <WidgetButton onClick={copyJson}>
             {copied ? "Copied" : "Copy chart as JSON"}
-          </button>
+          </WidgetButton>
         </div>
       </div>
     </WidgetFrame>

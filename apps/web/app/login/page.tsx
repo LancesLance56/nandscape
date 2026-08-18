@@ -79,7 +79,7 @@ export default function LoginPage() {
 
           {error && <p className="text-sm text-signal-coral">{error}</p>}
 
-          <Button type="submit" variant="primary" size="lg" disabled={submitting}>
+          <Button type="submit" variant="default" size="app-lg" disabled={submitting}>
             {submitting ? "Logging in…" : "Log in"}
           </Button>
         </form>

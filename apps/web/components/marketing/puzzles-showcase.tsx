@@ -4,7 +4,7 @@ import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
 import { gateTypeToString } from "@nandscape/engine";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { CardLink } from "@/components/ui/card";
+import { RowItem, RowList } from "@/components/ui/rail";
 import type { PuzzleSpec } from "@/types/puzzle";
 
 function tagColor(tag: string): string {
@@ -50,53 +50,49 @@ export async function PuzzlesShowcase() {
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
             Practice
           </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">Try a Puzzle Yourself!</h2>
+          <h2 className="font-display text-3xl font-semibold text-ink">Try a Logic Problem</h2>
         </div>
         <Link
           href="/puzzles"
           className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
         >
-          Browse all puzzles →
+          Browse all problems →
         </Link>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <RowList>
         {featured.map((puzzle, i) => (
-          <ScrollReveal key={puzzle.slug} delay={i * 60}>
-            <CardLink href={`/puzzles/${puzzle.slug}`} className="flex h-full flex-col gap-3 p-5">
-              <div className="flex items-center justify-between">
-                <DifficultyTag difficulty={puzzle.difficulty} />
-                <span className=" text-[11px] text-slate">
-                  {puzzle.gateBudget !== null ? `≤${puzzle.gateBudget} gates` : "no budget"}
-                </span>
-              </div>
-
-              <h3 className="font-display text-base font-bold text-ink transition-colors group-hover:text-copper-dark">
-                {puzzle.title}
-              </h3>
-              <p className="line-clamp-2 text-xs leading-relaxed text-ink-soft">{puzzle.description}</p>
-
-              <div className="mt-auto flex flex-wrap items-center gap-1.5 pt-1">
-                {puzzle.tags.slice(0, 2).map((tag) => {
-                  const color = tagColor(tag);
-                  return (
-                    <span
-                      key={tag}
-                      style={{ backgroundColor: hexToRgba(color, 0.12), color }}
-                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                    >
-                      {tag}
-                    </span>
-                  );
-                })}
-                {restriction(puzzle) && (
-                  <span className="ml-auto text-[10px] text-border-strong">{restriction(puzzle)}</span>
-                )}
-              </div>
-            </CardLink>
+          <ScrollReveal key={puzzle.slug} delay={i * 50}>
+            <RowItem
+              href={`/puzzles/${puzzle.slug}`}
+              index={String(i + 1).padStart(2, "0")}
+              title={puzzle.title}
+              description={puzzle.description}
+              meta={puzzle.gateBudget !== null ? `≤${puzzle.gateBudget} gates` : "no budget"}
+              badges={
+                <>
+                  <DifficultyTag difficulty={puzzle.difficulty} />
+                  {puzzle.tags.slice(0, 2).map((tag) => {
+                    const color = tagColor(tag);
+                    return (
+                      <span
+                        key={tag}
+                        style={{ backgroundColor: hexToRgba(color, 0.12), color }}
+                        className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+                      >
+                        {tag}
+                      </span>
+                    );
+                  })}
+                  {restriction(puzzle) && (
+                    <span className="text-[10px] text-slate">{restriction(puzzle)}</span>
+                  )}
+                </>
+              }
+            />
           </ScrollReveal>
         ))}
-      </div>
+      </RowList>
 
       {featured.length === 0 && (
         <p className="text-sm text-ink-soft">No puzzles in the database yet.</p>

@@ -8,7 +8,9 @@ import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player"
 
 // The graph widgets import these from here rather than from ../shared, so
 // they stay re-exported for those callers.
-export { ChipRow, PanelBox } from "../shared/panel-ui";
+import { Segmented } from "../shared/widget-ui";
+
+export { ChipRow, PanelBox } from "../shared/widget-ui";
 
 interface AlgorithmRunnerProps {
   graph: GraphSpec;
@@ -68,44 +70,23 @@ export function AlgorithmRunner({
   return (
     <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
       {modes && modes.length > 1 && (
-        <div className="mb-3 flex flex-wrap gap-1.5">
-          {modes.map((m) => (
-            <button
-              key={m.id}
-              type="button"
-              onClick={() => onModeChange?.(m.id)}
-              aria-pressed={m.id === activeMode}
-              className={cn(
-                "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-                m.id === activeMode ? "bg-copper text-white" : "bg-surface-2 text-ink-soft hover:text-ink",
-              )}
-            >
-              {m.label}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          className="mb-3"
+          variant="solid"
+          options={modes}
+          value={activeMode ?? modes[0].id}
+          onChange={(id) => onModeChange?.(id)}
+        />
       )}
 
       {examples && examples.length > 1 && (
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-semibold text-slate">Example:</span>
-          {examples.map((ex) => (
-            <button
-              key={ex.id}
-              type="button"
-              onClick={() => onExampleChange?.(ex.id)}
-              aria-pressed={ex.id === activeExample}
-              className={cn(
-                "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                ex.id === activeExample
-                  ? "border-copper bg-copper-bg text-copper-dark"
-                  : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-              )}
-            >
-              {ex.label}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          className="mb-3"
+          label="Example"
+          options={examples}
+          value={activeExample ?? examples[0].id}
+          onChange={(id) => onExampleChange?.(id)}
+        />
       )}
 
       <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">

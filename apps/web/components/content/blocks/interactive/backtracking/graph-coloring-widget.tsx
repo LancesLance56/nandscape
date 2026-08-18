@@ -3,9 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { COLOR_NAMES, mColoringSteps, type ColoringPayload } from "@/lib/backtracking/puzzles";
 import type { GraphSpec } from "@/lib/graph/types";
-import { cn } from "@/lib/cn";
-import { PanelBox, StatReadout } from "../shared/panel-ui";
-import { BacktrackingRunner, type ToggleGroup } from "./backtracking-runner";
+import { PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
+import { BacktrackingRunner } from "./backtracking-runner";
 
 /** Warm palette matching the graph widgets' group colours. */
 const SWATCHES = ["#C15A2A", "#4CAF7D", "#E0A339", "#5B8FA8"];
@@ -182,7 +181,7 @@ export function GraphColoringWidget({ data }: { data: Record<string, unknown> })
   const example = EXAMPLES.find((e) => e.id === exampleId) ?? EXAMPLES[0];
   const run = useMemo(() => mColoringSteps(example.graph, m), [example, m]);
 
-  const toggles: ToggleGroup[] = [
+  const toggles: SegmentedGroup[] = [
     {
       id: "example",
       label: "Graph",
@@ -266,7 +265,7 @@ function ManualColoring({
 }: {
   graph: GraphSpec;
   m: number;
-  toggles: ToggleGroup[];
+  toggles: SegmentedGroup[];
   note: string;
 }) {
   const [colors, setColors] = useState<Record<string, number>>({});
@@ -293,29 +292,7 @@ function ManualColoring({
 
   return (
     <div className="rounded-xl border border-border bg-surface-card p-5">
-      <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-        {toggles.map((group) => (
-          <div key={group.id} className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-semibold text-slate">{group.label}</span>
-            {group.options.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => group.onChange(opt.id)}
-                aria-pressed={opt.id === group.active}
-                className={cn(
-                  "rounded-md border px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                  opt.id === group.active
-                    ? "border-copper bg-copper-bg text-copper-dark"
-                    : "border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-                )}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
+      <SegmentedRow groups={toggles} className="mb-4" />
 
       <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
         <div>

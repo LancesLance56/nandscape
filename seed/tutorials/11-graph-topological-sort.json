@@ -43,7 +43,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch this to the DAG tab. Every arrow means \"must come before\". A points at B and D, so A has to be done first. E has arrows coming in from both B and D, so it waits for both."
+          "text": "Switch this to the DAG tab, where every arrow means \"must come before\". A points at B and D, so A has to be done first. E has arrows coming in from both B and D, so it waits for both."
         }
       ]
     },

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { listTutorialTrackTrees } from "@/lib/tutorials/tutorial-tracks";
 import { buildContentMetadata } from "@/lib/seo/metadata";
-import { CardLink } from "@/components/ui/card";
+import { Rail, RailItem } from "@/components/ui/rail";
+import { tutorialPath } from "@/types/tutorial";
 import type { TutorialTrackTree } from "@/types/tutorial";
 
 export const revalidate = 60;
@@ -17,34 +18,53 @@ export const metadata: Metadata = buildContentMetadata({
   keywords: ["computer science tutorials", "digital logic tutorial", "data structures and algorithms"],
 });
 
-function TrackCard({ track }: { track: TutorialTrackTree }) {
+/**
+ * One track, drawn as its own spine.
+ *
+ * The identity sits in a narrow left column and the sections hang off a wire
+ * on the right, so the page reads as "two subjects, eight paths between them"
+ * rather than as two boxes that happen to contain lists.
+ */
+function TrackRail({ track }: { track: TutorialTrackTree }) {
+  const sections = track.sections.filter((s) => s.pages.length > 0);
+
   return (
-    <CardLink href={`/tutorials/${track.slug}`} className="flex h-full flex-col p-6">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-xl font-bold text-ink transition-colors group-hover:text-copper-dark">
-          {track.title}
-        </h2>
-        <span className="shrink-0 text-xs text-slate">
-          {track.pageCount} {track.pageCount === 1 ? "lesson" : "lessons"}
-        </span>
+    <section className="grid gap-6 border-t border-border-strong pt-7 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] lg:gap-12">
+      <div className="lg:sticky lg:top-28 lg:self-start">
+        <h2 className="font-display text-2xl font-bold leading-tight text-ink">{track.title}</h2>
+        <p className="mt-1.5 text-xs font-semibold uppercase tracking-wide text-copper-dark">
+          {track.pageCount} {track.pageCount === 1 ? "lesson" : "lessons"} · {sections.length}{" "}
+          {sections.length === 1 ? "path" : "paths"}
+        </p>
+        {track.description && (
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">{track.description}</p>
+        )}
+        <Link
+          href={`/tutorials/${track.slug}`}
+          className="mt-4 inline-block text-sm font-semibold text-copper-dark hover:text-copper"
+        >
+          Browse {track.title} →
+        </Link>
       </div>
 
-      {track.description && (
-        <p className="mt-2 text-sm leading-relaxed text-ink-soft">{track.description}</p>
-      )}
-
-      <ul className="mt-4 flex flex-col gap-1.5">
-        {track.sections.map((section) => (
-          <li key={section.id} className="flex items-center gap-2 text-sm text-ink-soft">
-            <span className="h-1 w-1 shrink-0 rounded-full bg-copper" />
-            <span className="truncate">{section.title}</span>
-            <span className="ml-auto shrink-0 text-[11px] text-slate">{section.pages.length}</span>
-          </li>
-        ))}
-      </ul>
-
-      <span className="mt-4 text-sm font-semibold text-copper-dark">Browse {track.title} →</span>
-    </CardLink>
+      <Rail>
+        {sections.map((section, i) => {
+          const first = section.pages[0];
+          return (
+            <RailItem
+              key={section.id}
+              // Straight to the first lesson: a section is a path, and the
+              // useful thing to do with a path is start walking it.
+              href={first ? tutorialPath(first.trackSlug, first.slug) : `/tutorials/${track.slug}`}
+              title={section.title}
+              detail={first?.title}
+              meta={`${section.pages.length} ${section.pages.length === 1 ? "lesson" : "lessons"}`}
+              filled={i === 0}
+            />
+          );
+        })}
+      </Rail>
+    </section>
   );
 }
 
@@ -62,7 +82,7 @@ export default async function TutorialsIndexPage() {
 
   return (
     <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
-      <header className="mb-8">
+      <header className="mb-10">
         <h1 className="font-display text-3xl font-bold leading-tight text-ink">Tutorials</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
           Pick a subject to start. Every lesson is free, needs no signup, and is built around something you can
@@ -73,14 +93,14 @@ export default async function TutorialsIndexPage() {
       {withContent.length === 0 ? (
         <p className="text-sm text-ink-soft">No tutorials published yet, check back soon.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="flex flex-col gap-12">
           {withContent.map((track) => (
-            <TrackCard key={track.id} track={track} />
+            <TrackRail key={track.id} track={track} />
           ))}
         </div>
       )}
 
-      <p className="mt-10 text-sm text-ink-soft">
+      <p className="mt-14 border-t border-border pt-6 text-sm text-ink-soft">
         Prefer to poke at something first?{" "}
         <Link href="/tools" className="font-medium text-copper hover:text-copper-dark">
           Try the interactive tools
