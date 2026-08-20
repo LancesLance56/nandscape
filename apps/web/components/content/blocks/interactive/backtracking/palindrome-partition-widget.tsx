@@ -12,13 +12,6 @@ const PRESETS = [
   { id: "banana", label: "banana" },
 ];
 
-/**
- * Palindrome partitioning: the string, the piece under test, and the tree.
- *
- * The string strip is doing the real teaching here. The tree tells you the
- * search is branching, but only the strip shows *which* substring is being
- * tested and why it was refused, which is where the constraint lives.
- */
 export function PalindromePartitionWidget({ data }: { data: Record<string, unknown> }) {
   const given = typeof data.text === "string" && data.text.length > 0 ? data.text.slice(0, 8) : null;
   const presets = useMemo(

@@ -303,7 +303,7 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
           </Panel>
 
           <Panel title={`Arrows (${spec.edges.length})`}>
-            <div className="flex max-h-40 flex-col gap-1 overflow-y-auto">
+            <div className="flex flex-col gap-1">
               {spec.edges.length === 0 && <span className="text-[11px] italic text-slate">none yet</span>}
               {spec.edges.map((e, i) => (
                 <div key={`${e.from}-${e.to}-${i}`} className="flex items-center gap-1.5 text-[11px]">
