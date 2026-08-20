@@ -28,18 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "What makes them worth studying is not the loop, which is trivial, but the argument for why the sorted arrangement is optimal. That argument is nearly always an "
-        },
-        {
-          "text": "exchange argument",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ": assume an optimal solution that differs from the sorted one, find two elements that are \"crossed\", and show that uncrossing them does not make the answer worse. Repeat until you have the sorted arrangement, which is therefore also optimal."
+          "text": "What makes them worth studying is not the loop, which is trivial, but the argument for why the sorted arrangement is optimal. That argument is nearly always an exchange argument. Assume an optimal solution that differs from the sorted one, find two elements that are \"crossed\", and show that uncrossing them does not make the answer worse. Repeat until you have the sorted arrangement, so it is optimal too."
         }
       ]
     },
@@ -62,7 +51,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Find the two values in an array with the smallest difference. Checking all pairs is O(n²)."
+          "text": "Find the two values in an array with the smallest difference, where checking all pairs is O(n²)."
         }
       ]
     },
@@ -95,7 +84,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sort ascending, then swap each adjacent pair. After sorting, a[i] ≤ a[i+1] everywhere; swapping positions 0 and 1, 2 and 3, and so on makes every even index hold the larger of its pair, which is enough to satisfy the pattern on both sides."
+          "text": "Sort ascending, then swap each adjacent pair. After sorting, a[i] is at most a[i+1] everywhere. Swapping positions 0 and 1, 2 and 3, and so on makes every even index hold the larger of its pair, which is enough to satisfy the pattern on both sides."
         }
       ]
     },
@@ -119,7 +108,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Choose an arrangement maximising the sum of each element multiplied by its index."
+          "text": "Choose an arrangement maximizing the sum of each element multiplied by its index."
         }
       ]
     },
@@ -143,7 +132,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two armies of units with strength values, paired one-to-one. A matchup is won when your unit is strictly stronger. Maximise the number of matchups won."
+          "text": "Two armies of units with strength values, paired one-to-one. A matchup is won when your unit is strictly stronger, and the goal is to maximize the number of matchups won."
         }
       ]
     },
@@ -196,7 +185,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Given passenger positions and chair positions on a line, assign each passenger a chair minimising the total distance moved."
+          "text": "Given passenger positions and chair positions on a line, assign each passenger a chair minimizing the total distance moved."
         }
       ]
     },
@@ -329,7 +318,7 @@
             ]
           },
           {
-            "prompt": "To maximise the sum of i × arr[i], how should values be arranged?",
+            "prompt": "To maximize the sum of i × arr[i], how should values be arranged?",
             "options": [
               {
                 "label": "Ascending, so the largest values get the largest indices",

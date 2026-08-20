@@ -1,7 +1,7 @@
 {
   "slug": "graph-kinds-and-digraphs",
   "title": "Directed, Weighted, and Other Flavours",
-  "excerpt": "Digraphs, DAGs, trees and weights are not six separate data structures. They are options you switch on, and each one changes what you are allowed to conclude.",
+  "excerpt": "Direction, weight and shape each change which algorithms are available to you. Trees and DAGs get their own names because of how much follows from two short conditions.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T09:10:00Z",
@@ -18,7 +18,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "People talk about digraphs, DAGs, trees and weighted graphs as though they were four different things you have to learn separately. They are not. They are the same dots-and-lines idea with different rules bolted on, and each rule buys you something specific."
+          "text": "The last page treated every edge as the same kind of thing. Real problems are fussier. Sometimes a connection runs one way only, sometimes it carries a cost, and sometimes the graph has a shape special enough to deserve its own name and its own faster algorithms."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This page is about those distinctions. Each one changes which algorithms are available to you, so it is worth being able to classify a graph before you start writing code against it."
         }
       ]
     },
@@ -26,14 +35,14 @@
       "id": "h-directed",
       "type": "heading",
       "level": 2,
-      "text": "Direction: the arrow that changes everything"
+      "text": "Direction"
     },
     {
-      "id": "p-directed-1",
+      "id": "p-directed",
       "type": "paragraph",
       "content": [
         {
-          "text": "In an undirected graph, an edge between A and B means the two are connected, with no direction attached. Friendship works like this: if you are my friend, then I am yours."
+          "text": "In an undirected graph an edge between A and B means the two are connected, with no orientation attached, and friendship works like this: if you are my friend, then I am yours."
         }
       ]
     },
@@ -42,10 +51,10 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A "
+          "text": "In a "
         },
         {
-          "text": "directed graph",
+          "text": "directed",
           "marks": [
             {
               "kind": "bold"
@@ -53,7 +62,7 @@
           ]
         },
         {
-          "text": " (a digraph, if you want to sound like you have read a textbook) puts an arrowhead on each edge. Now A → B tells you absolutely nothing about whether you can get from B back to A. Following someone on social media works like this. So do one-way streets, so do function calls, so do web links."
+          "text": " graph, often shortened to digraph, each edge points. An edge from A to B says nothing whatsoever about getting from B to A. Following someone on social media works this way, and so do one-way streets, web links, and \"this task must finish before that one\"."
         }
       ]
     },
@@ -62,7 +71,266 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch the widget below to the directed tab and trace it with your finger. Starting at A you can reach every other node. Starting at C you can reach nothing at all, because every arrow touching C points inward. That asymmetry is impossible in an undirected graph and it is the single most important consequence of adding arrows."
+          "text": "Direction is not a cosmetic detail. It breaks a property you have been quietly relying on. In an undirected graph, reachability is symmetric: if you can get to me, I can get to you, so \"who is in my group\" has a single clean answer. Take that away and the question splits in two, "
+        },
+        {
+          "text": "who can I reach",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "who can reach me",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", and the answers can be completely different sets."
+        }
+      ]
+    },
+    {
+      "id": "p-directed-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That split is why directed graphs need their own machinery. Finding groups of mutually reachable nodes stops being one traversal and becomes Tarjan's algorithm, which is a later page in this section and would make no sense at all on undirected input."
+        }
+      ]
+    },
+    {
+      "id": "h-weighted",
+      "type": "heading",
+      "level": 2,
+      "text": "Weight"
+    },
+    {
+      "id": "p-weighted",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A weighted graph attaches a number to each edge, usually a cost such as kilometers, milliseconds, money, or risk, though occasionally it is a capacity or a probability instead."
+        }
+      ]
+    },
+    {
+      "id": "p-weighted-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Adding weights changes what \"shortest\" means, and that single change is enough to retire an algorithm. Breadth-first search finds the route with the fewest edges, which stops being the cheapest route the moment the edges differ in cost. Three short hops can easily beat one long one. That is exactly the gap Dijkstra's algorithm exists to close."
+        }
+      ]
+    },
+    {
+      "id": "p-weighted-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Negative weights are a further step again, and they break Dijkstra rather than merely inconveniencing it. If a weight can be negative then adding more edges to a route can make it cheaper, and every argument that let Dijkstra commit to an answer early collapses. Bellman-Ford handles that case and pays for it in time."
+        }
+      ]
+    },
+    {
+      "id": "h-trees",
+      "type": "heading",
+      "level": 2,
+      "text": "Trees, and why they are worth naming"
+    },
+    {
+      "id": "p-trees",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        {
+          "text": "tree",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " is a graph that is connected and has no cycles. That is the whole definition, and it is worth pausing on how much follows from two short conditions."
+        }
+      ]
+    },
+    {
+      "id": "p-trees-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The first consequence is that there is exactly one path between any two nodes. If there were two different paths you could go out along one and back along the other, which is a cycle, and trees do not have those. If there were none the graph would not be connected. Exactly one, always."
+        }
+      ]
+    },
+    {
+      "id": "p-trees-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second is that a tree on "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " nodes has precisely "
+        },
+        {
+          "text": "n - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " edges. Start with one node and no edges. Every additional node needs exactly one edge to attach it to what is already there: fewer and it is disconnected, more and you have closed a loop."
+        }
+      ]
+    },
+    {
+      "id": "p-trees-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That gives a genuinely useful test. Connected, acyclic, and "
+        },
+        {
+          "text": "n - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " edges are three properties, and any two of them force the third."
+        }
+      ]
+    },
+    {
+      "id": "code-tree-test",
+      "type": "code",
+      "language": "text",
+      "code": "Connected?   Acyclic?   Edges = n-1?     Verdict\n   yes          yes           yes          a tree\n   yes          yes           no           impossible\n   yes          no            yes          impossible\n   no           yes           yes          impossible\n\nAny two of the three force the third."
+    },
+    {
+      "id": "p-trees-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So checking whether something is a tree is easy: count the edges, then run one traversal to confirm it is connected. If both hold you are done, with no cycle detection required."
+        }
+      ]
+    },
+    {
+      "id": "p-trees-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Trees turn up so often that people forget they are graphs at all. Your file system is one. The DOM is another. A binary search tree is obviously one. Anything you have written a recursive function over was probably a tree, and every graph algorithm in this section works on trees without modification, usually faster, because there are no cycles to guard against."
+        }
+      ]
+    },
+    {
+      "id": "p-trees-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One warning about vocabulary. Trees in computer science usually have a designated "
+        },
+        {
+          "text": "root",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " and talk about parents and children, but rooting is a choice you make rather than a property the graph has. Any node of a tree can be picked as the root, and the parent relationships rearrange themselves around your choice. A graph theorist's tree has no root at all."
+        }
+      ]
+    },
+    {
+      "id": "h-dag",
+      "type": "heading",
+      "level": 2,
+      "text": "Directed acyclic graphs"
+    },
+    {
+      "id": "p-dag",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Combine the two ideas: a directed graph with no directed cycles, which everyone calls a "
+        },
+        {
+          "text": "DAG",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "p-dag-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "DAGs are what you get whenever the edges mean must come before: build dependencies, course prerequisites, spreadsheet formulas, task schedules, and the order you put clothes on."
+        }
+      ]
+    },
+    {
+      "id": "code-dag",
+      "type": "code",
+      "language": "text",
+      "code": "shirt -> tie -> jacket          A valid order:\nshirt -> belt                     socks, shirt, tie, trousers,\ntrousers -> belt                  belt, shoes, jacket\ntrousers -> shoes\nsocks -> shoes                  Another valid order:\n                                  shirt, tie, socks, trousers,\nNo cycles, so an order exists.    shoes, belt, jacket"
+    },
+    {
+      "id": "p-dag-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The absence of cycles is precisely what makes those problems solvable. A cycle would mean A must precede B, which must precede C, which must precede A, and no ordering can satisfy that. When a build system tells you it found a circular dependency, it is telling you your graph is not a DAG, so your question has no answer. Finding a valid order is topological sorting, which is the next page."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "See the differences"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch between the tabs. Same nodes each time, different rules about what the edges mean, and completely different questions worth asking."
         }
       ]
     },
@@ -73,112 +341,53 @@
       "data": {}
     },
     {
-      "id": "h-weighted",
+      "id": "h-oddities",
       "type": "heading",
       "level": 2,
-      "text": "Weights: when edges are not all equal"
+      "text": "Two oddities worth recognizing"
     },
     {
-      "id": "p-weighted",
+      "id": "p-oddities",
       "type": "paragraph",
       "content": [
         {
-          "text": "A weight is just a number attached to an edge. Distance in kilometres, latency in milliseconds, cost in dollars, whatever you are actually measuring. The moment weights exist, \"shortest path\" stops meaning \"fewest hops\" and starts meaning \"smallest total\", and those two can give completely different answers. Three short hops often beat one long one."
+          "text": "A "
+        },
+        {
+          "text": "self-loop",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " is an edge from a node to itself. A "
+        },
+        {
+          "text": "multigraph",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " allows several edges between the same pair of nodes, which matters when the edges are genuinely distinct, as the seven bridges of Konigsberg were."
         }
       ]
     },
     {
-      "id": "p-weighted-2",
+      "id": "p-oddities-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is why there are separate algorithms for the two cases. Plain BFS finds the fewest-hops path and is fast. Dijkstra finds the smallest-total path and does more work. Reach for the cheap one when your edges are all equivalent."
+          "text": "Most algorithms and most problem statements quietly assume neither exists. That assumption is usually safe, and when it is wrong it tends to produce a confusing bug rather than a crash, so it is worth checking the constraints of a problem before assuming a clean simple graph."
         }
       ]
     },
     {
-      "id": "h-dag",
-      "type": "heading",
-      "level": 2,
-      "text": "DAGs: directed, and no going in circles"
-    },
-    {
-      "id": "p-dag-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "A DAG is a Directed Acyclic Graph. Directed, you have met. Acyclic means there is no way to follow arrows and end up back where you started."
-        }
-      ]
-    },
-    {
-      "id": "p-dag-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That restriction sounds like a limitation and is actually a gift. If nothing loops, then there is always a valid order to process everything in: do the things that depend on nothing, then the things that only depended on those, and so on. That is what a build system does with your source files, what a package manager does with dependencies, and what a spreadsheet does when you change one cell."
-        }
-      ]
-    },
-    {
-      "id": "p-dag-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "When a dependency graph does contain a cycle, you get the error every developer has seen at least once: circular dependency. There is no valid order, because each thing is waiting on the other. Detecting that is a graph problem, and we come back to it in the advanced section."
-        }
-      ]
-    },
-    {
-      "id": "h-tree",
-      "type": "heading",
-      "level": 2,
-      "text": "Trees: the tidiest possible connected graph"
-    },
-    {
-      "id": "p-tree",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "A tree is a connected graph with no cycles. Equivalently, there is exactly one path between any two nodes, no choices and no shortcuts. A tree over n nodes always has exactly n minus 1 edges, and that number is worth memorising because it shows up again the moment we talk about spanning trees."
-        }
-      ]
-    },
-    {
-      "id": "p-tree-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Trees are so common in programming that people forget they are graphs at all. Your file system is one, the DOM is another, and a binary search tree is obviously one. Anything you have written a recursive function over was probably a tree."
-        }
-      ]
-    },
-    {
-      "id": "h-disconnected",
-      "type": "heading",
-      "level": 2,
-      "text": "Disconnected graphs, and the bug they cause"
-    },
-    {
-      "id": "p-disc",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Nothing requires a graph to be one piece. The last tab in the widget shows two separate islands, and no amount of walking gets you from A to E."
-        }
-      ]
-    },
-    {
-      "id": "p-disc-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "This causes a specific, very common bug. A traversal started at A only ever finds A's island. If you wrote \"visit every node\" but implemented \"traverse from node zero\", your code silently ignores everything else. The fix is a loop over all nodes that starts a fresh traversal from any node you have not seen yet. Keep that in the back of your mind for the next section."
-        }
-      ]
-    },
-    {
-      "id": "h-quiz",
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -190,44 +399,44 @@
       "data": {
         "questions": [
           {
-            "prompt": "You are modelling \"who follows whom\" on a social app. Which kind of graph?",
+            "prompt": "A connected graph has 12 nodes and 11 edges. What must it be?",
             "options": [
               {
-                "label": "Directed, because following is one-way",
+                "label": "A tree, because connected plus n-1 edges forces acyclic",
                 "correct": true
               },
               {
-                "label": "Undirected, because both people are involved",
+                "label": "A DAG, though possibly not a tree",
                 "correct": false
               },
               {
-                "label": "A tree, because there is a root user",
+                "label": "Not enough information to say",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "A graph has 7 nodes and is a tree. How many edges does it have?",
+            "prompt": "Why does making a graph directed require new algorithms for finding groups?",
             "options": [
               {
-                "label": "6",
+                "label": "Reachability stops being symmetric, so who I can reach and who can reach me are different questions",
                 "correct": true
               },
               {
-                "label": "7",
+                "label": "Directed graphs can have more edges",
                 "correct": false
               },
               {
-                "label": "It depends on the shape",
+                "label": "Traversals cannot follow directed edges",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Your package manager reports a circular dependency. In graph terms, what happened?",
+            "prompt": "A build tool reports a circular dependency. In graph terms, what has happened?",
             "options": [
               {
-                "label": "The dependency graph has a cycle, so it is not a DAG",
+                "label": "The dependency graph contains a directed cycle, so it is not a DAG and no valid build order exists",
                 "correct": true
               },
               {
@@ -235,28 +444,34 @@
                 "correct": false
               },
               {
-                "label": "Two edges have the same weight",
+                "label": "Two files were given the same node",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "How many paths are there between any two nodes of a tree?",
+            "options": [
+              {
+                "label": "Exactly one",
+                "correct": true
+              },
+              {
+                "label": "At least one, possibly more",
+                "correct": false
+              },
+              {
+                "label": "It depends which node is the root",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to storing a graph in code",
-      "href": "/tutorials/dsa/graph-representations",
-      "style": "primary"
     }
   ],
   "seoTitle": "Types of Graphs: Directed, Weighted, DAG, and Tree",
-  "seoDescription": "Directed, weighted, acyclic and tree graphs are options you switch on, not separate structures. See what each one lets you conclude.",
+  "seoDescription": "Directed and undirected graphs, weighted edges, trees and DAGs explained: why direction splits reachability in two, why a tree on n nodes has n-1 edges, and why cycles make ordering impossible.",
   "keywords": [
     "types of graphs",
     "directed graph",

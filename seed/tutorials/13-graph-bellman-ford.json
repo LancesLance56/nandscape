@@ -1,7 +1,7 @@
 {
   "slug": "graph-bellman-ford",
   "title": "Negative Weights: Bellman-Ford and Floyd-Warshall",
-  "excerpt": "What to do when Dijkstra's greedy shortcut stops being safe, and how to detect a cycle that makes shortest paths meaningless entirely.",
+  "excerpt": "When an edge can be negative, Dijkstra's whole argument collapses. Bellman-Ford gives up on choosing a clever order, relaxes everything repeatedly, and detects the case where no answer exists at all.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T10:20:00Z",
@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Dijkstra is fast because it commits. Once a node is locked in, it never looks at it again. That works because going further can only cost more, which stops being true the moment an edge is allowed to be negative."
+          "text": "Dijkstra's algorithm rests on one assumption: adding another edge to a route can never make it cheaper. That is obviously true when every weight is a distance or a duration, and it is what lets the algorithm commit to a node's distance and never look at it again."
         }
       ]
     },
@@ -28,85 +28,261 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Negative edges are not a made-up textbook scenario. A currency conversion that gains value, a chemical reaction that releases energy, a game move that refunds points. Any of those give you a graph where travelling an edge improves your position."
+          "text": "Some problems break the assumption. A currency exchange can leave you with more than you started. A financial model can have a step that pays out. A game can have a move that refunds. As soon as a weight can be negative, Dijkstra returns confident wrong answers, and you need something that does not rely on committing early."
         }
       ]
     },
     {
-      "id": "h-bellman",
+      "id": "h-idea",
       "type": "heading",
       "level": 2,
-      "text": "Bellman-Ford: stop being clever"
+      "text": "Giving up the clever part"
     },
     {
-      "id": "p-bellman",
+      "id": "p-idea",
       "type": "paragraph",
       "content": [
         {
-          "text": "Bellman-Ford drops the greedy selection completely. Instead of carefully picking the best node each round, it just relaxes every edge in the graph, then does it again, V minus 1 times total."
+          "text": "Bellman-Ford's approach is almost aggressively simple: it does not try to work out a safe order to settle nodes in, and instead relaxes every edge in the graph, over and over, until nothing improves."
         }
       ]
     },
     {
-      "id": "p-bellman-2",
+      "id": "p-idea-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The reasoning is simpler than Dijkstra's. After one full pass, every correct one-edge path is settled. After two passes, every correct two-edge path. A shortest path can never use more than V minus 1 edges, because using V or more would mean visiting some node twice, and that means a cycle you could delete. So V minus 1 passes is always enough."
+          "text": "That sounds like it might never finish, so the question is how many passes are enough. The answer comes from thinking about what a shortest path looks like."
         }
       ]
     },
     {
-      "id": "code-bellman",
-      "type": "code",
-      "language": "javascript",
-      "code": "function bellmanFord(nodes, edges, start) {\n  const dist = new Map(nodes.map((n) => [n, Infinity]));\n  dist.set(start, 0);\n\n  // V-1 passes. No cleverness about which edge to look at.\n  for (let pass = 0; pass < nodes.length - 1; pass++) {\n    let changed = false;\n\n    for (const { from, to, weight } of edges) {\n      if (dist.get(from) === Infinity) continue;   // no route here yet\n      if (dist.get(from) + weight < dist.get(to)) {\n        dist.set(to, dist.get(from) + weight);\n        changed = true;\n      }\n    }\n\n    if (!changed) break; // settled early, the rest of the passes are wasted\n  }\n\n  // One extra pass. If anything still improves, no shortest path exists.\n  for (const { from, to, weight } of edges) {\n    if (dist.get(from) === Infinity) continue;\n    if (dist.get(from) + weight < dist.get(to)) {\n      throw new Error(\"Negative cycle: shortest paths are undefined\");\n    }\n  }\n\n  return dist;\n}",
-      "variants": [
+      "id": "p-idea-3",
+      "type": "paragraph",
+      "content": [
         {
-          "language": "python",
-          "code": "import math\n\ndef bellman_ford(nodes, edges, start):\n    dist = {n: math.inf for n in nodes}\n    dist[start] = 0\n\n    # V-1 passes. No cleverness about which edge to look at.\n    for _ in range(len(nodes) - 1):\n        changed = False\n\n        for frm, to, weight in edges:\n            if dist[frm] == math.inf:\n                continue                  # no route here yet\n            if dist[frm] + weight < dist[to]:\n                dist[to] = dist[frm] + weight\n                changed = True\n\n        if not changed:\n            break  # settled early, the rest of the passes are wasted\n\n    # One extra pass. If anything still improves, no shortest path exists.\n    for frm, to, weight in edges:\n        if dist[frm] == math.inf:\n            continue\n        if dist[frm] + weight < dist[to]:\n            raise ValueError(\"Negative cycle: shortest paths are undefined\")\n\n    return dist"
+          "text": "A shortest path never repeats a node. If it did, it would contain a loop, and removing that loop leaves a path that is no longer and visits fewer nodes. So a shortest path visits at most "
         },
         {
-          "language": "cpp",
-          "code": "#include <limits>\n#include <map>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nstruct Edge { std::string from, to; int weight; };\n\nstd::map<std::string, double> bellmanFord(\n    const std::vector<std::string>& nodes,\n    const std::vector<Edge>& edges,\n    const std::string& start) {\n    const double INF = std::numeric_limits<double>::infinity();\n\n    std::map<std::string, double> dist;\n    for (const std::string& n : nodes) dist[n] = INF;\n    dist[start] = 0;\n\n    // V-1 passes. No cleverness about which edge to look at.\n    for (size_t pass = 0; pass + 1 < nodes.size(); pass++) {\n        bool changed = false;\n\n        for (const Edge& e : edges) {\n            if (dist[e.from] == INF) continue;   // no route here yet\n            if (dist[e.from] + e.weight < dist[e.to]) {\n                dist[e.to] = dist[e.from] + e.weight;\n                changed = true;\n            }\n        }\n\n        if (!changed) break;  // settled early, the rest of the passes are wasted\n    }\n\n    // One extra pass. If anything still improves, no shortest path exists.\n    for (const Edge& e : edges) {\n        if (dist[e.from] == INF) continue;\n        if (dist[e.from] + e.weight < dist[e.to]) {\n            throw std::runtime_error(\"Negative cycle: shortest paths are undefined\");\n        }\n    }\n\n    return dist;\n}"
+          "text": "V",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " nodes, which means it uses at most "
+        },
+        {
+          "text": "V - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " edges."
         }
       ]
     },
     {
-      "id": "h-negative-cycle",
-      "type": "heading",
-      "level": 2,
-      "text": "The negative cycle problem"
-    },
-    {
-      "id": "p-neg",
+      "id": "p-idea-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "That final pass is doing something more interesting than error handling. Picture a loop whose weights sum to a negative number. Go around it once and your total drops. Go around again and it drops further. There is no shortest path, because you can always beat any route by taking one more lap. The correct answer is negative infinity."
+          "text": "Now watch what one full pass achieves. After the first pass, every correct distance that uses one edge is in place. After the second, every one that uses two edges is in place, because the one-edge answers it builds on were already correct. By induction, after "
+        },
+        {
+          "text": "V - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " passes every shortest path is found, whatever order you relaxed the edges in."
         }
       ]
     },
     {
-      "id": "code-neg",
+      "id": "p-idea-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last clause is the whole tradeoff. Dijkstra needs a carefully chosen order and pays for it with a heap and a correctness proof, while Bellman-Ford needs no order at all and pays for it in time instead."
+        }
+      ]
+    },
+    {
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "A trace"
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Four nodes, one negative edge, source A, and watch C get a value and then improve on it within the same pass."
+        }
+      ]
+    },
+    {
+      "id": "code-bf-trace",
       "type": "code",
       "language": "text",
-      "code": "A --(1)---> B\nB --(-3)--> C\nC --(1)---> A\n\nLoop total: 1 + (-3) + 1 = -1\n\nEach lap costs -1, so \"shortest\" has no answer.\nAfter V-1 passes everything should be settled. If another\npass still finds an improvement, a loop like this exists."
+      "code": "Graph: A->B 4, A->C 5, B->C -3, C->D 2\n\nstart        A 0    B inf   C inf   D inf\n\nround 1      relax every edge once, in the order listed\n  A->B       B = min(inf, 0 + 4)  = 4\n  A->C       C = min(inf, 0 + 5)  = 5\n  B->C       C = min(5, 4 - 3)  = 1     better route found\n  C->D       D = min(inf, 1 + 2)  = 3\n             A 0    B 4     C 1     D 3\n\nround 2      relax every edge again\n  nothing improves\n             A 0    B 4     C 1     D 3\n\nNothing changed in round 2, so we can stop early."
     },
     {
-      "id": "p-neg-2",
+      "id": "p-trace-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "This detection has a genuinely useful application. Model currency exchange rates as a graph, take the negative logarithm of each rate as the edge weight, and a negative cycle is a sequence of trades that returns more money than you started with. Real trading systems look for exactly this."
+          "text": "C went to 5 via the direct edge, then dropped to 1 when the B to C edge was relaxed later in the same round. This is exactly the situation that breaks Dijkstra: it would have settled C at 5 and never revisited it, because 5 was the smallest tentative value at the time."
         }
       ]
     },
     {
-      "id": "h-compare",
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Also notice the early exit. The graph needed one pass, not three, and the "
+        },
+        {
+          "text": "changed",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " flag caught that. The "
+        },
+        {
+          "text": "V - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " bound is a worst case rather than a schedule, and on most real graphs the algorithm settles far sooner."
+        }
+      ]
+    },
+    {
+      "id": "h-cycles",
       "type": "heading",
       "level": 2,
-      "text": "Dijkstra or Bellman-Ford"
+      "text": "Negative cycles, and detecting them for free"
+    },
+    {
+      "id": "p-cycles",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a case where the question itself has no answer. If the graph contains a cycle whose weights sum to a negative number, you can go round it repeatedly and get cheaper every time."
+        }
+      ]
+    },
+    {
+      "id": "code-bf-cycle",
+      "type": "code",
+      "language": "text",
+      "code": "Graph: A->B 1, B->C -1, C->B -1\n\nround 1   B = 1, C = 0\nround 2   B = min(1, 0 - 1) = -1, C = -2\nround 3   B = -3, C = -4\n...\nEvery extra lap around B->C->B subtracts 2. There is no shortest path,\nbecause \"shortest\" has no smallest value. Run one round past V-1 and\nif anything still improves, you have found a negative cycle."
+    },
+    {
+      "id": "p-cycles-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is no shortest path here, because for any route you name there is a cheaper one, and the right response is to report that, not to return a number."
+        }
+      ]
+    },
+    {
+      "id": "p-cycles-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Bellman-Ford detects this almost for free. You proved above that "
+        },
+        {
+          "text": "V - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " passes are enough for any graph where shortest paths exist. So run one extra pass. If anything still improves, no finite answer exists, and something must be looping to get cheaper. One extra loop over the edges turns the algorithm into a negative cycle detector, which is a large part of why it is still worth knowing."
+        }
+      ]
+    },
+    {
+      "id": "p-cycles-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That detector has real uses beyond graphs. Model currencies as nodes and exchange rates as edges, take the negative logarithm of each rate as the weight, and a negative cycle is an arbitrage opportunity: a sequence of trades returning more than you started with."
+        }
+      ]
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "What it costs"
+    },
+    {
+      "id": "p-cost",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Up to "
+        },
+        {
+          "text": "V - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " passes, each relaxing all "
+        },
+        {
+          "text": "E",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " edges, so "
+        },
+        {
+          "text": "O(V * E)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " in the worst case. On a graph with ten thousand nodes and fifty thousand edges that is five hundred million operations, against roughly a million for Dijkstra on the same input."
+        }
+      ]
     },
     {
       "id": "t-compare",
@@ -118,128 +294,147 @@
       ],
       "rows": [
         [
-          "Negative weights",
-          "no",
-          "yes"
-        ],
-        [
-          "Detects negative cycles",
-          "no",
-          "yes"
-        ],
-        [
-          "Running time",
+          "Time",
           "O((V + E) log V)",
-          "O(V · E)"
+          "O(V * E)"
         ],
         [
-          "Approach",
-          "greedy, each node finalised once",
-          "brute force, relax everything repeatedly"
+          "Negative weights",
+          "Silently wrong",
+          "Handled correctly"
         ],
         [
-          "Use when",
-          "all weights are non-negative",
-          "negatives are possible, or you need cycle detection"
+          "Negative cycles",
+          "No",
+          "Detects them"
+        ],
+        [
+          "Needs",
+          "A priority queue",
+          "A flat list of edges"
+        ],
+        [
+          "Use it when",
+          "All weights are non-negative",
+          "Weights can be negative, or you need cycle detection"
         ]
       ]
     },
     {
-      "id": "p-compare",
+      "id": "p-cost-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Bellman-Ford is meaningfully slower. Use Dijkstra whenever your weights allow it, which in practice is most of the time, since distances and durations cannot be negative."
+          "text": "The rule is plain. Use Dijkstra whenever you can, because it is far faster. Reach for Bellman-Ford when negative weights are genuinely possible, or when detecting a negative cycle is the actual goal."
         }
       ]
     },
     {
-      "id": "h-floyd",
+      "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "Floyd-Warshall: every pair at once"
+      "text": "The implementation"
     },
     {
-      "id": "p-floyd",
+      "id": "p-code",
       "type": "paragraph",
       "content": [
         {
-          "text": "Both algorithms so far answer \"shortest path from one source\". Sometimes you want the distance between every pair of nodes. You could run Dijkstra V times. Or you could use Floyd-Warshall, which is five lines and works on an adjacency matrix."
+          "text": "Notice the input. This one wants a flat list of edges rather than an adjacency list, since it never asks \"what are this node's neighbors\" and only ever sweeps every edge."
         }
       ]
     },
     {
-      "id": "code-floyd",
+      "id": "code-impl",
       "type": "code",
       "language": "javascript",
-      "code": "// dist[i][j] starts as the direct edge weight, or Infinity if none.\n// dist[i][i] starts at 0.\n\nfor (let k = 0; k < n; k++) {          // allowed intermediate node\n  for (let i = 0; i < n; i++) {        // from\n    for (let j = 0; j < n; j++) {      // to\n      if (dist[i][k] + dist[k][j] < dist[i][j]) {\n        dist[i][j] = dist[i][k] + dist[k][j];\n      }\n    }\n  }\n}",
+      "code": "function bellmanFord(nodeCount, edges, source) {\n  const dist = new Array(nodeCount).fill(Infinity);\n  dist[source] = 0;\n\n  // V-1 rounds: a shortest path uses at most V-1 edges.\n  for (let round = 0; round < nodeCount - 1; round++) {\n    let changed = false;\n    for (const { from, to, weight } of edges) {\n      if (dist[from] === Infinity) continue;\n      if (dist[from] + weight < dist[to]) {\n        dist[to] = dist[from] + weight;\n        changed = true;\n      }\n    }\n    if (!changed) break;              // settled early, common in practice\n  }\n\n  // One more round. Any improvement now means a negative cycle.\n  for (const { from, to, weight } of edges) {\n    if (dist[from] !== Infinity && dist[from] + weight < dist[to]) {\n      return { dist: null, negativeCycle: true };\n    }\n  }\n\n  return { dist, negativeCycle: false };\n}",
       "variants": [
         {
           "language": "python",
-          "code": "# dist[i][j] starts as the direct edge weight, or math.inf if none.\n# dist[i][i] starts at 0.\n\nfor k in range(n):              # allowed intermediate node\n    for i in range(n):          # from\n        for j in range(n):      # to\n            if dist[i][k] + dist[k][j] < dist[i][j]:\n                dist[i][j] = dist[i][k] + dist[k][j]"
-        },
-        {
-          "language": "cpp",
-          "code": "// dist[i][j] starts as the direct edge weight, or INF if none.\n// dist[i][i] starts at 0.\n\nfor (int k = 0; k < n; k++) {          // allowed intermediate node\n    for (int i = 0; i < n; i++) {      // from\n        for (int j = 0; j < n; j++) {  // to\n            if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                dist[i][j] = dist[i][k] + dist[k][j];\n            }\n        }\n    }\n}"
+          "code": "def bellman_ford(node_count, edges, source):\n    dist = [float(\"inf\")] * node_count\n    dist[source] = 0\n\n    # V-1 rounds: a shortest path uses at most V-1 edges.\n    for _ in range(node_count - 1):\n        changed = False\n        for frm, to, weight in edges:\n            if dist[frm] == float(\"inf\"):\n                continue\n            if dist[frm] + weight < dist[to]:\n                dist[to] = dist[frm] + weight\n                changed = True\n        if not changed:\n            break                     # settled early, common in practice\n\n    # One more round. Any improvement now means a negative cycle.\n    for frm, to, weight in edges:\n        if dist[frm] != float(\"inf\") and dist[frm] + weight < dist[to]:\n            return None, True\n\n    return dist, False"
         }
       ]
     },
     {
-      "id": "p-floyd-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The loop order is the entire idea, and getting it backwards is the classic bug. The outer loop is not a counter, it is a question: \"if I am now allowed to route through node k, does any pair get cheaper?\" After k has ranged over every node, every possible intermediate has been considered."
-        }
-      ]
-    },
-    {
-      "id": "p-floyd-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It runs in O(V³) and needs O(V²) memory, so it is for small graphs. Handles negative edges fine. To spot a negative cycle, check whether any dist[i][i] ended up below zero, which would mean a node found a way back to itself at a profit."
-        }
-      ]
-    },
-    {
-      "id": "h-picking",
+      "id": "h-mistakes",
       "type": "heading",
       "level": 2,
-      "text": "Picking one, in one table"
+      "text": "Where it goes wrong"
     },
     {
-      "id": "t-picking",
-      "type": "table",
-      "headers": [
-        "You need",
-        "Use"
-      ],
-      "rows": [
-        [
-          "Unweighted, one source",
-          "BFS, O(V + E)"
-        ],
-        [
-          "Non-negative weights, one source",
-          "Dijkstra, O((V + E) log V)"
-        ],
-        [
-          "Negative weights, one source",
-          "Bellman-Ford, O(V · E)"
-        ],
-        [
-          "Every pair, small graph",
-          "Floyd-Warshall, O(V³)"
-        ],
-        [
-          "Every pair, large sparse graph",
-          "Dijkstra from each node"
-        ]
+      "id": "p-mistake-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Relaxing from a node that is still unreachable.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Adding a weight to infinity gives nonsense, and in languages where infinity is a large integer it can overflow into a negative number and invent routes that do not exist. The "
+        },
+        {
+          "text": "if (dist[from] === Infinity) continue;",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " line is not decoration."
+        }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Running V passes instead of V - 1, then wondering why cycle detection never fires.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The detection pass has to be the extra one, run after the bound is exhausted. Fold it in and you lose the signal."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reporting a negative cycle that cannot reach the source.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " A negative cycle in a far corner of the graph, unreachable from your start node, does not affect any distance you were asked about. If that distinction matters for your problem, check that the improving node is actually reachable."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reaching for it by default because it is safer is a few hundred times slower on realistic inputs, and safety that costs that much is not free."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -251,82 +446,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Why exactly V-1 passes in Bellman-Ford?",
+            "prompt": "Why are V - 1 passes enough?",
             "options": [
               {
-                "label": "A shortest path can't use more than V-1 edges without repeating a node",
+                "label": "A shortest path never repeats a node, so it uses at most V - 1 edges, and each pass locks in one more edge of depth",
                 "correct": true
               },
               {
-                "label": "It matches the number of edges in a spanning tree",
+                "label": "Because there are V - 1 edges in a spanning tree",
                 "correct": false
               },
               {
-                "label": "It's a safety margin, fewer would usually work",
+                "label": "Because the last node needs no relaxation",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "An extra pass after the V-1 still improves a distance. What does that mean?",
+            "prompt": "Something still improves on the extra pass after V - 1. What does that mean?",
             "options": [
               {
-                "label": "There's a negative cycle, so no shortest path exists",
+                "label": "A negative cycle exists, so no finite shortest path does",
                 "correct": true
               },
               {
-                "label": "The algorithm needs more passes to settle",
+                "label": "The edges were relaxed in an unlucky order",
                 "correct": false
               },
               {
-                "label": "The graph is disconnected",
+                "label": "The source was chosen badly",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "In Floyd-Warshall, what is the outer k loop actually doing?",
+            "prompt": "Why does Bellman-Ford need no priority queue?",
             "options": [
               {
-                "label": "Widening which nodes are allowed as intermediate stops",
+                "label": "It never chooses an order. It relaxes every edge every pass, so no ordering structure is required",
                 "correct": true
               },
               {
-                "label": "Iterating over source nodes",
+                "label": "It sorts the edges once at the start instead",
                 "correct": false
               },
               {
-                "label": "Repeating the relaxation V times like Bellman-Ford",
+                "label": "It processes nodes in index order, which is already sorted",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "You skip the check that a node is reachable before relaxing from it. What can happen?",
+            "options": [
+              {
+                "label": "Arithmetic on the infinity sentinel can overflow and invent routes that do not exist",
+                "correct": true
+              },
+              {
+                "label": "The algorithm silently runs one pass too few",
+                "correct": false
+              },
+              {
+                "label": "Negative cycle detection triggers on every graph",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "p-end",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That covers the graph algorithms you will meet most often. If you want to feel the difference between BFS and Dijkstra again, the traversal and shortest-path widgets earlier in this section are worth replaying now that you know what the numbers mean."
-        }
-      ]
-    },
-    {
-      "id": "b-back",
-      "type": "button",
-      "label": "Continue to backtracking",
-      "href": "/tutorials/dsa/backtracking-introduction",
-      "style": "primary"
     }
   ],
   "seoTitle": "Bellman-Ford and Floyd-Warshall: Negative Weight Paths",
-  "seoDescription": "When Dijkstra stops being safe, Bellman-Ford handles negative edges and detects negative cycles. Floyd-Warshall solves every pair at once.",
+  "seoDescription": "Bellman-Ford explained: why negative weights break Dijkstra, why V-1 passes suffice, a full trace, how one extra pass detects negative cycles, the arbitrage application, and when the slower algorithm is the right call.",
   "keywords": [
     "bellman-ford algorithm",
     "floyd-warshall",

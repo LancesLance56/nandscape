@@ -1,0 +1,401 @@
+{
+  "slug": "memoization-top-down",
+  "title": "Memoization: Writing the Answers Down",
+  "excerpt": "Three lines turn an exponential recursion into a linear one. The interesting part is not the code, it is choosing what to use as the key, which is where most of the bugs live.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-20T10:00:00Z",
+  "tags": [
+    "dynamic-programming",
+    "memoization",
+    "recursion",
+    "dsa"
+  ],
+  "sectionSlug": "dynamic-programming",
+  "position": 30,
+  "seoTitle": "Memoization Explained: Top-Down Dynamic Programming and Cache Keys",
+  "seoDescription": "How three lines turn exponential Fibonacci into linear Fibonacci, how to work out the cost of a memoized recursion, and how to choose a cache key that captures the whole subproblem.",
+  "keywords": [
+    "memoization",
+    "top-down dynamic programming",
+    "cache key",
+    "subproblem",
+    "binomial coefficient"
+  ],
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The last tutorial finished on a count: twenty-five calls to answer seven questions. Put that way, the fix more or less announces itself. Answer each question once, write the answer down somewhere, and look it up the next time somebody asks for it."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is "
+        },
+        {
+          "text": "memoization",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", and in most languages it costs about three lines of change to a function you have already written. The function keeps its shape. It keeps its base case, it keeps its recursive case, and the induction argument from the first tutorial in this section goes through completely unchanged, which matters more than it might look: you are not being asked to trust a new algorithm, only a store sitting beside an old one."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "Three lines"
+    },
+    {
+      "id": "code-memo",
+      "type": "code",
+      "language": "javascript",
+      "code": "function fib(n, memo = new Map()) {\n  if (n <= 1) return n;\n  if (memo.has(n)) return memo.get(n);          // already answered\n  const value = fib(n - 1, memo) + fib(n - 2, memo);\n  memo.set(n, value);                           // write it down\n  return value;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def fib(n, memo=None):\n    if memo is None:\n        memo = {}\n    if n <= 1:\n        return n\n    if n in memo:\n        return memo[n]                       # already answered\n    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)   # write it down\n    return memo[n]"
+        },
+        {
+          "language": "cpp",
+          "code": "long long fib(int n, std::unordered_map<int, long long>& memo) {\n    if (n <= 1) return n;\n    auto found = memo.find(n);\n    if (found != memo.end()) return found->second;   // already answered\n    long long value = fib(n - 1, memo) + fib(n - 2, memo);\n    memo[n] = value;                                 // write it down\n    return value;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-code-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two of those lines carry the whole idea. One checks the store before doing any work at all, and one writes the result into the store on the way back out. The arithmetic in between is the original recursion, untouched."
+        }
+      ]
+    },
+    {
+      "id": "p-code-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The Python version takes a small detour that is worth flagging, because it catches people. Writing memo equals empty dictionary directly in the parameter list would build that dictionary once, at the moment the function is defined, and then every later call anywhere in the program would quietly share it. The None check builds a fresh one per top-level call."
+        }
+      ]
+    },
+    {
+      "id": "p-widget",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Turn the memo on in the widget below and watch what it does to the same fib(6) tree."
+        }
+      ]
+    },
+    {
+      "id": "w-fib-memo",
+      "type": "interactive",
+      "widget": "recursion-tree",
+      "data": {
+        "problem": "fib",
+        "mode": "naive"
+      }
+    },
+    {
+      "id": "p-widget-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Twenty-five calls become eleven. The repeated subtrees do not shrink, they stop existing altogether, because a call that finds its answer waiting in the memo returns on the spot and never grows anything beneath it. What is left is the seven distinct questions plus four lookups, drawn dashed so you can tell at a glance which calls did work and which merely collected it."
+        }
+      ]
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "What it costs now"
+    },
+    {
+      "id": "p-cost-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a formula for the cost of a memoized recursion, and it is friendlier than most complexity arguments. Count the distinct subproblems. Count the work each one does on its own, not counting its recursive calls. Multiply the two."
+        }
+      ]
+    },
+    {
+      "id": "p-cost-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Fibonacci has n plus 1 distinct subproblems and each does a single addition, so the whole thing runs in linear time. That is down from exponential, and the price is a table holding n entries. Trading memory for time is the standard bargain of this entire section, and it is very nearly always worth taking."
+        }
+      ]
+    },
+    {
+      "id": "t-calls",
+      "type": "table",
+      "headers": [
+        "n",
+        "naive calls",
+        "memoized calls"
+      ],
+      "rows": [
+        [
+          "6",
+          "25",
+          "11"
+        ],
+        [
+          "9",
+          "109",
+          "17"
+        ],
+        [
+          "20",
+          "21,891",
+          "39"
+        ],
+        [
+          "40",
+          "331,160,281",
+          "79"
+        ]
+      ],
+      "caption": "The right column is 2n minus 1. Every subproblem is entered once and looked up once."
+    },
+    {
+      "id": "h-key",
+      "type": "heading",
+      "level": 2,
+      "text": "Choosing the key"
+    },
+    {
+      "id": "p-key-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The one real decision in memoization is what to use as the key, and getting it wrong produces the most confusing class of bug in the topic. The rule fits in a sentence: the key has to capture everything the answer depends on, and nothing else."
+        }
+      ]
+    },
+    {
+      "id": "p-key-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Put too little in the key and the store hands back an answer that was computed under different circumstances, which shows up as the algorithm being subtly and inconsistently wrong. Put too much in and no two calls ever match, so the store fills up, never hits, and the only thing you have bought is memory pressure."
+        }
+      ]
+    },
+    {
+      "id": "p-key-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Fibonacci makes this look trivial, since there is one argument and it is obviously the key. Binomial coefficients are the honest version. C(n,k) counts the ways of choosing k things out of n, and it obeys a rule with the same shape as Fibonacci's."
+        }
+      ]
+    },
+    {
+      "id": "code-choose",
+      "type": "code",
+      "language": "text",
+      "code": "C(n, 0) = 1\nC(n, n) = 1\nC(n, k) = C(n - 1, k - 1) + C(n - 1, k)"
+    },
+    {
+      "id": "p-key-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The reasoning behind that middle line is worth a moment. Fix your attention on the first item. Every group of k either contains it or does not, those two cases cannot both happen and between them they cover everything, so counting each and adding gives the total. Two arguments change on the way down, which means the key has to be the pair. Store on n alone and C(6,3) will cheerfully hand back whatever C(6,1) worked out earlier."
+        }
+      ]
+    },
+    {
+      "id": "p-key-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The widget below opens on Choose with the memo already switched on, so the entries in the memo panel are written as pairs rather than single numbers. That small change in what a key looks like is what pushes the next tutorial toward a grid."
+        }
+      ]
+    },
+    {
+      "id": "w-choose",
+      "type": "interactive",
+      "widget": "recursion-tree",
+      "data": {
+        "problem": "binomial",
+        "mode": "memo"
+      }
+    },
+    {
+      "id": "h-limits",
+      "type": "heading",
+      "level": 2,
+      "text": "What memoization does not fix"
+    },
+    {
+      "id": "p-limit-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two things, and neither is obscure. The first is the call stack. A memoized recursion still recurses, so a problem needing a hundred thousand levels of depth will run out of stack long before it runs out of ideas, and plenty of languages have no tail-call elimination to fall back on. Python stops at a thousand frames by default."
+        }
+      ]
+    },
+    {
+      "id": "p-limit-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second is that the cost formula cuts both ways. Distinct subproblems multiplied by work per subproblem is an honest number, and when the first factor is already astronomical, storing results does nothing for you. A memo turns repeated work into stored work. It cannot turn an exponential number of genuinely different questions into a small one."
+        }
+      ]
+    },
+    {
+      "id": "h-tools",
+      "type": "heading",
+      "level": 2,
+      "text": "The version you will actually write"
+    },
+    {
+      "id": "p-tools-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Most languages ship something that does all of this for you. Python keeps a decorator in the standard library: put a cache above the function and every call gets stored, keyed on whatever arguments it was handed. The body stays exactly as it was in the naive version, which is the whole appeal."
+        }
+      ]
+    },
+    {
+      "id": "code-cache",
+      "type": "code",
+      "language": "python",
+      "code": "from functools import cache\n\n\n@cache\ndef fib(n):\n    if n <= 1:\n        return n\n    return fib(n - 1) + fib(n - 2)"
+    },
+    {
+      "id": "p-tools-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is worth knowing and worth handling with some care. The decorator keys on the arguments, so every argument has to be hashable, and passing a list in will fail on the spot. It also holds entries forever unless you switch to the version that takes a size limit, which is harmless inside a script that runs once and a slow leak inside a service that runs for months."
+        }
+      ]
+    },
+    {
+      "id": "p-tools-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a reason to write the store out by hand at least once before reaching for the decorator. The decorator quietly answers the question you are supposed to be thinking about. What identifies a subproblem is the decision this entire topic turns on, and a tool that settles it for you by taking the whole argument list is right most of the time and silently wrong the rest of it."
+        }
+      ]
+    },
+    {
+      "id": "h-order",
+      "type": "heading",
+      "level": 2,
+      "text": "Only the subproblems that come up"
+    },
+    {
+      "id": "p-order-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Memoization does one thing that is genuinely awkward to reproduce any other way. It solves only the subproblems that actually arise, because the recursion asks for what it needs and never goes looking for anything else, so a problem with an enormous space of possible subproblems and a narrow path through it pays only for the path."
+        }
+      ]
+    },
+    {
+      "id": "p-order-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Fibonacci hides this, since reaching fib(40) means passing through every smaller value along the way and there is nothing to skip. Plenty of problems are not built like that. Hold on to the point, because the next tutorial trades this property away for something else worth having."
+        }
+      ]
+    },
+    {
+      "id": "q-check",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "What has to go into a memo key?",
+            "options": [
+              {
+                "label": "Everything the answer depends on, and nothing that it does not",
+                "correct": true
+              },
+              {
+                "label": "Only the first argument to the function",
+                "correct": false
+              },
+              {
+                "label": "The current depth of the call stack",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Memoized fib(40) makes 79 calls where the naive version makes 331 million. Where did the saving come from?",
+            "options": [
+              {
+                "label": "A repeated call returns from the store and never builds its subtree",
+                "correct": true
+              },
+              {
+                "label": "The additions themselves got faster",
+                "correct": false
+              },
+              {
+                "label": "The base cases were removed from the function",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Which of these will memoization not help with?",
+            "options": [
+              {
+                "label": "A recursion whose distinct subproblems are already exponential in number",
+                "correct": true
+              },
+              {
+                "label": "A recursion that asks the same question many times",
+                "correct": false
+              },
+              {
+                "label": "A recursion with two arguments instead of one",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both of those limits point the same direction. If the recursion exists only to decide which subproblem gets solved first, and every subproblem is going to be solved sooner or later anyway, then the recursion can be thrown away and the answers filled in directly."
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "slug": "graph-topological-sort",
   "title": "Topological Sort and Cycle Detection",
-  "excerpt": "Putting a dependency graph into a valid order, and finding out when no valid order exists.",
+  "excerpt": "Given a pile of tasks with dependencies, find an order that respects all of them. The algorithm is what you would do by hand, and it detects the impossible cases for free.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T10:00:00Z",
@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "You have a list of tasks and some of them depend on others. You want an order to do them in where nothing starts before the things it needs are finished. That is a topological sort, and it only works on a DAG, for a reason that becomes obvious the moment you try it on something with a loop."
+          "text": "You have a pile of things to do and some of them depend on others. Compile this file before that one. Take the prerequisite before the course. Put your socks on before your shoes. The question is whether there is an order that respects every constraint, and if so, what it is."
         }
       ]
     },
@@ -28,22 +28,138 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every build system does this. So does npm, so does a spreadsheet recalculating cells, so does a course catalogue working out prerequisites."
+          "text": "Written as a graph, each task is a node and each edge points from a thing to a thing that must come after it. Producing a valid order is called "
+        },
+        {
+          "text": "topological sorting",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", and it is one of the most directly useful algorithms in this section, because the answer is a build plan, a schedule or an install order."
         }
       ]
     },
     {
-      "id": "h-see",
+      "id": "h-when",
       "type": "heading",
       "level": 2,
-      "text": "The graph you are sorting"
+      "text": "When an answer exists at all"
     },
     {
-      "id": "p-see",
+      "id": "p-when",
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch this to the DAG tab, where every arrow means \"must come before\". A points at B and D, so A has to be done first. E has arrows coming in from both B and D, so it waits for both."
+          "text": "Before finding an order it is worth asking when one exists, because the answer is clean and it drives the algorithm."
+        }
+      ]
+    },
+    {
+      "id": "p-when-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. Any ordering has to put one of the three first, and whichever you pick has something in the cycle that must come before it. So no order exists, and no cleverness will produce one."
+        }
+      ]
+    },
+    {
+      "id": "p-when-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The other direction holds too. If the graph has no directed cycle then an order always exists. So the question \"can these tasks be scheduled\" and the question \"is this graph a DAG\" are the same question, which is why the previous page bothered to name DAGs."
+        }
+      ]
+    },
+    {
+      "id": "h-idea",
+      "type": "heading",
+      "level": 2,
+      "text": "Deriving the algorithm"
+    },
+    {
+      "id": "p-idea",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Think about what you would do by hand with a real to-do list. You would look for something with nothing blocking it, do that, cross it off, and notice that crossing it off may have unblocked other things. Then repeat."
+        }
+      ]
+    },
+    {
+      "id": "p-idea-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That instinct is the algorithm, and it needs only one number per node, how many things are still blocking it, a count called the node's in-degree: the number of edges pointing at it."
+        }
+      ]
+    },
+    {
+      "id": "p-idea-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A node with in-degree 0 has nothing waiting on it, so it is safe to emit. Emitting it removes its outgoing edges, which lowers the in-degree of everything it pointed at, which may drop some of them to 0 and make them available in turn. Keep a collection of the currently-available nodes so you do not have to rescan for them."
+        }
+      ]
+    },
+    {
+      "id": "p-idea-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is Kahn's algorithm, and the pleasant part is the cycle check. You never have to look for a cycle explicitly. If you finish and have emitted fewer nodes than the graph contains, whatever is left is stuck behind something, and stuck means a cycle. The count is the detector."
+        }
+      ]
+    },
+    {
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "A trace, using the clothes"
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket."
+        }
+      ]
+    },
+    {
+      "id": "code-kahn",
+      "type": "code",
+      "language": "text",
+      "code": "in-degrees at the start\n  shirt 0   trousers 0   socks 0   tie 1   belt 2   shoes 2   jacket 1\n\nready queue [shirt, trousers, socks]\n\ntake shirt     output: shirt\n  tie    2 -> ... 1 -> 0   ready\n  belt   2 -> 1\ntake trousers  output: shirt, trousers\n  belt   1 -> 0   ready\n  shoes  2 -> 1\ntake socks     output: shirt, trousers, socks\n  shoes  1 -> 0   ready\ntake tie       output: ... tie        jacket 1 -> 0   ready\ntake belt      output: ... belt\ntake shoes     output: ... shoes\ntake jacket    output: ... jacket\n\n7 nodes emitted, 7 nodes in the graph, so there was no cycle."
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice that there were three nodes available at the very start, and the algorithm had to pick one. A different pick gives a different valid order. Topological orders are usually not unique, and a problem that expects one specific answer has to say which tie-break to use. If you need the lexicographically smallest order, make the ready collection a min-heap instead of a plain list, and the rest is unchanged."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Try it"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch to the DAG tab. Every arrow means \"must come before\", so a node cannot be taken until every arrow pointing at it has been dealt with."
         }
       ]
     },
@@ -54,87 +170,17 @@
       "data": {}
     },
     {
-      "id": "p-see-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "One valid order here is A, B, D, E, C. So is A, D, B, E, C. Topological orders are usually not unique, and any of them is a correct answer. When two tasks have no dependency between them, their relative order genuinely does not matter."
-        }
-      ]
-    },
-    {
-      "id": "h-kahn",
+      "id": "h-dfs",
       "type": "heading",
       "level": 2,
-      "text": "Kahn's algorithm: peel off what is ready"
-    },
-    {
-      "id": "p-kahn",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The in-degree of a node is how many arrows point at it, which here means how many unfinished things it is waiting on. A node with in-degree 0 is waiting on nothing, so it is ready to go right now."
-        }
-      ]
-    },
-    {
-      "id": "p-kahn-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So: collect every node with in-degree 0. Take one, output it, and remove its outgoing arrows. Removing those arrows might drop some other node to in-degree 0, which means that node just became ready. Repeat until you run out."
-        }
-      ]
-    },
-    {
-      "id": "code-kahn",
-      "type": "code",
-      "language": "javascript",
-      "code": "function topologicalSort(nodes, adj) {\n  const inDegree = new Map(nodes.map((n) => [n, 0]));\n  for (const node of nodes) {\n    for (const next of adj.get(node) ?? []) {\n      inDegree.set(next, inDegree.get(next) + 1);\n    }\n  }\n\n  // Everything that depends on nothing can start immediately.\n  const ready = nodes.filter((n) => inDegree.get(n) === 0);\n  const order = [];\n\n  while (ready.length > 0) {\n    const node = ready.shift();\n    order.push(node);\n\n    for (const next of adj.get(node) ?? []) {\n      inDegree.set(next, inDegree.get(next) - 1);\n      if (inDegree.get(next) === 0) ready.push(next); // now unblocked\n    }\n  }\n\n  // Anything left still has an unmet dependency, which on a finite\n  // graph can only mean those nodes depend on each other in a loop.\n  if (order.length !== nodes.length) {\n    throw new Error(\"Cycle detected: no valid order exists\");\n  }\n  return order;\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "from collections import deque\n\ndef topological_sort(nodes, adj):\n    in_degree = {n: 0 for n in nodes}\n    for node in nodes:\n        for nxt in adj.get(node, []):\n            in_degree[nxt] += 1\n\n    # Everything that depends on nothing can start immediately.\n    ready = deque(n for n in nodes if in_degree[n] == 0)\n    order = []\n\n    while ready:\n        node = ready.popleft()\n        order.append(node)\n\n        for nxt in adj.get(node, []):\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)   # now unblocked\n\n    # Anything left still has an unmet dependency, which on a finite\n    # graph can only mean those nodes depend on each other in a loop.\n    if len(order) != len(nodes):\n        raise ValueError(\"Cycle detected: no valid order exists\")\n\n    return order"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <map>\n#include <queue>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nstd::vector<std::string> topologicalSort(\n    const std::vector<std::string>& nodes,\n    const std::map<std::string, std::vector<std::string>>& adj) {\n    std::map<std::string, int> inDegree;\n    for (const std::string& n : nodes) inDegree[n] = 0;\n\n    for (const std::string& node : nodes) {\n        auto it = adj.find(node);\n        if (it == adj.end()) continue;\n        for (const std::string& next : it->second) inDegree[next]++;\n    }\n\n    // Everything that depends on nothing can start immediately.\n    std::queue<std::string> ready;\n    for (const std::string& n : nodes) {\n        if (inDegree[n] == 0) ready.push(n);\n    }\n\n    std::vector<std::string> order;\n    while (!ready.empty()) {\n        std::string node = ready.front();\n        ready.pop();\n        order.push_back(node);\n\n        auto it = adj.find(node);\n        if (it == adj.end()) continue;\n        for (const std::string& next : it->second) {\n            if (--inDegree[next] == 0) ready.push(next);  // now unblocked\n        }\n    }\n\n    // Anything left still has an unmet dependency, which on a finite\n    // graph can only mean those nodes depend on each other in a loop.\n    if (order.size() != nodes.size()) {\n        throw std::runtime_error(\"Cycle detected: no valid order exists\");\n    }\n    return order;\n}"
-        }
-      ]
-    },
-    {
-      "id": "h-cycle",
-      "type": "heading",
-      "level": 2,
-      "text": "The cycle check is free"
-    },
-    {
-      "id": "p-cycle",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That last check is worth dwelling on, because you get cycle detection without writing any extra code. If the loop finishes and some nodes never made it out, those nodes are all still waiting on something. On a finite graph, the only way for that to happen is for them to be waiting on each other, directly or through a chain."
-        }
-      ]
-    },
-    {
-      "id": "code-cycle",
-      "type": "code",
-      "language": "text",
-      "code": "auth  →  logger\nlogger →  config\nconfig →  auth\n\nEvery one of these has in-degree 1. Nothing ever reaches 0,\nso the ready list starts empty and the algorithm outputs nothing.\nThat is your circular dependency error, and this is how your\npackage manager finds it."
-    },
-    {
-      "id": "h-dfs-version",
-      "type": "heading",
-      "level": 2,
-      "text": "The DFS version"
+      "text": "The other way to do it"
     },
     {
       "id": "p-dfs",
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a second way that some people find neater. Run a DFS. When a node has finished exploring all of its descendants, push it onto a list. Reverse the list at the end and you have a topological order."
+          "text": "There is a second method worth knowing, because it costs nothing once you have depth-first search and it shows up in a lot of published code."
         }
       ]
     },
@@ -143,23 +189,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The reason it works: a node is only finished after everything it points to is finished, so it lands earlier in the finish list than all of its dependencies. Reversing puts it in front of them, which is exactly what you wanted."
-        }
-      ]
-    },
-    {
-      "id": "code-dfs",
-      "type": "code",
-      "language": "javascript",
-      "code": "function topoDfs(nodes, adj) {\n  const state = new Map(nodes.map((n) => [n, \"unseen\"]));\n  const finished = [];\n\n  function visit(node) {\n    if (state.get(node) === \"done\") return;\n    // Meeting a node we're still in the middle of means we\n    // walked in a circle and came back to it.\n    if (state.get(node) === \"visiting\") throw new Error(\"Cycle detected\");\n\n    state.set(node, \"visiting\");\n    for (const next of adj.get(node) ?? []) visit(next);\n    state.set(node, \"done\");\n    finished.push(node);\n  }\n\n  for (const node of nodes) visit(node);\n  return finished.reverse();\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "UNSEEN, VISITING, DONE = 0, 1, 2\n\ndef topo_dfs(nodes, adj):\n    state = {n: UNSEEN for n in nodes}\n    finished = []\n\n    def visit(node):\n        if state[node] == DONE:\n            return\n        # Meeting a node we're still in the middle of means we\n        # walked in a circle and came back to it.\n        if state[node] == VISITING:\n            raise ValueError(\"Cycle detected\")\n\n        state[node] = VISITING\n        for nxt in adj.get(node, []):\n            visit(nxt)\n        state[node] = DONE\n        finished.append(node)\n\n    for node in nodes:\n        visit(node)\n\n    return finished[::-1]"
+          "text": "Run a DFS. When a node "
         },
         {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <functional>\n#include <map>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nenum class State { Unseen, Visiting, Done };\n\nstd::vector<std::string> topoDfs(\n    const std::vector<std::string>& nodes,\n    const std::map<std::string, std::vector<std::string>>& adj) {\n    std::map<std::string, State> state;\n    for (const std::string& n : nodes) state[n] = State::Unseen;\n    std::vector<std::string> finished;\n\n    // std::function so the lambda can call itself.\n    std::function<void(const std::string&)> visit = [&](const std::string& node) {\n        if (state[node] == State::Done) return;\n        // Meeting a node we're still in the middle of means we\n        // walked in a circle and came back to it.\n        if (state[node] == State::Visiting) throw std::runtime_error(\"Cycle detected\");\n\n        state[node] = State::Visiting;\n        auto it = adj.find(node);\n        if (it != adj.end()) {\n            for (const std::string& next : it->second) visit(next);\n        }\n        state[node] = State::Done;\n        finished.push_back(node);\n    };\n\n    for (const std::string& node : nodes) visit(node);\n\n    std::reverse(finished.begin(), finished.end());\n    return finished;\n}"
+          "text": "finishes",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", meaning you have fully explored everything reachable from it, push it onto a list. At the end, reverse the list."
         }
       ]
     },
@@ -168,12 +209,144 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three states rather than a plain visited set is the important detail here. \"Visiting\" means this node is on the current path, still in progress. Bumping into one of those is a back edge, which is a cycle. Bumping into a \"done\" node is fine, that is just a shortcut to something already handled."
+          "text": "The reason that works is worth a moment. A node cannot finish until everything downstream of it has finished, so it always lands earlier in the finish list than its dependents. Reversing puts it after them, which is exactly the ordering you want. Detecting cycles takes one extra piece of state: if the DFS ever meets an edge back to a node that is currently open, meaning you are still inside its call, that is a cycle."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-dfs-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Kahn's version is usually easier to reason about and gives you the cycle check for free. The DFS version is more compact if you already have a DFS in front of you and do not want the in-degree bookkeeping. Both cost "
+        },
+        {
+          "text": "O(V + E)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "The implementation"
+    },
+    {
+      "id": "code-impl",
+      "type": "code",
+      "language": "javascript",
+      "code": "function topologicalSort(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  const inDegree = new Array(nodeCount).fill(0);\n\n  for (const [before, after] of edges) {\n    adj[before].push(after);\n    inDegree[after]++;                 // one more thing blocking it\n  }\n\n  const ready = [];\n  for (let v = 0; v < nodeCount; v++) if (inDegree[v] === 0) ready.push(v);\n\n  const order = [];\n  while (ready.length > 0) {\n    const v = ready.pop();\n    order.push(v);\n    for (const next of adj[v]) {\n      if (--inDegree[next] === 0) ready.push(next);\n    }\n  }\n\n  // Anything left un-emitted is stuck behind a cycle.\n  return order.length === nodeCount ? order : null;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "from collections import deque\n\ndef topological_sort(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    in_degree = [0] * node_count\n\n    for before, after in edges:\n        adj[before].append(after)\n        in_degree[after] += 1          # one more thing blocking it\n\n    ready = deque(v for v in range(node_count) if in_degree[v] == 0)\n\n    order = []\n    while ready:\n        v = ready.popleft()\n        order.append(v)\n        for nxt in adj[v]:\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)\n\n    # Anything left un-emitted is stuck behind a cycle.\n    return order if len(order) == node_count else None"
+        }
+      ]
+    },
+    {
+      "id": "p-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Returning "
+        },
+        {
+          "text": "null",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " rather than a partial order is deliberate. A half-finished topological order is not a useful object, and callers that silently use one will produce a build that fails much later for reasons that look unrelated."
+        }
+      ]
+    },
+    {
+      "id": "h-mistakes",
+      "type": "heading",
+      "level": 2,
+      "text": "Where it goes wrong"
+    },
+    {
+      "id": "p-mistake-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Pointing the edges the wrong way.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " If an edge from A to B means \"A depends on B\" rather than \"A must come before B\", your output comes out exactly reversed. Both conventions exist in the wild, so decide which one you are using and write it down next to the code."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Assuming the order is unique.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " It usually is not. Tests that compare against one specific expected order will fail on a perfectly correct implementation unless the problem pinned down a tie-break."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Skipping the count check.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Without it, a graph with a cycle returns a short list that looks like a valid order until something downstream breaks."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Forgetting isolated nodes.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " A task with no dependencies in either direction has in-degree 0 and belongs in the output. If you seed the ready collection from the edge list rather than from every node, those nodes vanish silently."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -185,56 +358,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Kahn's algorithm outputs 8 nodes but the graph has 11. What does that mean?",
+            "prompt": "Kahn's algorithm emits 6 nodes on a graph with 8. What does that mean?",
             "options": [
               {
-                "label": "The remaining 3 are in a cycle, so no valid order exists",
+                "label": "The remaining 2 are in or behind a cycle, so no valid order exists",
                 "correct": true
               },
               {
-                "label": "The graph is disconnected",
+                "label": "The ready queue was drained too early",
                 "correct": false
               },
               {
-                "label": "The output is fine, some nodes have no dependencies",
+                "label": "Two nodes had no outgoing edges",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "In the DFS version, why track \"visiting\" separately from \"done\"?",
+            "prompt": "What is a node's in-degree, in this context?",
             "options": [
               {
-                "label": "Reaching a \"visiting\" node means you looped back onto your own path, a cycle",
+                "label": "How many things must still be completed before it becomes available",
                 "correct": true
               },
               {
-                "label": "To output nodes in the correct order",
+                "label": "How many tasks depend on it",
                 "correct": false
               },
               {
-                "label": "To avoid visiting a node twice",
+                "label": "Its position in the final order",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Your topological sort is correct but the grader rejects it. What is the most likely explanation?",
+            "options": [
+              {
+                "label": "Several valid orders exist and the grader wanted one particular tie-break",
+                "correct": true
+              },
+              {
+                "label": "The graph contained a cycle",
+                "correct": false
+              },
+              {
+                "label": "In-degrees were computed on the wrong nodes",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "In the DFS version, why does reversing the finish order give a valid topological order?",
+            "options": [
+              {
+                "label": "A node cannot finish until everything downstream of it has finished, so reversing puts it before them",
+                "correct": true
+              },
+              {
+                "label": "DFS visits nodes in order of in-degree",
+                "correct": false
+              },
+              {
+                "label": "The finish order is already correct and reversing is a convention",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to strongly connected components",
-      "href": "/tutorials/dsa/graph-tarjan-scc",
-      "style": "primary"
     }
   ],
   "seoTitle": "Topological Sort: Kahn's Algorithm and Cycle Detection",
-  "seoDescription": "Order a dependency graph with Kahn's algorithm or DFS, and detect the cycles that make a valid ordering impossible, all in the same pass.",
+  "seoDescription": "Topological sorting derived: why a cycle makes ordering impossible, how in-degree counting gives Kahn's algorithm, a full trace, the DFS finish-time alternative, and why the output is rarely unique.",
   "keywords": [
     "topological sort",
     "kahn's algorithm",

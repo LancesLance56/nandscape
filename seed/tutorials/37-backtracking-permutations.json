@@ -1,7 +1,7 @@
 {
   "slug": "backtracking-permutations",
   "title": "Permutations of a String",
-  "excerpt": "Two standard ways to generate permutations, why they need different duplicate tests, and why only the bottom row of the tree counts as an answer this time.",
+  "excerpt": "Take everything and decide the order. That small change moves the problem from 2 to the n up to n factorial, which puts a hard ceiling on what enumeration can ever solve.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T09:20:00Z",
@@ -20,82 +20,158 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Printing every permutation of a string is the standard second backtracking exercise, and it introduces something subsets did not have: a real distinction between a partial state and an answer."
+          "text": "Subsets asked which items to take. Permutations asks something different: take all of them, and decide what order to put them in. The change sounds small and it moves the problem into a much more expensive part of the world."
         }
       ]
     },
     {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "In the subsets tree, every node was an answer. Here only the leaves are. A half-built permutation is not a permutation of anything, so the recording step moves to the bottom of the tree and the internal nodes become pure scaffolding."
-        }
-      ]
-    },
-    {
-      "id": "h-two",
+      "id": "h-count",
       "type": "heading",
       "level": 2,
-      "text": "Two ways to do it"
+      "text": "How much more expensive"
     },
     {
-      "id": "p-two",
+      "id": "p-count",
       "type": "paragraph",
       "content": [
         {
-          "text": "Both are common enough that you should recognise either on sight."
+          "text": "There are "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " choices for the first position, "
+        },
+        {
+          "text": "n - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for the second since one item is used up, and so on. That product is "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " factorial."
         }
       ]
     },
     {
-      "id": "t-two",
-      "type": "table",
-      "headers": [
-        "",
-        "Used array",
-        "Swap in place"
-      ],
-      "rows": [
-        [
-          "Idea",
-          "Keep the input fixed, track which indices are taken",
-          "Move a chosen character into the current slot"
-        ],
-        [
-          "Extra memory",
-          "A boolean array plus the output buffer",
-          "None beyond the recursion"
-        ],
-        [
-          "Input order",
-          "Preserved",
-          "Scrambled during the run, restored on the way out"
-        ],
-        [
-          "Lexicographic output",
-          "Yes, if the input is sorted",
-          "No"
-        ],
-        [
-          "Duplicate handling",
-          "Compare against the previous index",
-          "Track values already used at this level"
-        ]
-      ]
+      "id": "code-count",
+      "type": "code",
+      "language": "text",
+      "code": "n = 3    3 x 2 x 1 = 6 arrangements\nn = 5    120\nn = 10   3,628,800\nn = 13   over 6 billion\nn = 20   about 2.4 x 10^18, more than seconds since the universe began"
     },
     {
-      "id": "h-watch",
-      "type": "heading",
-      "level": 2,
-      "text": "Step through both"
-    },
-    {
-      "id": "p-watch",
+      "id": "p-count-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch between the two methods below on the same input. The answers match; the order they arrive in does not, and neither does what the array looks like part way down."
+          "text": "Compare that against subsets. At 20 items subsets produces about a million answers, which a laptop handles without complaint. Permutations of 20 items produce more arrangements than there have been seconds since the beginning of the universe."
+        }
+      ]
+    },
+    {
+      "id": "p-count-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The practical consequence is worth stating plainly. If a problem asks you to enumerate permutations and the input can exceed roughly 10 or 11 items, enumeration is not the intended solution and you should be looking for a different approach entirely. Recognizing that boundary saves a lot of wasted effort."
+        }
+      ]
+    },
+    {
+      "id": "h-track",
+      "type": "heading",
+      "level": 2,
+      "text": "The new difficulty: remembering what you used"
+    },
+    {
+      "id": "p-track",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Subsets kept order out of the way with a start index, and never needed to know which items were already taken, because it only ever looked forward."
+        }
+      ]
+    },
+    {
+      "id": "p-track-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Permutations cannot do that. Every remaining item is a legal next choice regardless of position, so the loop has to run over all of them, and you need some way to know which are still available."
+        }
+      ]
+    },
+    {
+      "id": "p-track-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The direct approach is a parallel array of booleans, one per item, marking whether it is currently placed. Before choosing item "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " you check the flag; if it is set, that item is somewhere above you in the current arrangement and cannot be used again."
+        }
+      ]
+    },
+    {
+      "id": "p-track-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The important detail is in the un-choose step. There are now "
+        },
+        {
+          "text": "two",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " pieces of state to undo: the item comes off the arrangement and its flag goes back to false. Undo one and forget the other and the search goes wrong in a way that is genuinely difficult to read, because the arrangement looks correct while the availability flags no longer match it."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Watch it run"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step through and watch the used flags alongside the arrangement, since every time the recursion returns, both should change together."
         }
       ]
     },
@@ -103,30 +179,90 @@
       "id": "w-perms",
       "type": "interactive",
       "widget": "permutations-explorer",
+      "data": {}
+    },
+    {
+      "id": "w-flow-perms",
+      "type": "interactive",
+      "widget": "flowchart",
       "data": {
-        "letters": [
-          "A",
-          "B",
-          "C"
-        ],
-        "mode": "used"
+        "preset": "permutations"
       }
     },
     {
-      "id": "p-watch-2",
+      "id": "h-swap",
+      "type": "heading",
+      "level": 2,
+      "text": "The other way, which trades clarity for memory"
+    },
+    {
+      "id": "p-swap",
       "type": "paragraph",
       "content": [
         {
-          "text": "In used-array mode, watch the free-characters panel shrink as you descend and refill as you back out. That panel is the boolean array, and it is the entire difference between this and an unconstrained loop."
+          "text": "There is a second standard approach, and it avoids the flags entirely."
         }
       ]
     },
     {
-      "id": "p-watch-3",
+      "id": "p-swap-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Then switch to swap mode and watch the array itself change. The swap-back frame after each branch is the un-choose step. Remove it and the array drifts, so the next branch permutes something that was never the input."
+          "text": "Think of the array as split at position "
+        },
+        {
+          "text": "k",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ": everything before it is decided, everything from "
+        },
+        {
+          "text": "k",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " onward is still available. To choose an item for position "
+        },
+        {
+          "text": "k",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", swap it into place, recurse on "
+        },
+        {
+          "text": "k + 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", then swap it back."
+        }
+      ]
+    },
+    {
+      "id": "p-swap-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It uses no extra array and the un-choose is the same swap performed again, which is tidy. The cost is that the array gets scrambled during the search, so the items are not in their original order while you are inside the recursion. If a prune needs to know something about the original ordering, the used-array version is easier to reason about. Both produce the same set of permutations, occasionally in a different sequence."
         }
       ]
     },
@@ -141,7 +277,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Give the string AAB to the naive version and it emits six results, of which only three are different. The two As are distinguishable by index and by nothing else, so the algorithm faithfully produces each ordering twice."
+          "text": "Everything so far assumed the items are distinct. Give it "
+        },
+        {
+          "text": "[1,1,2]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and it produces six answers where only three are actually different, because it treats the two 1s as separate objects."
         }
       ]
     },
@@ -150,7 +297,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch the input to AAB above and turn duplicate skipping on. The rejected branches show up in coral: those are the subtrees that would have rebuilt work already done."
+          "text": "The fix is a small piece of reasoning worth following, since the same pattern turns up in several problems."
         }
       ]
     },
@@ -159,48 +306,33 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The fix depends on which method you are using, and this is the part that catches people who have memorised one of them."
+          "text": "Sort the input first so equal items sit next to each other. Then, among a run of identical items, allow only one fixed order of use: an item may be placed only if the identical item immediately before it has already been placed. That forces the copies to be used left to right, so each distinct arrangement is generated exactly once."
         }
       ]
     },
     {
-      "id": "t-dupes",
-      "type": "table",
-      "headers": [
-        "Method",
-        "Test",
-        "Why it works"
-      ],
-      "rows": [
-        [
-          "Used array (input sorted)",
-          "skip if i > 0 and s[i] === s[i-1] and not used[i-1]",
-          "Equal characters sit next to each other. Only let the leftmost unused one go first, so a fixed representative is chosen each time."
-        ],
-        [
-          "Swap in place",
-          "keep a set of values already placed at this depth; skip repeats",
-          "Swapping destroys sortedness, so the neighbour test is meaningless. The set is per level, not global."
-        ]
-      ]
+      "id": "code-dedup",
+      "type": "code",
+      "language": "javascript",
+      "code": "items.sort();                     // equal items now sit next to each other\n\nfor (let i = 0; i < items.length; i++) {\n  if (used[i]) continue;\n  // Skip a duplicate unless the copy before it is already placed.\n  if (i > 0 && items[i] === items[i - 1] && !used[i - 1]) continue;\n  ...\n}"
     },
     {
       "id": "p-dupes-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "The "
+          "text": "The condition reads oddly the first time. It says: if this item equals the previous one, and the previous one is "
         },
         {
-          "text": "!used[i-1]",
+          "text": "not",
           "marks": [
             {
-              "kind": "code"
+              "kind": "bold"
             }
           ]
         },
         {
-          "text": " half of the first test is the subtle bit. Without it you also block the legitimate case where the previous equal character is already placed higher up the current path, and you lose real answers rather than duplicates."
+          "text": " currently in use, then we are about to start a duplicate branch that a sibling has already handled, so skip it."
         }
       ]
     },
@@ -208,50 +340,107 @@
       "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "In code"
+      "text": "The implementation"
     },
     {
-      "id": "code-perms",
+      "id": "code-perm",
       "type": "code",
       "language": "javascript",
-      "code": "// Used-array version. Sort first if you want duplicate skipping\n// or lexicographic output.\nfunction permutations(str, { dedupe = false } = {}) {\n  const chars = dedupe ? [...str].sort() : [...str];\n  const used = new Array(chars.length).fill(false);\n  const out = [];\n  const current = [];\n\n  function backtrack() {\n    if (current.length === chars.length) {\n      out.push(current.join(\"\"));\n      return;\n    }\n\n    for (let i = 0; i < chars.length; i++) {\n      if (used[i]) continue;\n      // Only the leftmost unused copy of a repeated character may go first.\n      if (dedupe && i > 0 && chars[i] === chars[i - 1] && !used[i - 1]) continue;\n\n      used[i] = true;\n      current.push(chars[i]);      // choose\n      backtrack();                 // explore\n      current.pop();               // un-choose\n      used[i] = false;\n    }\n  }\n\n  backtrack();\n  return out;\n}\n\n// Swap version. No extra array, but the output is not sorted.\nfunction permutationsBySwap(str) {\n  const chars = [...str];\n  const out = [];\n\n  function backtrack(k) {\n    if (k === chars.length) {\n      out.push(chars.join(\"\"));\n      return;\n    }\n    const seen = new Set();\n    for (let i = k; i < chars.length; i++) {\n      if (seen.has(chars[i])) continue;   // duplicate test, per level\n      seen.add(chars[i]);\n\n      [chars[k], chars[i]] = [chars[i], chars[k]];   // choose\n      backtrack(k + 1);                              // explore\n      [chars[k], chars[i]] = [chars[i], chars[k]];   // un-choose\n    }\n  }\n\n  backtrack(0);\n  return out;\n}",
+      "code": "function permutations(items) {\n  const answers = [];\n  const current = [];\n  const used = new Array(items.length).fill(false);\n\n  function solve() {\n    if (current.length === items.length) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let i = 0; i < items.length; i++) {\n      if (used[i]) continue;          // already placed somewhere above\n\n      used[i] = true;                 // choose\n      current.push(items[i]);\n      solve();                        // explore\n      current.pop();                  // un-choose, both halves\n      used[i] = false;\n    }\n  }\n\n  solve();\n  return answers;\n}",
       "variants": [
         {
           "language": "python",
-          "code": "# Used-array version. Sort first if you want duplicate skipping\n# or lexicographic output.\ndef permutations(s, dedupe=False):\n    chars = sorted(s) if dedupe else list(s)\n    used = [False] * len(chars)\n    out = []\n    current = []\n\n    def backtrack():\n        if len(current) == len(chars):\n            out.append(\"\".join(current))\n            return\n\n        for i in range(len(chars)):\n            if used[i]:\n                continue\n            # Only the leftmost unused copy of a repeated character may go first.\n            if dedupe and i > 0 and chars[i] == chars[i - 1] and not used[i - 1]:\n                continue\n\n            used[i] = True\n            current.append(chars[i])    # choose\n            backtrack()                 # explore\n            current.pop()               # un-choose\n            used[i] = False\n\n    backtrack()\n    return out\n\n\n# Swap version. No extra array, but the output is not sorted.\ndef permutations_by_swap(s):\n    chars = list(s)\n    out = []\n\n    def backtrack(k):\n        if k == len(chars):\n            out.append(\"\".join(chars))\n            return\n        seen = set()\n        for i in range(k, len(chars)):\n            if chars[i] in seen:        # duplicate test, per level\n                continue\n            seen.add(chars[i])\n\n            chars[k], chars[i] = chars[i], chars[k]   # choose\n            backtrack(k + 1)                          # explore\n            chars[k], chars[i] = chars[i], chars[k]   # un-choose\n\n    backtrack(0)\n    return out"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <functional>\n#include <set>\n#include <string>\n#include <vector>\n\n// Used-array version.\nstd::vector<std::string> permutations(std::string s, bool dedupe = false) {\n    if (dedupe) std::sort(s.begin(), s.end());\n    std::vector<bool> used(s.size(), false);\n    std::vector<std::string> out;\n    std::string current;\n\n    std::function<void()> backtrack = [&]() {\n        if (current.size() == s.size()) {\n            out.push_back(current);\n            return;\n        }\n        for (size_t i = 0; i < s.size(); i++) {\n            if (used[i]) continue;\n            // Only the leftmost unused copy of a repeated character may go first.\n            if (dedupe && i > 0 && s[i] == s[i - 1] && !used[i - 1]) continue;\n\n            used[i] = true;\n            current.push_back(s[i]);   // choose\n            backtrack();               // explore\n            current.pop_back();        // un-choose\n            used[i] = false;\n        }\n    };\n\n    backtrack();\n    return out;\n}\n\n// Swap version.\nstd::vector<std::string> permutationsBySwap(std::string s) {\n    std::vector<std::string> out;\n\n    std::function<void(size_t)> backtrack = [&](size_t k) {\n        if (k == s.size()) {\n            out.push_back(s);\n            return;\n        }\n        std::set<char> seen;\n        for (size_t i = k; i < s.size(); i++) {\n            if (seen.count(s[i])) continue;   // duplicate test, per level\n            seen.insert(s[i]);\n\n            std::swap(s[k], s[i]);   // choose\n            backtrack(k + 1);        // explore\n            std::swap(s[k], s[i]);   // un-choose\n        }\n    };\n\n    backtrack(0);\n    return out;\n}"
+          "code": "def permutations(items):\n    answers, current = [], []\n    used = [False] * len(items)\n\n    def solve():\n        if len(current) == len(items):\n            answers.append(current[:])\n            return\n\n        for i in range(len(items)):\n            if used[i]:\n                continue              # already placed somewhere above\n\n            used[i] = True            # choose\n            current.append(items[i])\n            solve()                   # explore\n            current.pop()             # un-choose, both halves\n            used[i] = False\n\n    solve()\n    return answers"
         }
       ]
     },
     {
-      "id": "h-cost",
+      "id": "h-mistakes",
       "type": "heading",
       "level": 2,
-      "text": "What it costs"
+      "text": "Where it goes wrong"
     },
     {
-      "id": "p-cost",
+      "id": "p-mistake-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "There are n! permutations and each one takes O(n) to write out, so no algorithm can beat O(n · n!) if it has to produce all of them. Both versions here hit that bound. The output is the bottleneck, not the search."
+          "text": "Undoing only half the state.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The item is popped and the flag stays true, or the other way round. The symptom is answers that are too short or items that vanish from later branches."
         }
       ]
     },
     {
-      "id": "p-cost-2",
+      "id": "p-mistake-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is worth internalising before optimising anything: 10 characters is 3.6 million permutations, 13 is over six billion. If a problem asks for all permutations of anything longer than about ten items, the problem is usually not really asking for that."
+          "text": "Deduplicating without sorting first.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The skip rule relies on equal items being adjacent. Unsorted, it removes some duplicates and misses others, which is worse than doing nothing because the output looks nearly right."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Recording the arrangement without copying it.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The same bug as in subsets, and it bites harder here because the working array ends up back in its original order rather than empty, so every stored answer is the untouched input."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Trying to enumerate permutations of a large input.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " If "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " can reach 15, no amount of pruning will save an enumeration. The problem wants something else."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -263,136 +452,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Why can't the swap method use the s[i] === s[i-1] duplicate test?",
+            "prompt": "Why does the permutations loop start at 0 while the subsets loop starts at a passed-in index?",
             "options": [
               {
-                "label": "Swapping destroys the sorted order the test depends on",
+                "label": "Any unused item may go next, so position no longer restricts the choice",
                 "correct": true
               },
               {
-                "label": "The swap method cannot produce duplicates at all",
+                "label": "Because permutations allow items to repeat",
                 "correct": false
               },
               {
-                "label": "It can, but it is slower",
+                "label": "To make the answers come out in sorted order",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "In the permutations tree, which nodes are answers?",
+            "prompt": "Your permutation solver returns arrangements shorter than the input. What is the likely cause?",
             "options": [
               {
-                "label": "Only the leaves, since a partial permutation is not a permutation",
+                "label": "The un-choose step restores only one of the two pieces of state",
                 "correct": true
               },
               {
-                "label": "Every node, as with subsets",
+                "label": "The base case compares against the wrong length",
                 "correct": false
               },
               {
-                "label": "Every node at odd depth",
+                "label": "The used array was never initialized",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "What is the unavoidable time complexity of listing every permutation of n distinct characters?",
+            "prompt": "Roughly how many permutations does a 13-item list have?",
             "options": [
               {
-                "label": "O(n · n!), because there are n! outputs each of length n",
+                "label": "Over 6 billion",
                 "correct": true
               },
               {
-                "label": "O(2^n)",
+                "label": "About 8,000",
                 "correct": false
               },
               {
-                "label": "O(n^2), with memoisation",
+                "label": "About 170",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why must the input be sorted before applying the duplicate-skipping rule?",
+            "options": [
+              {
+                "label": "The rule compares each item with the one immediately before it, which only finds duplicates when equal items are adjacent",
+                "correct": true
+              },
+              {
+                "label": "Sorting makes the recursion shallower",
+                "correct": false
+              },
+              {
+                "label": "Because the answers must be produced in sorted order",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "h-flow",
-      "type": "heading",
-      "level": 2,
-      "text": "As a flowchart"
-    },
-    {
-      "id": "p-flow",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The used-array version, drawn out:"
-        }
-      ]
-    },
-    {
-      "id": "w-flow-perms",
-      "type": "interactive",
-      "widget": "flowchart",
-      "data": {
-        "preset": "permutations"
-      }
-    },
-    {
-      "id": "p-flow-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Compare it against the subsets chart. The loop runs over all n characters instead of a suffix, because any unused character may come next, and there is an extra "
-        },
-        {
-          "text": "used[i] ?",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " decision whose \"yes\" branch skips the character entirely. The choose step now sets two things rather than one, and the un-choose step has to undo both."
-        }
-      ]
-    },
-    {
-      "id": "p-flow-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The stopping test also moved: it is "
-        },
-        {
-          "text": "current.length == n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " at the top rather than a record-on-entry, which is the structural expression of \"only the leaves are answers here\"."
-        }
-      ]
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to the N-Queens problem",
-      "href": "/tutorials/dsa/backtracking-n-queens",
-      "style": "primary"
     }
   ],
   "seoTitle": "Permutations of a String: Backtracking with Swap and Used Array",
-  "seoDescription": "Generate all permutations of a string two ways, handle duplicate characters correctly in each, and see why only the leaves of the recursion tree are answers.",
+  "seoDescription": "Permutations with backtracking: why n factorial rules out large inputs, tracking used items and undoing both halves of the state, the swap variant, and the sort-then-skip rule for duplicate elements.",
   "keywords": [
     "permutations of a string",
     "print all permutations",

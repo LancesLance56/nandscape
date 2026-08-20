@@ -1,7 +1,7 @@
 {
   "slug": "backtracking-sudoku",
   "title": "Sudoku, and Where Plain Backtracking Runs Out",
-  "excerpt": "A sudoku solver is twenty lines of backtracking. Making it fast is a different question, and the answer is about which cell you ask about next.",
+  "excerpt": "The problem where choosing which decision to make next matters more than the algorithm around it. One change to the cell ordering takes the solver from 56 dead ends to none.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T10:00:00Z",
@@ -20,40 +20,42 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sudoku is the natural end of this section. The rules are three constraints, the search is the same template as every other page here, and a working solver is about twenty lines."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
+          "text": "Sudoku is the problem where the choice of "
+        },
         {
-          "text": "It is also where the template alone stops being enough, and the interesting decisions move somewhere else entirely."
+          "text": "which decision to make next",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " matters more than anything else in the algorithm. The rules are simple, the template is the one you already know, and a single change to the ordering makes the solver about four times cheaper."
         }
       ]
     },
     {
-      "id": "h-naive",
+      "id": "h-framing",
       "type": "heading",
       "level": 2,
-      "text": "The obvious solver"
+      "text": "Sudoku is graph coloring"
     },
     {
-      "id": "p-naive",
+      "id": "p-framing",
       "type": "paragraph",
       "content": [
         {
-          "text": "Find a blank cell. Try 1 through 9 in it. For each value that does not already appear in the same row, column or 3 by 3 box, place it and recurse. If nothing works, blank the cell and report failure upward."
+          "text": "Before the algorithm, a framing worth carrying. Make each of the 81 cells a node. Join two cells with an edge when they share a row, a column or a 3 by 3 box, meaning they are not allowed to hold the same digit. Now solving the puzzle is coloring that graph with 9 colors, where some nodes arrive pre-colored."
         }
       ]
     },
     {
-      "id": "p-naive-3",
+      "id": "p-framing-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "That is correct and complete. Given enough time it solves any solvable grid, and given a nearly empty grid it will take a very long time indeed."
+          "text": "The similarity runs deeper than a comparison. Coloring a graph and solving a puzzle board are the same search wearing different labels, which is why the previous page's algorithm works here with almost no modification. It also sets expectations: coloring is hard in general, so do not expect a formula."
         }
       ]
     },
@@ -61,14 +63,14 @@
       "id": "h-order",
       "type": "heading",
       "level": 2,
-      "text": "Which blank cell, though?"
+      "text": "The decision that actually matters"
     },
     {
       "id": "p-order",
       "type": "paragraph",
       "content": [
         {
-          "text": "\"Find a blank cell\" hides the only decision that matters. Taking the next one in reading order is the obvious choice and a poor one."
+          "text": "The obvious way to pick the next blank is reading order: top-left to bottom-right. It is simple and there is nothing wrong with it except that it ignores information sitting in plain view."
         }
       ]
     },
@@ -77,7 +79,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The alternative is to take the blank cell with the fewest legal values remaining. If some cell has only one candidate, filling it is not a guess at all. If some cell has zero, the branch is already dead and you have just found that out without exploring it. This is the most constrained variable heuristic, and it is the same idea as colouring the most constrained node first on the previous page."
+          "text": "Consider a blank with 6 legal digits and another with 1. Filling the 6-candidate cell means branching six ways, and if the puzzle is doomed from here you will discover that six times over. Filling the 1-candidate cell means branching once, and the digit is forced, so no guess is being made at all."
         }
       ]
     },
@@ -86,7 +88,92 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch between the two below on the same puzzle. The counters at the right report both."
+          "text": "So a better rule: always fill the blank with the fewest legal digits remaining. This is called the "
+        },
+        {
+          "text": "most constrained variable",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " heuristic, and versions of it appear across the whole of constraint solving."
+        }
+      ]
+    },
+    {
+      "id": "p-order-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two things happen at once. Forced cells get filled immediately and for free, which is exactly what a human solver does. And when a guess is genuinely required, it is made where the branching factor is smallest, so a wrong guess is discovered after the least possible work."
+        }
+      ]
+    },
+    {
+      "id": "h-numbers",
+      "type": "heading",
+      "level": 2,
+      "text": "What it is worth"
+    },
+    {
+      "id": "p-numbers",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "On the puzzle bundled with the widget below, the two orderings differ like this."
+        }
+      ]
+    },
+    {
+      "id": "code-compare",
+      "type": "code",
+      "language": "text",
+      "code": "                       cells filled    dead ends    frames\n\nreading order              185            56          heavy\nfewest candidates           49             0          light\n\nSame puzzle. Same rules. Same finished grid.\nThe only difference is which blank the solver picks next."
+    },
+    {
+      "id": "p-numbers-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Read the dead-ends column again. The most-constrained ordering hit "
+        },
+        {
+          "text": "zero",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " dead ends. It never guessed wrong, not because it was lucky, but because it kept choosing cells where the answer was already determined, and by the time a real choice was needed the grid had enough information to make it safely."
+        }
+      ]
+    },
+    {
+      "id": "p-numbers-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Nothing about the rules changed. No prune was added. The solver simply asked its questions in a better order, which is a genuinely different kind of optimization from the ones earlier in this section and often the most powerful one available."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Compare them yourself"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch between the two orderings and watch the counters, since the finished grid is identical either way."
         }
       ]
     },
@@ -94,167 +181,155 @@
       "id": "w-sudoku",
       "type": "interactive",
       "widget": "sudoku-solver",
+      "data": {}
+    },
+    {
+      "id": "w-flow-sudoku",
+      "type": "interactive",
+      "widget": "flowchart",
       "data": {
-        "strategy": "first"
+        "preset": "sudoku"
       }
-    },
-    {
-      "id": "p-order-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Reading order fills 185 cells and hits 56 dead ends. Fewest candidates fills 49 and hits none, meaning it never once guessed wrong on this grid. Same algorithm, same finished grid, roughly a quarter of the work."
-        }
-      ]
-    },
-    {
-      "id": "p-order-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Step through the reading-order run and watch what a dead end costs. The solver commits to a value near the top of the grid, descends a long way on the strength of it, discovers a cell with no candidates, and unwinds everything in between. The heuristic version asks about that cell while the guess is still fresh."
-        }
-      ]
     },
     {
       "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "In code"
+      "text": "The implementation"
+    },
+    {
+      "id": "p-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The solver itself is the template unchanged, and everything interesting has moved into pickCell."
+        }
+      ]
     },
     {
       "id": "code-sudoku",
       "type": "code",
       "language": "javascript",
-      "code": "// board is a flat array of 81 numbers, 0 for blank.\nfunction solveSudoku(board) {\n  function candidates(cell) {\n    const row = Math.floor(cell / 9);\n    const col = cell % 9;\n    const boxRow = Math.floor(row / 3) * 3;\n    const boxCol = Math.floor(col / 3) * 3;\n    const taken = new Set();\n\n    for (let i = 0; i < 9; i++) {\n      taken.add(board[row * 9 + i]);                                   // row\n      taken.add(board[i * 9 + col]);                                   // column\n      taken.add(board[(boxRow + Math.floor(i / 3)) * 9 + boxCol + (i % 3)]);  // box\n    }\n\n    const out = [];\n    for (let v = 1; v <= 9; v++) if (!taken.has(v)) out.push(v);\n    return out;\n  }\n\n  // The heuristic: fewest options first. A cell with one candidate is\n  // forced, and a cell with none kills the branch immediately.\n  function pickCell() {\n    let best = null;\n    let bestCount = 10;\n    for (let i = 0; i < 81; i++) {\n      if (board[i] !== 0) continue;\n      const count = candidates(i).length;\n      if (count < bestCount) {\n        best = i;\n        bestCount = count;\n        if (count === 0) break;      // nothing beats finding this out now\n      }\n    }\n    return best;\n  }\n\n  function solve() {\n    const cell = pickCell();\n    if (cell === null) return true;  // no blanks left\n\n    for (const v of candidates(cell)) {\n      board[cell] = v;               // choose\n      if (solve()) return true;      // explore\n      board[cell] = 0;               // un-choose\n    }\n\n    return false;\n  }\n\n  return solve();\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "# board is a flat list of 81 numbers, 0 for blank.\ndef solve_sudoku(board):\n    def candidates(cell):\n        row, col = divmod(cell, 9)\n        box_row, box_col = (row // 3) * 3, (col // 3) * 3\n        taken = set()\n\n        for i in range(9):\n            taken.add(board[row * 9 + i])                                  # row\n            taken.add(board[i * 9 + col])                                  # column\n            taken.add(board[(box_row + i // 3) * 9 + box_col + i % 3])     # box\n\n        return [v for v in range(1, 10) if v not in taken]\n\n    # The heuristic: fewest options first. A cell with one candidate is\n    # forced, and a cell with none kills the branch immediately.\n    def pick_cell():\n        best, best_count = None, 10\n        for i in range(81):\n            if board[i] != 0:\n                continue\n            count = len(candidates(i))\n            if count < best_count:\n                best, best_count = i, count\n                if count == 0:\n                    break            # nothing beats finding this out now\n        return best\n\n    def solve():\n        cell = pick_cell()\n        if cell is None:\n            return True              # no blanks left\n\n        for v in candidates(cell):\n            board[cell] = v          # choose\n            if solve():\n                return True          # explore\n            board[cell] = 0          # un-choose\n\n        return False\n\n    return solve()"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <array>\n#include <functional>\n#include <set>\n#include <vector>\n\n// board is a flat array of 81 numbers, 0 for blank.\nbool solveSudoku(std::array<int, 81>& board) {\n    auto candidates = [&](int cell) {\n        int row = cell / 9, col = cell % 9;\n        int boxRow = (row / 3) * 3, boxCol = (col / 3) * 3;\n        std::set<int> taken;\n\n        for (int i = 0; i < 9; i++) {\n            taken.insert(board[row * 9 + i]);                              // row\n            taken.insert(board[i * 9 + col]);                              // column\n            taken.insert(board[(boxRow + i / 3) * 9 + boxCol + i % 3]);    // box\n        }\n\n        std::vector<int> out;\n        for (int v = 1; v <= 9; v++)\n            if (!taken.count(v)) out.push_back(v);\n        return out;\n    };\n\n    // The heuristic: fewest options first.\n    auto pickCell = [&]() {\n        int best = -1, bestCount = 10;\n        for (int i = 0; i < 81; i++) {\n            if (board[i] != 0) continue;\n            int count = (int)candidates(i).size();\n            if (count < bestCount) {\n                best = i;\n                bestCount = count;\n                if (count == 0) break;   // nothing beats finding this out now\n            }\n        }\n        return best;\n    };\n\n    std::function<bool()> solve = [&]() -> bool {\n        int cell = pickCell();\n        if (cell == -1) return true;     // no blanks left\n\n        for (int v : candidates(cell)) {\n            board[cell] = v;             // choose\n            if (solve()) return true;    // explore\n            board[cell] = 0;             // un-choose\n        }\n\n        return false;\n    };\n\n    return solve();\n}"
-        }
-      ]
+      "code": "function solve(board) {\n  const cell = pickCell(board);            // the only interesting decision\n  if (cell === null) return true;          // no blanks left, we are done\n\n  const [row, col] = cell;\n  for (let d = 1; d <= 9; d++) {\n    if (!isLegal(board, row, col, d)) continue;\n\n    board[row][col] = d;                   // choose\n    if (solve(board)) return true;         // explore\n    board[row][col] = 0;                   // un-choose\n  }\n\n  return false;                            // every digit failed here\n}\n\n// Naive: the first blank in reading order.\nfunction firstBlank(board) { ... }\n\n// Better: the blank with the fewest legal digits remaining.\nfunction mostConstrained(board) {\n  let best = null, bestCount = 10;\n  for (let r = 0; r < 9; r++) {\n    for (let c = 0; c < 9; c++) {\n      if (board[r][c] !== 0) continue;\n      const count = countLegalDigits(board, r, c);\n      if (count < bestCount) { bestCount = count; best = [r, c]; }\n      if (count === 1) return best;        // cannot do better than forced\n    }\n  }\n  return best;\n}"
     },
     {
       "id": "p-code-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The heuristic costs a scan of all 81 cells per step, which sounds expensive and is not. Recomputing candidates 81 times is cheap next to descending forty levels into a branch that was doomed at the top."
+          "text": "The early return when a cell has exactly one candidate is a small but real saving. No cell can be better than forced, so there is no point scanning the remaining blanks once you have found one."
         }
       ]
     },
     {
-      "id": "h-propagation",
+      "id": "h-further",
       "type": "heading",
       "level": 2,
-      "text": "Constraint propagation, the step beyond"
+      "text": "Where solvers go from here"
     },
     {
-      "id": "p-propagation",
+      "id": "p-further",
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a further idea that changes the character of the solver rather than tuning it."
+          "text": "Two more ideas turn this into something that handles the puzzles marketed as impossible."
         }
       ]
     },
     {
-      "id": "p-propagation-2",
+      "id": "p-further-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Instead of searching and checking, keep a set of candidates for every cell and shrink those sets as facts arrive. Assigning a value removes it from every peer's candidate set. That removal can leave some peer with a single candidate, which is now forced, so assign it too, which removes more, and so on. The consequences cascade without any guessing at all."
+          "text": "The first is constraint propagation. After placing a digit, update the candidate lists of every cell that sees it. If any cell drops to zero candidates, the branch is dead immediately rather than several placements later. If any drops to one, fill it at once and propagate again. Much of a hard puzzle solves itself this way with no guessing at all."
         }
       ]
     },
     {
-      "id": "p-propagation-3",
+      "id": "p-further-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "On easy puzzles that alone finishes the grid. On hard ones it runs out, at which point you guess a value, propagate again, and back out if the propagation reaches a contradiction. Search becomes the fallback rather than the main strategy."
+          "text": "The second is the least-constraining value: among the digits legal for the chosen cell, try first the one that removes the fewest options from its neighbors. Choose the cell that constrains you most, then the value that constrains you least. That pairing is the standard shape of a good constraint solver."
         }
       ]
     },
     {
-      "id": "p-propagation-4",
+      "id": "h-mistakes",
+      "type": "heading",
+      "level": 2,
+      "text": "Where it goes wrong"
+    },
+    {
+      "id": "p-mistake-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "Peter Norvig's essay "
-        },
-        {
-          "text": "Solving Every Sudoku Puzzle",
+          "text": "Recomputing candidate counts from scratch on every call.",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://norvig.com/sudoku.html"
+              "kind": "bold"
             }
           ]
         },
         {
-          "text": " is the standard treatment, and worth reading in full once this section makes sense. His opening claim is that it takes about a page of code using two ideas, constraint propagation and search, which is a fair summary of where this material ends up."
+          "text": " Correct, and it can cost more than the search it saves on large grids. Keep the counts updated as cells are filled and cleared."
         }
       ]
     },
     {
-      "id": "t-levels",
-      "type": "table",
-      "headers": [
-        "Approach",
-        "What it does when stuck",
-        "Roughly"
-      ],
-      "rows": [
-        [
-          "Naive backtracking, reading order",
-          "Guesses the next blank cell",
-          "Correct, slow on sparse grids"
-        ],
-        [
-          "Most constrained cell first",
-          "Guesses the tightest cell",
-          "Usually a large improvement for a small cost"
-        ],
-        [
-          "Constraint propagation plus search",
-          "Propagates until forced moves run out, then guesses",
-          "Solves typical puzzles with little or no guessing"
-        ],
-        [
-          "Exact cover with dancing links",
-          "Reformulates the whole puzzle as a cover problem",
-          "Fast and general, and a much bigger implementation"
-        ]
-      ]
-    },
-    {
-      "id": "p-levels-2",
+      "id": "p-mistake-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "That last row is Knuth's "
-        },
-        {
-          "text": "Dancing Links",
+          "text": "Forgetting the box check.",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://arxiv.org/abs/cs/0011047"
+              "kind": "bold"
             }
           ]
         },
         {
-          "text": " again. Sudoku, n-queens and polyomino tiling all turn out to be the same exact cover problem underneath, which is a satisfying place for this section to land: six problems that looked different have been the same search the whole way."
+          "text": " Row and column are easy to remember and the 3 by 3 box is easy to leave out. The solver then produces grids that look almost right and violate the rule everyone checks last."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Not undoing on failure.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The same bug as everywhere else, and here it leaves stale digits that make later branches appear illegal, so the solver reports an unsolvable puzzle that is perfectly solvable."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Assuming one solution exists.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " A proper Sudoku has exactly one. A puzzle with too few givens has many, and a solver that stops at the first will happily return one of them. If uniqueness matters, keep searching after the first success and count."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -266,152 +341,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Why does picking the blank cell with the fewest candidates help so much?",
+            "prompt": "Why does filling the most constrained cell first help so much?",
             "options": [
               {
-                "label": "Contradictions surface near the top of the tree, so a wrong guess is cheap to undo",
+                "label": "It minimizes branching where guesses are needed, and fills forced cells with no guess at all",
                 "correct": true
               },
               {
-                "label": "It reduces the number of cells that need filling",
+                "label": "It fills the grid in fewer total placements",
                 "correct": false
               },
               {
-                "label": "It makes each individual candidate check faster",
+                "label": "It makes the legality check cheaper",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "A cell has exactly one candidate. What does that mean?",
+            "prompt": "The most-constrained solver hit zero dead ends on the sample puzzle. What does that mean?",
             "options": [
               {
-                "label": "The value is forced, so filling it in is deduction rather than a guess",
+                "label": "It never had to undo a placement, because each choice was already determined or safe when made",
                 "correct": true
               },
               {
-                "label": "The puzzle has no solution",
+                "label": "The puzzle had only one blank cell",
                 "correct": false
               },
               {
-                "label": "You should skip that cell and come back later",
+                "label": "It found a different solution from the naive version",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "What is constraint propagation doing that plain backtracking is not?",
+            "prompt": "How is Sudoku the same problem as graph coloring?",
             "options": [
               {
-                "label": "Shrinking candidate sets as facts arrive, cascading forced moves without guessing",
+                "label": "Cells are nodes, edges join cells that may not match, and the 9 digits are the colors",
                 "correct": true
               },
               {
-                "label": "Trying values in a random order to avoid worst cases",
+                "label": "Both are solved by breadth-first search",
                 "correct": false
               },
               {
-                "label": "Caching solved subgrids for reuse",
+                "label": "Both require exactly nine colors for any input",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What is constraint propagation, in one sentence?",
+            "options": [
+              {
+                "label": "After placing a digit, update every affected cell's candidates and act immediately on any that reach zero or one",
+                "correct": true
+              },
+              {
+                "label": "Trying every digit in every cell before recursing",
+                "correct": false
+              },
+              {
+                "label": "Sorting the cells by how many givens surround them",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "h-practice",
-      "type": "heading",
-      "level": 2,
-      "text": "Where to go next"
-    },
-    {
-      "id": "p-practice",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The best way to make this stick is volume. The "
-        },
-        {
-          "text": "CSES Problem Set",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "https://cses.fi/problemset/"
-            }
-          ]
-        },
-        {
-          "text": " has a free graded collection with judged submissions, and its introductory section includes the classic grid-path and permutation-search problems this section prepares you for."
-        }
-      ]
-    },
-    {
-      "id": "h-flow",
-      "type": "heading",
-      "level": 2,
-      "text": "As a flowchart"
-    },
-    {
-      "id": "p-flow",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The solver, with the cell-choosing step called out as its own box:"
-        }
-      ]
-    },
-    {
-      "id": "w-flow-sudoku",
-      "type": "interactive",
-      "widget": "flowchart",
-      "data": {
-        "preset": "sudoku"
-      }
-    },
-    {
-      "id": "p-flow-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That first box, "
-        },
-        {
-          "text": "pick an empty cell",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", is drawn separately for a reason. Nothing else in the chart changes between the naive version and the heuristic one. The entire four-times difference in work comes from what that single box decides."
-        }
-      ]
-    },
-    {
-      "id": "p-flow-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It is worth comparing this chart against the m-coloring one. They are the same graph: both stop at the first success, both have a decision for the recursive call, both undo their guess on failure. Sudoku is graph colouring on a graph with 81 nodes and 9 colours, and the flowcharts make that visible in a way the code does not."
-        }
-      ]
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Back to the algorithms track",
-      "href": "/tutorials/dsa",
-      "style": "primary"
     }
   ],
   "seoTitle": "Sudoku Solver with Backtracking: Cell Ordering and Constraint Propagation",
-  "seoDescription": "Write a sudoku solver with backtracking, then cut its work by three quarters with the most-constrained-cell heuristic. Covers constraint propagation and exact cover.",
+  "seoDescription": "Sudoku as backtracking: why it is graph coloring in disguise, the most-constrained-variable heuristic and the numbers behind it, constraint propagation, and the bugs that make a solvable grid look unsolvable.",
   "keywords": [
     "sudoku solver backtracking",
     "sudoku algorithm",

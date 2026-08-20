@@ -35,7 +35,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Walk the array comparing neighbours and swapping any that are out of order. After one pass the largest value has been carried to the end. Repeat."
+          "text": "Walk the array comparing neighbors and swapping any that are out of order, and after one pass the largest value has been carried to the end. Repeat."
         }
       ]
     },
@@ -154,7 +154,7 @@
           ]
         },
         {
-          "text": " row underneath. While the shifting loop runs, the value being placed is out of the array entirely, held in a variable, and its old slot has been overwritten. That is why the bars briefly show a duplicate: it is real, not a rendering artefact."
+          "text": " row underneath. While the shifting loop runs, the value being placed is out of the array entirely, held in a variable, and its old slot has been overwritten. That is why the bars briefly show a duplicate: it is real, not a rendering artifact."
         }
       ]
     },
@@ -343,7 +343,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The same algorithms drawn as flowcharts. Dashed copper arrows are loops back to an earlier step. Click any box with a dot to see why that step is there."
+          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step, and clicking any box with a dot shows why that step is there."
         }
       ]
     },

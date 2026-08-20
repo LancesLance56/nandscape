@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Up to now every cell in the map has been a 0 or a 1. Real circuits have a third case: input combinations that cannot occur, so their output genuinely does not matter."
+          "text": "Up to now every cell in the map has been a 0 or a 1. Real circuits have a third case: input combinations that cannot occur at all, so their output genuinely does not matter."
         }
       ]
     },
@@ -28,18 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "These are "
-        },
-        {
-          "text": "don't-care conditions",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", written X on the map. They are not a shortcut or an approximation. They are a statement that the specification never says what should happen for that input, which leaves you free to pick whichever answer makes the circuit smaller."
+          "text": "These are don't-care conditions, written X on the map, and they are not a shortcut or an approximation. They are a statement that the specification never says what should happen for that input, which leaves you free to pick whichever answer makes the circuit smaller."
         }
       ]
     },
@@ -54,7 +43,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The most common source is a code that does not use its full range."
+          "text": "The most common source is a code that does not use its full range, like a four-bit field that only ever carries the digits 0 through 9."
         }
       ]
     },
@@ -89,7 +78,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In each case the hardware will never see those inputs. Forcing the output to 0 there is a choice, and usually a needlessly expensive one."
+          "text": "In each case the hardware will never see those inputs, so forcing the output to 0 there is a choice, and usually a needlessly expensive one."
         }
       ]
     },
@@ -104,18 +93,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Four bits "
-        },
-        {
-          "text": "ABCD",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " carry one BCD digit, so only 0000 through 1001 ever appear. The output should be 1 when the digit is 5 or more, which means minterms 5, 6, 7, 8 and 9."
+          "text": "Four bits ABCD carry one BCD digit, so only 0000 through 1001 ever appear, and the output should be 1 when the digit is 5 or more, which means minterms 5, 6, 7, 8 and 9."
         }
       ]
     },
@@ -124,7 +102,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "First, the cautious version. Treat the six impossible inputs as 0, because that feels safe:"
+          "text": "First, the cautious version. Treat the six impossible inputs as 0, because that feels safe, and see what the map gives you."
         }
       ]
     },
@@ -166,7 +144,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That gives A'BD + A'BC + AB'C': 3 terms and 9 literals. Every group is boxed in by the zeros around it."
+          "text": "That gives A'BD + A'BC + AB'C', three terms and nine literals, because every group is boxed in by the zeros sitting around it."
         }
       ]
     },
@@ -175,7 +153,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now mark those six as don't-cares instead, and watch what the groups do:"
+          "text": "Now mark those six as don't-cares instead, and watch what the groups do."
         }
       ]
     },
@@ -217,7 +195,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now it is BD + BC + A: 3 terms and 5 literals. Same circuit behaviour for every input that can actually happen, built from noticeably less logic."
+          "text": "Now it is BD + BC + A, three terms and five literals. Same circuit behavior for every input that can actually happen, built from noticeably less logic."
         }
       ]
     },
@@ -226,7 +204,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The groups were able to expand into the X cells because nothing stops them there. A group is only illegal if it covers a 0."
+          "text": "The groups were able to expand into the X cells because nothing stops them there, and a group is only illegal if it covers a 0."
         }
       ]
     },
@@ -267,7 +245,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That middle row is the one to internalise. A don't-care is worth including when it enlarges a group, and worth ignoring when it does not. A group made entirely of don't-cares is legal but pointless: it covers nothing that needed covering, and adds a term to your expression for no reason."
+          "text": "That middle row is the one to internalize: a don't-care is worth including when it enlarges a group, and worth ignoring when it does not, which is a judgment call the solver makes for you every time it draws a boundary. A group made entirely of don't-cares is legal but pointless. It covers nothing that needed covering."
         }
       ]
     },
@@ -291,7 +269,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If a malformed input is merely unlikely rather than impossible, it is not a don't-care. Decide what should happen and write that down as a 0 or a 1. The extra gate is cheaper than the bug."
+          "text": "If a malformed input is merely unlikely rather than impossible, it is not a don't-care. Decide what should happen and write that down as a 0 or a 1, because the extra gate is cheaper than the bug."
         }
       ]
     },

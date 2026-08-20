@@ -1,7 +1,7 @@
 {
   "slug": "backtracking-n-queens",
   "title": "The N-Queens Problem",
-  "excerpt": "Place n queens on an n by n board with none attacking another. The interesting part is not the search, it is the two reformulations that shrink it from 4 billion candidates to a few thousand.",
+  "excerpt": "The standard demonstration of backtracking, and the standard lesson too: a better encoding beat a better search by a factor of three hundred before any pruning happened at all.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T09:30:00Z",
@@ -20,232 +20,99 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Place eight queens on a chessboard so that no two attack each other. A queen covers her whole row, her whole column and both diagonals, so this is harder than it sounds and easier than it looks."
+          "text": "Eight queens on a chessboard, none of them attacking another. A queen covers her whole row, her whole column and both diagonals, so eight of them on 64 squares is a tight fit. There are exactly 92 solutions, and the problem is the standard demonstration of backtracking for a good reason: the naive approach is hopeless and one good idea plus one cheap check makes it instant."
         }
       ]
     },
     {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The puzzle is not new. The chess composer Max Bezzel published it in 1848, and Franz Nauck published the first solutions in 1850. Gauss worked on it too. It survives as a teaching problem because the search is small enough to watch and the pruning is dramatic enough to feel."
-        }
-      ]
-    },
-    {
-      "id": "h-size",
+      "id": "h-framing",
       "type": "heading",
       "level": 2,
-      "text": "How big is the naive search?"
+      "text": "Choosing what a decision is"
     },
     {
-      "id": "p-size",
+      "id": "p-framing",
       "type": "paragraph",
       "content": [
         {
-          "text": "Choosing 8 squares out of 64 gives 64 choose 8, which is 4,426,165,368 arrangements. Testing all of them is possible and pointless."
+          "text": "Before writing any code, the framing decides almost everything. The obvious statement of the problem is \"choose 8 squares out of 64\", which gives about 4.4 billion arrangements."
         }
       ]
     },
     {
-      "id": "p-size-2",
+      "id": "p-framing-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Two observations collapse that number, and neither is an algorithm. They are reformulations, which is usually where the real speedup in a backtracking problem comes from."
+          "text": "Now use something you know about the answer. Two queens in the same row always attack each other, so any valid solution has exactly one queen per row. That is not a heuristic, it is a fact about every solution, so restricting to it loses nothing."
         }
       ]
     },
     {
-      "id": "t-size",
+      "id": "p-framing-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reframed, the question becomes \"which column does each row's queen go in\", which is 8 choices repeated 8 times: 16.7 million. Nearly three hundred times smaller, and it came from thinking rather than from code."
+        }
+      ]
+    },
+    {
+      "id": "t-framing",
       "type": "table",
       "headers": [
-        "Observation",
-        "Search space becomes"
+        "Framing",
+        "Arrangements",
+        "Where the saving came from"
       ],
       "rows": [
         [
-          "Two queens cannot share a row, so put exactly one queen per row",
-          "8^8 = 16,777,216 column assignments"
+          "Choose 8 squares from 64",
+          "about 4.4 billion",
+          "nothing yet"
         ],
         [
-          "Two queens cannot share a column either, so the assignment is a permutation",
-          "8! = 40,320 permutations"
+          "One queen per row, choose its column",
+          "16,777,216",
+          "a fact about every solution"
         ],
         [
-          "Reject a placement the moment it conflicts, rather than at the end",
-          "About 2,000 nodes actually visited"
+          "Reject attacked squares as you go",
+          "2,057 boards built",
+          "checking early instead of at the end"
         ]
       ]
     },
     {
-      "id": "p-size-3",
+      "id": "p-framing-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "From four billion to a couple of thousand, and only the last row is backtracking. The first two are just noticing what the constraints already told you."
+          "text": "This generalizes past eight queens. Before reaching for a faster search, it is worth asking whether the representation itself can be made smaller, since a better encoding usually beats a better search."
         }
       ]
     },
     {
-      "id": "h-try",
+      "id": "h-check-fast",
       "type": "heading",
       "level": 2,
-      "text": "Try it by hand first"
+      "text": "Checking a square quickly"
     },
     {
-      "id": "p-try",
+      "id": "p-check-fast",
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch the widget to \"Place them yourself\" and try to solve the 6 by 6 board without help. Nothing stops you putting two queens in one row, and it is worth doing that once to see the tool report it."
+          "text": "With one queen per row, rows take care of themselves, columns are easy since you keep a set of used columns, and diagonals are the part that looks fiddly and turns out not to be."
         }
       ]
     },
     {
-      "id": "p-try-2",
+      "id": "p-check-fast-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Then switch to \"Watch it solve\" and step through. Red squares are attacked by a queen already placed. A square marked with a cross is one the solver considered and rejected before building anything underneath it."
-        }
-      ]
-    },
-    {
-      "id": "w-queens",
-      "type": "interactive",
-      "widget": "n-queens",
-      "data": {
-        "n": 6
-      }
-    },
-    {
-      "id": "p-try-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The moment to watch for is a row where every column is attacked. The solver has nothing to try, so it returns, lifts the queen from the row above, and continues from there. That is the backtrack, and on a 6 by 6 board it happens constantly."
-        }
-      ]
-    },
-    {
-      "id": "p-try-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Try n = 4 as well. It has only two solutions and they are mirror images, so the whole search is short enough to follow end to end without losing your place."
-        }
-      ]
-    },
-    {
-      "id": "h-counts",
-      "type": "heading",
-      "level": 2,
-      "text": "Solution counts"
-    },
-    {
-      "id": "p-counts",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The number of solutions does not grow smoothly, which surprises people expecting something tidy."
-        }
-      ]
-    },
-    {
-      "id": "t-counts",
-      "type": "table",
-      "headers": [
-        "n",
-        "Distinct solutions",
-        "Unique up to rotation and reflection"
-      ],
-      "rows": [
-        [
-          "1",
-          "1",
-          "1"
-        ],
-        [
-          "2",
-          "0",
-          "0"
-        ],
-        [
-          "3",
-          "0",
-          "0"
-        ],
-        [
-          "4",
-          "2",
-          "1"
-        ],
-        [
-          "5",
-          "10",
-          "2"
-        ],
-        [
-          "6",
-          "4",
-          "1"
-        ],
-        [
-          "7",
-          "40",
-          "6"
-        ],
-        [
-          "8",
-          "92",
-          "12"
-        ]
-      ]
-    },
-    {
-      "id": "p-counts-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Six has fewer solutions than five, which is a good reminder that these counts come from the structure of the board rather than from any formula worth memorising. There is no known closed form. The values above are from "
-        },
-        {
-          "text": "Wikipedia's eight queens puzzle article",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Eight_queens_puzzle"
-            }
-          ]
-        },
-        {
-          "text": ", which also covers the history and the symmetry classes."
-        }
-      ]
-    },
-    {
-      "id": "h-diag",
-      "type": "heading",
-      "level": 2,
-      "text": "Checking diagonals without a loop"
-    },
-    {
-      "id": "p-diag",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The naive conflict test walks every previously placed queen. It is O(row) per check, which is fine, and there is a neater way that is O(1)."
-        }
-      ]
-    },
-    {
-      "id": "p-diag-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Two squares are on the same descending diagonal exactly when "
+          "text": "Two squares are on the same \"\\\\\" diagonal exactly when "
         },
         {
           "text": "row - col",
@@ -256,7 +123,7 @@
           ]
         },
         {
-          "text": " matches, and on the same ascending diagonal when "
+          "text": " matches, and on the same \"/\" diagonal exactly when "
         },
         {
           "text": "row + col",
@@ -267,136 +134,296 @@
           ]
         },
         {
-          "text": " matches. So three sets, one for columns and one for each diagonal direction, answer the question immediately."
+          "text": " matches. So each diagonal has a single number naming it, and checking a diagonal is a set lookup like the column check."
         }
       ]
     },
     {
-      "id": "t-diag",
-      "type": "table",
-      "headers": [
-        "Quantity",
-        "Constant along",
-        "Range"
-      ],
-      "rows": [
-        [
-          "col",
-          "a column",
-          "0 to n-1"
-        ],
-        [
-          "row - col",
-          "a descending diagonal (top-left to bottom-right)",
-          "-(n-1) to n-1"
-        ],
-        [
-          "row + col",
-          "an ascending diagonal (bottom-left to top-right)",
-          "0 to 2n-2"
-        ]
-      ]
+      "id": "code-diag",
+      "type": "code",
+      "language": "text",
+      "code": "row - col is constant down a \"\\\" diagonal      row + col is constant down a \"/\" diagonal\n\n     c0 c1 c2 c3                                   c0 c1 c2 c3\n r0   0  -1 -2 -3                              r0   0   1  2  3\n r1   1   0 -1 -2                              r1   1   2  3  4\n r2   2   1  0 -1                              r2   2   3  4  5\n r3   3   2  1  0                              r3   3   4  5  6"
     },
     {
-      "id": "p-diag-3",
+      "id": "p-check-fast-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Add "
-        },
-        {
-          "text": "n - 1",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " to the "
-        },
-        {
-          "text": "row - col",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " value if you want to index an array rather than use a hash set. That is the usual competitive-programming form."
+          "text": "Three sets, three constant-time lookups, and a square is either safe or not. Without this you would scan the placed queens each time, which is fine at n = 8 and starts to hurt as the board grows."
         }
       ]
+    },
+    {
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "The first stretch, written out"
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Below is the search running on a 4 by 4 board. Use Step rather than Play, so each placement and backtrack gets its own moment instead of blurring past. Columns are lettered a to d, rows numbered 1 to 4, filling one row at a time from the top."
+        }
+      ]
+    },
+    {
+      "id": "w-queens-trace",
+      "type": "interactive",
+      "widget": "n-queens",
+      "data": {
+        "n": 4,
+        "allSolutions": false
+      }
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch what happens once queens are sitting on a1 and c2. Every column in row 3 is attacked, so the loop finishes having placed nothing and the call simply returns. That return is the backtrack. There is no special instruction for it, just a function running out of columns to try."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Keep watching after that, and the search eventually abandons row 1 entirely: once every arrangement starting with a queen on a1 has failed, it concludes nothing beginning there can work and moves on to b1. Twenty tries proved a single fact about the first row, and every one of them was necessary. Skip any of it and you risk throwing away a real solution along with the dead ends."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It reaches the first solution only after backing all the way out of the a1 branch and restarting from b1. Brute force over all 4-square placements would test 1,820 arrangements to get there."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Drive it"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Change the board size and watch the node counter. Between 6 and 8 the work grows quickly, and the difference between the pruned search and the raw arrangement count grows faster still."
+        }
+      ]
+    },
+    {
+      "id": "w-queens",
+      "type": "interactive",
+      "widget": "n-queens",
+      "data": {}
+    },
+    {
+      "id": "w-flow-nq",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "n-queens"
+      }
     },
     {
       "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "In code"
+      "text": "The implementation"
     },
     {
-      "id": "code-queens",
+      "id": "code-nq",
       "type": "code",
       "language": "javascript",
-      "code": "function solveNQueens(n) {\n  const solutions = [];\n  const queens = [];                 // queens[row] = column\n  const cols = new Set();\n  const diag = new Set();            // row - col\n  const anti = new Set();            // row + col\n\n  function backtrack(row) {\n    if (row === n) {\n      solutions.push([...queens]);\n      return;\n    }\n\n    for (let col = 0; col < n; col++) {\n      // O(1) conflict test, no loop over placed queens.\n      if (cols.has(col) || diag.has(row - col) || anti.has(row + col)) continue;\n\n      queens.push(col);                                     // choose\n      cols.add(col); diag.add(row - col); anti.add(row + col);\n\n      backtrack(row + 1);                                   // explore\n\n      queens.pop();                                         // un-choose\n      cols.delete(col); diag.delete(row - col); anti.delete(row + col);\n    }\n  }\n\n  backtrack(0);\n  return solutions;\n}\n\n// solveNQueens(8).length -> 92",
+      "code": "function solveNQueens(n) {\n  const solutions = [];\n  const queenInRow = [];              // queenInRow[r] = the column used\n\n  const usedCols  = new Set();\n  const usedDown  = new Set();        // row - col\n  const usedUp    = new Set();        // row + col\n\n  function place(row) {\n    if (row === n) {\n      solutions.push([...queenInRow]);\n      return;\n    }\n\n    for (let col = 0; col < n; col++) {\n      const down = row - col, up = row + col;\n      if (usedCols.has(col) || usedDown.has(down) || usedUp.has(up)) continue;\n\n      usedCols.add(col); usedDown.add(down); usedUp.add(up);\n      queenInRow.push(col);\n\n      place(row + 1);\n\n      queenInRow.pop();\n      usedCols.delete(col); usedDown.delete(down); usedUp.delete(up);\n    }\n  }\n\n  place(0);\n  return solutions;\n}",
       "variants": [
         {
           "language": "python",
-          "code": "def solve_n_queens(n):\n    solutions = []\n    queens = []              # queens[row] = column\n    cols, diag, anti = set(), set(), set()   # col, row - col, row + col\n\n    def backtrack(row):\n        if row == n:\n            solutions.append(list(queens))\n            return\n\n        for col in range(n):\n            # O(1) conflict test, no loop over placed queens.\n            if col in cols or (row - col) in diag or (row + col) in anti:\n                continue\n\n            queens.append(col)                               # choose\n            cols.add(col); diag.add(row - col); anti.add(row + col)\n\n            backtrack(row + 1)                               # explore\n\n            queens.pop()                                     # un-choose\n            cols.discard(col); diag.discard(row - col); anti.discard(row + col)\n\n    backtrack(0)\n    return solutions\n\n\n# len(solve_n_queens(8)) -> 92"
+          "code": "def solve_n_queens(n):\n    solutions, queen_in_row = [], []\n    used_cols, used_down, used_up = set(), set(), set()\n\n    def place(row):\n        if row == n:\n            solutions.append(queen_in_row[:])\n            return\n\n        for col in range(n):\n            down, up = row - col, row + col\n            if col in used_cols or down in used_down or up in used_up:\n                continue\n\n            used_cols.add(col); used_down.add(down); used_up.add(up)\n            queen_in_row.append(col)\n\n            place(row + 1)\n\n            queen_in_row.pop()\n            used_cols.discard(col); used_down.discard(down); used_up.discard(up)\n\n    place(0)\n    return solutions"
+        }
+      ]
+    },
+    {
+      "id": "p-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Compare it against the template. The stopping test is "
         },
         {
-          "language": "cpp",
-          "code": "#include <functional>\n#include <vector>\n\nstd::vector<std::vector<int>> solveNQueens(int n) {\n    std::vector<std::vector<int>> solutions;\n    std::vector<int> queens;                  // queens[row] = column\n    std::vector<bool> cols(n, false);\n    std::vector<bool> diag(2 * n - 1, false); // indexed by row - col + n - 1\n    std::vector<bool> anti(2 * n - 1, false); // indexed by row + col\n\n    std::function<void(int)> backtrack = [&](int row) {\n        if (row == n) {\n            solutions.push_back(queens);\n            return;\n        }\n\n        for (int col = 0; col < n; col++) {\n            // O(1) conflict test, no loop over placed queens.\n            if (cols[col] || diag[row - col + n - 1] || anti[row + col]) continue;\n\n            queens.push_back(col);            // choose\n            cols[col] = diag[row - col + n - 1] = anti[row + col] = true;\n\n            backtrack(row + 1);               // explore\n\n            queens.pop_back();                // un-choose\n            cols[col] = diag[row - col + n - 1] = anti[row + col] = false;\n        }\n    };\n\n    backtrack(0);\n    return solutions;\n}"
-        }
-      ]
-    },
-    {
-      "id": "h-further",
-      "type": "heading",
-      "level": 2,
-      "text": "How far this scales"
-    },
-    {
-      "id": "p-further",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Counting solutions stays feasible into the high twenties with good pruning and bitmask representations, and stops being feasible shortly after. There is no polynomial algorithm for counting them."
-        }
-      ]
-    },
-    {
-      "id": "p-further-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Finding a single solution is a different question, and much easier: there are direct constructions that place n non-attacking queens without any search at all. If a problem only needs one arrangement, searching for it is the wrong tool."
-        }
-      ]
-    },
-    {
-      "id": "p-further-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "For the state of the art on the search side, Donald Knuth's "
-        },
-        {
-          "text": "Dancing Links",
+          "text": "row === n",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://arxiv.org/abs/cs/0011047"
+              "kind": "code"
             }
           ]
         },
         {
-          "text": " paper is the standard reference. It reframes problems like this as exact cover and uses reversible operations on doubly linked lists to make the undo step nearly free, and the paper reports results for n-queens up to n = 18."
+          "text": ", the choices are the "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " columns of the current row, the prune is the three-set lookup, and the un-choose removes exactly what the choose added. Four pieces of state go up and four come back down."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "h-counts",
+      "type": "heading",
+      "level": 2,
+      "text": "How the numbers grow"
+    },
+    {
+      "id": "p-counts",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The solution counts are worth having in front of you, partly as a check on your own implementation."
+        }
+      ]
+    },
+    {
+      "id": "t-counts",
+      "type": "table",
+      "headers": [
+        "Board",
+        "Solutions"
+      ],
+      "rows": [
+        [
+          "4 by 4",
+          "2"
+        ],
+        [
+          "5 by 5",
+          "10"
+        ],
+        [
+          "6 by 6",
+          "4"
+        ],
+        [
+          "7 by 7",
+          "40"
+        ],
+        [
+          "8 by 8",
+          "92"
+        ]
+      ]
+    },
+    {
+      "id": "p-counts-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The dip at 6 is real and surprises people. There is no simple formula for these numbers, which is part of why the problem stayed interesting: for larger boards, counting the solutions is done by running a search rather than by evaluating an expression."
+        }
+      ]
+    },
+    {
+      "id": "p-counts-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If your solver returns 88 rather than 92 on the 8 by 8 board, the search is not broken. A prune is rejecting placements that were actually legal, and the diagonal arithmetic is the first place to look."
+        }
+      ]
+    },
+    {
+      "id": "h-mistakes",
+      "type": "heading",
+      "level": 2,
+      "text": "Where it goes wrong"
+    },
+    {
+      "id": "p-mistake-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Getting a diagonal formula backwards.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Using "
+        },
+        {
+          "text": "row + col",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for both diagonals is the classic slip. It runs, it produces fewer solutions than it should, and nothing looks wrong. Check against the table above."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Removing only some of the state on the way out.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Four things were added and all four must be removed. Missing one leaves a phantom queen blocking squares in sibling branches."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Checking safety after placing rather than before.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " It works and it wastes the prune, since you build the state and then immediately tear it down."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Storing a reference to the working board is the same copying bug as everywhere else in this section, so take a snapshot when you record a solution."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -408,211 +435,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Why does the solver place exactly one queen per row rather than choosing 8 squares from 64?",
+            "prompt": "Why is one queen per row a safe restriction rather than a guess?",
             "options": [
               {
-                "label": "Two queens can never share a row, so the constraint is built into the representation",
+                "label": "Two queens in a row always attack, so every valid solution already has that shape",
                 "correct": true
               },
               {
-                "label": "It makes the code shorter but does not affect the search size",
+                "label": "It is a heuristic that happens to find most solutions",
                 "correct": false
               },
               {
-                "label": "Because queens move differently along rows than columns",
+                "label": "It only works for boards of size 8",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Two squares lie on the same ascending diagonal exactly when which quantity matches?",
+            "prompt": "Two squares lie on the same anti-diagonal. What do they share?",
             "options": [
               {
-                "label": "row + col",
+                "label": "The value of row + col",
                 "correct": true
               },
               {
-                "label": "row - col",
+                "label": "The value of row - col",
                 "correct": false
               },
               {
-                "label": "row × col",
+                "label": "The value of row times col",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "How many distinct solutions does the 8 by 8 board have?",
+            "prompt": "Your 8 by 8 solver returns 88 solutions. What is wrong?",
             "options": [
               {
-                "label": "92, of which 12 are unique up to rotation and reflection",
+                "label": "A prune is rejecting placements that were actually legal",
                 "correct": true
               },
               {
-                "label": "40,320, one per permutation of the columns",
+                "label": "The un-choose step is missing",
                 "correct": false
               },
               {
-                "label": "8, one per starting column",
+                "label": "The recursion stops one row early",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What exactly is the backtrack, in code terms?",
+            "options": [
+              {
+                "label": "A call returning after its loop runs out of legal choices",
+                "correct": true
+              },
+              {
+                "label": "An explicit jump back to the previous row",
+                "correct": false
+              },
+              {
+                "label": "Clearing the board and restarting from a new first move",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "h-trace",
-      "type": "heading",
-      "level": 2,
-      "text": "A complete trace on the 4 by 4 board"
-    },
-    {
-      "id": "p-trace",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The widget shows the search running, but it is worth reading the first stretch of it written out, because the backtracks are where the algorithm earns its name and they go past quickly on screen."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Columns are lettered a to d, rows numbered 1 to 4. The solver fills one row at a time, top down."
-        }
-      ]
-    },
-    {
-      "id": "code-trace",
-      "type": "code",
-      "language": "text",
-      "code": " 1. Row 1: try a -> safe, place queen.            board: a1\n 2. Row 2: try a -> rejected, a1 shares the column\n 3. Row 2: try b -> rejected, a1 shares a diagonal\n 4. Row 2: try c -> safe, place queen.            board: a1 c2\n 5. Row 3: try a -> rejected, a1 shares the column\n 6. Row 3: try b -> rejected, c2 shares a diagonal\n 7. Row 3: try c -> rejected, a1 shares a diagonal\n 8. Row 3: try d -> rejected, c2 shares a diagonal\n 9. Row 2: nothing worked below c2, lift that queen      <- BACKTRACK\n10. Row 2: try d -> safe, place queen.            board: a1 d2\n11. Row 3: try a -> rejected, a1 shares the column\n12. Row 3: try b -> safe, place queen.            board: a1 d2 b3\n13. Row 4: try a -> rejected, a1 shares the column\n14. Row 4: try b -> rejected, d2 shares a diagonal\n15. Row 4: try c -> rejected, b3 shares a diagonal\n16. Row 4: try d -> rejected, a1 shares a diagonal\n17. Row 3: nothing worked below b3, lift that queen      <- BACKTRACK\n18. Row 3: try c -> rejected, a1 shares a diagonal\n19. Row 3: try d -> rejected, d2 shares the column\n20. Row 2: nothing worked below d2, lift that queen      <- BACKTRACK\n21. Row 1: nothing worked below a1, lift that queen      <- BACKTRACK\n22. Row 1: try b -> safe, place queen.            board: b1"
-    },
-    {
-      "id": "p-trace-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Steps 5 to 8 are the pattern in miniature. Every column in row 3 is attacked, so the loop finishes having placed nothing, and the call returns. That return "
-        },
-        {
-          "text": "is",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " the backtrack: there is no special instruction for it, just a function running out of choices and handing control back to its caller."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Step 21 is the important one. After three nested backtracks the solver concludes that no arrangement at all begins with a queen on a1, and abandons that entire branch. Twenty steps of work have proved a single fact about the first row, and every one of those steps was necessary to prove it."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It reaches the first solution at step 31. Brute force over all 4-square placements would test 1,820 arrangements to get there."
-        }
-      ]
-    },
-    {
-      "id": "h-flow",
-      "type": "heading",
-      "level": 2,
-      "text": "As a flowchart"
-    },
-    {
-      "id": "p-flow",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The same algorithm drawn out. Compare it against the template chart from the introduction: it is the identical shape."
-        }
-      ]
-    },
-    {
-      "id": "w-flow-nq",
-      "type": "interactive",
-      "widget": "flowchart",
-      "data": {
-        "preset": "n-queens"
-      }
-    },
-    {
-      "id": "t-map",
-      "type": "table",
-      "headers": [
-        "Template",
-        "N-Queens"
-      ],
-      "rows": [
-        [
-          "is state a solution ?",
-          "row == n, meaning every row has a queen"
-        ],
-        [
-          "choices at this level",
-          "the n columns of the current row"
-        ],
-        [
-          "choice legal ?",
-          "is (row, col) attacked by an existing queen"
-        ],
-        [
-          "choose",
-          "place a queen at (row, col)"
-        ],
-        [
-          "explore",
-          "placeQueens(row + 1)"
-        ],
-        [
-          "un-choose",
-          "remove the queen from (row, col)"
-        ],
-        [
-          "return with no choices left",
-          "the backtrack at steps 9, 17, 20 and 21 above"
-        ]
-      ]
-    },
-    {
-      "id": "p-flow-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The one-queen-per-row decision does not appear anywhere in the chart, because it is not a step. It is a choice about how the problem is represented, made before any code runs, and it is what turns \"choose 8 squares from 64\" into \"choose a column for each row\"."
-        }
-      ]
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to palindrome partitioning",
-      "href": "/tutorials/dsa/backtracking-palindrome-partitioning",
-      "style": "primary"
     }
   ],
   "seoTitle": "N-Queens Problem: Backtracking Solution Explained Step by Step",
-  "seoDescription": "Solve the n-queens problem with backtracking. Why one queen per row shrinks the search from 4 billion to 40,320, the O(1) diagonal check, and full code in three languages.",
+  "seoDescription": "N-Queens with backtracking: why one queen per row shrinks the problem 300-fold, naming diagonals with row plus or minus column, a full annotated trace of the backtracks, and why 88 solutions means an over-eager prune.",
   "keywords": [
     "n queens problem",
     "8 queens problem",

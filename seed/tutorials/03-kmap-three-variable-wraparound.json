@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three variables means eight minterms, too many for a single row or column. The standard layout splits them 1-and-2: one variable controls two rows, the other two control four columns labeled in Gray code order, 00, 01, 11, 10. That order isn't counting order, it's arranged so each column differs from its neighbor by exactly one bit."
+          "text": "Three variables means eight minterms, too many for a single row or column. The standard layout splits them one and two: one variable controls two rows, the other two control four columns labeled in Gray code order, 00, 01, 11, 10. That order is not counting order. It is arranged so each column differs from its neighbor by exactly one bit."
         }
       ]
     },
@@ -32,7 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Look at the two ends of that Gray code sequence: 00 and 10. They aren't next to each other in the row, they sit on opposite sides of the grid, but they still differ in exactly one bit. That means the leftmost and rightmost columns of a Karnaugh map are just as adjacent as any two side-by-side columns, the grid effectively wraps around into a cylinder. The same rule applies to the top and bottom row whenever a map has more than one row."
+          "text": "Look at the two ends of that Gray code sequence: 00 and 10. They are not next to each other in the row, sitting instead on opposite sides of the grid, but they still differ in exactly one bit. That means the leftmost and rightmost columns of a Karnaugh map are just as adjacent as any two side-by-side columns, and the grid effectively wraps around into a cylinder. The same rule applies to the top and bottom row whenever a map has more than one row."
         }
       ]
     },
@@ -47,7 +47,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This isn't a special case bolted onto the grouping rule, it falls straight out of it. A group is legal exactly when every cell in it shares the same fixed values for some subset of variables. Algebra doesn't know or care where a cell happens to sit on a printed page, only whether the underlying minterms differ in a single variable, and the columns 00 and 10 do exactly that."
+          "text": "This is not a special case bolted onto the grouping rule. It falls straight out of it. A group is legal exactly when every cell in it shares the same fixed values for some subset of variables, and algebra does not know or care where a cell happens to sit on a printed page, only whether the underlying minterms differ in a single variable, which columns 00 and 10 do exactly."
         }
       ]
     },
@@ -62,7 +62,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Here's a function picked specifically to force a wraparound group: F(A, B, C) is 1 whenever C is 0, regardless of A or B. Try grouping the four 1s into a single group of four. You'll need to select cells from both the leftmost and rightmost columns to do it."
+          "text": "Here is a function picked specifically to force a wraparound group. F(A, B, C) is 1 whenever C is 0, regardless of A or B. Try grouping the four 1s into a single group of four. You will need to select cells from both the leftmost and rightmost columns to do it."
         }
       ]
     },
@@ -104,7 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "All four selected cells share C = 0 and let A and B vary freely across every combination, so C is the only variable that survives, giving the single term C'. Four cells canceling two variables at once is exactly the \"group size must be a power of two, and bigger is better\" rule from the fundamentals guide, this example just happens to need the wraparound to reach that size."
+          "text": "All four selected cells share C = 0 and let A and B vary freely across every combination, so C is the only variable that survives, giving the single term C'. Four cells canceling two variables at once is exactly the group-size-must-be-a-power-of-two rule from the fundamentals guide. This example just happens to need the wraparound to reach that size."
         }
       ]
     },
@@ -180,7 +180,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The trap here is grabbing the leftover 1 as a group of one. It has a neighbour, so it belongs in a pair, and taking the pair costs one literal less than taking the single cell."
+          "text": "The trap here is grabbing the leftover 1 as a group of one. It has a neighbor, so it belongs in a pair, and taking the pair costs one literal less than taking the single cell."
         }
       ]
     },

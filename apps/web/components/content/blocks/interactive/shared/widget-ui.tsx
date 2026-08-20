@@ -71,7 +71,13 @@ export function Segmented<T extends string>({
           const picked = next[0] as T | undefined;
           if (picked && picked !== value) onChange(picked);
         }}
-        className="gap-1.5"
+        // flex-wrap is load-bearing. The toggle-group primitive is `w-fit
+        // flex-row` with no wrapping, so a group with more than about four
+        // options runs off the side of a phone: the sorting visualiser's seven
+        // algorithms measured 465px against a 375px viewport and dragged the
+        // whole homepage into horizontal scroll. The buttons this replaced were
+        // in a plain flex-wrap row and wrapped for free.
+        className="flex-wrap gap-1.5"
       >
         {options.map((opt) => (
           <ToggleGroupItem

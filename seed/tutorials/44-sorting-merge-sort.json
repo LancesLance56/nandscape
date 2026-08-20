@@ -146,7 +146,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Here is every call, in the exact order it happens. Indentation shows recursion depth."
+          "text": "Here is every call, in the exact order it happens, with indentation showing recursion depth."
         }
       ]
     },
@@ -288,7 +288,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Keep a pointer at the front of each side. Compare the two values under the pointers, take the smaller, and advance that pointer. Repeat."
+          "text": "Keep a pointer at the front of each side, compare the two values under the pointers, take the smaller, and advance that pointer. Repeat."
         }
       ]
     },
@@ -480,7 +480,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The base case is the exit that stops the recursion. Without it, splitting would continue forever on empty arrays."
+          "text": "The base case is the exit that stops the recursion, and without it, splitting would continue forever on empty arrays."
         }
       ]
     },
@@ -618,15 +618,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "When the worst case matters",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". Quick sort is usually faster but can degrade to O(n²). Merge sort cannot."
+          "text": "When the worst case matters, quick sort is usually faster but can degrade to O(n²), and merge sort cannot."
         }
       ]
     },

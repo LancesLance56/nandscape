@@ -1,0 +1,331 @@
+{
+  "slug": "dp-one-dimension",
+  "title": "Problems That Fit in One Row",
+  "excerpt": "Three classic problems, one row of cells each. The recurrence usually falls out in a line once the state is right, and choosing the state is where all the thinking actually goes.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-20T11:00:00Z",
+  "tags": [
+    "dynamic-programming",
+    "coin change",
+    "longest increasing subsequence",
+    "dsa"
+  ],
+  "sectionSlug": "dynamic-programming",
+  "position": 50,
+  "seoTitle": "One-Dimensional Dynamic Programming: House Robber, Coin Change, LIS",
+  "seoDescription": "How to choose the state for a dynamic programming problem, why greedy coin change fails, and why the longest increasing subsequence has to index by where a run ends.",
+  "keywords": [
+    "dynamic programming state",
+    "coin change",
+    "house robber",
+    "longest increasing subsequence",
+    "greedy fails"
+  ],
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every problem in this tutorial fits inside a single row of cells. That is not a coincidence about the problems so much as a fact about their states: each one can be answered by knowing a single number, an index into a list, and nothing else whatsoever."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Getting to that point is the hard part, and it is worth saying plainly that it is hard. The recurrence usually falls out in a line or two once the state is right. Choosing the state is where the thinking goes."
+        }
+      ]
+    },
+    {
+      "id": "h-state",
+      "type": "heading",
+      "level": 2,
+      "text": "What a state actually is"
+    },
+    {
+      "id": "p-state-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A state is a complete description of a subproblem. Complete is doing real work in that sentence: two calls carrying the same state have to produce the same answer, whatever happened before either of them. When that fails, the description is missing something, and the table will end up holding two contradictory values in one cell."
+        }
+      ]
+    },
+    {
+      "id": "p-state-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Most one-dimensional problems use one of two standard shapes, and both are worth committing to memory because they turn up constantly. The first is the best answer using the first i items. The second is the best answer for a run that ends exactly at item i. Those are not the same thing, and confusing them is the most common mistake in this material."
+        }
+      ]
+    },
+    {
+      "id": "p-state-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The difference shows up at the end, when you go to read the answer off. If the table holds the best answer using the first i items, the final cell is the answer and you are done. If it holds the best answer ending at item i, the answer is the largest value anywhere in the table, because the winning run may well have finished somewhere in the middle."
+        }
+      ]
+    },
+    {
+      "id": "h-three",
+      "type": "heading",
+      "level": 2,
+      "text": "Three problems, one row each"
+    },
+    {
+      "id": "p-rob-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "No two in a row",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". A line of houses with an amount in each, and a rule that you cannot take from two houses standing next door to each other. Collect as much as you can."
+        }
+      ]
+    },
+    {
+      "id": "p-rob-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "State: the best total available from the first i houses. Every cell is a two-way decision, which is what makes this the cleanest example in the section. Skip house i and the total is whatever the first i minus 1 houses already gave you. Take house i and it pays its own amount but rules out its neighbor, so it has to pair with the best from the first i minus 2. Keep the larger of the two."
+        }
+      ]
+    },
+    {
+      "id": "p-rob-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "With the amounts 2, 7, 9, 3 and 1 the answer is 12, collected from the first, third and fifth houses. Notice what the winning selection leaves behind. It skips 7, which is the second largest number on the list, because taking it would have cost both of its neighbors."
+        }
+      ]
+    },
+    {
+      "id": "p-coins-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Fewest coins",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". A set of coin values and a target amount. Hit the target exactly, using as few coins as you can, with an unlimited supply of each value."
+        }
+      ]
+    },
+    {
+      "id": "p-coins-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This one deserves a moment, because the obvious approach fails and fails quietly. Taking the largest coin that still fits, over and over, is what everyone does at a till, and it happens to be correct for the coin systems most countries actually use. Give it coins of 1, 3 and 4 with a target of 6 and greed takes the 4, then a 1, then another 1, and reports three coins. Two threes would have done it."
+        }
+      ]
+    },
+    {
+      "id": "p-coins-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "State: the fewest coins that make amount a. The rule here reads over every coin rather than over a fixed pair of neighbors, since any coin at all could have been the last one paid. Try each in turn, look up what the remainder already costs, add one for the coin you just spent, and keep the smallest result."
+        }
+      ]
+    },
+    {
+      "id": "p-lis-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Longest rising run",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Pick out the longest subsequence of a list whose values increase. Skipping is allowed, reordering is not."
+        }
+      ]
+    },
+    {
+      "id": "p-lis-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is the one that forces the second shape of state. To extend a run you have to know what value it finished on, and the best answer among the first i items does not tell you that, because the best answer might have ended on something huge that nothing can follow. The longest run ending exactly at item i does tell you, since item i is right there in the description."
+        }
+      ]
+    },
+    {
+      "id": "p-lis-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The cost is different too, and the arrows in the widget show why. Each cell has to look back over every earlier cell rather than a fixed two of them, so the work per cell grows as you go and the whole thing lands at n squared instead of n. On the list 3, 1, 4, 1, 5, 9, 2 and 6 the answer is 4."
+        }
+      ]
+    },
+    {
+      "id": "p-widget",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "All three are in the widget below, along with climbing stairs from the last tutorial for comparison. Switch between them and watch the arrows. Stairs and houses read a fixed two cells every time, while coins and the rising run read a number of cells that changes as the table fills."
+        }
+      ]
+    },
+    {
+      "id": "w-array",
+      "type": "interactive",
+      "widget": "dp-array",
+      "data": {
+        "problem": "rob"
+      }
+    },
+    {
+      "id": "h-check",
+      "type": "heading",
+      "level": 2,
+      "text": "A checklist for finding the state"
+    },
+    {
+      "id": "p-check-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When a problem does not obviously match any shape you already know, three questions asked in this order will usually get you there."
+        }
+      ]
+    },
+    {
+      "id": "t-check",
+      "type": "table",
+      "headers": [
+        "Ask this",
+        "And it hands you"
+      ],
+      "rows": [
+        [
+          "What decision does the algorithm make at each step?",
+          "the shape of the recurrence"
+        ],
+        [
+          "What do I need to know in order to make that decision?",
+          "the state"
+        ],
+        [
+          "Which states can I answer without deciding anything?",
+          "the base cases"
+        ]
+      ],
+      "caption": "Asked in this order, because the second answer is what the first one keeps needing."
+    },
+    {
+      "id": "p-check-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The order is not decoration. People reach for the recurrence first, get halfway through writing it, and discover that the thing they need to look at is not in the state they chose. Working out what a decision requires, before writing the rule that makes the decision, saves all of that."
+        }
+      ]
+    },
+    {
+      "id": "p-check-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One more habit worth building. Once you have a candidate state, say it out loud as a full sentence with the word best or the word number in it, and check that the sentence would still make sense to somebody who had not seen the problem. The best total from the first i houses passes. The best total so far does not, because so far is not a description of anything."
+        }
+      ]
+    },
+    {
+      "id": "q-check",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Coins of 1, 3 and 4 with a target of 6. Why does taking the largest coin that fits go wrong?",
+            "options": [
+              {
+                "label": "It takes a 4 and then two 1s for three coins, where two 3s do it in two",
+                "correct": true
+              },
+              {
+                "label": "It runs out of coins before reaching the target",
+                "correct": false
+              },
+              {
+                "label": "It never terminates on this coin set",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why does the longest rising run index by where a run ends, rather than by the first i items?",
+            "options": [
+              {
+                "label": "Extending a run requires knowing the value it ended on",
+                "correct": true
+              },
+              {
+                "label": "It uses less memory that way",
+                "correct": false
+              },
+              {
+                "label": "The first i items are not always in increasing order",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A table holds the longest rising run ending at each position. Where is the final answer?",
+            "options": [
+              {
+                "label": "The largest value anywhere in the table",
+                "correct": true
+              },
+              {
+                "label": "The last cell",
+                "correct": false
+              },
+              {
+                "label": "The sum of every cell",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One index, one row, and one number in each cell. The next tutorial covers what happens when one index is not enough, which is the situation you land in the moment a problem involves two sequences rather than one."
+        }
+      ]
+    }
+  ]
+}

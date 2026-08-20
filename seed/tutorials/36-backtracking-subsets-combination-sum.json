@@ -1,7 +1,7 @@
 {
   "slug": "backtracking-subsets-combination-sum",
   "title": "Subsets and Combination Sum",
-  "excerpt": "The same tree, twice: once with nothing rejected and once with a single comparison that deletes half the work. This is where pruning stops being an abstraction.",
+  "excerpt": "The gentlest problem in the section, done slowly. One parameter separates 2 to the n work from n factorial work, and combination sum is where pruning first earns its keep.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T09:10:00Z",
@@ -20,143 +20,250 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The previous page built every subset and rejected nothing. Now the same tree gets a constraint bolted on: only keep the subsets that add up to a target. That one requirement is enough to show what pruning actually does to a search."
+          "text": "Subsets is the gentlest problem in this section, and it is worth doing carefully rather than quickly, since nothing here gets rejected, so you can watch the recursion's shape without a prune complicating the picture."
         }
       ]
     },
     {
-      "id": "h-shape",
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The task: given a list of distinct numbers, produce every subset, which for [1,2,3] is eight answers, from the empty set up to the whole thing."
+        }
+      ]
+    },
+    {
+      "id": "h-count",
       "type": "heading",
       "level": 2,
-      "text": "Two ways to write the subset tree"
+      "text": "Knowing the answer's size before you start"
     },
     {
-      "id": "p-shape",
+      "id": "p-count",
       "type": "paragraph",
       "content": [
         {
-          "text": "There are two standard formulations, and they produce differently shaped trees for the same answers."
+          "text": "It pays to know how many answers to expect, because it tells you what your program is allowed to cost. Every item faces one independent decision, in or out, so with n items that is 2 multiplied by itself n times: 2 to the power of n subsets. For 3 items that is 8. For 20 items, about a million. For 40, over a trillion."
         }
       ]
     },
     {
-      "id": "t-shape",
-      "type": "table",
-      "headers": [
-        "Formulation",
-        "Branching",
-        "Tree shape"
-      ],
-      "rows": [
-        [
-          "Include or exclude item i, then move to i+1",
-          "Always 2",
-          "A perfect binary tree of depth n, 2^n leaves"
-        ],
-        [
-          "Loop over remaining items, recurse from i+1",
-          "Shrinks as you go",
-          "Depth n, 2^n nodes total, every node an answer"
-        ]
-      ]
-    },
-    {
-      "id": "p-shape-2",
+      "id": "p-count-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Everything on this page uses the second one. It generalises to permutations, n-queens and colouring without changing shape, whereas the include/exclude version is specific to picking a subset of a fixed list."
+          "text": "Every item faces one independent decision: in or out. With "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " items that is "
+        },
+        {
+          "text": "2",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " multiplied by itself "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " times, so 2 to the power of "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " subsets. For 3 items, 8. For 20 items, about a million. For 40, over a trillion."
         }
       ]
     },
     {
-      "id": "h-target",
+      "id": "p-count-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So there is no fast algorithm hiding here. Any correct program has to produce 2 to the power of "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " answers, and printing them alone takes that long. When the output is exponential the algorithm has to be too, and this is one of the rare cases where an exponential runtime is not a sign of a mistake."
+        }
+      ]
+    },
+    {
+      "id": "h-decisions",
       "type": "heading",
       "level": 2,
-      "text": "Adding the constraint"
+      "text": "Turning it into decisions"
     },
     {
-      "id": "p-target",
+      "id": "p-decisions",
       "type": "paragraph",
       "content": [
         {
-          "text": "Combination sum asks for every subset of a candidate list that totals exactly some target. The naive way is to build all 2^n subsets and test each one. That works, and it is wasteful in a way that is easy to see once you watch it."
+          "text": "The template from the introduction needs three things filled in: what a complete answer looks like, what choices exist at each step, and which of them are allowed."
         }
       ]
     },
     {
-      "id": "p-target-2",
+      "id": "p-decisions-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "If the running total is already past the target and every candidate is positive, nothing below that node can ever come back down to it. The entire subtree is dead, and it is dead the moment you compute the total, not several levels later when a leaf gets tested."
+          "text": "The natural reading is that a state is a partial subset and a choice is \"which item do I add next\". Every state is already a valid subset, so every node in the tree records an answer rather than only the leaves. That is unusual and worth noticing: in most problems only complete states count."
         }
       ]
     },
     {
-      "id": "h-compare",
+      "id": "p-decisions-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now a real problem appears. If each step may choose any item, you will build the same subset repeatedly under different orderings."
+        }
+      ]
+    },
+    {
+      "id": "code-dup",
+      "type": "code",
+      "language": "text",
+      "code": "Without a start index, choosing from all of [1,2,3] every time:\n\n  [] -> [1] -> [1,2]        and        [] -> [2] -> [2,1]\n\nSame set, built twice, and the tree keeps doing it. With start,\na branch only ever looks at items to the RIGHT of what it took."
+    },
+    {
+      "id": "p-decisions-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The fix is a single parameter. Pass down a start index, and only ever choose items at or after it, so having taken item 2, later steps consider only items 3 onward. Each subset is then built in exactly one order and appears exactly once."
+        }
+      ]
+    },
+    {
+      "id": "p-decisions-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This one parameter is the difference between 2 to the power of "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " work and "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " factorial work. It is the most important line in the problem and it looks like nothing."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
       "type": "heading",
       "level": 2,
-      "text": "Compare the two runs"
+      "text": "Watch the tree"
     },
     {
-      "id": "p-compare",
+      "id": "p-play",
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch pruning off and on below. The candidates, the target and the answers all stay the same, so the only thing worth watching is the node counter."
+          "text": "Step through and match the tree against the trace from the introduction. Every node is an answer here, so the count of recorded answers climbs steadily rather than only at the bottom."
         }
       ]
     },
     {
-      "id": "w-combo",
+      "id": "w-tree",
       "type": "interactive",
       "widget": "backtracking-tree",
       "data": {
-        "problem": "combination-sum",
-        "candidates": [
-          2,
-          3,
-          5,
-          6,
-          8
-        ],
-        "target": 10
+        "mode": "subsets"
       }
     },
     {
-      "id": "p-compare-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "With pruning off the search enters 29 nodes. With it on, 13, and 8 branches get cut before they are built. Both find the same two answers. The unpruned version spends most of its time in subtrees that were doomed at the second level."
-        }
-      ]
+      "id": "w-flow-subsets",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "subsets"
+      }
     },
     {
-      "id": "p-compare-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That ratio grows quickly. Five candidates is small enough that both runs finish instantly; at twenty candidates the pruned version is still fine and the naive one is building a million subsets to test."
-        }
-      ]
-    },
-    {
-      "id": "h-sort",
+      "id": "h-combo",
       "type": "heading",
       "level": 2,
-      "text": "Why the list is sorted"
+      "text": "Combination sum, where pruning finally appears"
     },
     {
-      "id": "p-sort",
+      "id": "p-combo",
       "type": "paragraph",
       "content": [
         {
-          "text": "The candidates are sorted ascending, and that is load-bearing. It lets the rejection use "
+          "text": "Subsets had no rules to break, so nothing was ever rejected, but combination sum adds one, and it is where the prune from the introduction earns its keep."
+        }
+      ]
+    },
+    {
+      "id": "p-combo-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The task: given candidate numbers and a target, find every combination that sums to exactly the target, where each candidate may be used as many times as you like."
+        }
+      ]
+    },
+    {
+      "id": "p-combo-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two things change from subsets. First, since reuse is allowed, a recursive call passes "
         },
         {
-          "text": "break",
+          "text": "i",
           "marks": [
             {
               "kind": "code"
@@ -167,7 +274,161 @@
           "text": " rather than "
         },
         {
+          "text": "i + 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", so the same item stays available. Second, and this is the interesting part, you can tell a branch is doomed before finishing it. If the running total already exceeds the target, no amount of adding more positive numbers will bring it back down."
+        }
+      ]
+    },
+    {
+      "id": "p-combo-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That single check cuts an entire subtree. Below is the tree for candidates 2, 3 and 5 with target 8, pruning on: step through it and watch every branch that gets cut the moment a partial sum overshoots."
+        }
+      ]
+    },
+    {
+      "id": "p-combo-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch the branches-cut counter as you go. Each cut is a subtree a generate-and-filter approach would have explored all the way to the bottom before throwing it away. The deeper the tree, the more each cut saves."
+        }
+      ]
+    },
+    {
+      "id": "h-play-combo",
+      "type": "heading",
+      "level": 2,
+      "text": "Pruning on and off"
+    },
+    {
+      "id": "p-play-combo",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch pruning off and back on. The candidates, the target and the answers all stay the same, so the only thing worth watching is the node counter. That difference is the entire value of thinking about the problem before writing the loop."
+        }
+      ]
+    },
+    {
+      "id": "w-tree-combo",
+      "type": "interactive",
+      "widget": "backtracking-tree",
+      "data": {
+        "problem": "combination-sum",
+        "candidates": [
+          2,
+          3,
+          5
+        ],
+        "target": 8,
+        "pruning": true
+      }
+    },
+    {
+      "id": "h-sorting",
+      "type": "heading",
+      "level": 2,
+      "text": "One more improvement worth knowing"
+    },
+    {
+      "id": "p-sorting",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If the candidates are sorted, the prune gets stronger. When you meet a candidate larger than the remaining target, every candidate after it is larger too, so instead of skipping this one you can stop the loop entirely."
+        }
+      ]
+    },
+    {
+      "id": "p-sorting-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That turns a "
+        },
+        {
           "text": "continue",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " into a "
+        },
+        {
+          "text": "break",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and skips the rest of the row rather than one cell of it. The sort costs "
+        },
+        {
+          "text": "n log n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " once and pays for itself immediately. It is a good habit generally: sorting the input often makes a prune sharper."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "The implementation"
+    },
+    {
+      "id": "code-combo",
+      "type": "code",
+      "language": "javascript",
+      "code": "function combinationSum(candidates, target) {\n  const answers = [];\n  const current = [];\n\n  function solve(start, remaining) {\n    if (remaining === 0) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let i = start; i < candidates.length; i++) {\n      if (candidates[i] > remaining) continue;   // the prune\n\n      current.push(candidates[i]);\n      solve(i, remaining - candidates[i]);       // i, not i+1: reuse allowed\n      current.pop();\n    }\n  }\n\n  solve(0, target);\n  return answers;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def combination_sum(candidates, target):\n    answers, current = [], []\n\n    def solve(start, remaining):\n        if remaining == 0:\n            answers.append(current[:])\n            return\n\n        for i in range(start, len(candidates)):\n            if candidates[i] > remaining:\n                continue                      # the prune\n\n            current.append(candidates[i])\n            solve(i, remaining - candidates[i])   # i, not i+1: reuse allowed\n            current.pop()\n\n    solve(0, target)\n    return answers"
+        }
+      ]
+    },
+    {
+      "id": "p-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Compare this against the subsets code from the introduction. The skeleton is untouched. What changed is the stopping test, one prune, and "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " in place of "
+        },
+        {
+          "text": "i + 1",
           "marks": [
             {
               "kind": "code"
@@ -180,122 +441,73 @@
       ]
     },
     {
-      "id": "p-sort-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "If candidate "
-        },
-        {
-          "text": "i",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " already pushes the total past the target, then candidate "
-        },
-        {
-          "text": "i+1",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " is at least as large and pushes it further. There is no point testing the rest of the loop. On an unsorted list that reasoning collapses and you are back to skipping one candidate at a time."
-        }
-      ]
-    },
-    {
-      "id": "code-combo",
-      "type": "code",
-      "language": "javascript",
-      "code": "function combinationSum(candidates, target) {\n  const sorted = [...candidates].sort((a, b) => a - b);   // required for the break\n  const out = [];\n  const current = [];\n\n  function backtrack(start, sum) {\n    if (sum === target) {\n      out.push([...current]);\n      return;                       // all candidates positive, so going deeper cannot help\n    }\n\n    for (let i = start; i < sorted.length; i++) {\n      // Sorted, so if this one overshoots, so does everything after it.\n      if (sum + sorted[i] > target) break;\n\n      current.push(sorted[i]);                    // choose\n      backtrack(i + 1, sum + sorted[i]);          // explore\n      current.pop();                              // un-choose\n    }\n  }\n\n  backtrack(0, 0);\n  return out;\n}\n\n// combinationSum([2, 3, 5, 6, 8], 10) -> [[2, 3, 5], [2, 8]]",
-      "variants": [
-        {
-          "language": "python",
-          "code": "def combination_sum(candidates, target):\n    ordered = sorted(candidates)          # required for the break\n    out = []\n    current = []\n\n    def backtrack(start, total):\n        if total == target:\n            out.append(list(current))\n            return                        # all candidates positive, going deeper cannot help\n\n        for i in range(start, len(ordered)):\n            # Sorted, so if this one overshoots, so does everything after it.\n            if total + ordered[i] > target:\n                break\n\n            current.append(ordered[i])            # choose\n            backtrack(i + 1, total + ordered[i])  # explore\n            current.pop()                         # un-choose\n\n    backtrack(0, 0)\n    return out\n\n\n# combination_sum([2, 3, 5, 6, 8], 10) -> [[2, 3, 5], [2, 8]]"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <vector>\n\nstd::vector<std::vector<int>> combinationSum(std::vector<int> candidates, int target) {\n    std::sort(candidates.begin(), candidates.end());   // required for the break\n    std::vector<std::vector<int>> out;\n    std::vector<int> current;\n\n    std::function<void(int, int)> backtrack = [&](int start, int sum) {\n        if (sum == target) {\n            out.push_back(current);\n            return;      // all candidates positive, going deeper cannot help\n        }\n\n        for (int i = start; i < (int)candidates.size(); i++) {\n            // Sorted, so if this one overshoots, so does everything after it.\n            if (sum + candidates[i] > target) break;\n\n            current.push_back(candidates[i]);          // choose\n            backtrack(i + 1, sum + candidates[i]);     // explore\n            current.pop_back();                        // un-choose\n        }\n    };\n\n    backtrack(0, 0);\n    return out;\n}"
-        }
-      ]
-    },
-    {
-      "id": "h-variants",
+      "id": "h-mistakes",
       "type": "heading",
       "level": 2,
-      "text": "The variants you will actually be asked for"
+      "text": "Where it goes wrong"
     },
     {
-      "id": "p-variants",
+      "id": "p-mistake-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "Combination sum shows up in three flavours, and they differ by one line each."
-        }
-      ]
-    },
-    {
-      "id": "t-variants",
-      "type": "table",
-      "headers": [
-        "Variant",
-        "The change"
-      ],
-      "rows": [
-        [
-          "Each candidate used at most once",
-          "Recurse with i + 1, as above"
-        ],
-        [
-          "Candidates may be reused without limit",
-          "Recurse with i instead of i + 1"
-        ],
-        [
-          "Input has duplicates, answers must not repeat",
-          "Sort, then skip when i > start and candidates[i] === candidates[i-1]"
-        ]
-      ]
-    },
-    {
-      "id": "p-variants-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That third rule is worth staring at. The condition is "
-        },
-        {
-          "text": "i > start",
+          "text": "Passing i + 1 when reuse is allowed, or i when it is not.",
           "marks": [
             {
-              "kind": "code"
+              "kind": "bold"
             }
           ]
         },
         {
-          "text": ", not "
-        },
-        {
-          "text": "i > 0",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ". The first occurrence of a repeated value at a given level is allowed; later ones would start a subtree identical to one already built. The same idea comes back on the next page for permutations, in a slightly different disguise."
+          "text": " These two problems differ by that single character, and getting it wrong produces answers that look plausible. If your combination sum output is missing every repeated-element answer, this is why."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Dropping the start index in subsets.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " You get every permutation of every subset, so the answer count jumps from 8 to 16 on three items and the duplicates are not obvious at a glance."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Checking the total only at the leaves is correct and slow, since the whole point is to reject as early as the rules allow."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Assuming the prune still holds with negative candidates.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " If a candidate can be negative, exceeding the target no longer means the branch is dead, because a later negative can bring the sum back. The prune quietly becomes wrong. Check the constraints before relying on it."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -307,136 +519,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Why must the candidate list be sorted before using break to cut the loop short?",
+            "prompt": "What is the start index in the subsets solution actually preventing?",
             "options": [
               {
-                "label": "So that a candidate overshooting the target guarantees every later candidate does too",
+                "label": "The same subset being built in several different orders",
                 "correct": true
               },
               {
-                "label": "Because the output has to come back in sorted order",
+                "label": "Subsets larger than the input",
                 "correct": false
               },
               {
-                "label": "Because recursion requires sorted input",
+                "label": "Infinite recursion",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Pruning turned a 29-node search into a 13-node one. What happened to the answers?",
+            "prompt": "How many subsets does a list of 20 distinct items have?",
             "options": [
               {
-                "label": "Identical. Pruning only removes branches that provably contain no answer",
+                "label": "About a million, since it is 2 to the power of 20",
                 "correct": true
               },
               {
-                "label": "Some answers are lost, which is the trade-off for speed",
+                "label": "400, since it is 20 squared",
                 "correct": false
               },
               {
-                "label": "The answers come back in a different order but are otherwise the same",
+                "label": "20 factorial",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "To allow each candidate to be reused any number of times, what changes?",
+            "prompt": "In combination sum, why does the recursive call pass i rather than i + 1?",
             "options": [
               {
-                "label": "Recurse with i rather than i + 1",
+                "label": "Because a candidate may be used more than once, so it stays available",
                 "correct": true
               },
               {
-                "label": "Remove the sort",
+                "label": "To avoid skipping the last candidate",
                 "correct": false
               },
               {
-                "label": "Drop the un-choose line",
+                "label": "To keep the answers sorted",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A candidate exceeds the remaining target and the list is sorted. What is better than continue?",
+            "options": [
+              {
+                "label": "break, since every later candidate is larger and will also fail",
+                "correct": true
+              },
+              {
+                "label": "return, since the whole search is finished",
+                "correct": false
+              },
+              {
+                "label": "Nothing, continue is already optimal",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "h-flow",
-      "type": "heading",
-      "level": 2,
-      "text": "As a flowchart"
-    },
-    {
-      "id": "p-flow",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Subsets is the template with the recording step moved to the top, because here every node is an answer rather than only the leaves."
-        }
-      ]
-    },
-    {
-      "id": "w-flow-subsets",
-      "type": "interactive",
-      "widget": "flowchart",
-      "data": {
-        "preset": "subsets"
-      }
-    },
-    {
-      "id": "p-flow-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The detail worth noticing is "
-        },
-        {
-          "text": "i = start",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " rather than "
-        },
-        {
-          "text": "i = 0",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ". Starting the loop at the parent's index is what stops {a, b} and {b, a} both being generated, and it is why this tree has 2^n nodes instead of n! ones."
-        }
-      ]
-    },
-    {
-      "id": "p-flow-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Combination sum is this same chart with one extra decision inserted before the recursive call: if the running total already exceeds the target, cut the branch. That single diamond is the difference between the 29-node and the 13-node run above."
-        }
-      ]
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to permutations",
-      "href": "/tutorials/dsa/backtracking-permutations",
-      "style": "primary"
     }
   ],
   "seoTitle": "Combination Sum and Subsets: Backtracking with Pruning",
-  "seoDescription": "Generate all subsets, then add a target-sum constraint and watch pruning cut the search from 29 nodes to 13. Includes the reuse and duplicate-handling variants.",
+  "seoDescription": "Subsets and combination sum with backtracking: why the answer count is exponential, what the start index actually prevents, a full pruned trace, and why sorting the candidates sharpens the prune.",
   "keywords": [
     "combination sum",
     "subsets backtracking",

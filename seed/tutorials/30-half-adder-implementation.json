@@ -26,40 +26,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A "
-        },
-        {
-          "text": "half adder",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " adds two single bits and produces two outputs: a "
-        },
-        {
-          "text": "SUM",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " bit and a "
-        },
-        {
-          "text": "CARRY",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " bit. It is the smallest piece of arithmetic hardware there is, and every larger adder is built from copies of it."
+          "text": "A half adder adds two single bits. It produces two outputs, a SUM bit and a CARRY bit, and it is the smallest piece of arithmetic hardware there is, which matters because every larger adder is built from copies of it."
         }
       ]
     },
@@ -74,18 +41,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Adding two bits can produce 2, which does not fit in one bit. "
-        },
-        {
-          "text": "1 + 1 = 10",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " in binary: a sum of 0 and a carry of 1. That overflow is exactly what the carry output is for."
+          "text": "Adding two bits can produce 2. That does not fit in one bit, so the result has to spill somewhere, and in binary 1 + 1 = 10, which reads as a sum of 0 and a carry of 1. The carry output is where the overflow goes."
         }
       ]
     },
@@ -148,18 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Look at the SUM column: it is 1 exactly when the inputs differ. That is the definition of XOR, so "
-        },
-        {
-          "text": "SUM = A XOR B",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": "."
+          "text": "Look at the SUM column. It is 1 exactly when the inputs differ, which is the definition of XOR, so SUM = A XOR B."
         }
       ]
     },
@@ -174,18 +119,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "CARRY is 1 only when both inputs are 1, which is AND. So "
-        },
-        {
-          "text": "CARRY = A AND B",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ". The entire half adder is two gates."
+          "text": "CARRY is 1 only when both inputs are 1, and that is AND, so CARRY = A AND B. Two gates, and the half adder is finished."
         }
       ]
     },
@@ -200,19 +134,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A half adder has nowhere to accept a carry from a previous column, so it can only ever add the rightmost bit of a number. Fixing that is what the "
-        },
-        {
-          "text": "full adder",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/full-adder-implementation"
-            }
-          ]
-        },
-        {
-          "text": " is for."
+          "text": "A half adder has nowhere to accept a carry from a previous column, so it can only ever add the rightmost bit of a number. Fixing that is what the full adder is for."
         }
       ]
     },
@@ -227,7 +149,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two gates, four rows to check. This is the best possible first circuit to build from scratch."
+          "text": "Two gates and four rows to check. If you are building your first circuit from scratch this is the one to start with, because you can verify every possible input by hand in about a minute."
         }
       ]
     },

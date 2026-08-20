@@ -1,7 +1,7 @@
 {
   "slug": "backtracking-introduction",
   "title": "Introduction to Backtracking",
-  "excerpt": "Backtracking is brute force that gives up early. One template covers subsets, permutations, n-queens and sudoku, and the whole trick is knowing when to stop going deeper.",
+  "excerpt": "Some problems have no formula and you simply have to search. Backtracking is how you search without doing an impossible amount of work, and it is one template you will reuse for the rest of the section.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T09:00:00Z",
@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Some problems have no clever formula. There is no arithmetic that hands you a valid sudoku grid, and no closed form that lists every way to cut a string into palindromes. For those, the only honest approach is to try things."
+          "text": "Most of the algorithms you meet early on compute an answer. You feed them a graph or a list, they run a fixed procedure, and a result comes out. Backtracking is for the problems where no such procedure exists, and the only honest thing to do is try possibilities and see which ones survive."
         }
       ]
     },
@@ -28,10 +28,107 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Trying everything is brute force, and it is usually far too slow. "
+          "text": "Place eight queens on a chessboard so none attacks another. Fill in a Sudoku grid, or split a string so every piece reads the same forwards and backwards. There is no formula for any of these, and the only honest thing to do is try possibilities and see which ones survive."
+        }
+      ]
+    },
+    {
+      "id": "h-naive",
+      "type": "heading",
+      "level": 2,
+      "text": "Why the obvious approach dies"
+    },
+    {
+      "id": "p-naive",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The straightforward plan is to generate every possible arrangement and then throw away the ones that break the rules. It is simple, it is obviously correct, and for anything but toy inputs it does not finish."
+        }
+      ]
+    },
+    {
+      "id": "p-naive-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Eight queens on a chessboard is a good illustration. Choosing 8 squares out of 64 gives a little over 4.4 billion arrangements to check. Almost all of them are absurd: they put two queens on the same square of the board's first row, or stack three in one column."
+        }
+      ]
+    },
+    {
+      "id": "p-naive-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "You can already improve on that by noticing something about the problem rather than about the code. Two queens in the same row always attack each other, so any valid solution has exactly one queen per row. Instead of choosing squares, choose a column for each of the 8 rows. That is 8 to the power of 8, which is about 16.7 million: still large, but nearly three hundred times smaller, and it came from thinking about the problem for a minute."
+        }
+      ]
+    },
+    {
+      "id": "t-explosion",
+      "type": "table",
+      "headers": [
+        "Way of framing it",
+        "Arrangements to consider"
+      ],
+      "rows": [
+        [
+          "Choose 8 squares from 64",
+          "about 4.4 billion"
+        ],
+        [
+          "Choose a column for each row",
+          "16,777,216"
+        ],
+        [
+          "Choose a column, skipping ones already attacked",
+          "2,057 board positions actually built"
+        ]
+      ]
+    },
+    {
+      "id": "p-naive-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That last row is what this page is about, and the gap between it and the others is the whole reason backtracking is worth learning."
+        }
+      ]
+    },
+    {
+      "id": "h-insight",
+      "type": "heading",
+      "level": 2,
+      "text": "The idea: fail early, not at the end"
+    },
+    {
+      "id": "p-insight",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Generate-and-filter has one specific weakness: it builds a complete arrangement before it checks anything. But you very often know an arrangement is doomed long before it is complete."
+        }
+      ]
+    },
+    {
+      "id": "p-insight-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If the first two queens already attack each other, every single completion of that board is invalid. There are 8 to the power of 6 of them, which is 262,144 boards, and not one is worth building. Generate-and-filter builds all of them and rejects all of them individually."
+        }
+      ]
+    },
+    {
+      "id": "p-insight-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So the idea is to build the answer one piece at a time, and to check the rules after each piece rather than at the end. The moment a partial answer is already broken, abandon it and everything that could have grown from it. Cutting off a whole family of possibilities with one check is called "
         },
         {
-          "text": "Backtracking",
+          "text": "pruning",
           "marks": [
             {
               "kind": "bold"
@@ -39,16 +136,16 @@
           ]
         },
         {
-          "text": " is brute force with one addition: the moment a partial attempt is provably hopeless, you abandon it and everything that would have been built on top of it. That single change is the difference between a program that finishes and one that does not."
+          "text": ", and it is where all the savings come from."
         }
       ]
     },
     {
-      "id": "p-hook-3",
+      "id": "p-insight-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "The term goes back to the 1950s, when D. H. Lehmer coined it. The idea is older than most of the data structures it gets taught alongside."
+          "text": "The word backtracking describes the other half. Having abandoned a partial answer, you have to get back to a state where you can try something else. You undo your last decision and try the next option. If there is no next option, you undo the decision before that. That walking-backwards-to-try-again is the backtrack."
         }
       ]
     },
@@ -56,14 +153,14 @@
       "id": "h-tree",
       "type": "heading",
       "level": 2,
-      "text": "The state space tree"
+      "text": "Every one of these problems is secretly a tree"
     },
     {
       "id": "p-tree",
       "type": "paragraph",
       "content": [
         {
-          "text": "Every backtracking problem describes a tree, whether or not you ever draw it. The root is the empty attempt, each edge is one decision, and each node holds the partial answer built so far."
+          "text": "This is the mental model worth building carefully, because once you have it, every problem in this section looks like the same problem."
         }
       ]
     },
@@ -72,77 +169,59 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This tree is never stored anywhere. It exists only as the shape your recursion traces out, which is why it is worth looking at once: the call stack at any moment is exactly one root-to-node path, and returning from a call is exactly a step back up."
+          "text": "Think about the shape your search traces out. The root is the empty attempt, before you have decided anything. Each edge going down is one decision. Each node is the partial answer you have built so far. The leaves are complete attempts. Below is that tree, built live, for the smallest useful example: finding every subset of the numbers 1, 2 and 3, where each decision is simply whether to include the next number."
         }
       ]
     },
     {
-      "id": "t-tree",
-      "type": "table",
-      "headers": [
-        "In the tree",
-        "In the code"
-      ],
-      "rows": [
-        [
-          "Going down one level",
-          "A recursive call"
-        ],
-        [
-          "A node's branches",
-          "One iteration of the loop over choices"
-        ],
-        [
-          "Backing up a level",
-          "Returning, after undoing the choice"
-        ],
-        [
-          "A branch that is never drawn",
-          "A constraint check that rejected the choice"
-        ],
-        [
-          "A leaf",
-          "Either a finished answer or a dead end"
+      "id": "w-tree-static",
+      "type": "interactive",
+      "widget": "backtracking-tree",
+      "data": {
+        "problem": "subsets",
+        "items": [
+          "1",
+          "2",
+          "3"
         ]
+      }
+    },
+    {
+      "id": "p-tree-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice that your own code never builds this tree as a data structure, even though the widget above is drawing exactly this shape for you as a teaching aid. The tree exists only as the shape your recursive calls trace out over time. Going down an edge is a function call, and returning from that call is the backtrack. It is a way of seeing what your program is doing, and once you can see it, pruning has an obvious meaning: it is cutting off an entire subtree, along with every leaf underneath it."
+        }
       ]
     },
     {
       "id": "h-template",
       "type": "heading",
       "level": 2,
-      "text": "One template, every problem"
+      "text": "The template, which is genuinely always the same"
     },
     {
       "id": "p-template",
       "type": "paragraph",
       "content": [
         {
-          "text": "Almost every backtracking solution is the same seven lines. The problem only changes what goes inside them."
+          "text": "Every problem in this section is this shape with different pieces filled in, and it is worth reading a few times, because the rest of the section is variations on it."
         }
       ]
     },
     {
       "id": "code-template",
       "type": "code",
-      "language": "javascript",
-      "code": "function backtrack(state) {\n  if (isSolution(state)) {\n    record(state);\n    return;                     // usually no point going deeper\n  }\n\n  for (const choice of choicesFrom(state)) {\n    if (!isValid(state, choice)) continue;   // prune: never build this branch\n\n    apply(state, choice);       // choose\n    backtrack(state);           // explore\n    undo(state, choice);        // un-choose\n  }\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "def backtrack(state):\n    if is_solution(state):\n        record(state)\n        return                       # usually no point going deeper\n\n    for choice in choices_from(state):\n        if not is_valid(state, choice):\n            continue                 # prune: never build this branch\n\n        apply(state, choice)         # choose\n        backtrack(state)             # explore\n        undo(state, choice)          # un-choose"
-        },
-        {
-          "language": "cpp",
-          "code": "void backtrack(State& state) {\n    if (isSolution(state)) {\n        record(state);\n        return;                          // usually no point going deeper\n    }\n\n    for (const Choice& choice : choicesFrom(state)) {\n        if (!isValid(state, choice)) continue;  // prune: never build this branch\n\n        apply(state, choice);            // choose\n        backtrack(state);                // explore\n        undo(state, choice);             // un-choose\n    }\n}"
-        }
-      ]
+      "language": "text",
+      "code": "function solve(state):\n    if state is a complete answer:\n        record it\n        return\n\n    for each choice available from state:\n        if choice is not allowed:\n            continue          # prune: never build anything below here\n\n        apply choice          # choose\n        solve(state)          # explore\n        undo choice           # un-choose"
     },
     {
       "id": "p-template-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Choose, explore, un-choose. If you remember nothing else from this section, remember those three lines in that order."
+          "text": "The three lines at the bottom are the heart of it, and they are always in that order. Choose, explore, un-choose. Miss the third and you carry a decision into branches where it was never made."
         }
       ]
     },
@@ -151,10 +230,10 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Wikipedia's write-up splits this into six named pieces ("
+          "text": "The "
         },
         {
-          "text": "root",
+          "text": "continue",
           "marks": [
             {
               "kind": "code"
@@ -162,172 +241,97 @@
           ]
         },
         {
-          "text": ", "
-        },
-        {
-          "text": "reject",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", "
-        },
-        {
-          "text": "accept",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", "
-        },
-        {
-          "text": "first",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", "
-        },
-        {
-          "text": "next",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " and "
-        },
-        {
-          "text": "output",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": "), which is the same skeleton with the parts given names. It is worth reading once you have written two or three of these by hand: "
-        },
-        {
-          "text": "the Wikipedia article on backtracking",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Backtracking"
-            }
-          ]
-        },
-        {
-          "text": "."
+          "text": " above it is the prune. Everything you gain over brute force lives on that line, because skipping a choice there means the entire subtree below it is never built. In the queens table above, that single check is the difference between 16.7 million and 2,057."
         }
       ]
     },
     {
-      "id": "h-watch",
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "A trace you can follow with a finger"
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Subsets is the gentlest place to watch the template run, because the rules never reject anything and you can concentrate on the shape of the recursion alone. Step through the same widget above again, and this time follow the call stack panel rather than the tree. Recursion depth is exactly how deep that stack goes, and every push is a choose, every pop is an undo."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two things are worth noticing. Every recorded answer is a snapshot taken at that instant, and the underlying list being built is a single object being edited in place the entire run. It finishes empty, exactly as it started."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Also count the undos as you step through. There are exactly as many as there are chooses, and they always come back in the reverse order the choices were made. That symmetry is what keeps the state honest, and when a backtracking program misbehaves it is very often because that symmetry got broken somewhere."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
       "type": "heading",
       "level": 2,
       "text": "Watch the tree get built"
     },
     {
-      "id": "p-watch",
+      "id": "p-play",
       "type": "paragraph",
       "content": [
         {
-          "text": "Generating every subset of a set is the gentlest possible example, because nothing is ever rejected. Every node is a valid answer, so the tree gets built in full and you can watch the shape without any pruning to distract from it."
+          "text": "Pruning is easier to believe than to picture, so here it is happening. This is the same template on a problem where the rules do reject candidates: combination sum, hunting for numbers from a fixed list that add up to a target. Flip pruning on and off and watch the two counters below the tree. Cutting overshooting branches early is the entire difference between them."
         }
       ]
     },
     {
-      "id": "w-subsets",
+      "id": "w-tree",
       "type": "interactive",
       "widget": "backtracking-tree",
       "data": {
-        "problem": "subsets",
-        "items": [
-          "a",
-          "b",
-          "c"
-        ]
+        "problem": "combination-sum",
+        "candidates": [
+          2,
+          3,
+          5
+        ],
+        "target": 8,
+        "pruning": true
       }
     },
     {
-      "id": "p-watch-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Follow one branch down to the bottom and then watch what happens on the way back up. The captions alternate between \"choose\" and \"un-choose\", and the un-choose frames are the ones people skip when tracing this on paper. They are also where the bug usually is."
-        }
-      ]
-    },
-    {
-      "id": "p-watch-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Notice there is no separate answer layer. Three items produce eight subsets and the tree has exactly eight nodes. That will not be true of the next problem, and the contrast is the point of starting here."
-        }
-      ]
-    },
-    {
-      "id": "h-undo",
+      "id": "h-pruning",
       "type": "heading",
       "level": 2,
-      "text": "The un-choose step, and why it bites"
+      "text": "What pruning is actually worth"
     },
     {
-      "id": "p-undo",
+      "id": "p-pruning",
       "type": "paragraph",
       "content": [
         {
-          "text": "The most common backtracking bug is a missing or wrong undo. It rarely crashes. It quietly returns answers that are almost right, which is much worse."
+          "text": "It is easy to underrate a single if statement, but the arithmetic is what makes the case."
         }
       ]
     },
     {
-      "id": "p-undo-2",
+      "id": "p-pruning-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The reason is that the state is shared across the whole search. One array, one board, one string buffer, mutated on the way down and restored on the way up. If a branch forgets to restore something, every branch explored after it starts from a state that never actually existed."
-        }
-      ]
-    },
-    {
-      "id": "code-undo",
-      "type": "code",
-      "language": "javascript",
-      "code": "// Broken: the push is never undone, so `current` only ever grows.\nfunction subsetsBroken(items, start = 0, current = [], out = []) {\n  out.push([...current]);\n  for (let i = start; i < items.length; i++) {\n    current.push(items[i]);\n    subsetsBroken(items, i + 1, current, out);\n    // missing: current.pop()\n  }\n  return out;\n}\n\n// Correct: every choice is undone before the next one is tried.\nfunction subsets(items, start = 0, current = [], out = []) {\n  out.push([...current]);          // copy, or every entry aliases the same array\n  for (let i = start; i < items.length; i++) {\n    current.push(items[i]);        // choose\n    subsets(items, i + 1, current, out);   // explore\n    current.pop();                 // un-choose\n  }\n  return out;\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "# Broken: the append is never undone, so `current` only ever grows.\ndef subsets_broken(items, start=0, current=None, out=None):\n    current = [] if current is None else current\n    out = [] if out is None else out\n    out.append(list(current))\n    for i in range(start, len(items)):\n        current.append(items[i])\n        subsets_broken(items, i + 1, current, out)\n        # missing: current.pop()\n    return out\n\n\n# Correct: every choice is undone before the next one is tried.\ndef subsets(items, start=0, current=None, out=None):\n    current = [] if current is None else current\n    out = [] if out is None else out\n    out.append(list(current))        # copy, or every entry aliases the same list\n    for i in range(start, len(items)):\n        current.append(items[i])     # choose\n        subsets(items, i + 1, current, out)   # explore\n        current.pop()                # un-choose\n    return out"
+          "text": "In a tree where each node has "
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n\n// Correct: every choice is undone before the next one is tried.\nvoid subsets(const std::vector<int>& items, int start,\n             std::vector<int>& current,\n             std::vector<std::vector<int>>& out) {\n    out.push_back(current);          // copy, not a reference\n\n    for (int i = start; i < (int)items.size(); i++) {\n        current.push_back(items[i]);         // choose\n        subsets(items, i + 1, current, out); // explore\n        current.pop_back();                  // un-choose\n    }\n}"
-        }
-      ]
-    },
-    {
-      "id": "p-undo-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The other half of that snippet is the copy. Recording "
-        },
-        {
-          "text": "current",
+          "text": "k",
           "marks": [
             {
               "kind": "code"
@@ -335,7 +339,60 @@
           ]
         },
         {
-          "text": " itself rather than a copy of it stores a reference to the one buffer everything shares, so at the end every recorded answer is identical and usually empty."
+          "text": " children and the tree runs "
+        },
+        {
+          "text": "d",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " levels deep, cutting one node at depth "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " removes "
+        },
+        {
+          "text": "k",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " to the power of "
+        },
+        {
+          "text": "(d - i)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " leaves. Cutting near the root is worth astronomically more than cutting near the bottom, which is why a cheap check applied early beats a clever check applied late."
+        }
+      ]
+    },
+    {
+      "id": "p-pruning-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The queens numbers make it concrete. Checking whether a square is attacked before placing a queen costs almost nothing and is done as early as possible, and it takes the search from 16.7 million completions down to 2,057 boards ever being built. The algorithm did not get smarter. It just stopped building things it already knew were worthless."
         }
       ]
     },
@@ -343,51 +400,48 @@
       "id": "h-cost",
       "type": "heading",
       "level": 2,
-      "text": "What it costs"
+      "text": "What it costs, and why exponential is not always fatal"
     },
     {
       "id": "p-cost",
       "type": "paragraph",
       "content": [
         {
-          "text": "Backtracking is still exponential. Pruning does not change the complexity class, it changes the constant, and the constant is frequently the entire difference between a second and a week."
+          "text": "There is no way around it: the worst case is exponential. Subsets of "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " items really does produce 2 to the power of "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " answers, and no algorithm can list them faster than it can print them. Permutations really do number "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " factorial. When the answer itself is exponentially large, the algorithm must be too."
         }
-      ]
-    },
-    {
-      "id": "t-cost",
-      "type": "table",
-      "headers": [
-        "Problem",
-        "Rough worst case",
-        "What pruning actually buys"
-      ],
-      "rows": [
-        [
-          "All subsets",
-          "O(2^n) nodes",
-          "Nothing. Every node is an answer, so there is nothing to reject."
-        ],
-        [
-          "All permutations",
-          "O(n!) leaves, O(n · n!) work",
-          "Only duplicate-skipping, when the input has repeats."
-        ],
-        [
-          "Combination sum",
-          "O(2^n) without pruning",
-          "Large. Whole subtrees vanish the moment the running total overshoots."
-        ],
-        [
-          "N-Queens",
-          "O(n!) if you only check at the end",
-          "Enormous. Most branches die within two or three rows."
-        ],
-        [
-          "Sudoku",
-          "O(9^blanks) in principle",
-          "Enormous, and the cell ordering matters as much as the check itself."
-        ]
       ]
     },
     {
@@ -395,66 +449,179 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The worst case rarely happens. That is not a rigorous statement, and it is why backtracking gets described as practical rather than fast: the bound is terrifying, the behaviour on real inputs is usually fine, and there is no general way to predict which you will get."
+          "text": "What pruning changes is the gap between the worst case and the case in front of you. Those two are routinely separated by several orders of magnitude, and that gap is the difference between a program that returns and one that does not."
         }
       ]
     },
     {
-      "id": "h-when",
+      "id": "p-cost-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Memory is the reassuring part. At any moment you are holding one root-to-leaf path, so the space is proportional to the depth of the tree, not its size. A search that visits billions of nodes may only ever hold a few dozen items."
+        }
+      ]
+    },
+    {
+      "id": "h-mistakes",
       "type": "heading",
       "level": 2,
-      "text": "When to reach for it"
+      "text": "The bugs, in the order you will meet them"
     },
     {
-      "id": "p-when",
+      "id": "p-mistake-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "Backtracking fits when you need every solution, or when you need one solution and the constraints are tight enough to kill most branches early. It fits badly when you only need the best solution by some measure and the subproblems overlap heavily, because then you are recomputing the same partial answers on many different branches."
+          "text": "Forgetting to undo.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " This is the classic, and its symptom is answers that get longer and longer as the run goes on, with items in them from branches you thought you had left."
         }
       ]
     },
     {
-      "id": "t-when",
-      "type": "table",
-      "headers": [
-        "Signal",
-        "Probably the right tool"
-      ],
-      "rows": [
-        [
-          "\"List all the ways to...\"",
-          "Backtracking"
-        ],
-        [
-          "\"Is there any arrangement where...\"",
-          "Backtracking, with early exit"
-        ],
-        [
-          "\"What is the best/cheapest/longest...\" with overlapping subproblems",
-          "Dynamic programming"
-        ],
-        [
-          "A locally best choice is always globally safe",
-          "Greedy"
-        ],
-        [
-          "Shortest path in a graph with no negative edges",
-          "Dijkstra, not a search over paths"
-        ]
-      ]
+      "id": "code-bug-undo",
+      "type": "code",
+      "language": "javascript",
+      "code": "for (let i = start; i < nums.length; i++) {\n  current.push(nums[i]);\n  solve(i + 1);\n  // current.pop();   <-- forgotten\n}"
     },
     {
-      "id": "p-when-2",
+      "id": "p-mistake-1b",
       "type": "paragraph",
       "content": [
         {
-          "text": "The line between backtracking and dynamic programming is blurrier than it looks. Both explore a tree of decisions. Dynamic programming is what you get when you notice the same state keeps recurring and start remembering answers instead of rebuilding them."
+          "text": "The state is shared across every branch, so a choice made in one branch is still sitting there when a sibling branch runs. The fix is the missing line. The habit that prevents it is writing the undo immediately after writing the recursive call, before you do anything else."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Storing the working list instead of a copy of it is nearly as common a mistake and much more confusing, because the code looks right."
+        }
+      ]
+    },
+    {
+      "id": "code-bug-copy",
+      "type": "code",
+      "language": "javascript",
+      "code": "answers.push(current);      // WRONG: stores a reference\nanswers.push([...current]); // right: stores a snapshot"
+    },
+    {
+      "id": "p-mistake-2b",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The first line pushes a reference to the one list you keep editing. Since it finishes empty, every answer you collected turns out to be empty at the end, and the bug appears to come from nowhere. Take a snapshot at the moment you record."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Checking the rules only at the leaves.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Perfectly correct, and it quietly throws away every advantage backtracking has. If your solver is correct but far too slow, this is the first thing to look at: are you validating as early as you possibly could?"
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Pruning something that was actually valid.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The opposite failure, and the harder one to spot, because the program is fast and simply misses answers. When a solver returns 88 solutions to eight queens instead of 92, the prune is too aggressive rather than the search being broken."
+        }
+      ]
+    },
+    {
+      "id": "h-code",
+      "type": "heading",
+      "level": 2,
+      "text": "The template, filled in"
+    },
+    {
+      "id": "p-code",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Subsets written out. Compare it against the template above line by line and you will find every part of it, including the "
+        },
+        {
+          "text": "start",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " parameter, which exists so that a choice already considered is not offered again further down."
+        }
+      ]
+    },
+    {
+      "id": "code-subsets",
+      "type": "code",
+      "language": "javascript",
+      "code": "function subsets(nums) {\n  const answers = [];\n  const current = [];\n\n  function solve(start) {\n    answers.push([...current]);        // a copy, see the note below\n\n    for (let i = start; i < nums.length; i++) {\n      current.push(nums[i]);           // choose\n      solve(i + 1);                    // explore\n      current.pop();                   // un-choose\n    }\n  }\n\n  solve(0);\n  return answers;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def subsets(nums):\n    answers = []\n    current = []\n\n    def solve(start):\n        answers.append(current[:])     # a copy, see the note below\n\n        for i in range(start, len(nums)):\n            current.append(nums[i])    # choose\n            solve(i + 1)               # explore\n            current.pop()              # un-choose\n\n    solve(0)\n    return answers"
+        },
+        {
+          "language": "cpp",
+          "code": "void solve(const vector<int>& nums, int start,\n           vector<int>& current, vector<vector<int>>& answers) {\n    answers.push_back(current);        // a copy, see the note below\n\n    for (int i = start; i < (int)nums.size(); i++) {\n        current.push_back(nums[i]);    // choose\n        solve(nums, i + 1, current, answers);\n        current.pop_back();            // un-choose\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-code-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "From here the rest of the section changes only what goes in the blanks. Permutations swap the "
+        },
+        {
+          "text": "start",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " parameter for a used-marker. N-Queens adds a real prune. Sudoku adds a rule about which blank to fill next. The skeleton does not move."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -466,194 +633,96 @@
       "data": {
         "questions": [
           {
-            "prompt": "What separates backtracking from plain brute force?",
+            "prompt": "What does pruning actually remove from the search?",
             "options": [
               {
-                "label": "It abandons a partial candidate as soon as that candidate cannot possibly work",
+                "label": "The entire subtree below the pruned node, including every leaf under it",
                 "correct": true
               },
               {
-                "label": "It is not recursive",
+                "label": "Just that one candidate answer",
                 "correct": false
               },
               {
-                "label": "It reduces the problem to polynomial time",
+                "label": "Duplicate answers found earlier in the run",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "You forget the un-choose line. What usually happens?",
+            "prompt": "Your subsets solver returns the right number of answers, but they are all empty lists. What is wrong?",
             "options": [
               {
-                "label": "Later branches run against state left over from earlier ones, producing wrong answers",
+                "label": "You stored the working list itself instead of a copy, and it ends empty",
                 "correct": true
               },
               {
-                "label": "The program crashes immediately with a stack overflow",
+                "label": "You forgot the un-choose step",
                 "correct": false
               },
               {
-                "label": "Nothing, the recursion rebuilds the state anyway",
+                "label": "The start parameter is off by one",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Generating all subsets of n items builds a tree with how many nodes, using the choose-from-here formulation?",
+            "prompt": "Why is cutting a branch near the root worth far more than cutting one near the leaves?",
             "options": [
               {
-                "label": "2^n, because every node is itself a subset",
+                "label": "The number of leaves removed grows exponentially with the remaining depth",
                 "correct": true
               },
               {
-                "label": "n!, one leaf per ordering",
+                "label": "Nodes near the root are more expensive to evaluate",
                 "correct": false
               },
               {
-                "label": "n^2, one per pair",
+                "label": "It reduces the memory used by the recursion",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A backtracking search visits billions of nodes. Roughly how much memory does the recursion hold?",
+            "options": [
+              {
+                "label": "Proportional to the depth of the tree, since only one path is live at a time",
+                "correct": true
+              },
+              {
+                "label": "Proportional to the number of nodes visited",
+                "correct": false
+              },
+              {
+                "label": "Proportional to the number of answers found",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "An N-Queens solver runs fast but reports 88 solutions instead of 92. What is the likeliest cause?",
+            "options": [
+              {
+                "label": "A prune is rejecting some placements that were actually legal",
+                "correct": true
+              },
+              {
+                "label": "The un-choose step is missing",
+                "correct": false
+              },
+              {
+                "label": "The recursion is hitting a depth limit",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "h-more",
-      "type": "heading",
-      "level": 2,
-      "text": "Where to read more"
-    },
-    {
-      "id": "p-more",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Antti Laaksonen's "
-        },
-        {
-          "text": "Competitive Programmer's Handbook",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "https://cses.fi/book/book.pdf"
-            }
-          ]
-        },
-        {
-          "text": " is a free PDF with a compact chapter on this material, written for people who are about to be timed. It is a good second source precisely because it is terse where this page is chatty."
-        }
-      ]
-    },
-    {
-      "id": "h-flow",
-      "type": "heading",
-      "level": 2,
-      "text": "The template as a flowchart"
-    },
-    {
-      "id": "p-flow",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The seven lines above, drawn out. This one chart is the whole section: every problem that follows is this shape with different boxes."
-        }
-      ]
-    },
-    {
-      "id": "p-flow-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "A flowchart has no symbol for \"call yourself\", so what is drawn is a "
-        },
-        {
-          "text": "single call",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", with the recursive step shown as an ordinary process box. Click any box with a dot to see what it is for."
-        }
-      ]
-    },
-    {
-      "id": "w-flow-template",
-      "type": "interactive",
-      "widget": "flowchart",
-      "data": {
-        "preset": "backtracking-template"
-      }
-    },
-    {
-      "id": "p-flow-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Three things are worth locating on it. The "
-        },
-        {
-          "text": "is state a solution ?",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " test at the top is the only thing that stops the recursion. The "
-        },
-        {
-          "text": "choice[i] legal ?",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " diamond is the prune, and its \"no\" branch skips straight to the next choice without ever building anything below it. And the dashed copper arrow at the bottom is the loop that tries the next choice at this level."
-        }
-      ]
-    },
-    {
-      "id": "p-flow-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Notice that "
-        },
-        {
-          "text": "choose, explore and un-choose sit in a straight line",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " with no branching between them. That is the invariant to hold onto: whatever the problem, those three always run together, in that order, and skipping the third is the bug described above."
-        }
-      ]
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to subsets and combination sum",
-      "href": "/tutorials/dsa/backtracking-subsets-combination-sum",
-      "style": "primary"
     }
   ],
   "seoTitle": "Introduction to Backtracking: The Algorithm Template Explained",
-  "seoDescription": "Learn backtracking from the state space tree up: the choose, explore, un-choose template, why the undo step matters, what pruning costs, and when to use it over DP.",
+  "seoDescription": "Backtracking explained from first principles: why generate-and-filter dies, how pruning cuts whole subtrees, the choose-explore-unchoose template, a full hand trace, and the bugs everyone hits once.",
   "keywords": [
     "backtracking",
     "backtracking algorithm",

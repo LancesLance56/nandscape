@@ -9,10 +9,11 @@ import type { TutorialTrackTree } from "@/types/tutorial";
 /**
  * The tutorials strip: one split index per track.
  *
- * Track identity sits in the left column, its sections in a seam-ruled grid on
- * the right with the lesson count as the numeral. This was a grid of one small
- * card per section, which flattened a three-level tree into eight identical
- * tiles and never said which subject a path belonged to.
+ * Track identity sits in the left column, its sections on the right as filled
+ * tiles carrying the lesson count as their numeral, each in its own accent.
+ * This was a grid of one small card per section, which flattened a three-level
+ * tree into eight identical tiles and never said which subject a path belonged
+ * to.
  */
 export async function TutorialsShowcase() {
   let tracks: TutorialTrackTree[] = [];

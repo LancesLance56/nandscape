@@ -23,6 +23,8 @@ import { NQueensWidget } from "./backtracking/n-queens-widget";
 import { PalindromePartitionWidget } from "./backtracking/palindrome-partition-widget";
 import { GraphColoringWidget } from "./backtracking/graph-coloring-widget";
 import { SudokuWidget } from "./backtracking/sudoku-widget";
+import { RecursionTreeWidget } from "./dp/recursion-tree-widget";
+import { DpArrayWidget, DpTableWidget } from "./dp/dp-table-widgets";
 import { SortingVisualizerWidget } from "./sorting/sorting-visualizer-widget";
 import {
   PartitionExplorerWidget,
@@ -66,6 +68,9 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "palindrome-partition": PalindromePartitionWidget,
   "graph-coloring": GraphColoringWidget,
   "sudoku-solver": SudokuWidget,
+  "recursion-tree": RecursionTreeWidget,
+  "dp-array": DpArrayWidget,
+  "dp-table": DpTableWidget,
   "sorting-visualizer": SortingVisualizerWidget,
   "partition-explorer": PartitionExplorerWidget,
   "merge-explorer": MergeExplorerWidget,

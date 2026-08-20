@@ -1,0 +1,408 @@
+{
+  "slug": "recursion-as-induction",
+  "title": "Recursion, and Why It Works",
+  "excerpt": "A function that calls itself looks like circular reasoning. It is not, and the argument that rescues it is induction: settle the base case, assume the smaller answer, and the whole thing stands up.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-20T09:00:00Z",
+  "tags": [
+    "recursion",
+    "induction",
+    "dynamic-programming",
+    "dsa"
+  ],
+  "sectionSlug": "dynamic-programming",
+  "position": 10,
+  "seoTitle": "Recursion Explained Through Induction: Base Case, Assumption, Step",
+  "seoDescription": "Why a function that calls itself is not circular reasoning. Recursion read as mathematical induction, with an interactive call tree you can step through one frame at a time.",
+  "keywords": [
+    "recursion",
+    "mathematical induction",
+    "base case",
+    "recursive case",
+    "call tree"
+  ],
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A function that calls itself looks like it should not work. If answering a question requires answering the same question, nothing has actually moved, and the whole arrangement has the smell of circular reasoning."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is not circular, and getting straight on why is worth doing before anything else in this section. Recursion is mathematical induction wearing different clothes. Once you can see the two as one argument, writing a recursive function stops being a matter of tracing calls in your head and becomes a matter of checking three short claims, none of which asks you to picture the whole tree at once."
+        }
+      ]
+    },
+    {
+      "id": "h-what",
+      "type": "heading",
+      "level": 2,
+      "text": "A function defined in terms of itself"
+    },
+    {
+      "id": "p-fact-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Factorial earns its place as the standard first example. The factorial of a whole number n, written n!, is what you get by multiplying every whole number from 1 up to n. So 5! is 5 x 4 x 3 x 2 x 1, which comes to 120."
+        }
+      ]
+    },
+    {
+      "id": "p-fact-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Stare at that product for a second and something falls out of it. The tail of it, 4 x 3 x 2 x 1, is exactly 4!. That means 5! is simply 5 x 4!. Nothing about the number five made that work either. Every factorial has the next smaller factorial sitting inside it, and that gives you a definition of factorial written in terms of factorial."
+        }
+      ]
+    },
+    {
+      "id": "code-def",
+      "type": "code",
+      "language": "text",
+      "code": "fact(0) = 1\nfact(1) = 1\nfact(n) = n x fact(n - 1)"
+    },
+    {
+      "id": "p-fact-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two of those lines are answers and the third is a rule. The first two say what to do when the problem has got small enough to settle outright, and they are the "
+        },
+        {
+          "text": "base cases",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". The third says how to turn a larger problem into a smaller one, and it is the "
+        },
+        {
+          "text": "recursive case",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Every recursive definition you meet from here on has that same two-part shape."
+        }
+      ]
+    },
+    {
+      "id": "code-js",
+      "type": "code",
+      "language": "javascript",
+      "code": "function factorial(n) {\n  if (n <= 1) return 1;          // base case: answered outright\n  return n * factorial(n - 1);   // recursive case: shrink, then combine\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def factorial(n):\n    if n <= 1:\n        return 1                 # base case: answered outright\n    return n * factorial(n - 1)  # recursive case: shrink, then combine"
+        },
+        {
+          "language": "cpp",
+          "code": "long long factorial(int n) {\n    if (n <= 1) return 1;              // base case: answered outright\n    return n * factorial(n - 1);       // recursive case: shrink, then combine\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-run",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Below is that function running, drawn as a tree of calls. Each box is one call, it turns green the moment it has a value to hand back, and stepping through frame by frame shows the chain traveling all the way down to the base case before a single answer starts coming back up."
+        }
+      ]
+    },
+    {
+      "id": "w-factorial",
+      "type": "interactive",
+      "widget": "recursion-tree",
+      "data": {
+        "problem": "factorial",
+        "mode": "naive",
+        "lockMode": true
+      }
+    },
+    {
+      "id": "p-run-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two features of that shape are worth noticing now, because both come back later. The chain goes all the way down before it comes back up, which means the call you made first is the last one to finish, and that ordering is not a quirk of this example but a property of every recursion ever written. No question gets asked twice here. Every call in the tree is about a different number."
+        }
+      ]
+    },
+    {
+      "id": "h-cheat",
+      "type": "heading",
+      "level": 2,
+      "text": "The part that feels like cheating"
+    },
+    {
+      "id": "p-cheat-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Here is the objection that bothers most people the first time they see this. The definition of factorial uses factorial. You have not been told what factorial is. You have been told what it equals in terms of itself, which sounds a lot like being told that a word means what the word means."
+        }
+      ]
+    },
+    {
+      "id": "p-cheat-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The objection is a fair one and there is a real answer to it. The answer is not that the definition must be fine because the code happens to run. It is that the definition rests on a case which does not use factorial at all, and every other case can be traced back to that one in a finite number of steps, which is the whole difference between a definition that grounds out and one that spins."
+        }
+      ]
+    },
+    {
+      "id": "h-induction",
+      "type": "heading",
+      "level": 2,
+      "text": "The same argument as induction"
+    },
+    {
+      "id": "p-ind-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If you have met mathematical induction before, this next part will feel familiar. Induction proves a claim about every whole number without checking them one at a time, which would take forever. It manages that in two moves."
+        }
+      ]
+    },
+    {
+      "id": "p-ind-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "First you prove the claim for the smallest case outright, usually with arithmetic simple enough to do on paper. Then you prove something conditional: if the claim holds for n minus 1, it holds for n. Those two together are enough to cover everything. The first case is settled directly, the second follows from the first, the third from the second, and the chain reaches every number you could name."
+        }
+      ]
+    },
+    {
+      "id": "p-ind-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is exactly the shape the factorial code has. Set the proof and the function out side by side and the correspondence runs line for line, with every move in the argument answered by a line of code doing the same job."
+        }
+      ]
+    },
+    {
+      "id": "t-map",
+      "type": "table",
+      "headers": [
+        "The induction proof",
+        "The recursive function"
+      ],
+      "rows": [
+        [
+          "Prove the claim for the smallest case",
+          "Return an answer directly for the base case"
+        ],
+        [
+          "Assume the claim holds for n minus 1",
+          "Trust whatever the recursive call hands back"
+        ],
+        [
+          "Show it then holds for n",
+          "Combine that value into an answer for n"
+        ],
+        [
+          "Conclude it holds for every n",
+          "The function is correct on every input"
+        ]
+      ],
+      "caption": "The same argument twice, once written as a proof and once as code."
+    },
+    {
+      "id": "p-ind-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The middle row is the one doing the work, and it is the one people distrust. You are allowed to assume the smaller call is correct. Not hope, assume. That assumption is not a leap of faith, because it is precisely what the induction step is entitled to help itself to, and the base case is what pays for it."
+        }
+      ]
+    },
+    {
+      "id": "p-ind-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In practice this changes how you write recursive code, and the change is a big one. You never have to hold a call tree in your head. You write the base case, you write the combining step, and then you check one thing: would that step be right if the smaller answer were right? Three small checks. Each one fits inside a single line of thought."
+        }
+      ]
+    },
+    {
+      "id": "p-ind-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The widget above has a panel that spells those three out for whichever call is running. Step through it again with that panel open and the assumption gets named for the call actually on screen, rather than left sitting there as an abstract n."
+        }
+      ]
+    },
+    {
+      "id": "h-rules",
+      "type": "heading",
+      "level": 2,
+      "text": "What a recursive function has to get right"
+    },
+    {
+      "id": "p-rules-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two things can go wrong here, and awkwardly, both show up as the same symptom."
+        }
+      ]
+    },
+    {
+      "id": "p-rules-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The first is a base case that is missing, or one that never gets reached. With nothing to stop the chain the calls keep coming until the program runs out of room to remember where it was, which in most languages means a stack overflow whose error message almost never points at the line that actually caused it."
+        }
+      ]
+    },
+    {
+      "id": "p-rules-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second is an argument that fails to shrink. A recursive call is only any use when it asks about a strictly smaller problem, and smaller has to be measured against something that cannot keep decreasing forever. Counting down toward zero qualifies. Passing the same value straight through does not."
+        }
+      ]
+    },
+    {
+      "id": "code-bad",
+      "type": "code",
+      "language": "javascript",
+      "code": "function broken(n) {\n  return n * broken(n);          // the argument never shrinks\n}\n\nfunction alsoBroken(n) {\n  if (n === 0) return 1;         // a base case that odd inputs sail past\n  return n * alsoBroken(n - 2);\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def broken(n):\n    return n * broken(n)          # the argument never shrinks\n\n\ndef also_broken(n):\n    if n == 0:\n        return 1                  # a base case that odd inputs sail past\n    return n * also_broken(n - 2)"
+        }
+      ]
+    },
+    {
+      "id": "p-rules-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second one is nastier than the first, because it works. Feed it an even number and it terminates and hands back something that looks perfectly reasonable, so the function sails through whatever test you happened to write for it. Feed it 5 and it counts 5, 3, 1, then minus 1, minus 3, and never so much as touches zero. Half the inputs are fine. Bugs like that are the ones that reach production."
+        }
+      ]
+    },
+    {
+      "id": "h-tree",
+      "type": "heading",
+      "level": 2,
+      "text": "Reading a call tree"
+    },
+    {
+      "id": "p-tree-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Factorial makes one call per level, so its tree is a straight chain. Most recursions worth writing branch instead, and the moment one call makes two calls of its own the tree stops being a line and starts being a shape, which is where a picture begins to earn its keep."
+        }
+      ]
+    },
+    {
+      "id": "p-tree-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the widget above over to Fibonacci and step through that instead. Each call now makes two, the tree fans out, and before long the same numbers start turning up in different corners of it. That repetition is not an artifact of the drawing. It is real work the program is doing more than once, and it is the whole subject of the next tutorial."
+        }
+      ]
+    },
+    {
+      "id": "q-check",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why is a recursive definition not circular reasoning?",
+            "options": [
+              {
+                "label": "The base case is answered without recursion, and every other case traces back to it in a finite number of steps",
+                "correct": true
+              },
+              {
+                "label": "The compiler rewrites the function as a loop before it runs",
+                "correct": false
+              },
+              {
+                "label": "Because most languages allow a function to call itself",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "In the induction reading, what does the recursive call correspond to?",
+            "options": [
+              {
+                "label": "The assumption that the claim already holds for a smaller input",
+                "correct": true
+              },
+              {
+                "label": "The claim being proved for the smallest case",
+                "correct": false
+              },
+              {
+                "label": "The conclusion that the claim holds for every input",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A function returns 1 when n is 0 and otherwise recurses on n minus 2. What goes wrong?",
+            "options": [
+              {
+                "label": "Odd inputs step straight past the base case and never stop",
+                "correct": true
+              },
+              {
+                "label": "Nothing, since the argument does still shrink",
+                "correct": false
+              },
+              {
+                "label": "Even inputs overflow the stack",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Recursion is correct because of induction, and the base case is what the entire argument stands on. Carry that piece forward, because what comes next is not about whether recursion works. It is about what recursion costs, and for some very ordinary problems the answer turns out to be far more than it has any business costing."
+        }
+      ]
+    }
+  ]
+}

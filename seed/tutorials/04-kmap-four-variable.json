@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sixteen minterms need a 4x4 grid: two variables assigned to the rows, two to the columns, both axes labeled in the same 00, 01, 11, 10 Gray code order used for the 3-variable map's columns. Nothing new is happening mathematically here, there are just two Gray-coded axes running at once instead of one."
+          "text": "Sixteen minterms need a 4x4 grid, two variables assigned to the rows and two to the columns, both axes labeled in the same 00, 01, 11, 10 Gray code order used for the 3-variable map's columns. Nothing new is happening mathematically here. There are just two Gray-coded axes running at once instead of one."
         }
       ]
     },
@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Because both axes wrap around independently, the four corner cells of a 4-variable map are mutually adjacent even though none of them touch on paper: the top-left cell is adjacent to the top-right by row-wraparound, adjacent to the bottom-left by column-wraparound, and reaches the bottom-right by combining both wraps at once. All four corners are legally a single group of four whenever they all happen to be 1."
+          "text": "Because both axes wrap around independently, the four corner cells of a 4-variable map are mutually adjacent even though none of them touch on paper. The top-left cell is adjacent to the top-right by row-wraparound, adjacent to the bottom-left by column-wraparound, and reaches the bottom-right by combining both wraps at once, so all four corners are legally a single group of four whenever they all happen to be 1."
         }
       ]
     },
@@ -62,7 +62,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Try it below. F(A, B, C, D) is 1 whenever B = 0 and D = 0, everywhere else it's 0. Select all four corner cells and check the group."
+          "text": "Try it below. F(A, B, C, D) is 1 whenever B = 0 and D = 0, and everywhere else it is 0. Select all four corner cells and check the group."
         }
       ]
     },
@@ -113,7 +113,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every corner shares B = 0 and D = 0 while A and C vary across all four combinations between them, so those two variables cancel and only B'D' survives. Four cells, two variables gone, exactly the same power-of-two relationship as every other group size, it just happens to be scattered across all four corners of the printed grid instead of sitting in one visual block."
+          "text": "Every corner shares B = 0 and D = 0 while A and C vary across all four combinations between them, so those two variables cancel and only B'D' survives. Four cells, two variables gone, exactly the same power-of-two relationship as every other group size. It just happens to be scattered across all four corners of the printed grid instead of sitting in one visual block."
         }
       ]
     },
@@ -138,7 +138,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A 5-variable map needs two 4x4 grids side by side, and by six variables the wraparound relationships get hard to track by eye even with a lot of practice. That's the practical ceiling for doing Karnaugh maps by hand. Past it, tabular methods like Quine-McCluskey, or a computer searching the same adjacency structure, take over. The underlying idea never changes: find the largest legal power-of-two group covering each 1, and the smallest Sum-of-Products falls out."
+          "text": "A 5-variable map needs two 4x4 grids side by side. By six variables the wraparound relationships get hard to track by eye even with practice, which is the practical ceiling for doing Karnaugh maps by hand. Past it, tabular methods like Quine-McCluskey, or a computer searching the same adjacency structure, take over. The underlying idea never changes: find the largest legal power-of-two group covering each 1, and the smallest Sum-of-Products falls out."
         }
       ]
     },
@@ -153,7 +153,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Six 1s. The largest groups available share cells, and that is fine: covering a 1 twice costs nothing."
+          "text": "Six 1s. The largest groups available share cells, and that is fine, since covering a 1 twice costs nothing."
         }
       ]
     },

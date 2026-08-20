@@ -1,7 +1,7 @@
 {
   "slug": "backtracking-m-coloring",
   "title": "Graph M-Coloring",
-  "excerpt": "Colour every node so no edge joins two of the same colour, using at most m colours. The search is the easy part; the ordering heuristic is what makes it finish.",
+  "excerpt": "Color a graph so no two connected nodes match. The goal shifts from finding every answer to finding one, and that single change rewrites how the recursion returns.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T09:50:00Z",
@@ -20,7 +20,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Given a graph and m colours, can you colour every node so that no edge has the same colour at both ends? This is the m-coloring problem, and it is the same search you have written five times now with a different rejection test."
+          "text": "Color every node of a graph so that no two connected nodes share a color, using at most "
+        },
+        {
+          "text": "m",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " colors. It sounds like a puzzle and it is really a scheduling problem in disguise."
         }
       ]
     },
@@ -29,98 +40,130 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It also has more real uses than most puzzle problems. Register allocation in a compiler is graph colouring. So is assigning frequencies to transmitters that interfere, scheduling exams so no student sits two at once, and filling in a map so neighbouring countries look different."
+          "text": "Exams that share students cannot run in the same slot. Radio towers that overlap cannot use the same frequency. Variables alive at the same moment cannot share a CPU register. In each case the things are nodes, the conflicts are edges, and the colors are the resource you are rationing."
         }
       ]
     },
     {
-      "id": "h-hard",
+      "id": "h-difference",
       "type": "heading",
       "level": 2,
-      "text": "Where the difficulty actually is"
+      "text": "A different kind of goal"
     },
     {
-      "id": "p-hard",
+      "id": "p-difference",
       "type": "paragraph",
       "content": [
         {
-          "text": "Deciding whether a graph can be coloured with k colours is NP-complete for every k except 0, 1 and 2. Those three are easy, and the reason 2 is easy is worth knowing."
-        }
-      ]
-    },
-    {
-      "id": "t-hard",
-      "type": "table",
-      "headers": [
-        "m",
-        "Difficulty",
-        "Why"
-      ],
-      "rows": [
-        [
-          "0",
-          "Trivial",
-          "Only an empty graph works."
-        ],
-        [
-          "1",
-          "Trivial",
-          "Only a graph with no edges works."
-        ],
-        [
-          "2",
-          "Linear time",
-          "2-colourable means bipartite. One BFS, colouring by layer, answers it."
-        ],
-        [
-          "3 or more",
-          "NP-complete",
-          "No known polynomial algorithm. Backtracking is the practical option."
-        ]
-      ]
-    },
-    {
-      "id": "p-hard-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So the jump from 2 to 3 is not a gentle increase in difficulty. It crosses from a problem with a linear-time answer to one with no known efficient answer at all. The "
+          "text": "Every problem so far in this section wanted "
         },
         {
-          "text": "Wikipedia article on graph coloring",
+          "text": "all",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Graph_coloring"
+              "kind": "bold"
             }
           ]
         },
         {
-          "text": " covers the complexity landscape, along with the four colour theorem: every planar graph can be coloured with four colours, proved by Appel and Haken in 1976 in what was the first major computer-aided proof."
+          "text": " the answers. Subsets listed every subset, N-Queens counted all 92 solutions. Coloring usually wants "
+        },
+        {
+          "text": "one",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " answer, or just a yes or no."
         }
       ]
     },
     {
-      "id": "h-try",
+      "id": "p-difference-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That changes the code in a way worth being deliberate about. When you are collecting everything, the recursive call returns nothing and the loop always continues to the next choice. When you want one answer, the recursive call returns a boolean, and a success has to stop the search and travel all the way back up through every caller."
+        }
+      ]
+    },
+    {
+      "id": "p-difference-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In the template that means the explore step becomes a decision rather than a plain statement: "
+        },
+        {
+          "text": "if (solve(...)) return true;",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Without that, the search finds a valid coloring and then cheerfully undoes it and keeps looking, which is both slow and confusing to debug."
+        }
+      ]
+    },
+    {
+      "id": "h-trace",
       "type": "heading",
       "level": 2,
-      "text": "Colour one yourself"
+      "text": "A trace"
     },
     {
-      "id": "p-try",
+      "id": "p-trace",
       "type": "paragraph",
       "content": [
         {
-          "text": "Start on the map-like graph with 3 colours and the \"Colour it yourself\" mode. Click a node to cycle it through the colours. Broken edges turn coral."
+          "text": "Five regions and three colors, colored in a fixed order, is small enough to watch the whole run happen below without a single rejection."
         }
       ]
     },
     {
-      "id": "p-try-2",
+      "id": "w-coloring-trace",
+      "type": "interactive",
+      "widget": "graph-coloring",
+      "data": {
+        "example": "map",
+        "m": 3
+      }
+    },
+    {
+      "id": "p-trace-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Then switch to K4, the graph where every node touches every other, and try to do it with 3. You will get three nodes down and find the fourth has a neighbour of every available colour, every single time."
+          "text": "This example is easy enough to need no backtracking at all, which is itself worth seeing: backtracking algorithms do not always backtrack. Drop to two colors and it becomes impossible, and the search has to exhaust every branch before it can say so."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That asymmetry is general. Proving something is possible means finding one example. Proving it is impossible means ruling out everything, which is usually far more expensive."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Try both"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Color the graph yourself, then let the solver run. Reduce the number of colors until it fails and watch how much more work the failure costs than the success did."
         }
       ]
     },
@@ -128,85 +171,79 @@
       "id": "w-coloring",
       "type": "interactive",
       "widget": "graph-coloring",
+      "data": {}
+    },
+    {
+      "id": "w-flow-color",
+      "type": "interactive",
+      "widget": "flowchart",
       "data": {
-        "m": 3,
-        "example": "map"
+        "preset": "m-coloring"
       }
     },
     {
-      "id": "p-try-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Now watch the solver on K4 with 3 colours. It grinds through every combination and reports failure, and the tree fills with coral rejections. Bump m to 4 and it succeeds almost immediately. That gap is the whole problem in miniature: proving no colouring exists means exhausting the search, while finding one that does can happen on the first path you try."
-        }
-      ]
-    },
-    {
-      "id": "p-try-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The 5-cycle is the other instructive case. Odd cycles are never bipartite, so 2 colours always fail and 3 always work."
-        }
-      ]
-    },
-    {
-      "id": "h-order",
+      "id": "h-symmetry",
       "type": "heading",
       "level": 2,
-      "text": "Node order matters more than you would expect"
+      "text": "A free saving worth knowing"
     },
     {
-      "id": "p-order",
+      "id": "p-symmetry",
       "type": "paragraph",
       "content": [
         {
-          "text": "The solver colours nodes in the order the graph lists them. That order is not part of the problem, and changing it changes how much work the search does by a large factor while changing the answer not at all."
+          "text": "There is redundancy in this search that is easy to miss. If you find a valid coloring, then swapping every red for green and every green for red gives another valid coloring. The colors have no meaning of their own, only their pattern of agreement and disagreement matters."
         }
       ]
     },
     {
-      "id": "p-order-2",
+      "id": "p-symmetry-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The intuition is the same one that shows up in sudoku on the next page. A node with many already-coloured neighbours has few options left, so trying it early means failing early, near the top of the tree where a failure is cheap. A node with no coloured neighbours can take any colour, so deciding it first commits you to nothing and defers the real question."
+          "text": "So the search wastes time exploring branches that are relabelings of each other. The standard fix is to insist that the first node always takes color 0, and more generally that a node may only use a new color if every lower-numbered color has already been used somewhere. That removes whole families of duplicate branches without losing a single genuinely distinct answer."
         }
       ]
     },
     {
-      "id": "t-order",
-      "type": "table",
-      "headers": [
-        "Heuristic",
-        "Rule",
-        "Effect"
-      ],
-      "rows": [
-        [
-          "Given order",
-          "Whatever order the input happened to use",
-          "Baseline, and often bad"
-        ],
-        [
-          "Largest degree first",
-          "Sort by number of neighbours, descending",
-          "Constrained nodes get decided while the tree is still shallow"
-        ],
-        [
-          "Most constrained (dynamic)",
-          "Pick the uncoloured node with the fewest legal colours left",
-          "Usually the strongest, and costs a scan per step"
-        ]
-      ]
-    },
-    {
-      "id": "p-order-3",
+      "id": "p-symmetry-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "None of these change the worst case. The problem is still NP-complete and there are graphs that defeat all of them. They change the typical case, which is what you actually run."
+          "text": "Symmetry breaking of this kind shows up all over search problems, and it is usually the largest available win after the basic prune."
+        }
+      ]
+    },
+    {
+      "id": "h-hardness",
+      "type": "heading",
+      "level": 2,
+      "text": "Why there is no clever formula"
+    },
+    {
+      "id": "p-hardness",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is fair to ask whether some direct method exists that avoids searching. For 2 colors, yes: a graph is 2-colorable exactly when it contains no odd-length cycle, and one traversal decides it."
+        }
+      ]
+    },
+    {
+      "id": "p-hardness-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "From 3 colors upward, no efficient method is known. The problem is NP-complete, which in practice means that if you find a fast general algorithm for it you have solved one of the major open problems in computer science. Until then, search with good pruning is the honest answer, and knowing that saves you from hunting for a formula that probably does not exist."
+        }
+      ]
+    },
+    {
+      "id": "p-hardness-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It also explains why the four color theorem is famous. Every map drawn on a plane needs at most four colors, which is a strong statement about a specific family of graphs, and it took a computer-assisted proof to establish. General graphs have no such bound."
         }
       ]
     },
@@ -214,59 +251,96 @@
       "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "In code"
+      "text": "The implementation"
     },
     {
-      "id": "code-coloring",
+      "id": "code-color",
       "type": "code",
       "language": "javascript",
-      "code": "// adj is a Map from node id to an array of neighbour ids.\nfunction mColoring(nodes, adj, m) {\n  const colors = new Map();\n\n  function canUse(node, color) {\n    for (const nb of adj.get(node) ?? []) {\n      if (colors.get(nb) === color) return false;\n    }\n    return true;\n  }\n\n  function backtrack(i) {\n    if (i === nodes.length) return true;      // every node coloured\n\n    const node = nodes[i];\n    for (let c = 0; c < m; c++) {\n      if (!canUse(node, c)) continue;         // prune: a neighbour already has c\n\n      colors.set(node, c);                    // choose\n      if (backtrack(i + 1)) return true;      // explore, stop at the first success\n      colors.delete(node);                    // un-choose\n    }\n\n    return false;                             // no colour worked here\n  }\n\n  return backtrack(0) ? colors : null;\n}",
+      "code": "function color(graph, m) {\n  const assigned = new Map();\n\n  function ok(node, c) {\n    for (const other of graph.neighbors(node)) {\n      if (assigned.get(other) === c) return false;\n    }\n    return true;\n  }\n\n  function solve(index) {\n    if (index === graph.nodes.length) return true;   // all done\n\n    const node = graph.nodes[index];\n    for (let c = 0; c < m; c++) {\n      if (!ok(node, c)) continue;\n\n      assigned.set(node, c);\n      if (solve(index + 1)) return true;   // a success bubbles all the way up\n      assigned.delete(node);               // that color failed, undo it\n    }\n\n    return false;                          // no color worked here\n  }\n\n  return solve(0) ? assigned : null;\n}",
       "variants": [
         {
           "language": "python",
-          "code": "# adj maps a node id to a list of neighbour ids.\ndef m_coloring(nodes, adj, m):\n    colors = {}\n\n    def can_use(node, color):\n        return all(colors.get(nb) != color for nb in adj.get(node, []))\n\n    def backtrack(i):\n        if i == len(nodes):\n            return True                    # every node coloured\n\n        node = nodes[i]\n        for c in range(m):\n            if not can_use(node, c):\n                continue                   # prune: a neighbour already has c\n\n            colors[node] = c               # choose\n            if backtrack(i + 1):\n                return True                # explore, stop at the first success\n            del colors[node]               # un-choose\n\n        return False                       # no colour worked here\n\n    return colors if backtrack(0) else None"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <functional>\n#include <map>\n#include <string>\n#include <vector>\n\n// adj maps a node id to its neighbours.\nbool mColoring(const std::vector<std::string>& nodes,\n               const std::map<std::string, std::vector<std::string>>& adj,\n               int m,\n               std::map<std::string, int>& colors) {\n\n    auto canUse = [&](const std::string& node, int color) {\n        auto it = adj.find(node);\n        if (it == adj.end()) return true;\n        for (const auto& nb : it->second) {\n            auto c = colors.find(nb);\n            if (c != colors.end() && c->second == color) return false;\n        }\n        return true;\n    };\n\n    std::function<bool(size_t)> backtrack = [&](size_t i) -> bool {\n        if (i == nodes.size()) return true;     // every node coloured\n\n        const std::string& node = nodes[i];\n        for (int c = 0; c < m; c++) {\n            if (!canUse(node, c)) continue;     // prune: a neighbour already has c\n\n            colors[node] = c;                   // choose\n            if (backtrack(i + 1)) return true;  // explore, stop at first success\n            colors.erase(node);                 // un-choose\n        }\n\n        return false;                           // no colour worked here\n    };\n\n    return backtrack(0);\n}"
+          "code": "def color(graph, m):\n    assigned = {}\n\n    def ok(node, c):\n        return all(assigned.get(other) != c for other in graph.neighbors(node))\n\n    def solve(index):\n        if index == len(graph.nodes):\n            return True                    # all done\n\n        node = graph.nodes[index]\n        for c in range(m):\n            if not ok(node, c):\n                continue\n\n            assigned[node] = c\n            if solve(index + 1):\n                return True                # a success bubbles all the way up\n            del assigned[node]             # that color failed, undo it\n\n        return False                       # no color worked here\n\n    return assigned if solve(0) else None"
         }
       ]
     },
     {
-      "id": "p-code-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Note the return type. Unlike the enumeration problems, this one stops at the first success and reports a boolean up the stack, because the question was whether a colouring exists rather than how many there are. Counting them all means dropping the early return and letting the loop finish."
-        }
-      ]
-    },
-    {
-      "id": "h-chromatic",
+      "id": "h-mistakes",
       "type": "heading",
       "level": 2,
-      "text": "Finding the smallest m"
+      "text": "Where it goes wrong"
     },
     {
-      "id": "p-chromatic",
+      "id": "p-mistake-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "The smallest number of colours a graph needs is its chromatic number. The usual way to find it is to run the m-coloring decision procedure for m = 1, 2, 3 and so on, and take the first that succeeds."
+          "text": "Ignoring the recursive call's return value.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The single most common bug in find-one-answer problems. The solver finds a coloring, discards it, and reports failure or takes far longer than it should."
         }
       ]
     },
     {
-      "id": "p-chromatic-2",
+      "id": "p-mistake-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "That sounds wasteful and mostly is not, because the failing runs are the cheap ones. A graph that needs 4 colours fails fast at m = 1 and m = 2, does real work at m = 3 to prove impossibility, then succeeds at 4. The expensive run is the last failure, not the successes before it."
+          "text": "Undoing after a success.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The undo belongs in the failure path only. If it runs after a successful return, the answer is dismantled on the way back up and the caller receives an empty result."
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Checking neighbors that have no color yet.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Comparing against an unassigned node should never block a color. In languages where a missing key reads as a default value, an uncolored neighbor can accidentally match color 0 and rule it out everywhere."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Expecting a fast answer for large graphs.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " No pruning makes this problem easy in general. If your input is large and arbitrary, look for structure in it or accept an approximate answer."
+        }
+      ]
+    },
+    {
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -278,125 +352,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "Why is deciding 2-colourability easy while 3-colourability is NP-complete?",
+            "prompt": "Why does the recursive call return a boolean here when subsets returned nothing?",
             "options": [
               {
-                "label": "2-colourable is exactly the same as bipartite, which a single traversal can check",
+                "label": "The goal is one answer rather than all of them, so a success must stop the search and propagate upward",
                 "correct": true
               },
               {
-                "label": "Two colours give fewer combinations, so brute force is fast enough",
+                "label": "Because coloring can fail and subsets cannot",
                 "correct": false
               },
               {
-                "label": "3-colouring needs more memory",
+                "label": "To make the un-choose step unnecessary",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "What does colouring the most constrained node first change?",
+            "prompt": "Where does the un-choose step belong in a find-one-answer search?",
             "options": [
               {
-                "label": "How much work a typical run does, by failing near the top of the tree instead of deep in it",
+                "label": "Only on the failure path, after the recursive call reports it did not work",
                 "correct": true
               },
               {
-                "label": "The worst-case complexity, which becomes polynomial",
+                "label": "Always, immediately after the recursive call",
                 "correct": false
               },
               {
-                "label": "Which colourings are valid",
+                "label": "Before the recursive call",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "On K4 with m = 3, why does the solver take so much longer than on K4 with m = 4?",
+            "prompt": "Why does forcing the first node to color 0 lose no solutions?",
             "options": [
               {
-                "label": "Proving no colouring exists requires exhausting the search; finding one can succeed early",
+                "label": "Colors have no meaning individually, so any coloring can be relabeled to start with color 0",
                 "correct": true
               },
               {
-                "label": "Fewer colours means more memory per node",
+                "label": "Because color 0 is always safe for the first node",
                 "correct": false
               },
               {
-                "label": "It does not; both take the same time",
+                "label": "Because the first node has the fewest neighbors",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Deciding 2-colorability is easy but 3-colorability is not. What is the 2-color test?",
+            "options": [
+              {
+                "label": "A graph is 2-colorable exactly when it has no odd-length cycle, which one traversal can check",
+                "correct": true
+              },
+              {
+                "label": "It has fewer edges than nodes",
+                "correct": false
+              },
+              {
+                "label": "It is a tree",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "h-flow",
-      "type": "heading",
-      "level": 2,
-      "text": "As a flowchart"
-    },
-    {
-      "id": "p-flow",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Colouring stops at the first success rather than enumerating everything, and that shows up in the chart:"
-        }
-      ]
-    },
-    {
-      "id": "w-flow-color",
-      "type": "interactive",
-      "widget": "flowchart",
-      "data": {
-        "preset": "m-coloring"
-      }
-    },
-    {
-      "id": "p-flow-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The explore step is a "
-        },
-        {
-          "text": "decision",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " here, not a process box. The recursive call returns true or false, and its answer decides whether this call returns immediately or undoes its colour and tries the next one. In the enumeration problems the recursive call returns nothing and the loop always continues."
-        }
-      ]
-    },
-    {
-      "id": "p-flow-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That difference propagates all the way up: a failure at the deepest node travels back through every caller until one of them still has a colour left to try."
-        }
-      ]
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to sudoku and constraint propagation",
-      "href": "/tutorials/dsa/backtracking-sudoku",
-      "style": "primary"
     }
   ],
   "seoTitle": "Graph M-Coloring Problem: Backtracking Solution and Heuristics",
-  "seoDescription": "Solve graph m-coloring with backtracking, see why 2-coloring is linear but 3-coloring is NP-complete, and why node ordering changes the runtime without changing the answer.",
+  "seoDescription": "Graph m-coloring with backtracking: exam and register-allocation framings, why finding one answer changes the recursion's return, symmetry breaking on interchangeable colors, and why 3-coloring has no known fast algorithm.",
   "keywords": [
     "m coloring problem",
     "graph coloring backtracking",

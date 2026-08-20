@@ -79,7 +79,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This is the detail that trips people up. In the NAND version the inputs are usually labelled "
+          "text": "This is the detail that trips people up. In the NAND version the inputs are usually labeled "
         },
         {
           "text": "S'",
@@ -120,7 +120,7 @@
       "id": "h-truth",
       "type": "heading",
       "level": 2,
-      "text": "Behaviour table"
+      "text": "Behavior table"
     },
     {
       "id": "t-truth",

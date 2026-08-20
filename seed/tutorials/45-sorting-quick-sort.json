@@ -64,7 +64,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Partitioning is the whole algorithm, so it is worth walking through in full. The scheme below is Lomuto's, which takes the last element as the pivot."
+          "text": "Partitioning is the whole algorithm, so it is worth walking through in full, and the scheme below is Lomuto's, which takes the last element as the pivot."
         }
       ]
     },
@@ -419,7 +419,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Partitioning is O(n) and there are, on a good day, log n levels of recursion, giving O(n log n). That depends entirely on the pivot splitting the array somewhere near the middle."
+          "text": "Partitioning is O(n), and there are, on a good day, log n levels of recursion, giving O(n log n), but that depends entirely on the pivot splitting the array somewhere near the middle."
         }
       ]
     },
@@ -495,19 +495,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That last one matters more than it sounds. With a two-way partition and an array where every value is identical, each partition splits off nothing and the algorithm is O(n²). A three-way partition finishes that same array in O(n). It is the "
-        },
-        {
-          "text": "Dutch national flag problem",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Dutch_national_flag_problem"
-            }
-          ]
-        },
-        {
-          "text": ", covered later in this section."
+          "text": "That last case matters more than it sounds, because it is common in practice. A two-way partition on an array where every value is identical splits off nothing and runs in O(n squared), while a three-way partition finishes that same array in O(n). It is the Dutch national flag problem, covered later in this section."
         }
       ]
     },
@@ -539,7 +527,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Partition, however, is a plain loop and maps onto a flowchart exactly. Compare it against the trace table above: the decision box is the "
+          "text": "Partition is a plain loop, and it maps onto a flowchart exactly. Compare it against the trace table above: the decision box is the "
         },
         {
           "text": "a[j] < pivot",
@@ -625,7 +613,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In practice quick sort usually wins on wall-clock time despite the worse worst case, because partitioning is a tight linear scan with excellent cache behaviour, and it needs no extra buffer. That is why it is the default for primitives in most standard libraries, with the safeguards above bolted on."
+          "text": "In practice quick sort usually wins on wall-clock time despite the worse worst case, because partitioning is a tight linear scan with excellent cache behavior, and it needs no extra buffer. That is why it is the default for primitives in most standard libraries, with the safeguards above bolted on."
         }
       ]
     },

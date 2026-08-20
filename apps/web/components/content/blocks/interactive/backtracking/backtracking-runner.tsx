@@ -112,17 +112,18 @@ export function BacktrackingRunner<P>({
         </div>
 
         <div className="flex min-w-0 flex-col gap-2.5">
-          <PanelBox title="Work done">
-            <StatReadout
-              stats={[
-                { label: "nodes entered", value: step.visited },
-                { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
-                { label: solutionsLabel.toLowerCase().includes("solution") ? "solutions" : "found", value: step.solutions.length, tone: "good" },
-              ]}
-            />
-          </PanelBox>
+          {/* Unboxed rather than another titled panel: this is the one readout
+              that never has anything problem-specific in it, so it does not
+              need the same weight as the panels that do. */}
+          <StatReadout
+            stats={[
+              { label: "nodes entered", value: step.visited },
+              { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
+              { label: solutionsLabel.toLowerCase().includes("solution") ? "solutions" : "found", value: step.solutions.length, tone: "good" },
+            ]}
+          />
 
-          <PanelBox title="Call stack (root to current)">
+          <PanelBox title="Call stack">
             <ChipRow items={step.path} emptyLabel="back at the root" />
           </PanelBox>
 

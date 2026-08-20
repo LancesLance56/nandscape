@@ -1,0 +1,332 @@
+{
+  "slug": "dp-two-dimensions",
+  "title": "Two Axes, and Reading the Answer Back Out",
+  "excerpt": "When one index is not enough the table grows a second axis and nothing else changes. Grid routes, shared letters and edit distance, plus the traceback that turns a number into an actual answer.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-20T11:30:00Z",
+  "tags": [
+    "dynamic-programming",
+    "edit distance",
+    "longest common subsequence",
+    "dsa"
+  ],
+  "sectionSlug": "dynamic-programming",
+  "position": 60,
+  "seoTitle": "Two-Dimensional Dynamic Programming: Grid Paths, LCS and Edit Distance",
+  "seoDescription": "How a dynamic programming table grows a second axis, the rules behind longest common subsequence and edit distance, and how walking the table backwards recovers the answer itself.",
+  "keywords": [
+    "edit distance",
+    "longest common subsequence",
+    "grid path dynamic programming",
+    "traceback",
+    "levenshtein"
+  ],
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One index stops being enough the moment a problem has two things to keep track of at once. Two strings, or a position on a grid, or a list of items together with a budget. The state grows a second component, the table grows a second axis, and everything else stays exactly where it was."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That really is the whole of the promotion. You still write a rule for one cell in terms of cells that are already filled, you still check that no arrow points forward, and you still fill in an order that respects them. Nothing new is being introduced here except a second subscript. Nothing else moves."
+        }
+      ]
+    },
+    {
+      "id": "h-grid",
+      "type": "heading",
+      "level": 2,
+      "text": "A grid you can walk across"
+    },
+    {
+      "id": "p-grid-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Start with the case where the table looks like the problem, because it makes everything after it easier to believe. A grid of tolls, one number per square, and the only legal moves are right and down. Get from the top-left corner to the bottom-right for as little money as you can manage."
+        }
+      ]
+    },
+    {
+      "id": "p-grid-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two moves reach any square, and both of them come from squares up and to the left. However the cheapest route into a square arrived, it arrived either from above or from the left, so the cheapest way into a square is that square's own toll plus the cheaper of its two neighbors."
+        }
+      ]
+    },
+    {
+      "id": "p-grid-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The edges are the fiddly part, and they are fiddly in a thoroughly boring way. The top row has nothing above it and the left column has nothing to its left, so each of those cells has exactly one way in and simply copies its single neighbor. The corner has no way in at all, so its cost is simply given rather than computed, and then the loop takes over."
+        }
+      ]
+    },
+    {
+      "id": "p-widget",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Set the widget below to Cheapest route and play it through. Watch the arrows while the table fills, and then keep watching after it is full."
+        }
+      ]
+    },
+    {
+      "id": "w-grid",
+      "type": "interactive",
+      "widget": "dp-table",
+      "data": {
+        "problem": "minpath"
+      }
+    },
+    {
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "Reading the route back out"
+    },
+    {
+      "id": "p-trace-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The corner cell says the trip costs 9. It does not say which way to go, and for most real uses the route is the thing you actually wanted."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The table has it anyway. Stand on the finishing square and ask which neighbor it read from, which is whichever of the two was cheaper. Step onto that one and ask the same question again. Keep going until you reach the start, and the squares you touched are the route, recovered backwards. The route falls out backwards."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is a general move rather than a trick for grids, and it is worth filing as one. A dynamic programming table records the value of every subproblem, so walking backwards through it and asking which choice produced each value reconstructs the decisions that were made. It is also the reason the memory trick from two tutorials ago is not free: throw the table away and you keep the number while losing the answer."
+        }
+      ]
+    },
+    {
+      "id": "h-strings",
+      "type": "heading",
+      "level": 2,
+      "text": "Two strings, two axes"
+    },
+    {
+      "id": "p-lcs-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The grid was easy because the table looked like the input, and that will not happen again. The string problems are the same idea with the picture taken away, and they earn the extra effort several times over, since they turn up in spell-checkers, in file comparison, and in every version control system you have ever used. Diff is this algorithm."
+        }
+      ]
+    },
+    {
+      "id": "p-lcs-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Longest common subsequence",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Given two strings, find the longest run of letters that appears in both in the same order, not necessarily next to each other. Cell (i, j) holds the answer for the first i letters of one string measured against the first j letters of the other."
+        }
+      ]
+    },
+    {
+      "id": "p-lcs-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The rule splits on a single comparison. If the two prefixes end in the same letter, pair those two letters up and add 1 to the answer for both prefixes one shorter, which is the diagonal neighbor. If they end in different letters then at least one of those letters cannot be used in the answer, so give up whichever loses less and take the better of the cell above and the cell to the left."
+        }
+      ]
+    },
+    {
+      "id": "p-lcs-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Row 0 and column 0 are all zeros. The reason is worth stating rather than asserting, since it is the base case doing exactly the job base cases always do: an empty prefix shares no letters with anything."
+        }
+      ]
+    },
+    {
+      "id": "p-edit-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Edit distance",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". The same table with a different question written on it. Count the fewest single-letter edits that turn one string into the other, where an edit means inserting a letter, deleting one, or substituting one for another."
+        }
+      ]
+    },
+    {
+      "id": "p-edit-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three neighbors this time, and each of the three is one of the edits. The cell above is a deletion, the cell to the left is an insertion, and the diagonal is a substitution. Take the cheapest of the three and add one for the edit you just made. The exception is the case that costs nothing: when both prefixes end in the same letter that letter is already correct, and the cell copies its diagonal neighbor untouched. Matches are free."
+        }
+      ]
+    },
+    {
+      "id": "p-edit-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The base cases say the same thing twice from opposite ends. Turning nothing into a string of length j takes j insertions, and turning a string of length i into nothing takes i deletions. Those two fill the first row and the first column before the loop starts."
+        }
+      ]
+    },
+    {
+      "id": "p-edit-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Turning kitten into sitting costs three edits. That is what the table lands on, and it is also what you get doing it by hand: substitute the k for an s, substitute the e for an i, and add a g on the end."
+        }
+      ]
+    },
+    {
+      "id": "p-widget-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both string problems live in the same widget. Switch to Shared letters or to Edit distance and step through them, paying attention to how the arrows change between a match and a mismatch. A match reads one cell. A mismatch reads two or three."
+        }
+      ]
+    },
+    {
+      "id": "w-strings",
+      "type": "interactive",
+      "widget": "dp-table",
+      "data": {
+        "problem": "lcs"
+      }
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "The shape of the cost"
+    },
+    {
+      "id": "p-cost-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Costing a two-dimensional solution is the same multiplication as before. Cells are states, each cell does a fixed amount of work, so a table of m by n cells costs m times n and nothing more."
+        }
+      ]
+    },
+    {
+      "id": "p-cost-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two strings of length 1000 make a million cells, which any computer fills without noticing. Two strings of length a million make a trillion cells, which it does not. That quadratic cost is the real ceiling on these algorithms, and the specialized versions used in production exist almost entirely to dodge it."
+        }
+      ]
+    },
+    {
+      "id": "q-check",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "In an edit distance table, what does the cell directly above represent?",
+            "options": [
+              {
+                "label": "A deletion",
+                "correct": true
+              },
+              {
+                "label": "An insertion",
+                "correct": false
+              },
+              {
+                "label": "A substitution",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why are row 0 and column 0 of a longest common subsequence table all zeros?",
+            "options": [
+              {
+                "label": "An empty prefix shares no letters with anything",
+                "correct": true
+              },
+              {
+                "label": "The strings are assumed to start with different letters",
+                "correct": false
+              },
+              {
+                "label": "The first letter of each string is handled separately",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "The corner cell of a cheapest-route table reads 9. How do you recover the route?",
+            "options": [
+              {
+                "label": "Walk backwards, each time stepping to whichever neighbor the cell read from",
+                "correct": true
+              },
+              {
+                "label": "Sort the cells by value and read them in order",
+                "correct": false
+              },
+              {
+                "label": "Refill the table from the corner instead of the start",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both string problems use one table and differ only in what a cell means and which neighbors it reads. That pattern is worth trusting, because it keeps holding. The last tutorial in this section puts it on a problem where the second axis is not a sequence at all."
+        }
+      ]
+    }
+  ]
+}

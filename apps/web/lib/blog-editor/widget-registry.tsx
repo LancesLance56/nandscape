@@ -25,6 +25,8 @@ import { NQueensWidget } from "@/components/content/blocks/interactive/backtrack
 import { PalindromePartitionWidget } from "@/components/content/blocks/interactive/backtracking/palindrome-partition-widget";
 import { GraphColoringWidget } from "@/components/content/blocks/interactive/backtracking/graph-coloring-widget";
 import { SudokuWidget } from "@/components/content/blocks/interactive/backtracking/sudoku-widget";
+import { RecursionTreeWidget } from "@/components/content/blocks/interactive/dp/recursion-tree-widget";
+import { DpArrayWidget, DpTableWidget } from "@/components/content/blocks/interactive/dp/dp-table-widgets";
 import { SortingVisualizerWidget } from "@/components/content/blocks/interactive/sorting/sorting-visualizer-widget";
 import {
   PartitionExplorerWidget,
@@ -276,6 +278,27 @@ const registryImpl: Record<string, WidgetDefinition> = {
     Renderer: SudokuWidget,
     Editor: (props) => <RawJsonField {...props} />,
     createDefault: () => ({ strategy: "first" }),
+  },
+  "recursion-tree": {
+    name: "recursion-tree",
+    label: "Recursion Tree (memo on / off)",
+    Renderer: RecursionTreeWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ problem: "fib", mode: "naive" }),
+  },
+  "dp-array": {
+    name: "dp-array",
+    label: "DP Table, one row (stairs / robber / coins / rising run)",
+    Renderer: DpArrayWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ problem: "stairs" }),
+  },
+  "dp-table": {
+    name: "dp-table",
+    label: "DP Table, two dimensions (routes / letters / edits / packing)",
+    Renderer: DpTableWidget,
+    Editor: (props) => <RawJsonField {...props} />,
+    createDefault: () => ({ problem: "lcs" }),
   },
   "sorting-visualizer": {
     name: "sorting-visualizer",

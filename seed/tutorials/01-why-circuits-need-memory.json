@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In combinational gates like adders, you would always get the same result for the same input i.e., the output is independent of what happened before. That property where the output depends only on current input, is very useful in computation because it's reliable, but useless when it comes to trying to hold information."
+          "text": "An adder gives the same answer every time you feed it the same inputs. That reliability is what makes it trustworthy. But the output depends only on what is present right now, which also makes it useless the moment you need it to hold on to something."
         }
       ]
     },
@@ -32,40 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Half adders, multiplexers, majority voters, all belong to a category called "
-        },
-        {
-          "text": "combinational logic",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". Formally, a combinational circuit computes a function "
-        },
-        {
-          "text": "output = f(inputs)",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": " with no dependence on time. Most of digital logic is combinational, and for pure computation (adders, comparators, decoders) that's sufficient for the most part. On the other hand, stateful circuits are sequential, which means that the output depends on a "
-        },
-        {
-          "text": "chronological sequence ",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": "of inputs."
+          "text": "Half adders, multiplexers and majority voters all belong to one family: combinational logic. A combinational circuit computes output = f(inputs) with no dependence on time. Feed it the same inputs twice and it answers twice the same way, with nothing in between remembered or carried forward from the first time to the second. Most of digital logic works this way. Circuits whose output depends on a sequence of inputs rather than a single snapshot are called sequential."
         }
       ]
     },
@@ -74,18 +41,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "But a computer needs more than computation. It needs to count, hold a running total, remember which state a state machine is currently in, and store a byte long after the signal that produced it is gone. None of that is expressible as a pure function of the current inputs, because the whole point is that the output has to depend on something that isn't there anymore, in other words, the "
-        },
-        {
-          "text": "history ",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": "of the inputs."
+          "text": "But a computer needs more than math, and counting is the simplest place to see the gap. It has to hold a running total, remember which state a machine is in, and store a byte long after the signal that produced it has gone. None of that can be written as a pure function of the current inputs, because the whole point is that the answer depends on something no longer there: the history of the inputs."
         }
       ]
     },
@@ -100,7 +56,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Take a gate's output and wire it back into one of its own inputs (directly, or through a neighboring gate that loops back into it), and the gate's output stops being a pure function of its external inputs. It becomes a function of its own recent output too, because that old output is now literally one of the signals feeding it."
+          "text": "Now wire a gate's output back into one of its own inputs, either directly or through a neighboring gate that loops back. Something changes. The output is no longer a pure function of the outside inputs, because that old output is now literally one of the signals feeding the gate."
         }
       ]
     },
@@ -115,18 +71,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A feedback loop in software that recomputes a value from itself is usually a bug. In a digital circuit it isn't, because gates aren't instantaneous. Every gate has a small propagation delay, which is why a signal chasing itself around a loop doesn't recompute forever, it "
-        },
-        {
-          "text": "settles",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": ". After a handful of gate delays the loop reaches a value that's consistent with itself, every gate's output matches what its inputs demand, and nothing changes further. That converging behavior is what makes the next three tutorials safe to build, and it's why simulating one of these circuits gate-by-gate always converges instead of spinning."
+          "text": "A feedback loop in software that recomputes a value from itself is usually a bug. In a circuit it is not, and the reason is delay. Gates are not instant. Every gate takes a little time to pass a signal through, so a signal chasing itself around a loop does not recompute forever. It settles, because each pass around the loop changes the signal less than the last, until a pass finally changes nothing at all. After a handful of gate delays the loop reaches a value that agrees with itself, every gate's output matches what its inputs demand, and nothing moves after that. That settling is what makes the next three tutorials safe to build."
         }
       ]
     },
@@ -145,7 +90,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three storage elements, built in order, each one fixing a specific problem with the last:"
+          "text": "Three storage elements, built in order, each fixing a specific problem with the last."
         }
       ]
     },
@@ -160,7 +105,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "By the end you'll know exactly what a register is made of, gate by gate, and why each design decision along the way was forced by a specific limitation of the one before it."
+          "text": "By the end you will know what a register is made of, gate by gate. You will also know why every design decision along the way was forced by a specific limit of the one before it."
         }
       ]
     },

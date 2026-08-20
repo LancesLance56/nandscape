@@ -81,7 +81,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Written out over all three inputs it is eight rows, but the behaviour compresses to those two lines: SEL chooses the source, and the unselected input has no effect on the output at all."
+          "text": "Written out over all three inputs it is eight rows, but the behavior compresses to those two lines: SEL chooses the source, and the unselected input has no effect on the output at all."
         }
       ]
     },

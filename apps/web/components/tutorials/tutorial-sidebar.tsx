@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { tutorialPath, type TutorialTrackTree } from "@/types/tutorial";
@@ -56,6 +56,10 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
+      // Marks the link a scroll effect elsewhere in this file looks for, so
+      // the nav can find "where the reader is" without threading a ref down
+      // through every level of the tree.
+      data-current-page={active ? "true" : undefined}
       className={`block rounded-lg px-3 py-1.5 text-sm transition-colors ${
         active ? "bg-copper-bg font-semibold text-copper-dark" : "text-ink-soft hover:bg-surface-2 hover:text-ink"
       }`}
@@ -63,6 +67,67 @@ function NavLink({ href, label }: { href: string; label: string }) {
       {label}
     </Link>
   );
+}
+
+/**
+ * Finds which section, if any, contains the current page.
+ *
+ * Returns null on the tutorials index and anywhere else that isn't a specific
+ * page, since there is nothing there to be "at" yet - collapsing every
+ * section in that case would hide the whole tree for no reason.
+ */
+function activeSectionId(tracks: TutorialTrackTree[], pathname: string): string | null {
+  for (const track of tracks) {
+    for (const section of track.sections) {
+      for (const page of section.pages) {
+        if (tutorialPath(track.slug, page.slug) === pathname) return section.id;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * The collapse set a fresh visit to `pathname` should open with: only the
+ * section the current page lives in, everything else closed. Recomputed on
+ * every navigation rather than merged with whatever the reader had toggled
+ * open, so the sidebar always reflects where they are now rather than
+ * accumulating every section they have ever glanced into.
+ */
+function defaultCollapsed(tracks: TutorialTrackTree[], pathname: string): Set<string> {
+  const active = activeSectionId(tracks, pathname);
+  const collapsed = new Set<string>();
+  if (active === null) return collapsed;
+  for (const track of tracks) {
+    for (const section of track.sections) {
+      if (section.id !== active) collapsed.add(section.id);
+    }
+  }
+  return collapsed;
+}
+
+/**
+ * Scrolls a nav container so the current page's link sits near the top,
+ * rather than wherever it happened to fall in a long track. Reads the DOM
+ * directly instead of threading a ref onto the active link itself, since
+ * NavList is shared between the mobile panel and the desktop rail and either
+ * one might be the container that needs scrolling.
+ *
+ * Sets `scrollTop` directly rather than `scrollIntoView`, which would also be
+ * free to scroll an ancestor (the whole page) to satisfy the request - this
+ * container has its own scrollbar and nothing outside it should move.
+ */
+function useScrollToCurrentPage(containerRef: RefObject<HTMLElement | null>, active: boolean, pathname: string) {
+  useEffect(() => {
+    if (!active) return;
+    const container = containerRef.current;
+    const link = container?.querySelector<HTMLElement>('[data-current-page="true"]');
+    if (!container || !link) return;
+
+    const linkTop = link.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+    container.scrollTop = Math.max(0, linkTop - 8);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- containerRef is stable
+  }, [active, pathname]);
 }
 
 interface NavListProps {
@@ -122,25 +187,33 @@ function NavList({ tracks, collapsed, onToggle }: NavListProps): ReactNode {
 }
 
 export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] }) {
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const pathname = usePathname();
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => defaultCollapsed(tracks, pathname));
   const [mobileOpen, setMobileOpen] = useState(false);
   const railCollapsed = useSyncExternalStore(
     subscribeToCollapse,
     getCollapseSnapshot,
     getCollapseServerSnapshot,
   );
-  const pathname = usePathname();
 
   const toggleRail = () => setCollapsed(!railCollapsed);
 
   // Reset during render rather than in an effect (React's documented
   // pattern for state derived from a changing prop) - one render instead
-  // of two.
+  // of two. A fresh page means a fresh default collapse set too, so
+  // whatever the reader had opened elsewhere folds back up and the section
+  // they just navigated into opens in its place.
   const [prevPathname, setPrevPathname] = useState(pathname);
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
     setMobileOpen(false);
+    setCollapsedSections(defaultCollapsed(tracks, pathname));
   }
+
+  const desktopNavRef = useRef<HTMLElement>(null);
+  const mobileNavRef = useRef<HTMLElement>(null);
+  useScrollToCurrentPage(desktopNavRef, !railCollapsed, pathname);
+  useScrollToCurrentPage(mobileNavRef, mobileOpen, pathname);
 
   const toggleSection = (sectionId: string) => {
     setCollapsedSections((prev) => {
@@ -166,6 +239,7 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
         </button>
 
         <nav
+          ref={mobileNavRef}
           className={`${mobileOpen ? "flex" : "hidden"} mt-2 max-h-[60vh] w-full flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-surface-card px-3 py-3`}
         >
           <NavList tracks={tracks} collapsed={collapsedSections} onToggle={toggleSection} />
@@ -189,7 +263,10 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
           <PanelIcon />
         </button>
       ) : (
-        <aside className="sticky top-32 hidden max-h-[calc(100vh-10rem)] w-64 shrink-0 flex-col overflow-y-auto overscroll-contain pb-4 lg:flex">
+        <aside
+          ref={desktopNavRef}
+          className="sticky top-32 hidden max-h-[calc(100vh-10rem)] w-64 shrink-0 flex-col overflow-y-auto overscroll-contain pb-4 lg:flex"
+        >
           <div className="mb-1 flex items-center justify-between pl-3">
             <span className="text-[10px] font-bold uppercase tracking-wide text-slate">Contents</span>
             <button

@@ -1,0 +1,406 @@
+{
+  "slug": "overlapping-subproblems",
+  "title": "When Recursion Does the Same Work Twice",
+  "excerpt": "The naive Fibonacci function makes 331 million calls to answer 41 questions. Seeing where that waste comes from is what separates the problems dynamic programming can fix from the ones it cannot.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-20T09:30:00Z",
+  "tags": [
+    "dynamic-programming",
+    "recursion",
+    "complexity",
+    "dsa"
+  ],
+  "sectionSlug": "dynamic-programming",
+  "position": 20,
+  "seoTitle": "Overlapping Subproblems and Optimal Substructure, Seen in a Call Tree",
+  "seoDescription": "Why naive Fibonacci is exponential, what overlapping subproblems and optimal substructure actually mean, and how to tell a dynamic programming problem from a divide and conquer one.",
+  "keywords": [
+    "overlapping subproblems",
+    "optimal substructure",
+    "dynamic programming",
+    "fibonacci",
+    "exponential time"
+  ],
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Fibonacci is defined by a rule short enough to hold in your head. Each number is the sum of the two before it, and the sequence starts from 0 and 1. Turning that into code takes about four lines, and those four lines are close to a word for word transcription of the definition. Nothing about it looks expensive."
+        }
+      ]
+    },
+    {
+      "id": "code-fib",
+      "type": "code",
+      "language": "javascript",
+      "code": "function fib(n) {\n  if (n <= 1) return n;            // base cases\n  return fib(n - 1) + fib(n - 2);  // recursive case\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def fib(n):\n    if n <= 1:\n        return n                  # base cases\n    return fib(n - 1) + fib(n - 2)  # recursive case"
+        },
+        {
+          "language": "cpp",
+          "code": "long long fib(int n) {\n    if (n <= 1) return n;                 // base cases\n    return fib(n - 1) + fib(n - 2);       // recursive case\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Written this way it is also close to unusable. Ask it for the fortieth Fibonacci number and a modern laptop will sit there thinking for a noticeable stretch of time, and ask for the sixtieth and you will not have an answer by the end of the week. The definition is correct and the translation into code is faithful, which means the fault lies somewhere neither of them can be blamed for."
+        }
+      ]
+    },
+    {
+      "id": "h-look",
+      "type": "heading",
+      "level": 2,
+      "text": "Look at what it actually does"
+    },
+    {
+      "id": "p-tree-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The problem is invisible in the code and impossible to miss in the tree. Below is fib(6) running with nothing clever attached to it, and the thing to watch is not the shape of the tree so much as the labels written inside the boxes."
+        }
+      ]
+    },
+    {
+      "id": "w-fib",
+      "type": "interactive",
+      "widget": "recursion-tree",
+      "data": {
+        "problem": "fib",
+        "mode": "naive",
+        "lockMode": true
+      }
+    },
+    {
+      "id": "p-tree-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "By the end the counter reads 25 calls. Now count the different questions those calls asked: fib(6), fib(5), fib(4), fib(3), fib(2), fib(1), fib(0). Seven. Twenty-five calls to answer seven questions, and the dashed coral rings mark every call whose answer was already sitting somewhere to its left by the time it ran. Eighteen of the twenty-five calls are repeats."
+        }
+      ]
+    },
+    {
+      "id": "p-tree-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "fib(3) alone gets computed three separate times, and none of those three is cheap, because each one rebuilds the entire subtree underneath it from scratch. That subtree has its own repeats inside it, and those repeats have repeats of their own, so the waste compounds the whole way down instead of merely adding up. Nothing in the four lines of code hints at any of it."
+        }
+      ]
+    },
+    {
+      "id": "p-tree-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a neat way to see why the total goes exponential without doing any algebra at all. Every call that is not a base case makes two more, so the number of calls on each level roughly doubles as you go down, and the tree runs about n levels deep before it bottoms out. Doubling n times is what 2 to the power of n means."
+        }
+      ]
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "How bad it gets"
+    },
+    {
+      "id": "p-cost-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Push the input up to fib(9) and the counter reads 109 calls for ten distinct questions. The pattern behind those numbers is worth naming. Every step of n multiplies the number of calls by about 1.6, which is what exponential growth looks like when you meet it out in the open. The growth is not gentle."
+        }
+      ]
+    },
+    {
+      "id": "t-growth",
+      "type": "table",
+      "headers": [
+        "n",
+        "distinct questions",
+        "calls the naive version makes"
+      ],
+      "rows": [
+        [
+          "6",
+          "7",
+          "25"
+        ],
+        [
+          "9",
+          "10",
+          "109"
+        ],
+        [
+          "20",
+          "21",
+          "21,891"
+        ],
+        [
+          "40",
+          "41",
+          "331,160,281"
+        ]
+      ],
+      "caption": "The left column grows by one per row. The right column keeps multiplying."
+    },
+    {
+      "id": "p-cost-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Read those two columns against each other for a moment. Forty-one different questions have answers worth knowing, and the program asks 331 million of them. That gap, between how much information the problem actually contains and how much work the program does to extract it, is the entire subject of this section. Forty-one answers, 331 million questions."
+        }
+      ]
+    },
+    {
+      "id": "h-props",
+      "type": "heading",
+      "level": 2,
+      "text": "The two properties that make this fixable"
+    },
+    {
+      "id": "p-prop-0",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Not every slow recursion can be rescued the same way, and it pays to be precise about which ones can. Two properties have to hold, and both carry names you will meet in every textbook that covers the topic, which makes them worth learning properly rather than by feel."
+        }
+      ]
+    },
+    {
+      "id": "p-prop-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Overlapping subproblems",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". The recursion has to keep asking the same questions. Fibonacci does this spectacularly, asking seven distinct questions twenty-five times over. If every call in the tree asked about something genuinely new, there would be nothing at all to save, and no technique in this section would apply. Fibonacci passes this one easily."
+        }
+      ]
+    },
+    {
+      "id": "p-prop-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Optimal substructure",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". The answer to a problem has to be built out of answers to smaller versions of the same problem, and those smaller answers must not depend on which larger problem happened to ask for them. fib(4) is 3 no matter who is asking. That last clause is easy to read past."
+        }
+      ]
+    },
+    {
+      "id": "p-prop-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That second condition sounds like a technicality and it is nothing of the kind, because it genuinely fails for real problems. Suppose the best route from one city to another depends on which cities you have already passed through, as it does the moment a rule says you cannot visit anywhere twice. The subproblem stops having one answer. It has a different answer for every history that could have led into it, and storing results by city buys you nothing at all."
+        }
+      ]
+    },
+    {
+      "id": "h-fine",
+      "type": "heading",
+      "level": 2,
+      "text": "Where plain recursion is already fine"
+    },
+    {
+      "id": "p-fine-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Plenty of recursive algorithms branch without ever repeating themselves, and those need no rescuing at all. Merge sort is the obvious example: it splits a list in half, sorts each half by calling itself, and merges the two sorted results, so its call tree branches in exactly the way Fibonacci's does."
+        }
+      ]
+    },
+    {
+      "id": "p-fine-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The difference is that the two halves are different lists. Nothing merge sort works out about the left half is ever wanted for the right half, so there is no question asked twice and nothing a cache could catch. That family has its own name, "
+        },
+        {
+          "text": "divide and conquer",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", and it is the case where recursion is already doing the right amount of work. Dynamic programming is what you reach for when the pieces overlap. The distinction is not academic."
+        }
+      ]
+    },
+    {
+      "id": "t-compare",
+      "type": "table",
+      "headers": [
+        "",
+        "Merge sort",
+        "Naive Fibonacci"
+      ],
+      "rows": [
+        [
+          "Do subproblems overlap?",
+          "no, the halves are disjoint",
+          "yes, heavily"
+        ],
+        [
+          "Same question asked twice?",
+          "never",
+          "constantly"
+        ],
+        [
+          "Would storing answers help?",
+          "not at all",
+          "enormously"
+        ]
+      ],
+      "caption": "Same branching shape, opposite answers, and the difference decides the technique."
+    },
+    {
+      "id": "h-spot",
+      "type": "heading",
+      "level": 2,
+      "text": "Spotting it before you write the code"
+    },
+    {
+      "id": "p-spot-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Fibonacci is a set piece, and set pieces are easy. The skill worth having is noticing the same shape in a problem nobody has labeled for you, and there is one reliable question that gets you there. Write down what a single call actually depends on, then ask how many different values that description can take. Then count the states."
+        }
+      ]
+    },
+    {
+      "id": "p-spot-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If the answer is some manageable number, a few thousand or a few million, and the recursion clearly wanders across that space more than once, you are looking at a dynamic programming problem whether or not anyone has said so out loud. If instead a call depends on the entire history of what came before it, you are not, and nothing in this section will save you."
+        }
+      ]
+    },
+    {
+      "id": "h-name",
+      "type": "heading",
+      "level": 2,
+      "text": "Two names for one fix"
+    },
+    {
+      "id": "p-name-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The repair comes in two flavors and they compute the same thing. Storing answers as the recursion runs is called memoization, and filling those answers in from the bottom up without recursing at all is called tabulation. Those two, together with the two properties above, are what people mean when they say dynamic programming."
+        }
+      ]
+    },
+    {
+      "id": "p-name-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The name itself is famously unhelpful. Richard Bellman coined it in the 1950s, and by his own later account the choice had at least as much to do with sounding respectable to the people funding the work as with describing it. Programming here means scheduling, in the sense of programming a timetable, and has nothing to do with writing code. The label stuck anyway."
+        }
+      ]
+    },
+    {
+      "id": "q-check",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Running fib(6) makes 25 calls. How many distinct questions do those calls ask?",
+            "options": [
+              {
+                "label": "7",
+                "correct": true
+              },
+              {
+                "label": "25",
+                "correct": false
+              },
+              {
+                "label": "13",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Merge sort branches just like Fibonacci. Why would caching its results buy nothing?",
+            "options": [
+              {
+                "label": "Its subproblems never overlap, so no question is ever asked twice",
+                "correct": true
+              },
+              {
+                "label": "It has no base case to cache",
+                "correct": false
+              },
+              {
+                "label": "Its subproblems have no optimal substructure",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What makes the naive Fibonacci grow exponentially?",
+            "options": [
+              {
+                "label": "Every repeated call rebuilds a whole subtree that was already built elsewhere",
+                "correct": true
+              },
+              {
+                "label": "Adding large numbers gets slower as they grow",
+                "correct": false
+              },
+              {
+                "label": "The recursion runs out of stack space and restarts",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-next",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The diagnosis is finished. Twenty-five calls for seven answers, and the count more or less dictates the cure: answer each question once and hang on to the answer. The next tutorial does that in three lines of code."
+        }
+      ]
+    }
+  ]
+}

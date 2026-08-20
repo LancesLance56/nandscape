@@ -20,7 +20,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A family of interview problems asks you to rearrange an array whose values come from a very small set: separate 0s from 1s, push all zeroes to the end, sort an array of 0s, 1s and 2s."
+          "text": "A family of interview problems asks you to rearrange an array whose values come from a very small set. Separate 0s from 1s. Push all zeroes to the end. Sort an array of 0s, 1s and 2s."
         }
       ]
     },
@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sorting solves all of them in O(n log n). All of them can be done in O(n) with a single pass and no extra memory, because with only a handful of distinct values you do not need to compare anything: you can decide where a value belongs just by looking at it."
+          "text": "Sorting solves all of them in O(n log n). All of them can also be done in O(n) with a single pass and no extra memory, because with only a handful of distinct values you do not need to compare anything. You can decide where a value belongs just by looking at it."
         }
       ]
     },
@@ -52,7 +52,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two pointers walking inward. The left pointer advances while it sees 0s, the right advances backward while it sees 1s, and when both stop you have a 1 on the left and a 0 on the right, so swap them."
+          "text": "Two pointers walk inward. The left pointer advances while it sees 0s, the right advances backward while it sees 1s, and when both stop you have a 1 on the left and a 0 on the right, so swap them."
         }
       ]
     },

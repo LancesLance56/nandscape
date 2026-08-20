@@ -124,7 +124,7 @@
       "type": "interactive",
       "widget": "circuit-embed",
       "data": {
-        "title": "SR Latch,  2 NOR gates, active-high",
+        "title": "SR Latch, 2 NOR gates, active-high",
         "projectSlug": "sr-latch-nor",
         "height": 280
       }

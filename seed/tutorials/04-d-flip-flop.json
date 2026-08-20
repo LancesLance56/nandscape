@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "From the outside, a D flip-flop looks almost identical to the gated D latch: one data input D, one clock input CLK, outputs Q and Q̄. The behavior inside is completely different, and that difference is exactly the fix the previous tutorial promised."
+          "text": "From the outside, a D flip-flop looks almost identical to the gated D latch, with one data input D, one clock input CLK, and outputs Q and NOT-Q. The behavior inside is completely different. That difference is exactly the fix the previous tutorial promised."
         }
       ]
     },
@@ -32,40 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A level-sensitive latch cares about a signal's "
-        },
-        {
-          "text": "value",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": " over some stretch of time (\"while E is high\"). An edge-sensitive flip-flop cares about a signal's "
-        },
-        {
-          "text": "transition",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": " at one specific moment (\"the instant CLK goes from 0 to 1\", the "
-        },
-        {
-          "text": "rising edge",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": "), and is completely blind to D the rest of the time. Every instant other than that edge, no matter what D is doing, Q simply holds."
+          "text": "A level-sensitive latch cares about a signal's value over a stretch of time, while E is high. An edge-sensitive flip-flop cares instead about a signal's transition at one specific moment, the rising edge where CLK goes from 0 to 1, and it is blind to D the rest of the time. Every other instant, Q simply holds."
         }
       ]
     },
@@ -80,29 +47,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The circuit below is wired the way real hardware builds one: two gated D latches in series, a "
-        },
-        {
-          "text": "master",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " and a "
-        },
-        {
-          "text": "slave",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", with the master's enable wired to CLK inverted and the slave's enable wired to CLK directly. Fifteen gates total, and every one is a NAND or a NOT you already know."
+          "text": "The circuit below is wired the way real hardware builds one: two gated D latches in series, a master and a slave, with the master's enable wired to CLK inverted and the slave's enable wired to CLK directly. Fifteen gates total, and every one is a NAND or a NOT you already know."
         }
       ]
     },
@@ -117,7 +62,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Because the two enables are inverted copies of each other, they can never both be transparent at the same time. That's what turns \"two level-sensitive latches\" into one edge-sensitive flip-flop: at every instant exactly one of the two is open, and D can only reach Q by passing through both, master then slave, which only happens in the narrow window right as CLK transitions from low to high."
+          "text": "The two enables are inverted copies of each other, so they can never both be transparent at once. That is what turns two level-sensitive latches into one edge-sensitive flip-flop. At every instant exactly one of the two is open. D can only reach Q by passing through both, master then slave, and that only happens in the narrow window right as CLK transitions from low to high."
         }
       ]
     },
@@ -132,7 +77,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Toggle D as many times as you like while CLK stays put, nothing happens to Q, because nothing you're touching is a clock edge. Now toggle CLK from 0 to 1 and back. Watch the master latch (left half) freeze the instant CLK rises, right as the slave latch (right half) opens and copies whatever the master was holding out to Q. That handoff, master closing exactly as slave opens, is the entire mechanism, laid out in gates instead of asserted as a black box."
+          "text": "Toggle D as many times as you like while CLK stays put. Nothing happens to Q, because nothing you are touching is a clock edge. Now toggle CLK from 0 to 1 and back, and watch the master latch freeze the instant CLK rises, right as the slave latch opens and copies whatever the master was holding out to Q. That handoff is the entire mechanism."
         }
       ]
     },
@@ -141,7 +86,7 @@
       "type": "interactive",
       "widget": "circuit-embed",
       "data": {
-        "title": "D Flip-Flop,  two gated D latches, master + slave",
+        "title": "D Flip-Flop, two gated D latches, master + slave",
         "projectSlug": "d-flip-flop",
         "height": 360
       }
@@ -157,7 +102,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Chain several D flip-flops together, output of one into the input of the next, all sharing a single clock line, and you get the building block a shift register, a counter, or a processor's register file is made of. Because every flip-flop in the chain samples at the exact same instant, each stage advances by precisely one step per clock tick. No stage can race ahead into the next one mid-cycle, because for all but that one instant, every flip-flop in the chain is simply holding."
+          "text": "Chain several D flip-flops together, output of one into the input of the next, all sharing a single clock line, and you get the building block a shift register or a counter is made of. Every flip-flop samples at the exact same instant, so each stage advances by exactly one step per clock tick. No stage can race ahead into the next one mid-cycle. For all but that one instant, every flip-flop in the chain is simply holding."
         }
       ]
     },
@@ -166,7 +111,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That guarantee is the entire reason edge-triggered storage exists. A multi-stage design built from plain gated latches would need careful, error-prone timing analysis to avoid race-through on every single chain of them, exactly the problem raised at the end of the last tutorial."
+          "text": "That guarantee is the entire reason edge-triggered storage exists. A multi-stage design built from plain gated latches would need careful, error-prone timing analysis to avoid race-through on every chain of them, exactly the problem raised at the end of the last tutorial."
         }
       ]
     },
@@ -185,18 +130,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Worth calling out directly: the underlying simulation engine doesn't give a flip-flop any special \"memory cell\" data structure. Even the built-in primitive version does what this gate-level circuit does by construction. A flip-flop's Q output is just an ordinary output pin, and the engine's runtime state already tracks what every pin in the circuit is currently driving, so the stored bit "
-        },
-        {
-          "text": "is",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": " that pin's drive state, nothing more. Detecting the rising edge works by comparing a net's value immediately before and immediately after it's resolved during the same simulation step, a comparison the engine already computes for every net that changed."
+          "text": "Worth calling out directly: the underlying simulation engine does not give a flip-flop any special memory-cell data structure. Even the built-in primitive version does what this gate-level circuit does by construction. A flip-flop's Q output is just an ordinary output pin. The engine's runtime state already tracks what every pin is currently driving, so the stored bit is that pin's drive state and nothing more. Detecting the rising edge works by comparing a net's value immediately before and after it resolves during the same simulation step, a comparison the engine already computes for every net that changed."
         }
       ]
     },

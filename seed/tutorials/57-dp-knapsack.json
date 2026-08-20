@@ -1,0 +1,326 @@
+{
+  "slug": "dp-knapsack",
+  "title": "Take It or Leave It: the Knapsack",
+  "excerpt": "A bag with a weight limit, a pile of items, and no taking half of anything. The second axis stops being a sequence and becomes a resource you are spending, which is where the word pseudo-polynomial earns its keep.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-20T12:00:00Z",
+  "tags": [
+    "dynamic-programming",
+    "knapsack",
+    "subset sum",
+    "dsa"
+  ],
+  "sectionSlug": "dynamic-programming",
+  "position": 70,
+  "seoTitle": "0/1 Knapsack Explained: the Table, the Traceback and Pseudo-Polynomial Time",
+  "seoDescription": "Why greedy packing fails, how the 0/1 knapsack table works cell by cell, how to read the chosen items back out of it, and what pseudo-polynomial actually means.",
+  "keywords": [
+    "0/1 knapsack",
+    "pseudo-polynomial",
+    "subset sum",
+    "unbounded knapsack",
+    "dynamic programming"
+  ],
+  "body": [
+    {
+      "id": "p-hook",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One last problem, and it is the one that gets asked about most often. A bag that holds a fixed weight, a pile of items each with a weight and a value, and a rule that every item is either in the bag or out of it. No taking half of something."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The 0/1 knapsack earns a tutorial of its own because of what the second axis turns into here. In the last tutorial that axis was a second sequence. Here it is a resource you are spending, and once you have seen that version, a whole family of problems that look unrelated turn out to be the same table with the arrows moved."
+        }
+      ]
+    },
+    {
+      "id": "h-fails",
+      "type": "heading",
+      "level": 2,
+      "text": "Why the obvious approaches fail"
+    },
+    {
+      "id": "p-greedy-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The tempting move is to sort the items by value and take greedily, or to sort them by value per unit of weight and take greedily. Both are wrong, and both are wrong for the same reason. An item that looks excellent on its own can crowd out a pair that would have been better together, and no amount of sorting sees that coming. Sorting cannot see a pair."
+        }
+      ]
+    },
+    {
+      "id": "p-greedy-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The opposite extreme is to try every subset, which is correct and hopeless. With n items there are 2 to the power of n subsets, so forty items gives roughly a trillion, and the shape of that number is the same one the second tutorial in this section spent its time on."
+        }
+      ]
+    },
+    {
+      "id": "h-state",
+      "type": "heading",
+      "level": 2,
+      "text": "The state"
+    },
+    {
+      "id": "p-state-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A call in the brute-force version is deciding exactly one thing: does item i go in the bag? To settle that you have to know two things, which items are still on the table and how much room is left, and there is nothing else that could possibly matter."
+        }
+      ]
+    },
+    {
+      "id": "p-state-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That hands you the state directly. Cell (i, c) holds the best value obtainable from the first i items with a bag of capacity c. Nothing else needs tracking, because those two numbers already pin down every choice made so far."
+        }
+      ]
+    },
+    {
+      "id": "p-state-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The rule is the two-way decision from the house problem with a weight check bolted on. Leave item i out and the value is whatever the first i minus 1 items managed at the same capacity, which is the cell directly above. Take it and you collect its value, then land one row up and several columns to the left, at capacity c minus the item's weight. Keep the larger of the two. If the item weighs more than c there is nothing to compare, and the cell copies the one above it."
+        }
+      ]
+    },
+    {
+      "id": "p-widget",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The widget below packs a bag of capacity 7 from four items. Each row adds one more item to what you are allowed to consider."
+        }
+      ]
+    },
+    {
+      "id": "w-knapsack",
+      "type": "interactive",
+      "widget": "dp-table",
+      "data": {
+        "problem": "knapsack",
+        "lockProblem": true
+      }
+    },
+    {
+      "id": "p-widget-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Read a row as a bigger shelf rather than a bigger bag. The columns are capacities and the rows are how many items are on offer, so moving down a row means one more item became available while the bag stayed the same size. A cell either matches the cell above it, meaning that item was left behind, or beats it, meaning the item went in."
+        }
+      ]
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is also how the traceback works, and it is simpler here than on the grid. Walk up the rows starting from the corner. Every time a cell differs from the one directly above it, the item belonging to that row is in the bag, so subtract its weight from the capacity and carry on upward. Every time the two match, that item was skipped."
+        }
+      ]
+    },
+    {
+      "id": "h-pseudo",
+      "type": "heading",
+      "level": 2,
+      "text": "Pseudo-polynomial, and why the word matters"
+    },
+    {
+      "id": "p-poly-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The table has n rows and W plus 1 columns, where W is the capacity, so the whole thing costs n times W. That looks polynomial, and it very nearly is, and the gap between very nearly and actually is the sort of distinction that sounds pedantic right up until the moment it bites."
+        }
+      ]
+    },
+    {
+      "id": "p-poly-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The size of an input is measured by how many symbols it takes to write down. Writing a capacity of one billion takes ten digits, and the table for it is a billion columns wide. Add one more digit and the table gets ten times wider while the input grew by a single character. Growing tenfold per character of input is exponential growth, measured the way complexity theory measures it, and an algorithm that does this is called "
+        },
+        {
+          "text": "pseudo-polynomial",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "p-poly-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In practice the rule of thumb is short. The table is fine when capacities are small and useless when they are large. A bag measured in grams is comfortable, and the same bag measured in micrograms has a table a million times wider holding exactly the same problem. Units matter here."
+        }
+      ]
+    },
+    {
+      "id": "h-family",
+      "type": "heading",
+      "level": 2,
+      "text": "The family it belongs to"
+    },
+    {
+      "id": "t-family",
+      "type": "table",
+      "headers": [
+        "Problem",
+        "What changes about the table"
+      ],
+      "rows": [
+        [
+          "Subset sum",
+          "values equal weights, and you only ask whether a total is reachable"
+        ],
+        [
+          "Partition into two equal halves",
+          "subset sum aimed at half the total"
+        ],
+        [
+          "Unbounded knapsack",
+          "taking an item reads the same row, since it is still available after"
+        ],
+        [
+          "Fewest coins",
+          "unbounded knapsack, minimizing a count instead of maximizing a value"
+        ]
+      ],
+      "caption": "Four names, one table, and the arrows in slightly different places."
+    },
+    {
+      "id": "p-family-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Those are not four algorithms. They are one table with its arrows moved, and seeing that is most of what being comfortable with this topic amounts to. Learn the table, not the four names."
+        }
+      ]
+    },
+    {
+      "id": "p-family-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The unbounded row repays a second reading. Taking an item there reads the current row rather than the row above, because the item is still on the shelf afterwards, and that single change is the entire difference between taking something once and taking it as often as you like. It is one subscript."
+        }
+      ]
+    },
+    {
+      "id": "q-check",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why does taking items greedily by value per unit of weight fail?",
+            "options": [
+              {
+                "label": "An item that looks best on its own can crowd out a pair that is better together",
+                "correct": true
+              },
+              {
+                "label": "Sorting the items takes longer than filling the table",
+                "correct": false
+              },
+              {
+                "label": "It cannot handle items of equal weight",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "In a knapsack table, what does a cell equal to the one directly above it mean?",
+            "options": [
+              {
+                "label": "That row's item was left out of the bag",
+                "correct": true
+              },
+              {
+                "label": "That row's item was taken",
+                "correct": false
+              },
+              {
+                "label": "The bag is already full at that capacity",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why is a cost of n times W called pseudo-polynomial rather than polynomial?",
+            "options": [
+              {
+                "label": "The cost follows the value of W, while the input size is only the number of digits in W",
+                "correct": true
+              },
+              {
+                "label": "Because W is usually much larger than n",
+                "correct": false
+              },
+              {
+                "label": "Because the table uses more memory than time",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "h-end",
+      "type": "heading",
+      "level": 2,
+      "text": "Where to go from here"
+    },
+    {
+      "id": "p-end-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This section has been one idea told four ways. A recursion is correct because of induction. It is slow when it keeps asking the same question. Storing answers repairs that from the top down, filling a table repairs it from the bottom up, and the only genuinely difficult part is deciding what a single cell should mean."
+        }
+      ]
+    },
+    {
+      "id": "p-end-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What comes next is practice, and there is one piece of advice about practice worth taking seriously. Every problem in this section has a brute-force version that is short, obviously correct, and far too slow, so write both and run them against each other on small inputs. Agreement there is not a proof. But it catches nearly every bug a subtly wrong recurrence produces, since those bugs tend to show up long before the input gets large."
+        }
+      ]
+    },
+    {
+      "id": "p-end-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The backtracking section is the natural companion to this one, since a backtracking search with a store bolted onto it is a dynamic programming solution, and several of the problems over there become tractable the moment you notice that. The sorting section is worth a second visit too, because merge sort and quick sort are the divide and conquer half of the picture this section has been drawing."
+        }
+      ]
+    }
+  ]
+}

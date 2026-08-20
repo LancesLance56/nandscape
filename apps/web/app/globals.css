@@ -33,6 +33,11 @@
   --copper-dark: #9c4720;
   --copper-bg: #f5dfce;
   --copper-ink: #ffffff;
+  /* Display-size accent, separate from the copper ramp on purpose. The ramp is
+     tuned for small text and chrome; scaled up to a 60px headline its dark-mode
+     value (#f0966a, hsl 19 79% 68%) is light and low-chroma enough to read as
+     peach rather than orange. This one keeps its chroma at size. */
+  --accent-display: #c2500f;
 
   --signal-green: #1ca463;
   --signal-green-strong: #0f7e4a;
@@ -63,6 +68,7 @@
   --copper-dark: #f0966a;
   --copper-bg: #3a2317;
   --copper-ink: #1a0f08;
+  --accent-display: #ff7a29;
 
   --signal-green: #2ece86;
   --signal-green-strong: #6ee7b0;
@@ -147,6 +153,7 @@
   --color-copper-dark: var(--copper-dark);
   --color-copper-bg: var(--copper-bg);
   --color-copper-ink: var(--copper-ink);
+  --color-accent-display: var(--accent-display);
 
   --color-signal-green: var(--signal-green);
   --color-signal-green-strong: var(--signal-green-strong);
@@ -223,8 +230,22 @@ body {
   }
 }
 
+
+/* ---------------------------------------------------------------------------
+   Motion.
+
+   One keyframe, used by the hero wires to march their dashes along when a
+   signal is high. Everything else on the page is a plain transition.
+   --------------------------------------------------------------------------- */
+
 @keyframes nandscape-wire-flow {
   to {
-    stroke-dashoffset: -10;
+    stroke-dashoffset: -12;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nandscape-wire-live {
+    animation: nandscape-wire-flow 0.6s linear infinite;
   }
 }

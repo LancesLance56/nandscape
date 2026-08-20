@@ -187,7 +187,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Inversions between the two halves are counted during their merge; inversions within a half are counted by the recursive calls. Every pair is therefore counted exactly once, at the level where the two elements first end up in different halves."
+          "text": "Inversions between the two halves are counted during their merge; inversions within a half are counted by the recursive calls. So every pair is counted exactly once, at the level where the two elements first end up in different halves."
         }
       ]
     },

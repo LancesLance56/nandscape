@@ -35,7 +35,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A max-heap is an array read as a binary tree, where every parent is at least as large as its children. Node i has children at 2i+1 and 2i+2. The largest value is therefore always at index 0."
+          "text": "A max-heap is an array read as a binary tree, where every parent is at least as large as its children. Node i has children at 2i+1 and 2i+2. So the largest value is always at index 0."
         }
       ]
     },
@@ -73,7 +73,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So why is it not the default? Cache behaviour. Sift-down jumps between indices i, 2i+1 and 2i+2, which on a large array means jumping across memory and missing the cache constantly. Quick sort scans linearly and is often two or three times faster in wall-clock terms despite the worse asymptotic worst case. Heap sort survives mostly as introsort's safety net."
+          "text": "So why is it not the default? Cache behavior. Sift-down jumps between indices i, 2i+1 and 2i+2, which on a large array means jumping across memory and missing the cache constantly. Quick sort scans linearly and is often two or three times faster in wall-clock terms despite the worse asymptotic worst case. Heap sort survives mostly as introsort's safety net."
         }
       ]
     },
@@ -156,7 +156,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The stability requirement is load-bearing rather than a nicety. Each pass must preserve the ordering established by the previous, less significant, digits. Swap in an unstable sort for the per-digit pass and radix sort simply produces the wrong answer."
+          "text": "The stability requirement is load-bearing rather than a nicety, since each pass must preserve the ordering established by the previous, less significant, digits. Swap in an unstable sort for the per-digit pass and radix sort simply produces the wrong answer."
         }
       ]
     },
@@ -304,7 +304,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The same algorithms drawn as flowcharts. Dashed copper arrows are loops back to an earlier step. Click any box with a dot to see why that step is there."
+          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step, and clicking any box with a dot shows why that step is there."
         }
       ]
     },
@@ -355,7 +355,7 @@
     }
   ],
   "seoTitle": "Heap Sort and Counting Sort: Beating and Meeting the n log n Bound",
-  "seoDescription": "Heap sort's O(n log n) in-place guarantee and why cache behaviour keeps it off the podium, plus counting and radix sort, which avoid comparisons entirely.",
+  "seoDescription": "Heap sort's O(n log n) in-place guarantee and why cache behavior keeps it off the podium, plus counting and radix sort, which avoid comparisons entirely.",
   "keywords": [
     "heap sort",
     "heapsort algorithm",

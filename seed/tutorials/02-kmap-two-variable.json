@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two variables means four minterms, so the smallest Karnaugh map is a 2x2 grid: one bit assigned to the rows, one to the columns. There's no room yet for a multi-digit Gray code sequence (each axis is simply 0 then 1), but the map already has the shape every larger map will share, including the split corner cell in the top-left that holds the row and column variable names."
+          "text": "Two variables means four minterms, so the smallest Karnaugh map is a 2x2 grid, one bit assigned to the rows and one to the columns. There is no room yet for a multi-digit Gray code sequence, since each axis is simply 0 then 1. But the map already has the shape every larger map will share."
         }
       ]
     },
@@ -32,7 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Below is the map for F(A, B) = A OR B. Three of the four cells hold a 1. Click a 1, click another adjacent 1, then press Check group once you think you've found a legal pair. A legal group has to be a rectangular block sized 1, 2, or 4 cells here, since 2x2 is as big as this map gets."
+          "text": "Below is the map for F(A, B) = A OR B. Three of the four cells hold a 1. Click a 1, click another adjacent 1, then press Check group once you think you have found a legal pair, which has to be a rectangular block sized 1, 2, or 4 cells here, since 2x2 is as big as this map gets."
         }
       ]
     },
@@ -80,7 +80,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two groups of size 2 cover every 1 in the map: the pair where B stays 1 while A changes (giving the term B), and the pair where A stays 1 while B changes (giving the term A)."
+          "text": "Two groups of size 2 cover every 1 in the map. There is the pair where B stays 1 while A changes, giving the term B, and the pair where A stays 1 while B changes, giving the term A."
         }
       ]
     },
@@ -89,7 +89,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The cell where A = 1 and B = 1 belongs to both groups. Overlap is completely legal here, the goal is to cover every 1 with the fewest, largest groups, not to partition the map into disjoint pieces."
+          "text": "The cell where A = 1 and B = 1 belongs to both groups, and that overlap is completely legal here. The goal is to cover every 1 with the fewest, largest groups, not to partition the map into disjoint pieces."
         }
       ]
     },
@@ -104,7 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Each group of 2 cells is doing exactly what the identity from the previous tutorial does: AB' + AB = A(B' + B) = A. Grouping visually and factoring algebraically are the same operation, the grid just makes it obvious which minterms happen to differ in one variable."
+          "text": "Each group of 2 cells is doing exactly what the identity from the previous tutorial does: AB' + AB = A(B' + B) = A. Grouping visually and factoring algebraically are the same operation, and the grid just makes it obvious which minterms happen to differ in one variable."
         }
       ]
     },
@@ -119,7 +119,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "OR the surviving terms together and you get F = A + B back out, the exact function you started with, just derived visually instead of algebraically. For a function this small that's not a huge win by itself, but the same procedure keeps working as the variable count climbs, which is the entire point of learning it here first."
+          "text": "OR the surviving terms together and you get F = A + B back out, the exact function you started with, derived visually instead of algebraically. For a function this small that is not a huge win by itself, but the same procedure keeps working as the variable count climbs."
         }
       ]
     },
@@ -132,7 +132,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A 2x2 grid is too small to ever need to wrap around an edge, every cell already touches every other cell along at least one side. That changes at three variables."
+          "text": "A 2x2 grid is too small to ever need to wrap around an edge. Every cell already touches every other cell along at least one side. That changes at three variables."
         }
       ]
     },
@@ -147,7 +147,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Not every function gets smaller. This map has two 1s sitting diagonally, which means they are not adjacent: diagonal cells differ in two variables, not one."
+          "text": "Not every function gets smaller. This map has two 1s sitting diagonally, which means they are not adjacent, since diagonal cells differ in two variables, not one."
         }
       ]
     },

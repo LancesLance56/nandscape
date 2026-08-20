@@ -1,7 +1,7 @@
 {
   "slug": "graph-dijkstra",
   "title": "Shortest Paths with Dijkstra",
-  "excerpt": "When edges have costs, fewest hops stops meaning cheapest. Dijkstra fixes that with one greedy rule that turns out to be provably safe.",
+  "excerpt": "BFS finds the fewest hops, which stops meaning the cheapest route the moment edges carry costs. Work out what you can safely commit to and Dijkstra's rule builds itself.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T09:40:00Z",
@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "BFS finds the route with the fewest edges. That is the right answer only when every edge costs the same. Put real numbers on them, distances, latencies, fares, and the fewest-hops route is frequently the expensive one. Two short hops beat one long haul all the time."
+          "text": "You already have an algorithm that finds shortest paths. Breadth-first search does it, and it does it perfectly on one condition: every edge has to cost the same to cross. Take that condition away and BFS quietly starts giving wrong answers."
         }
       ]
     },
@@ -28,40 +28,235 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Dijkstra's algorithm handles this. It is the thing inside your maps app, and the idea behind it is smaller than its reputation suggests."
+          "text": "Here is where it breaks. Suppose you are routing between towns and the roads have real lengths. One road runs straight from A to D and it is 100 kilometers long, while another route goes A to B to C to D, three roads of 10 kilometers each. BFS counts hops, so it reports the single 100 km road as the shortest path, because one is smaller than three. Anyone holding a map can see that 30 beats 100."
         }
       ]
     },
     {
-      "id": "h-idea",
+      "id": "p-hook-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So the question this page answers is not really \"what is Dijkstra's algorithm\". It is this: once edges have costs, what do you actually know for certain at any given moment, and how little do you need to know before you can safely commit to an answer?"
+        }
+      ]
+    },
+    {
+      "id": "h-attempt",
       "type": "heading",
       "level": 2,
-      "text": "The one rule"
+      "text": "Start with the obvious idea, then watch it fail"
     },
     {
-      "id": "p-idea",
+      "id": "p-attempt",
       "type": "paragraph",
       "content": [
         {
-          "text": "Keep a best-known cost for every node. The source starts at 0 because standing still is free, and everything else starts at infinity because you have not found any route to it yet. Then repeat:"
+          "text": "The first thing most people try is the natural one. Stand at the source. Walk to whichever neighbor is nearest. From there, walk to whichever neighbor is nearest again, and keep going until you arrive. It feels sensible, it is easy to write, and it is wrong."
         }
       ]
     },
     {
-      "id": "p-idea-2",
+      "id": "p-attempt-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Pick the cheapest node you have not finalised yet. Lock its number in permanently. Then look at its neighbours and ask, for each one, whether going through this node beats the best route you knew about. If it does, write down the better number."
+          "text": "Take this graph. From A you can reach B for a cost of 1, or C for a cost of 4."
         }
       ]
     },
     {
-      "id": "p-idea-3",
+      "id": "t-greedy-fail",
+      "type": "table",
+      "headers": [
+        "Edge",
+        "Cost"
+      ],
+      "rows": [
+        [
+          "A to B",
+          "1"
+        ],
+        [
+          "B to D",
+          "50"
+        ],
+        [
+          "A to C",
+          "4"
+        ],
+        [
+          "C to D",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "p-attempt-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "That last step has a name you will see everywhere: "
+          "text": "The nearest-neighbor walk goes to B first, because 1 is smaller than 4, and then has no choice but to pay 50 to reach D. Total: 51. The route through C costs 4 plus 1, which is 5. The greedy walk lost by a factor of ten, and it lost because it committed to B on the strength of one cheap edge, with no idea what lay behind it."
+        }
+      ]
+    },
+    {
+      "id": "p-attempt-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is the useful part of the failure. A cheap first step tells you nothing about the total. So a correct algorithm cannot commit to a "
+        },
+        {
+          "text": "route",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". The question left over is whether there is anything at all it can safely commit to."
+        }
+      ]
+    },
+    {
+      "id": "h-insight",
+      "type": "heading",
+      "level": 2,
+      "text": "The one thing you can be certain about"
+    },
+    {
+      "id": "p-insight",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Suppose you know the true distance from the source to a handful of nodes, and for every other node you have only a best guess: the cheapest route you have found so far, which might yet be beaten."
+        }
+      ]
+    },
+    {
+      "id": "p-insight-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now look at whichever guessed node has the "
+        },
+        {
+          "text": "smallest",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " guess. Call it X, and say its guess is 12. The claim is that 12 is not a guess at all. It is the true shortest distance to X, and nothing you discover later can lower it."
+        }
+      ]
+    },
+    {
+      "id": "p-insight-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The argument is worth walking through slowly, because once you believe it the rest of the algorithm falls out of it on its own. Imagine some cheaper route to X exists that you have not found yet. That route starts at the source and ends at X, so at some point it has to leave the set of nodes you already know for certain and step into the unknown. Call the first unknown node it touches Y."
+        }
+      ]
+    },
+    {
+      "id": "p-insight-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reaching Y already costs at least as much as Y's own current guess, because that guess is the cheapest known way in. And Y's guess cannot be smaller than X's, since you picked X as the smallest one. So the imagined route has already spent at least 12 by the time it reaches Y, and it still has the rest of the journey to X ahead of it. It cannot come in under 12."
+        }
+      ]
+    },
+    {
+      "id": "p-insight-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One assumption is hiding in that last sentence, and the whole algorithm rests on it: "
+        },
+        {
+          "text": "the rest of the journey cannot cost less than nothing",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". If every edge costs zero or more, adding more road can never make a trip cheaper, so the imagined cheaper route is impossible and 12 is final. Hold on to that. It is precisely what negative edges take away, and we come back to it at the end."
+        }
+      ]
+    },
+    {
+      "id": "h-algorithm",
+      "type": "heading",
+      "level": 2,
+      "text": "The algorithm, now that you would have guessed it"
+    },
+    {
+      "id": "p-algorithm",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Everything follows from that one certainty. If the smallest guess is always already correct, then you can turn guesses into facts one at a time, cheapest first, and never revisit a decision."
+        }
+      ]
+    },
+    {
+      "id": "p-algorithm-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Give every node a best-known distance. The source gets 0, because standing still is free. Everything else gets infinity, which is just a way of writing \"no route found yet\". Then repeat two steps until you run out of nodes."
+        }
+      ]
+    },
+    {
+      "id": "p-algorithm-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Among the nodes you have not finalised, take the one with the smallest best-known distance and mark it settled. By the argument above, its number is now permanent."
+        }
+      ]
+    },
+    {
+      "id": "p-algorithm-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Look at each of that node's neighbors and ask a single question: is going through this node cheaper than the best route I currently know to that neighbor? If it is, write down the smaller number."
+        }
+      ]
+    },
+    {
+      "id": "p-algorithm-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That second step is called "
         },
         {
           "text": "relaxing",
@@ -72,22 +267,323 @@
           ]
         },
         {
-          "text": " an edge. It sounds mysterious and means \"check whether this edge gives a cheaper route, and update if so\". That is all."
+          "text": " an edge, a piece of vocabulary considerably more intimidating than the idea behind it. Relaxing edge "
+        },
+        {
+          "text": "u -> v",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " means checking whether "
+        },
+        {
+          "text": "dist[u] + weight(u,v)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is less than "
+        },
+        {
+          "text": "dist[v]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", and writing it down when it is. The name comes from picturing each distance as a stretched constraint that you let settle to a lower value once you find one."
         }
       ]
     },
     {
-      "id": "h-watch",
+      "id": "h-trace",
       "type": "heading",
       "level": 2,
-      "text": "Watch the numbers fall"
+      "text": "A full trace, by hand"
     },
     {
-      "id": "p-watch",
+      "id": "p-trace",
       "type": "paragraph",
       "content": [
         {
-          "text": "The number floating above each node is its current best-known cost. Play this through and watch them drop from infinity as better routes get discovered. The panel on the right shows which ones are locked in."
+          "text": "Reading the two rules is not the same as believing them. Below is the graph every round in this section runs on, five nodes and six weighted edges. Click a node to try it yourself, or just read on: every number below is worked out by hand next."
+        }
+      ]
+    },
+    {
+      "id": "w-dijkstra-picture",
+      "type": "interactive",
+      "widget": "shortest-path",
+      "data": {
+        "graph": {
+          "weighted": true,
+          "nodes": [
+            {
+              "id": "A",
+              "x": 55,
+              "y": 130
+            },
+            {
+              "id": "B",
+              "x": 175,
+              "y": 60
+            },
+            {
+              "id": "C",
+              "x": 175,
+              "y": 200
+            },
+            {
+              "id": "D",
+              "x": 295,
+              "y": 130
+            },
+            {
+              "id": "E",
+              "x": 410,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B",
+              "weight": 2
+            },
+            {
+              "from": "A",
+              "to": "C",
+              "weight": 5
+            },
+            {
+              "from": "B",
+              "to": "C",
+              "weight": 1
+            },
+            {
+              "from": "B",
+              "to": "D",
+              "weight": 7
+            },
+            {
+              "from": "C",
+              "to": "D",
+              "weight": 2
+            },
+            {
+              "from": "D",
+              "to": "E",
+              "weight": 3
+            }
+          ]
+        },
+        "start": "A"
+      }
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Everything starts unknown except the source itself."
+        }
+      ]
+    },
+    {
+      "id": "t-round-0",
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
+      ],
+      "rows": [
+        [
+          "start",
+          "0",
+          "inf",
+          "inf",
+          "inf",
+          "inf",
+          "nothing yet"
+        ]
+      ]
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A has the smallest number, so A settles at 0. Relaxing its two edges gives B a route costing 2 and C a route costing 5."
+        }
+      ]
+    },
+    {
+      "id": "t-round-1",
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
+      ],
+      "rows": [
+        [
+          "1",
+          "0",
+          "2",
+          "5",
+          "inf",
+          "inf",
+          "A at 0"
+        ]
+      ]
+    },
+    {
+      "id": "p-trace-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The smallest unsettled number is now B at 2, so B settles. From B you can reach C for 2 plus 1, which is 3. That beats the 5 you had, so C drops to 3. You can also reach D for 2 plus 7, which is 9, and 9 beats infinity, so D becomes 9."
+        }
+      ]
+    },
+    {
+      "id": "t-round-2",
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
+      ],
+      "rows": [
+        [
+          "2",
+          "0",
+          "2",
+          "3",
+          "9",
+          "inf",
+          "B at 2"
+        ]
+      ]
+    },
+    {
+      "id": "p-trace-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "C is now the smallest unsettled node at 3, so it settles. From C you reach D for 3 plus 2, which is 5, and that beats the 9 you wrote a moment ago, so D improves to 5. This is the moment worth pausing on. D's value changed after it had already been discovered. Discovery and certainty are different things."
+        }
+      ]
+    },
+    {
+      "id": "t-round-3",
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
+      ],
+      "rows": [
+        [
+          "3",
+          "0",
+          "2",
+          "3",
+          "5",
+          "inf",
+          "C at 3"
+        ]
+      ]
+    },
+    {
+      "id": "p-trace-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "D settles at 5 and hands E a route of 5 plus 3, which is 8. Then E settles at 8 and there is nothing left to do."
+        }
+      ]
+    },
+    {
+      "id": "t-round-4",
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
+      ],
+      "rows": [
+        [
+          "4",
+          "0",
+          "2",
+          "3",
+          "5",
+          "8",
+          "D at 5"
+        ],
+        [
+          "5",
+          "0",
+          "2",
+          "3",
+          "5",
+          "8",
+          "E at 8"
+        ]
+      ]
+    },
+    {
+      "id": "p-trace-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Look back at D. It was 9, then 5, then final. Had you settled D the first time you saw a number for it, you would have shipped an answer nearly twice the true cost. The rule that saves you is not \"settle a node when you reach it\" but \"settle a node when it is the cheapest thing left anywhere in the graph\"."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Now drive it yourself"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The number floating above each node is its best-known distance. Watch the numbers fall from infinity as better routes turn up, and watch the panel record which ones have been locked in. Try starting from a different node, and predict the first two settlements before you press play."
         }
       ]
     },
@@ -96,57 +592,175 @@
       "type": "interactive",
       "widget": "shortest-path",
       "data": {
+        "graph": {
+          "weighted": true,
+          "nodes": [
+            {
+              "id": "A",
+              "x": 55,
+              "y": 130
+            },
+            {
+              "id": "B",
+              "x": 175,
+              "y": 60
+            },
+            {
+              "id": "C",
+              "x": 175,
+              "y": 200
+            },
+            {
+              "id": "D",
+              "x": 295,
+              "y": 130
+            },
+            {
+              "id": "E",
+              "x": 410,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B",
+              "weight": 2
+            },
+            {
+              "from": "A",
+              "to": "C",
+              "weight": 5
+            },
+            {
+              "from": "B",
+              "to": "C",
+              "weight": 1
+            },
+            {
+              "from": "B",
+              "to": "D",
+              "weight": 7
+            },
+            {
+              "from": "C",
+              "to": "D",
+              "weight": 2
+            },
+            {
+              "from": "D",
+              "to": "E",
+              "weight": 3
+            }
+          ]
+        },
         "start": "A"
       }
     },
     {
-      "id": "p-watch-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Look at what happens to B specifically. It starts at 4, because the direct edge A→B costs 4. Then C gets finalised at 2, and suddenly B improves to 3, because going A→C→B costs 2 plus 1. The direct edge was not the cheapest route to a direct neighbour, and that possibility is the reason the algorithm has to exist at all."
-        }
-      ]
-    },
-    {
-      "id": "p-watch-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The second example, \"The long way is cheaper\", pushes that idea as far as it will go. There is a direct A→B edge costing 10, sitting right next to a three-hop detour A→C→D→B costing 1 plus 1 plus 1. Watch B start at 10 and fall to 3, and E start at 20 and fall to 5. A route with three times as many edges wins by a factor of three. If you had reached for BFS here, it would have confidently handed you the one-hop path and been wrong by 7."
-        }
-      ]
-    },
-    {
-      "id": "h-why-safe",
+      "id": "h-paths",
       "type": "heading",
       "level": 2,
-      "text": "Why locking a node in is safe"
+      "text": "Getting the actual route, not just the number"
     },
     {
-      "id": "p-why-safe",
+      "id": "p-paths",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is the part that deserves a minute. Why can Dijkstra permanently commit to a node's cost without ever revisiting it? What if a better route shows up later?"
+          "text": "So far the algorithm produces distances. Usually you want the road, not the mileage. The fix is small: whenever you improve a node's distance, also record which node you came from."
         }
       ]
     },
     {
-      "id": "p-why-safe-2",
+      "id": "p-paths-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "It cannot. Suppose we are about to lock in node X at cost 7, meaning X is the cheapest unfinalised node. Any alternative route to X has to leave the finalised set at some point, through some unfinalised node Y. But we picked X because it was the cheapest unfinalised node, so Y already costs at least 7. Then you would still have to travel from Y onwards to X, adding more. So the alternative is at least as expensive. There is no room for a surprise."
+          "text": "That single extra field gives you every shortest path at once. To read the route to E, start at E, jump to its recorded predecessor, and keep jumping until you land on the source, then reverse what you collected. The predecessors form a tree rooted at the source containing a shortest path to every reachable node, which is a lot of value for one array."
         }
       ]
     },
     {
-      "id": "p-why-safe-3",
+      "id": "code-parent",
+      "type": "code",
+      "language": "javascript",
+      "code": "if (dist[u] + w < dist[v]) {\n  dist[v] = dist[u] + w;\n  parent[v] = u;          // the only new line\n}\n\nfunction pathTo(target) {\n  const route = [];\n  for (let at = target; at !== undefined; at = parent[at]) route.push(at);\n  return route.reverse();\n}"
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "Where the running time comes from"
+    },
+    {
+      "id": "p-cost",
       "type": "paragraph",
       "content": [
         {
-          "text": "Notice the hidden assumption: adding more edges only ever makes a route more expensive. That holds because weights are not negative. Break that assumption and the proof falls apart, which is exactly what happens next."
+          "text": "It is worth deriving the cost rather than memorising it, because the derivation tells you which implementation to reach for."
+        }
+      ]
+    },
+    {
+      "id": "p-cost-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Each of the V nodes settles exactly once, and settling means finding the smallest remaining number. Each of the E edges is relaxed once, when the node at its tail settles. So the total work is V smallest-finds plus E relaxations, and everything depends on how fast those two operations are."
+        }
+      ]
+    },
+    {
+      "id": "t-cost",
+      "type": "table",
+      "headers": [
+        "Finding the minimum",
+        "One find",
+        "One relaxation",
+        "Total"
+      ],
+      "rows": [
+        [
+          "Scan the whole array",
+          "O(V)",
+          "O(1)",
+          "O(V squared)"
+        ],
+        [
+          "Binary heap",
+          "O(log V)",
+          "O(log V) to push",
+          "O((V + E) log V)"
+        ]
+      ]
+    },
+    {
+      "id": "p-cost-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The array version wins on dense graphs, where E approaches V squared and the scan cost is swamped anyway. The heap wins on sparse graphs, which covers most real road and network data. If you only ever remember one version, remember the heap."
+        }
+      ]
+    },
+    {
+      "id": "p-cost-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One practical detail trips people up. Most heap implementations cannot cheaply lower a key that is already inside, so the usual trick is to push the improved entry and leave the stale one in place. When a stale entry surfaces later its distance no longer matches the node's current best, so you skip it. That is the "
+        },
+        {
+          "text": "if (d > dist[u]) continue;",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " line in the code below. Without it the algorithm still terminates, but it repeats work it has already done."
         }
       ]
     },
@@ -154,29 +768,137 @@
       "id": "h-negative",
       "type": "heading",
       "level": 2,
-      "text": "Dijkstra breaks on negative weights"
+      "text": "Exactly where it breaks"
     },
     {
       "id": "p-negative",
       "type": "paragraph",
       "content": [
         {
-          "text": "If an edge can have a negative weight, going further can make a route cheaper. Now locking a node in is no longer safe, because a bargain edge further out could undercut a decision you already made and refuse to revisit."
+          "text": "Go back to the argument that made all of this work. It needed one thing: extra edges can never reduce a total. Allow a negative edge and that guarantee disappears, and the algorithm's correctness goes with it."
         }
       ]
-    },
-    {
-      "id": "code-negative",
-      "type": "code",
-      "language": "text",
-      "code": "A --(2)--> B\nA --(5)--> C\nB --(-4)-> C\n\nDijkstra locks C at 5, because 5 beats the other options it can see.\nThe real answer is 2 + (-4) = -2, via B.\nBy the time B is processed, C is already finalised and never reconsidered."
     },
     {
       "id": "p-negative-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is not a bug you can patch. It is the price of the greedy shortcut that makes Dijkstra fast. For negative weights you need Bellman-Ford, which is slower and gets its own lesson in the advanced section."
+          "text": "Here is the smallest example that shows it. Three nodes, three edges."
+        }
+      ]
+    },
+    {
+      "id": "t-negative",
+      "type": "table",
+      "headers": [
+        "Edge",
+        "Cost"
+      ],
+      "rows": [
+        [
+          "A to B",
+          "2"
+        ],
+        [
+          "A to C",
+          "3"
+        ],
+        [
+          "C to B",
+          "-2"
+        ]
+      ]
+    },
+    {
+      "id": "p-negative-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Dijkstra settles A at 0, then looks around and sees B at 2 and C at 3. B is smaller, so B settles at 2 and is never reconsidered. Only afterwards does C settle at 3 and reveal a route to B costing 3 plus -2, which is 1. The true answer for B is 1, the algorithm already committed to 2, and it has no mechanism for taking a settlement back."
+        }
+      ]
+    },
+    {
+      "id": "p-negative-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice that this is not a bug in some edge case of the implementation. It is the proof itself failing, which is why the fix is a different algorithm rather than a patch. Bellman-Ford drops the idea of settling nodes in a fixed order and relaxes every edge repeatedly instead. That costs more, and it survives negative weights."
+        }
+      ]
+    },
+    {
+      "id": "h-mistakes",
+      "type": "heading",
+      "level": 2,
+      "text": "Mistakes worth knowing about in advance"
+    },
+    {
+      "id": "p-mistake-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Settling a node the moment you first reach it. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "This is the most common error by a wide margin, and the trace above shows the damage: D was discovered at 9 and finished at 5. A node is only safe to settle once it is the cheapest unsettled node in the graph."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Running it on negative edges because the answer looked plausible. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Dijkstra does not crash on negative weights. It returns a confident wrong number, which is worse. Check the weights before you choose the algorithm."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Forgetting the stale-entry check with a heap. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Without the skip, old entries get processed again carrying distances that are no longer current. On large graphs that turns into a real slowdown."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Assuming unreachable means zero. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Nodes with no route from the source keep their infinity. Initialize with a value you can recognize afterwards, and never with 0."
         }
       ]
     },
@@ -184,44 +906,35 @@
       "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "In code"
-    },
-    {
-      "id": "code-dijkstra",
-      "type": "code",
-      "language": "javascript",
-      "code": "function dijkstra(adj, nodes, start) {\n  const dist = new Map(nodes.map((n) => [n, Infinity]));\n  const parent = new Map();\n  const done = new Set();\n  dist.set(start, 0);\n\n  while (done.size < nodes.length) {\n    // Cheapest unfinalised node. A real implementation uses a\n    // priority queue here; this scan is O(V) and easier to read.\n    let current = null;\n    let best = Infinity;\n    for (const [node, d] of dist) {\n      if (!done.has(node) && d < best) {\n        best = d;\n        current = node;\n      }\n    }\n\n    if (current === null) break; // rest of the graph is unreachable\n    done.add(current);\n\n    for (const { to, weight } of adj.get(current) ?? []) {\n      if (done.has(to)) continue;\n      const candidate = best + weight;\n      if (candidate < dist.get(to)) {\n        dist.set(to, candidate);   // relax the edge\n        parent.set(to, current);\n      }\n    }\n  }\n\n  return { dist, parent };\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "import math\n\ndef dijkstra(adj, nodes, start):\n    dist = {n: math.inf for n in nodes}\n    parent = {}\n    done = set()\n    dist[start] = 0\n\n    while len(done) < len(nodes):\n        # Cheapest unfinalised node. A real implementation uses heapq\n        # here; this scan is O(V) and easier to read.\n        current = None\n        best = math.inf\n        for node, d in dist.items():\n            if node not in done and d < best:\n                best = d\n                current = node\n\n        if current is None:\n            break  # rest of the graph is unreachable\n        done.add(current)\n\n        for to, weight in adj.get(current, []):\n            if to in done:\n                continue\n            candidate = best + weight\n            if candidate < dist[to]:\n                dist[to] = candidate   # relax the edge\n                parent[to] = current\n\n    return dist, parent"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <limits>\n#include <map>\n#include <set>\n#include <string>\n#include <vector>\n\nstruct Edge { std::string to; int weight; };\n\nstd::map<std::string, double> dijkstra(\n    const std::map<std::string, std::vector<Edge>>& adj,\n    const std::vector<std::string>& nodes,\n    const std::string& start,\n    std::map<std::string, std::string>& parent) {\n    const double INF = std::numeric_limits<double>::infinity();\n\n    std::map<std::string, double> dist;\n    for (const std::string& n : nodes) dist[n] = INF;\n    std::set<std::string> done;\n    dist[start] = 0;\n\n    while (done.size() < nodes.size()) {\n        // Cheapest unfinalised node. A real implementation uses a\n        // priority_queue here; this scan is O(V) and easier to read.\n        std::string current;\n        bool found = false;\n        double best = INF;\n        for (const auto& [node, d] : dist) {\n            if (!done.count(node) && d < best) {\n                best = d;\n                current = node;\n                found = true;\n            }\n        }\n\n        if (!found) break;  // rest of the graph is unreachable\n        done.insert(current);\n\n        auto it = adj.find(current);\n        if (it == adj.end()) continue;\n\n        for (const Edge& e : it->second) {\n            if (done.count(e.to)) continue;\n            double candidate = best + e.weight;\n            if (candidate < dist[e.to]) {\n                dist[e.to] = candidate;   // relax the edge\n                parent[e.to] = current;\n            }\n        }\n    }\n\n    return dist;\n}"
-        }
-      ]
+      "text": "The implementation"
     },
     {
       "id": "p-code",
       "type": "paragraph",
       "content": [
         {
-          "text": "That inner scan for the cheapest node is the slow part, giving O(V²) overall. Swap it for a binary heap and you get O((V + E) log V), which is what any serious implementation does. The logic does not change, only how fast you can find the minimum."
+          "text": "Nothing here should surprise you now. The only line doing real thinking is the comparison inside the inner loop."
         }
       ]
     },
     {
-      "id": "p-code-2",
-      "type": "paragraph",
-      "content": [
+      "id": "code-impl",
+      "type": "code",
+      "language": "javascript",
+      "code": "function dijkstra(graph, source) {\n  const dist = new Map();\n  const parent = new Map();\n  for (const node of graph.nodes) dist.set(node, Infinity);\n  dist.set(source, 0);\n\n  const heap = new MinHeap();       // ordered by distance\n  heap.push([0, source]);\n\n  while (!heap.isEmpty()) {\n    const [d, u] = heap.pop();\n    if (d > dist.get(u)) continue;  // a stale entry, already improved on\n\n    for (const { to, weight } of graph.neighbors(u)) {\n      const candidate = dist.get(u) + weight;\n      if (candidate < dist.get(to)) {\n        dist.set(to, candidate);\n        parent.set(to, u);\n        heap.push([candidate, to]);\n      }\n    }\n  }\n\n  return { dist, parent };\n}",
+      "variants": [
         {
-          "text": "Also worth noticing: if every weight is 1, Dijkstra degenerates into BFS. The cheapest unfinalised node is always the one at the current ring. Same algorithm underneath, which is a satisfying thing to realise."
+          "language": "python",
+          "code": "import heapq\n\ndef dijkstra(graph, source):\n    dist = {node: float(\"inf\") for node in graph.nodes}\n    dist[source] = 0\n    parent = {}\n\n    heap = [(0, source)]\n    while heap:\n        d, u = heapq.heappop(heap)\n        if d > dist[u]:\n            continue                 # a stale entry, already improved on\n\n        for to, weight in graph.neighbors(u):\n            candidate = dist[u] + weight\n            if candidate < dist[to]:\n                dist[to] = candidate\n                parent[to] = u\n                heapq.heappush(heap, (candidate, to))\n\n    return dist, parent"
+        },
+        {
+          "language": "cpp",
+          "code": "vector<long long> dijkstra(const vector<vector<pair<int,int>>>& adj, int source) {\n    const long long INF = LLONG_MAX / 4;\n    vector<long long> dist(adj.size(), INF);\n    dist[source] = 0;\n\n    priority_queue<pair<long long,int>,\n                   vector<pair<long long,int>>,\n                   greater<>> heap;\n    heap.push({0, source});\n\n    while (!heap.empty()) {\n        auto [d, u] = heap.top();\n        heap.pop();\n        if (d > dist[u]) continue;   // a stale entry, already improved on\n\n        for (auto [to, weight] : adj[u]) {\n            long long candidate = dist[u] + weight;\n            if (candidate < dist[to]) {\n                dist[to] = candidate;\n                heap.push({candidate, to});\n            }\n        }\n    }\n    return dist;\n}"
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -233,73 +946,79 @@
       "data": {
         "questions": [
           {
-            "prompt": "What does \"relaxing an edge\" mean?",
+            "prompt": "Why is it safe to permanently settle the unsettled node with the smallest distance?",
             "options": [
               {
-                "label": "Checking whether that edge gives a cheaper route, and updating if it does",
+                "label": "Any cheaper route would have to leave the settled set first, and that first step already costs at least as much",
                 "correct": true
               },
               {
-                "label": "Removing the edge from the graph",
+                "label": "Because the graph is sorted by weight before the algorithm runs",
                 "correct": false
               },
               {
-                "label": "Reducing the edge's weight",
+                "label": "Because every node is visited exactly once",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Why can't Dijkstra handle negative edge weights?",
+            "prompt": "In the worked trace, D was assigned 9 and later changed to 5. What does that show?",
             "options": [
               {
-                "label": "Going further could get cheaper, so a locked-in node might turn out to be wrong",
+                "label": "Reaching a node is not the same as knowing its final distance",
                 "correct": true
               },
               {
-                "label": "Negative numbers break the priority queue",
+                "label": "The graph contained a negative edge",
                 "correct": false
               },
               {
-                "label": "It can, it just runs slower",
+                "label": "The heap was missing its stale-entry check",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Every edge in your graph has weight 1. What does Dijkstra do?",
+            "prompt": "A graph has one edge of weight -2 and the rest are positive. What happens if you run Dijkstra?",
             "options": [
               {
-                "label": "The same thing BFS does",
+                "label": "It may return a wrong answer with no error, because a settled node is never revised",
                 "correct": true
               },
               {
-                "label": "Fails, it needs varied weights",
+                "label": "It loops forever",
                 "correct": false
               },
               {
-                "label": "Returns the fewest-hops path but takes exponential time",
+                "label": "It works, since only negative cycles cause trouble",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What does relaxing edge u to v actually do?",
+            "options": [
+              {
+                "label": "Checks whether going through u beats v's best known distance, and updates it if so",
+                "correct": true
+              },
+              {
+                "label": "Removes the edge once both endpoints are settled",
+                "correct": false
+              },
+              {
+                "label": "Reduces the edge's weight so the search finishes sooner",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to minimum spanning trees",
-      "href": "/tutorials/dsa/graph-mst-kruskal-prim",
-      "style": "primary"
     }
   ],
   "seoTitle": "Dijkstra's Algorithm Explained With a Worked Example",
-  "seoDescription": "How Dijkstra's algorithm finds shortest paths on weighted graphs, why locking in the nearest node is provably safe, and where negative weights break it.",
+  "seoDescription": "Dijkstra's algorithm derived step by step: why greedy nearest-neighbor fails, why settling the smallest tentative distance is provably safe, a full hand trace, and exactly where negative weights break the argument.",
   "keywords": [
     "dijkstra's algorithm",
     "shortest path algorithm",

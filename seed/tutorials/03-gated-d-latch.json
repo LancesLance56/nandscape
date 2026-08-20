@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The SR latch's forbidden state exists because it hands you two independent levers, S and R, and trusts you never to pull both at once. The gated D latch removes that trust requirement by removing the second lever entirely."
+          "text": "The SR latch has a forbidden state because it hands you two levers, S and R, and trusts you never to pull both at once. The gated D latch fixes that. It removes the second lever entirely, so there is only one input to set and nothing left for it to contradict."
         }
       ]
     },
@@ -32,29 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There's exactly one data input, "
-        },
-        {
-          "text": "D",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", plus a second input, "
-        },
-        {
-          "text": "E",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " (enable, sometimes labeled EN or drawn as a clock input). With only one data value in play, there's no longer any combination of inputs that could mean \"do two contradictory things at once.\" The forbidden state isn't handled better here, it's structurally impossible to construct in the first place."
+          "text": "There is one data input, D, plus a second input, E, for enable. With only one data value in play, no combination of inputs can mean two contradictory things at once, which is a stronger guarantee than it first sounds. The forbidden state is not handled better here, it simply has no way to occur, since building it would require two conflicting values at once and there is only ever the one."
         }
       ]
     },
@@ -69,7 +47,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Under the hood it's still an SR latch. One NOT gate and two extra NAND gates sit in front of the same cross-coupled NAND pair from the SR latch's NAND-based cousin, deriving S and R from D and E. D feeds one gate directly and its inverse feeds the other, so the two derived signals can never both demand the same forbidden combination, they either disagree (an update) or both go inactive together (the safe hold case)."
+          "text": "Under the hood it is still an SR latch. One NOT gate and two extra NAND gates sit in front of the same cross-coupled NAND pair, deriving S and R from D and E. D feeds one gate directly and its inverse feeds the other. So the two derived signals can never both demand the forbidden combination, and they either disagree, which is an update, or go inactive together, which is a hold."
         }
       ]
     },
@@ -84,7 +62,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "You're not learning a new primitive here, you're watching a disciplined way of driving the one you already have so the forbidden combination is never reachable."
+          "text": "This can look like a new kind of primitive, but it is really just a disciplined way of driving the one you already have, wired so that the bad combination is never reachable in the first place."
         }
       ]
     },
@@ -99,29 +77,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The whole behavior reduces to one rule worth memorizing exactly: "
-        },
-        {
-          "text": "while E is high, Q follows D immediately",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". This is called being "
-        },
-        {
-          "text": "transparent",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": ": the latch isn't storing anything yet, it's letting D pass straight through to Q, the same way glass lets light pass through. The instant E drops low, whatever Q happened to be showing at that moment freezes in place, and D can wiggle freely with zero effect on Q until E goes high again."
+          "text": "The whole behavior reduces to one rule. While E is high, Q follows D immediately, and the latch is called transparent because it is not storing anything yet, it is letting D pass straight through to Q. The instant E drops low, whatever Q was showing freezes. D can then wiggle freely with no effect on Q until E goes high again."
         }
       ]
     },
@@ -130,7 +86,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Try both halves of that rule on the circuit below. With E off, click D a few times and confirm Q never moves, the signal dies out partway through the gating logic instead of reaching the latch. Then turn E on and click D again: Q tracks it instantly, the same instant you toggle it, through the five real gates that make it happen."
+          "text": "Try both halves of that rule below. With E off, click D a few times and confirm Q never moves, because the signal dies partway through the gating logic instead of reaching the latch. Then turn E on and click D again. Q tracks it instantly, through the five real gates that make it happen."
         }
       ]
     },
@@ -139,7 +95,7 @@
       "type": "interactive",
       "widget": "circuit-embed",
       "data": {
-        "title": "Gated D Latch,  1 NOT + 4 NAND gates",
+        "title": "Gated D Latch, 1 NOT + 4 NAND gates",
         "projectSlug": "gated-d-latch",
         "height": 320
       }
@@ -155,18 +111,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The gated D latch solves the forbidden-state problem, but it keeps one property from the SR latch that matters a lot once you start chaining these together: it reacts to a "
-        },
-        {
-          "text": "level",
-          "marks": [
-            {
-              "kind": "italic"
-            }
-          ]
-        },
-        {
-          "text": ", not a moment. \"Transparent while E is high\" means transparent for the entire stretch of time E happens to be high, which could span many gate delays, not one clean instant."
+          "text": "The gated D latch solves the forbidden-state problem. It keeps one property from the SR latch that matters enormously once you chain these together: it reacts to a level, not to a moment. Transparent while E is high means transparent for the entire stretch of time E happens to be high, which could span many gate delays."
         }
       ]
     },
@@ -181,18 +126,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Chain latches the way a shift register or counter needs to, latch A's output feeding latch B's input, with both sharing the same enable signal. While that enable is high, a change can ripple straight through A into B before E even has a chance to drop, data racing through multiple stages in a single \"tick\" instead of moving one stage at a time. Engineers call this "
-        },
-        {
-          "text": "race-through",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", and it's exactly why the next storage element exists."
+          "text": "Chain them the way a shift register needs to, with latch A feeding latch B and both sharing one enable. Now the trouble starts. While that enable is high, a change can ripple straight through A into B before E has any chance to drop, so data races through several stages in a single tick instead of moving one stage at a time. Engineers call this race-through."
         }
       ]
     },
@@ -211,7 +145,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "What registers and counters actually need is a storage element that ignores D almost all the time and samples it at exactly one precise, vanishingly brief instant per clock cycle, so that chaining stage after stage moves data forward by exactly one step per tick with no possibility of racing through several stages at once. That's a D flip-flop, built by combining two of this exact gated D latch, not by inventing a new gate."
+          "text": "What registers and counters need is a storage element that ignores D almost all the time. It should sample D at one precise, vanishingly brief instant per clock cycle, so that chaining stage after stage moves data forward by exactly one step per tick. That is a D flip-flop. It is built from two of this exact gated D latch, not from a new kind of gate."
         }
       ]
     },

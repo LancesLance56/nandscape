@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sorting is the most studied problem in computing, and the reason is not that ordered data is pretty. It is that an enormous number of problems become easy once the input is sorted, and stay hard otherwise."
+          "text": "Sorting is the most studied problem in computing, and the reason is not that ordered data is pretty, but that an enormous number of problems become easy once the input is sorted, and stay hard otherwise."
         }
       ]
     },
@@ -60,12 +60,12 @@
         [
           "Are there duplicates?",
           "O(n) with a hash set",
-          "O(n) scan of neighbours, no extra memory"
+          "O(n) scan of neighbors, no extra memory"
         ],
         [
           "Which two values are closest?",
           "O(n²) over all pairs",
-          "O(n) scan of neighbours"
+          "O(n) scan of neighbors"
         ],
         [
           "Do any of these intervals overlap?",
@@ -183,18 +183,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "An "
-        },
-        {
-          "text": "in-place",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " sort uses O(1) or O(log n) extra memory beyond the array itself. Merge sort does not: it needs a scratch buffer as large as the input. On a large dataset that is the difference between fitting in memory and not."
+          "text": "An in-place sort uses O(1) or O(log n) extra memory beyond the array itself. Merge sort does not, since it needs a scratch buffer as large as the input, and on a large dataset that is the difference between fitting in memory and not."
         }
       ]
     },
@@ -316,7 +305,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "No production sort is a textbook algorithm. They are hybrids, and the hybrid is instructive."
+          "text": "No production sort is a textbook algorithm, since real ones are hybrids, and the hybrid is instructive."
         }
       ]
     },

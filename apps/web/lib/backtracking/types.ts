@@ -1,3 +1,5 @@
+import { layoutTree } from "@/lib/tree-layout";
+
 /**
  * Shared vocabulary for every backtracking teaching widget (subsets,
  * permutations, n-queens, palindrome partitioning, m-coloring, sudoku).
@@ -223,68 +225,11 @@ export function createRecorder<P = unknown>(options: RecorderOptions = {}) {
 }
 
 /**
- * Tidy-ish tree layout: every leaf gets its own column in left-to-right order
- * and each parent centres over its children.
- *
- * Laying out the *complete* node list once, rather than re-laying out the
- * revealed subset on every frame, is the point. If positions were recomputed
- * per frame the whole tree would slide sideways each time a node appeared,
- * and following a single branch downward would be impossible.
+ * Re-exported so the existing widgets keep importing tree utilities from the
+ * backtracking vocabulary they already depend on, while the implementation
+ * lives somewhere the dynamic-programming widgets can reach it too.
  */
-export function layoutTree(nodes: PendingNode[], width: number, rowHeight: number): SearchNode[] {
-  if (nodes.length === 0) return [];
-
-  const childrenOf = new Map<string | null, PendingNode[]>();
-  for (const node of nodes) {
-    const list = childrenOf.get(node.parentId);
-    if (list) list.push(node);
-    else childrenOf.set(node.parentId, [node]);
-  }
-
-  const slot = new Map<string, number>();
-  let nextLeaf = 0;
-
-  // Iterative post-order: these trees get deep enough that a recursive
-  // layout would be at risk of the same stack overflow the tutorials warn
-  // about, which would be an embarrassing way for the widget to fail.
-  const walk: { node: PendingNode; expanded: boolean }[] = (childrenOf.get(null) ?? []).map((node) => ({
-    node,
-    expanded: false,
-  }));
-
-  while (walk.length > 0) {
-    const frame = walk[walk.length - 1];
-    const kids = childrenOf.get(frame.node.id) ?? [];
-
-    if (kids.length === 0) {
-      slot.set(frame.node.id, nextLeaf++);
-      walk.pop();
-      continue;
-    }
-
-    if (!frame.expanded) {
-      frame.expanded = true;
-      for (let i = kids.length - 1; i >= 0; i--) walk.push({ node: kids[i], expanded: false });
-      continue;
-    }
-
-    const positions = kids.map((k) => slot.get(k.id) ?? 0);
-    slot.set(frame.node.id, (Math.min(...positions) + Math.max(...positions)) / 2);
-    walk.pop();
-  }
-
-  const leafCount = Math.max(nextLeaf, 1);
-  return nodes.map((node) => ({
-    ...node,
-    x: ((slot.get(node.id) ?? 0) + 0.5) * (width / leafCount),
-    y: node.depth * rowHeight + rowHeight * 0.7,
-  }));
-}
-
-/** Depth of the deepest node, used to size the canvas. */
-export function treeDepth(nodes: SearchNode[]): number {
-  return nodes.reduce((max, n) => Math.max(max, n.depth), 0);
-}
+export { layoutTree, treeDepth } from "@/lib/tree-layout";
 
 export function formatSet(items: (string | number)[]): string {
   return items.length === 0 ? "{ }" : `{ ${items.join(", ")} }`;

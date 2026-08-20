@@ -17,7 +17,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A Karnaugh map (K-map) looks complicated at first glance, but it's really just a truth table with its rows reordered so one algebraic trick becomes something you can spot by eye instead of derive by hand. Before any of that reordering makes sense, though, it's worth seeing the brute-force version of the trick first,  the version that always works, is never wrong, and just happens to be more work than it needs to be."
+          "text": "A Karnaugh map looks complicated at first glance. It is really just a truth table with its rows reordered, so that one algebraic trick becomes something you can spot by eye instead of derive by hand. Before that reordering makes sense, it is worth seeing the brute-force version first: the version that always works and is never wrong, but is more work than it needs to be."
         }
       ]
     },
@@ -32,7 +32,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Any combinational circuit can be written as a truth table: one row per input combination, one output column. To reverse-engineer that table into a formula, you only ever need the rows where the output is 1. Hardcode each of those rows as an AND of its inputs, then OR all of those together, and you're done,  guaranteed correct, every time."
+          "text": "Any combinational circuit can be written as a truth table, one row per input combination, one output column. To reverse-engineer that table into a formula, you only ever need the rows where the output is 1. Hardcode each of those rows as an AND of its inputs, then OR all of those together. The result is guaranteed correct every time, because every row where the output should be 1 is accounted for by its own term."
         }
       ]
     },
@@ -41,7 +41,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Say one row has A = 1, B = 1 with output 1, and another has A = 0, B = 1, also output 1. AND each row's inputs together (AB, and A'B), then OR the two rows: AB + A'B. That's a completely valid formula for the function. Every input combination that should output 1 has its own term accounted for, nothing more, nothing hand-wavy."
+          "text": "Say one row has A = 1, B = 1 with output 1, and another has A = 0, B = 1, also output 1. AND each row's inputs together, giving AB and A'B, then OR the two rows: AB + A'B. That is a completely valid formula for the function, with every input combination that should output 1 accounted for by its own term. Nothing hand-wavy."
         }
       ]
     },
@@ -50,7 +50,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This method is worth sitting with for a moment, because everything else in this section is just a faster way to do the same thing. Below is a truth table for a small function. Click every row where the output is 1,  those are the rows you'd hardcode into a formula this way."
+          "text": "This method is worth sitting with for a moment, because everything else in this section is just a faster way to do the same thing. Below is a truth table for a small function, and you can click every row where the output is 1, since those are the rows you would hardcode into a formula this way."
         }
       ]
     },
@@ -82,18 +82,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Each of those single-row AND terms has a name: a "
-        },
-        {
-          "text": "minterm",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", a product term that's true for exactly one input combination. Sum every minterm where the output is 1 and you get the canonical Sum-of-Products (SOP) form of the function. It's always logically correct, and it's also, for anything past a couple variables, almost never the simplest circuit you could build,  it's reverse-engineering by brute force, one row at a time."
+          "text": "Each of those single-row AND terms has a name: a minterm, a product term that is true for exactly one input combination. Sum every minterm where the output is 1 and you get the canonical Sum-of-Products form of the function, which is always correct and almost never the simplest circuit you could build. It is reverse-engineering by brute force, one row at a time."
         }
       ]
     },
@@ -106,7 +95,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So the brute-force method works, but it never simplifies anything. The next step is the one real idea that lets you merge rows together instead of listing every single one,  and Karnaugh maps exist purely to make that idea easy to spot."
+          "text": "So the brute-force method works, but it never simplifies anything. The next step is the one real idea that lets you merge rows together instead of listing every single one, and Karnaugh maps exist purely to make that idea easy to spot."
         }
       ]
     },
@@ -136,7 +125,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Look closely at what happened: A and B stayed fixed across both terms, and C is the only thing that flipped (C' in one, C in the other). Because C touches both possibilities, it contributes nothing to the final answer,  it cancels, and AB is all that's left. Two three-variable minterms merged into one two-variable term."
+          "text": "Look closely at what happened. A and B stayed fixed across both terms, and C is the only thing that flipped, C' in one, C in the other, so it contributes nothing to the final answer and cancels, leaving AB. Two three-variable minterms merged into one two-variable term."
         }
       ]
     },
@@ -180,7 +169,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Knowing the identity is one thing. Actually spotting which pairs of minterms qualify, just by scanning a truth table, turns out to be surprisingly painful,  and that pain is exactly what motivates everything a Karnaugh map does."
+          "text": "Knowing the identity is one thing. Actually spotting which pairs of minterms qualify, just by scanning a truth table, turns out to be surprisingly painful, and that pain is exactly what motivates everything a Karnaugh map does."
         }
       ]
     },
@@ -210,7 +199,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now find the pair that should be easy: 011 and 100. On paper they sit right next to each other, back to back in the list. But compare them bit by bit, and they differ in all three positions,  they're actually as far apart as two 3-bit rows can possibly be. Meanwhile 011 and 111, which really do differ by only one bit, are three rows apart on the page."
+          "text": "Now find the pair that should be easy: 011 and 100. On paper they sit right next to each other, back to back in the list, but compare them bit by bit and they differ in all three positions. They are actually as far apart as two 3-bit rows can possibly be. Meanwhile 011 and 111, which really do differ by only one bit, sit three rows apart on the page."
         }
       ]
     },
@@ -219,7 +208,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Counting order was never designed to put mergeable rows near each other,  it just counts. Spotting which pairs of minterms qualify to merge, from the identity in the last tutorial, means checking every row against every other row for a one-bit difference. That's fine for two variables. Past three or four, doing it reliably by eye is genuinely painful, and that's before you're even trying to spot groups of four or eight rows merging at once."
+          "text": "Counting order was never designed to put mergeable rows near each other. It just counts. Spotting which pairs of minterms qualify to merge, from the identity above, means checking every row against every other row for a one-bit difference, which is fine for two variables. Past three or four, doing it reliably by eye is genuinely painful, and that is before you are even trying to spot groups of four or eight rows merging at once."
         }
       ]
     },
@@ -232,7 +221,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The fix doesn't add any new math. It just changes the order the rows are written in,  and that one change is the entire reason a Karnaugh map works at all."
+          "text": "The fix does not add any new math. It just changes the order the rows are written in, and that one change is the entire reason a Karnaugh map works at all."
         }
       ]
     },
@@ -247,18 +236,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Instead of counting in ordinary binary, label the rows in "
-        },
-        {
-          "text": "reflected binary Gray code",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " instead: 00, 01, 11, 10. Every consecutive pair in that sequence differs in exactly one bit, by construction,  not by coincidence, and not just most of the time. Counting this way, separately, for rows and for columns of a grid is the single design decision that makes the rest of a Karnaugh map work."
+          "text": "Instead of counting in ordinary binary, label the rows in reflected binary Gray code instead: 00, 01, 11, 10. Every consecutive pair in that sequence differs in exactly one bit, by construction, not by coincidence and not just most of the time. Counting this way, separately, for rows and for columns of a grid, is the single design decision that makes the rest of a Karnaugh map work."
         }
       ]
     },
@@ -267,7 +245,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Step through the sequence below, one row at a time, for both orderings side by side. Binary counting order will jump by a different number of bits every step,  sometimes one, sometimes all of them at once. Gray code never does. Pay attention to the very last step, too: it wraps from the final row back to the first, and even that wraparound only changes one bit."
+          "text": "Step through the sequence below, one row at a time, for both orderings side by side. Binary counting order jumps by a different number of bits every step, sometimes one, sometimes all of them at once. Gray code never does. Pay attention to the very last step too: it wraps from the final row back to the first, and even that wraparound only changes one bit."
         }
       ]
     },
@@ -284,7 +262,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That wraparound property isn't a footnote,  it's exactly what lets a Karnaugh map's leftmost and rightmost columns (or its top and bottom rows) count as neighbors too. You'll meet that directly as the \"wraparound rule\" once grids show up."
+          "text": "That wraparound property is not a footnote. It is exactly what lets a Karnaugh map's leftmost and rightmost columns, or its top and bottom rows, count as neighbors too. You will meet that directly as the wraparound rule once grids show up."
         }
       ]
     },
@@ -297,7 +275,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "With rows and columns both labeled this way, a truth table can be poured directly into a grid,  and that grid is a Karnaugh map."
+          "text": "With rows and columns both labeled this way, a truth table can be poured directly into a grid, and that grid is a Karnaugh map."
         }
       ]
     },

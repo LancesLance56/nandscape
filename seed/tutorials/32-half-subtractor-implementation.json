@@ -26,51 +26,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A "
-        },
-        {
-          "text": "half subtractor",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " computes "
-        },
-        {
-          "text": "A - B",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " for two single bits, producing a "
-        },
-        {
-          "text": "DIFFERENCE",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " and a "
-        },
-        {
-          "text": "BORROW",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ". It mirrors the half adder almost exactly, with one revealing difference."
+          "text": "Now subtract instead of add. A half subtractor computes A minus B for two single bits, producing a DIFFERENCE and a BORROW, and it mirrors the half adder closely enough to build by editing a copy."
         }
       ]
     },
@@ -133,18 +89,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Exactly as in the half adder, the difference bit is 1 when the inputs differ: "
-        },
-        {
-          "text": "DIFF = A XOR B",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": "."
+          "text": "The difference bit behaves as the sum bit did. It is 1 exactly when the inputs differ, so DIFF = A XOR B, the same gate the adder used."
         }
       ]
     },
@@ -159,29 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "You borrow only when subtracting 1 from 0, so "
-        },
-        {
-          "text": "BORROW = (NOT A) AND B",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ". This is the one asymmetry with the half adder, whose carry is a plain "
-        },
-        {
-          "text": "A AND B",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " with no inversion."
+          "text": "Borrowing is different. You borrow only when taking 1 from 0, so BORROW = (NOT A) AND B, and that inverter is the one asymmetry with the half adder."
         }
       ]
     },
@@ -228,7 +151,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Build the half adder first, then change the carry branch. It is a one-inverter edit."
+          "text": "Build the half adder first, then edit its carry branch into a borrow branch."
         }
       ]
     },

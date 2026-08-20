@@ -1,7 +1,7 @@
 {
   "slug": "graph-tarjan-scc",
   "title": "Strongly Connected Components with Tarjan",
-  "excerpt": "Finding every group of nodes where you can get from any one to any other and back. Tarjan does it in a single pass using two numbers per node.",
+  "excerpt": "In a directed graph the useful grouping is not what you can reach but what can reach you back. One depth-first search and two numbers per node find every such group in linear time.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T10:10:00Z",
@@ -19,7 +19,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In an undirected graph, asking \"which nodes are connected to each other\" is easy. Run a traversal, everything you reach is one component, done."
+          "text": "In an undirected graph, asking which nodes belong together is easy. Run one traversal, and everything it reaches is a connected component, because reachability goes both ways."
         }
       ]
     },
@@ -28,10 +28,10 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Directed graphs are meaner. You can reach B from A without any way of getting back. So the useful question becomes: which groups of nodes can all reach each other, in both directions? Those groups are "
+          "text": "Directed graphs take that symmetry away. A one-way street from A to B tells you nothing about getting from B back to A. So the interesting grouping is no longer \"can I reach it\" but "
         },
         {
-          "text": "strongly connected components",
+          "text": "\"can we reach each other\"",
           "marks": [
             {
               "kind": "bold"
@@ -39,148 +39,317 @@
           ]
         },
         {
-          "text": ", and inside one, you can start anywhere, wander, and always find a way home."
+          "text": ". A set of nodes where every node can reach every other node, and which cannot be made any bigger without breaking that, is a "
+        },
+        {
+          "text": "strongly connected component",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "."
         }
       ]
     },
     {
-      "id": "h-why",
+      "id": "p-hook-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "These matter more than they first appear. Mutually recursive functions form one in a call graph. Circular package dependencies form one in a build graph. Collapse each component to a single point and any directed graph becomes acyclic, which means you can then topologically sort it. Finding them is often the first step that makes a tangled graph tractable."
+        }
+      ]
+    },
+    {
+      "id": "h-naive",
       "type": "heading",
       "level": 2,
-      "text": "Why anyone cares"
+      "text": "The obvious method, and its price"
     },
     {
-      "id": "p-why",
+      "id": "p-naive",
       "type": "paragraph",
       "content": [
         {
-          "text": "An SCC in a dependency graph is a circular dependency, with every module involved named for you rather than just a yes-or-no answer. An SCC of size 2 or more in a module graph is exactly the thing your bundler warns about."
+          "text": "There is a direct way to compute this, and it is worth pricing before reaching for anything clever. For each node, run a traversal forwards to find everything it reaches, then run a traversal along reversed edges to find everything that reaches it, and intersect the two sets to get exactly the nodes mutually reachable with it, which is its component."
         }
       ]
     },
     {
-      "id": "p-why-2",
+      "id": "p-naive-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a second use that is worth knowing. Collapse every SCC down to a single node and the graph you are left with is always a DAG, because any cycle would have meant those nodes belonged in the same component. That collapsed graph is called the condensation, and it means you can topologically sort anything, cycles included, as long as you are willing to treat each tangle as one unit."
+          "text": "That is completely correct and costs two traversals per node, so "
+        },
+        {
+          "text": "O(V * (V + E))",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " overall. On a graph with a hundred thousand nodes it is far too slow. The question is whether one pass can do it, and the answer turns out to be yes, using nothing but a depth-first search with two extra numbers per node."
         }
       ]
     },
     {
-      "id": "h-idea",
+      "id": "h-observation",
+      "type": "heading",
+      "level": 2,
+      "text": "The observation everything rests on"
+    },
+    {
+      "id": "p-observation",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Run a depth-first search on a directed graph and it carves the graph into a tree, the edges it actually descended through, plus leftover edges that point to nodes already discovered."
+        }
+      ]
+    },
+    {
+      "id": "p-observation-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now here is the fact that makes a one-pass algorithm possible. Every strongly connected component appears in that DFS tree as a "
+        },
+        {
+          "text": "contiguous block",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". All its nodes sit in one subtree, and exactly one of them was discovered first. Call that node the component's "
+        },
+        {
+          "text": "root",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "p-observation-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The reason is not hard to see. If two nodes are mutually reachable and DFS enters one of them, it can reach the other before it leaves, so the other is discovered somewhere below it. So a component never gets split across unrelated parts of the tree."
+        }
+      ]
+    },
+    {
+      "id": "p-observation-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That reduces the whole problem to a single question. If you can recognize, at the moment DFS finishes with a node, whether that node is the root of a component, then everything discovered since you entered it and not yet claimed must be its component. Recognizing roots is the entire algorithm."
+        }
+      ]
+    },
+    {
+      "id": "h-lowlink",
       "type": "heading",
       "level": 2,
       "text": "Two numbers per node"
     },
     {
-      "id": "p-idea",
+      "id": "p-lowlink",
       "type": "paragraph",
       "content": [
         {
-          "text": "Tarjan runs one DFS and gives every node two numbers as it goes."
+          "text": "Give every node a discovery number as you enter it: 0 for the first node entered, 1 for the next, and so on. Call it index, and once a node has one it keeps it for the rest of the run, since nothing revisits a node to renumber it."
         }
       ]
     },
     {
-      "id": "t-numbers",
-      "type": "table",
-      "headers": [
-        "Number",
-        "Meaning"
-      ],
-      "rows": [
-        [
-          "arrival",
-          "A counter, stamped the first time you reach the node. Never changes."
-        ],
-        [
-          "lowlink",
-          "The smallest arrival number reachable from this node, including by going backwards along one edge into something still in progress."
-        ]
-      ]
-    },
-    {
-      "id": "p-idea-2",
+      "id": "p-lowlink-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Both start out equal. Only lowlink moves, and it only ever goes down, when you discover you can loop back to something older than you thought."
+          "text": "Then give every node a second number called "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", which answers this question: "
+        },
+        {
+          "text": "what is the smallest index I can reach, going down through my subtree and then taking at most one edge back up?",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "p-idea-3",
+      "id": "p-lowlink-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "The payoff is one line: when a node finishes and its lowlink still equals its arrival, that node could not reach anything older than itself. It is the oldest node in its component, the point where the whole tangle was entered. Everything sitting above it on the stack belongs to it."
+          "text": "A node starts with "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " equal to its own "
+        },
+        {
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", because it can certainly reach itself. It then improves in two ways. When you return from a child, your "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " takes the minimum of itself and the child's "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", since anything the child can climb to, you can climb to through the child. And when you see an edge to a node that was already discovered and is still in play, your "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " takes the minimum of itself and that node's "
+        },
+        {
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
         }
       ]
     },
     {
-      "id": "h-watch",
-      "type": "heading",
-      "level": 2,
-      "text": "Step through it"
-    },
-    {
-      "id": "p-watch",
+      "id": "p-lowlink-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "This graph has two tangles: A, B, C, D form a loop, and E and F point at each other. Play it and watch the pair above each node. The moment a component closes, its nodes get tinted as a group."
+          "text": "Now the payoff. If a node finishes with "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " strictly less than its "
+        },
+        {
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", something in its subtree found a way back to an ancestor. That ancestor and this node are on a cycle together, so they share a component, and this node cannot be the first one entered in it."
         }
       ]
     },
     {
-      "id": "w-tarjan",
-      "type": "interactive",
-      "widget": "tarjan-scc",
-      "data": {}
-    },
-    {
-      "id": "p-watch-2",
+      "id": "p-lowlink-5",
       "type": "paragraph",
       "content": [
         {
-          "text": "The moment to look for is when D finds its edge back to A. A is still on the stack, so that edge is proof of a loop, and D's lowlink drops to A's arrival number. That drop then propagates back up through C and B as each of them finishes, which is how the whole group ends up agreeing that A is their root."
-        }
-      ]
-    },
-    {
-      "id": "p-watch-3",
-      "type": "paragraph",
-      "content": [
+          "text": "If a node finishes with "
+        },
         {
-          "text": "Also notice E and F close into their own component before A's group does, even though they were reached later. A component closes as soon as its root finishes, not in the order the components were discovered."
-        }
-      ]
-    },
-    {
-      "id": "p-watch-4",
-      "type": "paragraph",
-      "content": [
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
         {
-          "text": "Now try the \"With a lone node\" example, which has three components instead of two. A and B point at each other, C, D and E form a triangle, and F just sits there at the end with a single arrow coming in and nothing going out."
-        }
-      ]
-    },
-    {
-      "id": "p-watch-5",
-      "type": "paragraph",
-      "content": [
+          "text": " equal to its "
+        },
         {
-          "text": "F is still a strongly connected component, all by itself. That catches people out, because F is on no cycle at all. But the definition only asks whether every node in the group can reach every other, and with a group of one that is trivially true: F can reach F by doing nothing. Every node in a directed graph belongs to exactly one SCC, and most real graphs are mostly components of size 1."
-        }
-      ]
-    },
-    {
-      "id": "p-watch-6",
-      "type": "paragraph",
-      "content": [
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
         {
-          "text": "F is also the first component to close, before either of the bigger ones, which is worth sitting with for a second. Tarjan finishes F's edges first (there are none), so F's root test passes immediately while C, D, E and A, B are all still open further down the stack."
+          "text": ", nothing beneath it escaped upward. Nothing in its subtree can reach anything discovered before it. That is exactly what being the first node of a component means. "
+        },
+        {
+          "text": "low equals index identifies a root",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", and everything still unclaimed below it is its component."
         }
       ]
     },
@@ -188,14 +357,14 @@
       "id": "h-stack",
       "type": "heading",
       "level": 2,
-      "text": "Why the stack is not just the DFS path"
+      "text": "Why there is a stack, and the subtlety inside it"
     },
     {
       "id": "p-stack",
       "type": "paragraph",
       "content": [
         {
-          "text": "This trips people up. Tarjan keeps its own stack, separate from the DFS call stack, and nodes stay on it after the DFS has backed out of them. They only come off when their component closes."
+          "text": "Keep a stack of every node discovered but not yet assigned to a finished component. Push a node when you enter it. When a root finishes, pop until you pop the root itself, and those nodes are the component."
         }
       ]
     },
@@ -204,42 +373,486 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The stack is answering a specific question: is this node part of a component that is still open? That distinction is what makes the three cases below work out correctly."
+          "text": "That much is bookkeeping. The stack is also doing something less obvious, and this is the one part of Tarjan's algorithm that genuinely catches people out."
         }
       ]
     },
     {
-      "id": "t-cases",
+      "id": "p-stack-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "When DFS meets an edge to a node that has already been discovered, there are two very different situations, and they need opposite treatment."
+        }
+      ]
+    },
+    {
+      "id": "t-edge-cases",
       "type": "table",
       "headers": [
-        "Edge u → v leads to",
+        "The edge points to",
         "What it means",
-        "Do"
+        "What to do"
       ],
       "rows": [
         [
-          "a node never seen",
-          "a new branch of the search",
-          "recurse, then pull v's lowlink into u's"
+          "A node still on the stack",
+          "It is an ancestor or a node in the same unfinished region, so it can reach back to you",
+          "Update low using that node's index"
         ],
         [
-          "a node on the stack",
-          "a loop back into an open component",
-          "lower u's lowlink to v's arrival"
-        ],
-        [
-          "a node not on the stack",
-          "a finished component, one-way street",
-          "ignore it completely"
+          "A node already popped off",
+          "It sits in a finished component, which by definition cannot reach back to you",
+          "Ignore the edge completely"
         ]
       ]
     },
     {
-      "id": "p-cases",
+      "id": "p-stack-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "That third row is the one people get wrong. If v is already in a closed component, you cannot get back from v to u, so that edge tells you nothing about u's component. Letting it lower u's lowlink would incorrectly glue two separate components together."
+          "text": "Miss that second case and components start merging that have no business merging. The edge exists, so you can get there, but there is no route back, and a component needs both directions."
+        }
+      ]
+    },
+    {
+      "id": "p-stack-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One more detail in the same area. When you take an edge to a node on the stack, you use that node's "
+        },
+        {
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and not its "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Using "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " can pull in a value from a region that cannot actually reach you, which merges components that should stay apart. The version with "
+        },
+        {
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the one that is correct, and it is a common source of a solver that works on small tests and fails on larger ones."
+        }
+      ]
+    },
+    {
+      "id": "h-trace",
+      "type": "heading",
+      "level": 2,
+      "text": "A full trace"
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Here is a graph with four components of different shapes: one cycle of three, one cycle of two, and two single nodes."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Starting the DFS at A, with neighbors taken in the order listed. Step through it below and watch the low values travel back up as the recursion unwinds."
+        }
+      ]
+    },
+    {
+      "id": "w-tarjan-live",
+      "type": "interactive",
+      "widget": "tarjan-scc",
+      "data": {
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": "A",
+              "x": 60,
+              "y": 60
+            },
+            {
+              "id": "B",
+              "x": 180,
+              "y": 60
+            },
+            {
+              "id": "C",
+              "x": 120,
+              "y": 170
+            },
+            {
+              "id": "D",
+              "x": 300,
+              "y": 60
+            },
+            {
+              "id": "E",
+              "x": 420,
+              "y": 60
+            },
+            {
+              "id": "F",
+              "x": 420,
+              "y": 170
+            },
+            {
+              "id": "G",
+              "x": 300,
+              "y": 170
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B"
+            },
+            {
+              "from": "B",
+              "to": "C"
+            },
+            {
+              "from": "C",
+              "to": "A"
+            },
+            {
+              "from": "B",
+              "to": "D"
+            },
+            {
+              "from": "D",
+              "to": "E"
+            },
+            {
+              "from": "E",
+              "to": "F"
+            },
+            {
+              "from": "F",
+              "to": "E"
+            },
+            {
+              "from": "D",
+              "to": "G"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Four things in that trace are worth going back to. C reached A, an ancestor, so C's "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " dropped to 0 and that 0 propagated up through B to A. D had a child, E, whose component finished underneath it, and D's own "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " was untouched by it, which is exactly right: E's component cannot get back to D."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Also notice the order components come out. E and F finished first, then G, then D, then the big one containing A. Tarjan produces components in reverse topological order of the collapsed graph, which is a free bonus. If you need that order the right way round, reverse the output rather than sorting it."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "And notice that A, the very first node entered, was a root with low 0 equal to its index 0, since the first node of a DFS is always a root of something, because nothing was discovered before it for anything to climb back to."
+        }
+      ]
+    },
+    {
+      "id": "h-play",
+      "type": "heading",
+      "level": 2,
+      "text": "Step through it"
+    },
+    {
+      "id": "p-play",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The panel shows each node's index and low as they change. Watch for the moment a low value drops because of a back edge, then watch that value climb the recursion. The components get outlined as they are popped."
+        }
+      ]
+    },
+    {
+      "id": "w-tarjan",
+      "type": "interactive",
+      "widget": "tarjan-scc",
+      "data": {
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": "A",
+              "x": 60,
+              "y": 60
+            },
+            {
+              "id": "B",
+              "x": 180,
+              "y": 60
+            },
+            {
+              "id": "C",
+              "x": 120,
+              "y": 170
+            },
+            {
+              "id": "D",
+              "x": 300,
+              "y": 60
+            },
+            {
+              "id": "E",
+              "x": 420,
+              "y": 60
+            },
+            {
+              "id": "F",
+              "x": 420,
+              "y": 170
+            },
+            {
+              "id": "G",
+              "x": 300,
+              "y": 170
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B"
+            },
+            {
+              "from": "B",
+              "to": "C"
+            },
+            {
+              "from": "C",
+              "to": "A"
+            },
+            {
+              "from": "B",
+              "to": "D"
+            },
+            {
+              "from": "D",
+              "to": "E"
+            },
+            {
+              "from": "E",
+              "to": "F"
+            },
+            {
+              "from": "F",
+              "to": "E"
+            },
+            {
+              "from": "D",
+              "to": "G"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "h-cost",
+      "type": "heading",
+      "level": 2,
+      "text": "What it costs"
+    },
+    {
+      "id": "p-cost",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every node is entered once and pushed once. Every edge is examined once, from its tail. Each node is popped at most once. Add those up and the whole thing is "
+        },
+        {
+          "text": "O(V + E)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", the same as a plain DFS, which is the point of the exercise: it beats the two-traversals-per-node approach by a whole factor of V."
+        }
+      ]
+    },
+    {
+      "id": "p-cost-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Memory is "
+        },
+        {
+          "text": "O(V)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for the two number arrays, the stack, and the on-stack flags. The recursion depth can reach V on a long chain, which is the same stack overflow risk any recursive DFS carries, and the same fix applies if you hit it."
+        }
+      ]
+    },
+    {
+      "id": "h-mistakes",
+      "type": "heading",
+      "level": 2,
+      "text": "Where it goes wrong"
+    },
+    {
+      "id": "p-mistake-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Using low instead of index for an edge to a stacked node.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " The single most common error, and a nasty one because small graphs often give the right answer anyway. Components come out merged that should be separate."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Updating low from a node that is already off the stack.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " Same symptom, different cause. A finished component cannot reach you, so an edge into one carries no information about cycles and must be skipped entirely."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Only running the DFS from one node.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " A directed graph is very often not reachable from any single starting point. Loop over every node and start a fresh DFS from any that is still undiscovered, exactly as with counting connected components."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Expecting components in topological order.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " They come out reversed. That is useful once you know it and a confusing off-by-everything bug until you do."
+        }
+      ]
+    },
+    {
+      "id": "p-mistake-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Forgetting that a single node is a component.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " A node on no cycle at all forms a component of size one. In the trace above, D and G are each their own component. Code that only records components of two or more will silently drop most of the graph."
         }
       ]
     },
@@ -247,44 +860,31 @@
       "id": "h-code",
       "type": "heading",
       "level": 2,
-      "text": "In code"
-    },
-    {
-      "id": "code-tarjan",
-      "type": "code",
-      "language": "javascript",
-      "code": "function tarjan(nodes, adj) {\n  const arrival = new Map();\n  const lowlink = new Map();\n  const onStack = new Set();\n  const stack = [];\n  const components = [];\n  let counter = 0;\n\n  function strongConnect(u) {\n    arrival.set(u, counter);\n    lowlink.set(u, counter);\n    counter++;\n    stack.push(u);\n    onStack.add(u);\n\n    for (const v of adj.get(u) ?? []) {\n      if (!arrival.has(v)) {\n        strongConnect(v);\n        // v's component might reach further back than we knew\n        lowlink.set(u, Math.min(lowlink.get(u), lowlink.get(v)));\n      } else if (onStack.has(v)) {\n        // Back edge into a component that is still open.\n        // Note: arrival, not lowlink. v is not our ancestor's problem.\n        lowlink.set(u, Math.min(lowlink.get(u), arrival.get(v)));\n      }\n      // else: v is in a closed component, that edge is one-way, skip\n    }\n\n    // Could not reach anything older than itself, so u is a root.\n    if (lowlink.get(u) === arrival.get(u)) {\n      const component = [];\n      let w;\n      do {\n        w = stack.pop();\n        onStack.delete(w);\n        component.push(w);\n      } while (w !== u);\n      components.push(component);\n    }\n  }\n\n  for (const node of nodes) {\n    if (!arrival.has(node)) strongConnect(node);\n  }\n  return components;\n}",
-      "variants": [
-        {
-          "language": "python",
-          "code": "def tarjan(nodes, adj):\n    arrival = {}\n    lowlink = {}\n    on_stack = set()\n    stack = []\n    components = []\n    counter = 0\n\n    def strong_connect(u):\n        nonlocal counter\n        arrival[u] = counter\n        lowlink[u] = counter\n        counter += 1\n        stack.append(u)\n        on_stack.add(u)\n\n        for v in adj.get(u, []):\n            if v not in arrival:\n                strong_connect(v)\n                # v's component might reach further back than we knew\n                lowlink[u] = min(lowlink[u], lowlink[v])\n            elif v in on_stack:\n                # Back edge into a component that is still open.\n                # Note: arrival, not lowlink.\n                lowlink[u] = min(lowlink[u], arrival[v])\n            # else: v is in a closed component, that edge is one-way, skip\n\n        # Could not reach anything older than itself, so u is a root.\n        if lowlink[u] == arrival[u]:\n            component = []\n            while True:\n                w = stack.pop()\n                on_stack.discard(w)\n                component.append(w)\n                if w == u:\n                    break\n            components.append(component)\n\n    for node in nodes:\n        if node not in arrival:\n            strong_connect(node)\n\n    return components"
-        },
-        {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <functional>\n#include <map>\n#include <set>\n#include <string>\n#include <vector>\n\nstd::vector<std::vector<std::string>> tarjan(\n    const std::vector<std::string>& nodes,\n    const std::map<std::string, std::vector<std::string>>& adj) {\n    std::map<std::string, int> arrival, lowlink;\n    std::set<std::string> onStack;\n    std::vector<std::string> stack;\n    std::vector<std::vector<std::string>> components;\n    int counter = 0;\n\n    std::function<void(const std::string&)> strongConnect = [&](const std::string& u) {\n        arrival[u] = counter;\n        lowlink[u] = counter;\n        counter++;\n        stack.push_back(u);\n        onStack.insert(u);\n\n        auto it = adj.find(u);\n        if (it != adj.end()) {\n            for (const std::string& v : it->second) {\n                if (!arrival.count(v)) {\n                    strongConnect(v);\n                    // v's component might reach further back than we knew\n                    lowlink[u] = std::min(lowlink[u], lowlink[v]);\n                } else if (onStack.count(v)) {\n                    // Back edge into a component that is still open.\n                    // Note: arrival, not lowlink.\n                    lowlink[u] = std::min(lowlink[u], arrival[v]);\n                }\n                // else: v is in a closed component, that edge is one-way, skip\n            }\n        }\n\n        // Could not reach anything older than itself, so u is a root.\n        if (lowlink[u] == arrival[u]) {\n            std::vector<std::string> component;\n            std::string w;\n            do {\n                w = stack.back();\n                stack.pop_back();\n                onStack.erase(w);\n                component.push_back(w);\n            } while (w != u);\n            components.push_back(component);\n        }\n    };\n\n    for (const std::string& node : nodes) {\n        if (!arrival.count(node)) strongConnect(node);\n    }\n    return components;\n}"
-        }
-      ]
+      "text": "The implementation"
     },
     {
       "id": "p-code",
       "type": "paragraph",
       "content": [
         {
-          "text": "The whole thing is O(V + E). One DFS, each edge examined once, each node pushed and popped once. That is genuinely impressive for a problem that sounds like it should need repeated searching, and it is why Tarjan is the standard answer rather than the more intuitive approach of running a traversal from every node."
+          "text": "Short, considering what it does, and the two comment lines are where all the difficulty was."
         }
       ]
     },
     {
-      "id": "p-code-2",
-      "type": "paragraph",
-      "content": [
+      "id": "code-impl",
+      "type": "code",
+      "language": "javascript",
+      "code": "function tarjan(graph) {\n  const index = new Map();      // discovery order\n  const low = new Map();        // lowest index reachable, see above\n  const onStack = new Set();\n  const stack = [];\n  const components = [];\n  let counter = 0;\n\n  function visit(v) {\n    index.set(v, counter);\n    low.set(v, counter);\n    counter++;\n    stack.push(v);\n    onStack.add(v);\n\n    for (const w of graph.neighbors(v)) {\n      if (!index.has(w)) {\n        visit(w);                                   // tree edge\n        low.set(v, Math.min(low.get(v), low.get(w)));\n      } else if (onStack.has(w)) {\n        // w is an ancestor or a sibling still being processed, so it can\n        // reach back to v. Use its INDEX, not its low.\n        low.set(v, Math.min(low.get(v), index.get(w)));\n      }\n      // w visited but off the stack: it is in a finished component that\n      // cannot reach us. Ignore it entirely.\n    }\n\n    if (low.get(v) === index.get(v)) {              // v is a root\n      const component = [];\n      let w;\n      do {\n        w = stack.pop();\n        onStack.delete(w);\n        component.push(w);\n      } while (w !== v);\n      components.push(component);\n    }\n  }\n\n  for (const v of graph.nodes) if (!index.has(v)) visit(v);\n  return components;\n}",
+      "variants": [
         {
-          "text": "One practical warning, the same one from the DFS lesson: this is recursive, and a long chain will overflow the call stack. The widget above runs an iterative version with an explicit frame stack for exactly that reason."
+          "language": "python",
+          "code": "def tarjan(graph):\n    index, low, on_stack = {}, {}, set()\n    stack, components = [], []\n    counter = 0\n\n    def visit(v):\n        nonlocal counter\n        index[v] = low[v] = counter\n        counter += 1\n        stack.append(v)\n        on_stack.add(v)\n\n        for w in graph.neighbors(v):\n            if w not in index:\n                visit(w)                     # tree edge\n                low[v] = min(low[v], low[w])\n            elif w in on_stack:\n                # w can still reach back to v. Use its INDEX, not its low.\n                low[v] = min(low[v], index[w])\n            # w visited but off the stack: finished component, ignore it\n\n        if low[v] == index[v]:               # v is a root\n            component = []\n            while True:\n                w = stack.pop()\n                on_stack.discard(w)\n                component.append(w)\n                if w == v:\n                    break\n            components.append(component)\n\n    for v in graph.nodes:\n        if v not in index:\n            visit(v)\n    return components"
         }
       ]
     },
     {
-      "id": "h-quiz",
+      "id": "h-check",
       "type": "heading",
       "level": 2,
       "text": "Check yourself"
@@ -296,73 +896,96 @@
       "data": {
         "questions": [
           {
-            "prompt": "A node finishes with lowlink equal to its arrival number. What does that tell you?",
+            "prompt": "A node finishes with low equal to its index. What does that tell you?",
             "options": [
               {
-                "label": "It is the root of a component, so pop the stack down to it",
+                "label": "It is the root of a component, and everything above it on the stack belongs to that component",
                 "correct": true
               },
               {
-                "label": "It is isolated with no edges",
+                "label": "It has no outgoing edges",
                 "correct": false
               },
               {
-                "label": "It was the first node the algorithm visited",
+                "label": "It is a single-node component",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "Edge u → v where v has been visited but is NOT on the stack. What do you do?",
+            "prompt": "DFS finds an edge to a node that was visited but is no longer on the stack. What should happen?",
             "options": [
               {
-                "label": "Nothing, v is in a closed component and cannot reach back to u",
+                "label": "Nothing. That node is in a finished component that cannot reach back",
                 "correct": true
               },
               {
-                "label": "Lower u's lowlink to v's arrival",
+                "label": "Update low using that node's index",
                 "correct": false
               },
               {
-                "label": "Recurse into v again",
+                "label": "Update low using that node's low",
                 "correct": false
               }
             ]
           },
           {
-            "prompt": "You collapse every SCC into a single node. What is the resulting graph?",
+            "prompt": "Why use the neighbor's index rather than its low when it is on the stack?",
             "options": [
               {
-                "label": "Always a DAG, since any remaining cycle would have been one component",
+                "label": "Its low may come from a region that cannot reach you, which would merge separate components",
                 "correct": true
               },
               {
-                "label": "Always a tree",
+                "label": "Its low has not been computed yet at that point",
                 "correct": false
               },
               {
-                "label": "Still possibly cyclic",
+                "label": "The two are always equal for stacked nodes",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "In what order does Tarjan output the components?",
+            "options": [
+              {
+                "label": "Reverse topological order of the graph you get by collapsing each component to a point",
+                "correct": true
+              },
+              {
+                "label": "Largest component first",
+                "correct": false
+              },
+              {
+                "label": "The order their roots were discovered",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why is this better than running a forward and a backward traversal from every node?",
+            "options": [
+              {
+                "label": "It answers the same question in one DFS, so O(V + E) instead of O(V * (V + E))",
+                "correct": true
+              },
+              {
+                "label": "It handles graphs with cycles, which traversals cannot",
+                "correct": false
+              },
+              {
+                "label": "It needs no extra memory beyond the graph",
                 "correct": false
               }
             ]
           }
         ]
       }
-    },
-    {
-      "id": "divider-1",
-      "type": "divider"
-    },
-    {
-      "id": "b-next",
-      "type": "button",
-      "label": "Continue to negative weights",
-      "href": "/tutorials/dsa/graph-bellman-ford",
-      "style": "primary"
     }
   ],
   "seoTitle": "Tarjan's Algorithm: Strongly Connected Components",
-  "seoDescription": "Find every strongly connected component in one DFS pass. How Tarjan's discovery and low-link numbers work, and why the stack is not the DFS path.",
+  "seoDescription": "Tarjan's strongly connected components algorithm derived: why DFS puts each component in one contiguous subtree, what lowlink actually measures, why the stack distinguishes live cycles from finished components, and a full trace.",
   "keywords": [
     "tarjan's algorithm",
     "strongly connected components",

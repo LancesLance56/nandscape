@@ -25,18 +25,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The NOR gate is "
-        },
-        {
-          "text": "functionally complete",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", which means every other gate can be built from it alone. This page shows how to build a XOR gate using only NOR gates, why the construction works, and how many gates it costs."
+          "text": "The NOR gate is functionally complete, which means every other gate can be built from it alone, and this page builds an XOR gate from nothing else. Along the way you will see why the construction works and how many gates it costs."
         }
       ]
     },
@@ -259,7 +248,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Reading the construction is not the same as getting it working. Open the editor, drop in the gates, and watch the output change as you toggle the inputs."
+          "text": "Reading the construction is not the same as getting it working. Open the editor, drop in the gates, and watch the output change as you toggle the inputs, since that is the only way to be sure the circuit does what the truth table claims."
         }
       ]
     },
@@ -290,43 +279,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every conversion follows the same two moves: get the un-inverted version, then cancel or add an inversion. Once you have seen "
-        },
-        {
-          "text": "AND from NAND",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/implementation-of-and-from-nand"
-            }
-          ]
-        },
-        {
-          "text": " and "
-        },
-        {
-          "text": "OR from NAND",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/implementation-of-or-from-nand"
-            }
-          ]
-        },
-        {
-          "text": ", the rest are variations. The wider "
-        },
-        {
-          "text": "digital logic track",
-          "marks": [
-            {
-              "kind": "link",
-              "href": "/tutorials/digital-logic"
-            }
-          ]
-        },
-        {
-          "text": " covers where these gates end up: adders, latches and memory."
+          "text": "Every conversion in this track follows the same two moves: get the un-inverted version, then cancel or add an inversion. Once you have seen XOR built this way, the rest are variations on the same idea. The wider digital logic track covers where these gates end up, in adders, latches, and memory."
         }
       ]
     },

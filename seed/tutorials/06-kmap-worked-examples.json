@@ -1,7 +1,7 @@
 {
   "slug": "kmap-worked-examples",
   "title": "Karnaugh Map Worked Examples",
-  "excerpt": "Six maps solved end to end, from a single big group to four corners and a function with two equally minimal answers. Then an endless supply of random ones to practise on.",
+  "excerpt": "Six maps solved end to end, from a single big group to four corners and a function with two equally minimal answers. Then an endless supply of random ones to practice on.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T11:10:00Z",
@@ -20,7 +20,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The rules for Karnaugh maps take five minutes to learn and considerably longer to apply well. What follows is six maps solved in full, chosen because each one is where a particular mistake usually happens."
+          "text": "The rules for Karnaugh maps take five minutes to learn and considerably longer to apply well, so what follows is six maps solved in full, chosen because each one is where a particular mistake usually happens."
         }
       ]
     },
@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every map below is live. Groups are outlined and labelled with their product term, and you can click cells to change the function and watch the answer move."
+          "text": "Every map below is live. Groups are outlined and labeled with their product term, and you can click cells to change the function and watch the answer move."
         }
       ]
     },
@@ -44,7 +44,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Four 1s, all in the cells where C is 0. They form one block of four."
+          "text": "Four 1s, all in the cells where C is 0, form one block of four."
         }
       ]
     },
@@ -143,7 +143,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Edges wrap because the columns are labelled in Gray code. The first and last columns differ in exactly one bit, which is the same relationship any two side-by-side columns have. Nothing special is happening; the map is just drawn flat when it is really a cylinder."
+          "text": "Edges wrap because the columns are labeled in Gray code. The first and last columns differ in exactly one bit, which is the same relationship any two side-by-side columns have. Nothing special is happening; the map is just drawn flat when it is really a cylinder."
         }
       ]
     },
@@ -200,7 +200,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "They are one group, and the answer is B'D'. Both axes wrap, so the corners are all mutually adjacent. The widget draws this as four dashed pieces to show they belong to a single group."
+          "text": "They are one group, and the answer is B'D', because both axes wrap and the corners are all mutually adjacent. The widget draws this as four dashed pieces to show they belong to a single group."
         }
       ]
     },
@@ -209,7 +209,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If you can see this one without help, you have understood the wraparound rule. It is the standard exam question for exactly that reason."
+          "text": "If you can see this one without help, you have understood the wraparound rule, which is the standard exam question for exactly that reason."
         }
       ]
     },
@@ -266,7 +266,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The answer is A'B' + A'D + A'C, in 3 terms. Notice that some cells sit inside two groups at once."
+          "text": "The answer is A'B' + A'D + A'C, in three terms, and notice that some cells sit inside two groups at once."
         }
       ]
     },
@@ -275,18 +275,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Overlap costs nothing. A 1 covered twice is still just a 1: in Boolean algebra "
-        },
-        {
-          "text": "x + x = x",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", so repeating coverage never changes the function. What matters is that every 1 is covered at least once and that no group is redundant."
+          "text": "Overlap costs nothing, because a 1 covered twice is still just a 1: in Boolean algebra x + x = x, so repeating coverage never changes the function, and what matters is only that every 1 is covered at least once and that no group is redundant."
         }
       ]
     },
@@ -301,7 +290,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The BCD comparison from the previous lesson. Six inputs cannot occur, so they are marked X."
+          "text": "The BCD comparison from the previous lesson, where six inputs cannot occur and are marked X."
         }
       ]
     },
@@ -400,7 +389,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This is why a grader that compares your answer against one stored solution is unreliable. The practice tool below checks the two things that actually define a right answer: that your groups reproduce the function, and that no smaller grouping exists."
+          "text": "This is why a grader that compares your answer against one stored solution is unreliable. The practice tool below checks the two things that actually define a right answer."
         }
       ]
     },
@@ -469,7 +458,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A new random map every time, marked against the true minimum. Start on easy and move up when the 3-variable maps stop being interesting."
+          "text": "A new random map every time, marked against the true minimum, so start on easy and move up once the 3-variable maps stop being interesting."
         }
       ]
     },
@@ -587,7 +576,7 @@
     {
       "id": "b-next",
       "type": "button",
-      "label": "Practise with random maps",
+      "label": "Practice with random maps",
       "href": "/tools/karnaugh-map-practice",
       "style": "primary"
     }
