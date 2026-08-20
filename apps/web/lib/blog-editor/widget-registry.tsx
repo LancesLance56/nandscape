@@ -17,6 +17,7 @@ import { StateMachineWidget } from "@/components/content/blocks/interactive/stat
 import { GraphExplorerWidget } from "@/components/content/blocks/interactive/graph/graph-explorer-widget";
 import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
 import { ShortestPathWidget } from "@/components/content/blocks/interactive/graph/shortest-path-widget";
+import { GraphEmbedWidget, isGraphEmbedData } from "@/components/content/blocks/interactive/graph/graph-embed-widget";
 import { MstWidget } from "@/components/content/blocks/interactive/graph/mst-widget";
 import { TarjanSccWidget } from "@/components/content/blocks/interactive/graph/tarjan-scc-widget";
 import { BacktrackingTreeWidget } from "@/components/content/blocks/interactive/backtracking/backtracking-tree-widget";
@@ -42,6 +43,12 @@ import { PollWidgetEditor } from "@/components/blog-editor/widgets/poll-widget-e
 import { QuizWidgetEditor } from "@/components/blog-editor/widgets/quiz-widget-editor";
 import { RevealWidgetEditor } from "@/components/blog-editor/widgets/reveal-widget-editor";
 import { CircuitEmbedWidgetEditor } from "@/components/blog-editor/widgets/circuit-embed-widget-editor";
+import { GraphEmbedWidgetEditor } from "@/components/blog-editor/widgets/graph-embed-widget-editor";
+import { GraphTraversalWidgetEditor } from "@/components/blog-editor/widgets/graph-traversal-widget-editor";
+import { ShortestPathWidgetEditor } from "@/components/blog-editor/widgets/shortest-path-widget-editor";
+import { MstWidgetEditor } from "@/components/blog-editor/widgets/mst-widget-editor";
+import { TarjanSccWidgetEditor } from "@/components/blog-editor/widgets/tarjan-scc-widget-editor";
+import { GraphColoringWidgetEditor } from "@/components/blog-editor/widgets/graph-coloring-widget-editor";
 
 export interface WidgetEditorProps {
   data: Record<string, unknown>;
@@ -213,29 +220,37 @@ const registryImpl: Record<string, WidgetDefinition> = {
     name: "graph-traversal",
     label: "Graph Traversal (BFS/DFS)",
     Renderer: GraphTraversalWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: GraphTraversalWidgetEditor,
     createDefault: () => ({ mode: "bfs" }),
   },
   "shortest-path": {
     name: "shortest-path",
     label: "Shortest Path (Dijkstra)",
     Renderer: ShortestPathWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: ShortestPathWidgetEditor,
     createDefault: () => ({ start: "A" }),
   },
   "mst-explorer": {
     name: "mst-explorer",
     label: "Minimum Spanning Tree (Kruskal/Prim)",
     Renderer: MstWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: MstWidgetEditor,
     createDefault: () => ({ mode: "kruskal" }),
   },
   "tarjan-scc": {
     name: "tarjan-scc",
     label: "Tarjan Strongly Connected Components",
     Renderer: TarjanSccWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: TarjanSccWidgetEditor,
     createDefault: () => ({}),
+  },
+  "graph-embed": {
+    name: "graph-embed",
+    label: "Graph Diagram (no algorithm)",
+    Renderer: GraphEmbedWidget,
+    Editor: GraphEmbedWidgetEditor,
+    createDefault: () => ({ graph: { nodes: [], edges: [] } }),
+    validate: (data) => (isGraphEmbedData(data as Record<string, unknown>) ? [] : ["Needs at least one node."]),
   },
   "backtracking-tree": {
     name: "backtracking-tree",
@@ -269,7 +284,7 @@ const registryImpl: Record<string, WidgetDefinition> = {
     name: "graph-coloring",
     label: "Graph M-Coloring",
     Renderer: GraphColoringWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: GraphColoringWidgetEditor,
     createDefault: () => ({ m: 3 }),
   },
   "sudoku-solver": {

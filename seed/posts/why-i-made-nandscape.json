@@ -1,0 +1,376 @@
+{
+  "slug": "why-i-made-nandscape",
+  "title": "Why I made Nandscape",
+  "excerpt": "Learning digital logic can be difficult not because it's a hard topic to grasp, but because it's difficult to process or learn through textbooks.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "coverImage": "/images/blog/why-i-made-nandscape/cover.png",
+  "publishedAt": "2026-08-07T00:00:00Z",
+  "tags": [
+    "devlog"
+  ],
+  "body": [
+    {
+      "id": "p_41b2ef3c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Learning digital logic can be difficult not because it's a hard topic to grasp, but because it's difficult to process or learn through textbooks. I made Nandscape to make learning a bit more fun for CS students through interactive tutorials and puzzles."
+        }
+      ]
+    },
+    {
+      "id": "widget_e6b709b0",
+      "data": {
+        "name": "Circuit",
+        "edges": [
+          {
+            "id": "e1",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_in_a",
+            "target": "demo_fa_xor1",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e2",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_in_b",
+            "target": "demo_fa_xor1",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-1"
+          },
+          {
+            "id": "e3",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_in_a",
+            "target": "demo_fa_and1",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e4",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_in_b",
+            "target": "demo_fa_and1",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-1"
+          },
+          {
+            "id": "e5",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_xor1",
+            "target": "demo_fa_xor2",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e6",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_in_cin",
+            "target": "demo_fa_xor2",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-1"
+          },
+          {
+            "id": "e7",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_xor1",
+            "target": "demo_fa_and2",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e8",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_in_cin",
+            "target": "demo_fa_and2",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-1"
+          },
+          {
+            "id": "e9",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_and1",
+            "target": "demo_fa_not_p1",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e10",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_and2",
+            "target": "demo_fa_not_p2",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e11",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_not_p1",
+            "target": "demo_fa_nand_carry",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e12",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_not_p2",
+            "target": "demo_fa_nand_carry",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-1"
+          },
+          {
+            "id": "e13",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_xor2",
+            "target": "demo_fa_sum",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          },
+          {
+            "id": "e14",
+            "data": {},
+            "type": "wire",
+            "source": "demo_fa_nand_carry",
+            "target": "demo_fa_cout",
+            "sourceHandle": "out-0",
+            "targetHandle": "in-0"
+          }
+        ],
+        "nodes": [
+          {
+            "id": "demo_fa_in_a",
+            "data": {
+              "kind": "input",
+              "name": "A",
+              "value": 0
+            },
+            "type": "io-input",
+            "measured": {
+              "width": 40,
+              "height": 61
+            },
+            "position": {
+              "x": 40,
+              "y": 40
+            },
+            "selected": true
+          },
+          {
+            "id": "demo_fa_in_b",
+            "data": {
+              "kind": "input",
+              "name": "B",
+              "value": 0
+            },
+            "type": "io-input",
+            "measured": {
+              "width": 40,
+              "height": 61
+            },
+            "position": {
+              "x": 40,
+              "y": 200
+            },
+            "selected": false
+          },
+          {
+            "id": "demo_fa_in_cin",
+            "data": {
+              "kind": "input",
+              "name": "CIN",
+              "value": 0
+            },
+            "type": "io-input",
+            "measured": {
+              "width": 40,
+              "height": 61
+            },
+            "position": {
+              "x": 40,
+              "y": 360
+            },
+            "selected": false
+          },
+          {
+            "id": "demo_fa_xor1",
+            "data": {
+              "kind": "gate",
+              "gateType": 4,
+              "inputCount": 2
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 40
+            },
+            "position": {
+              "x": 240,
+              "y": 100
+            }
+          },
+          {
+            "id": "demo_fa_and1",
+            "data": {
+              "kind": "gate",
+              "gateType": 1,
+              "inputCount": 2
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 40
+            },
+            "position": {
+              "x": 240,
+              "y": 260
+            }
+          },
+          {
+            "id": "demo_fa_xor2",
+            "data": {
+              "kind": "gate",
+              "gateType": 4,
+              "inputCount": 2
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 40
+            },
+            "position": {
+              "x": 440,
+              "y": 40
+            }
+          },
+          {
+            "id": "demo_fa_and2",
+            "data": {
+              "kind": "gate",
+              "gateType": 1,
+              "inputCount": 2
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 40
+            },
+            "position": {
+              "x": 440,
+              "y": 200
+            }
+          },
+          {
+            "id": "demo_fa_not_p1",
+            "data": {
+              "kind": "gate",
+              "gateType": 6,
+              "inputCount": 1
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 35
+            },
+            "position": {
+              "x": 620,
+              "y": 300
+            }
+          },
+          {
+            "id": "demo_fa_not_p2",
+            "data": {
+              "kind": "gate",
+              "gateType": 6,
+              "inputCount": 1
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 35
+            },
+            "position": {
+              "x": 620,
+              "y": 460
+            }
+          },
+          {
+            "id": "demo_fa_nand_carry",
+            "data": {
+              "kind": "gate",
+              "gateType": 0,
+              "inputCount": 2
+            },
+            "type": "gate",
+            "measured": {
+              "width": 84,
+              "height": 40
+            },
+            "position": {
+              "x": 800,
+              "y": 380
+            }
+          },
+          {
+            "id": "demo_fa_sum",
+            "data": {
+              "kind": "output",
+              "name": "SUM"
+            },
+            "type": "io-output",
+            "measured": {
+              "width": 40,
+              "height": 61
+            },
+            "position": {
+              "x": 640,
+              "y": 40
+            }
+          },
+          {
+            "id": "demo_fa_cout",
+            "data": {
+              "kind": "output",
+              "name": "COUT"
+            },
+            "type": "io-output",
+            "measured": {
+              "width": 40,
+              "height": 61
+            },
+            "position": {
+              "x": 960,
+              "y": 360
+            }
+          }
+        ]
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
+    },
+    {
+      "id": "p_033ae124",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "With nandscape, you can share your circuits, and embed them into your sites."
+        }
+      ]
+    }
+  ],
+  "keywords": []
+}

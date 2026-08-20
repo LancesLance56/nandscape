@@ -6,6 +6,17 @@ import type { GraphSpec } from "@/lib/graph/types";
 import { PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { BacktrackingRunner } from "./backtracking-runner";
 
+type Example = { id: string; label: string; graph: GraphSpec; note: string };
+
+/** An author-supplied `data.graph` (see GraphSpecEditor) replaces the built-ins entirely. */
+function resolveExamples(data: Record<string, unknown>, builtins: Example[]): Example[] {
+  const g = data.graph;
+  if (typeof g !== "object" || g === null) return builtins;
+  const spec = g as Partial<GraphSpec>;
+  if (!Array.isArray(spec.nodes) || !Array.isArray(spec.edges) || spec.nodes.length === 0) return builtins;
+  return [{ id: "custom", label: "Custom", graph: spec as GraphSpec, note: "" }];
+}
+
 /** Warm palette matching the graph widgets' group colours. */
 const SWATCHES = ["#C15A2A", "#4CAF7D", "#E0A339", "#5B8FA8"];
 
@@ -172,13 +183,14 @@ function ColoringCanvas({
  * three and running out of options on the last node every single time.
  */
 export function GraphColoringWidget({ data }: { data: Record<string, unknown> }) {
+  const examples = useMemo(() => resolveExamples(data, EXAMPLES), [data]);
   const [exampleId, setExampleId] = useState(
-    typeof data.example === "string" && EXAMPLES.some((e) => e.id === data.example) ? data.example : EXAMPLES[0].id,
+    typeof data.example === "string" && examples.some((e) => e.id === data.example) ? data.example : examples[0].id,
   );
   const [m, setM] = useState(typeof data.m === "number" ? Math.min(4, Math.max(2, data.m)) : 3);
   const [manual, setManual] = useState(false);
 
-  const example = EXAMPLES.find((e) => e.id === exampleId) ?? EXAMPLES[0];
+  const example = examples.find((e) => e.id === exampleId) ?? examples[0];
   const run = useMemo(() => mColoringSteps(example.graph, m), [example, m]);
 
   const toggles: SegmentedGroup[] = [
@@ -187,7 +199,7 @@ export function GraphColoringWidget({ data }: { data: Record<string, unknown> })
       label: "Graph",
       active: exampleId,
       onChange: setExampleId,
-      options: EXAMPLES.map((e) => ({ id: e.id, label: e.label })),
+      options: examples.map((e) => ({ id: e.id, label: e.label })),
     },
     {
       id: "m",

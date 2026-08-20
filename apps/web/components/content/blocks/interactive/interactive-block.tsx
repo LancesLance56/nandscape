@@ -13,6 +13,7 @@ import { NumberBaseExplorerWidget } from "./number-base-explorer-widget";
 import { TwosComplementWidget } from "./twos-complement-widget";
 import { StateMachineWidget } from "./state-machine-widget";
 import { GraphExplorerWidget } from "./graph/graph-explorer-widget";
+import { GraphEmbedWidget } from "./graph/graph-embed-widget";
 import { GraphTraversalWidget } from "./graph/graph-traversal-widget";
 import { ShortestPathWidget } from "./graph/shortest-path-widget";
 import { MstWidget } from "./graph/mst-widget";
@@ -58,6 +59,7 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "twos-complement-explorer": TwosComplementWidget,
   "state-machine-explorer": StateMachineWidget,
   "graph-explorer": GraphExplorerWidget,
+  "graph-embed": GraphEmbedWidget,
   "graph-traversal": GraphTraversalWidget,
   "shortest-path": ShortestPathWidget,
   "mst-explorer": MstWidget,

@@ -4,7 +4,9 @@ import { edgeKey, nodeMap, type AlgorithmStep, type GraphSpec } from "@/lib/grap
 
 export const GRAPH_WIDTH = 440;
 export const GRAPH_HEIGHT = 260;
-const NODE_R = 17;
+/** Exported so the graph editor (components/blog-editor/widgets/graph-spec-editor.tsx)
+ *  places and hit-tests nodes against the exact same radius this canvas draws them at. */
+export const NODE_R = 17;
 /** How far a reciprocal edge (A→B alongside B→A) bows away from the straight line. */
 const CURVE = 22;
 /** Breathing room between a group's outermost node and its hull edge. */
