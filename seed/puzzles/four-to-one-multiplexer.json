@@ -3,28 +3,195 @@
   "title": "4-to-1 Multiplexer",
   "description": "Two select lines choose which of four data inputs reaches the output: 00 selects A, 01 selects B, 10 selects C, 11 selects D.",
   "difficulty": "medium",
-  "tags": ["combinational", "selectors"],
+  "tags": [
+    "combinational",
+    "selectors"
+  ],
   "gateBudget": 14,
   "inputs": [
-    { "name": "SEL1" },
-    { "name": "SEL0" },
-    { "name": "A" },
-    { "name": "B" },
-    { "name": "C" },
-    { "name": "D" }
+    {
+      "name": "SEL1"
+    },
+    {
+      "name": "SEL0"
+    },
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "D"
+    }
   ],
-  "outputs": [{ "name": "Y" }],
-  "inputDisplay": [{ "type": "bus", "names": ["SEL1", "SEL0"] }],
+  "outputs": [
+    {
+      "name": "Y"
+    }
+  ],
+  "inputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "SEL1",
+        "SEL0"
+      ]
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 1, "B": 0, "C": 0, "D": 0 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 1, "C": 1, "D": 1 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "SEL1": 0, "SEL0": 1, "A": 0, "B": 1, "C": 0, "D": 0 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "SEL1": 0, "SEL0": 1, "A": 1, "B": 0, "C": 1, "D": 1 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "SEL1": 1, "SEL0": 0, "A": 0, "B": 0, "C": 1, "D": 0 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "SEL1": 1, "SEL0": 0, "A": 1, "B": 1, "C": 0, "D": 1 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 0, "B": 0, "C": 0, "D": 1 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 1, "B": 1, "C": 1, "D": 0 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "SEL1": 0, "SEL0": 0, "A": 0, "B": 0, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "SEL1": 1, "SEL0": 1, "A": 1, "B": 1, "C": 1, "D": 1 }, "outputs": { "Y": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0,
+          "C": 0,
+          "D": 0,
+          "SEL0": 0,
+          "SEL1": 0
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1,
+          "C": 1,
+          "D": 1,
+          "SEL0": 0,
+          "SEL1": 0
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1,
+          "C": 0,
+          "D": 0,
+          "SEL0": 1,
+          "SEL1": 0
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0,
+          "C": 1,
+          "D": 1,
+          "SEL0": 1,
+          "SEL1": 0
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0,
+          "C": 1,
+          "D": 0,
+          "SEL0": 0,
+          "SEL1": 1
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "C": 0,
+          "D": 1,
+          "SEL0": 0,
+          "SEL1": 1
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 1,
+          "SEL0": 1,
+          "SEL1": 1
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 0,
+          "SEL0": 1,
+          "SEL1": 1
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 0,
+          "SEL0": 0,
+          "SEL1": 0
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1,
+          "SEL0": 1,
+          "SEL1": 1
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    }
   ]
 }

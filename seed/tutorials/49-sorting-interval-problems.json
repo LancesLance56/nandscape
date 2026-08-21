@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-interval-problems",
   "title": "Interval Problems: Merging and Minimum Platforms",
   "excerpt": "Sorting by the right endpoint turns an all-pairs overlap question into a single left-to-right sweep.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T13:10:00Z",
   "tags": [
     "sorting",
@@ -13,7 +12,17 @@
     "greedy",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 80,
+  "seoTitle": "Merge Overlapping Intervals and Minimum Platforms Explained",
+  "seoDescription": "Sort by start time and sweep: merge overlapping intervals in O(n log n), and find the minimum number of platforms with a two-pointer sweep over arrivals and departures.",
+  "keywords": [
+    "merge overlapping intervals",
+    "minimum platforms problem",
+    "interval scheduling",
+    "sweep line algorithm",
+    "meeting rooms problem"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -26,17 +35,17 @@
     },
     {
       "id": "w-intervals",
-      "type": "interactive",
-      "widget": "interval-explorer",
       "data": {
         "mode": "merge"
-      }
+      },
+      "type": "interactive",
+      "widget": "interval-explorer"
     },
     {
       "id": "h-merge",
+      "text": "Merging overlapping intervals",
       "type": "heading",
-      "level": 2,
-      "text": "Merging overlapping intervals"
+      "level": 2
     },
     {
       "id": "p-merge",
@@ -111,9 +120,9 @@
     },
     {
       "id": "h-platforms",
+      "text": "Minimum platforms",
       "type": "heading",
-      "level": 2,
-      "text": "Minimum platforms"
+      "level": 2
     },
     {
       "id": "p-plat",
@@ -162,36 +171,34 @@
     },
     {
       "id": "h-code",
+      "text": "In code",
       "type": "heading",
-      "level": 2,
-      "text": "In code"
+      "level": 2
     },
     {
       "id": "code-int",
+      "code": "function mergeIntervals(intervals) {\n  if (intervals.length === 0) return [];\n  const sorted = [...intervals].sort((a, b) => a.start - b.start);\n  const out = [{ ...sorted[0] }];\n\n  for (const cur of sorted.slice(1)) {\n    const last = out[out.length - 1];\n    if (cur.start > last.end) {\n      out.push({ ...cur });          // no overlap: start a new interval\n    } else {\n      // max, not cur.end: cur may be entirely inside last.\n      last.end = Math.max(last.end, cur.end);\n    }\n  }\n  return out;\n}\n\nfunction minimumPlatforms(intervals) {\n  const arrivals = intervals.map((i) => i.start).sort((a, b) => a - b);\n  const departures = intervals.map((i) => i.end).sort((a, b) => a - b);\n\n  let i = 0, j = 0, inUse = 0, peak = 0;\n  while (i < arrivals.length) {\n    if (arrivals[i] <= departures[j]) {\n      inUse++;\n      peak = Math.max(peak, inUse);\n      i++;\n    } else {\n      inUse--;\n      j++;\n    }\n  }\n  return peak;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function mergeIntervals(intervals) {\n  if (intervals.length === 0) return [];\n  const sorted = [...intervals].sort((a, b) => a.start - b.start);\n  const out = [{ ...sorted[0] }];\n\n  for (const cur of sorted.slice(1)) {\n    const last = out[out.length - 1];\n    if (cur.start > last.end) {\n      out.push({ ...cur });          // no overlap: start a new interval\n    } else {\n      // max, not cur.end: cur may be entirely inside last.\n      last.end = Math.max(last.end, cur.end);\n    }\n  }\n  return out;\n}\n\nfunction minimumPlatforms(intervals) {\n  const arrivals = intervals.map((i) => i.start).sort((a, b) => a - b);\n  const departures = intervals.map((i) => i.end).sort((a, b) => a - b);\n\n  let i = 0, j = 0, inUse = 0, peak = 0;\n  while (i < arrivals.length) {\n    if (arrivals[i] <= departures[j]) {\n      inUse++;\n      peak = Math.max(peak, inUse);\n      i++;\n    } else {\n      inUse--;\n      j++;\n    }\n  }\n  return peak;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    ordered = sorted(intervals, key=lambda iv: iv[0])\n    out = [list(ordered[0])]\n\n    for start, end in ordered[1:]:\n        if start > out[-1][1]:\n            out.append([start, end])       # no overlap: new interval\n        else:\n            # max, not end: this interval may be entirely inside the last.\n            out[-1][1] = max(out[-1][1], end)\n    return out\n\n\ndef minimum_platforms(intervals):\n    arrivals = sorted(iv[0] for iv in intervals)\n    departures = sorted(iv[1] for iv in intervals)\n\n    i = j = in_use = peak = 0\n    while i < len(arrivals):\n        if arrivals[i] <= departures[j]:\n            in_use += 1\n            peak = max(peak, in_use)\n            i += 1\n        else:\n            in_use -= 1\n            j += 1\n    return peak"
+          "code": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    ordered = sorted(intervals, key=lambda iv: iv[0])\n    out = [list(ordered[0])]\n\n    for start, end in ordered[1:]:\n        if start > out[-1][1]:\n            out.append([start, end])       # no overlap: new interval\n        else:\n            # max, not end: this interval may be entirely inside the last.\n            out[-1][1] = max(out[-1][1], end)\n    return out\n\n\ndef minimum_platforms(intervals):\n    arrivals = sorted(iv[0] for iv in intervals)\n    departures = sorted(iv[1] for iv in intervals)\n\n    i = j = in_use = peak = 0\n    while i < len(arrivals):\n        if arrivals[i] <= departures[j]:\n            in_use += 1\n            peak = max(peak, in_use)\n            i += 1\n        else:\n            in_use -= 1\n            j += 1\n    return peak",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <algorithm>\n\nstruct Interval { int start, end; };\n\nstd::vector<Interval> mergeIntervals(std::vector<Interval> iv) {\n    if (iv.empty()) return {};\n    std::sort(iv.begin(), iv.end(), [](auto& a, auto& b) { return a.start < b.start; });\n\n    std::vector<Interval> out{iv[0]};\n    for (size_t k = 1; k < iv.size(); k++) {\n        if (iv[k].start > out.back().end) out.push_back(iv[k]);\n        // max, not iv[k].end: it may be entirely inside the last one.\n        else out.back().end = std::max(out.back().end, iv[k].end);\n    }\n    return out;\n}\n\nint minimumPlatforms(const std::vector<Interval>& iv) {\n    std::vector<int> arr, dep;\n    for (auto& x : iv) { arr.push_back(x.start); dep.push_back(x.end); }\n    std::sort(arr.begin(), arr.end());\n    std::sort(dep.begin(), dep.end());\n\n    size_t i = 0, j = 0;\n    int inUse = 0, peak = 0;\n    while (i < arr.size()) {\n        if (arr[i] <= dep[j]) { inUse++; peak = std::max(peak, inUse); i++; }\n        else { inUse--; j++; }\n    }\n    return peak;\n}"
+          "code": "#include <vector>\n#include <algorithm>\n\nstruct Interval { int start, end; };\n\nstd::vector<Interval> mergeIntervals(std::vector<Interval> iv) {\n    if (iv.empty()) return {};\n    std::sort(iv.begin(), iv.end(), [](auto& a, auto& b) { return a.start < b.start; });\n\n    std::vector<Interval> out{iv[0]};\n    for (size_t k = 1; k < iv.size(); k++) {\n        if (iv[k].start > out.back().end) out.push_back(iv[k]);\n        // max, not iv[k].end: it may be entirely inside the last one.\n        else out.back().end = std::max(out.back().end, iv[k].end);\n    }\n    return out;\n}\n\nint minimumPlatforms(const std::vector<Interval>& iv) {\n    std::vector<int> arr, dep;\n    for (auto& x : iv) { arr.push_back(x.start); dep.push_back(x.end); }\n    std::sort(arr.begin(), arr.end());\n    std::sort(dep.begin(), dep.end());\n\n    size_t i = 0, j = 0;\n    int inUse = 0, peak = 0;\n    while (i < arr.size()) {\n        if (arr[i] <= dep[j]) { inUse++; peak = std::max(peak, inUse); i++; }\n        else { inUse--; j++; }\n    }\n    return peak;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -246,7 +253,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d1",
@@ -254,19 +263,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/dsa/sorting-pairing-problems",
       "type": "button",
       "label": "Continue to sort-then-pair problems",
-      "href": "/tutorials/dsa/sorting-pairing-problems",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Merge Overlapping Intervals and Minimum Platforms Explained",
-  "seoDescription": "Sort by start time and sweep: merge overlapping intervals in O(n log n), and find the minimum number of platforms with a two-pointer sweep over arrivals and departures.",
-  "keywords": [
-    "merge overlapping intervals",
-    "minimum platforms problem",
-    "interval scheduling",
-    "sweep line algorithm",
-    "meeting rooms problem"
   ]
 }

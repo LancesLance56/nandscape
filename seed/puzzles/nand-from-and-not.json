@@ -3,15 +3,72 @@
   "title": "NAND from AND + NOT",
   "description": "NAND itself is off-limits this time. Build it the other direction, from a single AND and a single NOT.",
   "difficulty": "easy",
-  "tags": ["combinational", "boolean-algebra"],
+  "tags": [
+    "combinational",
+    "boolean-algebra"
+  ],
   "gateBudget": 2,
-  "allowedGateTypes": [1, 6],
-  "inputs": [{ "name": "A" }, { "name": "B" }],
-  "outputs": [{ "name": "Y" }],
+  "allowedGateTypes": [
+    1,
+    6
+  ],
+  "inputs": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Y"
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A": 0, "B": 0 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "A": 0, "B": 1 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "A": 1, "B": 0 }, "outputs": { "Y": 1 } } },
-    { "row": { "inputs": { "A": 1, "B": 1 }, "outputs": { "Y": 0 } } }
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    }
   ]
 }

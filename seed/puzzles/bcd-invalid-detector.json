@@ -3,27 +3,249 @@
   "title": "BCD Invalid Code Detector",
   "description": "A 4-bit BCD digit only ever holds 0-9. Output HIGH when the 4-bit input W X Y Z encodes 10-15, a code that never appears in valid BCD.",
   "difficulty": "medium",
-  "tags": ["combinational", "boolean-algebra"],
+  "tags": [
+    "combinational",
+    "boolean-algebra"
+  ],
   "gateBudget": 3,
-  "inputs": [{ "name": "W" }, { "name": "X" }, { "name": "Y" }, { "name": "Z" }],
-  "outputs": [{ "name": "INVALID" }],
-  "inputDisplay": [{ "type": "bus", "names": ["W", "X", "Y", "Z"] }],
+  "inputs": [
+    {
+      "name": "W"
+    },
+    {
+      "name": "X"
+    },
+    {
+      "name": "Y"
+    },
+    {
+      "name": "Z"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "INVALID"
+    }
+  ],
+  "inputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "W",
+        "X",
+        "Y",
+        "Z"
+      ]
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "W": 0, "X": 0, "Y": 0, "Z": 0 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 0, "Y": 0, "Z": 1 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 0, "Y": 1, "Z": 0 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 0, "Y": 1, "Z": 1 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 1, "Y": 0, "Z": 0 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 1, "Y": 0, "Z": 1 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 1, "Y": 1, "Z": 0 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 0, "X": 1, "Y": 1, "Z": 1 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 1, "X": 0, "Y": 0, "Z": 0 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 1, "X": 0, "Y": 0, "Z": 1 }, "outputs": { "INVALID": 0 } } },
-    { "row": { "inputs": { "W": 1, "X": 0, "Y": 1, "Z": 0 }, "outputs": { "INVALID": 1 } } },
-    { "row": { "inputs": { "W": 1, "X": 0, "Y": 1, "Z": 1 }, "outputs": { "INVALID": 1 } } },
-    { "row": { "inputs": { "W": 1, "X": 1, "Y": 0, "Z": 0 }, "outputs": { "INVALID": 1 } } },
-    { "row": { "inputs": { "W": 1, "X": 1, "Y": 0, "Z": 1 }, "outputs": { "INVALID": 1 } } },
-    { "row": { "inputs": { "W": 1, "X": 1, "Y": 1, "Z": 0 }, "outputs": { "INVALID": 1 } } },
-    { "row": { "inputs": { "W": 1, "X": 1, "Y": 1, "Z": 1 }, "outputs": { "INVALID": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 0,
+          "Y": 0,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 0,
+          "Y": 1,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 0,
+          "Y": 1,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 1,
+          "Y": 0,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 1,
+          "Y": 0,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 1,
+          "Y": 1,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 0,
+          "X": 1,
+          "Y": 1,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 0,
+          "Y": 0,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 0,
+          "Y": 1,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 0,
+          "Y": 1,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 1,
+          "Y": 0,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 1,
+          "Y": 0,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 1,
+          "Y": 1,
+          "Z": 0
+        },
+        "outputs": {
+          "INVALID": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "W": 1,
+          "X": 1,
+          "Y": 1,
+          "Z": 1
+        },
+        "outputs": {
+          "INVALID": 1
+        }
+      }
+    }
   ]
 }

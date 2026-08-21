@@ -14,6 +14,15 @@
   ],
   "sectionSlug": "backtracking",
   "position": 20,
+  "seoTitle": "Combination Sum and Subsets: Backtracking with Pruning",
+  "seoDescription": "Subsets and combination sum with backtracking: why the answer count is exponential, what the start index actually prevents, a full pruned trace, and why sorting the candidates sharpens the prune.",
+  "keywords": [
+    "combination sum",
+    "subsets backtracking",
+    "power set algorithm",
+    "backtracking pruning",
+    "combination sum python"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -35,9 +44,9 @@
     },
     {
       "id": "h-count",
+      "text": "Knowing the answer's size before you start",
       "type": "heading",
-      "level": 2,
-      "text": "Knowing the answer's size before you start"
+      "level": 2
     },
     {
       "id": "p-count",
@@ -123,9 +132,9 @@
     },
     {
       "id": "h-decisions",
+      "text": "Turning it into decisions",
       "type": "heading",
-      "level": 2,
-      "text": "Turning it into decisions"
+      "level": 2
     },
     {
       "id": "p-decisions",
@@ -156,9 +165,9 @@
     },
     {
       "id": "code-dup",
+      "code": "Without a start index, choosing from all of [1,2,3] every time:\n\n  [] -> [1] -> [1,2]        and        [] -> [2] -> [2,1]\n\nSame set, built twice, and the tree keeps doing it. With start,\na branch only ever looks at items to the RIGHT of what it took.",
       "type": "code",
-      "language": "text",
-      "code": "Without a start index, choosing from all of [1,2,3] every time:\n\n  [] -> [1] -> [1,2]        and        [] -> [2] -> [2,1]\n\nSame set, built twice, and the tree keeps doing it. With start,\na branch only ever looks at items to the RIGHT of what it took."
+      "language": "text"
     },
     {
       "id": "p-decisions-4",
@@ -202,9 +211,9 @@
     },
     {
       "id": "h-play",
+      "text": "Watch the tree",
       "type": "heading",
-      "level": 2,
-      "text": "Watch the tree"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -217,25 +226,25 @@
     },
     {
       "id": "w-tree",
-      "type": "interactive",
-      "widget": "backtracking-tree",
       "data": {
         "mode": "subsets"
-      }
+      },
+      "type": "interactive",
+      "widget": "backtracking-tree"
     },
     {
       "id": "w-flow-subsets",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "subsets"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-combo",
+      "text": "Combination sum, where pruning finally appears",
       "type": "heading",
-      "level": 2,
-      "text": "Combination sum, where pruning finally appears"
+      "level": 2
     },
     {
       "id": "p-combo",
@@ -306,9 +315,9 @@
     },
     {
       "id": "h-play-combo",
+      "text": "Pruning on and off",
       "type": "heading",
-      "level": 2,
-      "text": "Pruning on and off"
+      "level": 2
     },
     {
       "id": "p-play-combo",
@@ -321,24 +330,24 @@
     },
     {
       "id": "w-tree-combo",
-      "type": "interactive",
-      "widget": "backtracking-tree",
       "data": {
+        "target": 8,
         "problem": "combination-sum",
+        "pruning": true,
         "candidates": [
           2,
           3,
           5
-        ],
-        "target": 8,
-        "pruning": true
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "backtracking-tree"
     },
     {
       "id": "h-sorting",
+      "text": "One more improvement worth knowing",
       "type": "heading",
-      "level": 2,
-      "text": "One more improvement worth knowing"
+      "level": 2
     },
     {
       "id": "p-sorting",
@@ -393,19 +402,19 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-combo",
+      "code": "function combinationSum(candidates, target) {\n  const answers = [];\n  const current = [];\n\n  function solve(start, remaining) {\n    if (remaining === 0) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let i = start; i < candidates.length; i++) {\n      if (candidates[i] > remaining) continue;   // the prune\n\n      current.push(candidates[i]);\n      solve(i, remaining - candidates[i]);       // i, not i+1: reuse allowed\n      current.pop();\n    }\n  }\n\n  solve(0, target);\n  return answers;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function combinationSum(candidates, target) {\n  const answers = [];\n  const current = [];\n\n  function solve(start, remaining) {\n    if (remaining === 0) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let i = start; i < candidates.length; i++) {\n      if (candidates[i] > remaining) continue;   // the prune\n\n      current.push(candidates[i]);\n      solve(i, remaining - candidates[i]);       // i, not i+1: reuse allowed\n      current.pop();\n    }\n  }\n\n  solve(0, target);\n  return answers;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def combination_sum(candidates, target):\n    answers, current = [], []\n\n    def solve(start, remaining):\n        if remaining == 0:\n            answers.append(current[:])\n            return\n\n        for i in range(start, len(candidates)):\n            if candidates[i] > remaining:\n                continue                      # the prune\n\n            current.append(candidates[i])\n            solve(i, remaining - candidates[i])   # i, not i+1: reuse allowed\n            current.pop()\n\n    solve(0, target)\n    return answers"
+          "code": "def combination_sum(candidates, target):\n    answers, current = [], []\n\n    def solve(start, remaining):\n        if remaining == 0:\n            answers.append(current[:])\n            return\n\n        for i in range(start, len(candidates)):\n            if candidates[i] > remaining:\n                continue                      # the prune\n\n            current.append(candidates[i])\n            solve(i, remaining - candidates[i])   # i, not i+1: reuse allowed\n            current.pop()\n\n    solve(0, target)\n    return answers",
+          "language": "python"
         }
       ]
     },
@@ -442,9 +451,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -508,14 +517,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -587,16 +594,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Combination Sum and Subsets: Backtracking with Pruning",
-  "seoDescription": "Subsets and combination sum with backtracking: why the answer count is exponential, what the start index actually prevents, a full pruned trace, and why sorting the candidates sharpens the prune.",
-  "keywords": [
-    "combination sum",
-    "subsets backtracking",
-    "power set algorithm",
-    "backtracking pruning",
-    "combination sum python"
   ]
 }

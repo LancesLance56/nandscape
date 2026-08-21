@@ -34,17 +34,17 @@
     },
     {
       "id": "code-fib",
+      "code": "function fib(n) {\n  if (n <= 1) return n;            // base cases\n  return fib(n - 1) + fib(n - 2);  // recursive case\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function fib(n) {\n  if (n <= 1) return n;            // base cases\n  return fib(n - 1) + fib(n - 2);  // recursive case\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def fib(n):\n    if n <= 1:\n        return n                  # base cases\n    return fib(n - 1) + fib(n - 2)  # recursive case"
+          "code": "def fib(n):\n    if n <= 1:\n        return n                  # base cases\n    return fib(n - 1) + fib(n - 2)  # recursive case",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "long long fib(int n) {\n    if (n <= 1) return n;                 // base cases\n    return fib(n - 1) + fib(n - 2);       // recursive case\n}"
+          "code": "long long fib(int n) {\n    if (n <= 1) return n;                 // base cases\n    return fib(n - 1) + fib(n - 2);       // recursive case\n}",
+          "language": "cpp"
         }
       ]
     },
@@ -59,9 +59,9 @@
     },
     {
       "id": "h-look",
+      "text": "Look at what it actually does",
       "type": "heading",
-      "level": 2,
-      "text": "Look at what it actually does"
+      "level": 2
     },
     {
       "id": "p-tree-1",
@@ -74,13 +74,13 @@
     },
     {
       "id": "w-fib",
-      "type": "interactive",
-      "widget": "recursion-tree",
       "data": {
-        "problem": "fib",
         "mode": "naive",
+        "problem": "fib",
         "lockMode": true
-      }
+      },
+      "type": "interactive",
+      "widget": "recursion-tree"
     },
     {
       "id": "p-tree-2",
@@ -111,9 +111,9 @@
     },
     {
       "id": "h-cost",
+      "text": "How bad it gets",
       "type": "heading",
-      "level": 2,
-      "text": "How bad it gets"
+      "level": 2
     },
     {
       "id": "p-cost-1",
@@ -126,12 +126,6 @@
     },
     {
       "id": "t-growth",
-      "type": "table",
-      "headers": [
-        "n",
-        "distinct questions",
-        "calls the naive version makes"
-      ],
       "rows": [
         [
           "6",
@@ -154,7 +148,13 @@
           "331,160,281"
         ]
       ],
-      "caption": "The left column grows by one per row. The right column keeps multiplying."
+      "type": "table",
+      "caption": "The left column grows by one per row. The right column keeps multiplying.",
+      "headers": [
+        "n",
+        "distinct questions",
+        "calls the naive version makes"
+      ]
     },
     {
       "id": "p-cost-2",
@@ -167,9 +167,9 @@
     },
     {
       "id": "h-props",
+      "text": "The two properties that make this fixable",
       "type": "heading",
-      "level": 2,
-      "text": "The two properties that make this fixable"
+      "level": 2
     },
     {
       "id": "p-prop-0",
@@ -225,9 +225,9 @@
     },
     {
       "id": "h-fine",
+      "text": "Where plain recursion is already fine",
       "type": "heading",
-      "level": 2,
-      "text": "Where plain recursion is already fine"
+      "level": 2
     },
     {
       "id": "p-fine-1",
@@ -260,12 +260,6 @@
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "",
-        "Merge sort",
-        "Naive Fibonacci"
-      ],
       "rows": [
         [
           "Do subproblems overlap?",
@@ -283,13 +277,19 @@
           "enormously"
         ]
       ],
-      "caption": "Same branching shape, opposite answers, and the difference decides the technique."
+      "type": "table",
+      "caption": "Same branching shape, opposite answers, and the difference decides the technique.",
+      "headers": [
+        "",
+        "Merge sort",
+        "Naive Fibonacci"
+      ]
     },
     {
       "id": "h-spot",
+      "text": "Spotting it before you write the code",
       "type": "heading",
-      "level": 2,
-      "text": "Spotting it before you write the code"
+      "level": 2
     },
     {
       "id": "p-spot-1",
@@ -311,9 +311,9 @@
     },
     {
       "id": "h-name",
+      "text": "Two names for one fix",
       "type": "heading",
-      "level": 2,
-      "text": "Two names for one fix"
+      "level": 2
     },
     {
       "id": "p-name-1",
@@ -335,8 +335,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -391,7 +389,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "p-next",

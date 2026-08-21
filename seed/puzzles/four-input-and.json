@@ -3,15 +3,95 @@
   "title": "4-Input AND",
   "description": "Output HIGH only when all four inputs are HIGH. The gate budget only allows one gate, so it won't fit as a chain of 2-input gates.",
   "difficulty": "easy",
-  "tags": ["combinational", "boolean-algebra"],
+  "tags": [
+    "combinational",
+    "boolean-algebra"
+  ],
   "gateBudget": 1,
-  "inputs": [{ "name": "A" }, { "name": "B" }, { "name": "C" }, { "name": "D" }],
-  "outputs": [{ "name": "Y" }],
+  "inputs": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "D"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Y"
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A": 0, "B": 0, "C": 0, "D": 0 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 1, "C": 1, "D": 0 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 1, "C": 0, "D": 1 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "A": 0, "B": 1, "C": 1, "D": 1 }, "outputs": { "Y": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 1, "C": 1, "D": 1 }, "outputs": { "Y": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0,
+          "C": 0,
+          "D": 0
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 0
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "C": 0,
+          "D": 1
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1,
+          "C": 1,
+          "D": 1
+        },
+        "outputs": {
+          "Y": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1
+        },
+        "outputs": {
+          "Y": 1
+        }
+      }
+    }
   ]
 }

@@ -2,14 +2,16 @@
   "slug": "sr-latch-from-nand-implementation",
   "title": "Implementation of an SR Latch Using NAND Gates",
   "excerpt": "Two cross-coupled NAND gates, and the moment a circuit starts having memory.",
+  "authorName": "Nandscape",
   "status": "published",
-  "sectionSlug": "gate-implementations",
-  "position": 140,
+  "publishedAt": "2026-08-15T14:28:40.366Z",
   "tags": [
     "digital-logic",
     "logic-gates",
     "implementation"
   ],
+  "sectionSlug": "gate-implementations",
+  "position": 140,
   "seoTitle": "SR Latch Using NAND Gates: Circuit and Truth Table",
   "seoDescription": "Build an SR latch from two cross-coupled NAND gates. Why the NAND version is active low, and why both inputs low is forbidden.",
   "keywords": [
@@ -18,8 +20,6 @@
     "sr latch implementation",
     "active low sr latch"
   ],
-  "authorName": "Nandscape",
-  "publishedAt": "2026-08-15T14:28:40.366Z",
   "body": [
     {
       "id": "p-intro",
@@ -43,9 +43,9 @@
     },
     {
       "id": "h-cross",
+      "text": "What cross-coupled means",
       "type": "heading",
-      "level": 2,
-      "text": "What cross-coupled means"
+      "level": 2
     },
     {
       "id": "p-cross",
@@ -58,8 +58,8 @@
           "text": "Why this does not oscillate forever",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/why-circuits-need-memory"
+              "href": "/tutorials/digital-logic/why-circuits-need-memory",
+              "kind": "link"
             }
           ]
         },
@@ -70,9 +70,9 @@
     },
     {
       "id": "h-active-low",
+      "text": "The NAND version is active low",
       "type": "heading",
-      "level": 2,
-      "text": "The NAND version is active low"
+      "level": 2
     },
     {
       "id": "p-active-low",
@@ -118,19 +118,12 @@
     },
     {
       "id": "h-truth",
+      "text": "Behavior table",
       "type": "heading",
-      "level": 2,
-      "text": "Behavior table"
+      "level": 2
     },
     {
       "id": "t-truth",
-      "type": "table",
-      "headers": [
-        "S'",
-        "R'",
-        "Q",
-        "Meaning"
-      ],
       "rows": [
         [
           "1",
@@ -156,13 +149,20 @@
           "invalid",
           "Both outputs forced to 1, breaking the Q/Q' relationship"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "S'",
+        "R'",
+        "Q",
+        "Meaning"
       ]
     },
     {
       "id": "h-forbidden",
+      "text": "Why S' = 0, R' = 0 is forbidden",
       "type": "heading",
-      "level": 2,
-      "text": "Why S' = 0, R' = 0 is forbidden"
+      "level": 2
     },
     {
       "id": "p-forbidden",
@@ -175,9 +175,9 @@
     },
     {
       "id": "h-next",
+      "text": "Where this leads",
       "type": "heading",
-      "level": 2,
-      "text": "Where this leads"
+      "level": 2
     },
     {
       "id": "p-next",
@@ -190,8 +190,8 @@
           "text": "gated D latch",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/gated-d-latch"
+              "href": "/tutorials/digital-logic/gated-d-latch",
+              "kind": "link"
             }
           ]
         },
@@ -202,8 +202,8 @@
           "text": "D flip-flop",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/d-flip-flop"
+              "href": "/tutorials/digital-logic/d-flip-flop",
+              "kind": "link"
             }
           ]
         },
@@ -214,9 +214,9 @@
     },
     {
       "id": "h-build",
+      "text": "Build it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Build it yourself"
+      "level": 2
     },
     {
       "id": "p-build",
@@ -229,18 +229,18 @@
     },
     {
       "id": "w-companion",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
-        "projectSlug": "sr-latch-from-nand",
-        "height": 260
-      }
+        "height": 260,
+        "projectSlug": "sr-latch-from-nand"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "b-build",
+      "href": "/puzzles/sr-latch-1-bit-memory",
       "type": "button",
       "label": "Solve the 1-bit memory puzzle",
-      "href": "/puzzles/sr-latch-1-bit-memory",
       "style": "primary"
     },
     {

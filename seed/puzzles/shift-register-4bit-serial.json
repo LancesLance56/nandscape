@@ -3,32 +3,209 @@
   "title": "4-Bit Serial-In Shift Register",
   "description": "Build a 4-bit shift register. On each rising edge of CLK, SIN shifts into Q0 and every bit shifts up toward Q3. RESET clears all four bits immediately.",
   "difficulty": "expert",
-  "tags": ["sequential", "memory"],
+  "tags": [
+    "sequential",
+    "memory"
+  ],
   "gateBudget": 12,
   "inputs": [
-    { "name": "SIN", "defaultValue": 0 },
-    { "name": "CLK", "defaultValue": 0 },
-    { "name": "RESET", "defaultValue": 0 }
+    {
+      "name": "SIN",
+      "defaultValue": 0
+    },
+    {
+      "name": "CLK",
+      "defaultValue": 0
+    },
+    {
+      "name": "RESET",
+      "defaultValue": 0
+    }
   ],
-  "outputs": [{ "name": "Q3" }, { "name": "Q2" }, { "name": "Q1" }, { "name": "Q0" }],
-  "outputDisplay": [{ "type": "bus", "names": ["Q3", "Q2", "Q1", "Q0"] }],
+  "outputs": [
+    {
+      "name": "Q3"
+    },
+    {
+      "name": "Q2"
+    },
+    {
+      "name": "Q1"
+    },
+    {
+      "name": "Q0"
+    }
+  ],
+  "outputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "Q3",
+        "Q2",
+        "Q1",
+        "Q0"
+      ]
+    }
+  ],
   "testCases": [
     {
       "sequence": [
-        { "setInputs": { "RESET": 1 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 0, "Q0": 0 } },
-        { "setInputs": { "RESET": 0, "SIN": 1, "CLK": 0 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 0, "Q0": 0 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 0, "Q0": 1 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 0, "Q0": 1 } },
-        { "setInputs": { "SIN": 0 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 0, "Q0": 1 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 1, "Q0": 0 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 1, "Q0": 0 } },
-        { "setInputs": { "SIN": 1 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 1, "Q0": 0 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q3": 0, "Q2": 1, "Q1": 0, "Q0": 1 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q3": 0, "Q2": 1, "Q1": 0, "Q0": 1 } },
-        { "setInputs": { "SIN": 1 }, "expectOutputs": { "Q3": 0, "Q2": 1, "Q1": 0, "Q0": 1 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q3": 1, "Q2": 0, "Q1": 1, "Q0": 1 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q3": 1, "Q2": 0, "Q1": 1, "Q0": 1 } },
-        { "setInputs": { "RESET": 1 }, "expectOutputs": { "Q3": 0, "Q2": 0, "Q1": 0, "Q0": 0 } }
+        {
+          "setInputs": {
+            "RESET": 1
+          },
+          "expectOutputs": {
+            "Q0": 0,
+            "Q1": 0,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0,
+            "SIN": 1,
+            "RESET": 0
+          },
+          "expectOutputs": {
+            "Q0": 0,
+            "Q1": 0,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 0,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 0,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "SIN": 0
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 0,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q0": 0,
+            "Q1": 1,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q0": 0,
+            "Q1": 1,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "SIN": 1
+          },
+          "expectOutputs": {
+            "Q0": 0,
+            "Q1": 1,
+            "Q2": 0,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 0,
+            "Q2": 1,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 0,
+            "Q2": 1,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "SIN": 1
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 0,
+            "Q2": 1,
+            "Q3": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 1,
+            "Q2": 0,
+            "Q3": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q0": 1,
+            "Q1": 1,
+            "Q2": 0,
+            "Q3": 1
+          }
+        },
+        {
+          "setInputs": {
+            "RESET": 1
+          },
+          "expectOutputs": {
+            "Q0": 0,
+            "Q1": 0,
+            "Q2": 0,
+            "Q3": 0
+          }
+        }
       ]
     }
   ]

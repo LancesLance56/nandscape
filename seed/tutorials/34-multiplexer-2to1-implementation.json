@@ -2,14 +2,16 @@
   "slug": "multiplexer-2to1-implementation",
   "title": "Implementation of a 2:1 Multiplexer Using Logic Gates",
   "excerpt": "A select line, two inputs, one output. The hardware version of a ternary expression.",
+  "authorName": "Nandscape",
   "status": "published",
-  "sectionSlug": "gate-implementations",
-  "position": 150,
+  "publishedAt": "2026-08-15T14:28:40.367Z",
   "tags": [
     "digital-logic",
     "logic-gates",
     "implementation"
   ],
+  "sectionSlug": "gate-implementations",
+  "position": 150,
   "seoTitle": "2:1 Multiplexer Using Logic Gates: Circuit and Truth Table",
   "seoDescription": "Implement a 2:1 multiplexer from an inverter, two AND gates and an OR gate. Truth table, boolean expression and why muxes matter.",
   "keywords": [
@@ -18,8 +20,6 @@
     "mux implementation",
     "2:1 mux circuit"
   ],
-  "authorName": "Nandscape",
-  "publishedAt": "2026-08-15T14:28:40.367Z",
   "body": [
     {
       "id": "p-intro",
@@ -54,17 +54,12 @@
     },
     {
       "id": "h-truth",
+      "text": "Truth table",
       "type": "heading",
-      "level": 2,
-      "text": "Truth table"
+      "level": 2
     },
     {
       "id": "t-truth",
-      "type": "table",
-      "headers": [
-        "SEL",
-        "Y"
-      ],
       "rows": [
         [
           "0",
@@ -74,6 +69,11 @@
           "1",
           "B"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "SEL",
+        "Y"
       ]
     },
     {
@@ -87,9 +87,9 @@
     },
     {
       "id": "h-expression",
+      "text": "The boolean expression",
       "type": "heading",
-      "level": 2,
-      "text": "The boolean expression"
+      "level": 2
     },
     {
       "id": "p-expression",
@@ -107,15 +107,15 @@
     },
     {
       "id": "h-gates",
+      "text": "Step-by-step construction",
       "type": "heading",
-      "level": 2,
-      "text": "Step-by-step construction"
+      "level": 2
     },
     {
       "id": "h-inv",
+      "text": "Invert the select line",
       "type": "heading",
-      "level": 3,
-      "text": "Invert the select line"
+      "level": 3
     },
     {
       "id": "p-inv",
@@ -128,9 +128,9 @@
     },
     {
       "id": "h-and",
+      "text": "Two AND gates act as gates in the literal sense",
       "type": "heading",
-      "level": 3,
-      "text": "Two AND gates act as gates in the literal sense"
+      "level": 3
     },
     {
       "id": "p-and",
@@ -143,9 +143,9 @@
     },
     {
       "id": "h-or",
+      "text": "OR the branches",
       "type": "heading",
-      "level": 3,
-      "text": "OR the branches"
+      "level": 3
     },
     {
       "id": "p-or",
@@ -158,9 +158,9 @@
     },
     {
       "id": "h-why",
+      "text": "Why multiplexers matter",
       "type": "heading",
-      "level": 2,
-      "text": "Why multiplexers matter"
+      "level": 2
     },
     {
       "id": "p-why",
@@ -173,8 +173,8 @@
           "text": "lookup-table based FPGAs",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Field-programmable_gate_array"
+              "href": "https://en.wikipedia.org/wiki/Field-programmable_gate_array",
+              "kind": "link"
             }
           ]
         },
@@ -185,9 +185,9 @@
     },
     {
       "id": "h-build",
+      "text": "Build it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Build it yourself"
+      "level": 2
     },
     {
       "id": "p-build",
@@ -200,18 +200,18 @@
     },
     {
       "id": "w-companion",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
-        "projectSlug": "multiplexer-2to1",
-        "height": 260
-      }
+        "height": 260,
+        "projectSlug": "multiplexer-2to1"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "b-build",
+      "href": "/puzzles/two-to-one-multiplexer",
       "type": "button",
       "label": "Solve the 2-to-1 multiplexer puzzle",
-      "href": "/puzzles/two-to-one-multiplexer",
       "style": "primary"
     },
     {

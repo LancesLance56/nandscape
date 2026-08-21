@@ -2,14 +2,16 @@
   "slug": "full-adder-implementation",
   "title": "Full Adder: Implementation and Truth Table",
   "excerpt": "Three inputs, two outputs, and the building block every multi-bit adder is made from.",
+  "authorName": "Nandscape",
   "status": "published",
-  "sectionSlug": "gate-implementations",
-  "position": 120,
+  "publishedAt": "2026-08-15T14:28:40.365Z",
   "tags": [
     "digital-logic",
     "logic-gates",
     "implementation"
   ],
+  "sectionSlug": "gate-implementations",
+  "position": 120,
   "seoTitle": "Full Adder: Circuit, Truth Table and Implementation",
   "seoDescription": "How a full adder works: the eight-row truth table, building one from two half adders, and how chaining them makes a ripple-carry adder.",
   "keywords": [
@@ -18,8 +20,6 @@
     "full adder circuit",
     "carry in carry out"
   ],
-  "authorName": "Nandscape",
-  "publishedAt": "2026-08-15T14:28:40.365Z",
   "body": [
     {
       "id": "p-intro",
@@ -43,9 +43,9 @@
     },
     {
       "id": "h-why",
+      "text": "Why three inputs",
       "type": "heading",
-      "level": 2,
-      "text": "Why three inputs"
+      "level": 2
     },
     {
       "id": "p-why",
@@ -58,8 +58,8 @@
           "text": "half adder",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/digital-logic/half-adder-implementation"
+              "href": "/tutorials/digital-logic/half-adder-implementation",
+              "kind": "link"
             }
           ]
         },
@@ -81,20 +81,12 @@
     },
     {
       "id": "h-truth",
+      "text": "Truth table",
       "type": "heading",
-      "level": 2,
-      "text": "Truth table"
+      "level": 2
     },
     {
       "id": "t-truth",
-      "type": "table",
-      "headers": [
-        "A",
-        "B",
-        "CIN",
-        "SUM",
-        "COUT"
-      ],
       "rows": [
         [
           "0",
@@ -152,19 +144,27 @@
           "1",
           "1"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "A",
+        "B",
+        "CIN",
+        "SUM",
+        "COUT"
       ]
     },
     {
       "id": "h-gates",
+      "text": "Building it from two half adders",
       "type": "heading",
-      "level": 2,
-      "text": "Building it from two half adders"
+      "level": 2
     },
     {
       "id": "h-first",
+      "text": "First half adder",
       "type": "heading",
-      "level": 3,
-      "text": "First half adder"
+      "level": 3
     },
     {
       "id": "p-first",
@@ -177,9 +177,9 @@
     },
     {
       "id": "h-second",
+      "text": "Second half adder",
       "type": "heading",
-      "level": 3,
-      "text": "Second half adder"
+      "level": 3
     },
     {
       "id": "p-second",
@@ -192,9 +192,9 @@
     },
     {
       "id": "h-or",
+      "text": "OR the two carries",
       "type": "heading",
-      "level": 3,
-      "text": "OR the two carries"
+      "level": 3
     },
     {
       "id": "p-or",
@@ -218,9 +218,9 @@
     },
     {
       "id": "h-expression",
+      "text": "The boolean expressions",
       "type": "heading",
-      "level": 2,
-      "text": "The boolean expressions"
+      "level": 2
     },
     {
       "id": "p-expression",
@@ -249,9 +249,9 @@
     },
     {
       "id": "h-chaining",
+      "text": "Chaining full adders",
       "type": "heading",
-      "level": 2,
-      "text": "Chaining full adders"
+      "level": 2
     },
     {
       "id": "p-chaining",
@@ -275,9 +275,9 @@
     },
     {
       "id": "h-build",
+      "text": "Build it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Build it yourself"
+      "level": 2
     },
     {
       "id": "p-build",
@@ -290,18 +290,18 @@
     },
     {
       "id": "w-companion",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
-        "projectSlug": "full-adder",
-        "height": 260
-      }
+        "height": 260,
+        "projectSlug": "full-adder"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "b-build",
+      "href": "/puzzles/full-adder",
       "type": "button",
       "label": "Solve the full adder puzzle",
-      "href": "/puzzles/full-adder",
       "style": "primary"
     },
     {

@@ -3,24 +3,241 @@
   "title": "2-Bit Wide 2-to-1 Multiplexer",
   "description": "SEL picks between two 2-bit buses (A1 A0 and B1 B0) and routes the chosen one to Y1 Y0.",
   "difficulty": "medium",
-  "tags": ["combinational", "selectors"],
+  "tags": [
+    "combinational",
+    "selectors"
+  ],
   "gateBudget": 9,
-  "inputs": [{ "name": "SEL" }, { "name": "A1" }, { "name": "A0" }, { "name": "B1" }, { "name": "B0" }],
-  "outputs": [{ "name": "Y1" }, { "name": "Y0" }],
-  "inputDisplay": [{ "type": "bus", "names": ["A1", "A0"] }, { "type": "bus", "names": ["B1", "B0"] }],
-  "outputDisplay": [{ "type": "bus", "names": ["Y1", "Y0"] }],
+  "inputs": [
+    {
+      "name": "SEL"
+    },
+    {
+      "name": "A1"
+    },
+    {
+      "name": "A0"
+    },
+    {
+      "name": "B1"
+    },
+    {
+      "name": "B0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Y1"
+    },
+    {
+      "name": "Y0"
+    }
+  ],
+  "inputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "A1",
+        "A0"
+      ]
+    },
+    {
+      "type": "bus",
+      "names": [
+        "B1",
+        "B0"
+      ]
+    }
+  ],
+  "outputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "Y1",
+        "Y0"
+      ]
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "SEL": 0, "A1": 0, "A0": 0, "B1": 0, "B0": 0 }, "outputs": { "Y1": 0, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 0, "A1": 0, "A0": 0, "B1": 1, "B0": 1 }, "outputs": { "Y1": 0, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 0, "A1": 1, "A0": 0, "B1": 0, "B0": 1 }, "outputs": { "Y1": 1, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 0, "A1": 1, "A0": 0, "B1": 1, "B0": 0 }, "outputs": { "Y1": 1, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 0, "A1": 1, "A0": 0, "B1": 1, "B0": 1 }, "outputs": { "Y1": 1, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 0, "A1": 1, "A0": 1, "B1": 1, "B0": 1 }, "outputs": { "Y1": 1, "Y0": 1 } } },
-    { "row": { "inputs": { "SEL": 1, "A1": 0, "A0": 0, "B1": 0, "B0": 1 }, "outputs": { "Y1": 0, "Y0": 1 } } },
-    { "row": { "inputs": { "SEL": 1, "A1": 0, "A0": 1, "B1": 0, "B0": 0 }, "outputs": { "Y1": 0, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 1, "A1": 0, "A0": 1, "B1": 1, "B0": 1 }, "outputs": { "Y1": 1, "Y0": 1 } } },
-    { "row": { "inputs": { "SEL": 1, "A1": 1, "A0": 0, "B1": 0, "B0": 1 }, "outputs": { "Y1": 0, "Y0": 1 } } },
-    { "row": { "inputs": { "SEL": 1, "A1": 1, "A0": 1, "B1": 0, "B0": 0 }, "outputs": { "Y1": 0, "Y0": 0 } } },
-    { "row": { "inputs": { "SEL": 1, "A1": 1, "A0": 1, "B1": 1, "B0": 1 }, "outputs": { "Y1": 1, "Y0": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "SEL": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 1,
+          "B1": 1,
+          "SEL": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 0,
+          "SEL": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 0,
+          "B1": 1,
+          "SEL": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "SEL": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "SEL": 0
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 1,
+          "B1": 0,
+          "SEL": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "SEL": 1
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 1,
+          "B1": 1,
+          "SEL": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 0,
+          "SEL": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 0,
+          "B1": 0,
+          "SEL": 1
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "SEL": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1
+        }
+      }
+    }
   ]
 }

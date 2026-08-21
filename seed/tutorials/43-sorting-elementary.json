@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-elementary",
   "title": "Bubble, Selection and Insertion Sort",
   "excerpt": "Three quadratic sorts that look interchangeable and are not. One of them is genuinely useful in production, and it is not the one people expect.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T12:10:00Z",
   "tags": [
     "sorting",
@@ -13,7 +12,17 @@
     "insertion-sort",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 20,
+  "seoTitle": "Bubble vs Selection vs Insertion Sort: What Actually Differs",
+  "seoDescription": "Three O(n^2) sorts compared properly: writes, stability, adaptivity, and why insertion sort is the only one that survives into production code.",
+  "keywords": [
+    "bubble sort",
+    "selection sort",
+    "insertion sort",
+    "comparison of sorting algorithms",
+    "insertion sort adaptive"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -26,9 +35,9 @@
     },
     {
       "id": "h-bubble",
+      "text": "Bubble sort",
       "type": "heading",
-      "level": 2,
-      "text": "Bubble sort"
+      "level": 2
     },
     {
       "id": "p-bubble",
@@ -50,14 +59,14 @@
     },
     {
       "id": "w-bubble",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
-        "algorithm": "bubble",
-        "preset": "random",
         "size": 10,
+        "preset": "random",
+        "algorithm": "bubble",
         "showComparison": false
-      }
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "p-bubble-3",
@@ -70,9 +79,9 @@
     },
     {
       "id": "h-selection",
+      "text": "Selection sort",
       "type": "heading",
-      "level": 2,
-      "text": "Selection sort"
+      "level": 2
     },
     {
       "id": "p-selection",
@@ -94,14 +103,14 @@
     },
     {
       "id": "w-selection",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
-        "algorithm": "selection",
-        "preset": "random",
         "size": 10,
+        "preset": "random",
+        "algorithm": "selection",
         "showComparison": false
-      }
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "p-selection-3",
@@ -114,9 +123,9 @@
     },
     {
       "id": "h-insertion",
+      "text": "Insertion sort",
       "type": "heading",
-      "level": 2,
-      "text": "Insertion sort"
+      "level": 2
     },
     {
       "id": "p-insertion",
@@ -129,14 +138,14 @@
     },
     {
       "id": "w-insertion",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
-        "algorithm": "insertion",
-        "preset": "nearly",
         "size": 12,
+        "preset": "nearly",
+        "algorithm": "insertion",
         "showComparison": false
-      }
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "p-insertion-2",
@@ -169,9 +178,9 @@
     },
     {
       "id": "h-compare",
+      "text": "Side by side",
       "type": "heading",
-      "level": 2,
-      "text": "Side by side"
+      "level": 2
     },
     {
       "id": "p-compare",
@@ -184,27 +193,20 @@
     },
     {
       "id": "w-all",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
+        "size": 14,
+        "preset": "nearly",
         "algorithms": [
           "bubble",
           "selection",
           "insertion"
-        ],
-        "preset": "nearly",
-        "size": 14
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "",
-        "Bubble",
-        "Selection",
-        "Insertion"
-      ],
       "rows": [
         [
           "Best case",
@@ -242,40 +244,45 @@
           "Rarely",
           "Yes, for small inputs"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Bubble",
+        "Selection",
+        "Insertion"
       ]
     },
     {
       "id": "h-code",
+      "text": "In code",
       "type": "heading",
-      "level": 2,
-      "text": "In code"
+      "level": 2
     },
     {
       "id": "code-elem",
+      "code": "function bubbleSort(a) {\n  for (let pass = 0; pass < a.length - 1; pass++) {\n    let swapped = false;\n    for (let i = 0; i < a.length - 1 - pass; i++) {\n      if (a[i] > a[i + 1]) {\n        [a[i], a[i + 1]] = [a[i + 1], a[i]];\n        swapped = true;\n      }\n    }\n    if (!swapped) break;      // the whole point: sorted input costs one pass\n  }\n  return a;\n}\n\nfunction selectionSort(a) {\n  for (let i = 0; i < a.length - 1; i++) {\n    let min = i;\n    for (let j = i + 1; j < a.length; j++) if (a[j] < a[min]) min = j;\n    if (min !== i) [a[i], a[min]] = [a[min], a[i]];   // exactly one swap per i\n  }\n  return a;\n}\n\nfunction insertionSort(a) {\n  for (let i = 1; i < a.length; i++) {\n    const value = a[i];        // held out of the array while we shift\n    let j = i - 1;\n    while (j >= 0 && a[j] > value) {\n      a[j + 1] = a[j];\n      j--;\n    }\n    a[j + 1] = value;\n  }\n  return a;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function bubbleSort(a) {\n  for (let pass = 0; pass < a.length - 1; pass++) {\n    let swapped = false;\n    for (let i = 0; i < a.length - 1 - pass; i++) {\n      if (a[i] > a[i + 1]) {\n        [a[i], a[i + 1]] = [a[i + 1], a[i]];\n        swapped = true;\n      }\n    }\n    if (!swapped) break;      // the whole point: sorted input costs one pass\n  }\n  return a;\n}\n\nfunction selectionSort(a) {\n  for (let i = 0; i < a.length - 1; i++) {\n    let min = i;\n    for (let j = i + 1; j < a.length; j++) if (a[j] < a[min]) min = j;\n    if (min !== i) [a[i], a[min]] = [a[min], a[i]];   // exactly one swap per i\n  }\n  return a;\n}\n\nfunction insertionSort(a) {\n  for (let i = 1; i < a.length; i++) {\n    const value = a[i];        // held out of the array while we shift\n    let j = i - 1;\n    while (j >= 0 && a[j] > value) {\n      a[j + 1] = a[j];\n      j--;\n    }\n    a[j + 1] = value;\n  }\n  return a;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def bubble_sort(a):\n    for p in range(len(a) - 1):\n        swapped = False\n        for i in range(len(a) - 1 - p):\n            if a[i] > a[i + 1]:\n                a[i], a[i + 1] = a[i + 1], a[i]\n                swapped = True\n        if not swapped:\n            break            # sorted input costs one pass\n    return a\n\n\ndef selection_sort(a):\n    for i in range(len(a) - 1):\n        m = min(range(i, len(a)), key=lambda j: a[j])\n        if m != i:\n            a[i], a[m] = a[m], a[i]   # exactly one swap per i\n    return a\n\n\ndef insertion_sort(a):\n    for i in range(1, len(a)):\n        value = a[i]         # held out of the list while we shift\n        j = i - 1\n        while j >= 0 and a[j] > value:\n            a[j + 1] = a[j]\n            j -= 1\n        a[j + 1] = value\n    return a"
+          "code": "def bubble_sort(a):\n    for p in range(len(a) - 1):\n        swapped = False\n        for i in range(len(a) - 1 - p):\n            if a[i] > a[i + 1]:\n                a[i], a[i + 1] = a[i + 1], a[i]\n                swapped = True\n        if not swapped:\n            break            # sorted input costs one pass\n    return a\n\n\ndef selection_sort(a):\n    for i in range(len(a) - 1):\n        m = min(range(i, len(a)), key=lambda j: a[j])\n        if m != i:\n            a[i], a[m] = a[m], a[i]   # exactly one swap per i\n    return a\n\n\ndef insertion_sort(a):\n    for i in range(1, len(a)):\n        value = a[i]         # held out of the list while we shift\n        j = i - 1\n        while j >= 0 and a[j] > value:\n            a[j + 1] = a[j]\n            j -= 1\n        a[j + 1] = value\n    return a",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <utility>\n\nvoid bubbleSort(std::vector<int>& a) {\n    for (size_t p = 0; p + 1 < a.size(); p++) {\n        bool swapped = false;\n        for (size_t i = 0; i + 1 < a.size() - p; i++) {\n            if (a[i] > a[i + 1]) { std::swap(a[i], a[i + 1]); swapped = true; }\n        }\n        if (!swapped) break;   // sorted input costs one pass\n    }\n}\n\nvoid selectionSort(std::vector<int>& a) {\n    for (size_t i = 0; i + 1 < a.size(); i++) {\n        size_t m = i;\n        for (size_t j = i + 1; j < a.size(); j++) if (a[j] < a[m]) m = j;\n        if (m != i) std::swap(a[i], a[m]);   // exactly one swap per i\n    }\n}\n\nvoid insertionSort(std::vector<int>& a) {\n    for (size_t i = 1; i < a.size(); i++) {\n        int value = a[i];      // held out of the array while we shift\n        size_t j = i;\n        while (j > 0 && a[j - 1] > value) { a[j] = a[j - 1]; j--; }\n        a[j] = value;\n    }\n}"
+          "code": "#include <vector>\n#include <utility>\n\nvoid bubbleSort(std::vector<int>& a) {\n    for (size_t p = 0; p + 1 < a.size(); p++) {\n        bool swapped = false;\n        for (size_t i = 0; i + 1 < a.size() - p; i++) {\n            if (a[i] > a[i + 1]) { std::swap(a[i], a[i + 1]); swapped = true; }\n        }\n        if (!swapped) break;   // sorted input costs one pass\n    }\n}\n\nvoid selectionSort(std::vector<int>& a) {\n    for (size_t i = 0; i + 1 < a.size(); i++) {\n        size_t m = i;\n        for (size_t j = i + 1; j < a.size(); j++) if (a[j] < a[m]) m = j;\n        if (m != i) std::swap(a[i], a[m]);   // exactly one swap per i\n    }\n}\n\nvoid insertionSort(std::vector<int>& a) {\n    for (size_t i = 1; i < a.size(); i++) {\n        int value = a[i];      // held out of the array while we shift\n        size_t j = i;\n        while (j > 0 && a[j - 1] > value) { a[j] = a[j - 1]; j--; }\n        a[j] = value;\n    }\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -330,13 +337,15 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "h-flow",
+      "text": "As flowcharts",
       "type": "heading",
-      "level": 2,
-      "text": "As flowcharts"
+      "level": 2
     },
     {
       "id": "p-flow",
@@ -358,11 +367,11 @@
     },
     {
       "id": "w-flow-bubble",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "bubble"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "p-flow-selection",
@@ -375,11 +384,11 @@
     },
     {
       "id": "w-flow-selection",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "selection"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "p-flow-insertion",
@@ -392,11 +401,11 @@
     },
     {
       "id": "w-flow-insertion",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "insertion"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "d1",
@@ -404,19 +413,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/dsa/sorting-merge-sort",
       "type": "button",
       "label": "Continue to merge sort",
-      "href": "/tutorials/dsa/sorting-merge-sort",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Bubble vs Selection vs Insertion Sort: What Actually Differs",
-  "seoDescription": "Three O(n^2) sorts compared properly: writes, stability, adaptivity, and why insertion sort is the only one that survives into production code.",
-  "keywords": [
-    "bubble sort",
-    "selection sort",
-    "insertion sort",
-    "comparison of sorting algorithms",
-    "insertion sort adaptive"
   ]
 }

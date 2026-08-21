@@ -43,9 +43,9 @@
     },
     {
       "id": "h-what",
+      "text": "A function defined in terms of itself",
       "type": "heading",
-      "level": 2,
-      "text": "A function defined in terms of itself"
+      "level": 2
     },
     {
       "id": "p-fact-1",
@@ -67,9 +67,9 @@
     },
     {
       "id": "code-def",
+      "code": "fact(0) = 1\nfact(1) = 1\nfact(n) = n x fact(n - 1)",
       "type": "code",
-      "language": "text",
-      "code": "fact(0) = 1\nfact(1) = 1\nfact(n) = n x fact(n - 1)"
+      "language": "text"
     },
     {
       "id": "p-fact-3",
@@ -104,17 +104,17 @@
     },
     {
       "id": "code-js",
+      "code": "function factorial(n) {\n  if (n <= 1) return 1;          // base case: answered outright\n  return n * factorial(n - 1);   // recursive case: shrink, then combine\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function factorial(n) {\n  if (n <= 1) return 1;          // base case: answered outright\n  return n * factorial(n - 1);   // recursive case: shrink, then combine\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def factorial(n):\n    if n <= 1:\n        return 1                 # base case: answered outright\n    return n * factorial(n - 1)  # recursive case: shrink, then combine"
+          "code": "def factorial(n):\n    if n <= 1:\n        return 1                 # base case: answered outright\n    return n * factorial(n - 1)  # recursive case: shrink, then combine",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "long long factorial(int n) {\n    if (n <= 1) return 1;              // base case: answered outright\n    return n * factorial(n - 1);       // recursive case: shrink, then combine\n}"
+          "code": "long long factorial(int n) {\n    if (n <= 1) return 1;              // base case: answered outright\n    return n * factorial(n - 1);       // recursive case: shrink, then combine\n}",
+          "language": "cpp"
         }
       ]
     },
@@ -129,13 +129,13 @@
     },
     {
       "id": "w-factorial",
-      "type": "interactive",
-      "widget": "recursion-tree",
       "data": {
-        "problem": "factorial",
         "mode": "naive",
+        "problem": "factorial",
         "lockMode": true
-      }
+      },
+      "type": "interactive",
+      "widget": "recursion-tree"
     },
     {
       "id": "p-run-2",
@@ -148,9 +148,9 @@
     },
     {
       "id": "h-cheat",
+      "text": "The part that feels like cheating",
       "type": "heading",
-      "level": 2,
-      "text": "The part that feels like cheating"
+      "level": 2
     },
     {
       "id": "p-cheat-1",
@@ -172,9 +172,9 @@
     },
     {
       "id": "h-induction",
+      "text": "The same argument as induction",
       "type": "heading",
-      "level": 2,
-      "text": "The same argument as induction"
+      "level": 2
     },
     {
       "id": "p-ind-1",
@@ -205,11 +205,6 @@
     },
     {
       "id": "t-map",
-      "type": "table",
-      "headers": [
-        "The induction proof",
-        "The recursive function"
-      ],
       "rows": [
         [
           "Prove the claim for the smallest case",
@@ -228,7 +223,12 @@
           "The function is correct on every input"
         ]
       ],
-      "caption": "The same argument twice, once written as a proof and once as code."
+      "type": "table",
+      "caption": "The same argument twice, once written as a proof and once as code.",
+      "headers": [
+        "The induction proof",
+        "The recursive function"
+      ]
     },
     {
       "id": "p-ind-4",
@@ -259,9 +259,9 @@
     },
     {
       "id": "h-rules",
+      "text": "What a recursive function has to get right",
       "type": "heading",
-      "level": 2,
-      "text": "What a recursive function has to get right"
+      "level": 2
     },
     {
       "id": "p-rules-1",
@@ -292,13 +292,13 @@
     },
     {
       "id": "code-bad",
+      "code": "function broken(n) {\n  return n * broken(n);          // the argument never shrinks\n}\n\nfunction alsoBroken(n) {\n  if (n === 0) return 1;         // a base case that odd inputs sail past\n  return n * alsoBroken(n - 2);\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function broken(n) {\n  return n * broken(n);          // the argument never shrinks\n}\n\nfunction alsoBroken(n) {\n  if (n === 0) return 1;         // a base case that odd inputs sail past\n  return n * alsoBroken(n - 2);\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def broken(n):\n    return n * broken(n)          # the argument never shrinks\n\n\ndef also_broken(n):\n    if n == 0:\n        return 1                  # a base case that odd inputs sail past\n    return n * also_broken(n - 2)"
+          "code": "def broken(n):\n    return n * broken(n)          # the argument never shrinks\n\n\ndef also_broken(n):\n    if n == 0:\n        return 1                  # a base case that odd inputs sail past\n    return n * also_broken(n - 2)",
+          "language": "python"
         }
       ]
     },
@@ -313,9 +313,9 @@
     },
     {
       "id": "h-tree",
+      "text": "Reading a call tree",
       "type": "heading",
-      "level": 2,
-      "text": "Reading a call tree"
+      "level": 2
     },
     {
       "id": "p-tree-1",
@@ -337,8 +337,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -393,7 +391,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "p-next",

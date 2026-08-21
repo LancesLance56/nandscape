@@ -13,6 +13,15 @@
   ],
   "sectionSlug": "graph-theory-advanced",
   "position": 10,
+  "seoTitle": "Topological Sort: Kahn's Algorithm and Cycle Detection",
+  "seoDescription": "Topological sorting derived: why a cycle makes ordering impossible, how in-degree counting gives Kahn's algorithm, a full trace, the DFS finish-time alternative, and why the output is rarely unique.",
+  "keywords": [
+    "topological sort",
+    "kahn's algorithm",
+    "cycle detection",
+    "dag",
+    "dependency graph"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -45,9 +54,9 @@
     },
     {
       "id": "h-when",
+      "text": "When an answer exists at all",
       "type": "heading",
-      "level": 2,
-      "text": "When an answer exists at all"
+      "level": 2
     },
     {
       "id": "p-when",
@@ -78,9 +87,9 @@
     },
     {
       "id": "h-idea",
+      "text": "Deriving the algorithm",
       "type": "heading",
-      "level": 2,
-      "text": "Deriving the algorithm"
+      "level": 2
     },
     {
       "id": "p-idea",
@@ -120,9 +129,9 @@
     },
     {
       "id": "h-trace",
+      "text": "A trace, using the clothes",
       "type": "heading",
-      "level": 2,
-      "text": "A trace, using the clothes"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -135,9 +144,9 @@
     },
     {
       "id": "code-kahn",
+      "code": "in-degrees at the start\n  shirt 0   trousers 0   socks 0   tie 1   belt 2   shoes 2   jacket 1\n\nready queue [shirt, trousers, socks]\n\ntake shirt     output: shirt\n  tie    2 -> ... 1 -> 0   ready\n  belt   2 -> 1\ntake trousers  output: shirt, trousers\n  belt   1 -> 0   ready\n  shoes  2 -> 1\ntake socks     output: shirt, trousers, socks\n  shoes  1 -> 0   ready\ntake tie       output: ... tie        jacket 1 -> 0   ready\ntake belt      output: ... belt\ntake shoes     output: ... shoes\ntake jacket    output: ... jacket\n\n7 nodes emitted, 7 nodes in the graph, so there was no cycle.",
       "type": "code",
-      "language": "text",
-      "code": "in-degrees at the start\n  shirt 0   trousers 0   socks 0   tie 1   belt 2   shoes 2   jacket 1\n\nready queue [shirt, trousers, socks]\n\ntake shirt     output: shirt\n  tie    2 -> ... 1 -> 0   ready\n  belt   2 -> 1\ntake trousers  output: shirt, trousers\n  belt   1 -> 0   ready\n  shoes  2 -> 1\ntake socks     output: shirt, trousers, socks\n  shoes  1 -> 0   ready\ntake tie       output: ... tie        jacket 1 -> 0   ready\ntake belt      output: ... belt\ntake shoes     output: ... shoes\ntake jacket    output: ... jacket\n\n7 nodes emitted, 7 nodes in the graph, so there was no cycle."
+      "language": "text"
     },
     {
       "id": "p-trace-2",
@@ -150,9 +159,9 @@
     },
     {
       "id": "h-play",
+      "text": "Try it",
       "type": "heading",
-      "level": 2,
-      "text": "Try it"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -165,15 +174,15 @@
     },
     {
       "id": "w-explorer",
+      "data": {},
       "type": "interactive",
-      "widget": "graph-explorer",
-      "data": {}
+      "widget": "graph-explorer"
     },
     {
       "id": "h-dfs",
+      "text": "The other way to do it",
       "type": "heading",
-      "level": 2,
-      "text": "The other way to do it"
+      "level": 2
     },
     {
       "id": "p-dfs",
@@ -235,19 +244,19 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-impl",
+      "code": "function topologicalSort(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  const inDegree = new Array(nodeCount).fill(0);\n\n  for (const [before, after] of edges) {\n    adj[before].push(after);\n    inDegree[after]++;                 // one more thing blocking it\n  }\n\n  const ready = [];\n  for (let v = 0; v < nodeCount; v++) if (inDegree[v] === 0) ready.push(v);\n\n  const order = [];\n  while (ready.length > 0) {\n    const v = ready.pop();\n    order.push(v);\n    for (const next of adj[v]) {\n      if (--inDegree[next] === 0) ready.push(next);\n    }\n  }\n\n  // Anything left un-emitted is stuck behind a cycle.\n  return order.length === nodeCount ? order : null;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function topologicalSort(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  const inDegree = new Array(nodeCount).fill(0);\n\n  for (const [before, after] of edges) {\n    adj[before].push(after);\n    inDegree[after]++;                 // one more thing blocking it\n  }\n\n  const ready = [];\n  for (let v = 0; v < nodeCount; v++) if (inDegree[v] === 0) ready.push(v);\n\n  const order = [];\n  while (ready.length > 0) {\n    const v = ready.pop();\n    order.push(v);\n    for (const next of adj[v]) {\n      if (--inDegree[next] === 0) ready.push(next);\n    }\n  }\n\n  // Anything left un-emitted is stuck behind a cycle.\n  return order.length === nodeCount ? order : null;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "from collections import deque\n\ndef topological_sort(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    in_degree = [0] * node_count\n\n    for before, after in edges:\n        adj[before].append(after)\n        in_degree[after] += 1          # one more thing blocking it\n\n    ready = deque(v for v in range(node_count) if in_degree[v] == 0)\n\n    order = []\n    while ready:\n        v = ready.popleft()\n        order.append(v)\n        for nxt in adj[v]:\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)\n\n    # Anything left un-emitted is stuck behind a cycle.\n    return order if len(order) == node_count else None"
+          "code": "from collections import deque\n\ndef topological_sort(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    in_degree = [0] * node_count\n\n    for before, after in edges:\n        adj[before].append(after)\n        in_degree[after] += 1          # one more thing blocking it\n\n    ready = deque(v for v in range(node_count) if in_degree[v] == 0)\n\n    order = []\n    while ready:\n        v = ready.popleft()\n        order.append(v)\n        for nxt in adj[v]:\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)\n\n    # Anything left un-emitted is stuck behind a cycle.\n    return order if len(order) == node_count else None",
+          "language": "python"
         }
       ]
     },
@@ -273,9 +282,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -347,14 +356,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -426,16 +433,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Topological Sort: Kahn's Algorithm and Cycle Detection",
-  "seoDescription": "Topological sorting derived: why a cycle makes ordering impossible, how in-degree counting gives Kahn's algorithm, a full trace, the DFS finish-time alternative, and why the output is rarely unique.",
-  "keywords": [
-    "topological sort",
-    "kahn's algorithm",
-    "cycle detection",
-    "dag",
-    "dependency graph"
   ]
 }

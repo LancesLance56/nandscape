@@ -2,14 +2,16 @@
   "slug": "implementation-of-not-from-nand",
   "title": "Implementation of NOT Gate from NAND Gate",
   "excerpt": "NAND is functionally complete, so a NOT gate can be built from it alone. Here is the construction, and why it works.",
+  "authorName": "Nandscape",
   "status": "published",
-  "sectionSlug": "gate-implementations",
-  "position": 30,
+  "publishedAt": "2026-08-15T14:28:40.359Z",
   "tags": [
     "digital-logic",
     "logic-gates",
     "implementation"
   ],
+  "sectionSlug": "gate-implementations",
+  "position": 30,
   "seoTitle": "NOT Gate Using NAND Gates: Circuit and Truth Table",
   "seoDescription": "How to implement a NOT gate using only NAND gates, with the step-by-step construction, boolean expression and full truth table.",
   "keywords": [
@@ -17,8 +19,6 @@
     "nand as inverter",
     "implementation of not from nand"
   ],
-  "authorName": "Nandscape",
-  "publishedAt": "2026-08-15T14:28:40.359Z",
   "body": [
     {
       "id": "p-intro",
@@ -31,9 +31,9 @@
     },
     {
       "id": "h-why",
+      "text": "Why NOT can be built from NAND",
       "type": "heading",
-      "level": 2,
-      "text": "Why NOT can be built from NAND"
+      "level": 2
     },
     {
       "id": "p-why",
@@ -55,8 +55,8 @@
           "text": "NAND and NOR are both functionally complete",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Functional_completeness"
+              "href": "https://en.wikipedia.org/wiki/Functional_completeness",
+              "kind": "link"
             }
           ]
         },
@@ -67,15 +67,15 @@
     },
     {
       "id": "h-steps",
+      "text": "Step-by-step construction",
       "type": "heading",
-      "level": 2,
-      "text": "Step-by-step construction"
+      "level": 2
     },
     {
       "id": "h-step-1",
+      "text": "Step 1",
       "type": "heading",
-      "level": 3,
-      "text": "Step 1"
+      "level": 3
     },
     {
       "id": "p-step-1",
@@ -86,9 +86,9 @@
     },
     {
       "id": "h-step-2",
+      "text": "Step 2",
       "type": "heading",
-      "level": 3,
-      "text": "Step 2"
+      "level": 3
     },
     {
       "id": "p-step-2",
@@ -132,9 +132,9 @@
     },
     {
       "id": "h-expression",
+      "text": "The boolean expression",
       "type": "heading",
-      "level": 2,
-      "text": "The boolean expression"
+      "level": 2
     },
     {
       "id": "p-expression",
@@ -152,17 +152,12 @@
     },
     {
       "id": "h-truth",
+      "text": "Truth table",
       "type": "heading",
-      "level": 2,
-      "text": "Truth table"
+      "level": 2
     },
     {
       "id": "t-truth",
-      "type": "table",
-      "headers": [
-        "A",
-        "NOT"
-      ],
       "rows": [
         [
           "0",
@@ -172,6 +167,11 @@
           "1",
           "0"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "A",
+        "NOT"
       ]
     },
     {
@@ -185,9 +185,9 @@
     },
     {
       "id": "h-cost",
+      "text": "Gate count",
       "type": "heading",
-      "level": 2,
-      "text": "Gate count"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -211,9 +211,9 @@
     },
     {
       "id": "h-build",
+      "text": "Build it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Build it yourself"
+      "level": 2
     },
     {
       "id": "p-build",
@@ -226,25 +226,25 @@
     },
     {
       "id": "w-companion",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
-        "projectSlug": "not-from-nand",
-        "height": 260
-      }
+        "height": 260,
+        "projectSlug": "not-from-nand"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "b-build",
+      "href": "/puzzles/not-from-nand",
       "type": "button",
       "label": "Solve this as a puzzle",
-      "href": "/puzzles/not-from-nand",
       "style": "primary"
     },
     {
       "id": "h-related",
+      "text": "Related pages",
       "type": "heading",
-      "level": 2,
-      "text": "Related pages"
+      "level": 2
     },
     {
       "id": "p-related",

@@ -14,13 +14,22 @@
   ],
   "sectionSlug": "graph-theory-concepts",
   "position": 30,
+  "seoTitle": "Kruskal vs Prim: Minimum Spanning Tree Algorithms",
+  "seoDescription": "Minimum spanning trees explained: why the answer must be a tree, the cut property that makes greedy safe, Kruskal with union-find, Prim as the same theorem applied differently, and why ties give several correct answers.",
+  "keywords": [
+    "minimum spanning tree",
+    "kruskal's algorithm",
+    "prim's algorithm",
+    "kruskal vs prim",
+    "union find"
+  ],
   "body": [
     {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
         {
-          "text": "You have to connect several places, and every possible link has a price: lay fibre between offices, wire up a circuit board, run power to a set of villages. You need everything connected and you want to spend as little as possible."
+          "text": "When you have to connect several places, each link has a cost: lay fibre between offices, wire up a circuit board, run power to a set of villages. You need everything connected and you want to spend as little as possible."
         }
       ]
     },
@@ -46,9 +55,9 @@
     },
     {
       "id": "h-why-tree",
+      "text": "Why the answer has to be a tree",
       "type": "heading",
-      "level": 2,
-      "text": "Why the answer has to be a tree"
+      "level": 2
     },
     {
       "id": "p-why-tree",
@@ -101,16 +110,16 @@
     },
     {
       "id": "h-greedy",
+      "text": "The greedy idea, and why it's ok",
       "type": "heading",
-      "level": 2,
-      "text": "The greedy idea, and why it survives here"
+      "level": 2
     },
     {
       "id": "p-greedy",
       "type": "paragraph",
       "content": [
         {
-          "text": "Greedy algorithms usually deserve suspicion. On the Dijkstra page, walking to the nearest neighbor looked reasonable and lost by a factor of ten. So it is fair to be sceptical of a plan that says \"keep taking the cheapest edge you can\"."
+          "text": "Greedy algorithms usually deserve further analysis. Sometimes greedy algorithms miss better solutions where the value just wasn't notice immediately. So it is fair to be sceptical of a plan that says \"keep taking the cheapest edge you can\"."
         }
       ]
     },
@@ -119,7 +128,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Here it works, and the reason is a property worth knowing by name. Split the nodes into any two groups you like. Look at all the edges crossing between the groups. The "
+          "text": " Split the nodes into any two groups you like. Look at all the edges crossing between the groups. The "
         },
         {
           "text": "cheapest crossing edge is always safe",
@@ -154,9 +163,9 @@
     },
     {
       "id": "h-kruskal",
+      "text": "Kruskal's algorithm",
       "type": "heading",
-      "level": 2,
-      "text": "Kruskal's algorithm"
+      "level": 2
     },
     {
       "id": "p-kruskal",
@@ -178,78 +187,78 @@
     },
     {
       "id": "w-kruskal-live",
-      "type": "interactive",
-      "widget": "mst-explorer",
       "data": {
+        "mode": "kruskal",
         "graph": {
-          "weighted": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 70,
-              "y": 60
-            },
-            {
-              "id": "B",
-              "x": 215,
-              "y": 40
-            },
-            {
-              "id": "C",
-              "x": 370,
-              "y": 65
-            },
-            {
-              "id": "D",
-              "x": 70,
-              "y": 200
-            },
-            {
-              "id": "E",
-              "x": 225,
-              "y": 165
-            }
-          ],
           "edges": [
             {
-              "from": "A",
               "to": "B",
+              "from": "A",
               "weight": 1
             },
             {
-              "from": "C",
               "to": "D",
+              "from": "C",
               "weight": 2
             },
             {
+              "to": "C",
               "from": "A",
-              "to": "C",
               "weight": 3
             },
             {
-              "from": "B",
               "to": "C",
+              "from": "B",
               "weight": 3
             },
             {
-              "from": "B",
               "to": "D",
+              "from": "B",
               "weight": 4
             },
             {
-              "from": "D",
               "to": "E",
+              "from": "D",
               "weight": 5
             },
             {
-              "from": "C",
               "to": "E",
+              "from": "C",
               "weight": 6
             }
-          ]
-        },
-        "mode": "kruskal"
-      }
+          ],
+          "nodes": [
+            {
+              "x": 61.70958709716797,
+              "y": 96.8929214477539,
+              "id": "A"
+            },
+            {
+              "x": 211.36598205566406,
+              "y": 47.0074577331543,
+              "id": "B"
+            },
+            {
+              "x": 348.2312316894531,
+              "y": 128.87078857421875,
+              "id": "C"
+            },
+            {
+              "x": 57.23268508911133,
+              "y": 174.9188995361328,
+              "id": "D"
+            },
+            {
+              "x": 200.49349975585938,
+              "y": 236.95594787597656,
+              "id": "E"
+            }
+          ],
+          "weighted": true
+        }
+      },
+      "type": "interactive",
+      "widget": "mst-explorer"
     },
     {
       "id": "p-kruskal-3",
@@ -262,9 +271,9 @@
     },
     {
       "id": "h-dsu",
+      "text": "The structure that makes it fast",
       "type": "heading",
-      "level": 2,
-      "text": "The structure that makes it fast"
+      "level": 2
     },
     {
       "id": "p-dsu",
@@ -306,9 +315,9 @@
     },
     {
       "id": "h-prim",
+      "text": "Prim's algorithm, the other way round",
       "type": "heading",
-      "level": 2,
-      "text": "Prim's algorithm, the other way round"
+      "level": 2
     },
     {
       "id": "p-prim",
@@ -339,12 +348,6 @@
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "",
-        "Kruskal",
-        "Prim"
-      ],
       "rows": [
         [
           "Grows",
@@ -371,13 +374,19 @@
           "A flat edge list",
           "An adjacency list"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Kruskal",
+        "Prim"
       ]
     },
     {
       "id": "h-play",
+      "text": "Watch both run",
       "type": "heading",
-      "level": 2,
-      "text": "Watch both run"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -390,84 +399,84 @@
     },
     {
       "id": "w-mst",
-      "type": "interactive",
-      "widget": "mst-explorer",
       "data": {
+        "mode": "kruskal",
         "graph": {
-          "weighted": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 70,
-              "y": 60
-            },
-            {
-              "id": "B",
-              "x": 215,
-              "y": 40
-            },
-            {
-              "id": "C",
-              "x": 370,
-              "y": 65
-            },
-            {
-              "id": "D",
-              "x": 70,
-              "y": 200
-            },
-            {
-              "id": "E",
-              "x": 225,
-              "y": 165
-            }
-          ],
           "edges": [
             {
-              "from": "A",
               "to": "B",
+              "from": "A",
               "weight": 1
             },
             {
-              "from": "C",
               "to": "D",
+              "from": "C",
               "weight": 2
             },
             {
+              "to": "C",
               "from": "A",
-              "to": "C",
               "weight": 3
             },
             {
-              "from": "B",
               "to": "C",
+              "from": "B",
               "weight": 3
             },
             {
-              "from": "B",
               "to": "D",
+              "from": "B",
               "weight": 4
             },
             {
-              "from": "D",
               "to": "E",
+              "from": "D",
               "weight": 5
             },
             {
-              "from": "C",
               "to": "E",
+              "from": "C",
               "weight": 6
             }
-          ]
-        },
-        "mode": "kruskal"
-      }
+          ],
+          "nodes": [
+            {
+              "x": 41.24375534057617,
+              "y": 105.18717956542969,
+              "id": "A"
+            },
+            {
+              "x": 216.48243713378906,
+              "y": 31.63809585571289,
+              "id": "B"
+            },
+            {
+              "x": 398.11669921875,
+              "y": 129.4903564453125,
+              "id": "C"
+            },
+            {
+              "x": 45.08109664916992,
+              "y": 170.42201232910156,
+              "id": "D"
+            },
+            {
+              "x": 215.84288024902344,
+              "y": 239.49420166015625,
+              "id": "E"
+            }
+          ],
+          "weighted": true
+        }
+      },
+      "type": "interactive",
+      "widget": "mst-explorer"
     },
     {
       "id": "h-ties",
+      "text": "Ties, and when the answer is unique",
       "type": "heading",
-      "level": 2,
-      "text": "Ties, and when the answer is unique"
+      "level": 2
     },
     {
       "id": "p-ties",
@@ -489,27 +498,27 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-impl",
+      "code": "function kruskal(nodeCount, edges) {\n  const parent = Array.from({ length: nodeCount }, (_, i) => i);\n\n  function find(x) {                       // which group is x in?\n    while (parent[x] !== x) {\n      parent[x] = parent[parent[x]];       // flatten as we walk\n      x = parent[x];\n    }\n    return x;\n  }\n\n  function union(a, b) {                   // merge two groups\n    const ra = find(a), rb = find(b);\n    if (ra === rb) return false;           // already together, this edge is a cycle\n    parent[ra] = rb;\n    return true;\n  }\n\n  const sorted = [...edges].sort((x, y) => x.weight - y.weight);\n  const tree = [];\n\n  for (const edge of sorted) {\n    if (union(edge.from, edge.to)) tree.push(edge);\n    if (tree.length === nodeCount - 1) break;   // a tree is full\n  }\n\n  return tree;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function kruskal(nodeCount, edges) {\n  const parent = Array.from({ length: nodeCount }, (_, i) => i);\n\n  function find(x) {                       // which group is x in?\n    while (parent[x] !== x) {\n      parent[x] = parent[parent[x]];       // flatten as we walk\n      x = parent[x];\n    }\n    return x;\n  }\n\n  function union(a, b) {                   // merge two groups\n    const ra = find(a), rb = find(b);\n    if (ra === rb) return false;           // already together, this edge is a cycle\n    parent[ra] = rb;\n    return true;\n  }\n\n  const sorted = [...edges].sort((x, y) => x.weight - y.weight);\n  const tree = [];\n\n  for (const edge of sorted) {\n    if (union(edge.from, edge.to)) tree.push(edge);\n    if (tree.length === nodeCount - 1) break;   // a tree is full\n  }\n\n  return tree;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def kruskal(node_count, edges):\n    parent = list(range(node_count))\n\n    def find(x):                            # which group is x in?\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]   # flatten as we walk\n            x = parent[x]\n        return x\n\n    def union(a, b):                        # merge two groups\n        ra, rb = find(a), find(b)\n        if ra == rb:\n            return False                    # already together, this edge is a cycle\n        parent[ra] = rb\n        return True\n\n    tree = []\n    for edge in sorted(edges, key=lambda e: e.weight):\n        if union(edge.frm, edge.to):\n            tree.append(edge)\n        if len(tree) == node_count - 1:     # a tree is full\n            break\n\n    return tree"
+          "code": "def kruskal(node_count, edges):\n    parent = list(range(node_count))\n\n    def find(x):                            # which group is x in?\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]   # flatten as we walk\n            x = parent[x]\n        return x\n\n    def union(a, b):                        # merge two groups\n        ra, rb = find(a), find(b)\n        if ra == rb:\n            return False                    # already together, this edge is a cycle\n        parent[ra] = rb\n        return True\n\n    tree = []\n    for edge in sorted(edges, key=lambda e: e.weight):\n        if union(edge.frm, edge.to):\n            tree.append(edge)\n        if len(tree) == node_count - 1:     # a tree is full\n            break\n\n    return tree",
+          "language": "python"
         }
       ]
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -592,14 +601,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -671,16 +678,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Kruskal vs Prim: Minimum Spanning Tree Algorithms",
-  "seoDescription": "Minimum spanning trees explained: why the answer must be a tree, the cut property that makes greedy safe, Kruskal with union-find, Prim as the same theorem applied differently, and why ties give several correct answers.",
-  "keywords": [
-    "minimum spanning tree",
-    "kruskal's algorithm",
-    "prim's algorithm",
-    "kruskal vs prim",
-    "union find"
   ]
 }

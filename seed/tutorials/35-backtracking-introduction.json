@@ -13,6 +13,16 @@
   ],
   "sectionSlug": "backtracking",
   "position": 10,
+  "seoTitle": "Introduction to Backtracking: The Algorithm Template Explained",
+  "seoDescription": "Backtracking explained from first principles: why generate-and-filter dies, how pruning cuts whole subtrees, the choose-explore-unchoose template, a full hand trace, and the bugs everyone hits once.",
+  "keywords": [
+    "backtracking",
+    "backtracking algorithm",
+    "state space tree",
+    "recursion",
+    "choose explore unchoose",
+    "backtracking template"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -34,9 +44,9 @@
     },
     {
       "id": "h-naive",
+      "text": "Why the obvious approach dies",
       "type": "heading",
-      "level": 2,
-      "text": "Why the obvious approach dies"
+      "level": 2
     },
     {
       "id": "p-naive",
@@ -67,11 +77,6 @@
     },
     {
       "id": "t-explosion",
-      "type": "table",
-      "headers": [
-        "Way of framing it",
-        "Arrangements to consider"
-      ],
       "rows": [
         [
           "Choose 8 squares from 64",
@@ -85,6 +90,11 @@
           "Choose a column, skipping ones already attacked",
           "2,057 board positions actually built"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Way of framing it",
+        "Arrangements to consider"
       ]
     },
     {
@@ -98,9 +108,9 @@
     },
     {
       "id": "h-insight",
+      "text": "The idea: fail early, not at the end",
       "type": "heading",
-      "level": 2,
-      "text": "The idea: fail early, not at the end"
+      "level": 2
     },
     {
       "id": "p-insight",
@@ -151,9 +161,9 @@
     },
     {
       "id": "h-tree",
+      "text": "Every one of these problems is secretly a tree",
       "type": "heading",
-      "level": 2,
-      "text": "Every one of these problems is secretly a tree"
+      "level": 2
     },
     {
       "id": "p-tree",
@@ -175,16 +185,16 @@
     },
     {
       "id": "w-tree-static",
-      "type": "interactive",
-      "widget": "backtracking-tree",
       "data": {
-        "problem": "subsets",
         "items": [
           "1",
           "2",
           "3"
-        ]
-      }
+        ],
+        "problem": "subsets"
+      },
+      "type": "interactive",
+      "widget": "backtracking-tree"
     },
     {
       "id": "p-tree-3",
@@ -197,9 +207,9 @@
     },
     {
       "id": "h-template",
+      "text": "The template, which is genuinely always the same",
       "type": "heading",
-      "level": 2,
-      "text": "The template, which is genuinely always the same"
+      "level": 2
     },
     {
       "id": "p-template",
@@ -212,9 +222,9 @@
     },
     {
       "id": "code-template",
+      "code": "function solve(state):\n    if state is a complete answer:\n        record it\n        return\n\n    for each choice available from state:\n        if choice is not allowed:\n            continue          # prune: never build anything below here\n\n        apply choice          # choose\n        solve(state)          # explore\n        undo choice           # un-choose",
       "type": "code",
-      "language": "text",
-      "code": "function solve(state):\n    if state is a complete answer:\n        record it\n        return\n\n    for each choice available from state:\n        if choice is not allowed:\n            continue          # prune: never build anything below here\n\n        apply choice          # choose\n        solve(state)          # explore\n        undo choice           # un-choose"
+      "language": "text"
     },
     {
       "id": "p-template-2",
@@ -247,9 +257,9 @@
     },
     {
       "id": "h-trace",
+      "text": "A trace you can follow with a finger",
       "type": "heading",
-      "level": 2,
-      "text": "A trace you can follow with a finger"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -280,9 +290,9 @@
     },
     {
       "id": "h-play",
+      "text": "Watch the tree get built",
       "type": "heading",
-      "level": 2,
-      "text": "Watch the tree get built"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -295,24 +305,24 @@
     },
     {
       "id": "w-tree",
-      "type": "interactive",
-      "widget": "backtracking-tree",
       "data": {
+        "target": 8,
         "problem": "combination-sum",
+        "pruning": true,
         "candidates": [
           2,
           3,
           5
-        ],
-        "target": 8,
-        "pruning": true
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "backtracking-tree"
     },
     {
       "id": "h-pruning",
+      "text": "What pruning is actually worth",
       "type": "heading",
-      "level": 2,
-      "text": "What pruning is actually worth"
+      "level": 2
     },
     {
       "id": "p-pruning",
@@ -398,9 +408,9 @@
     },
     {
       "id": "h-cost",
+      "text": "What it costs, and why exponential is not always fatal",
       "type": "heading",
-      "level": 2,
-      "text": "What it costs, and why exponential is not always fatal"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -464,9 +474,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "The bugs, in the order you will meet them",
       "type": "heading",
-      "level": 2,
-      "text": "The bugs, in the order you will meet them"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -487,9 +497,9 @@
     },
     {
       "id": "code-bug-undo",
+      "code": "for (let i = start; i < nums.length; i++) {\n  current.push(nums[i]);\n  solve(i + 1);\n  // current.pop();   <-- forgotten\n}",
       "type": "code",
-      "language": "javascript",
-      "code": "for (let i = start; i < nums.length; i++) {\n  current.push(nums[i]);\n  solve(i + 1);\n  // current.pop();   <-- forgotten\n}"
+      "language": "javascript"
     },
     {
       "id": "p-mistake-1b",
@@ -511,9 +521,9 @@
     },
     {
       "id": "code-bug-copy",
+      "code": "answers.push(current);      // WRONG: stores a reference\nanswers.push([...current]); // right: stores a snapshot",
       "type": "code",
-      "language": "javascript",
-      "code": "answers.push(current);      // WRONG: stores a reference\nanswers.push([...current]); // right: stores a snapshot"
+      "language": "javascript"
     },
     {
       "id": "p-mistake-2b",
@@ -560,9 +570,9 @@
     },
     {
       "id": "h-code",
+      "text": "The template, filled in",
       "type": "heading",
-      "level": 2,
-      "text": "The template, filled in"
+      "level": 2
     },
     {
       "id": "p-code",
@@ -586,17 +596,17 @@
     },
     {
       "id": "code-subsets",
+      "code": "function subsets(nums) {\n  const answers = [];\n  const current = [];\n\n  function solve(start) {\n    answers.push([...current]);        // a copy, see the note below\n\n    for (let i = start; i < nums.length; i++) {\n      current.push(nums[i]);           // choose\n      solve(i + 1);                    // explore\n      current.pop();                   // un-choose\n    }\n  }\n\n  solve(0);\n  return answers;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function subsets(nums) {\n  const answers = [];\n  const current = [];\n\n  function solve(start) {\n    answers.push([...current]);        // a copy, see the note below\n\n    for (let i = start; i < nums.length; i++) {\n      current.push(nums[i]);           // choose\n      solve(i + 1);                    // explore\n      current.pop();                   // un-choose\n    }\n  }\n\n  solve(0);\n  return answers;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def subsets(nums):\n    answers = []\n    current = []\n\n    def solve(start):\n        answers.append(current[:])     # a copy, see the note below\n\n        for i in range(start, len(nums)):\n            current.append(nums[i])    # choose\n            solve(i + 1)               # explore\n            current.pop()              # un-choose\n\n    solve(0)\n    return answers"
+          "code": "def subsets(nums):\n    answers = []\n    current = []\n\n    def solve(start):\n        answers.append(current[:])     # a copy, see the note below\n\n        for i in range(start, len(nums)):\n            current.append(nums[i])    # choose\n            solve(i + 1)               # explore\n            current.pop()              # un-choose\n\n    solve(0)\n    return answers",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "void solve(const vector<int>& nums, int start,\n           vector<int>& current, vector<vector<int>>& answers) {\n    answers.push_back(current);        // a copy, see the note below\n\n    for (int i = start; i < (int)nums.size(); i++) {\n        current.push_back(nums[i]);    // choose\n        solve(nums, i + 1, current, answers);\n        current.pop_back();            // un-choose\n    }\n}"
+          "code": "void solve(const vector<int>& nums, int start,\n           vector<int>& current, vector<vector<int>>& answers) {\n    answers.push_back(current);        // a copy, see the note below\n\n    for (int i = start; i < (int)nums.size(); i++) {\n        current.push_back(nums[i]);    // choose\n        solve(nums, i + 1, current, answers);\n        current.pop_back();            // un-choose\n    }\n}",
+          "language": "cpp"
         }
       ]
     },
@@ -622,14 +632,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -718,17 +726,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Introduction to Backtracking: The Algorithm Template Explained",
-  "seoDescription": "Backtracking explained from first principles: why generate-and-filter dies, how pruning cuts whole subtrees, the choose-explore-unchoose template, a full hand trace, and the bugs everyone hits once.",
-  "keywords": [
-    "backtracking",
-    "backtracking algorithm",
-    "state space tree",
-    "recursion",
-    "choose explore unchoose",
-    "backtracking template"
   ]
 }

@@ -11,6 +11,15 @@
   ],
   "sectionSlug": "sequential-logic",
   "position": 30,
+  "seoTitle": "Gated D Latch: How It Works and Why It Is Transparent",
+  "seoDescription": "The gated D latch removes the SR latch's forbidden state using one data input and an enable, but stays level-sensitive, causing race-through.",
+  "keywords": [
+    "gated d latch",
+    "d latch",
+    "transparent latch",
+    "level sensitive latch",
+    "enable input"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -23,9 +32,9 @@
     },
     {
       "id": "h-one-input",
+      "text": "One Data Input Instead of Two",
       "type": "heading",
-      "level": 2,
-      "text": "One Data Input Instead of Two"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -38,9 +47,9 @@
     },
     {
       "id": "h-derivation",
+      "text": "How D and E Become S and R",
       "type": "heading",
-      "level": 2,
-      "text": "How D and E Become S and R"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -53,9 +62,9 @@
     },
     {
       "id": "code-derivation",
+      "code": "S = NAND(D, E)\nR = NAND(NOT(D), E)\n\nE = 0:  S = 1, R = 1  ->  SR latch holds (both NAND outputs forced high, no change)\nE = 1:  S = NOT(D), R = D  ->  D drives Q directly through the latch",
       "type": "code",
-      "language": "text",
-      "code": "S = NAND(D, E)\nR = NAND(NOT(D), E)\n\nE = 0:  S = 1, R = 1  ->  SR latch holds (both NAND outputs forced high, no change)\nE = 1:  S = NOT(D), R = D  ->  D drives Q directly through the latch"
+      "language": "text"
     },
     {
       "id": "p-3",
@@ -68,9 +77,9 @@
     },
     {
       "id": "h-transparent",
+      "text": "Transparent vs. Holding",
       "type": "heading",
-      "level": 2,
-      "text": "Transparent vs. Holding"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -92,19 +101,19 @@
     },
     {
       "id": "dlatch-1",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
         "title": "Gated D Latch, 1 NOT + 4 NAND gates",
-        "projectSlug": "gated-d-latch",
-        "height": 320
-      }
+        "height": 320,
+        "projectSlug": "gated-d-latch"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "h-still-level",
+      "text": "Still Level-Sensitive",
       "type": "heading",
-      "level": 2,
-      "text": "Still Level-Sensitive"
+      "level": 2
     },
     {
       "id": "p-6",
@@ -117,9 +126,9 @@
     },
     {
       "id": "h-race-through",
+      "text": "Why That's a Problem: Race-Through",
       "type": "heading",
-      "level": 2,
-      "text": "Why That's a Problem: Race-Through"
+      "level": 2
     },
     {
       "id": "p-7",
@@ -136,9 +145,9 @@
     },
     {
       "id": "h-fix",
+      "text": "The Fix: React to a Moment, Not a Level",
       "type": "heading",
-      "level": 2,
-      "text": "The Fix: React to a Moment, Not a Level"
+      "level": 2
     },
     {
       "id": "p-8",
@@ -151,19 +160,10 @@
     },
     {
       "id": "b1",
+      "href": "/tutorials/digital-logic/d-flip-flop",
       "type": "button",
       "label": "Continue to the D Flip-Flop",
-      "href": "/tutorials/digital-logic/d-flip-flop",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Gated D Latch: How It Works and Why It Is Transparent",
-  "seoDescription": "The gated D latch removes the SR latch's forbidden state using one data input and an enable, but stays level-sensitive, causing race-through.",
-  "keywords": [
-    "gated d latch",
-    "d latch",
-    "transparent latch",
-    "level sensitive latch",
-    "enable input"
   ]
 }

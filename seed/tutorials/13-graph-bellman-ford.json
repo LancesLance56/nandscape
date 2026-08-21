@@ -13,6 +13,15 @@
   ],
   "sectionSlug": "graph-theory-advanced",
   "position": 30,
+  "seoTitle": "Bellman-Ford and Floyd-Warshall: Negative Weight Paths",
+  "seoDescription": "Bellman-Ford explained: why negative weights break Dijkstra, why V-1 passes suffice, a full trace, how one extra pass detects negative cycles, the arbitrage application, and when the slower algorithm is the right call.",
+  "keywords": [
+    "bellman-ford algorithm",
+    "floyd-warshall",
+    "negative weight edges",
+    "negative cycle",
+    "all pairs shortest path"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -34,9 +43,9 @@
     },
     {
       "id": "h-idea",
+      "text": "Giving up the clever part",
       "type": "heading",
-      "level": 2,
-      "text": "Giving up the clever part"
+      "level": 2
     },
     {
       "id": "p-idea",
@@ -118,9 +127,9 @@
     },
     {
       "id": "h-trace",
+      "text": "A trace",
       "type": "heading",
-      "level": 2,
-      "text": "A trace"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -133,9 +142,9 @@
     },
     {
       "id": "code-bf-trace",
+      "code": "Graph: A->B 4, A->C 5, B->C -3, C->D 2\n\nstart        A 0    B inf   C inf   D inf\n\nround 1      relax every edge once, in the order listed\n  A->B       B = min(inf, 0 + 4)  = 4\n  A->C       C = min(inf, 0 + 5)  = 5\n  B->C       C = min(5, 4 - 3)  = 1     better route found\n  C->D       D = min(inf, 1 + 2)  = 3\n             A 0    B 4     C 1     D 3\n\nround 2      relax every edge again\n  nothing improves\n             A 0    B 4     C 1     D 3\n\nNothing changed in round 2, so we can stop early.",
       "type": "code",
-      "language": "text",
-      "code": "Graph: A->B 4, A->C 5, B->C -3, C->D 2\n\nstart        A 0    B inf   C inf   D inf\n\nround 1      relax every edge once, in the order listed\n  A->B       B = min(inf, 0 + 4)  = 4\n  A->C       C = min(inf, 0 + 5)  = 5\n  B->C       C = min(5, 4 - 3)  = 1     better route found\n  C->D       D = min(inf, 1 + 2)  = 3\n             A 0    B 4     C 1     D 3\n\nround 2      relax every edge again\n  nothing improves\n             A 0    B 4     C 1     D 3\n\nNothing changed in round 2, so we can stop early."
+      "language": "text"
     },
     {
       "id": "p-trace-2",
@@ -179,9 +188,9 @@
     },
     {
       "id": "h-cycles",
+      "text": "Negative cycles, and detecting them for free",
       "type": "heading",
-      "level": 2,
-      "text": "Negative cycles, and detecting them for free"
+      "level": 2
     },
     {
       "id": "p-cycles",
@@ -194,9 +203,9 @@
     },
     {
       "id": "code-bf-cycle",
+      "code": "Graph: A->B 1, B->C -1, C->B -1\n\nround 1   B = 1, C = 0\nround 2   B = min(1, 0 - 1) = -1, C = -2\nround 3   B = -3, C = -4\n...\nEvery extra lap around B->C->B subtracts 2. There is no shortest path,\nbecause \"shortest\" has no smallest value. Run one round past V-1 and\nif anything still improves, you have found a negative cycle.",
       "type": "code",
-      "language": "text",
-      "code": "Graph: A->B 1, B->C -1, C->B -1\n\nround 1   B = 1, C = 0\nround 2   B = min(1, 0 - 1) = -1, C = -2\nround 3   B = -3, C = -4\n...\nEvery extra lap around B->C->B subtracts 2. There is no shortest path,\nbecause \"shortest\" has no smallest value. Run one round past V-1 and\nif anything still improves, you have found a negative cycle."
+      "language": "text"
     },
     {
       "id": "p-cycles-2",
@@ -238,9 +247,9 @@
     },
     {
       "id": "h-cost",
+      "text": "What it costs",
       "type": "heading",
-      "level": 2,
-      "text": "What it costs"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -286,12 +295,6 @@
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "",
-        "Dijkstra",
-        "Bellman-Ford"
-      ],
       "rows": [
         [
           "Time",
@@ -318,6 +321,12 @@
           "All weights are non-negative",
           "Weights can be negative, or you need cycle detection"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Dijkstra",
+        "Bellman-Ford"
       ]
     },
     {
@@ -331,9 +340,9 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "p-code",
@@ -346,21 +355,21 @@
     },
     {
       "id": "code-impl",
+      "code": "function bellmanFord(nodeCount, edges, source) {\n  const dist = new Array(nodeCount).fill(Infinity);\n  dist[source] = 0;\n\n  // V-1 rounds: a shortest path uses at most V-1 edges.\n  for (let round = 0; round < nodeCount - 1; round++) {\n    let changed = false;\n    for (const { from, to, weight } of edges) {\n      if (dist[from] === Infinity) continue;\n      if (dist[from] + weight < dist[to]) {\n        dist[to] = dist[from] + weight;\n        changed = true;\n      }\n    }\n    if (!changed) break;              // settled early, common in practice\n  }\n\n  // One more round. Any improvement now means a negative cycle.\n  for (const { from, to, weight } of edges) {\n    if (dist[from] !== Infinity && dist[from] + weight < dist[to]) {\n      return { dist: null, negativeCycle: true };\n    }\n  }\n\n  return { dist, negativeCycle: false };\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function bellmanFord(nodeCount, edges, source) {\n  const dist = new Array(nodeCount).fill(Infinity);\n  dist[source] = 0;\n\n  // V-1 rounds: a shortest path uses at most V-1 edges.\n  for (let round = 0; round < nodeCount - 1; round++) {\n    let changed = false;\n    for (const { from, to, weight } of edges) {\n      if (dist[from] === Infinity) continue;\n      if (dist[from] + weight < dist[to]) {\n        dist[to] = dist[from] + weight;\n        changed = true;\n      }\n    }\n    if (!changed) break;              // settled early, common in practice\n  }\n\n  // One more round. Any improvement now means a negative cycle.\n  for (const { from, to, weight } of edges) {\n    if (dist[from] !== Infinity && dist[from] + weight < dist[to]) {\n      return { dist: null, negativeCycle: true };\n    }\n  }\n\n  return { dist, negativeCycle: false };\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def bellman_ford(node_count, edges, source):\n    dist = [float(\"inf\")] * node_count\n    dist[source] = 0\n\n    # V-1 rounds: a shortest path uses at most V-1 edges.\n    for _ in range(node_count - 1):\n        changed = False\n        for frm, to, weight in edges:\n            if dist[frm] == float(\"inf\"):\n                continue\n            if dist[frm] + weight < dist[to]:\n                dist[to] = dist[frm] + weight\n                changed = True\n        if not changed:\n            break                     # settled early, common in practice\n\n    # One more round. Any improvement now means a negative cycle.\n    for frm, to, weight in edges:\n        if dist[frm] != float(\"inf\") and dist[frm] + weight < dist[to]:\n            return None, True\n\n    return dist, False"
+          "code": "def bellman_ford(node_count, edges, source):\n    dist = [float(\"inf\")] * node_count\n    dist[source] = 0\n\n    # V-1 rounds: a shortest path uses at most V-1 edges.\n    for _ in range(node_count - 1):\n        changed = False\n        for frm, to, weight in edges:\n            if dist[frm] == float(\"inf\"):\n                continue\n            if dist[frm] + weight < dist[to]:\n                dist[to] = dist[frm] + weight\n                changed = True\n        if not changed:\n            break                     # settled early, common in practice\n\n    # One more round. Any improvement now means a negative cycle.\n    for frm, to, weight in edges:\n        if dist[frm] != float(\"inf\") and dist[frm] + weight < dist[to]:\n            return None, True\n\n    return dist, False",
+          "language": "python"
         }
       ]
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -435,14 +444,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -514,16 +521,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Bellman-Ford and Floyd-Warshall: Negative Weight Paths",
-  "seoDescription": "Bellman-Ford explained: why negative weights break Dijkstra, why V-1 passes suffice, a full trace, how one extra pass detects negative cycles, the arbitrage application, and when the slower algorithm is the right call.",
-  "keywords": [
-    "bellman-ford algorithm",
-    "floyd-warshall",
-    "negative weight edges",
-    "negative cycle",
-    "all pairs shortest path"
   ]
 }

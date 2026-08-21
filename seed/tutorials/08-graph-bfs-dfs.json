@@ -13,99 +13,37 @@
   ],
   "sectionSlug": "graph-theory-concepts",
   "position": 10,
+  "seoTitle": "BFS vs DFS Explained: Graph Traversal With Code",
+  "seoDescription": "BFS and DFS explained from first principles: why a traversal needs a frontier and a seen set, the single line that separates the two, full side-by-side traces, why BFS finds shortest paths, and the common marking bug.",
+  "keywords": [
+    "bfs vs dfs",
+    "breadth first search",
+    "depth first search",
+    "graph traversal",
+    "shortest path unweighted"
+  ],
   "body": [
     {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
         {
-          "text": "Almost every question you will ever ask about a graph starts the same way: you are standing on one node and you want to know about the rest. Can I reach that node from here? How far is it? Which nodes are in the same connected clump as this one? Is there a cycle?"
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "All of those are answered by walking the graph, and there are exactly two sensible ways to walk it. The surprising part, and the reason this page can cover both at once, is that the two ways differ by a single line of code. Everything else about them is identical."
-        }
-      ]
-    },
-    {
-      "id": "h-problem",
-      "type": "heading",
-      "level": 2,
-      "text": "Why you cannot just wander"
-    },
-    {
-      "id": "p-problem",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Suppose you try the naive thing: stand on A, move to a neighbor, move to one of its neighbors, and keep going. Two problems show up straight away."
-        }
-      ]
-    },
-    {
-      "id": "p-problem-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The first is that you get stuck. Wander far enough down one branch and you reach a node whose neighbors you have all seen, with no record of the turnings you skipped on the way. You need somewhere to keep the places you have found but not yet examined."
-        }
-      ]
-    },
-    {
-      "id": "p-problem-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The second is worse. Graphs have cycles. A path that goes A to B to C and back to A will send you round forever, and unlike a tree there is no natural end to fall off. So you also need a record of where you have already been."
-        }
-      ]
-    },
-    {
-      "id": "p-problem-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Those two needs give you the entire algorithm: keep a collection of nodes you have discovered but not processed, and a set of nodes you have already seen. Take something out of the collection, look at its neighbors, put the unseen ones in, and stop when the collection empties."
+          "text": "Search algorithms are what allow you to traverse a graph and make sense of what it looks like. In a real problem it can help you answer questions like, \"can I reach node X from Y?\" and \"which nodes are in the same connected clump as this one? Is there a cycle?\""
         }
       ]
     },
     {
       "id": "h-difference",
+      "text": "Basic Idea",
       "type": "heading",
-      "level": 2,
-      "text": "The single line that separates them"
-    },
-    {
-      "id": "p-difference",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Now the only real decision. When you take a node out of that collection, which one do you take?"
-        }
-      ]
+      "level": 2
     },
     {
       "id": "p-difference-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Take the "
-        },
-        {
-          "text": "oldest",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " one, the node that has been waiting longest, and the collection behaves as a queue. You finish everything one step from the start before you look at anything two steps away, and the search spreads outward in rings. That is breadth-first search."
+          "text": "Take the node that has been waiting longest, and the collection behaves as a queue. You finish everything one step from the start before you look at anything two steps away, and the search spreads outward in rings. This is breadth-first search."
         }
       ]
     },
@@ -114,18 +52,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Take the "
-        },
-        {
-          "text": "newest",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " one, the node you added most recently, and the collection behaves as a stack. You charge as deep as you can down a single path, and only when you run out of new ground do you back up to the most recent turning you skipped. That is depth-first search."
+          "text": "Take the node you added most recently, and the collection behaves as a stack. You charge as deep as you can down a single path, and only when you run out of new ground do you back up to the most recent turning you skipped. That is depth-first search."
         }
       ]
     },
@@ -134,7 +61,19 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In code the difference is "
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " In code the difference is "
         },
         {
           "text": "shift()",
@@ -156,139 +95,131 @@
           ]
         },
         {
-          "text": ". Nothing else changes. If you ever find yourself memorising two separate algorithms, you have learned it in a harder way than necessary."
+          "text": "."
         }
       ]
     },
     {
       "id": "h-trace",
+      "text": "Try it out first",
       "type": "heading",
-      "level": 2,
-      "text": "Both, traced on the same graph"
+      "level": 2
     },
     {
       "id": "p-trace",
       "type": "paragraph",
       "content": [
         {
-          "text": "Seeing the two run on identical input is the fastest way for the difference to stick. Below is one graph, wired the same way for both runs. Neighbors are always tried in alphabetical order, so the run is reproducible and every step matches the caption underneath it."
+          "text": "Below is one graph, wired the same way for both runs. Neighbors are always tried in alphabetical order, so the run is reproducible and every step matches the caption underneath it. Try visualizing what the next step is and figure out the difference between BFS and DFS."
         }
       ]
     },
     {
       "id": "w-trace-live",
-      "type": "interactive",
-      "widget": "graph-traversal",
       "data": {
+        "mode": "bfs",
         "graph": {
-          "nodes": [
-            {
-              "id": "A",
-              "x": 60,
-              "y": 130
-            },
-            {
-              "id": "B",
-              "x": 170,
-              "y": 60
-            },
-            {
-              "id": "C",
-              "x": 170,
-              "y": 200
-            },
-            {
-              "id": "D",
-              "x": 290,
-              "y": 50
-            },
-            {
-              "id": "E",
-              "x": 290,
-              "y": 210
-            },
-            {
-              "id": "F",
-              "x": 400,
-              "y": 130
-            }
-          ],
           "edges": [
             {
-              "from": "A",
-              "to": "B"
+              "to": "B",
+              "from": "A"
             },
             {
-              "from": "A",
-              "to": "C"
+              "to": "C",
+              "from": "A"
             },
             {
-              "from": "B",
-              "to": "C"
+              "to": "D",
+              "from": "A"
             },
             {
-              "from": "B",
-              "to": "D"
+              "to": "E",
+              "from": "C"
             },
             {
-              "from": "C",
-              "to": "E"
+              "to": "G",
+              "from": "C"
             },
             {
-              "from": "D",
-              "to": "F"
+              "to": "F",
+              "from": "D"
             },
             {
-              "from": "E",
-              "to": "F"
+              "to": "H",
+              "from": "E"
+            },
+            {
+              "to": "I",
+              "from": "F"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 214.5637664794922,
+              "y": 29.099853515625,
+              "id": "A"
+            },
+            {
+              "x": 126.94441986083984,
+              "y": 66.19417572021484,
+              "id": "B"
+            },
+            {
+              "x": 213.92420959472656,
+              "y": 85.38088989257812,
+              "id": "C"
+            },
+            {
+              "x": 302.8226623535156,
+              "y": 68.75240325927734,
+              "id": "D"
+            },
+            {
+              "x": 257.4140930175781,
+              "y": 165.96510314941406,
+              "id": "E"
+            },
+            {
+              "x": 348.87078857421875,
+              "y": 132.06857299804688,
+              "id": "F"
+            },
+            {
+              "x": 174.2716522216797,
+              "y": 159.5695343017578,
+              "id": "G"
+            },
+            {
+              "x": 261.2514343261719,
+              "y": 232.4790496826172,
+              "id": "H"
+            },
+            {
+              "x": 349.5103454589844,
+              "y": 222.8856964111328,
+              "id": "I"
             }
           ]
         },
-        "mode": "bfs",
         "start": "A"
-      }
+      },
+      "type": "interactive",
+      "widget": "graph-traversal"
     },
     {
-      "id": "p-trace-2",
+      "id": "p_d5020281",
       "type": "paragraph",
       "content": [
         {
-          "text": "Start it in BFS mode. Watch how the queue holds a whole ring of nodes at a time before moving on to the next."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The visit order is A, B, C, D, E, F. Group that by distance from A and the structure appears: A is the only node at distance 0, then B and C at distance 1, then D and E at distance 2, then F at distance 3. BFS walked the graph in exact order of distance without ever being told to."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Now switch the widget to DFS mode, on the same graph, changing only which end of the pile you take from."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The visit order is A, B, C, E, F, D. Watch what happens at B: it has two unvisited neighbors, C and D, and the rule is always try the alphabetically smaller one first, so it takes C and leaves D sitting there. From C the only move is E, from E the only move is F, and only once that entire branch is used up does the search finally backtrack to B and pick up D. A neighbor that was on offer from the very first step ends up visited dead last."
+          "text": "From here, you've probably noticed that the difference between BFS and DFS in words is that BFS checks branch by branch and DFS checks nodes in order of how far it is from the root."
         }
       ]
     },
     {
       "id": "h-play",
+      "text": "More Examples",
       "type": "heading",
-      "level": 2,
-      "text": "Watch it happen"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -301,109 +232,46 @@
     },
     {
       "id": "w-traversal",
-      "type": "interactive",
-      "widget": "graph-traversal",
       "data": {
         "mode": "bfs",
         "start": "A"
-      }
+      },
+      "type": "interactive",
+      "widget": "graph-traversal"
     },
     {
       "id": "h-shortest",
+      "text": "Why BFS gets shortest paths",
       "type": "heading",
-      "level": 2,
-      "text": "Why BFS gets shortest paths for free"
-    },
-    {
-      "id": "p-shortest",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The ring behavior is not a nice coincidence. It is a guarantee, and it is worth seeing why, because it is the reason BFS is the right tool for an entire category of problems."
-        }
-      ]
+      "level": 2
     },
     {
       "id": "p-shortest-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Claim: when BFS first reaches a node, the number of steps it took is the smallest possible number of steps."
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " when BFS first reaches a node, the number of steps it took is minimal"
         }
       ]
     },
     {
-      "id": "p-shortest-3",
+      "id": "p-shortest",
       "type": "paragraph",
       "content": [
         {
-          "text": "The reason is that the queue is always sorted by distance. Suppose everything currently in the queue is at distance "
-        },
-        {
-          "text": "d",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " or "
-        },
-        {
-          "text": "d + 1",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", which is certainly true at the start when the queue holds only the source at distance 0. Take a node out at distance "
-        },
-        {
-          "text": "d",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ". Its undiscovered neighbors are at distance "
-        },
-        {
-          "text": "d + 1",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", and they join the back of the queue, behind everything at distance "
-        },
-        {
-          "text": "d",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " and alongside the other "
-        },
-        {
-          "text": "d + 1",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " nodes. The property survives, so it holds forever."
+          "text": "Put simply, BFS checks by distance starting with the closest. It then follows that the first time it reaches a certain node, that's the least distance because you checked each possibility from least distance to greatest."
         }
       ]
     },
@@ -412,15 +280,15 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Since nodes come out in non-decreasing order of distance, the first time you meet a node is via the shortest route to it. Recording the layer is one extra line."
+          "text": "Since nodes come out in non-decreasing order of distance, the first time you meet a node is via the shortest route to it. In summary, BFS finds all possibilities starting with the shortest ones (unweighted). "
         }
       ]
     },
     {
       "id": "code-layers",
+      "code": "function shortestPathLengths(graph, start) {\n  const dist = new Map([[start, 0]]);\n  const queue = [start];\n\n  while (queue.length > 0) {\n    const node = queue.shift();\n    for (const next of graph.neighbors(node)) {\n      if (dist.has(next)) continue;\n      dist.set(next, dist.get(node) + 1);   // one more layer out\n      queue.push(next);\n    }\n  }\n\n  return dist;\n}",
       "type": "code",
-      "language": "javascript",
-      "code": "function shortestPathLengths(graph, start) {\n  const dist = new Map([[start, 0]]);\n  const queue = [start];\n\n  while (queue.length > 0) {\n    const node = queue.shift();\n    for (const next of graph.neighbors(node)) {\n      if (dist.has(next)) continue;\n      dist.set(next, dist.get(node) + 1);   // one more layer out\n      queue.push(next);\n    }\n  }\n\n  return dist;\n}"
+      "language": "javascript"
     },
     {
       "id": "p-shortest-5",
@@ -433,16 +301,16 @@
     },
     {
       "id": "h-dfs-good",
+      "text": "What depth-first search is better at",
       "type": "heading",
-      "level": 2,
-      "text": "What depth-first search is better at"
+      "level": 2
     },
     {
       "id": "p-dfs-good",
       "type": "paragraph",
       "content": [
         {
-          "text": "It would be easy to read the last section and conclude BFS is simply the better one. It is not. DFS has a property BFS lacks: at any moment, the chain of calls you are inside "
+          "text": "DFS has a property BFS lacks: at any moment, the chain of calls you are inside "
         },
         {
           "text": "is",
@@ -462,18 +330,12 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Cycle detection is the clearest case. If DFS ever finds an edge back to a node that is still open, meaning you are still inside its call, you have found a cycle, and the nodes on the current call stack are the cycle. Topological sorting falls out of the order in which DFS finishes nodes. Tarjan's algorithm for strongly connected components is DFS with two extra numbers per node."
+          "text": "This makes it useful for something like detecting cycles. If DFS ever finds an edge back to a node that is still open, meaning you are still inside its call, you have found a cycle, and the nodes on the current call stack are the cycle. Topological sorting falls out of the order in which DFS finishes nodes. Tarjan's algorithm for strongly connected components is DFS with two extra numbers per node."
         }
       ]
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "What you want",
-        "Reach for",
-        "Why"
-      ],
       "rows": [
         [
           "Fewest edges to a node",
@@ -505,13 +367,19 @@
           "Neither",
           "Costs need Dijkstra"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "What you want",
+        "Reach for",
+        "Why"
       ]
     },
     {
       "id": "h-recursive",
+      "text": "The recursive version",
       "type": "heading",
-      "level": 2,
-      "text": "The recursive version, and its one trap"
+      "level": 2
     },
     {
       "id": "p-recursive",
@@ -524,16 +392,16 @@
     },
     {
       "id": "code-recursive",
+      "code": "function dfs(graph, node, seen = new Set()) {\n  seen.add(node);\n  for (const next of graph.neighbors(node)) {\n    if (!seen.has(next)) dfs(graph, next, seen);\n  }\n  return seen;\n}",
       "type": "code",
-      "language": "javascript",
-      "code": "function dfs(graph, node, seen = new Set()) {\n  seen.add(node);\n  for (const next of graph.neighbors(node)) {\n    if (!seen.has(next)) dfs(graph, next, seen);\n  }\n  return seen;\n}"
+      "language": "javascript"
     },
     {
       "id": "p-recursive-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The trap is that a real call stack has a size limit, while an array does not. On a graph shaped like a long chain of a hundred thousand nodes, the recursion goes a hundred thousand frames deep and the program dies with a stack overflow. The iterative version with an explicit array handles the same graph without complaint. On competitive programming sites this is a common and confusing source of runtime errors, since the logic is perfectly correct."
+          "text": "The trap is that a real call stack has a size limit. On a graph shaped like a long chain of a hundred thousand nodes, the recursion goes a hundred thousand frames deep and the program dies with a stack overflow. The iterative version with an explicit array handles the same graph without complaint. On competitive programming sites this is a common and confusing source of runtime errors, since the logic is perfectly correct."
         }
       ]
     },
@@ -548,9 +416,9 @@
     },
     {
       "id": "h-cost",
+      "text": "What it costs",
       "type": "heading",
-      "level": 2,
-      "text": "What it costs"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -603,9 +471,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "Common Mistakes",
       "type": "heading",
-      "level": 2,
-      "text": "The mistake almost everyone makes once"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -621,7 +489,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Marking nodes as seen when you take them out, instead of when you put them in.",
+          "text": "Marking nodes as seen when you take them out, instead of when you put them in",
           "marks": [
             {
               "kind": "bold"
@@ -629,18 +497,26 @@
           ]
         },
         {
-          "text": " If you only mark on removal, a node with three unprocessed neighbors can be added to the queue three separate times before it is ever popped. The result is still correct, but the queue swells and the algorithm slows badly on dense graphs. Mark it the moment you push it."
+          "text": ":"
+        },
+        {
+          "text": " ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "If you only mark on removal, a node that is adjacent to three already-processed nodes can be added to the queue three separate times before it is dequeued."
         }
       ]
     },
     {
-      "id": "p-mistake-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Using an array and calling shift() on it in a hot loop is a subtle trap. In JavaScript, shift() on a large array can re-index the whole thing, which turns a linear algorithm into a quadratic one, so use a real queue, or keep an index pointer and walk it forward instead of removing from the front."
-        }
-      ]
+      "id": "code_4f395ffe",
+      "code": "from collections import deque\n\ndef bfs_bad(graph, start):\n    queue = deque([start])\n    visited = set()\n    push_count = 0  # Tracks queue entries\n    \n    while queue:\n        current = queue.popleft()\n        \n        # BAD: Marking as visited ONLY when taking it out\n        if current in visited:\n            continue\n        visited.add(current)\n        \n        for neighbor in graph[current]:\n            if neighbor not in visited:\n                queue.append(neighbor)\n                push_count += 1\n                \n    return push_count\n",
+      "type": "code",
+      "language": "python"
     },
     {
       "id": "p-mistake-4",
@@ -672,15 +548,15 @@
           ]
         },
         {
-          "text": " If you build your adjacency list by hand, an edge between A and B has to appear in both lists. Half the confusing \"my BFS cannot reach that node\" bugs are actually a graph that was only half built."
+          "text": " If you build your adjacency list by hand, an edge between A and B has to appear in both lists."
         }
       ]
     },
     {
       "id": "h-code",
+      "text": "2 in 1",
       "type": "heading",
-      "level": 2,
-      "text": "One implementation, both algorithms"
+      "level": 2
     },
     {
       "id": "p-code",
@@ -693,30 +569,28 @@
     },
     {
       "id": "code-impl",
+      "code": "function traverse(graph, start, mode) {\n  const seen = new Set([start]);     // mark on the way IN, not on the way out\n  const pending = [start];\n  const order = [];\n\n  while (pending.length > 0) {\n    const node = mode === \"bfs\" ? pending.shift() : pending.pop(); // only change\n    order.push(node);\n\n    for (const next of graph.neighbors(node)) {\n      if (seen.has(next)) continue;\n      seen.add(next);\n      pending.push(next);\n    }\n  }\n\n  return order;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function traverse(graph, start, mode) {\n  const seen = new Set([start]);     // mark on the way IN, not on the way out\n  const pending = [start];\n  const order = [];\n\n  while (pending.length > 0) {\n    const node = mode === \"bfs\" ? pending.shift() : pending.pop();\n    order.push(node);\n\n    for (const next of graph.neighbors(node)) {\n      if (seen.has(next)) continue;\n      seen.add(next);\n      pending.push(next);\n    }\n  }\n\n  return order;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "from collections import deque\n\ndef traverse(graph, start, mode):\n    seen = {start}                    # mark on the way IN, not on the way out\n    pending = deque([start])\n    order = []\n\n    while pending:\n        node = pending.popleft() if mode == \"bfs\" else pending.pop()\n        order.append(node)\n\n        for nxt in graph.neighbors(node):\n            if nxt in seen:\n                continue\n            seen.add(nxt)\n            pending.append(nxt)\n\n    return order"
+          "code": "from collections import deque\n\ndef traverse(graph, start, mode):\n    seen = {start}                    # mark on the way IN, not on the way out\n    pending = deque([start])\n    order = []\n\n    while pending:\n        # one line change\n        node = pending.popleft() if mode == \"bfs\" else pending.pop()\n        order.append(node)\n\n        for nxt in graph.neighbors(node):\n            if nxt in seen:\n                continue\n            seen.add(nxt)\n            pending.append(nxt)\n\n    return order",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "vector<int> traverse(const vector<vector<int>>& adj, int start, bool bfs) {\n    vector<bool> seen(adj.size(), false);\n    seen[start] = true;               // mark on the way IN, not on the way out\n    deque<int> pending{start};\n    vector<int> order;\n\n    while (!pending.empty()) {\n        int node = bfs ? pending.front() : pending.back();\n        bfs ? pending.pop_front() : pending.pop_back();\n        order.push_back(node);\n\n        for (int next : adj[node]) {\n            if (seen[next]) continue;\n            seen[next] = true;\n            pending.push_back(next);\n        }\n    }\n    return order;\n}"
+          "code": "vector<int> traverse(const vector<vector<int>>& adj, int start, bool bfs) {\n    vector<bool> seen(adj.size(), false);\n    seen[start] = true;               // mark on the way IN, not on the way out\n    deque<int> pending{start};\n    vector<int> order;\n\n    while (!pending.empty()) {\n        // small difference\n        int node = bfs ? pending.front() : pending.back();\n        bfs ? pending.pop_front() : pending.pop_back();\n        order.push_back(node);\n\n        for (int next : adj[node]) {\n            if (seen[next]) continue;\n            seen[next] = true;\n            pending.push_back(next);\n        }\n    }\n    return order;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -805,16 +679,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "BFS vs DFS Explained: Graph Traversal With Code",
-  "seoDescription": "BFS and DFS explained from first principles: why a traversal needs a frontier and a seen set, the single line that separates the two, full side-by-side traces, why BFS finds shortest paths, and the common marking bug.",
-  "keywords": [
-    "bfs vs dfs",
-    "breadth first search",
-    "depth first search",
-    "graph traversal",
-    "shortest path unweighted"
   ]
 }

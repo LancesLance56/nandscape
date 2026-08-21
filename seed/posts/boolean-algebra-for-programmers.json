@@ -14,9 +14,9 @@
   "body": [
     {
       "id": "h-intro",
+      "text": "Why Every Programmer Should Learn Boolean Algebra",
       "type": "heading",
       "level": 2,
-      "text": "Why Every Programmer Should Learn Boolean Algebra",
       "className": "text-copper-dark"
     },
     {
@@ -39,44 +39,44 @@
     },
     {
       "id": "code-hook-a",
+      "code": "if (expensiveCheck() && isLoggedIn())",
       "type": "code",
-      "language": "javascript",
-      "code": "if (expensiveCheck() && isLoggedIn())"
+      "language": "javascript"
     },
     {
       "id": "code-hook-b",
+      "code": "if (isLoggedIn() && expensiveCheck())",
       "type": "code",
-      "language": "javascript",
-      "code": "if (isLoggedIn() && expensiveCheck())"
+      "language": "javascript"
     },
     {
       "id": "hook-quiz",
-      "type": "interactive",
-      "widget": "boolean-choice-quiz",
       "data": {
         "prompt": "Which one is faster?",
         "options": [
           {
             "label": "Option A",
-            "sublabel": "is faster",
-            "correct": false
+            "correct": false,
+            "sublabel": "is faster"
           },
           {
             "label": "Option B",
-            "sublabel": "is faster",
-            "correct": true
+            "correct": true,
+            "sublabel": "is faster"
           }
         ],
-        "verdictGood": "Option B wins.",
         "explanation": "Both conditions do identical work in the worst case. But && short-circuits: the moment the left side is false, the right side never runs. In Option A, the expensive function always executes first, whether or not the user is even logged in. In Option B, it only runs after you already know the user is logged in. Same logic, same result, different amount of work done to get there.",
-        "opsOnAnswer": 1
-      }
+        "opsOnAnswer": 1,
+        "verdictGood": "Option B wins."
+      },
+      "type": "interactive",
+      "widget": "boolean-choice-quiz"
     },
     {
       "id": "h-not-just-hardware",
+      "text": "Boolean Algebra Isn't Just for Hardware",
       "type": "heading",
-      "level": 2,
-      "text": "Boolean Algebra Isn't Just for Hardware"
+      "level": 2
     },
     {
       "id": "p-nh-1",
@@ -140,9 +140,9 @@
     },
     {
       "id": "h-p1",
+      "text": "Eliminate Unnecessary Work",
       "type": "heading",
-      "level": 2,
-      "text": "Eliminate Unnecessary Work"
+      "level": 2
     },
     {
       "id": "p-p1-1",
@@ -177,29 +177,29 @@
     },
     {
       "id": "code-p1-before",
+      "code": "if (expensiveRegex(text) && isValidUser)",
       "type": "code",
-      "language": "javascript",
-      "code": "if (expensiveRegex(text) && isValidUser)"
+      "language": "javascript"
     },
     {
       "id": "p1-reveal",
-      "type": "interactive",
-      "widget": "boolean-reveal",
       "data": {
         "prompt": "Which condition should run first?",
-        "buttonLabel": "Reveal the fix",
-        "beforeLabel": "Before",
-        "afterLabel": "After",
         "afterCode": "if (isValidUser && expensiveRegex(text))",
+        "afterLabel": "After",
+        "beforeLabel": "Before",
+        "buttonLabel": "Reveal the fix",
         "explanation": "isValidUser is almost certainly a boolean already sitting in memory. expensiveRegex has to walk the entire string. Put the cheap check first and the regex only runs for users who were going to pass anyway. Nothing about the result changes. Only the amount of work spent reaching it does.",
         "opsOnReveal": 1
-      }
+      },
+      "type": "interactive",
+      "widget": "boolean-reveal"
     },
     {
       "id": "h-p1-try",
+      "text": "Try it: order these from cheapest to most expensive",
       "type": "heading",
-      "level": 3,
-      "text": "Try it: order these from cheapest to most expensive"
+      "level": 3
     },
     {
       "id": "p-p1-try",
@@ -212,45 +212,45 @@
     },
     {
       "id": "reorder-exercise",
-      "type": "interactive",
-      "widget": "boolean-reorder",
       "data": {
         "items": [
           {
             "id": "api",
-            "name": "API call",
-            "cost": 200
+            "cost": 200,
+            "name": "API call"
           },
           {
             "id": "db",
-            "name": "Database query",
-            "cost": 80
+            "cost": 80,
+            "name": "Database query"
           },
           {
             "id": "flag",
-            "name": "Boolean flag",
-            "cost": 1
+            "cost": 1,
+            "name": "Boolean flag"
           },
           {
             "id": "regex",
-            "name": "Regex",
-            "cost": 15
+            "cost": 15,
+            "name": "Regex"
           }
         ],
+        "opsOnSolve": 2,
         "correctOrder": [
           "flag",
           "regex",
           "db",
           "api"
-        ],
-        "opsOnSolve": 2
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "boolean-reorder"
     },
     {
       "id": "h-p2",
+      "text": "Simplify Your Conditions",
       "type": "heading",
-      "level": 2,
-      "text": "Simplify Your Conditions"
+      "level": 2
     },
     {
       "id": "p-p2-1",
@@ -263,14 +263,12 @@
     },
     {
       "id": "code-p2-before",
+      "code": "if (\n    (isAdmin && canEdit) ||\n    (isAdmin && canDelete)\n)",
       "type": "code",
-      "language": "javascript",
-      "code": "if (\n    (isAdmin && canEdit) ||\n    (isAdmin && canDelete)\n)"
+      "language": "javascript"
     },
     {
       "id": "p2-quiz",
-      "type": "interactive",
-      "widget": "boolean-choice-quiz",
       "data": {
         "prompt": "Which of these is an equivalent, simpler rewrite?",
         "options": [
@@ -291,16 +289,18 @@
             "correct": false
           }
         ],
-        "verdictGood": "isAdmin && (canEdit || canDelete)",
         "explanation": "This is the same distributive identity from the very first Karnaugh map tutorial: AB + AC = A(B + C). Here A is isAdmin, and it no longer gets checked twice. Beyond the runtime savings, which are real but small for a single boolean, the bigger win is maintenance: there is now exactly one place that says \"you have to be an admin,\" instead of two places that could quietly drift apart.",
-        "opsOnAnswer": 1
-      }
+        "opsOnAnswer": 1,
+        "verdictGood": "isAdmin && (canEdit || canDelete)"
+      },
+      "type": "interactive",
+      "widget": "boolean-choice-quiz"
     },
     {
       "id": "h-p3",
+      "text": "Order Matters at Scale",
       "type": "heading",
-      "level": 2,
-      "text": "Order Matters at Scale"
+      "level": 2
     },
     {
       "id": "p-p3-1",
@@ -313,37 +313,37 @@
     },
     {
       "id": "code-p3-bad",
+      "code": "if (\n    expensivePermissionCheck() &&\n    isLoggedIn()\n)",
       "type": "code",
-      "language": "javascript",
-      "code": "if (\n    expensivePermissionCheck() &&\n    isLoggedIn()\n)"
+      "language": "javascript"
     },
     {
       "id": "code-p3-good",
+      "code": "if (\n    isLoggedIn() &&\n    expensivePermissionCheck()\n)",
       "type": "code",
-      "language": "javascript",
-      "code": "if (\n    isLoggedIn() &&\n    expensivePermissionCheck()\n)"
+      "language": "javascript"
     },
     {
       "id": "p3-slider",
-      "type": "interactive",
-      "widget": "boolean-slider",
       "data": {
         "totalRequests": 100000,
         "initialPercent": 10,
         "explanationTemplate": "In the bad order, expensivePermissionCheck() runs first, unconditionally, on every single request. In the good order, it only runs after isLoggedIn() already returned true. At {pct}% logged in, that's {saved} calls to an expensive function that never needed to happen."
-      }
+      },
+      "type": "interactive",
+      "widget": "boolean-slider"
     },
     {
       "id": "h-consequences",
+      "text": "Real Consequences",
       "type": "heading",
-      "level": 2,
-      "text": "Real Consequences"
+      "level": 2
     },
     {
       "id": "h-consequences-db",
+      "text": "Database queries",
       "type": "heading",
-      "level": 3,
-      "text": "Database queries"
+      "level": 3
     },
     {
       "id": "p-consequences-db",
@@ -364,9 +364,9 @@
     },
     {
       "id": "h-consequences-search",
+      "text": "Search",
       "type": "heading",
-      "level": 3,
-      "text": "Search"
+      "level": 3
     },
     {
       "id": "p-consequences-search",
@@ -379,9 +379,9 @@
     },
     {
       "id": "h-consequences-games",
+      "text": "Game development",
       "type": "heading",
-      "level": 3,
-      "text": "Game development"
+      "level": 3
     },
     {
       "id": "p-consequences-games",
@@ -394,28 +394,28 @@
     },
     {
       "id": "h-challenge",
+      "text": "Practice Challenge",
       "type": "heading",
-      "level": 2,
-      "text": "Practice Challenge"
+      "level": 2
     },
     {
       "id": "code-challenge",
+      "code": "if (\n    expensiveValidation(data) &&\n    userExists &&\n    hasPermission &&\n    hasSubscription\n)",
       "type": "code",
-      "language": "javascript",
-      "code": "if (\n    expensiveValidation(data) &&\n    userExists &&\n    hasPermission &&\n    hasSubscription\n)"
+      "language": "javascript"
     },
     {
       "id": "challenge-reveal",
-      "type": "interactive",
-      "widget": "boolean-reveal",
       "data": {
         "prompt": "Reorder it in your head, then check your answer.",
-        "buttonLabel": "Show optimized version",
-        "afterLabel": "After",
         "afterCode": "if (\n    userExists &&\n    hasPermission &&\n    hasSubscription &&\n    expensiveValidation(data)\n)",
+        "afterLabel": "After",
+        "buttonLabel": "Show optimized version",
         "explanation": "userExists, hasPermission, and hasSubscription read like plain booleans, values already sitting in memory or a cheap lookup, not function calls that do real work. expensiveValidation(data) is named like the one thing here that actually costs something. Move it last, and it only runs for requests that already cleared every cheap gate.",
         "opsOnReveal": 1
-      }
+      },
+      "type": "interactive",
+      "widget": "boolean-reveal"
     },
     {
       "id": "divider-1",
@@ -423,19 +423,14 @@
     },
     {
       "id": "h-recap-quiz",
+      "text": "Quick Recap Quiz",
       "type": "heading",
-      "level": 2,
-      "text": "Quick Recap Quiz"
+      "level": 2
     },
     {
       "id": "recap-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "title": "Boolean Algebra for Programmers: Recap",
-        "counterAmountPerCorrect": 1,
-        "passMessage": "Solid, you've internalized the short-circuit habit.",
-        "failMessage": "Worth skimming the three principles above again.",
         "questions": [
           {
             "prompt": "Why does putting isLoggedIn() before expensivePermissionCheck() help?",
@@ -491,8 +486,13 @@
             ],
             "explanation": "Query planners are smart, but not always smart enough to reorder around an expensive function call, so putting the indexed/cheap condition first still matters in practice."
           }
-        ]
-      }
+        ],
+        "failMessage": "Worth skimming the three principles above again.",
+        "passMessage": "Solid, you've internalized the short-circuit habit.",
+        "counterAmountPerCorrect": 1
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "divider-2",
@@ -500,9 +500,9 @@
     },
     {
       "id": "h-takeaways",
+      "text": "Key Takeaways",
       "type": "heading",
-      "level": 2,
-      "text": "Key Takeaways"
+      "level": 2
     },
     {
       "id": "p-takeaway-1",
@@ -542,16 +542,16 @@
     },
     {
       "id": "b1",
+      "href": "/tutorials/",
       "type": "button",
       "label": "Learn more about logic gates",
-      "href": "/tutorials/",
       "style": "primary"
     },
     {
       "id": "b2",
+      "href": "/puzzles",
       "type": "button",
       "label": "Try out some puzzles",
-      "href": "/puzzles",
       "style": "secondary"
     }
   ],

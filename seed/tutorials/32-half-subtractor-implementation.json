@@ -2,14 +2,16 @@
   "slug": "half-subtractor-implementation",
   "title": "Half Subtractor: Implementation and Truth Table",
   "excerpt": "Binary subtraction for two bits, and the one inverter that separates it from a half adder.",
+  "authorName": "Nandscape",
   "status": "published",
-  "sectionSlug": "gate-implementations",
-  "position": 130,
+  "publishedAt": "2026-08-15T14:28:40.366Z",
   "tags": [
     "digital-logic",
     "logic-gates",
     "implementation"
   ],
+  "sectionSlug": "gate-implementations",
+  "position": 130,
   "seoTitle": "Half Subtractor: Circuit, Truth Table and Borrow Bit",
   "seoDescription": "How a half subtractor works: the truth table, why BORROW needs an inverter, and how it differs from a half adder by one gate.",
   "keywords": [
@@ -18,8 +20,6 @@
     "borrow bit",
     "binary subtraction"
   ],
-  "authorName": "Nandscape",
-  "publishedAt": "2026-08-15T14:28:40.366Z",
   "body": [
     {
       "id": "p-intro",
@@ -32,19 +32,12 @@
     },
     {
       "id": "h-truth",
+      "text": "Truth table",
       "type": "heading",
-      "level": 2,
-      "text": "Truth table"
+      "level": 2
     },
     {
       "id": "t-truth",
-      "type": "table",
-      "headers": [
-        "A",
-        "B",
-        "DIFF",
-        "BORROW"
-      ],
       "rows": [
         [
           "0",
@@ -70,19 +63,26 @@
           "0",
           "0"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "A",
+        "B",
+        "DIFF",
+        "BORROW"
       ]
     },
     {
       "id": "h-gates",
+      "text": "Which gates produce each output",
       "type": "heading",
-      "level": 2,
-      "text": "Which gates produce each output"
+      "level": 2
     },
     {
       "id": "h-diff",
+      "text": "DIFFERENCE is XOR",
       "type": "heading",
-      "level": 3,
-      "text": "DIFFERENCE is XOR"
+      "level": 3
     },
     {
       "id": "p-diff",
@@ -95,9 +95,9 @@
     },
     {
       "id": "h-borrow",
+      "text": "BORROW needs an inverter",
       "type": "heading",
-      "level": 3,
-      "text": "BORROW needs an inverter"
+      "level": 3
     },
     {
       "id": "p-borrow",
@@ -110,18 +110,12 @@
     },
     {
       "id": "h-compare",
+      "text": "Half adder vs half subtractor",
       "type": "heading",
-      "level": 2,
-      "text": "Half adder vs half subtractor"
+      "level": 2
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "",
-        "Half adder",
-        "Half subtractor"
-      ],
       "rows": [
         [
           "Main output",
@@ -138,13 +132,19 @@
           "2",
           "3"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Half adder",
+        "Half subtractor"
       ]
     },
     {
       "id": "h-build",
+      "text": "Build it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Build it yourself"
+      "level": 2
     },
     {
       "id": "p-build",
@@ -157,18 +157,18 @@
     },
     {
       "id": "w-companion",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
-        "projectSlug": "half-subtractor",
-        "height": 260
-      }
+        "height": 260,
+        "projectSlug": "half-subtractor"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "b-build",
+      "href": "/puzzles/half-subtractor",
       "type": "button",
       "label": "Solve the half subtractor puzzle",
-      "href": "/puzzles/half-subtractor",
       "style": "primary"
     },
     {

@@ -3,15 +3,71 @@
   "title": "1-Bit Equality Checker",
   "description": "XNOR is banned since it would make this trivial. Output HIGH when A and B match.",
   "difficulty": "easy",
-  "tags": ["combinational", "comparators"],
+  "tags": [
+    "combinational",
+    "comparators"
+  ],
   "gateBudget": 3,
-  "disallowedGateTypes": [5],
-  "inputs": [{ "name": "A" }, { "name": "B" }],
-  "outputs": [{ "name": "EQ" }],
+  "disallowedGateTypes": [
+    5
+  ],
+  "inputs": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "EQ"
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A": 0, "B": 0 }, "outputs": { "EQ": 1 } } },
-    { "row": { "inputs": { "A": 0, "B": 1 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 0 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 1 }, "outputs": { "EQ": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0
+        },
+        "outputs": {
+          "EQ": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1
+        },
+        "outputs": {
+          "EQ": 1
+        }
+      }
+    }
   ]
 }

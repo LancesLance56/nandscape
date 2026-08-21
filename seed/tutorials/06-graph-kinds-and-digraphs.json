@@ -12,39 +12,89 @@
   ],
   "sectionSlug": "graph-theory-basics",
   "position": 20,
+  "seoTitle": "Types of Graphs: Directed, Weighted, DAG, and Tree",
+  "seoDescription": "Directed and undirected graphs, weighted edges, trees and DAGs explained: why direction splits reachability in two, why a tree on n nodes has n-1 edges, and why cycles make ordering impossible.",
+  "keywords": [
+    "types of graphs",
+    "directed graph",
+    "digraph",
+    "weighted graph",
+    "dag",
+    "graph vs tree"
+  ],
   "body": [
     {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
         {
-          "text": "The last page treated every edge as the same kind of thing. Real problems are fussier. Sometimes a connection runs one way only, sometimes it carries a cost, and sometimes the graph has a shape special enough to deserve its own name and its own faster algorithms."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "This page is about those distinctions. Each one changes which algorithms are available to you, so it is worth being able to classify a graph before you start writing code against it."
+          "text": "Previously we discussed a simple case where a graph has a collection of nodes in edges all of the same kind. In many scenarios, you will need to make use of a slightly more complicated representation where some nodes and edges are different from one another. For example, representing instagram following as a graph would require something called a directed graph, where each edge points in a direction, since not everybody follows the people that follow them. We will discuss that in this chapter."
         }
       ]
     },
     {
       "id": "h-directed",
+      "text": "Direction",
       "type": "heading",
-      "level": 2,
-      "text": "Direction"
+      "level": 2
     },
     {
       "id": "p-directed",
       "type": "paragraph",
       "content": [
         {
-          "text": "In an undirected graph an edge between A and B means the two are connected, with no orientation attached, and friendship works like this: if you are my friend, then I am yours."
+          "text": "In an undirected graph, an edge between A and B means the two are connected, with no orientation attached, and friendship works like this: if you are my friend, then I am yours."
         }
       ]
+    },
+    {
+      "id": "widget_1a18351f",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "B"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 82.81497192382812,
+              "y": 208.17587280273438,
+              "id": "A"
+            },
+            {
+              "x": 192.17926025390625,
+              "y": 109.04450988769531,
+              "id": "B"
+            },
+            {
+              "x": 346.9521179199219,
+              "y": 109.04450988769531,
+              "id": "C"
+            },
+            {
+              "x": 82.1754150390625,
+              "y": 37.41409683227539,
+              "id": "D"
+            }
+          ]
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
     },
     {
       "id": "p-directed-2",
@@ -67,57 +117,67 @@
       ]
     },
     {
-      "id": "p-directed-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Direction is not a cosmetic detail. It breaks a property you have been quietly relying on. In an undirected graph, reachability is symmetric: if you can get to me, I can get to you, so \"who is in my group\" has a single clean answer. Take that away and the question splits in two, "
-        },
-        {
-          "text": "who can I reach",
-          "marks": [
+      "id": "interactive_f2ac7388",
+      "data": {
+        "graph": {
+          "edges": [
             {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " and "
-        },
-        {
-          "text": "who can reach me",
-          "marks": [
+              "to": "C",
+              "from": "B"
+            },
             {
-              "kind": "bold"
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "B"
+            },
+            {
+              "to": "B",
+              "from": "D"
             }
-          ]
-        },
-        {
-          "text": ", and the answers can be completely different sets."
+          ],
+          "nodes": [
+            {
+              "x": 82.81497192382812,
+              "y": 208.17587280273438,
+              "id": "A"
+            },
+            {
+              "x": 192.17926025390625,
+              "y": 109.04450988769531,
+              "id": "B"
+            },
+            {
+              "x": 346.9521179199219,
+              "y": 109.04450988769531,
+              "id": "C"
+            },
+            {
+              "x": 82.1754150390625,
+              "y": 37.41409683227539,
+              "id": "D"
+            }
+          ],
+          "directed": true
         }
-      ]
-    },
-    {
-      "id": "p-directed-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That split is why directed graphs need their own machinery. Finding groups of mutually reachable nodes stops being one traversal and becomes Tarjan's algorithm, which is a later page in this section and would make no sense at all on undirected input."
-        }
-      ]
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
     },
     {
       "id": "h-weighted",
+      "text": "Weight",
       "type": "heading",
-      "level": 2,
-      "text": "Weight"
+      "level": 2
     },
     {
       "id": "p-weighted",
       "type": "paragraph",
       "content": [
         {
-          "text": "A weighted graph attaches a number to each edge, usually a cost such as kilometers, milliseconds, money, or risk, though occasionally it is a capacity or a probability instead."
+          "text": "A weighted graph attaches a number to each edge, usually a cost such as kilometers, milliseconds, money, or risk, though occasionally it is a capacity or a probability instead. Weight's can also be negative, in a real application this could mean a certain path that gives you a benefit like a profit or a gain rather than cost."
         }
       ]
     },
@@ -126,31 +186,42 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Adding weights changes what \"shortest\" means, and that single change is enough to retire an algorithm. Breadth-first search finds the route with the fewest edges, which stops being the cheapest route the moment the edges differ in cost. Three short hops can easily beat one long one. That is exactly the gap Dijkstra's algorithm exists to close."
+          "text": "Adding weights changes what \"shortest\" means, and that single change makes calculation a lot more complicated. Breadth-first search finds the route with the fewest edges, which stops being the cheapest route the moment the edges differ in cost. Below is an example of what a weighted graph might look like, alongside an algorithm known as Dijkstra's algorithm, which we will tackle in a future chapter."
         }
       ]
     },
     {
-      "id": "p-weighted-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Negative weights are a further step again, and they break Dijkstra rather than merely inconveniencing it. If a weight can be negative then adding more edges to a route can make it cheaper, and every argument that let Dijkstra commit to an answer early collapses. Bellman-Ford handles that case and pays for it in time."
-        }
-      ]
+      "id": "widget_c622859d",
+      "data": {
+        "start": "A"
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
     },
     {
       "id": "h-trees",
+      "text": "Trees",
       "type": "heading",
-      "level": 2,
-      "text": "Trees, and why they are worth naming"
+      "level": 2
     },
     {
       "id": "p-trees",
       "type": "paragraph",
       "content": [
         {
-          "text": "A "
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " A "
         },
         {
           "text": "tree",
@@ -161,16 +232,99 @@
           ]
         },
         {
-          "text": " is a graph that is connected and has no cycles. That is the whole definition, and it is worth pausing on how much follows from two short conditions."
+          "text": " is a graph that is connected and has no cycles."
         }
       ]
+    },
+    {
+      "id": "widget_42390cbd",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "home",
+              "from": "/"
+            },
+            {
+              "to": "bob",
+              "from": "home"
+            },
+            {
+              "to": "etc",
+              "from": "/"
+            },
+            {
+              "to": "dev",
+              "from": "/"
+            },
+            {
+              "to": "alice",
+              "from": "home"
+            },
+            {
+              "to": "null",
+              "from": "dev"
+            },
+            {
+              "to": "tty",
+              "from": "dev"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 198.5748291015625,
+              "y": 30.958566665649414,
+              "id": "/"
+            },
+            {
+              "x": 87.29187774658203,
+              "y": 74.44845581054688,
+              "id": "dev"
+            },
+            {
+              "x": 336.7192077636719,
+              "y": 78.92536163330078,
+              "id": "etc"
+            },
+            {
+              "x": 194.73748779296875,
+              "y": 137.76461791992188,
+              "id": "home"
+            },
+            {
+              "x": 168.51564025878906,
+              "y": 211.31370544433594,
+              "id": "bob"
+            },
+            {
+              "x": 225.4362335205078,
+              "y": 213.87193298339844,
+              "id": "alice"
+            },
+            {
+              "x": 38.685523986816406,
+              "y": 181.2545166015625,
+              "id": "null"
+            },
+            {
+              "x": 91.12921905517578,
+              "y": 187.01052856445312,
+              "id": "tty"
+            }
+          ],
+          "directed": true
+        },
+        "title": "linux filesystem"
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
     },
     {
       "id": "p-trees-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The first consequence is that there is exactly one path between any two nodes. If there were two different paths you could go out along one and back along the other, which is a cycle, and trees do not have those. If there were none the graph would not be connected. Exactly one, always."
+          "text": "This is important for a few reasons. First of all, it means that at any node we can pick a branch and we will end up at completely different places compared to if we pick another branch. In other words, there's only one unique path to get to any node, which can make some calculations simpler."
         }
       ]
     },
@@ -179,7 +333,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The second is that a tree on "
+          "text": "The second reason is that a tree on "
         },
         {
           "text": "n",
@@ -201,16 +355,18 @@
           ]
         },
         {
-          "text": " edges. Start with one node and no edges. Every additional node needs exactly one edge to attach it to what is already there: fewer and it is disconnected, more and you have closed a loop."
-        }
-      ]
-    },
-    {
-      "id": "p-trees-4",
-      "type": "paragraph",
-      "content": [
+          "text": " edges. This is because starting with one node and no edges, every additional node needs exactly one edge to attach it to what is already there. This also works vice versa, so a tree with "
+        },
         {
-          "text": "That gives a genuinely useful test. Connected, acyclic, and "
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " nodes and "
         },
         {
           "text": "n - 1",
@@ -221,22 +377,27 @@
           ]
         },
         {
-          "text": " edges are three properties, and any two of them force the third."
+          "text": " edges is "
+        },
+        {
+          "text": "always",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " a tree (if all vertices are connected)."
         }
       ]
-    },
-    {
-      "id": "code-tree-test",
-      "type": "code",
-      "language": "text",
-      "code": "Connected?   Acyclic?   Edges = n-1?     Verdict\n   yes          yes           yes          a tree\n   yes          yes           no           impossible\n   yes          no            yes          impossible\n   no           yes           yes          impossible\n\nAny two of the three force the third."
     },
     {
       "id": "p-trees-5",
       "type": "paragraph",
       "content": [
         {
-          "text": "So checking whether something is a tree is easy: count the edges, then run one traversal to confirm it is connected. If both hold you are done, with no cycle detection required."
+          "text": "So checking whether something is a tree is easy: count the edges, then run one traversal to confirm it is connected. "
         }
       ]
     },
@@ -245,7 +406,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Trees turn up so often that people forget they are graphs at all. Your file system is one. The DOM is another. A binary search tree is obviously one. Anything you have written a recursive function over was probably a tree, and every graph algorithm in this section works on trees without modification, usually faster, because there are no cycles to guard against."
+          "text": "Trees turn up so often that people forget they are graphs at all. Your file system is one example of a tree, also the DOM is another. A binary search tree is obviously one. Anything you have written a recursive function over was probably a tree, and every graph algorithm in this section works on trees without modification, usually faster, because there are no cycles to guard against."
         }
       ]
     },
@@ -271,27 +432,28 @@
     },
     {
       "id": "h-dag",
+      "text": "Directed acyclic graphs",
       "type": "heading",
-      "level": 2,
-      "text": "Directed acyclic graphs"
+      "level": 2
     },
     {
       "id": "p-dag",
       "type": "paragraph",
       "content": [
         {
-          "text": "Combine the two ideas: a directed graph with no directed cycles, which everyone calls a "
-        },
-        {
-          "text": "DAG",
+          "text": "|",
           "marks": [
             {
               "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
             }
           ]
         },
         {
-          "text": "."
+          "text": " A directed acyclic graph (DAG) is a directed graph with no directed cycles"
         }
       ]
     },
@@ -300,51 +462,114 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "DAGs are what you get whenever the edges mean must come before: build dependencies, course prerequisites, spreadsheet formulas, task schedules, and the order you put clothes on."
+          "text": "DAGs are what you get whenever the edges mean \"must come before\": build dependencies, course prerequisites, spreadsheet formulas, task schedules, and the order you put clothes on."
         }
       ]
     },
     {
-      "id": "code-dag",
-      "type": "code",
-      "language": "text",
-      "code": "shirt -> tie -> jacket          A valid order:\nshirt -> belt                     socks, shirt, tie, trousers,\ntrousers -> belt                  belt, shoes, jacket\ntrousers -> shoes\nsocks -> shoes                  Another valid order:\n                                  shirt, tie, socks, trousers,\nNo cycles, so an order exists.    shoes, belt, jacket"
+      "id": "widget_7768473b",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "B",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "E",
+              "from": "C"
+            },
+            {
+              "to": "F",
+              "from": "E"
+            },
+            {
+              "to": "D",
+              "from": "B"
+            },
+            {
+              "to": "F",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 38.685523986816406,
+              "y": 121.43592834472656,
+              "id": "A"
+            },
+            {
+              "x": 135.2586669921875,
+              "y": 122.71504211425781,
+              "id": "B"
+            },
+            {
+              "x": 169.1551971435547,
+              "y": 191.14767456054688,
+              "id": "C"
+            },
+            {
+              "x": 231.83180236816406,
+              "y": 120.15681457519531,
+              "id": "D"
+            },
+            {
+              "x": 280.43817138671875,
+              "y": 191.14767456054688,
+              "id": "E"
+            },
+            {
+              "x": 343.1147766113281,
+              "y": 120.79637145996094,
+              "id": "F"
+            }
+          ],
+          "directed": true
+        },
+        "title": "git version control"
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
     },
     {
       "id": "p-dag-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "The absence of cycles is precisely what makes those problems solvable. A cycle would mean A must precede B, which must precede C, which must precede A, and no ordering can satisfy that. When a build system tells you it found a circular dependency, it is telling you your graph is not a DAG, so your question has no answer. Finding a valid order is topological sorting, which is the next page."
+          "text": "DAGs are so useful because since there are no cycles, its much easier to work with using algorithms, since you're never gonna end up in an endless loop. In fact, you'll discover when we start coding that its common to \"compress\" a directed graph to a directed acyclic graph in some problems. Finding a valid order is topological sorting, which is the next page."
         }
       ]
     },
     {
       "id": "h-play",
+      "text": "See the differences",
       "type": "heading",
-      "level": 2,
-      "text": "See the differences"
+      "level": 2
     },
     {
       "id": "p-play",
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch between the tabs. Same nodes each time, different rules about what the edges mean, and completely different questions worth asking."
+          "text": "Try visualizing each different graph using the widget."
         }
       ]
     },
     {
       "id": "w-explorer",
+      "data": {},
       "type": "interactive",
-      "widget": "graph-explorer",
-      "data": {}
+      "widget": "graph-explorer"
     },
     {
       "id": "h-oddities",
+      "text": "Note",
       "type": "heading",
-      "level": 2,
-      "text": "Two oddities worth recognizing"
+      "level": 2
     },
     {
       "id": "p-oddities",
@@ -388,14 +613,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -467,17 +690,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Types of Graphs: Directed, Weighted, DAG, and Tree",
-  "seoDescription": "Directed and undirected graphs, weighted edges, trees and DAGs explained: why direction splits reachability in two, why a tree on n nodes has n-1 edges, and why cycles make ordering impossible.",
-  "keywords": [
-    "types of graphs",
-    "directed graph",
-    "digraph",
-    "weighted graph",
-    "dag",
-    "graph vs tree"
   ]
 }

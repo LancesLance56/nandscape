@@ -11,6 +11,14 @@
   ],
   "sectionSlug": "karnaugh-maps",
   "position": 40,
+  "seoTitle": "4-Variable Karnaugh Map: Groups and the Four Corners",
+  "seoDescription": "How 4-variable Karnaugh maps work, why group sizes must be powers of two, and why the four corner cells form one legal group.",
+  "keywords": [
+    "4 variable karnaugh map",
+    "four corners karnaugh map",
+    "k-map group size",
+    "boolean simplification"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -23,9 +31,9 @@
     },
     {
       "id": "h-sizes",
+      "text": "Group Sizes Get Bigger",
       "type": "heading",
-      "level": 2,
-      "text": "Group Sizes Get Bigger"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -38,15 +46,15 @@
     },
     {
       "id": "code-sizes",
+      "code": "Group of 1  -> 0 variables cancel -> full 4-literal term\nGroup of 2  -> 1 variable cancels  -> 3-literal term\nGroup of 4  -> 2 variables cancel  -> 2-literal term\nGroup of 8  -> 3 variables cancel  -> 1-literal term\nGroup of 16 -> 4 variables cancel  -> constant 1",
       "type": "code",
-      "language": "text",
-      "code": "Group of 1  -> 0 variables cancel -> full 4-literal term\nGroup of 2  -> 1 variable cancels  -> 3-literal term\nGroup of 4  -> 2 variables cancel  -> 2-literal term\nGroup of 8  -> 3 variables cancel  -> 1-literal term\nGroup of 16 -> 4 variables cancel  -> constant 1"
+      "language": "text"
     },
     {
       "id": "h-corners",
+      "text": "The Four Corners",
       "type": "heading",
-      "level": 2,
-      "text": "The Four Corners"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -68,14 +76,23 @@
     },
     {
       "id": "kmap-1",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
         "variables": [
           "A",
           "B",
           "C",
           "D"
+        ],
+        "hintGroups": [
+          {
+            "term": "B'D'",
+            "cells": [
+              0,
+              2,
+              8,
+              10
+            ]
+          }
         ],
         "truthTable": [
           1,
@@ -94,19 +111,10 @@
           0,
           0,
           0
-        ],
-        "hintGroups": [
-          {
-            "cells": [
-              0,
-              2,
-              8,
-              10
-            ],
-            "term": "B'D'"
-          }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-4",
@@ -119,9 +127,9 @@
     },
     {
       "id": "code-corners",
+      "code": "Corners: {A'B'C'D', AB'C'D', A'B'CD', AB'CD'}\nAll four share B = 0 and D = 0. A and C take every combination between them.\n=> only B'D' survives -> F = B'D'",
       "type": "code",
-      "language": "text",
-      "code": "Corners: {A'B'C'D', AB'C'D', A'B'CD', AB'CD'}\nAll four share B = 0 and D = 0. A and C take every combination between them.\n=> only B'D' survives -> F = B'D'"
+      "language": "text"
     },
     {
       "id": "divider-1",
@@ -129,9 +137,9 @@
     },
     {
       "id": "h-beyond",
+      "text": "Beyond Four Variables",
       "type": "heading",
-      "level": 2,
-      "text": "Beyond Four Variables"
+      "level": 2
     },
     {
       "id": "p-5",
@@ -144,9 +152,9 @@
     },
     {
       "id": "h-ex2",
+      "text": "A second example: overlapping groups",
       "type": "heading",
-      "level": 2,
-      "text": "A second example: overlapping groups"
+      "level": 2
     },
     {
       "id": "p-ex2",
@@ -159,15 +167,8 @@
     },
     {
       "id": "w-ex2",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "solve",
         "cells": [
           0,
           0,
@@ -186,9 +187,16 @@
           0,
           1
         ],
-        "mode": "solve",
-        "title": "Overlapping groups"
-      }
+        "title": "Overlapping groups",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-ex2b",
@@ -210,18 +218,10 @@
     },
     {
       "id": "b1",
+      "href": "/tutorials/digital-logic/kmap-dont-cares",
       "type": "button",
       "label": "Continue to don't-care conditions",
-      "href": "/tutorials/digital-logic/kmap-dont-cares",
       "style": "primary"
     }
-  ],
-  "seoTitle": "4-Variable Karnaugh Map: Groups and the Four Corners",
-  "seoDescription": "How 4-variable Karnaugh maps work, why group sizes must be powers of two, and why the four corner cells form one legal group.",
-  "keywords": [
-    "4 variable karnaugh map",
-    "four corners karnaugh map",
-    "k-map group size",
-    "boolean simplification"
   ]
 }

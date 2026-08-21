@@ -54,23 +54,23 @@
     },
     {
       "id": "h-code",
+      "text": "Three lines",
       "type": "heading",
-      "level": 2,
-      "text": "Three lines"
+      "level": 2
     },
     {
       "id": "code-memo",
+      "code": "function fib(n, memo = new Map()) {\n  if (n <= 1) return n;\n  if (memo.has(n)) return memo.get(n);          // already answered\n  const value = fib(n - 1, memo) + fib(n - 2, memo);\n  memo.set(n, value);                           // write it down\n  return value;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function fib(n, memo = new Map()) {\n  if (n <= 1) return n;\n  if (memo.has(n)) return memo.get(n);          // already answered\n  const value = fib(n - 1, memo) + fib(n - 2, memo);\n  memo.set(n, value);                           // write it down\n  return value;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def fib(n, memo=None):\n    if memo is None:\n        memo = {}\n    if n <= 1:\n        return n\n    if n in memo:\n        return memo[n]                       # already answered\n    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)   # write it down\n    return memo[n]"
+          "code": "def fib(n, memo=None):\n    if memo is None:\n        memo = {}\n    if n <= 1:\n        return n\n    if n in memo:\n        return memo[n]                       # already answered\n    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)   # write it down\n    return memo[n]",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "long long fib(int n, std::unordered_map<int, long long>& memo) {\n    if (n <= 1) return n;\n    auto found = memo.find(n);\n    if (found != memo.end()) return found->second;   // already answered\n    long long value = fib(n - 1, memo) + fib(n - 2, memo);\n    memo[n] = value;                                 // write it down\n    return value;\n}"
+          "code": "long long fib(int n, std::unordered_map<int, long long>& memo) {\n    if (n <= 1) return n;\n    auto found = memo.find(n);\n    if (found != memo.end()) return found->second;   // already answered\n    long long value = fib(n - 1, memo) + fib(n - 2, memo);\n    memo[n] = value;                                 // write it down\n    return value;\n}",
+          "language": "cpp"
         }
       ]
     },
@@ -103,12 +103,12 @@
     },
     {
       "id": "w-fib-memo",
-      "type": "interactive",
-      "widget": "recursion-tree",
       "data": {
-        "problem": "fib",
-        "mode": "naive"
-      }
+        "mode": "naive",
+        "problem": "fib"
+      },
+      "type": "interactive",
+      "widget": "recursion-tree"
     },
     {
       "id": "p-widget-2",
@@ -121,9 +121,9 @@
     },
     {
       "id": "h-cost",
+      "text": "What it costs now",
       "type": "heading",
-      "level": 2,
-      "text": "What it costs now"
+      "level": 2
     },
     {
       "id": "p-cost-1",
@@ -145,12 +145,6 @@
     },
     {
       "id": "t-calls",
-      "type": "table",
-      "headers": [
-        "n",
-        "naive calls",
-        "memoized calls"
-      ],
       "rows": [
         [
           "6",
@@ -173,13 +167,19 @@
           "79"
         ]
       ],
-      "caption": "The right column is 2n minus 1. Every subproblem is entered once and looked up once."
+      "type": "table",
+      "caption": "The right column is 2n minus 1. Every subproblem is entered once and looked up once.",
+      "headers": [
+        "n",
+        "naive calls",
+        "memoized calls"
+      ]
     },
     {
       "id": "h-key",
+      "text": "Choosing the key",
       "type": "heading",
-      "level": 2,
-      "text": "Choosing the key"
+      "level": 2
     },
     {
       "id": "p-key-1",
@@ -210,9 +210,9 @@
     },
     {
       "id": "code-choose",
+      "code": "C(n, 0) = 1\nC(n, n) = 1\nC(n, k) = C(n - 1, k - 1) + C(n - 1, k)",
       "type": "code",
-      "language": "text",
-      "code": "C(n, 0) = 1\nC(n, n) = 1\nC(n, k) = C(n - 1, k - 1) + C(n - 1, k)"
+      "language": "text"
     },
     {
       "id": "p-key-4",
@@ -234,18 +234,18 @@
     },
     {
       "id": "w-choose",
-      "type": "interactive",
-      "widget": "recursion-tree",
       "data": {
-        "problem": "binomial",
-        "mode": "memo"
-      }
+        "mode": "memo",
+        "problem": "binomial"
+      },
+      "type": "interactive",
+      "widget": "recursion-tree"
     },
     {
       "id": "h-limits",
+      "text": "What memoization does not fix",
       "type": "heading",
-      "level": 2,
-      "text": "What memoization does not fix"
+      "level": 2
     },
     {
       "id": "p-limit-1",
@@ -267,9 +267,9 @@
     },
     {
       "id": "h-tools",
+      "text": "The version you will actually write",
       "type": "heading",
-      "level": 2,
-      "text": "The version you will actually write"
+      "level": 2
     },
     {
       "id": "p-tools-1",
@@ -282,9 +282,9 @@
     },
     {
       "id": "code-cache",
+      "code": "from functools import cache\n\n\n@cache\ndef fib(n):\n    if n <= 1:\n        return n\n    return fib(n - 1) + fib(n - 2)",
       "type": "code",
-      "language": "python",
-      "code": "from functools import cache\n\n\n@cache\ndef fib(n):\n    if n <= 1:\n        return n\n    return fib(n - 1) + fib(n - 2)"
+      "language": "python"
     },
     {
       "id": "p-tools-2",
@@ -306,9 +306,9 @@
     },
     {
       "id": "h-order",
+      "text": "Only the subproblems that come up",
       "type": "heading",
-      "level": 2,
-      "text": "Only the subproblems that come up"
+      "level": 2
     },
     {
       "id": "p-order-1",
@@ -330,8 +330,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -386,7 +384,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "p-next",

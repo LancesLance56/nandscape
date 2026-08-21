@@ -43,9 +43,9 @@
     },
     {
       "id": "h-fails",
+      "text": "Why the obvious approaches fail",
       "type": "heading",
-      "level": 2,
-      "text": "Why the obvious approaches fail"
+      "level": 2
     },
     {
       "id": "p-greedy-1",
@@ -67,9 +67,9 @@
     },
     {
       "id": "h-state",
+      "text": "The state",
       "type": "heading",
-      "level": 2,
-      "text": "The state"
+      "level": 2
     },
     {
       "id": "p-state-1",
@@ -109,12 +109,12 @@
     },
     {
       "id": "w-knapsack",
-      "type": "interactive",
-      "widget": "dp-table",
       "data": {
         "problem": "knapsack",
         "lockProblem": true
-      }
+      },
+      "type": "interactive",
+      "widget": "dp-table"
     },
     {
       "id": "p-widget-2",
@@ -136,9 +136,9 @@
     },
     {
       "id": "h-pseudo",
+      "text": "Pseudo-polynomial, and why the word matters",
       "type": "heading",
-      "level": 2,
-      "text": "Pseudo-polynomial, and why the word matters"
+      "level": 2
     },
     {
       "id": "p-poly-1",
@@ -180,17 +180,12 @@
     },
     {
       "id": "h-family",
+      "text": "The family it belongs to",
       "type": "heading",
-      "level": 2,
-      "text": "The family it belongs to"
+      "level": 2
     },
     {
       "id": "t-family",
-      "type": "table",
-      "headers": [
-        "Problem",
-        "What changes about the table"
-      ],
       "rows": [
         [
           "Subset sum",
@@ -209,7 +204,12 @@
           "unbounded knapsack, minimizing a count instead of maximizing a value"
         ]
       ],
-      "caption": "Four names, one table, and the arrows in slightly different places."
+      "type": "table",
+      "caption": "Four names, one table, and the arrows in slightly different places.",
+      "headers": [
+        "Problem",
+        "What changes about the table"
+      ]
     },
     {
       "id": "p-family-1",
@@ -231,8 +231,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -287,13 +285,15 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "h-end",
+      "text": "Where to go from here",
       "type": "heading",
-      "level": 2,
-      "text": "Where to go from here"
+      "level": 2
     },
     {
       "id": "p-end-1",

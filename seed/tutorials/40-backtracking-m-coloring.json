@@ -14,6 +14,15 @@
   ],
   "sectionSlug": "backtracking",
   "position": 60,
+  "seoTitle": "Graph M-Coloring Problem: Backtracking Solution and Heuristics",
+  "seoDescription": "Graph m-coloring with backtracking: exam and register-allocation framings, why finding one answer changes the recursion's return, symmetry breaking on interchangeable colors, and why 3-coloring has no known fast algorithm.",
+  "keywords": [
+    "m coloring problem",
+    "graph coloring backtracking",
+    "graph coloring algorithm",
+    "chromatic number",
+    "m coloring problem python"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -46,9 +55,9 @@
     },
     {
       "id": "h-difference",
+      "text": "A different kind of goal",
       "type": "heading",
-      "level": 2,
-      "text": "A different kind of goal"
+      "level": 2
     },
     {
       "id": "p-difference",
@@ -112,9 +121,9 @@
     },
     {
       "id": "h-trace",
+      "text": "A trace",
       "type": "heading",
-      "level": 2,
-      "text": "A trace"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -127,12 +136,12 @@
     },
     {
       "id": "w-coloring-trace",
-      "type": "interactive",
-      "widget": "graph-coloring",
       "data": {
-        "example": "map",
-        "m": 3
-      }
+        "m": 3,
+        "example": "map"
+      },
+      "type": "interactive",
+      "widget": "graph-coloring"
     },
     {
       "id": "p-trace-2",
@@ -154,9 +163,9 @@
     },
     {
       "id": "h-play",
+      "text": "Try both",
       "type": "heading",
-      "level": 2,
-      "text": "Try both"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -169,23 +178,23 @@
     },
     {
       "id": "w-coloring",
+      "data": {},
       "type": "interactive",
-      "widget": "graph-coloring",
-      "data": {}
+      "widget": "graph-coloring"
     },
     {
       "id": "w-flow-color",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "m-coloring"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-symmetry",
+      "text": "A free saving worth knowing",
       "type": "heading",
-      "level": 2,
-      "text": "A free saving worth knowing"
+      "level": 2
     },
     {
       "id": "p-symmetry",
@@ -216,9 +225,9 @@
     },
     {
       "id": "h-hardness",
+      "text": "Why there is no clever formula",
       "type": "heading",
-      "level": 2,
-      "text": "Why there is no clever formula"
+      "level": 2
     },
     {
       "id": "p-hardness",
@@ -249,27 +258,27 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-color",
+      "code": "function color(graph, m) {\n  const assigned = new Map();\n\n  function ok(node, c) {\n    for (const other of graph.neighbors(node)) {\n      if (assigned.get(other) === c) return false;\n    }\n    return true;\n  }\n\n  function solve(index) {\n    if (index === graph.nodes.length) return true;   // all done\n\n    const node = graph.nodes[index];\n    for (let c = 0; c < m; c++) {\n      if (!ok(node, c)) continue;\n\n      assigned.set(node, c);\n      if (solve(index + 1)) return true;   // a success bubbles all the way up\n      assigned.delete(node);               // that color failed, undo it\n    }\n\n    return false;                          // no color worked here\n  }\n\n  return solve(0) ? assigned : null;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function color(graph, m) {\n  const assigned = new Map();\n\n  function ok(node, c) {\n    for (const other of graph.neighbors(node)) {\n      if (assigned.get(other) === c) return false;\n    }\n    return true;\n  }\n\n  function solve(index) {\n    if (index === graph.nodes.length) return true;   // all done\n\n    const node = graph.nodes[index];\n    for (let c = 0; c < m; c++) {\n      if (!ok(node, c)) continue;\n\n      assigned.set(node, c);\n      if (solve(index + 1)) return true;   // a success bubbles all the way up\n      assigned.delete(node);               // that color failed, undo it\n    }\n\n    return false;                          // no color worked here\n  }\n\n  return solve(0) ? assigned : null;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def color(graph, m):\n    assigned = {}\n\n    def ok(node, c):\n        return all(assigned.get(other) != c for other in graph.neighbors(node))\n\n    def solve(index):\n        if index == len(graph.nodes):\n            return True                    # all done\n\n        node = graph.nodes[index]\n        for c in range(m):\n            if not ok(node, c):\n                continue\n\n            assigned[node] = c\n            if solve(index + 1):\n                return True                # a success bubbles all the way up\n            del assigned[node]             # that color failed, undo it\n\n        return False                       # no color worked here\n\n    return assigned if solve(0) else None"
+          "code": "def color(graph, m):\n    assigned = {}\n\n    def ok(node, c):\n        return all(assigned.get(other) != c for other in graph.neighbors(node))\n\n    def solve(index):\n        if index == len(graph.nodes):\n            return True                    # all done\n\n        node = graph.nodes[index]\n        for c in range(m):\n            if not ok(node, c):\n                continue\n\n            assigned[node] = c\n            if solve(index + 1):\n                return True                # a success bubbles all the way up\n            del assigned[node]             # that color failed, undo it\n\n        return False                       # no color worked here\n\n    return assigned if solve(0) else None",
+          "language": "python"
         }
       ]
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -341,14 +350,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -420,16 +427,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Graph M-Coloring Problem: Backtracking Solution and Heuristics",
-  "seoDescription": "Graph m-coloring with backtracking: exam and register-allocation framings, why finding one answer changes the recursion's return, symmetry breaking on interchangeable colors, and why 3-coloring has no known fast algorithm.",
-  "keywords": [
-    "m coloring problem",
-    "graph coloring backtracking",
-    "graph coloring algorithm",
-    "chromatic number",
-    "m coloring problem python"
   ]
 }

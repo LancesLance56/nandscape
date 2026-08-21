@@ -3,26 +3,312 @@
   "title": "2-Bit ALU (AND / OR / ADD / SUB)",
   "description": "A tiny 2-bit ALU. OP1 OP0 select the function: 00 = AND, 01 = OR, 10 = ADD, 11 = SUB (two's complement). COUT only carries meaning in ADD/SUB mode.",
   "difficulty": "expert",
-  "tags": ["combinational", "arithmetic"],
+  "tags": [
+    "combinational",
+    "arithmetic"
+  ],
   "gateBudget": 35,
-  "inputs": [{ "name": "A1" }, { "name": "A0" }, { "name": "B1" }, { "name": "B0" }, { "name": "OP1" }, { "name": "OP0" }],
-  "outputs": [{ "name": "Y1" }, { "name": "Y0" }, { "name": "COUT" }],
-  "inputDisplay": [{ "type": "bus", "names": ["A1", "A0"] }, { "type": "bus", "names": ["B1", "B0"] }, { "type": "bus", "names": ["OP1", "OP0"] }],
-  "outputDisplay": [{ "type": "bus", "names": ["Y1", "Y0"] }],
+  "inputs": [
+    {
+      "name": "A1"
+    },
+    {
+      "name": "A0"
+    },
+    {
+      "name": "B1"
+    },
+    {
+      "name": "B0"
+    },
+    {
+      "name": "OP1"
+    },
+    {
+      "name": "OP0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Y1"
+    },
+    {
+      "name": "Y0"
+    },
+    {
+      "name": "COUT"
+    }
+  ],
+  "inputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "A1",
+        "A0"
+      ]
+    },
+    {
+      "type": "bus",
+      "names": [
+        "B1",
+        "B0"
+      ]
+    },
+    {
+      "type": "bus",
+      "names": [
+        "OP1",
+        "OP0"
+      ]
+    }
+  ],
+  "outputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "Y1",
+        "Y0"
+      ]
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "OP1": 0, "OP0": 0 }, "outputs": { "Y1": 0, "Y0": 0, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 1, "OP1": 0, "OP0": 1 }, "outputs": { "Y1": 0, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 1, "B0": 1, "OP1": 1, "OP0": 0 }, "outputs": { "Y1": 1, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 0, "OP1": 1, "OP0": 1 }, "outputs": { "Y1": 0, "Y0": 1, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 1, "B0": 1, "OP1": 0, "OP0": 1 }, "outputs": { "Y1": 1, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 0, "B0": 1, "OP1": 0, "OP0": 1 }, "outputs": { "Y1": 1, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 0, "B0": 1, "OP1": 1, "OP0": 1 }, "outputs": { "Y1": 0, "Y0": 1, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 0, "OP1": 1, "OP0": 0 }, "outputs": { "Y1": 0, "Y0": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 1, "OP1": 0, "OP0": 0 }, "outputs": { "Y1": 1, "Y0": 0, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 1, "OP1": 1, "OP0": 0 }, "outputs": { "Y1": 0, "Y0": 1, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 1, "OP1": 1, "OP0": 1 }, "outputs": { "Y1": 1, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 0, "B0": 0, "OP1": 0, "OP0": 1 }, "outputs": { "Y1": 1, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 1, "B0": 0, "OP1": 0, "OP0": 1 }, "outputs": { "Y1": 1, "Y0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 1, "B0": 1, "OP1": 1, "OP0": 1 }, "outputs": { "Y1": 0, "Y0": 0, "COUT": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "OP0": 0,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 1,
+          "B1": 0,
+          "OP0": 1,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 0,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 1,
+          "B1": 1,
+          "OP0": 0,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "OP0": 1,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 1,
+          "B1": 1,
+          "OP0": 1,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 0,
+          "OP0": 1,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 0,
+          "OP0": 1,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 0,
+          "B1": 1,
+          "OP0": 0,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "OP0": 0,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "OP0": 0,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "OP0": 1,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 0,
+          "B1": 0,
+          "OP0": 1,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 0,
+          "B1": 1,
+          "OP0": 1,
+          "OP1": 0
+        },
+        "outputs": {
+          "Y0": 1,
+          "Y1": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "OP0": 1,
+          "OP1": 1
+        },
+        "outputs": {
+          "Y0": 0,
+          "Y1": 0,
+          "COUT": 1
+        }
+      }
+    }
   ]
 }

@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-partition-problems",
   "title": "Partition Problems: 0s, 1s and 2s",
   "excerpt": "When the values come from a tiny fixed set, sorting is overkill. Two or three pointers do the job in one pass with no extra memory.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T12:50:00Z",
   "tags": [
     "sorting",
@@ -13,7 +12,17 @@
     "partitioning",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 60,
+  "seoTitle": "Sort 0s 1s and 2s: Dutch National Flag and One-Pass Partitioning",
+  "seoDescription": "Segregate binary arrays, move zeroes to the end, and solve the Dutch national flag problem in one pass with no extra memory. With an interactive pointer visualizer.",
+  "keywords": [
+    "sort 0s 1s 2s",
+    "dutch national flag problem",
+    "move zeroes to end",
+    "segregate 0s and 1s",
+    "three way partitioning"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -35,17 +44,17 @@
     },
     {
       "id": "w-partition",
-      "type": "interactive",
-      "widget": "partition-explorer",
       "data": {
         "mode": "ternary"
-      }
+      },
+      "type": "interactive",
+      "widget": "partition-explorer"
     },
     {
       "id": "h-binary",
+      "text": "Segregating 0s and 1s",
       "type": "heading",
-      "level": 2,
-      "text": "Segregating 0s and 1s"
+      "level": 2
     },
     {
       "id": "p-binary",
@@ -67,9 +76,9 @@
     },
     {
       "id": "h-zeroes",
+      "text": "Moving zeroes to the end",
       "type": "heading",
-      "level": 2,
-      "text": "Moving zeroes to the end"
+      "level": 2
     },
     {
       "id": "p-zeroes",
@@ -100,9 +109,9 @@
     },
     {
       "id": "h-dnf",
+      "text": "The Dutch national flag problem",
       "type": "heading",
-      "level": 2,
-      "text": "The Dutch national flag problem"
+      "level": 2
     },
     {
       "id": "p-dnf",
@@ -115,8 +124,8 @@
           "text": "Dijkstra's Dutch national flag problem",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Dutch_national_flag_problem"
+              "href": "https://en.wikipedia.org/wiki/Dutch_national_flag_problem",
+              "kind": "link"
             }
           ]
         },
@@ -169,12 +178,6 @@
     },
     {
       "id": "t-dnf",
-      "type": "table",
-      "headers": [
-        "a[mid] is",
-        "Do",
-        "Then"
-      ],
       "rows": [
         [
           "0",
@@ -191,6 +194,12 @@
           "swap a[mid] and a[high]",
           "decrement high, and do NOT advance mid"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "a[mid] is",
+        "Do",
+        "Then"
       ]
     },
     {
@@ -268,9 +277,9 @@
     },
     {
       "id": "h-why",
+      "text": "Why this matters beyond the puzzle",
       "type": "heading",
-      "level": 2,
-      "text": "Why this matters beyond the puzzle"
+      "level": 2
     },
     {
       "id": "p-why",
@@ -283,36 +292,34 @@
     },
     {
       "id": "h-code",
+      "text": "In code",
       "type": "heading",
-      "level": 2,
-      "text": "In code"
+      "level": 2
     },
     {
       "id": "code-dnf",
+      "code": "// Dutch national flag: 0s, 1s and 2s in a single pass.\nfunction sortColors(a) {\n  let low = 0, mid = 0, high = a.length - 1;\n\n  while (mid <= high) {\n    if (a[mid] === 0) {\n      [a[low], a[mid]] = [a[mid], a[low]];\n      low++; mid++;\n    } else if (a[mid] === 2) {\n      [a[mid], a[high]] = [a[high], a[mid]];\n      high--;\n      // mid does NOT advance: the value swapped in is still unexamined.\n    } else {\n      mid++;\n    }\n  }\n  return a;\n}\n\n// Move zeroes to the end, keeping the other values in order.\nfunction moveZeroes(a) {\n  let write = 0;\n  for (let read = 0; read < a.length; read++) {\n    if (a[read] !== 0) {\n      [a[write], a[read]] = [a[read], a[write]];\n      write++;\n    }\n  }\n  return a;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// Dutch national flag: 0s, 1s and 2s in a single pass.\nfunction sortColors(a) {\n  let low = 0, mid = 0, high = a.length - 1;\n\n  while (mid <= high) {\n    if (a[mid] === 0) {\n      [a[low], a[mid]] = [a[mid], a[low]];\n      low++; mid++;\n    } else if (a[mid] === 2) {\n      [a[mid], a[high]] = [a[high], a[mid]];\n      high--;\n      // mid does NOT advance: the value swapped in is still unexamined.\n    } else {\n      mid++;\n    }\n  }\n  return a;\n}\n\n// Move zeroes to the end, keeping the other values in order.\nfunction moveZeroes(a) {\n  let write = 0;\n  for (let read = 0; read < a.length; read++) {\n    if (a[read] !== 0) {\n      [a[write], a[read]] = [a[read], a[write]];\n      write++;\n    }\n  }\n  return a;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# Dutch national flag: 0s, 1s and 2s in a single pass.\ndef sort_colors(a):\n    low = mid = 0\n    high = len(a) - 1\n\n    while mid <= high:\n        if a[mid] == 0:\n            a[low], a[mid] = a[mid], a[low]\n            low += 1\n            mid += 1\n        elif a[mid] == 2:\n            a[mid], a[high] = a[high], a[mid]\n            high -= 1\n            # mid does NOT advance: the value swapped in is unexamined.\n        else:\n            mid += 1\n    return a\n\n\n# Move zeroes to the end, keeping the other values in order.\ndef move_zeroes(a):\n    write = 0\n    for read in range(len(a)):\n        if a[read] != 0:\n            a[write], a[read] = a[read], a[write]\n            write += 1\n    return a"
+          "code": "# Dutch national flag: 0s, 1s and 2s in a single pass.\ndef sort_colors(a):\n    low = mid = 0\n    high = len(a) - 1\n\n    while mid <= high:\n        if a[mid] == 0:\n            a[low], a[mid] = a[mid], a[low]\n            low += 1\n            mid += 1\n        elif a[mid] == 2:\n            a[mid], a[high] = a[high], a[mid]\n            high -= 1\n            # mid does NOT advance: the value swapped in is unexamined.\n        else:\n            mid += 1\n    return a\n\n\n# Move zeroes to the end, keeping the other values in order.\ndef move_zeroes(a):\n    write = 0\n    for read in range(len(a)):\n        if a[read] != 0:\n            a[write], a[read] = a[read], a[write]\n            write += 1\n    return a",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <utility>\n\n// Dutch national flag: 0s, 1s and 2s in a single pass.\nvoid sortColors(std::vector<int>& a) {\n    int low = 0, mid = 0, high = (int)a.size() - 1;\n\n    while (mid <= high) {\n        if (a[mid] == 0) {\n            std::swap(a[low++], a[mid++]);\n        } else if (a[mid] == 2) {\n            std::swap(a[mid], a[high--]);\n            // mid does NOT advance: the value swapped in is unexamined.\n        } else {\n            mid++;\n        }\n    }\n}\n\n// Move zeroes to the end, keeping the other values in order.\nvoid moveZeroes(std::vector<int>& a) {\n    size_t write = 0;\n    for (size_t read = 0; read < a.size(); read++)\n        if (a[read] != 0) std::swap(a[write++], a[read]);\n}"
+          "code": "#include <vector>\n#include <utility>\n\n// Dutch national flag: 0s, 1s and 2s in a single pass.\nvoid sortColors(std::vector<int>& a) {\n    int low = 0, mid = 0, high = (int)a.size() - 1;\n\n    while (mid <= high) {\n        if (a[mid] == 0) {\n            std::swap(a[low++], a[mid++]);\n        } else if (a[mid] == 2) {\n            std::swap(a[mid], a[high--]);\n            // mid does NOT advance: the value swapped in is unexamined.\n        } else {\n            mid++;\n        }\n    }\n}\n\n// Move zeroes to the end, keeping the other values in order.\nvoid moveZeroes(std::vector<int>& a) {\n    size_t write = 0;\n    for (size_t read = 0; read < a.size(); read++)\n        if (a[read] != 0) std::swap(a[write++], a[read]);\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -367,7 +374,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d1",
@@ -375,19 +384,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/dsa/sorting-merge-problems",
       "type": "button",
       "label": "Continue to merge-based problems",
-      "href": "/tutorials/dsa/sorting-merge-problems",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Sort 0s 1s and 2s: Dutch National Flag and One-Pass Partitioning",
-  "seoDescription": "Segregate binary arrays, move zeroes to the end, and solve the Dutch national flag problem in one pass with no extra memory. With an interactive pointer visualizer.",
-  "keywords": [
-    "sort 0s 1s 2s",
-    "dutch national flag problem",
-    "move zeroes to end",
-    "segregate 0s and 1s",
-    "three way partitioning"
   ]
 }

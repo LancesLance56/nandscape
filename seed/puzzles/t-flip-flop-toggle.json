@@ -3,30 +3,155 @@
   "title": "Toggle (T) Flip-Flop",
   "description": "Build an edge-triggered toggle flip-flop. On every rising edge of CLK, Q flips if T is HIGH and holds if T is LOW. RESET clears Q to 0 immediately, regardless of CLK.",
   "difficulty": "hard",
-  "tags": ["sequential", "memory"],
+  "tags": [
+    "sequential",
+    "memory"
+  ],
   "gateBudget": 10,
   "inputs": [
-    { "name": "T", "defaultValue": 0 },
-    { "name": "CLK", "defaultValue": 0 },
-    { "name": "RESET", "defaultValue": 0 }
+    {
+      "name": "T",
+      "defaultValue": 0
+    },
+    {
+      "name": "CLK",
+      "defaultValue": 0
+    },
+    {
+      "name": "RESET",
+      "defaultValue": 0
+    }
   ],
-  "outputs": [{ "name": "Q" }, { "name": "QN" }],
+  "outputs": [
+    {
+      "name": "Q"
+    },
+    {
+      "name": "QN"
+    }
+  ],
   "testCases": [
     {
       "sequence": [
-        { "setInputs": { "T": 0, "CLK": 0, "RESET": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "RESET": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "T": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "T": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "T": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "RESET": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } }
+        {
+          "setInputs": {
+            "T": 0,
+            "CLK": 0,
+            "RESET": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "RESET": 0
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "T": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "T": 0
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "T": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "RESET": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        }
       ]
     }
   ]

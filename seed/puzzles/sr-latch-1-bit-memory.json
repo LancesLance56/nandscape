@@ -3,21 +3,75 @@
   "title": "1-Bit Memory Cell",
   "description": "Build a circuit that remembers a single bit using two cross-coupled NAND gates. Inputs are active-low: pulse S low to set, R low to reset, and hold both high to keep the last value.",
   "difficulty": "easy",
-  "tags": ["sequential", "memory"],
-  "gateBudget": 2,
-  "allowedGateTypes": [0],
-  "inputs": [
-    { "name": "S", "defaultValue": 1 },
-    { "name": "R", "defaultValue": 1 }
+  "tags": [
+    "sequential",
+    "memory"
   ],
-  "outputs": [{ "name": "Q" }, { "name": "QN" }],
+  "gateBudget": 2,
+  "allowedGateTypes": [
+    0
+  ],
+  "inputs": [
+    {
+      "name": "S",
+      "defaultValue": 1
+    },
+    {
+      "name": "R",
+      "defaultValue": 1
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Q"
+    },
+    {
+      "name": "QN"
+    }
+  ],
   "testCases": [
     {
       "sequence": [
-        { "setInputs": { "S": 0, "R": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "S": 1, "R": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "S": 1, "R": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "S": 1, "R": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } }
+        {
+          "setInputs": {
+            "R": 1,
+            "S": 0
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "R": 1,
+            "S": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "R": 0,
+            "S": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "R": 1,
+            "S": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        }
       ]
     }
   ]

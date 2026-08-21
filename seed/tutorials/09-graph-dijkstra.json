@@ -13,200 +13,36 @@
   ],
   "sectionSlug": "graph-theory-concepts",
   "position": 20,
+  "seoTitle": "Dijkstra's Algorithm Explained With a Worked Example",
+  "seoDescription": "Dijkstra's algorithm derived step by step: why greedy nearest-neighbor fails, why settling the smallest tentative distance is provably safe, a full hand trace, and exactly where negative weights break the argument.",
+  "keywords": [
+    "dijkstra's algorithm",
+    "shortest path algorithm",
+    "weighted graph",
+    "priority queue",
+    "dijkstra example"
+  ],
   "body": [
     {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
         {
-          "text": "You already have an algorithm that finds shortest paths. Breadth-first search does it, and it does it perfectly on one condition: every edge has to cost the same to cross. Take that condition away and BFS quietly starts giving wrong answers."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Here is where it breaks. Suppose you are routing between towns and the roads have real lengths. One road runs straight from A to D and it is 100 kilometers long, while another route goes A to B to C to D, three roads of 10 kilometers each. BFS counts hops, so it reports the single 100 km road as the shortest path, because one is smaller than three. Anyone holding a map can see that 30 beats 100."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So the question this page answers is not really \"what is Dijkstra's algorithm\". It is this: once edges have costs, what do you actually know for certain at any given moment, and how little do you need to know before you can safely commit to an answer?"
+          "text": "We already tackled an algorithm that finds shortest paths, BFS. The problem is that it only counts hops, but in the real world some edges can be more expensive than others i.e., we need a way to find the shortest path with these weights accounted for. "
         }
       ]
     },
     {
       "id": "h-attempt",
+      "text": "",
       "type": "heading",
-      "level": 2,
-      "text": "Start with the obvious idea, then watch it fail"
-    },
-    {
-      "id": "p-attempt",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The first thing most people try is the natural one. Stand at the source. Walk to whichever neighbor is nearest. From there, walk to whichever neighbor is nearest again, and keep going until you arrive. It feels sensible, it is easy to write, and it is wrong."
-        }
-      ]
-    },
-    {
-      "id": "p-attempt-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Take this graph. From A you can reach B for a cost of 1, or C for a cost of 4."
-        }
-      ]
-    },
-    {
-      "id": "t-greedy-fail",
-      "type": "table",
-      "headers": [
-        "Edge",
-        "Cost"
-      ],
-      "rows": [
-        [
-          "A to B",
-          "1"
-        ],
-        [
-          "B to D",
-          "50"
-        ],
-        [
-          "A to C",
-          "4"
-        ],
-        [
-          "C to D",
-          "1"
-        ]
-      ]
-    },
-    {
-      "id": "p-attempt-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The nearest-neighbor walk goes to B first, because 1 is smaller than 4, and then has no choice but to pay 50 to reach D. Total: 51. The route through C costs 4 plus 1, which is 5. The greedy walk lost by a factor of ten, and it lost because it committed to B on the strength of one cheap edge, with no idea what lay behind it."
-        }
-      ]
-    },
-    {
-      "id": "p-attempt-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That is the useful part of the failure. A cheap first step tells you nothing about the total. So a correct algorithm cannot commit to a "
-        },
-        {
-          "text": "route",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". The question left over is whether there is anything at all it can safely commit to."
-        }
-      ]
-    },
-    {
-      "id": "h-insight",
-      "type": "heading",
-      "level": 2,
-      "text": "The one thing you can be certain about"
-    },
-    {
-      "id": "p-insight",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Suppose you know the true distance from the source to a handful of nodes, and for every other node you have only a best guess: the cheapest route you have found so far, which might yet be beaten."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Now look at whichever guessed node has the "
-        },
-        {
-          "text": "smallest",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " guess. Call it X, and say its guess is 12. The claim is that 12 is not a guess at all. It is the true shortest distance to X, and nothing you discover later can lower it."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The argument is worth walking through slowly, because once you believe it the rest of the algorithm falls out of it on its own. Imagine some cheaper route to X exists that you have not found yet. That route starts at the source and ends at X, so at some point it has to leave the set of nodes you already know for certain and step into the unknown. Call the first unknown node it touches Y."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Reaching Y already costs at least as much as Y's own current guess, because that guess is the cheapest known way in. And Y's guess cannot be smaller than X's, since you picked X as the smallest one. So the imagined route has already spent at least 12 by the time it reaches Y, and it still has the rest of the journey to X ahead of it. It cannot come in under 12."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "One assumption is hiding in that last sentence, and the whole algorithm rests on it: "
-        },
-        {
-          "text": "the rest of the journey cannot cost less than nothing",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". If every edge costs zero or more, adding more road can never make a trip cheaper, so the imagined cheaper route is impossible and 12 is final. Hold on to that. It is precisely what negative edges take away, and we come back to it at the end."
-        }
-      ]
+      "level": 2
     },
     {
       "id": "h-algorithm",
+      "text": "The solution",
       "type": "heading",
-      "level": 2,
-      "text": "The algorithm, now that you would have guessed it"
-    },
-    {
-      "id": "p-algorithm",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Everything follows from that one certainty. If the smallest guess is always already correct, then you can turn guesses into facts one at a time, cheapest first, and never revisit a decision."
-        }
-      ]
+      "level": 2
     },
     {
       "id": "p-algorithm-2",
@@ -222,7 +58,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "One. ",
+          "text": "1. ",
           "marks": [
             {
               "kind": "bold"
@@ -239,7 +75,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two. ",
+          "text": "2. ",
           "marks": [
             {
               "kind": "bold"
@@ -306,9 +142,9 @@
     },
     {
       "id": "h-trace",
+      "text": "A full trace, by hand",
       "type": "heading",
-      "level": 2,
-      "text": "A full trace, by hand"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -321,73 +157,73 @@
     },
     {
       "id": "w-dijkstra-picture",
-      "type": "interactive",
-      "widget": "shortest-path",
       "data": {
         "graph": {
-          "weighted": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 55,
-              "y": 130
-            },
-            {
-              "id": "B",
-              "x": 175,
-              "y": 60
-            },
-            {
-              "id": "C",
-              "x": 175,
-              "y": 200
-            },
-            {
-              "id": "D",
-              "x": 295,
-              "y": 130
-            },
-            {
-              "id": "E",
-              "x": 410,
-              "y": 130
-            }
-          ],
           "edges": [
             {
-              "from": "A",
               "to": "B",
+              "from": "A",
               "weight": 2
             },
             {
-              "from": "A",
               "to": "C",
+              "from": "A",
               "weight": 5
             },
             {
-              "from": "B",
               "to": "C",
+              "from": "B",
               "weight": 1
             },
             {
-              "from": "B",
               "to": "D",
+              "from": "B",
               "weight": 7
             },
             {
-              "from": "C",
               "to": "D",
+              "from": "C",
               "weight": 2
             },
             {
-              "from": "D",
               "to": "E",
+              "from": "D",
               "weight": 3
             }
-          ]
+          ],
+          "nodes": [
+            {
+              "x": 55,
+              "y": 130,
+              "id": "A"
+            },
+            {
+              "x": 175,
+              "y": 60,
+              "id": "B"
+            },
+            {
+              "x": 175,
+              "y": 200,
+              "id": "C"
+            },
+            {
+              "x": 295,
+              "y": 130,
+              "id": "D"
+            },
+            {
+              "x": 410,
+              "y": 130,
+              "id": "E"
+            }
+          ],
+          "weighted": true
         },
         "start": "A"
-      }
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
     },
     {
       "id": "p-trace-2",
@@ -400,16 +236,6 @@
     },
     {
       "id": "t-round-0",
-      "type": "table",
-      "headers": [
-        "Round",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "Settled this round"
-      ],
       "rows": [
         [
           "start",
@@ -420,6 +246,16 @@
           "inf",
           "nothing yet"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
       ]
     },
     {
@@ -433,16 +269,6 @@
     },
     {
       "id": "t-round-1",
-      "type": "table",
-      "headers": [
-        "Round",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "Settled this round"
-      ],
       "rows": [
         [
           "1",
@@ -453,6 +279,16 @@
           "inf",
           "A at 0"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
       ]
     },
     {
@@ -466,16 +302,6 @@
     },
     {
       "id": "t-round-2",
-      "type": "table",
-      "headers": [
-        "Round",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "Settled this round"
-      ],
       "rows": [
         [
           "2",
@@ -486,6 +312,16 @@
           "inf",
           "B at 2"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
       ]
     },
     {
@@ -499,16 +335,6 @@
     },
     {
       "id": "t-round-3",
-      "type": "table",
-      "headers": [
-        "Round",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "Settled this round"
-      ],
       "rows": [
         [
           "3",
@@ -519,6 +345,16 @@
           "inf",
           "C at 3"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
       ]
     },
     {
@@ -532,16 +368,6 @@
     },
     {
       "id": "t-round-4",
-      "type": "table",
-      "headers": [
-        "Round",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "Settled this round"
-      ],
       "rows": [
         [
           "4",
@@ -561,6 +387,16 @@
           "8",
           "E at 8"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Round",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "Settled this round"
       ]
     },
     {
@@ -574,9 +410,9 @@
     },
     {
       "id": "h-play",
+      "text": "Now drive it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Now drive it yourself"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -589,86 +425,262 @@
     },
     {
       "id": "w-dijkstra",
-      "type": "interactive",
-      "widget": "shortest-path",
       "data": {
         "graph": {
-          "weighted": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 55,
-              "y": 130
-            },
-            {
-              "id": "B",
-              "x": 175,
-              "y": 60
-            },
-            {
-              "id": "C",
-              "x": 175,
-              "y": 200
-            },
-            {
-              "id": "D",
-              "x": 295,
-              "y": 130
-            },
-            {
-              "id": "E",
-              "x": 410,
-              "y": 130
-            }
-          ],
           "edges": [
             {
-              "from": "A",
               "to": "B",
+              "from": "A",
               "weight": 2
             },
             {
-              "from": "A",
               "to": "C",
+              "from": "A",
               "weight": 5
             },
             {
-              "from": "B",
               "to": "C",
+              "from": "B",
               "weight": 1
             },
             {
-              "from": "B",
               "to": "D",
+              "from": "B",
               "weight": 7
             },
             {
-              "from": "C",
               "to": "D",
+              "from": "C",
               "weight": 2
             },
             {
-              "from": "D",
               "to": "E",
+              "from": "D",
               "weight": 3
             }
-          ]
+          ],
+          "nodes": [
+            {
+              "x": 72.58206176757812,
+              "y": 122.13544464111328,
+              "id": "A"
+            },
+            {
+              "x": 167.2365264892578,
+              "y": 36.434776306152344,
+              "id": "B"
+            },
+            {
+              "x": 168.51564025878906,
+              "y": 221.9063720703125,
+              "id": "C"
+            },
+            {
+              "x": 264.44921875,
+              "y": 124.05411529541016,
+              "id": "D"
+            },
+            {
+              "x": 410.9078369140625,
+              "y": 124.69367218017578,
+              "id": "E"
+            }
+          ],
+          "weighted": true
         },
         "start": "A"
-      }
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
+    },
+    {
+      "id": "p_961f1718",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try this other, more complicated one:"
+        }
+      ]
+    },
+    {
+      "id": "widget_b88fc90a",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "C",
+              "from": "A",
+              "weight": 4
+            },
+            {
+              "to": "D",
+              "from": "C",
+              "weight": 1
+            },
+            {
+              "to": "E",
+              "from": "C",
+              "weight": 1
+            },
+            {
+              "to": "E",
+              "from": "D",
+              "weight": 1
+            },
+            {
+              "to": "H",
+              "from": "E",
+              "weight": 4
+            },
+            {
+              "to": "K",
+              "from": "I",
+              "weight": 3
+            },
+            {
+              "to": "G",
+              "from": "H",
+              "weight": 1
+            },
+            {
+              "to": "I",
+              "from": "G",
+              "weight": 4
+            },
+            {
+              "to": "K",
+              "from": "J",
+              "weight": 1
+            },
+            {
+              "to": "B",
+              "from": "C",
+              "weight": 6
+            },
+            {
+              "to": "H",
+              "from": "B",
+              "weight": 2
+            },
+            {
+              "to": "F",
+              "from": "B",
+              "weight": 4
+            },
+            {
+              "to": "H",
+              "from": "F",
+              "weight": 1
+            },
+            {
+              "to": "I",
+              "from": "H",
+              "weight": 3
+            },
+            {
+              "to": "J",
+              "from": "F",
+              "weight": 10
+            },
+            {
+              "to": "D",
+              "from": "A",
+              "weight": 3
+            },
+            {
+              "to": "K",
+              "from": "H",
+              "weight": 6
+            }
+          ],
+          "nodes": [
+            {
+              "x": 25.894380569458008,
+              "y": 35.4554557800293,
+              "id": "A"
+            },
+            {
+              "x": 131.42132568359375,
+              "y": 206.2172393798828,
+              "id": "B"
+            },
+            {
+              "x": 46.36021041870117,
+              "y": 133.30770874023438,
+              "id": "C"
+            },
+            {
+              "x": 116.07195281982422,
+              "y": 54.64216995239258,
+              "id": "D"
+            },
+            {
+              "x": 157.0036163330078,
+              "y": 137.14505004882812,
+              "id": "E"
+            },
+            {
+              "x": 248.46029663085938,
+              "y": 223.4852752685547,
+              "id": "F"
+            },
+            {
+              "x": 199.21438598632812,
+              "y": 61.037742614746094,
+              "id": "G"
+            },
+            {
+              "x": 247.82073974609375,
+              "y": 142.26150512695312,
+              "id": "H"
+            },
+            {
+              "x": 313.0555725097656,
+              "y": 59.758628845214844,
+              "id": "I"
+            },
+            {
+              "x": 392.3606872558594,
+              "y": 223.4852752685547,
+              "id": "J"
+            },
+            {
+              "x": 322.64892578125,
+              "y": 176.15805053710938,
+              "id": "K"
+            }
+          ],
+          "weighted": true
+        },
+        "start": "A"
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
     },
     {
       "id": "h-paths",
+      "text": "Getting the actual route",
       "type": "heading",
-      "level": 2,
-      "text": "Getting the actual route, not just the number"
+      "level": 2
     },
     {
       "id": "p-paths",
       "type": "paragraph",
       "content": [
         {
-          "text": "So far the algorithm produces distances. Usually you want the road, not the mileage. The fix is small: whenever you improve a node's distance, also record which node you came from."
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " Whenever you improve a node's distance, also record which node you came from."
         }
       ]
     },
@@ -677,21 +689,21 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That single extra field gives you every shortest path at once. To read the route to E, start at E, jump to its recorded predecessor, and keep jumping until you land on the source, then reverse what you collected. The predecessors form a tree rooted at the source containing a shortest path to every reachable node, which is a lot of value for one array."
+          "text": "To read the route to E, start at E, jump to its recorded predecessor, and keep jumping until you land on the source, then reverse what you collected. The predecessors form a tree rooted at the source containing a shortest path to every reachable node, which is a lot of value for one array."
         }
       ]
     },
     {
       "id": "code-parent",
+      "code": "if (dist[u] + w < dist[v]) {\n  dist[v] = dist[u] + w;\n  parent[v] = u;          // the only new line\n}\n\nfunction pathTo(target) {\n  const route = [];\n  for (let at = target; at !== undefined; at = parent[at]) route.push(at);\n  return route.reverse();\n}",
       "type": "code",
-      "language": "javascript",
-      "code": "if (dist[u] + w < dist[v]) {\n  dist[v] = dist[u] + w;\n  parent[v] = u;          // the only new line\n}\n\nfunction pathTo(target) {\n  const route = [];\n  for (let at = target; at !== undefined; at = parent[at]) route.push(at);\n  return route.reverse();\n}"
+      "language": "javascript"
     },
     {
       "id": "h-cost",
+      "text": "Where the running time comes from",
       "type": "heading",
-      "level": 2,
-      "text": "Where the running time comes from"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -713,13 +725,6 @@
     },
     {
       "id": "t-cost",
-      "type": "table",
-      "headers": [
-        "Finding the minimum",
-        "One find",
-        "One relaxation",
-        "Total"
-      ],
       "rows": [
         [
           "Scan the whole array",
@@ -733,6 +738,13 @@
           "O(log V) to push",
           "O((V + E) log V)"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Finding the minimum",
+        "One find",
+        "One relaxation",
+        "Total"
       ]
     },
     {
@@ -766,16 +778,16 @@
     },
     {
       "id": "h-negative",
+      "text": "Negative Weights?",
       "type": "heading",
-      "level": 2,
-      "text": "Exactly where it breaks"
+      "level": 2
     },
     {
       "id": "p-negative",
       "type": "paragraph",
       "content": [
         {
-          "text": "Go back to the argument that made all of this work. It needed one thing: extra edges can never reduce a total. Allow a negative edge and that guarantee disappears, and the algorithm's correctness goes with it."
+          "text": "Go back to the argument that made all of this work. It relies on the fact that extra edges can never reduce a total. The thing is, there are definitely some scenarios where a negative weight makes sense, like when there are benefits to taking a route."
         }
       ]
     },
@@ -784,38 +796,61 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Here is the smallest example that shows it. Three nodes, three edges."
+          "text": "Take this for example"
         }
       ]
     },
     {
-      "id": "t-negative",
-      "type": "table",
-      "headers": [
-        "Edge",
-        "Cost"
-      ],
-      "rows": [
-        [
-          "A to B",
-          "2"
-        ],
-        [
-          "A to C",
-          "3"
-        ],
-        [
-          "C to B",
-          "-2"
-        ]
-      ]
+      "id": "widget_fac682bd",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "B",
+              "from": "A",
+              "weight": 4
+            },
+            {
+              "to": "C",
+              "from": "B",
+              "weight": -2
+            },
+            {
+              "to": "C",
+              "from": "A",
+              "weight": 3
+            }
+          ],
+          "nodes": [
+            {
+              "x": 105.83903503417969,
+              "y": 187.98985290527344,
+              "id": "A"
+            },
+            {
+              "x": 208.80775451660156,
+              "y": 63.91575241088867,
+              "id": "B"
+            },
+            {
+              "x": 304.1017761230469,
+              "y": 187.98985290527344,
+              "id": "C"
+            }
+          ],
+          "weighted": true
+        },
+        "start": "A"
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
     },
     {
       "id": "p-negative-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Dijkstra settles A at 0, then looks around and sees B at 2 and C at 3. B is smaller, so B settles at 2 and is never reconsidered. Only afterwards does C settle at 3 and reveal a route to B costing 3 plus -2, which is 1. The true answer for B is 1, the algorithm already committed to 2, and it has no mechanism for taking a settlement back."
+          "text": "Dijkstra settles A at 0, then looks around and sees B at 4 and C at 3, so it picks C which costs 3 in total. This is more expensive then if it went to B then C for a total of 2."
         }
       ]
     },
@@ -824,15 +859,15 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Notice that this is not a bug in some edge case of the implementation. It is the proof itself failing, which is why the fix is a different algorithm rather than a patch. Bellman-Ford drops the idea of settling nodes in a fixed order and relaxes every edge repeatedly instead. That costs more, and it survives negative weights."
+          "text": "Notice that this is not a bug in some edge case of the implementation. It is just something Dijkstra's algorithm doesn't cover, which is why the fix is a different algorithm rather than a patch. Bellman-Ford drops the idea of settling nodes in a fixed order and relaxes every edge repeatedly instead. That costs more but it still works even for negative gates."
         }
       ]
     },
     {
       "id": "h-mistakes",
+      "text": "Mistakes worth knowing about in advance",
       "type": "heading",
-      "level": 2,
-      "text": "Mistakes worth knowing about in advance"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -904,9 +939,9 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "p-code",
@@ -919,30 +954,28 @@
     },
     {
       "id": "code-impl",
+      "code": "function dijkstra(graph, source) {\n  const dist = new Map();\n  const parent = new Map();\n  for (const node of graph.nodes) dist.set(node, Infinity);\n  dist.set(source, 0);\n\n  const heap = new MinHeap();       // ordered by distance\n  heap.push([0, source]);\n\n  while (!heap.isEmpty()) {\n    const [d, u] = heap.pop();\n    if (d > dist.get(u)) continue;  // a stale entry, already improved on\n\n    for (const { to, weight } of graph.neighbors(u)) {\n      const candidate = dist.get(u) + weight;\n      if (candidate < dist.get(to)) {\n        dist.set(to, candidate);\n        parent.set(to, u);\n        heap.push([candidate, to]);\n      }\n    }\n  }\n\n  return { dist, parent };\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function dijkstra(graph, source) {\n  const dist = new Map();\n  const parent = new Map();\n  for (const node of graph.nodes) dist.set(node, Infinity);\n  dist.set(source, 0);\n\n  const heap = new MinHeap();       // ordered by distance\n  heap.push([0, source]);\n\n  while (!heap.isEmpty()) {\n    const [d, u] = heap.pop();\n    if (d > dist.get(u)) continue;  // a stale entry, already improved on\n\n    for (const { to, weight } of graph.neighbors(u)) {\n      const candidate = dist.get(u) + weight;\n      if (candidate < dist.get(to)) {\n        dist.set(to, candidate);\n        parent.set(to, u);\n        heap.push([candidate, to]);\n      }\n    }\n  }\n\n  return { dist, parent };\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "import heapq\n\ndef dijkstra(graph, source):\n    dist = {node: float(\"inf\") for node in graph.nodes}\n    dist[source] = 0\n    parent = {}\n\n    heap = [(0, source)]\n    while heap:\n        d, u = heapq.heappop(heap)\n        if d > dist[u]:\n            continue                 # a stale entry, already improved on\n\n        for to, weight in graph.neighbors(u):\n            candidate = dist[u] + weight\n            if candidate < dist[to]:\n                dist[to] = candidate\n                parent[to] = u\n                heapq.heappush(heap, (candidate, to))\n\n    return dist, parent"
+          "code": "import heapq\n\ndef dijkstra(graph, source):\n    dist = {node: float(\"inf\") for node in graph.nodes}\n    dist[source] = 0\n    parent = {}\n\n    heap = [(0, source)]\n    while heap:\n        d, u = heapq.heappop(heap)\n        if d > dist[u]:\n            continue                 # a stale entry, already improved on\n\n        for to, weight in graph.neighbors(u):\n            candidate = dist[u] + weight\n            if candidate < dist[to]:\n                dist[to] = candidate\n                parent[to] = u\n                heapq.heappush(heap, (candidate, to))\n\n    return dist, parent",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "vector<long long> dijkstra(const vector<vector<pair<int,int>>>& adj, int source) {\n    const long long INF = LLONG_MAX / 4;\n    vector<long long> dist(adj.size(), INF);\n    dist[source] = 0;\n\n    priority_queue<pair<long long,int>,\n                   vector<pair<long long,int>>,\n                   greater<>> heap;\n    heap.push({0, source});\n\n    while (!heap.empty()) {\n        auto [d, u] = heap.top();\n        heap.pop();\n        if (d > dist[u]) continue;   // a stale entry, already improved on\n\n        for (auto [to, weight] : adj[u]) {\n            long long candidate = dist[u] + weight;\n            if (candidate < dist[to]) {\n                dist[to] = candidate;\n                heap.push({candidate, to});\n            }\n        }\n    }\n    return dist;\n}"
+          "code": "vector<long long> dijkstra(const vector<vector<pair<int,int>>>& adj, int source) {\n    const long long INF = LLONG_MAX / 4;\n    vector<long long> dist(adj.size(), INF);\n    dist[source] = 0;\n\n    priority_queue<pair<long long,int>,\n                   vector<pair<long long,int>>,\n                   greater<>> heap;\n    heap.push({0, source});\n\n    while (!heap.empty()) {\n        auto [d, u] = heap.top();\n        heap.pop();\n        if (d > dist[u]) continue;   // a stale entry, already improved on\n\n        for (auto [to, weight] : adj[u]) {\n            long long candidate = dist[u] + weight;\n            if (candidate < dist[to]) {\n                dist[to] = candidate;\n                heap.push({candidate, to});\n            }\n        }\n    }\n    return dist;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -1014,16 +1047,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Dijkstra's Algorithm Explained With a Worked Example",
-  "seoDescription": "Dijkstra's algorithm derived step by step: why greedy nearest-neighbor fails, why settling the smallest tentative distance is provably safe, a full hand trace, and exactly where negative weights break the argument.",
-  "keywords": [
-    "dijkstra's algorithm",
-    "shortest path algorithm",
-    "weighted graph",
-    "priority queue",
-    "dijkstra example"
   ]
 }

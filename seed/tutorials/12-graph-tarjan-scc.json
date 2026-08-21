@@ -13,6 +13,15 @@
   ],
   "sectionSlug": "graph-theory-advanced",
   "position": 20,
+  "seoTitle": "Tarjan's Algorithm: Strongly Connected Components",
+  "seoDescription": "Tarjan's strongly connected components algorithm derived: why DFS puts each component in one contiguous subtree, what lowlink actually measures, why the stack distinguishes live cycles from finished components, and a full trace.",
+  "keywords": [
+    "tarjan's algorithm",
+    "strongly connected components",
+    "scc",
+    "low link value",
+    "directed graph"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -65,9 +74,9 @@
     },
     {
       "id": "h-naive",
+      "text": "The obvious method, and its price",
       "type": "heading",
-      "level": 2,
-      "text": "The obvious method, and its price"
+      "level": 2
     },
     {
       "id": "p-naive",
@@ -100,9 +109,9 @@
     },
     {
       "id": "h-observation",
+      "text": "The observation everything rests on",
       "type": "heading",
-      "level": 2,
-      "text": "The observation everything rests on"
+      "level": 2
     },
     {
       "id": "p-observation",
@@ -164,9 +173,9 @@
     },
     {
       "id": "h-lowlink",
+      "text": "Two numbers per node",
       "type": "heading",
-      "level": 2,
-      "text": "Two numbers per node"
+      "level": 2
     },
     {
       "id": "p-lowlink",
@@ -355,9 +364,9 @@
     },
     {
       "id": "h-stack",
+      "text": "Why there is a stack, and the subtlety inside it",
       "type": "heading",
-      "level": 2,
-      "text": "Why there is a stack, and the subtlety inside it"
+      "level": 2
     },
     {
       "id": "p-stack",
@@ -388,12 +397,6 @@
     },
     {
       "id": "t-edge-cases",
-      "type": "table",
-      "headers": [
-        "The edge points to",
-        "What it means",
-        "What to do"
-      ],
       "rows": [
         [
           "A node still on the stack",
@@ -405,6 +408,12 @@
           "It sits in a finished component, which by definition cannot reach back to you",
           "Ignore the edge completely"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "The edge points to",
+        "What it means",
+        "What to do"
       ]
     },
     {
@@ -471,9 +480,9 @@
     },
     {
       "id": "h-trace",
+      "text": "A full trace",
       "type": "heading",
-      "level": 2,
-      "text": "A full trace"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -495,84 +504,84 @@
     },
     {
       "id": "w-tarjan-live",
-      "type": "interactive",
-      "widget": "tarjan-scc",
       "data": {
         "graph": {
-          "directed": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 60,
-              "y": 60
-            },
-            {
-              "id": "B",
-              "x": 180,
-              "y": 60
-            },
-            {
-              "id": "C",
-              "x": 120,
-              "y": 170
-            },
-            {
-              "id": "D",
-              "x": 300,
-              "y": 60
-            },
-            {
-              "id": "E",
-              "x": 420,
-              "y": 60
-            },
-            {
-              "id": "F",
-              "x": 420,
-              "y": 170
-            },
-            {
-              "id": "G",
-              "x": 300,
-              "y": 170
-            }
-          ],
           "edges": [
             {
-              "from": "A",
-              "to": "B"
+              "to": "B",
+              "from": "A"
             },
             {
-              "from": "B",
-              "to": "C"
+              "to": "C",
+              "from": "B"
             },
             {
-              "from": "C",
-              "to": "A"
+              "to": "A",
+              "from": "C"
             },
             {
-              "from": "B",
-              "to": "D"
+              "to": "D",
+              "from": "B"
             },
             {
-              "from": "D",
-              "to": "E"
+              "to": "E",
+              "from": "D"
             },
             {
-              "from": "E",
-              "to": "F"
+              "to": "F",
+              "from": "E"
             },
             {
-              "from": "F",
-              "to": "E"
+              "to": "E",
+              "from": "F"
             },
             {
-              "from": "D",
-              "to": "G"
+              "to": "G",
+              "from": "D"
             }
-          ]
+          ],
+          "nodes": [
+            {
+              "x": 60,
+              "y": 60,
+              "id": "A"
+            },
+            {
+              "x": 180,
+              "y": 60,
+              "id": "B"
+            },
+            {
+              "x": 120,
+              "y": 170,
+              "id": "C"
+            },
+            {
+              "x": 300,
+              "y": 60,
+              "id": "D"
+            },
+            {
+              "x": 420,
+              "y": 60,
+              "id": "E"
+            },
+            {
+              "x": 420,
+              "y": 170,
+              "id": "F"
+            },
+            {
+              "x": 300,
+              "y": 170,
+              "id": "G"
+            }
+          ],
+          "directed": true
         }
-      }
+      },
+      "type": "interactive",
+      "widget": "tarjan-scc"
     },
     {
       "id": "p-trace-3",
@@ -625,9 +634,9 @@
     },
     {
       "id": "h-play",
+      "text": "Step through it",
       "type": "heading",
-      "level": 2,
-      "text": "Step through it"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -640,90 +649,90 @@
     },
     {
       "id": "w-tarjan",
-      "type": "interactive",
-      "widget": "tarjan-scc",
       "data": {
         "graph": {
-          "directed": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 60,
-              "y": 60
-            },
-            {
-              "id": "B",
-              "x": 180,
-              "y": 60
-            },
-            {
-              "id": "C",
-              "x": 120,
-              "y": 170
-            },
-            {
-              "id": "D",
-              "x": 300,
-              "y": 60
-            },
-            {
-              "id": "E",
-              "x": 420,
-              "y": 60
-            },
-            {
-              "id": "F",
-              "x": 420,
-              "y": 170
-            },
-            {
-              "id": "G",
-              "x": 300,
-              "y": 170
-            }
-          ],
           "edges": [
             {
-              "from": "A",
-              "to": "B"
+              "to": "B",
+              "from": "A"
             },
             {
-              "from": "B",
-              "to": "C"
+              "to": "C",
+              "from": "B"
             },
             {
-              "from": "C",
-              "to": "A"
+              "to": "A",
+              "from": "C"
             },
             {
-              "from": "B",
-              "to": "D"
+              "to": "D",
+              "from": "B"
             },
             {
-              "from": "D",
-              "to": "E"
+              "to": "E",
+              "from": "D"
             },
             {
-              "from": "E",
-              "to": "F"
+              "to": "F",
+              "from": "E"
             },
             {
-              "from": "F",
-              "to": "E"
+              "to": "E",
+              "from": "F"
             },
             {
-              "from": "D",
-              "to": "G"
+              "to": "G",
+              "from": "D"
             }
-          ]
+          ],
+          "nodes": [
+            {
+              "x": 60,
+              "y": 60,
+              "id": "A"
+            },
+            {
+              "x": 180,
+              "y": 60,
+              "id": "B"
+            },
+            {
+              "x": 120,
+              "y": 170,
+              "id": "C"
+            },
+            {
+              "x": 300,
+              "y": 60,
+              "id": "D"
+            },
+            {
+              "x": 420,
+              "y": 60,
+              "id": "E"
+            },
+            {
+              "x": 420,
+              "y": 170,
+              "id": "F"
+            },
+            {
+              "x": 300,
+              "y": 170,
+              "id": "G"
+            }
+          ],
+          "directed": true
         }
-      }
+      },
+      "type": "interactive",
+      "widget": "tarjan-scc"
     },
     {
       "id": "h-cost",
+      "text": "What it costs",
       "type": "heading",
-      "level": 2,
-      "text": "What it costs"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -767,9 +776,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -858,9 +867,9 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "p-code",
@@ -873,26 +882,24 @@
     },
     {
       "id": "code-impl",
+      "code": "function tarjan(graph) {\n  const index = new Map();      // discovery order\n  const low = new Map();        // lowest index reachable, see above\n  const onStack = new Set();\n  const stack = [];\n  const components = [];\n  let counter = 0;\n\n  function visit(v) {\n    index.set(v, counter);\n    low.set(v, counter);\n    counter++;\n    stack.push(v);\n    onStack.add(v);\n\n    for (const w of graph.neighbors(v)) {\n      if (!index.has(w)) {\n        visit(w);                                   // tree edge\n        low.set(v, Math.min(low.get(v), low.get(w)));\n      } else if (onStack.has(w)) {\n        // w is an ancestor or a sibling still being processed, so it can\n        // reach back to v. Use its INDEX, not its low.\n        low.set(v, Math.min(low.get(v), index.get(w)));\n      }\n      // w visited but off the stack: it is in a finished component that\n      // cannot reach us. Ignore it entirely.\n    }\n\n    if (low.get(v) === index.get(v)) {              // v is a root\n      const component = [];\n      let w;\n      do {\n        w = stack.pop();\n        onStack.delete(w);\n        component.push(w);\n      } while (w !== v);\n      components.push(component);\n    }\n  }\n\n  for (const v of graph.nodes) if (!index.has(v)) visit(v);\n  return components;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function tarjan(graph) {\n  const index = new Map();      // discovery order\n  const low = new Map();        // lowest index reachable, see above\n  const onStack = new Set();\n  const stack = [];\n  const components = [];\n  let counter = 0;\n\n  function visit(v) {\n    index.set(v, counter);\n    low.set(v, counter);\n    counter++;\n    stack.push(v);\n    onStack.add(v);\n\n    for (const w of graph.neighbors(v)) {\n      if (!index.has(w)) {\n        visit(w);                                   // tree edge\n        low.set(v, Math.min(low.get(v), low.get(w)));\n      } else if (onStack.has(w)) {\n        // w is an ancestor or a sibling still being processed, so it can\n        // reach back to v. Use its INDEX, not its low.\n        low.set(v, Math.min(low.get(v), index.get(w)));\n      }\n      // w visited but off the stack: it is in a finished component that\n      // cannot reach us. Ignore it entirely.\n    }\n\n    if (low.get(v) === index.get(v)) {              // v is a root\n      const component = [];\n      let w;\n      do {\n        w = stack.pop();\n        onStack.delete(w);\n        component.push(w);\n      } while (w !== v);\n      components.push(component);\n    }\n  }\n\n  for (const v of graph.nodes) if (!index.has(v)) visit(v);\n  return components;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def tarjan(graph):\n    index, low, on_stack = {}, {}, set()\n    stack, components = [], []\n    counter = 0\n\n    def visit(v):\n        nonlocal counter\n        index[v] = low[v] = counter\n        counter += 1\n        stack.append(v)\n        on_stack.add(v)\n\n        for w in graph.neighbors(v):\n            if w not in index:\n                visit(w)                     # tree edge\n                low[v] = min(low[v], low[w])\n            elif w in on_stack:\n                # w can still reach back to v. Use its INDEX, not its low.\n                low[v] = min(low[v], index[w])\n            # w visited but off the stack: finished component, ignore it\n\n        if low[v] == index[v]:               # v is a root\n            component = []\n            while True:\n                w = stack.pop()\n                on_stack.discard(w)\n                component.append(w)\n                if w == v:\n                    break\n            components.append(component)\n\n    for v in graph.nodes:\n        if v not in index:\n            visit(v)\n    return components"
+          "code": "def tarjan(graph):\n    index, low, on_stack = {}, {}, set()\n    stack, components = [], []\n    counter = 0\n\n    def visit(v):\n        nonlocal counter\n        index[v] = low[v] = counter\n        counter += 1\n        stack.append(v)\n        on_stack.add(v)\n\n        for w in graph.neighbors(v):\n            if w not in index:\n                visit(w)                     # tree edge\n                low[v] = min(low[v], low[w])\n            elif w in on_stack:\n                # w can still reach back to v. Use its INDEX, not its low.\n                low[v] = min(low[v], index[w])\n            # w visited but off the stack: finished component, ignore it\n\n        if low[v] == index[v]:               # v is a root\n            component = []\n            while True:\n                w = stack.pop()\n                on_stack.discard(w)\n                component.append(w)\n                if w == v:\n                    break\n            components.append(component)\n\n    for v in graph.nodes:\n        if v not in index:\n            visit(v)\n    return components",
+          "language": "python"
         }
       ]
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -981,16 +988,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Tarjan's Algorithm: Strongly Connected Components",
-  "seoDescription": "Tarjan's strongly connected components algorithm derived: why DFS puts each component in one contiguous subtree, what lowlink actually measures, why the stack distinguishes live cycles from finished components, and a full trace.",
-  "keywords": [
-    "tarjan's algorithm",
-    "strongly connected components",
-    "scc",
-    "low link value",
-    "directed graph"
   ]
 }

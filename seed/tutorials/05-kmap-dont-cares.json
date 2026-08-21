@@ -13,6 +13,15 @@
   ],
   "sectionSlug": "karnaugh-maps",
   "position": 50,
+  "seoTitle": "Don't-Care Conditions in Karnaugh Maps Explained",
+  "seoDescription": "What don't-care conditions are, where they come from, and how marking impossible inputs as X instead of 0 shrinks the simplified expression. With a worked BCD example.",
+  "keywords": [
+    "don't care conditions",
+    "karnaugh map don't care",
+    "dont care kmap",
+    "bcd don't care",
+    "incompletely specified function"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -34,9 +43,9 @@
     },
     {
       "id": "h-where",
+      "text": "Where they come from",
       "type": "heading",
-      "level": 2,
-      "text": "Where they come from"
+      "level": 2
     },
     {
       "id": "p-where",
@@ -49,11 +58,6 @@
     },
     {
       "id": "t-where",
-      "type": "table",
-      "headers": [
-        "Situation",
-        "Inputs that never occur"
-      ],
       "rows": [
         [
           "Binary-coded decimal: 4 bits holding one decimal digit",
@@ -71,6 +75,11 @@
           "A state machine with unreachable states",
           "Any encoding no transition can produce"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Situation",
+        "Inputs that never occur"
       ]
     },
     {
@@ -84,9 +93,9 @@
     },
     {
       "id": "h-worked",
+      "text": "Worked example: is the digit 5 or more?",
       "type": "heading",
-      "level": 2,
-      "text": "Worked example: is the digit 5 or more?"
+      "level": 2
     },
     {
       "id": "p-worked",
@@ -108,15 +117,8 @@
     },
     {
       "id": "w-bcd-strict",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "solve",
         "cells": [
           0,
           0,
@@ -135,9 +137,16 @@
           0,
           0
         ],
-        "mode": "solve",
-        "title": "Impossible inputs forced to 0"
-      }
+        "title": "Impossible inputs forced to 0",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-worked-3",
@@ -159,15 +168,8 @@
     },
     {
       "id": "w-bcd-dc",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "solve",
         "cells": [
           0,
           0,
@@ -186,9 +188,16 @@
           "x",
           "x"
         ],
-        "mode": "solve",
-        "title": "Impossible inputs marked X"
-      }
+        "title": "Impossible inputs marked X",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-worked-5",
@@ -210,18 +219,12 @@
     },
     {
       "id": "h-rules",
+      "text": "The rules",
       "type": "heading",
-      "level": 2,
-      "text": "The rules"
+      "level": 2
     },
     {
       "id": "t-rules",
-      "type": "table",
-      "headers": [
-        "Cell",
-        "Must be covered?",
-        "May be covered?"
-      ],
       "rows": [
         [
           "1",
@@ -238,6 +241,12 @@
           "No",
           "Yes, whenever it helps"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Cell",
+        "Must be covered?",
+        "May be covered?"
       ]
     },
     {
@@ -251,9 +260,9 @@
     },
     {
       "id": "h-danger",
+      "text": "The catch",
       "type": "heading",
-      "level": 2,
-      "text": "The catch"
+      "level": 2
     },
     {
       "id": "p-danger",
@@ -275,9 +284,9 @@
     },
     {
       "id": "h-practice",
+      "text": "Try it",
       "type": "heading",
-      "level": 2,
-      "text": "Try it"
+      "level": 2
     },
     {
       "id": "p-practice",
@@ -290,15 +299,8 @@
     },
     {
       "id": "w-practice",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "practice",
         "cells": [
           0,
           0,
@@ -317,20 +319,25 @@
           "x",
           "x"
         ],
-        "mode": "practice",
-        "title": "Group it yourself"
-      }
+        "title": "Group it yourself",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -385,7 +392,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d1",
@@ -393,19 +402,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/digital-logic/kmap-worked-examples",
       "type": "button",
       "label": "Continue to worked examples",
-      "href": "/tutorials/digital-logic/kmap-worked-examples",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Don't-Care Conditions in Karnaugh Maps Explained",
-  "seoDescription": "What don't-care conditions are, where they come from, and how marking impossible inputs as X instead of 0 shrinks the simplified expression. With a worked BCD example.",
-  "keywords": [
-    "don't care conditions",
-    "karnaugh map don't care",
-    "dont care kmap",
-    "bcd don't care",
-    "incompletely specified function"
   ]
 }

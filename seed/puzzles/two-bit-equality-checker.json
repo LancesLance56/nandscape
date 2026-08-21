@@ -3,22 +3,179 @@
   "title": "2-Bit Equality Checker",
   "description": "Compare two 2-bit values (A1 A0 and B1 B0). XNOR is banned, so each bit's equality has to be built another way before combining them.",
   "difficulty": "medium",
-  "tags": ["combinational", "comparators"],
+  "tags": [
+    "combinational",
+    "comparators"
+  ],
   "gateBudget": 6,
-  "disallowedGateTypes": [5],
-  "inputs": [{ "name": "A1" }, { "name": "A0" }, { "name": "B1" }, { "name": "B0" }],
-  "outputs": [{ "name": "EQ" }],
-  "inputDisplay": [{ "type": "bus", "names": ["A1", "A0"] }, { "type": "bus", "names": ["B1", "B0"] }],
+  "disallowedGateTypes": [
+    5
+  ],
+  "inputs": [
+    {
+      "name": "A1"
+    },
+    {
+      "name": "A0"
+    },
+    {
+      "name": "B1"
+    },
+    {
+      "name": "B0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "EQ"
+    }
+  ],
+  "inputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "A1",
+        "A0"
+      ]
+    },
+    {
+      "type": "bus",
+      "names": [
+        "B1",
+        "B0"
+      ]
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0 }, "outputs": { "EQ": 1 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 1 }, "outputs": { "EQ": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 0 }, "outputs": { "EQ": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 1, "B0": 1 }, "outputs": { "EQ": 1 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 1 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 0 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 1 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 1, "B0": 0 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 1, "B0": 1 }, "outputs": { "EQ": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 0, "B0": 0 }, "outputs": { "EQ": 0 } } }
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0
+        },
+        "outputs": {
+          "EQ": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 1,
+          "B1": 0
+        },
+        "outputs": {
+          "EQ": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 0,
+          "B1": 1
+        },
+        "outputs": {
+          "EQ": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1
+        },
+        "outputs": {
+          "EQ": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 1,
+          "B1": 0
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 0,
+          "B1": 1
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 1,
+          "B1": 1
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 0,
+          "B1": 0
+        },
+        "outputs": {
+          "EQ": 0
+        }
+      }
+    }
   ]
 }

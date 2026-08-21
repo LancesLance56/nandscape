@@ -14,6 +14,15 @@
   ],
   "sectionSlug": "backtracking",
   "position": 40,
+  "seoTitle": "N-Queens Problem: Backtracking Solution Explained Step by Step",
+  "seoDescription": "N-Queens with backtracking: why one queen per row shrinks the problem 300-fold, naming diagonals with row plus or minus column, a full annotated trace of the backtracks, and why 88 solutions means an over-eager prune.",
+  "keywords": [
+    "n queens problem",
+    "8 queens problem",
+    "n queens backtracking",
+    "eight queens puzzle",
+    "n queens algorithm"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -26,9 +35,9 @@
     },
     {
       "id": "h-framing",
+      "text": "Choosing what a decision is",
       "type": "heading",
-      "level": 2,
-      "text": "Choosing what a decision is"
+      "level": 2
     },
     {
       "id": "p-framing",
@@ -59,12 +68,6 @@
     },
     {
       "id": "t-framing",
-      "type": "table",
-      "headers": [
-        "Framing",
-        "Arrangements",
-        "Where the saving came from"
-      ],
       "rows": [
         [
           "Choose 8 squares from 64",
@@ -81,6 +84,12 @@
           "2,057 boards built",
           "checking early instead of at the end"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Framing",
+        "Arrangements",
+        "Where the saving came from"
       ]
     },
     {
@@ -94,9 +103,9 @@
     },
     {
       "id": "h-check-fast",
+      "text": "Checking a square quickly",
       "type": "heading",
-      "level": 2,
-      "text": "Checking a square quickly"
+      "level": 2
     },
     {
       "id": "p-check-fast",
@@ -140,9 +149,9 @@
     },
     {
       "id": "code-diag",
+      "code": "row - col is constant down a \"\\\" diagonal      row + col is constant down a \"/\" diagonal\n\n     c0 c1 c2 c3                                   c0 c1 c2 c3\n r0   0  -1 -2 -3                              r0   0   1  2  3\n r1   1   0 -1 -2                              r1   1   2  3  4\n r2   2   1  0 -1                              r2   2   3  4  5\n r3   3   2  1  0                              r3   3   4  5  6",
       "type": "code",
-      "language": "text",
-      "code": "row - col is constant down a \"\\\" diagonal      row + col is constant down a \"/\" diagonal\n\n     c0 c1 c2 c3                                   c0 c1 c2 c3\n r0   0  -1 -2 -3                              r0   0   1  2  3\n r1   1   0 -1 -2                              r1   1   2  3  4\n r2   2   1  0 -1                              r2   2   3  4  5\n r3   3   2  1  0                              r3   3   4  5  6"
+      "language": "text"
     },
     {
       "id": "p-check-fast-3",
@@ -155,9 +164,9 @@
     },
     {
       "id": "h-trace",
+      "text": "The first stretch, written out",
       "type": "heading",
-      "level": 2,
-      "text": "The first stretch, written out"
+      "level": 2
     },
     {
       "id": "p-trace",
@@ -170,12 +179,12 @@
     },
     {
       "id": "w-queens-trace",
-      "type": "interactive",
-      "widget": "n-queens",
       "data": {
         "n": 4,
         "allSolutions": false
-      }
+      },
+      "type": "interactive",
+      "widget": "n-queens"
     },
     {
       "id": "p-trace-2",
@@ -206,9 +215,9 @@
     },
     {
       "id": "h-play",
+      "text": "Drive it",
       "type": "heading",
-      "level": 2,
-      "text": "Drive it"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -221,33 +230,33 @@
     },
     {
       "id": "w-queens",
+      "data": {},
       "type": "interactive",
-      "widget": "n-queens",
-      "data": {}
+      "widget": "n-queens"
     },
     {
       "id": "w-flow-nq",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "n-queens"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-nq",
+      "code": "function solveNQueens(n) {\n  const solutions = [];\n  const queenInRow = [];              // queenInRow[r] = the column used\n\n  const usedCols  = new Set();\n  const usedDown  = new Set();        // row - col\n  const usedUp    = new Set();        // row + col\n\n  function place(row) {\n    if (row === n) {\n      solutions.push([...queenInRow]);\n      return;\n    }\n\n    for (let col = 0; col < n; col++) {\n      const down = row - col, up = row + col;\n      if (usedCols.has(col) || usedDown.has(down) || usedUp.has(up)) continue;\n\n      usedCols.add(col); usedDown.add(down); usedUp.add(up);\n      queenInRow.push(col);\n\n      place(row + 1);\n\n      queenInRow.pop();\n      usedCols.delete(col); usedDown.delete(down); usedUp.delete(up);\n    }\n  }\n\n  place(0);\n  return solutions;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function solveNQueens(n) {\n  const solutions = [];\n  const queenInRow = [];              // queenInRow[r] = the column used\n\n  const usedCols  = new Set();\n  const usedDown  = new Set();        // row - col\n  const usedUp    = new Set();        // row + col\n\n  function place(row) {\n    if (row === n) {\n      solutions.push([...queenInRow]);\n      return;\n    }\n\n    for (let col = 0; col < n; col++) {\n      const down = row - col, up = row + col;\n      if (usedCols.has(col) || usedDown.has(down) || usedUp.has(up)) continue;\n\n      usedCols.add(col); usedDown.add(down); usedUp.add(up);\n      queenInRow.push(col);\n\n      place(row + 1);\n\n      queenInRow.pop();\n      usedCols.delete(col); usedDown.delete(down); usedUp.delete(up);\n    }\n  }\n\n  place(0);\n  return solutions;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def solve_n_queens(n):\n    solutions, queen_in_row = [], []\n    used_cols, used_down, used_up = set(), set(), set()\n\n    def place(row):\n        if row == n:\n            solutions.append(queen_in_row[:])\n            return\n\n        for col in range(n):\n            down, up = row - col, row + col\n            if col in used_cols or down in used_down or up in used_up:\n                continue\n\n            used_cols.add(col); used_down.add(down); used_up.add(up)\n            queen_in_row.append(col)\n\n            place(row + 1)\n\n            queen_in_row.pop()\n            used_cols.discard(col); used_down.discard(down); used_up.discard(up)\n\n    place(0)\n    return solutions"
+          "code": "def solve_n_queens(n):\n    solutions, queen_in_row = [], []\n    used_cols, used_down, used_up = set(), set(), set()\n\n    def place(row):\n        if row == n:\n            solutions.append(queen_in_row[:])\n            return\n\n        for col in range(n):\n            down, up = row - col, row + col\n            if col in used_cols or down in used_down or up in used_up:\n                continue\n\n            used_cols.add(col); used_down.add(down); used_up.add(up)\n            queen_in_row.append(col)\n\n            place(row + 1)\n\n            queen_in_row.pop()\n            used_cols.discard(col); used_down.discard(down); used_up.discard(up)\n\n    place(0)\n    return solutions",
+          "language": "python"
         }
       ]
     },
@@ -284,9 +293,9 @@
     },
     {
       "id": "h-counts",
+      "text": "How the numbers grow",
       "type": "heading",
-      "level": 2,
-      "text": "How the numbers grow"
+      "level": 2
     },
     {
       "id": "p-counts",
@@ -299,11 +308,6 @@
     },
     {
       "id": "t-counts",
-      "type": "table",
-      "headers": [
-        "Board",
-        "Solutions"
-      ],
       "rows": [
         [
           "4 by 4",
@@ -325,6 +329,11 @@
           "8 by 8",
           "92"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Board",
+        "Solutions"
       ]
     },
     {
@@ -347,9 +356,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -424,14 +433,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -503,16 +510,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "N-Queens Problem: Backtracking Solution Explained Step by Step",
-  "seoDescription": "N-Queens with backtracking: why one queen per row shrinks the problem 300-fold, naming diagonals with row plus or minus column, a full annotated trace of the backtracks, and why 88 solutions means an over-eager prune.",
-  "keywords": [
-    "n queens problem",
-    "8 queens problem",
-    "n queens backtracking",
-    "eight queens puzzle",
-    "n queens algorithm"
   ]
 }

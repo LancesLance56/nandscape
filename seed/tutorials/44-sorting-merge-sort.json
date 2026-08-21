@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-merge-sort",
   "title": "Merge Sort, Step by Step",
   "excerpt": "A complete trace of merge sort on a seven-element array: every split, every merge, and the execution order that almost everyone gets wrong the first time.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T12:20:00Z",
   "tags": [
     "sorting",
@@ -13,7 +12,18 @@
     "recursion",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 30,
+  "seoTitle": "Merge Sort Step by Step: Full Trace, Recursion Order and the Merge",
+  "seoDescription": "Merge sort traced completely on a 7-element array: every split, the exact depth-first call order, one merge shown pointer by pointer, and flowcharts of both halves.",
+  "keywords": [
+    "merge sort",
+    "merge sort step by step",
+    "merge sort example",
+    "merge sort recursion tree",
+    "how merge sort works",
+    "merge sort flowchart"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -44,9 +54,9 @@
     },
     {
       "id": "h-example",
+      "text": "The example we will follow",
       "type": "heading",
-      "level": 2,
-      "text": "The example we will follow"
+      "level": 2
     },
     {
       "id": "p-example",
@@ -59,16 +69,16 @@
     },
     {
       "id": "code-input",
+      "code": "[38, 27, 43, 3, 9, 82, 10]",
       "type": "code",
       "language": "text",
-      "code": "[38, 27, 43, 3, 9, 82, 10]",
       "variants": []
     },
     {
       "id": "h-split",
+      "text": "Step 1: splitting",
       "type": "heading",
-      "level": 2,
-      "text": "Step 1: splitting"
+      "level": 2
     },
     {
       "id": "p-split",
@@ -81,9 +91,9 @@
     },
     {
       "id": "code-tree",
+      "code": "               [38, 27, 43, 3, 9, 82, 10]\n                /                      \\\n       [38, 27, 43]              [3, 9, 82, 10]\n        /       \\                 /          \\\n    [38]    [27, 43]          [3, 9]      [82, 10]\n             /    \\            /   \\       /    \\\n          [27]   [43]        [3]   [9]  [82]   [10]",
       "type": "code",
       "language": "text",
-      "code": "               [38, 27, 43, 3, 9, 82, 10]\n                /                      \\\n       [38, 27, 43]              [3, 9, 82, 10]\n        /       \\                 /          \\\n    [38]    [27, 43]          [3, 9]      [82, 10]\n             /    \\            /   \\       /    \\\n          [27]   [43]        [3]   [9]  [82]   [10]",
       "variants": []
     },
     {
@@ -117,9 +127,9 @@
     },
     {
       "id": "h-order",
+      "text": "Step 2: the order things actually happen",
       "type": "heading",
-      "level": 2,
-      "text": "Step 2: the order things actually happen"
+      "level": 2
     },
     {
       "id": "p-order",
@@ -152,9 +162,9 @@
     },
     {
       "id": "code-trace",
+      "code": " 1  mergeSort([38,27,43,3,9,82,10])  ->  split into [38,27,43] and [3,9,82,10]\n 2    mergeSort([38,27,43])          ->  split into [38] and [27,43]\n 3      mergeSort([38])              ->  base case, return [38]\n 4      mergeSort([27,43])           ->  split into [27] and [43]\n 5        mergeSort([27])            ->  base case, return [27]\n 6        mergeSort([43])            ->  base case, return [43]\n 7      merge([27], [43])            ->  [27,43]\n 8    merge([38], [27,43])           ->  [27,38,43]      <- left half done\n 9    mergeSort([3,9,82,10])         ->  split into [3,9] and [82,10]\n10      mergeSort([3,9])             ->  split into [3] and [9]\n11        mergeSort([3])             ->  base case, return [3]\n12        mergeSort([9])             ->  base case, return [9]\n13      merge([3], [9])              ->  [3,9]\n14      mergeSort([82,10])           ->  split into [82] and [10]\n15        mergeSort([82])            ->  base case, return [82]\n16        mergeSort([10])            ->  base case, return [10]\n17      merge([82], [10])            ->  [10,82]\n18    merge([3,9], [10,82])          ->  [3,9,10,82]     <- right half done\n19  merge([27,38,43], [3,9,10,82])   ->  [3,9,10,27,38,43,82]",
       "type": "code",
       "language": "text",
-      "code": " 1  mergeSort([38,27,43,3,9,82,10])  ->  split into [38,27,43] and [3,9,82,10]\n 2    mergeSort([38,27,43])          ->  split into [38] and [27,43]\n 3      mergeSort([38])              ->  base case, return [38]\n 4      mergeSort([27,43])           ->  split into [27] and [43]\n 5        mergeSort([27])            ->  base case, return [27]\n 6        mergeSort([43])            ->  base case, return [43]\n 7      merge([27], [43])            ->  [27,43]\n 8    merge([38], [27,43])           ->  [27,38,43]      <- left half done\n 9    mergeSort([3,9,82,10])         ->  split into [3,9] and [82,10]\n10      mergeSort([3,9])             ->  split into [3] and [9]\n11        mergeSort([3])             ->  base case, return [3]\n12        mergeSort([9])             ->  base case, return [9]\n13      merge([3], [9])              ->  [3,9]\n14      mergeSort([82,10])           ->  split into [82] and [10]\n15        mergeSort([82])            ->  base case, return [82]\n16        mergeSort([10])            ->  base case, return [10]\n17      merge([82], [10])            ->  [10,82]\n18    merge([3,9], [10,82])          ->  [3,9,10,82]     <- right half done\n19  merge([27,38,43], [3,9,10,82])   ->  [3,9,10,27,38,43,82]",
       "variants": []
     },
     {
@@ -197,9 +207,9 @@
     },
     {
       "id": "h-stack",
+      "text": "Why the recursion works out",
       "type": "heading",
-      "level": 2,
-      "text": "Why the recursion works out"
+      "level": 2
     },
     {
       "id": "p-stack",
@@ -212,9 +222,9 @@
     },
     {
       "id": "code-stack",
+      "code": "mergeSort([38,27,43,3,9,82,10])     waiting on its left half\n  mergeSort([38,27,43])             waiting on its left half\n    mergeSort([27,43])              waiting on its left half\n      mergeSort([27])               running now, returns immediately",
       "type": "code",
       "language": "text",
-      "code": "mergeSort([38,27,43,3,9,82,10])     waiting on its left half\n  mergeSort([38,27,43])             waiting on its left half\n    mergeSort([27,43])              waiting on its left half\n      mergeSort([27])               running now, returns immediately",
       "variants": []
     },
     {
@@ -237,20 +247,20 @@
     },
     {
       "id": "w-vis",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
-        "algorithm": "merge",
-        "preset": "random",
         "size": 8,
+        "preset": "random",
+        "algorithm": "merge",
         "showComparison": false
-      }
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "h-mergestep",
+      "text": "Step 3: inside one merge",
       "type": "heading",
-      "level": 2,
-      "text": "Step 3: inside one merge"
+      "level": 2
     },
     {
       "id": "p-mergestep",
@@ -294,12 +304,6 @@
     },
     {
       "id": "t-merge",
-      "type": "table",
-      "headers": [
-        "Compare",
-        "Take",
-        "Output so far"
-      ],
       "rows": [
         [
           "27 vs 3",
@@ -336,6 +340,12 @@
           "82, the rest of the right",
           "[3, 9, 10, 27, 38, 43, 82]"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Compare",
+        "Take",
+        "Output so far"
       ]
     },
     {
@@ -358,28 +368,28 @@
     },
     {
       "id": "w-sweep",
-      "type": "interactive",
-      "widget": "merge-explorer",
       "data": {
-        "mode": "merge",
         "left": [
           27,
           38,
           43
         ],
+        "mode": "merge",
         "right": [
           3,
           9,
           10,
           82
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "merge-explorer"
     },
     {
       "id": "h-stable",
+      "text": "The one line that decides stability",
       "type": "heading",
-      "level": 2,
-      "text": "The one line that decides stability"
+      "level": 2
     },
     {
       "id": "p-stable",
@@ -443,9 +453,9 @@
     },
     {
       "id": "h-flow",
+      "text": "The algorithm as a flowchart",
       "type": "heading",
-      "level": 2,
-      "text": "The algorithm as a flowchart"
+      "level": 2
     },
     {
       "id": "p-flow",
@@ -469,11 +479,11 @@
     },
     {
       "id": "w-flow-ms",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "merge"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "p-flow-2",
@@ -495,11 +505,11 @@
     },
     {
       "id": "w-flow-merge",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "merge-step"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "p-flow-4",
@@ -512,9 +522,9 @@
     },
     {
       "id": "h-cost",
+      "text": "Why it is n log n",
       "type": "heading",
-      "level": 2,
-      "text": "Why it is n log n"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -545,11 +555,6 @@
     },
     {
       "id": "t-cost",
-      "type": "table",
-      "headers": [
-        "",
-        "Merge sort"
-      ],
       "rows": [
         [
           "Best / average / worst",
@@ -571,13 +576,18 @@
           "Recursion depth",
           "O(log n)"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Merge sort"
       ]
     },
     {
       "id": "h-where",
+      "text": "Where merge sort is the right answer",
       "type": "heading",
-      "level": 2,
-      "text": "Where merge sort is the right answer"
+      "level": 2
     },
     {
       "id": "p-where",
@@ -633,8 +643,8 @@
           "text": "Timsort",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Timsort"
+              "href": "https://en.wikipedia.org/wiki/Timsort",
+              "kind": "link"
             }
           ]
         },
@@ -645,36 +655,34 @@
     },
     {
       "id": "h-code",
+      "text": "In code",
       "type": "heading",
-      "level": 2,
-      "text": "In code"
+      "level": 2
     },
     {
       "id": "code-merge",
+      "code": "function mergeSort(a) {\n  if (a.length <= 1) return a;              // base case: stops the recursion\n\n  const mid = Math.floor(a.length / 2);\n  const left = mergeSort(a.slice(0, mid));  // runs to completion first\n  const right = mergeSort(a.slice(mid));    // only starts once left returns\n\n  return merge(left, right);\n}\n\nfunction merge(left, right) {\n  const out = [];\n  let i = 0, j = 0;\n\n  while (i < left.length && j < right.length) {\n    // <= not <: on a tie take the left, which is what keeps this stable.\n    if (left[i] <= right[j]) out.push(left[i++]);\n    else out.push(right[j++]);\n  }\n\n  // At most one of these runs. Whatever is left is already sorted and\n  // already larger than everything emitted, so it is copied wholesale.\n  while (i < left.length) out.push(left[i++]);\n  while (j < right.length) out.push(right[j++]);\n  return out;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function mergeSort(a) {\n  if (a.length <= 1) return a;              // base case: stops the recursion\n\n  const mid = Math.floor(a.length / 2);\n  const left = mergeSort(a.slice(0, mid));  // runs to completion first\n  const right = mergeSort(a.slice(mid));    // only starts once left returns\n\n  return merge(left, right);\n}\n\nfunction merge(left, right) {\n  const out = [];\n  let i = 0, j = 0;\n\n  while (i < left.length && j < right.length) {\n    // <= not <: on a tie take the left, which is what keeps this stable.\n    if (left[i] <= right[j]) out.push(left[i++]);\n    else out.push(right[j++]);\n  }\n\n  // At most one of these runs. Whatever is left is already sorted and\n  // already larger than everything emitted, so it is copied wholesale.\n  while (i < left.length) out.push(left[i++]);\n  while (j < right.length) out.push(right[j++]);\n  return out;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def merge_sort(a):\n    if len(a) <= 1:\n        return a                          # base case: stops the recursion\n\n    mid = len(a) // 2\n    left = merge_sort(a[:mid])            # runs to completion first\n    right = merge_sort(a[mid:])           # only starts once left returns\n\n    return merge(left, right)\n\n\ndef merge(left, right):\n    out = []\n    i = j = 0\n\n    while i < len(left) and j < len(right):\n        # <= not <: on a tie take the left, which keeps this stable.\n        if left[i] <= right[j]:\n            out.append(left[i]); i += 1\n        else:\n            out.append(right[j]); j += 1\n\n    # At most one of these adds anything: the remainder is already sorted\n    # and already larger than everything emitted so far.\n    out.extend(left[i:])\n    out.extend(right[j:])\n    return out"
+          "code": "def merge_sort(a):\n    if len(a) <= 1:\n        return a                          # base case: stops the recursion\n\n    mid = len(a) // 2\n    left = merge_sort(a[:mid])            # runs to completion first\n    right = merge_sort(a[mid:])           # only starts once left returns\n\n    return merge(left, right)\n\n\ndef merge(left, right):\n    out = []\n    i = j = 0\n\n    while i < len(left) and j < len(right):\n        # <= not <: on a tie take the left, which keeps this stable.\n        if left[i] <= right[j]:\n            out.append(left[i]); i += 1\n        else:\n            out.append(right[j]); j += 1\n\n    # At most one of these adds anything: the remainder is already sorted\n    # and already larger than everything emitted so far.\n    out.extend(left[i:])\n    out.extend(right[j:])\n    return out",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n\nstd::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right) {\n    std::vector<int> out;\n    out.reserve(left.size() + right.size());\n    size_t i = 0, j = 0;\n\n    while (i < left.size() && j < right.size()) {\n        // <= not <: on a tie take the left, which keeps this stable.\n        if (left[i] <= right[j]) out.push_back(left[i++]);\n        else out.push_back(right[j++]);\n    }\n    // At most one of these runs; the remainder is already sorted.\n    while (i < left.size()) out.push_back(left[i++]);\n    while (j < right.size()) out.push_back(right[j++]);\n    return out;\n}\n\nstd::vector<int> mergeSort(std::vector<int> a) {\n    if (a.size() <= 1) return a;          // base case\n    size_t mid = a.size() / 2;\n    auto left  = mergeSort({a.begin(), a.begin() + mid});  // completes first\n    auto right = mergeSort({a.begin() + mid, a.end()});\n    return merge(left, right);\n}"
+          "code": "#include <vector>\n\nstd::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right) {\n    std::vector<int> out;\n    out.reserve(left.size() + right.size());\n    size_t i = 0, j = 0;\n\n    while (i < left.size() && j < right.size()) {\n        // <= not <: on a tie take the left, which keeps this stable.\n        if (left[i] <= right[j]) out.push_back(left[i++]);\n        else out.push_back(right[j++]);\n    }\n    // At most one of these runs; the remainder is already sorted.\n    while (i < left.size()) out.push_back(left[i++]);\n    while (j < right.size()) out.push_back(right[j++]);\n    return out;\n}\n\nstd::vector<int> mergeSort(std::vector<int> a) {\n    if (a.size() <= 1) return a;          // base case\n    size_t mid = a.size() / 2;\n    auto left  = mergeSort({a.begin(), a.begin() + mid});  // completes first\n    auto right = mergeSort({a.begin() + mid, a.end()});\n    return merge(left, right);\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -746,7 +754,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d1",
@@ -754,20 +764,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/dsa/sorting-quick-sort",
       "type": "button",
       "label": "Continue to quick sort",
-      "href": "/tutorials/dsa/sorting-quick-sort",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Merge Sort Step by Step: Full Trace, Recursion Order and the Merge",
-  "seoDescription": "Merge sort traced completely on a 7-element array: every split, the exact depth-first call order, one merge shown pointer by pointer, and flowcharts of both halves.",
-  "keywords": [
-    "merge sort",
-    "merge sort step by step",
-    "merge sort example",
-    "merge sort recursion tree",
-    "how merge sort works",
-    "merge sort flowchart"
   ]
 }

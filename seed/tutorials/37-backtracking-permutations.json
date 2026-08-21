@@ -14,6 +14,15 @@
   ],
   "sectionSlug": "backtracking",
   "position": 30,
+  "seoTitle": "Permutations of a String: Backtracking with Swap and Used Array",
+  "seoDescription": "Permutations with backtracking: why n factorial rules out large inputs, tracking used items and undoing both halves of the state, the swap variant, and the sort-then-skip rule for duplicate elements.",
+  "keywords": [
+    "permutations of a string",
+    "print all permutations",
+    "string permutation backtracking",
+    "permutations with duplicates",
+    "swap permutation algorithm"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -26,9 +35,9 @@
     },
     {
       "id": "h-count",
+      "text": "How much more expensive",
       "type": "heading",
-      "level": 2,
-      "text": "How much more expensive"
+      "level": 2
     },
     {
       "id": "p-count",
@@ -74,9 +83,9 @@
     },
     {
       "id": "code-count",
+      "code": "n = 3    3 x 2 x 1 = 6 arrangements\nn = 5    120\nn = 10   3,628,800\nn = 13   over 6 billion\nn = 20   about 2.4 x 10^18, more than seconds since the universe began",
       "type": "code",
-      "language": "text",
-      "code": "n = 3    3 x 2 x 1 = 6 arrangements\nn = 5    120\nn = 10   3,628,800\nn = 13   over 6 billion\nn = 20   about 2.4 x 10^18, more than seconds since the universe began"
+      "language": "text"
     },
     {
       "id": "p-count-2",
@@ -98,9 +107,9 @@
     },
     {
       "id": "h-track",
+      "text": "The new difficulty: remembering what you used",
       "type": "heading",
-      "level": 2,
-      "text": "The new difficulty: remembering what you used"
+      "level": 2
     },
     {
       "id": "p-track",
@@ -162,9 +171,9 @@
     },
     {
       "id": "h-play",
+      "text": "Watch it run",
       "type": "heading",
-      "level": 2,
-      "text": "Watch it run"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -177,23 +186,23 @@
     },
     {
       "id": "w-perms",
+      "data": {},
       "type": "interactive",
-      "widget": "permutations-explorer",
-      "data": {}
+      "widget": "permutations-explorer"
     },
     {
       "id": "w-flow-perms",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "permutations"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-swap",
+      "text": "The other way, which trades clarity for memory",
       "type": "heading",
-      "level": 2,
-      "text": "The other way, which trades clarity for memory"
+      "level": 2
     },
     {
       "id": "p-swap",
@@ -268,9 +277,9 @@
     },
     {
       "id": "h-dupes",
+      "text": "When the input has repeats",
       "type": "heading",
-      "level": 2,
-      "text": "When the input has repeats"
+      "level": 2
     },
     {
       "id": "p-dupes",
@@ -312,9 +321,9 @@
     },
     {
       "id": "code-dedup",
+      "code": "items.sort();                     // equal items now sit next to each other\n\nfor (let i = 0; i < items.length; i++) {\n  if (used[i]) continue;\n  // Skip a duplicate unless the copy before it is already placed.\n  if (i > 0 && items[i] === items[i - 1] && !used[i - 1]) continue;\n  ...\n}",
       "type": "code",
-      "language": "javascript",
-      "code": "items.sort();                     // equal items now sit next to each other\n\nfor (let i = 0; i < items.length; i++) {\n  if (used[i]) continue;\n  // Skip a duplicate unless the copy before it is already placed.\n  if (i > 0 && items[i] === items[i - 1] && !used[i - 1]) continue;\n  ...\n}"
+      "language": "javascript"
     },
     {
       "id": "p-dupes-4",
@@ -338,27 +347,27 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-perm",
+      "code": "function permutations(items) {\n  const answers = [];\n  const current = [];\n  const used = new Array(items.length).fill(false);\n\n  function solve() {\n    if (current.length === items.length) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let i = 0; i < items.length; i++) {\n      if (used[i]) continue;          // already placed somewhere above\n\n      used[i] = true;                 // choose\n      current.push(items[i]);\n      solve();                        // explore\n      current.pop();                  // un-choose, both halves\n      used[i] = false;\n    }\n  }\n\n  solve();\n  return answers;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function permutations(items) {\n  const answers = [];\n  const current = [];\n  const used = new Array(items.length).fill(false);\n\n  function solve() {\n    if (current.length === items.length) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let i = 0; i < items.length; i++) {\n      if (used[i]) continue;          // already placed somewhere above\n\n      used[i] = true;                 // choose\n      current.push(items[i]);\n      solve();                        // explore\n      current.pop();                  // un-choose, both halves\n      used[i] = false;\n    }\n  }\n\n  solve();\n  return answers;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def permutations(items):\n    answers, current = [], []\n    used = [False] * len(items)\n\n    def solve():\n        if len(current) == len(items):\n            answers.append(current[:])\n            return\n\n        for i in range(len(items)):\n            if used[i]:\n                continue              # already placed somewhere above\n\n            used[i] = True            # choose\n            current.append(items[i])\n            solve()                   # explore\n            current.pop()             # un-choose, both halves\n            used[i] = False\n\n    solve()\n    return answers"
+          "code": "def permutations(items):\n    answers, current = [], []\n    used = [False] * len(items)\n\n    def solve():\n        if len(current) == len(items):\n            answers.append(current[:])\n            return\n\n        for i in range(len(items)):\n            if used[i]:\n                continue              # already placed somewhere above\n\n            used[i] = True            # choose\n            current.append(items[i])\n            solve()                   # explore\n            current.pop()             # un-choose, both halves\n            used[i] = False\n\n    solve()\n    return answers",
+          "language": "python"
         }
       ]
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -441,14 +450,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -520,16 +527,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Permutations of a String: Backtracking with Swap and Used Array",
-  "seoDescription": "Permutations with backtracking: why n factorial rules out large inputs, tracking used items and undoing both halves of the state, the swap variant, and the sort-then-skip rule for duplicate elements.",
-  "keywords": [
-    "permutations of a string",
-    "print all permutations",
-    "string permutation backtracking",
-    "permutations with duplicates",
-    "swap permutation algorithm"
   ]
 }

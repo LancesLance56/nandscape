@@ -43,9 +43,9 @@
     },
     {
       "id": "h-state",
+      "text": "What a state actually is",
       "type": "heading",
-      "level": 2,
-      "text": "What a state actually is"
+      "level": 2
     },
     {
       "id": "p-state-1",
@@ -76,9 +76,9 @@
     },
     {
       "id": "h-three",
+      "text": "Three problems, one row each",
       "type": "heading",
-      "level": 2,
-      "text": "Three problems, one row each"
+      "level": 2
     },
     {
       "id": "p-rob-1",
@@ -196,17 +196,17 @@
     },
     {
       "id": "w-array",
-      "type": "interactive",
-      "widget": "dp-array",
       "data": {
         "problem": "rob"
-      }
+      },
+      "type": "interactive",
+      "widget": "dp-array"
     },
     {
       "id": "h-check",
+      "text": "A checklist for finding the state",
       "type": "heading",
-      "level": 2,
-      "text": "A checklist for finding the state"
+      "level": 2
     },
     {
       "id": "p-check-1",
@@ -219,11 +219,6 @@
     },
     {
       "id": "t-check",
-      "type": "table",
-      "headers": [
-        "Ask this",
-        "And it hands you"
-      ],
       "rows": [
         [
           "What decision does the algorithm make at each step?",
@@ -238,7 +233,12 @@
           "the base cases"
         ]
       ],
-      "caption": "Asked in this order, because the second answer is what the first one keeps needing."
+      "type": "table",
+      "caption": "Asked in this order, because the second answer is what the first one keeps needing.",
+      "headers": [
+        "Ask this",
+        "And it hands you"
+      ]
     },
     {
       "id": "p-check-2",
@@ -260,8 +260,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -316,7 +314,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "p-next",

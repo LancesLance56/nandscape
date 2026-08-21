@@ -3,28 +3,224 @@
   "title": "2-Bit Ripple-Carry Adder",
   "description": "Add two 2-bit numbers plus a carry-in. Circuit blocks are disabled for puzzles, so the two bit-stages have to be wired by hand rather than reused as a block.",
   "difficulty": "hard",
-  "tags": ["combinational", "arithmetic"],
+  "tags": [
+    "combinational",
+    "arithmetic"
+  ],
   "gateBudget": 12,
   "inputs": [
-    { "name": "A1" },
-    { "name": "A0" },
-    { "name": "B1" },
-    { "name": "B0" },
-    { "name": "CIN" }
+    {
+      "name": "A1"
+    },
+    {
+      "name": "A0"
+    },
+    {
+      "name": "B1"
+    },
+    {
+      "name": "B0"
+    },
+    {
+      "name": "CIN"
+    }
   ],
-  "outputs": [{ "name": "SUM1" }, { "name": "SUM0" }, { "name": "COUT" }],
-  "inputDisplay": [{ "type": "bus", "names": ["A1", "A0"] }, { "type": "bus", "names": ["B1", "B0"] }],
-  "outputDisplay": [{ "type": "bus", "names": ["SUM1", "SUM0"] }],
+  "outputs": [
+    {
+      "name": "SUM1"
+    },
+    {
+      "name": "SUM0"
+    },
+    {
+      "name": "COUT"
+    }
+  ],
+  "inputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "A1",
+        "A0"
+      ]
+    },
+    {
+      "type": "bus",
+      "names": [
+        "B1",
+        "B0"
+      ]
+    }
+  ],
+  "outputDisplay": [
+    {
+      "type": "bus",
+      "names": [
+        "SUM1",
+        "SUM0"
+      ]
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 0, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 0, "B0": 1, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 1, "B0": 1, "CIN": 1 }, "outputs": { "SUM1": 1, "SUM0": 1, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 0, "B0": 1, "CIN": 1 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "SUM1": 1, "SUM0": 0, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 0, "B1": 0, "B0": 0, "CIN": 1 }, "outputs": { "SUM1": 0, "SUM0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 0, "B1": 1, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 0, "SUM0": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A1": 0, "A0": 1, "B1": 1, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A1": 1, "A0": 1, "B1": 0, "B0": 0, "CIN": 0 }, "outputs": { "SUM1": 1, "SUM0": 1, "COUT": 0 } } }
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "CIN": 0
+        },
+        "outputs": {
+          "COUT": 0,
+          "SUM0": 0,
+          "SUM1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 1,
+          "B1": 0,
+          "CIN": 0
+        },
+        "outputs": {
+          "COUT": 0,
+          "SUM0": 0,
+          "SUM1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 1,
+          "B1": 0,
+          "CIN": 0
+        },
+        "outputs": {
+          "COUT": 1,
+          "SUM0": 0,
+          "SUM1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 1,
+          "B1": 1,
+          "CIN": 1
+        },
+        "outputs": {
+          "COUT": 1,
+          "SUM0": 1,
+          "SUM1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 1,
+          "B1": 0,
+          "CIN": 1
+        },
+        "outputs": {
+          "COUT": 1,
+          "SUM0": 0,
+          "SUM1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "CIN": 1
+        },
+        "outputs": {
+          "COUT": 0,
+          "SUM0": 0,
+          "SUM1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 0,
+          "B0": 0,
+          "B1": 0,
+          "CIN": 1
+        },
+        "outputs": {
+          "COUT": 0,
+          "SUM0": 1,
+          "SUM1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 0,
+          "A1": 1,
+          "B0": 0,
+          "B1": 1,
+          "CIN": 0
+        },
+        "outputs": {
+          "COUT": 1,
+          "SUM0": 0,
+          "SUM1": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 0,
+          "B0": 0,
+          "B1": 1,
+          "CIN": 0
+        },
+        "outputs": {
+          "COUT": 0,
+          "SUM0": 1,
+          "SUM1": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A0": 1,
+          "A1": 1,
+          "B0": 0,
+          "B1": 0,
+          "CIN": 0
+        },
+        "outputs": {
+          "COUT": 0,
+          "SUM0": 1,
+          "SUM1": 1
+        }
+      }
+    }
   ]
 }

@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-introduction",
   "title": "Introduction to Sorting",
   "excerpt": "Why sorting matters more for what it enables than for itself, what stability and in-place actually mean, and the proof that no comparison sort can beat n log n.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T12:00:00Z",
   "tags": [
     "sorting",
@@ -12,7 +11,17 @@
     "complexity",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 10,
+  "seoTitle": "Introduction to Sorting Algorithms: Stability, Memory and the n log n Bound",
+  "seoDescription": "What sorting actually buys you, what stable, in-place and adaptive mean, and the full proof that no comparison sort can beat O(n log n). With an interactive visualizer.",
+  "keywords": [
+    "sorting algorithms",
+    "introduction to sorting",
+    "stable sort",
+    "comparison sort lower bound",
+    "n log n lower bound"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -34,18 +43,12 @@
     },
     {
       "id": "h-cost",
+      "text": "What sorting buys you",
       "type": "heading",
-      "level": 2,
-      "text": "What sorting buys you"
+      "level": 2
     },
     {
       "id": "t-cost",
-      "type": "table",
-      "headers": [
-        "Question",
-        "Unsorted",
-        "Sorted"
-      ],
       "rows": [
         [
           "Is x present?",
@@ -72,6 +75,12 @@
           "O(n²) pairwise",
           "O(n) sweep"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Question",
+        "Unsorted",
+        "Sorted"
       ]
     },
     {
@@ -85,9 +94,9 @@
     },
     {
       "id": "h-watch",
+      "text": "Watch them run",
       "type": "heading",
-      "level": 2,
-      "text": "Watch them run"
+      "level": 2
     },
     {
       "id": "p-watch",
@@ -100,19 +109,19 @@
     },
     {
       "id": "w-vis",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
-        "algorithm": "bubble",
+        "size": 12,
         "preset": "random",
-        "size": 12
-      }
+        "algorithm": "bubble"
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "h-props",
+      "text": "The three properties that actually matter",
       "type": "heading",
-      "level": 2,
-      "text": "The three properties that actually matter"
+      "level": 2
     },
     {
       "id": "p-props",
@@ -125,9 +134,9 @@
     },
     {
       "id": "h-stable",
+      "text": "Stability",
       "type": "heading",
-      "level": 3,
-      "text": "Stability"
+      "level": 3
     },
     {
       "id": "p-stable",
@@ -160,23 +169,23 @@
     },
     {
       "id": "t-stable",
-      "type": "table",
-      "headers": [
-        "Stable",
-        "Not stable"
-      ],
       "rows": [
         [
           "Insertion, bubble, merge, counting, Timsort",
           "Selection, quick, heap"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Stable",
+        "Not stable"
       ]
     },
     {
       "id": "h-inplace",
+      "text": "Memory",
       "type": "heading",
-      "level": 3,
-      "text": "Memory"
+      "level": 3
     },
     {
       "id": "p-inplace",
@@ -189,9 +198,9 @@
     },
     {
       "id": "h-adaptive",
+      "text": "Adaptivity",
       "type": "heading",
-      "level": 3,
-      "text": "Adaptivity"
+      "level": 3
     },
     {
       "id": "p-adaptive",
@@ -224,9 +233,9 @@
     },
     {
       "id": "h-bound",
+      "text": "Why nothing beats n log n",
       "type": "heading",
-      "level": 2,
-      "text": "Why nothing beats n log n"
+      "level": 2
     },
     {
       "id": "p-bound",
@@ -259,9 +268,9 @@
     },
     {
       "id": "code-bound",
+      "code": "2^c  >=  n!\n c   >=  log2(n!)\n c   >=  n log2(n) - n/ln(2)      (Stirling's approximation)\n c   =   Omega(n log n)",
       "type": "code",
       "language": "text",
-      "code": "2^c  >=  n!\n c   >=  log2(n!)\n c   >=  n log2(n) - n/ln(2)      (Stirling's approximation)\n c   =   Omega(n log n)",
       "variants": []
     },
     {
@@ -275,8 +284,8 @@
           "text": "comparison sort lower bound",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Comparison_sort"
+              "href": "https://en.wikipedia.org/wiki/Comparison_sort",
+              "kind": "link"
             }
           ]
         },
@@ -296,9 +305,9 @@
     },
     {
       "id": "h-real",
+      "text": "What real languages actually use",
       "type": "heading",
-      "level": 2,
-      "text": "What real languages actually use"
+      "level": 2
     },
     {
       "id": "p-real",
@@ -317,8 +326,8 @@
           "text": "Timsort",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://en.wikipedia.org/wiki/Timsort"
+              "href": "https://en.wikipedia.org/wiki/Timsort",
+              "kind": "link"
             }
           ]
         },
@@ -358,14 +367,12 @@
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -420,13 +427,15 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "h-sources",
+      "text": "Sources",
       "type": "heading",
-      "level": 2,
-      "text": "Sources"
+      "level": 2
     },
     {
       "id": "p-sources",
@@ -439,8 +448,8 @@
           "text": "Algorithms, 4th edition sorting chapter",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://algs4.cs.princeton.edu/20sorting/"
+              "href": "https://algs4.cs.princeton.edu/20sorting/",
+              "kind": "link"
             }
           ]
         },
@@ -451,8 +460,8 @@
           "text": "Competitive Programmer's Handbook",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://cses.fi/book/book.pdf"
+              "href": "https://cses.fi/book/book.pdf",
+              "kind": "link"
             }
           ]
         },
@@ -467,19 +476,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/dsa/sorting-elementary",
       "type": "button",
       "label": "Continue to the elementary sorts",
-      "href": "/tutorials/dsa/sorting-elementary",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Introduction to Sorting Algorithms: Stability, Memory and the n log n Bound",
-  "seoDescription": "What sorting actually buys you, what stable, in-place and adaptive mean, and the full proof that no comparison sort can beat O(n log n). With an interactive visualizer.",
-  "keywords": [
-    "sorting algorithms",
-    "introduction to sorting",
-    "stable sort",
-    "comparison sort lower bound",
-    "n log n lower bound"
   ]
 }

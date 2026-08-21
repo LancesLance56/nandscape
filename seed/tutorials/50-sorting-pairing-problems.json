@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-pairing-problems",
   "title": "Sort, Then One Pass",
   "excerpt": "Five problems where the algorithm is trivial once the data is sorted. The interesting part is proving the sorted pairing is the best one.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T13:20:00Z",
   "tags": [
     "sorting",
@@ -12,7 +11,17 @@
     "exchange-argument",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 90,
+  "seoTitle": "Sort Then One Pass: Greedy Pairing Problems and Exchange Arguments",
+  "seoDescription": "Five problems that become trivial after sorting: minimum difference pair, wave form, max sum of i*arr[i], Tywin's war strategy and minimum moves, each with its optimality proof.",
+  "keywords": [
+    "minimum difference pair",
+    "sort array in wave form",
+    "maximum sum of i*arr[i]",
+    "tywin war strategy",
+    "exchange argument greedy"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -34,17 +43,17 @@
     },
     {
       "id": "w-pair",
-      "type": "interactive",
-      "widget": "pairing-explorer",
       "data": {
         "mode": "minDiff"
-      }
+      },
+      "type": "interactive",
+      "widget": "pairing-explorer"
     },
     {
       "id": "h-mindiff",
+      "text": "Minimum difference pair",
       "type": "heading",
-      "level": 2,
-      "text": "Minimum difference pair"
+      "level": 2
     },
     {
       "id": "p-mindiff",
@@ -66,9 +75,9 @@
     },
     {
       "id": "h-wave",
+      "text": "Wave form",
       "type": "heading",
-      "level": 2,
-      "text": "Wave form"
+      "level": 2
     },
     {
       "id": "p-wave",
@@ -99,9 +108,9 @@
     },
     {
       "id": "h-index",
+      "text": "Maximum sum of i × arr[i]",
       "type": "heading",
-      "level": 2,
-      "text": "Maximum sum of i × arr[i]"
+      "level": 2
     },
     {
       "id": "p-index",
@@ -123,9 +132,9 @@
     },
     {
       "id": "h-tywin",
+      "text": "Tywin's war strategy",
       "type": "heading",
-      "level": 2,
-      "text": "Tywin's war strategy"
+      "level": 2
     },
     {
       "id": "p-tywin",
@@ -176,9 +185,9 @@
     },
     {
       "id": "h-moves",
+      "text": "Minimum moves to seat everyone",
       "type": "heading",
-      "level": 2,
-      "text": "Minimum moves to seat everyone"
+      "level": 2
     },
     {
       "id": "p-moves",
@@ -200,18 +209,12 @@
     },
     {
       "id": "h-summary",
+      "text": "The pattern",
       "type": "heading",
-      "level": 2,
-      "text": "The pattern"
+      "level": 2
     },
     {
       "id": "t-sum",
-      "type": "table",
-      "headers": [
-        "Problem",
-        "After sorting",
-        "Why it is optimal"
-      ],
       "rows": [
         [
           "Minimum difference pair",
@@ -238,6 +241,12 @@
           "Pair in order",
           "Crossed assignments can be uncrossed for free"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Problem",
+        "After sorting",
+        "Why it is optimal"
       ]
     },
     {
@@ -251,36 +260,34 @@
     },
     {
       "id": "h-code",
+      "text": "In code",
       "type": "heading",
-      "level": 2,
-      "text": "In code"
+      "level": 2
     },
     {
       "id": "code-pair",
+      "code": "function minimumDifference(a) {\n  const s = [...a].sort((x, y) => x - y);\n  let best = Infinity;\n  for (let i = 0; i + 1 < s.length; i++) best = Math.min(best, s[i + 1] - s[i]);\n  return best;\n}\n\nfunction waveForm(a) {\n  const s = [...a].sort((x, y) => x - y);\n  for (let i = 0; i + 1 < s.length; i += 2) [s[i], s[i + 1]] = [s[i + 1], s[i]];\n  return s;\n}\n\nfunction maxIndexSum(a) {\n  const s = [...a].sort((x, y) => x - y);          // biggest value, biggest index\n  return s.reduce((total, v, i) => total + i * v, 0);\n}\n\nfunction maxWins(mine, theirs) {\n  const a = [...mine].sort((x, y) => x - y);\n  const e = [...theirs].sort((x, y) => x - y);\n  let wins = 0, i = 0;\n\n  for (let j = 0; j < e.length && i < a.length; j++) {\n    // Skip units too weak to beat this enemy: they cannot beat any later one.\n    while (i < a.length && a[i] <= e[j]) i++;\n    if (i < a.length) { wins++; i++; }\n  }\n  return wins;\n}\n\nfunction minimumMoves(people, chairs) {\n  const p = [...people].sort((x, y) => x - y);\n  const c = [...chairs].sort((x, y) => x - y);\n  return p.reduce((total, v, i) => total + Math.abs(v - c[i]), 0);\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function minimumDifference(a) {\n  const s = [...a].sort((x, y) => x - y);\n  let best = Infinity;\n  for (let i = 0; i + 1 < s.length; i++) best = Math.min(best, s[i + 1] - s[i]);\n  return best;\n}\n\nfunction waveForm(a) {\n  const s = [...a].sort((x, y) => x - y);\n  for (let i = 0; i + 1 < s.length; i += 2) [s[i], s[i + 1]] = [s[i + 1], s[i]];\n  return s;\n}\n\nfunction maxIndexSum(a) {\n  const s = [...a].sort((x, y) => x - y);          // biggest value, biggest index\n  return s.reduce((total, v, i) => total + i * v, 0);\n}\n\nfunction maxWins(mine, theirs) {\n  const a = [...mine].sort((x, y) => x - y);\n  const e = [...theirs].sort((x, y) => x - y);\n  let wins = 0, i = 0;\n\n  for (let j = 0; j < e.length && i < a.length; j++) {\n    // Skip units too weak to beat this enemy: they cannot beat any later one.\n    while (i < a.length && a[i] <= e[j]) i++;\n    if (i < a.length) { wins++; i++; }\n  }\n  return wins;\n}\n\nfunction minimumMoves(people, chairs) {\n  const p = [...people].sort((x, y) => x - y);\n  const c = [...chairs].sort((x, y) => x - y);\n  return p.reduce((total, v, i) => total + Math.abs(v - c[i]), 0);\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def minimum_difference(a):\n    s = sorted(a)\n    return min(s[i + 1] - s[i] for i in range(len(s) - 1))\n\n\ndef wave_form(a):\n    s = sorted(a)\n    for i in range(0, len(s) - 1, 2):\n        s[i], s[i + 1] = s[i + 1], s[i]\n    return s\n\n\ndef max_index_sum(a):\n    s = sorted(a)                       # biggest value, biggest index\n    return sum(i * v for i, v in enumerate(s))\n\n\ndef max_wins(mine, theirs):\n    a, e = sorted(mine), sorted(theirs)\n    wins = i = 0\n\n    for j in range(len(e)):\n        if i >= len(a):\n            break\n        # Skip units too weak to beat this enemy: later enemies are stronger.\n        while i < len(a) and a[i] <= e[j]:\n            i += 1\n        if i < len(a):\n            wins += 1\n            i += 1\n    return wins\n\n\ndef minimum_moves(people, chairs):\n    return sum(abs(p - c) for p, c in zip(sorted(people), sorted(chairs)))"
+          "code": "def minimum_difference(a):\n    s = sorted(a)\n    return min(s[i + 1] - s[i] for i in range(len(s) - 1))\n\n\ndef wave_form(a):\n    s = sorted(a)\n    for i in range(0, len(s) - 1, 2):\n        s[i], s[i + 1] = s[i + 1], s[i]\n    return s\n\n\ndef max_index_sum(a):\n    s = sorted(a)                       # biggest value, biggest index\n    return sum(i * v for i, v in enumerate(s))\n\n\ndef max_wins(mine, theirs):\n    a, e = sorted(mine), sorted(theirs)\n    wins = i = 0\n\n    for j in range(len(e)):\n        if i >= len(a):\n            break\n        # Skip units too weak to beat this enemy: later enemies are stronger.\n        while i < len(a) and a[i] <= e[j]:\n            i += 1\n        if i < len(a):\n            wins += 1\n            i += 1\n    return wins\n\n\ndef minimum_moves(people, chairs):\n    return sum(abs(p - c) for p, c in zip(sorted(people), sorted(chairs)))",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <algorithm>\n#include <numeric>\n#include <cmath>\n\nint minimumDifference(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    int best = INT_MAX;\n    for (size_t i = 0; i + 1 < a.size(); i++) best = std::min(best, a[i + 1] - a[i]);\n    return best;\n}\n\nstd::vector<int> waveForm(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    for (size_t i = 0; i + 1 < a.size(); i += 2) std::swap(a[i], a[i + 1]);\n    return a;\n}\n\nlong long maxIndexSum(std::vector<int> a) {\n    std::sort(a.begin(), a.end());       // biggest value, biggest index\n    long long total = 0;\n    for (size_t i = 0; i < a.size(); i++) total += (long long)i * a[i];\n    return total;\n}\n\nint maxWins(std::vector<int> mine, std::vector<int> theirs) {\n    std::sort(mine.begin(), mine.end());\n    std::sort(theirs.begin(), theirs.end());\n    int wins = 0;\n    size_t i = 0;\n    for (size_t j = 0; j < theirs.size() && i < mine.size(); j++) {\n        // Units too weak here cannot beat any later enemy either.\n        while (i < mine.size() && mine[i] <= theirs[j]) i++;\n        if (i < mine.size()) { wins++; i++; }\n    }\n    return wins;\n}\n\nlong long minimumMoves(std::vector<int> people, std::vector<int> chairs) {\n    std::sort(people.begin(), people.end());\n    std::sort(chairs.begin(), chairs.end());\n    long long total = 0;\n    for (size_t i = 0; i < people.size(); i++) total += std::abs(people[i] - chairs[i]);\n    return total;\n}"
+          "code": "#include <vector>\n#include <algorithm>\n#include <numeric>\n#include <cmath>\n\nint minimumDifference(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    int best = INT_MAX;\n    for (size_t i = 0; i + 1 < a.size(); i++) best = std::min(best, a[i + 1] - a[i]);\n    return best;\n}\n\nstd::vector<int> waveForm(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    for (size_t i = 0; i + 1 < a.size(); i += 2) std::swap(a[i], a[i + 1]);\n    return a;\n}\n\nlong long maxIndexSum(std::vector<int> a) {\n    std::sort(a.begin(), a.end());       // biggest value, biggest index\n    long long total = 0;\n    for (size_t i = 0; i < a.size(); i++) total += (long long)i * a[i];\n    return total;\n}\n\nint maxWins(std::vector<int> mine, std::vector<int> theirs) {\n    std::sort(mine.begin(), mine.end());\n    std::sort(theirs.begin(), theirs.end());\n    int wins = 0;\n    size_t i = 0;\n    for (size_t j = 0; j < theirs.size() && i < mine.size(); j++) {\n        // Units too weak here cannot beat any later enemy either.\n        while (i < mine.size() && mine[i] <= theirs[j]) i++;\n        if (i < mine.size()) { wins++; i++; }\n    }\n    return wins;\n}\n\nlong long minimumMoves(std::vector<int> people, std::vector<int> chairs) {\n    std::sort(people.begin(), people.end());\n    std::sort(chairs.begin(), chairs.end());\n    long long total = 0;\n    for (size_t i = 0; i < people.size(); i++) total += std::abs(people[i] - chairs[i]);\n    return total;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -335,13 +342,15 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "h-sources",
+      "text": "Sources and practice",
       "type": "heading",
-      "level": 2,
-      "text": "Sources and practice"
+      "level": 2
     },
     {
       "id": "p-sources",
@@ -354,8 +363,8 @@
           "text": "Algorithms sorting chapter",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://algs4.cs.princeton.edu/20sorting/"
+              "href": "https://algs4.cs.princeton.edu/20sorting/",
+              "kind": "link"
             }
           ]
         },
@@ -366,8 +375,8 @@
           "text": "CSES Problem Set",
           "marks": [
             {
-              "kind": "link",
-              "href": "https://cses.fi/problemset/"
+              "href": "https://cses.fi/problemset/",
+              "kind": "link"
             }
           ]
         },
@@ -382,19 +391,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tools/sorting-algorithm-visualizer",
       "type": "button",
       "label": "Open the sorting visualizer",
-      "href": "/tools/sorting-algorithm-visualizer",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Sort Then One Pass: Greedy Pairing Problems and Exchange Arguments",
-  "seoDescription": "Five problems that become trivial after sorting: minimum difference pair, wave form, max sum of i*arr[i], Tywin's war strategy and minimum moves, each with its optimality proof.",
-  "keywords": [
-    "minimum difference pair",
-    "sort array in wave form",
-    "maximum sum of i*arr[i]",
-    "tywin war strategy",
-    "exchange argument greedy"
   ]
 }

@@ -1,10 +1,9 @@
 {
-  "authorName": "Lance Dy Chua",
-  "status": "published",
-  "sectionSlug": "sorting",
   "slug": "sorting-quick-sort",
   "title": "Quick Sort, Step by Step",
   "excerpt": "A complete partition trace showing what the two pointers mean at every moment, why the pivot lands in its final position, and how sorted input becomes the worst case.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
   "publishedAt": "2026-08-16T12:30:00Z",
   "tags": [
     "sorting",
@@ -13,7 +12,18 @@
     "recursion",
     "dsa"
   ],
+  "sectionSlug": "sorting",
   "position": 40,
+  "seoTitle": "Quick Sort Step by Step: Full Partition Trace and the Invariant",
+  "seoDescription": "Quick sort traced completely: what both partition pointers mean, the loop invariant, why the pivot is final, why sorted input is the worst case, and flowcharts of both parts.",
+  "keywords": [
+    "quick sort",
+    "quicksort step by step",
+    "lomuto partition",
+    "quicksort example",
+    "partition invariant",
+    "quicksort flowchart"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -55,9 +65,9 @@
     },
     {
       "id": "h-partition",
+      "text": "Partitioning, traced completely",
       "type": "heading",
-      "level": 2,
-      "text": "Partitioning, traced completely"
+      "level": 2
     },
     {
       "id": "p-partition",
@@ -79,9 +89,9 @@
     },
     {
       "id": "code-part-input",
+      "code": "[7, 2, 9, 4, 3, 7, 6]      pivot = 6 (the last element)",
       "type": "code",
       "language": "text",
-      "code": "[7, 2, 9, 4, 3, 7, 6]      pivot = 6 (the last element)",
       "variants": []
     },
     {
@@ -95,11 +105,6 @@
     },
     {
       "id": "t-pointers",
-      "type": "table",
-      "headers": [
-        "Index",
-        "Meaning"
-      ],
       "rows": [
         [
           "i",
@@ -109,6 +114,11 @@
           "j",
           "The scanner. It walks every element from the start up to (but not including) the pivot."
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Index",
+        "Meaning"
       ]
     },
     {
@@ -133,14 +143,6 @@
     },
     {
       "id": "t-trace",
-      "type": "table",
-      "headers": [
-        "j",
-        "a[j]",
-        "Test",
-        "Action",
-        "Array after"
-      ],
       "rows": [
         [
           "0",
@@ -184,6 +186,14 @@
           "nothing, i stays 2",
           "[2, 4, 3, 7, 9, 7, 6]"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "j",
+        "a[j]",
+        "Test",
+        "Action",
+        "Array after"
       ]
     },
     {
@@ -239,9 +249,9 @@
     },
     {
       "id": "code-part-out",
+      "code": "[2, 4, 3, 7, 9, 7, 6]      swap positions 3 and 6\n[2, 4, 3, 6, 9, 7, 7]\n          ^\n       pivot, now at index 3 and permanently in place",
       "type": "code",
       "language": "text",
-      "code": "[2, 4, 3, 7, 9, 7, 6]      swap positions 3 and 6\n[2, 4, 3, 6, 9, 7, 7]\n          ^\n       pivot, now at index 3 and permanently in place",
       "variants": []
     },
     {
@@ -264,14 +274,14 @@
     },
     {
       "id": "w-vis",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
-        "algorithm": "quick",
-        "preset": "random",
         "size": 10,
+        "preset": "random",
+        "algorithm": "quick",
         "showComparison": false
-      }
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "p-partition-9",
@@ -284,9 +294,9 @@
     },
     {
       "id": "h-invariant",
+      "text": "The invariant",
       "type": "heading",
-      "level": 2,
-      "text": "The invariant"
+      "level": 2
     },
     {
       "id": "p-invariant",
@@ -299,9 +309,9 @@
     },
     {
       "id": "code-inv",
+      "code": "a[low .. i]        all values < pivot\na[i+1 .. j-1]      all values >= pivot\na[j .. high-1]     not yet examined\na[high]            the pivot",
       "type": "code",
       "language": "text",
-      "code": "a[low .. i]        all values < pivot\na[i+1 .. j-1]      all values >= pivot\na[j .. high-1]     not yet examined\na[high]            the pivot",
       "variants": []
     },
     {
@@ -346,9 +356,9 @@
     },
     {
       "id": "h-recursion",
+      "text": "The recursion",
       "type": "heading",
-      "level": 2,
-      "text": "The recursion"
+      "level": 2
     },
     {
       "id": "p-recursion",
@@ -383,9 +393,9 @@
     },
     {
       "id": "code-rec",
+      "code": "quickSort([7,2,9,4,3,7,6], 0, 6)\n  partition -> pivot lands at 3, array now [2,4,3,6,9,7,7]\n  quickSort(a, 0, 2)      on [2,4,3]\n    partition -> pivot 3 lands at 1, giving [2,3,4]\n    quickSort(a, 0, 0)    single element, returns\n    quickSort(a, 2, 2)    single element, returns\n  quickSort(a, 4, 6)      on [9,7,7]\n    partition -> pivot 7 lands at 4, giving [7,7,9]\n    quickSort(a, 4, 3)    empty, returns\n    quickSort(a, 5, 6)    on [7,9] -> sorts to [7,9]\n-> [2,3,4,6,7,7,9]",
       "type": "code",
       "language": "text",
-      "code": "quickSort([7,2,9,4,3,7,6], 0, 6)\n  partition -> pivot lands at 3, array now [2,4,3,6,9,7,7]\n  quickSort(a, 0, 2)      on [2,4,3]\n    partition -> pivot 3 lands at 1, giving [2,3,4]\n    quickSort(a, 0, 0)    single element, returns\n    quickSort(a, 2, 2)    single element, returns\n  quickSort(a, 4, 6)      on [9,7,7]\n    partition -> pivot 7 lands at 4, giving [7,7,9]\n    quickSort(a, 4, 3)    empty, returns\n    quickSort(a, 5, 6)    on [7,9] -> sorts to [7,9]\n-> [2,3,4,6,7,7,9]",
       "variants": []
     },
     {
@@ -410,9 +420,9 @@
     },
     {
       "id": "h-worst",
+      "text": "The worst case, and why sorted input triggers it",
       "type": "heading",
-      "level": 2,
-      "text": "The worst case, and why sorted input triggers it"
+      "level": 2
     },
     {
       "id": "p-worst",
@@ -452,25 +462,20 @@
     },
     {
       "id": "w-compare",
-      "type": "interactive",
-      "widget": "sorting-visualizer",
       "data": {
+        "size": 12,
+        "preset": "sorted",
         "algorithms": [
           "quick",
           "merge",
           "heap"
-        ],
-        "preset": "sorted",
-        "size": 12
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
     },
     {
       "id": "t-fix",
-      "type": "table",
-      "headers": [
-        "Fix",
-        "What it does"
-      ],
       "rows": [
         [
           "Median-of-three",
@@ -488,6 +493,11 @@
           "Three-way partition",
           "Group values equal to the pivot into their own middle region. Essential when there are many duplicates."
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Fix",
+        "What it does"
       ]
     },
     {
@@ -501,9 +511,9 @@
     },
     {
       "id": "h-flow",
+      "text": "The algorithm as a flowchart",
       "type": "heading",
-      "level": 2,
-      "text": "The algorithm as a flowchart"
+      "level": 2
     },
     {
       "id": "p-flow",
@@ -516,11 +526,11 @@
     },
     {
       "id": "w-flow-qs",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "quick"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "p-flow-2",
@@ -555,26 +565,20 @@
     },
     {
       "id": "w-flow-part",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "partition"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-vs",
+      "text": "Against merge sort",
       "type": "heading",
-      "level": 2,
-      "text": "Against merge sort"
+      "level": 2
     },
     {
       "id": "t-vs",
-      "type": "table",
-      "headers": [
-        "",
-        "Quick sort",
-        "Merge sort"
-      ],
       "rows": [
         [
           "Worst case",
@@ -606,6 +610,12 @@
           "One pivot at a time, as it goes",
           "All at once, at the very end"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Quick sort",
+        "Merge sort"
       ]
     },
     {
@@ -619,36 +629,34 @@
     },
     {
       "id": "h-code",
+      "text": "In code",
       "type": "heading",
-      "level": 2,
-      "text": "In code"
+      "level": 2
     },
     {
       "id": "code-quick",
+      "code": "function quickSort(a, low = 0, high = a.length - 1) {\n  if (low >= high) return a;         // 0 or 1 elements: already sorted\n\n  const p = partition(a, low, high);\n  quickSort(a, low, p - 1);          // p is excluded: it is already final\n  quickSort(a, p + 1, high);\n  return a;\n}\n\nfunction partition(a, low, high) {\n  const pivot = a[high];\n  let i = low - 1;                   // end of the \"smaller\" region, empty so far\n\n  for (let j = low; j < high; j++) {\n    if (a[j] < pivot) {\n      i++;\n      [a[i], a[j]] = [a[j], a[i]];   // grow the region and move a[j] into it\n    }\n  }\n\n  [a[i + 1], a[high]] = [a[high], a[i + 1]];   // pivot onto the boundary\n  return i + 1;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function quickSort(a, low = 0, high = a.length - 1) {\n  if (low >= high) return a;         // 0 or 1 elements: already sorted\n\n  const p = partition(a, low, high);\n  quickSort(a, low, p - 1);          // p is excluded: it is already final\n  quickSort(a, p + 1, high);\n  return a;\n}\n\nfunction partition(a, low, high) {\n  const pivot = a[high];\n  let i = low - 1;                   // end of the \"smaller\" region, empty so far\n\n  for (let j = low; j < high; j++) {\n    if (a[j] < pivot) {\n      i++;\n      [a[i], a[j]] = [a[j], a[i]];   // grow the region and move a[j] into it\n    }\n  }\n\n  [a[i + 1], a[high]] = [a[high], a[i + 1]];   // pivot onto the boundary\n  return i + 1;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def quick_sort(a, low=0, high=None):\n    if high is None:\n        high = len(a) - 1\n    if low >= high:\n        return a                     # 0 or 1 elements: already sorted\n\n    p = partition(a, low, high)\n    quick_sort(a, low, p - 1)        # p is excluded: it is already final\n    quick_sort(a, p + 1, high)\n    return a\n\n\ndef partition(a, low, high):\n    pivot = a[high]\n    i = low - 1                      # end of the \"smaller\" region, empty so far\n\n    for j in range(low, high):\n        if a[j] < pivot:\n            i += 1\n            a[i], a[j] = a[j], a[i]  # grow the region, move a[j] into it\n\n    a[i + 1], a[high] = a[high], a[i + 1]      # pivot onto the boundary\n    return i + 1"
+          "code": "def quick_sort(a, low=0, high=None):\n    if high is None:\n        high = len(a) - 1\n    if low >= high:\n        return a                     # 0 or 1 elements: already sorted\n\n    p = partition(a, low, high)\n    quick_sort(a, low, p - 1)        # p is excluded: it is already final\n    quick_sort(a, p + 1, high)\n    return a\n\n\ndef partition(a, low, high):\n    pivot = a[high]\n    i = low - 1                      # end of the \"smaller\" region, empty so far\n\n    for j in range(low, high):\n        if a[j] < pivot:\n            i += 1\n            a[i], a[j] = a[j], a[i]  # grow the region, move a[j] into it\n\n    a[i + 1], a[high] = a[high], a[i + 1]      # pivot onto the boundary\n    return i + 1",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <utility>\n\nint partition(std::vector<int>& a, int low, int high) {\n    int pivot = a[high];\n    int i = low - 1;                 // end of the \"smaller\" region, empty so far\n\n    for (int j = low; j < high; j++) {\n        if (a[j] < pivot) std::swap(a[++i], a[j]);   // grow and move in\n    }\n\n    std::swap(a[i + 1], a[high]);    // pivot onto the boundary\n    return i + 1;\n}\n\nvoid quickSort(std::vector<int>& a, int low, int high) {\n    if (low >= high) return;         // 0 or 1 elements: already sorted\n    int p = partition(a, low, high);\n    quickSort(a, low, p - 1);        // p excluded: already final\n    quickSort(a, p + 1, high);\n}"
+          "code": "#include <vector>\n#include <utility>\n\nint partition(std::vector<int>& a, int low, int high) {\n    int pivot = a[high];\n    int i = low - 1;                 // end of the \"smaller\" region, empty so far\n\n    for (int j = low; j < high; j++) {\n        if (a[j] < pivot) std::swap(a[++i], a[j]);   // grow and move in\n    }\n\n    std::swap(a[i + 1], a[high]);    // pivot onto the boundary\n    return i + 1;\n}\n\nvoid quickSort(std::vector<int>& a, int low, int high) {\n    if (low >= high) return;         // 0 or 1 elements: already sorted\n    int p = partition(a, low, high);\n    quickSort(a, low, p - 1);        // p excluded: already final\n    quickSort(a, p + 1, high);\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -720,7 +728,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d1",
@@ -728,20 +738,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tutorials/dsa/sorting-heap-and-linear",
       "type": "button",
       "label": "Continue to heap and linear-time sorts",
-      "href": "/tutorials/dsa/sorting-heap-and-linear",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Quick Sort Step by Step: Full Partition Trace and the Invariant",
-  "seoDescription": "Quick sort traced completely: what both partition pointers mean, the loop invariant, why the pivot is final, why sorted input is the worst case, and flowcharts of both parts.",
-  "keywords": [
-    "quick sort",
-    "quicksort step by step",
-    "lomuto partition",
-    "quicksort example",
-    "partition invariant",
-    "quicksort flowchart"
   ]
 }

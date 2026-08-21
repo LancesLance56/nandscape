@@ -14,6 +14,16 @@
   ],
   "sectionSlug": "karnaugh-maps",
   "position": 60,
+  "seoTitle": "Karnaugh Map Examples: 6 Solved K-Maps with Explanations",
+  "seoDescription": "Six Karnaugh map examples worked end to end: single groups, wraparound, four corners, overlapping groups, don't-cares, and a map with two equally minimal answers.",
+  "keywords": [
+    "karnaugh map examples",
+    "k-map solved examples",
+    "karnaugh map problems with solutions",
+    "4 variable karnaugh map examples",
+    "karnaugh map practice",
+    "kmap examples with answers"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -35,9 +45,9 @@
     },
     {
       "id": "h-1",
+      "text": "Example 1: one group is the whole answer",
       "type": "heading",
-      "level": 2,
-      "text": "Example 1: one group is the whole answer"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -50,14 +60,8 @@
     },
     {
       "id": "w-1",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C"
-        ],
+        "mode": "solve",
         "cells": [
           1,
           0,
@@ -68,9 +72,15 @@
           1,
           0
         ],
-        "mode": "solve",
-        "title": "Example 1"
-      }
+        "title": "Example 1",
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-1b",
@@ -92,9 +102,9 @@
     },
     {
       "id": "h-2",
+      "text": "Example 2: the group that wraps",
       "type": "heading",
-      "level": 2,
-      "text": "Example 2: the group that wraps"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -107,14 +117,8 @@
     },
     {
       "id": "w-2",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C"
-        ],
+        "mode": "solve",
         "cells": [
           1,
           1,
@@ -125,9 +129,15 @@
           1,
           0
         ],
-        "mode": "solve",
-        "title": "Example 2"
-      }
+        "title": "Example 2",
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-2b",
@@ -149,9 +159,9 @@
     },
     {
       "id": "h-3",
+      "text": "Example 3: four corners",
       "type": "heading",
-      "level": 2,
-      "text": "Example 3: four corners"
+      "level": 2
     },
     {
       "id": "p-3",
@@ -164,15 +174,8 @@
     },
     {
       "id": "w-3",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "solve",
         "cells": [
           1,
           0,
@@ -191,9 +194,16 @@
           0,
           0
         ],
-        "mode": "solve",
-        "title": "Example 3"
-      }
+        "title": "Example 3",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-3b",
@@ -215,9 +225,9 @@
     },
     {
       "id": "h-4",
+      "text": "Example 4: groups are allowed to overlap",
       "type": "heading",
-      "level": 2,
-      "text": "Example 4: groups are allowed to overlap"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -230,15 +240,8 @@
     },
     {
       "id": "w-4",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "solve",
         "cells": [
           1,
           1,
@@ -257,9 +260,16 @@
           0,
           0
         ],
-        "mode": "solve",
-        "title": "Example 4"
-      }
+        "title": "Example 4",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-4b",
@@ -281,9 +291,9 @@
     },
     {
       "id": "h-5",
+      "text": "Example 5: don't-cares change the shape",
       "type": "heading",
-      "level": 2,
-      "text": "Example 5: don't-cares change the shape"
+      "level": 2
     },
     {
       "id": "p-5",
@@ -296,15 +306,8 @@
     },
     {
       "id": "w-5",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C",
-          "D"
-        ],
+        "mode": "solve",
         "cells": [
           0,
           0,
@@ -323,9 +326,16 @@
           "x",
           "x"
         ],
-        "mode": "solve",
-        "title": "Example 5"
-      }
+        "title": "Example 5",
+        "variables": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-5b",
@@ -338,9 +348,9 @@
     },
     {
       "id": "h-6",
+      "text": "Example 6: two answers, both minimal",
       "type": "heading",
-      "level": 2,
-      "text": "Example 6: two answers, both minimal"
+      "level": 2
     },
     {
       "id": "p-6",
@@ -353,14 +363,8 @@
     },
     {
       "id": "w-6",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C"
-        ],
+        "mode": "solve",
         "cells": [
           1,
           1,
@@ -371,9 +375,15 @@
           1,
           0
         ],
-        "mode": "solve",
-        "title": "Example 6"
-      }
+        "title": "Example 6",
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-6b",
@@ -395,9 +405,9 @@
     },
     {
       "id": "h-order",
+      "text": "A procedure that works",
       "type": "heading",
-      "level": 2,
-      "text": "A procedure that works"
+      "level": 2
     },
     {
       "id": "p-order",
@@ -410,11 +420,6 @@
     },
     {
       "id": "t-order",
-      "type": "table",
-      "headers": [
-        "Step",
-        "What to do"
-      ],
       "rows": [
         [
           "1",
@@ -436,6 +441,11 @@
           "5",
           "Check each group: if all its 1s are covered by others, delete it."
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Step",
+        "What to do"
       ]
     },
     {
@@ -449,9 +459,9 @@
     },
     {
       "id": "h-practice",
+      "text": "Now do it yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Now do it yourself"
+      "level": 2
     },
     {
       "id": "p-practice",
@@ -464,11 +474,11 @@
     },
     {
       "id": "w-practice",
-      "type": "interactive",
-      "widget": "kmap-practice",
       "data": {
         "difficulty": "easy"
-      }
+      },
+      "type": "interactive",
+      "widget": "kmap-practice"
     },
     {
       "id": "p-practice-2",
@@ -481,8 +491,8 @@
           "text": "the K-map practice generator",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tools/karnaugh-map-practice"
+              "href": "/tools/karnaugh-map-practice",
+              "kind": "link"
             }
           ]
         },
@@ -493,8 +503,8 @@
           "text": "solver",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tools/karnaugh-map-solver"
+              "href": "/tools/karnaugh-map-solver",
+              "kind": "link"
             }
           ]
         },
@@ -505,14 +515,12 @@
     },
     {
       "id": "h-quiz",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -567,7 +575,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d1",
@@ -575,20 +585,10 @@
     },
     {
       "id": "b-next",
+      "href": "/tools/karnaugh-map-practice",
       "type": "button",
       "label": "Practice with random maps",
-      "href": "/tools/karnaugh-map-practice",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Karnaugh Map Examples: 6 Solved K-Maps with Explanations",
-  "seoDescription": "Six Karnaugh map examples worked end to end: single groups, wraparound, four corners, overlapping groups, don't-cares, and a map with two equally minimal answers.",
-  "keywords": [
-    "karnaugh map examples",
-    "k-map solved examples",
-    "karnaugh map problems with solutions",
-    "4 variable karnaugh map examples",
-    "karnaugh map practice",
-    "kmap examples with answers"
   ]
 }

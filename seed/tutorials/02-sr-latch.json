@@ -11,6 +11,15 @@
   ],
   "sectionSlug": "sequential-logic",
   "position": 20,
+  "seoTitle": "SR Latch Explained: NOR Gates, Truth Table, Forbidden State",
+  "seoDescription": "How an SR latch stores one bit with two cross-coupled NOR gates, what each input combination does, and why S=1, R=1 is genuinely forbidden.",
+  "keywords": [
+    "sr latch",
+    "nor latch",
+    "sr latch truth table",
+    "sr latch forbidden state",
+    "set reset latch"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -23,9 +32,9 @@
     },
     {
       "id": "h-naming",
+      "text": "Inputs, Outputs, and What \"Stored\" Means Here",
       "type": "heading",
-      "level": 2,
-      "text": "Inputs, Outputs, and What \"Stored\" Means Here"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -71,9 +80,9 @@
     },
     {
       "id": "h-behavior",
+      "text": "The Four Input Combinations",
       "type": "heading",
-      "level": 2,
-      "text": "The Four Input Combinations"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -86,9 +95,9 @@
     },
     {
       "id": "code-truth",
+      "code": "S  R  |  Q (next)     Meaning\n-------------------------------\n0  0  |  unchanged     hold / memory\n1  0  |  1             set\n0  1  |  0             reset\n1  1  |  invalid       forbidden state",
       "type": "code",
-      "language": "text",
-      "code": "S  R  |  Q (next)     Meaning\n-------------------------------\n0  0  |  unchanged     hold / memory\n1  0  |  1             set\n0  1  |  0             reset\n1  1  |  invalid       forbidden state"
+      "language": "text"
     },
     {
       "id": "p-3",
@@ -121,19 +130,19 @@
     },
     {
       "id": "sr-1",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
         "title": "SR Latch, 2 NOR gates, active-high",
-        "projectSlug": "sr-latch-nor",
-        "height": 280
-      }
+        "height": 280,
+        "projectSlug": "sr-latch-nor"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "h-forbidden",
+      "text": "Why S = 1, R = 1 Is Forbidden, Not Just Undefined",
       "type": "heading",
-      "level": 2,
-      "text": "Why S = 1, R = 1 Is Forbidden, Not Just Undefined"
+      "level": 2
     },
     {
       "id": "p-5",
@@ -159,9 +168,9 @@
     },
     {
       "id": "h-one-cell",
+      "text": "One Idea, Two Common Flavors",
       "type": "heading",
-      "level": 2,
-      "text": "One Idea, Two Common Flavors"
+      "level": 2
     },
     {
       "id": "p-7",
@@ -174,16 +183,16 @@
     },
     {
       "id": "b1",
+      "href": "/puzzles/sr-latch-1-bit-memory",
       "type": "button",
       "label": "Build the NAND-based version yourself",
-      "href": "/puzzles/sr-latch-1-bit-memory",
       "style": "secondary"
     },
     {
       "id": "h-next",
+      "text": "What's Next",
       "type": "heading",
-      "level": 2,
-      "text": "What's Next"
+      "level": 2
     },
     {
       "id": "p-8",
@@ -196,19 +205,10 @@
     },
     {
       "id": "b2",
+      "href": "/tutorials/digital-logic/gated-d-latch",
       "type": "button",
       "label": "Continue to the Gated D Latch",
-      "href": "/tutorials/digital-logic/gated-d-latch",
       "style": "primary"
     }
-  ],
-  "seoTitle": "SR Latch Explained: NOR Gates, Truth Table, Forbidden State",
-  "seoDescription": "How an SR latch stores one bit with two cross-coupled NOR gates, what each input combination does, and why S=1, R=1 is genuinely forbidden.",
-  "keywords": [
-    "sr latch",
-    "nor latch",
-    "sr latch truth table",
-    "sr latch forbidden state",
-    "set reset latch"
   ]
 }

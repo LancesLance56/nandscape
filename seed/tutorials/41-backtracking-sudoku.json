@@ -14,6 +14,15 @@
   ],
   "sectionSlug": "backtracking",
   "position": 70,
+  "seoTitle": "Sudoku Solver with Backtracking: Cell Ordering and Constraint Propagation",
+  "seoDescription": "Sudoku as backtracking: why it is graph coloring in disguise, the most-constrained-variable heuristic and the numbers behind it, constraint propagation, and the bugs that make a solvable grid look unsolvable.",
+  "keywords": [
+    "sudoku solver backtracking",
+    "sudoku algorithm",
+    "constraint propagation sudoku",
+    "most constrained variable heuristic",
+    "sudoku solver python"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -37,9 +46,9 @@
     },
     {
       "id": "h-framing",
+      "text": "Sudoku is graph coloring",
       "type": "heading",
-      "level": 2,
-      "text": "Sudoku is graph coloring"
+      "level": 2
     },
     {
       "id": "p-framing",
@@ -61,9 +70,9 @@
     },
     {
       "id": "h-order",
+      "text": "The decision that actually matters",
       "type": "heading",
-      "level": 2,
-      "text": "The decision that actually matters"
+      "level": 2
     },
     {
       "id": "p-order",
@@ -114,9 +123,9 @@
     },
     {
       "id": "h-numbers",
+      "text": "What it is worth",
       "type": "heading",
-      "level": 2,
-      "text": "What it is worth"
+      "level": 2
     },
     {
       "id": "p-numbers",
@@ -129,9 +138,9 @@
     },
     {
       "id": "code-compare",
+      "code": "                       cells filled    dead ends    frames\n\nreading order              185            56          heavy\nfewest candidates           49             0          light\n\nSame puzzle. Same rules. Same finished grid.\nThe only difference is which blank the solver picks next.",
       "type": "code",
-      "language": "text",
-      "code": "                       cells filled    dead ends    frames\n\nreading order              185            56          heavy\nfewest candidates           49             0          light\n\nSame puzzle. Same rules. Same finished grid.\nThe only difference is which blank the solver picks next."
+      "language": "text"
     },
     {
       "id": "p-numbers-2",
@@ -164,9 +173,9 @@
     },
     {
       "id": "h-play",
+      "text": "Compare them yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Compare them yourself"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -179,23 +188,23 @@
     },
     {
       "id": "w-sudoku",
+      "data": {},
       "type": "interactive",
-      "widget": "sudoku-solver",
-      "data": {}
+      "widget": "sudoku-solver"
     },
     {
       "id": "w-flow-sudoku",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "sudoku"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "p-code",
@@ -208,9 +217,9 @@
     },
     {
       "id": "code-sudoku",
+      "code": "function solve(board) {\n  const cell = pickCell(board);            // the only interesting decision\n  if (cell === null) return true;          // no blanks left, we are done\n\n  const [row, col] = cell;\n  for (let d = 1; d <= 9; d++) {\n    if (!isLegal(board, row, col, d)) continue;\n\n    board[row][col] = d;                   // choose\n    if (solve(board)) return true;         // explore\n    board[row][col] = 0;                   // un-choose\n  }\n\n  return false;                            // every digit failed here\n}\n\n// Naive: the first blank in reading order.\nfunction firstBlank(board) { ... }\n\n// Better: the blank with the fewest legal digits remaining.\nfunction mostConstrained(board) {\n  let best = null, bestCount = 10;\n  for (let r = 0; r < 9; r++) {\n    for (let c = 0; c < 9; c++) {\n      if (board[r][c] !== 0) continue;\n      const count = countLegalDigits(board, r, c);\n      if (count < bestCount) { bestCount = count; best = [r, c]; }\n      if (count === 1) return best;        // cannot do better than forced\n    }\n  }\n  return best;\n}",
       "type": "code",
-      "language": "javascript",
-      "code": "function solve(board) {\n  const cell = pickCell(board);            // the only interesting decision\n  if (cell === null) return true;          // no blanks left, we are done\n\n  const [row, col] = cell;\n  for (let d = 1; d <= 9; d++) {\n    if (!isLegal(board, row, col, d)) continue;\n\n    board[row][col] = d;                   // choose\n    if (solve(board)) return true;         // explore\n    board[row][col] = 0;                   // un-choose\n  }\n\n  return false;                            // every digit failed here\n}\n\n// Naive: the first blank in reading order.\nfunction firstBlank(board) { ... }\n\n// Better: the blank with the fewest legal digits remaining.\nfunction mostConstrained(board) {\n  let best = null, bestCount = 10;\n  for (let r = 0; r < 9; r++) {\n    for (let c = 0; c < 9; c++) {\n      if (board[r][c] !== 0) continue;\n      const count = countLegalDigits(board, r, c);\n      if (count < bestCount) { bestCount = count; best = [r, c]; }\n      if (count === 1) return best;        // cannot do better than forced\n    }\n  }\n  return best;\n}"
+      "language": "javascript"
     },
     {
       "id": "p-code-2",
@@ -223,9 +232,9 @@
     },
     {
       "id": "h-further",
+      "text": "Where solvers go from here",
       "type": "heading",
-      "level": 2,
-      "text": "Where solvers go from here"
+      "level": 2
     },
     {
       "id": "p-further",
@@ -256,9 +265,9 @@
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -330,14 +339,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -409,16 +416,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Sudoku Solver with Backtracking: Cell Ordering and Constraint Propagation",
-  "seoDescription": "Sudoku as backtracking: why it is graph coloring in disguise, the most-constrained-variable heuristic and the numbers behind it, constraint propagation, and the bugs that make a solvable grid look unsolvable.",
-  "keywords": [
-    "sudoku solver backtracking",
-    "sudoku algorithm",
-    "constraint propagation sudoku",
-    "most constrained variable heuristic",
-    "sudoku solver python"
   ]
 }

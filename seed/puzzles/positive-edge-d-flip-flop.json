@@ -3,28 +3,137 @@
   "title": "Positive-Edge D Flip-Flop",
   "description": "Every other memory puzzle here is level-sensitive: transparent while an enable line is held high. Build a true edge-triggered D flip-flop instead, one that captures D only at the instant CLK rises from 0 to 1 and ignores it the rest of the time, with an async RESET that forces Q to 0. The standard technique is master-slave: two gated latches with opposite enables, so the second only ever sees a value the first has already locked in.",
   "difficulty": "expert",
-  "tags": ["sequential", "memory"],
+  "tags": [
+    "sequential",
+    "memory"
+  ],
   "gateBudget": 18,
   "inputs": [
-    { "name": "D", "defaultValue": 0 },
-    { "name": "CLK", "defaultValue": 0 },
-    { "name": "RESET", "defaultValue": 0 }
+    {
+      "name": "D",
+      "defaultValue": 0
+    },
+    {
+      "name": "CLK",
+      "defaultValue": 0
+    },
+    {
+      "name": "RESET",
+      "defaultValue": 0
+    }
   ],
-  "outputs": [{ "name": "Q" }, { "name": "QN" }],
+  "outputs": [
+    {
+      "name": "Q"
+    },
+    {
+      "name": "QN"
+    }
+  ],
   "testCases": [
     {
       "sequence": [
-        { "setInputs": { "D": 0, "CLK": 0, "RESET": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "RESET": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "D": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "D": 0 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "D": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "CLK": 0 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "D": 0 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "CLK": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } }
+        {
+          "setInputs": {
+            "D": 0,
+            "CLK": 0,
+            "RESET": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "RESET": 0
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "D": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "D": 0
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "D": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 0
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "D": 0
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "CLK": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        }
       ]
     }
   ]

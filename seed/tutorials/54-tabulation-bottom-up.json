@@ -54,9 +54,9 @@
     },
     {
       "id": "h-problem",
+      "text": "A problem worth the trouble",
       "type": "heading",
-      "level": 2,
-      "text": "A problem worth the trouble"
+      "level": 2
     },
     {
       "id": "p-stairs-1",
@@ -96,12 +96,12 @@
     },
     {
       "id": "w-stairs",
-      "type": "interactive",
-      "widget": "dp-array",
       "data": {
         "problem": "stairs",
         "lockProblem": true
-      }
+      },
+      "type": "interactive",
+      "widget": "dp-array"
     },
     {
       "id": "p-widget-2",
@@ -114,25 +114,25 @@
     },
     {
       "id": "code-stairs",
+      "code": "function climbStairs(n) {\n  const ways = new Array(n + 1);\n  ways[0] = 1;\n  ways[1] = 1;\n  for (let i = 2; i <= n; i++) {\n    ways[i] = ways[i - 1] + ways[i - 2];\n  }\n  return ways[n];\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function climbStairs(n) {\n  const ways = new Array(n + 1);\n  ways[0] = 1;\n  ways[1] = 1;\n  for (let i = 2; i <= n; i++) {\n    ways[i] = ways[i - 1] + ways[i - 2];\n  }\n  return ways[n];\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def climb_stairs(n):\n    ways = [0] * (n + 1)\n    ways[0] = 1\n    ways[1] = 1\n    for i in range(2, n + 1):\n        ways[i] = ways[i - 1] + ways[i - 2]\n    return ways[n]"
+          "code": "def climb_stairs(n):\n    ways = [0] * (n + 1)\n    ways[0] = 1\n    ways[1] = 1\n    for i in range(2, n + 1):\n        ways[i] = ways[i - 1] + ways[i - 2]\n    return ways[n]",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "long long climbStairs(int n) {\n    std::vector<long long> ways(n + 1);\n    ways[0] = 1;\n    ways[1] = 1;\n    for (int i = 2; i <= n; i++) {\n        ways[i] = ways[i - 1] + ways[i - 2];\n    }\n    return ways[n];\n}"
+          "code": "long long climbStairs(int n) {\n    std::vector<long long> ways(n + 1);\n    ways[0] = 1;\n    ways[1] = 1;\n    for (int i = 2; i <= n; i++) {\n        ways[i] = ways[i - 1] + ways[i - 2];\n    }\n    return ways[n];\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-convert",
+      "text": "Turning any memo into a table",
       "type": "heading",
-      "level": 2,
-      "text": "Turning any memo into a table"
+      "level": 2
     },
     {
       "id": "p-convert-1",
@@ -145,11 +145,6 @@
     },
     {
       "id": "t-convert",
-      "type": "table",
-      "headers": [
-        "In the memoized version",
-        "Becomes, in the table"
-      ],
       "rows": [
         [
           "the memo key",
@@ -172,7 +167,12 @@
           "a loop order you pick deliberately"
         ]
       ],
-      "caption": "Nothing is invented on the way across. The last row is the only real work."
+      "type": "table",
+      "caption": "Nothing is invented on the way across. The last row is the only real work.",
+      "headers": [
+        "In the memoized version",
+        "Becomes, in the table"
+      ]
     },
     {
       "id": "p-convert-2",
@@ -194,9 +194,9 @@
     },
     {
       "id": "h-order",
+      "text": "Fill order is the whole design",
       "type": "heading",
-      "level": 2,
-      "text": "Fill order is the whole design"
+      "level": 2
     },
     {
       "id": "p-order-1",
@@ -227,18 +227,12 @@
     },
     {
       "id": "h-choose",
+      "text": "Top-down or bottom-up",
       "type": "heading",
-      "level": 2,
-      "text": "Top-down or bottom-up"
+      "level": 2
     },
     {
       "id": "t-compare",
-      "type": "table",
-      "headers": [
-        "",
-        "Memoization, top-down",
-        "Tabulation, bottom-up"
-      ],
       "rows": [
         [
           "Shape of the code",
@@ -266,7 +260,13 @@
           "often"
         ]
       ],
-      "caption": "Same answers, different trade-offs, and neither one wins in general."
+      "type": "table",
+      "caption": "Same answers, different trade-offs, and neither one wins in general.",
+      "headers": [
+        "",
+        "Memoization, top-down",
+        "Tabulation, bottom-up"
+      ]
     },
     {
       "id": "p-choose-1",
@@ -288,9 +288,9 @@
     },
     {
       "id": "h-space",
+      "text": "Throwing most of the table away",
       "type": "heading",
-      "level": 2,
-      "text": "Throwing most of the table away"
+      "level": 2
     },
     {
       "id": "p-space-1",
@@ -312,13 +312,13 @@
     },
     {
       "id": "code-rolling",
+      "code": "function climbStairs(n) {\n  let prev = 1;   // ways to reach step i - 2\n  let curr = 1;   // ways to reach step i - 1\n  for (let i = 2; i <= n; i++) {\n    const next = prev + curr;\n    prev = curr;\n    curr = next;\n  }\n  return curr;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function climbStairs(n) {\n  let prev = 1;   // ways to reach step i - 2\n  let curr = 1;   // ways to reach step i - 1\n  for (let i = 2; i <= n; i++) {\n    const next = prev + curr;\n    prev = curr;\n    curr = next;\n  }\n  return curr;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def climb_stairs(n):\n    prev, curr = 1, 1        # steps i - 2 and i - 1\n    for _ in range(2, n + 1):\n        prev, curr = curr, prev + curr\n    return curr"
+          "code": "def climb_stairs(n):\n    prev, curr = 1, 1        # steps i - 2 and i - 1\n    for _ in range(2, n + 1):\n        prev, curr = curr, prev + curr\n    return curr",
+          "language": "python"
         }
       ]
     },
@@ -342,8 +342,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -398,7 +396,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "p-next",

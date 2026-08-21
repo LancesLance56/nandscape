@@ -43,9 +43,9 @@
     },
     {
       "id": "h-grid",
+      "text": "A grid you can walk across",
       "type": "heading",
-      "level": 2,
-      "text": "A grid you can walk across"
+      "level": 2
     },
     {
       "id": "p-grid-1",
@@ -85,17 +85,17 @@
     },
     {
       "id": "w-grid",
-      "type": "interactive",
-      "widget": "dp-table",
       "data": {
         "problem": "minpath"
-      }
+      },
+      "type": "interactive",
+      "widget": "dp-table"
     },
     {
       "id": "h-trace",
+      "text": "Reading the route back out",
       "type": "heading",
-      "level": 2,
-      "text": "Reading the route back out"
+      "level": 2
     },
     {
       "id": "p-trace-1",
@@ -126,9 +126,9 @@
     },
     {
       "id": "h-strings",
+      "text": "Two strings, two axes",
       "type": "heading",
-      "level": 2,
-      "text": "Two strings, two axes"
+      "level": 2
     },
     {
       "id": "p-lcs-1",
@@ -229,17 +229,17 @@
     },
     {
       "id": "w-strings",
-      "type": "interactive",
-      "widget": "dp-table",
       "data": {
         "problem": "lcs"
-      }
+      },
+      "type": "interactive",
+      "widget": "dp-table"
     },
     {
       "id": "h-cost",
+      "text": "The shape of the cost",
       "type": "heading",
-      "level": 2,
-      "text": "The shape of the cost"
+      "level": 2
     },
     {
       "id": "p-cost-1",
@@ -261,8 +261,6 @@
     },
     {
       "id": "q-check",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -317,7 +315,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "p-next",

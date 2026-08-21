@@ -3,18 +3,134 @@
   "title": "Full Adder",
   "description": "Add two bits plus a carry-in, no gate restrictions this time. Same problem as the NAND-only and NOR-only versions, just without the handicap.",
   "difficulty": "medium",
-  "tags": ["combinational", "arithmetic"],
+  "tags": [
+    "combinational",
+    "arithmetic"
+  ],
   "gateBudget": 6,
-  "inputs": [{ "name": "A" }, { "name": "B" }, { "name": "CIN" }],
-  "outputs": [{ "name": "SUM" }, { "name": "COUT" }],
+  "inputs": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "CIN"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "SUM"
+    },
+    {
+      "name": "COUT"
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A": 0, "B": 0, "CIN": 0 }, "outputs": { "SUM": 0, "COUT": 0 } } },
-    { "row": { "inputs": { "A": 0, "B": 0, "CIN": 1 }, "outputs": { "SUM": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A": 0, "B": 1, "CIN": 0 }, "outputs": { "SUM": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A": 0, "B": 1, "CIN": 1 }, "outputs": { "SUM": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A": 1, "B": 0, "CIN": 0 }, "outputs": { "SUM": 1, "COUT": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 0, "CIN": 1 }, "outputs": { "SUM": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A": 1, "B": 1, "CIN": 0 }, "outputs": { "SUM": 0, "COUT": 1 } } },
-    { "row": { "inputs": { "A": 1, "B": 1, "CIN": 1 }, "outputs": { "SUM": 1, "COUT": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0,
+          "CIN": 0
+        },
+        "outputs": {
+          "SUM": 0,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0,
+          "CIN": 1
+        },
+        "outputs": {
+          "SUM": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1,
+          "CIN": 0
+        },
+        "outputs": {
+          "SUM": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1,
+          "CIN": 1
+        },
+        "outputs": {
+          "SUM": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0,
+          "CIN": 0
+        },
+        "outputs": {
+          "SUM": 1,
+          "COUT": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0,
+          "CIN": 1
+        },
+        "outputs": {
+          "SUM": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "CIN": 0
+        },
+        "outputs": {
+          "SUM": 0,
+          "COUT": 1
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1,
+          "CIN": 1
+        },
+        "outputs": {
+          "SUM": 1,
+          "COUT": 1
+        }
+      }
+    }
   ]
 }

@@ -11,6 +11,14 @@
   ],
   "sectionSlug": "sequential-logic",
   "position": 40,
+  "seoTitle": "D Flip-Flop Explained: Edge-Triggered vs Level-Sensitive",
+  "seoDescription": "How a D flip-flop samples one clock edge instead of a level, how master-slave construction achieves it, and why registers use flip-flops.",
+  "keywords": [
+    "d flip flop",
+    "edge triggered flip flop",
+    "master slave flip flop",
+    "flip flop vs latch"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -23,9 +31,9 @@
     },
     {
       "id": "h-edge-vs-level",
+      "text": "Level-Sensitive vs. Edge-Sensitive",
       "type": "heading",
-      "level": 2,
-      "text": "Level-Sensitive vs. Edge-Sensitive"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -38,9 +46,9 @@
     },
     {
       "id": "h-master-slave",
+      "text": "Built From Two Latches: Master and Slave",
       "type": "heading",
-      "level": 2,
-      "text": "Built From Two Latches: Master and Slave"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -53,9 +61,9 @@
     },
     {
       "id": "code-master-slave",
+      "code": "CLK = 0:  master enable = 1 (transparent), slave enable = 0 (holding)\n            master follows D, slave holds its last value\n\nCLK = 1:  master enable = 0 (holding), slave enable = 1 (transparent)\n            master freezes whatever D was an instant before CLK rose,\n            slave immediately copies that frozen value out to Q",
       "type": "code",
-      "language": "text",
-      "code": "CLK = 0:  master enable = 1 (transparent), slave enable = 0 (holding)\n            master follows D, slave holds its last value\n\nCLK = 1:  master enable = 0 (holding), slave enable = 1 (transparent)\n            master freezes whatever D was an instant before CLK rose,\n            slave immediately copies that frozen value out to Q"
+      "language": "text"
     },
     {
       "id": "p-3",
@@ -68,9 +76,9 @@
     },
     {
       "id": "h-sampling",
+      "text": "Try It: Sampling Once Per Tick",
       "type": "heading",
-      "level": 2,
-      "text": "Try It: Sampling Once Per Tick"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -83,19 +91,19 @@
     },
     {
       "id": "dff-1",
-      "type": "interactive",
-      "widget": "circuit-embed",
       "data": {
         "title": "D Flip-Flop, two gated D latches, master + slave",
-        "projectSlug": "d-flip-flop",
-        "height": 360
-      }
+        "height": 360,
+        "projectSlug": "d-flip-flop"
+      },
+      "type": "interactive",
+      "widget": "circuit-embed"
     },
     {
       "id": "h-why-registers",
+      "text": "Why Registers Use Flip-Flops, Not Latches",
       "type": "heading",
-      "level": 2,
-      "text": "Why Registers Use Flip-Flops, Not Latches"
+      "level": 2
     },
     {
       "id": "p-5",
@@ -121,9 +129,9 @@
     },
     {
       "id": "h-real-engine",
+      "text": "How the Simulator Actually Implements This",
       "type": "heading",
-      "level": 2,
-      "text": "How the Simulator Actually Implements This"
+      "level": 2
     },
     {
       "id": "p-7",
@@ -136,15 +144,15 @@
     },
     {
       "id": "h-recap",
+      "text": "The Full Arc, In One Line Each",
       "type": "heading",
-      "level": 2,
-      "text": "The Full Arc, In One Line Each"
+      "level": 2
     },
     {
       "id": "code-recap",
+      "code": "1. A feedback loop turns two ordinary gates into an SR latch.\n2. Gating logic (D, E) turns the SR latch into a gated D latch, no forbidden state.\n3. Two gated D latches with inverted enables turn that into a D flip-flop, edge-triggered.\n4. A D flip-flop, wired up N times, is an N-bit register.",
       "type": "code",
-      "language": "text",
-      "code": "1. A feedback loop turns two ordinary gates into an SR latch.\n2. Gating logic (D, E) turns the SR latch into a gated D latch, no forbidden state.\n3. Two gated D latches with inverted enables turn that into a D flip-flop, edge-triggered.\n4. A D flip-flop, wired up N times, is an N-bit register."
+      "language": "text"
     },
     {
       "id": "p-8",
@@ -157,25 +165,17 @@
     },
     {
       "id": "b1",
+      "href": "/puzzles/gated-d-latch-nor-only",
       "type": "button",
       "label": "Build a gated D latch from NOR only",
-      "href": "/puzzles/gated-d-latch-nor-only",
       "style": "secondary"
     },
     {
       "id": "b2",
+      "href": "/nandbox",
       "type": "button",
       "label": "Wire one up yourself in the sandbox",
-      "href": "/nandbox",
       "style": "primary"
     }
-  ],
-  "seoTitle": "D Flip-Flop Explained: Edge-Triggered vs Level-Sensitive",
-  "seoDescription": "How a D flip-flop samples one clock edge instead of a level, how master-slave construction achieves it, and why registers use flip-flops.",
-  "keywords": [
-    "d flip flop",
-    "edge triggered flip flop",
-    "master slave flip flop",
-    "flip flop vs latch"
   ]
 }

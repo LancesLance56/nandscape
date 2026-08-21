@@ -14,6 +14,15 @@
   ],
   "sectionSlug": "backtracking",
   "position": 50,
+  "seoTitle": "Palindrome Partitioning: Backtracking Solution with DP Optimization",
+  "seoDescription": "Palindrome partitioning with backtracking: framing the cut as the decision, why this prune can be precomputed when the N-Queens one cannot, building the palindrome table, and the exponential worst case.",
+  "keywords": [
+    "palindrome partitioning",
+    "palindromic partition",
+    "backtracking string problems",
+    "palindrome partitioning dp",
+    "minimum palindrome cuts"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -79,9 +88,9 @@
     },
     {
       "id": "h-decisions",
+      "text": "What a decision is here",
       "type": "heading",
-      "level": 2,
-      "text": "What a decision is here"
+      "level": 2
     },
     {
       "id": "p-decisions",
@@ -121,17 +130,17 @@
     },
     {
       "id": "w-pal-tree",
-      "type": "interactive",
-      "widget": "palindrome-partition",
       "data": {
         "text": "aab"
-      }
+      },
+      "type": "interactive",
+      "widget": "palindrome-partition"
     },
     {
       "id": "h-difference",
+      "text": "How the prune differs from N-Queens",
       "type": "heading",
-      "level": 2,
-      "text": "How the prune differs from N-Queens"
+      "level": 2
     },
     {
       "id": "p-difference",
@@ -182,9 +191,9 @@
     },
     {
       "id": "h-precompute",
+      "text": "Precomputing every answer in advance",
       "type": "heading",
-      "level": 2,
-      "text": "Precomputing every answer in advance"
+      "level": 2
     },
     {
       "id": "p-precompute",
@@ -206,9 +215,9 @@
     },
     {
       "id": "code-dp",
+      "code": "isPal[i][j] = true when s[i..j] reads the same both ways\n\nFor \"aab\":\n        j=0    j=1    j=2\n i=0    \"a\"    \"aa\"   \"aab\"\n        true   true   false\n i=1           \"a\"    \"ab\"\n               true   false\n i=2                  \"b\"\n                      true\n\nBuilt once in O(n squared). Every cut test afterwards is a lookup.",
       "type": "code",
-      "language": "text",
-      "code": "isPal[i][j] = true when s[i..j] reads the same both ways\n\nFor \"aab\":\n        j=0    j=1    j=2\n i=0    \"a\"    \"aa\"   \"aab\"\n        true   true   false\n i=1           \"a\"    \"ab\"\n               true   false\n i=2                  \"b\"\n                      true\n\nBuilt once in O(n squared). Every cut test afterwards is a lookup."
+      "language": "text"
     },
     {
       "id": "p-precompute-3",
@@ -252,9 +261,9 @@
     },
     {
       "id": "h-play",
+      "text": "Try it",
       "type": "heading",
-      "level": 2,
-      "text": "Try it"
+      "level": 2
     },
     {
       "id": "p-play",
@@ -267,23 +276,23 @@
     },
     {
       "id": "w-pal",
+      "data": {},
       "type": "interactive",
-      "widget": "palindrome-partition",
-      "data": {}
+      "widget": "palindrome-partition"
     },
     {
       "id": "w-flow-pal",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "palindrome"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-cost",
+      "text": "What it costs",
       "type": "heading",
-      "level": 2,
-      "text": "What it costs"
+      "level": 2
     },
     {
       "id": "p-cost",
@@ -338,27 +347,27 @@
     },
     {
       "id": "h-code",
+      "text": "The implementation",
       "type": "heading",
-      "level": 2,
-      "text": "The implementation"
+      "level": 2
     },
     {
       "id": "code-pal",
+      "code": "function partition(s) {\n  const n = s.length;\n\n  // isPal[i][j]: does s[i..j] read the same both ways?\n  const isPal = Array.from({ length: n }, () => new Array(n).fill(false));\n  for (let i = n - 1; i >= 0; i--) {\n    for (let j = i; j < n; j++) {\n      // Ends match, and the inside is already known to be a palindrome.\n      isPal[i][j] = s[i] === s[j] && (j - i < 2 || isPal[i + 1][j - 1]);\n    }\n  }\n\n  const answers = [];\n  const current = [];\n\n  function solve(start) {\n    if (start === n) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let end = start; end < n; end++) {\n      if (!isPal[start][end]) continue;      // the prune, now a lookup\n\n      current.push(s.slice(start, end + 1));\n      solve(end + 1);\n      current.pop();\n    }\n  }\n\n  solve(0);\n  return answers;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function partition(s) {\n  const n = s.length;\n\n  // isPal[i][j]: does s[i..j] read the same both ways?\n  const isPal = Array.from({ length: n }, () => new Array(n).fill(false));\n  for (let i = n - 1; i >= 0; i--) {\n    for (let j = i; j < n; j++) {\n      // Ends match, and the inside is already known to be a palindrome.\n      isPal[i][j] = s[i] === s[j] && (j - i < 2 || isPal[i + 1][j - 1]);\n    }\n  }\n\n  const answers = [];\n  const current = [];\n\n  function solve(start) {\n    if (start === n) {\n      answers.push([...current]);\n      return;\n    }\n\n    for (let end = start; end < n; end++) {\n      if (!isPal[start][end]) continue;      // the prune, now a lookup\n\n      current.push(s.slice(start, end + 1));\n      solve(end + 1);\n      current.pop();\n    }\n  }\n\n  solve(0);\n  return answers;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def partition(s):\n    n = len(s)\n\n    # is_pal[i][j]: does s[i..j] read the same both ways?\n    is_pal = [[False] * n for _ in range(n)]\n    for i in range(n - 1, -1, -1):\n        for j in range(i, n):\n            # Ends match, and the inside is already known to be a palindrome.\n            is_pal[i][j] = s[i] == s[j] and (j - i < 2 or is_pal[i + 1][j - 1])\n\n    answers, current = [], []\n\n    def solve(start):\n        if start == n:\n            answers.append(current[:])\n            return\n\n        for end in range(start, n):\n            if not is_pal[start][end]:\n                continue                      # the prune, now a lookup\n\n            current.append(s[start:end + 1])\n            solve(end + 1)\n            current.pop()\n\n    solve(0)\n    return answers"
+          "code": "def partition(s):\n    n = len(s)\n\n    # is_pal[i][j]: does s[i..j] read the same both ways?\n    is_pal = [[False] * n for _ in range(n)]\n    for i in range(n - 1, -1, -1):\n        for j in range(i, n):\n            # Ends match, and the inside is already known to be a palindrome.\n            is_pal[i][j] = s[i] == s[j] and (j - i < 2 or is_pal[i + 1][j - 1])\n\n    answers, current = [], []\n\n    def solve(start):\n        if start == n:\n            answers.append(current[:])\n            return\n\n        for end in range(start, n):\n            if not is_pal[start][end]:\n                continue                      # the prune, now a lookup\n\n            current.append(s[start:end + 1])\n            solve(end + 1)\n            current.pop()\n\n    solve(0)\n    return answers",
+          "language": "python"
         }
       ]
     },
     {
       "id": "h-mistakes",
+      "text": "Where it goes wrong",
       "type": "heading",
-      "level": 2,
-      "text": "Where it goes wrong"
+      "level": 2
     },
     {
       "id": "p-mistake-1",
@@ -562,14 +571,12 @@
     },
     {
       "id": "h-check",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -641,16 +648,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "Palindrome Partitioning: Backtracking Solution with DP Optimization",
-  "seoDescription": "Palindrome partitioning with backtracking: framing the cut as the decision, why this prune can be precomputed when the N-Queens one cannot, building the palindrome table, and the exponential worst case.",
-  "keywords": [
-    "palindrome partitioning",
-    "palindromic partition",
-    "backtracking string problems",
-    "palindrome partitioning dp",
-    "minimum palindrome cuts"
   ]
 }

@@ -11,6 +11,14 @@
   ],
   "sectionSlug": "karnaugh-maps",
   "position": 20,
+  "seoTitle": "2-Variable Karnaugh Map: Worked Example and Rules",
+  "seoDescription": "Learn 2-variable Karnaugh maps with a complete worked example: how to fill the grid, group the 1s, and why each group matches boolean algebra.",
+  "keywords": [
+    "2 variable karnaugh map",
+    "k-map example",
+    "karnaugh map grouping",
+    "boolean simplification"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -23,9 +31,9 @@
     },
     {
       "id": "h-example",
+      "text": "Worked Example: F = A + B",
       "type": "heading",
-      "level": 2,
-      "text": "Worked Example: F = A + B"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -38,42 +46,42 @@
     },
     {
       "id": "kmap-1",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
         "variables": [
           "A",
           "B"
+        ],
+        "hintGroups": [
+          {
+            "term": "B",
+            "cells": [
+              1,
+              3
+            ]
+          },
+          {
+            "term": "A",
+            "cells": [
+              2,
+              3
+            ]
+          }
         ],
         "truthTable": [
           0,
           1,
           1,
           1
-        ],
-        "hintGroups": [
-          {
-            "cells": [
-              1,
-              3
-            ],
-            "term": "B"
-          },
-          {
-            "cells": [
-              2,
-              3
-            ],
-            "term": "A"
-          }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "h-reading",
+      "text": "Reading the Groups",
       "type": "heading",
-      "level": 2,
-      "text": "Reading the Groups"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -95,9 +103,9 @@
     },
     {
       "id": "h-why-works",
+      "text": "Why This Is the Same Algebra as Before",
       "type": "heading",
-      "level": 2,
-      "text": "Why This Is the Same Algebra as Before"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -110,9 +118,9 @@
     },
     {
       "id": "code-1",
+      "code": "A'B + AB = B(A' + A) = B\nAB' + AB = A(B' + B) = A",
       "type": "code",
-      "language": "text",
-      "code": "A'B + AB = B(A' + A) = B\nAB' + AB = A(B' + B) = A"
+      "language": "text"
     },
     {
       "id": "p-5",
@@ -138,9 +146,9 @@
     },
     {
       "id": "h-ex2",
+      "text": "A second example: when nothing simplifies",
       "type": "heading",
-      "level": 2,
-      "text": "A second example: when nothing simplifies"
+      "level": 2
     },
     {
       "id": "p-ex2",
@@ -153,22 +161,22 @@
     },
     {
       "id": "w-ex2",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B"
-        ],
+        "mode": "solve",
         "cells": [
           0,
           1,
           1,
           0
         ],
-        "mode": "solve",
-        "title": "Diagonal 1s"
-      }
+        "title": "Diagonal 1s",
+        "variables": [
+          "A",
+          "B"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-ex2b",
@@ -190,18 +198,10 @@
     },
     {
       "id": "b1",
+      "href": "/tutorials/digital-logic/kmap-three-variable-wraparound",
       "type": "button",
       "label": "Continue to 3-variable maps",
-      "href": "/tutorials/digital-logic/kmap-three-variable-wraparound",
       "style": "primary"
     }
-  ],
-  "seoTitle": "2-Variable Karnaugh Map: Worked Example and Rules",
-  "seoDescription": "Learn 2-variable Karnaugh maps with a complete worked example: how to fill the grid, group the 1s, and why each group matches boolean algebra.",
-  "keywords": [
-    "2 variable karnaugh map",
-    "k-map example",
-    "karnaugh map grouping",
-    "boolean simplification"
   ]
 }

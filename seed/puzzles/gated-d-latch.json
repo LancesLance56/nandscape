@@ -3,21 +3,79 @@
   "title": "Gated D Latch",
   "description": "Build a transparent, enable-gated D latch. While E is HIGH, Q follows D. While E is LOW, Q holds its last value.",
   "difficulty": "medium",
-  "tags": ["sequential", "memory"],
+  "tags": [
+    "sequential",
+    "memory"
+  ],
   "gateBudget": 4,
   "inputs": [
-    { "name": "D", "defaultValue": 0 },
-    { "name": "E", "defaultValue": 0 }
+    {
+      "name": "D",
+      "defaultValue": 0
+    },
+    {
+      "name": "E",
+      "defaultValue": 0
+    }
   ],
-  "outputs": [{ "name": "Q" }, { "name": "QN" }],
+  "outputs": [
+    {
+      "name": "Q"
+    },
+    {
+      "name": "QN"
+    }
+  ],
   "testCases": [
     {
       "sequence": [
-        { "setInputs": { "D": 1, "E": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } },
-        { "setInputs": { "D": 0, "E": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "E": 0 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "D": 1 }, "expectOutputs": { "Q": 0, "QN": 1 } },
-        { "setInputs": { "E": 1 }, "expectOutputs": { "Q": 1, "QN": 0 } }
+        {
+          "setInputs": {
+            "D": 1,
+            "E": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        },
+        {
+          "setInputs": {
+            "D": 0,
+            "E": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "E": 0
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "D": 1
+          },
+          "expectOutputs": {
+            "Q": 0,
+            "QN": 1
+          }
+        },
+        {
+          "setInputs": {
+            "E": 1
+          },
+          "expectOutputs": {
+            "Q": 1,
+            "QN": 0
+          }
+        }
       ]
     }
   ]

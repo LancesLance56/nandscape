@@ -11,194 +11,50 @@
   ],
   "sectionSlug": "graph-theory-basics",
   "position": 10,
+  "seoTitle": "What Is a Graph in Data Structures? Vertices and Edges",
+  "seoDescription": "What a graph is, starting from the Konigsberg bridges: nodes, edges, degree, paths and cycles, why the same algorithms solve mazes and chess positions, and how to tell when a problem is not a graph problem.",
+  "keywords": [
+    "what is a graph in data structure",
+    "vertices and edges",
+    "graph theory basics",
+    "degree of a vertex"
+  ],
   "body": [
+    {
+      "id": "p_2fa45bef",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Graphs are one of the most important data structures in DSA. It's often the most effective tool at modeling certain relations. Its common to see graphs model things like Facebook friends, airport connections, web pages (in search engines), Google Maps, etc."
+        }
+      ]
+    },
     {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
         {
-          "text": "A graph is a collection of dots with lines between some of them. The definition really does stop there, and it is fair to wonder how something that plain earned an entire branch of mathematics."
+          "text": "In discrete math (and in computer science), a graph is formally defined as a set of items called vertices (nodes), and a set of connections called edges (links) that join pairs of vertices."
         }
       ]
     },
     {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The answer is not in the definition. It is in how many problems that look completely unrelated turn out to be the same problem once you draw them this way."
-        }
-      ]
-    },
-    {
-      "id": "h-origin",
-      "type": "heading",
-      "level": 2,
-      "text": "Where the idea came from"
-    },
-    {
-      "id": "p-origin",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "In the 1700s the city of Konigsberg sat on both banks of a river and included two islands, with seven bridges joining the four pieces of land. A popular local question was whether you could take a walk that crossed every bridge exactly once."
-        }
-      ]
-    },
-    {
-      "id": "p-origin-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "People tried routes and failed, but nobody could say whether it was impossible or whether they had simply not been clever enough. Leonhard Euler settled it by noticing that almost everything about the map was irrelevant. The distances did not matter. The shapes of the islands did not matter. Where a bridge landed on a bank did not matter."
-        }
-      ]
-    },
-    {
-      "id": "code-bridges",
-      "type": "code",
-      "language": "text",
-      "code": "The city, drawn as a picture              The same city, drawn as a graph\n\n    ___/ North bank \\___                        North\n   |    |          |    |                       /  |  \\\n   |  [ Island A ] |    |                  Island A - Island B\n   |    |          |    |                       \\  |  /\n    ---\\ South bank /---                         South\n\nFour land masses, seven bridges.        Four dots, seven lines.\nThe shapes and distances mattered.      Only the connections survive."
-    },
-    {
-      "id": "p-origin-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "What mattered was which pieces of land connected to which, and how many times. Once he threw away everything else, the answer fell out quickly: each time you enter a land mass you must also leave it, so every land mass needs an even number of bridges, apart from where you start and where you finish. In Konigsberg all four had an odd number, so no such walk exists."
-        }
-      ]
-    },
-    {
-      "id": "p-origin-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That act of deletion is the useful lesson. A graph is what is left of a problem after you remove everything except the connections. Being able to spot when a problem survives that removal is most of the skill."
-        }
-      ]
-    },
-    {
-      "id": "h-vocab",
-      "type": "heading",
-      "level": 2,
-      "text": "The words, which are fewer than you would expect"
-    },
-    {
-      "id": "p-vocab",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The dots are "
-        },
-        {
-          "text": "nodes",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", also called vertices. The lines are "
-        },
-        {
-          "text": "edges",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". Two nodes joined by an edge are "
-        },
-        {
-          "text": "neighbors",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", or adjacent. The number of edges touching a node is its "
-        },
-        {
-          "text": "degree",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", and degree is exactly what Euler was counting in the bridge argument."
-        }
-      ]
-    },
-    {
-      "id": "p-vocab-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "A path is a sequence of nodes where each is joined to the next, and a path that returns to where it started is a cycle. If every node can reach every other node, the graph is connected. If it comes in separate islands with no edges between them, each island is a component."
-        }
-      ]
-    },
-    {
-      "id": "p-vocab-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That is nearly the whole vocabulary. Everything else in this section is built from these words, so it is worth being comfortable with them before moving on."
-        }
-      ]
-    },
-    {
-      "id": "h-see",
-      "type": "heading",
-      "level": 2,
-      "text": "Get a feel for the shapes"
-    },
-    {
-      "id": "p-see",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Move the nodes around. The picture changes completely and the graph does not change at all, because a graph has no geometry. Only the list of connections is real. Two drawings that look nothing alike can be the same graph."
-        }
-      ]
-    },
-    {
-      "id": "w-explorer",
+      "id": "widget_a25985df",
+      "data": {},
       "type": "interactive",
-      "widget": "graph-explorer",
-      "data": {}
+      "widget": "graph-explorer"
     },
     {
-      "id": "h-examples",
-      "type": "heading",
-      "level": 2,
-      "text": "The same shape, wearing different clothes"
-    },
-    {
-      "id": "p-examples",
+      "id": "p_df61f164",
       "type": "paragraph",
       "content": [
         {
-          "text": "Here is where graphs earn their reputation. Each of the following is a graph, and once you see that, algorithms written for one apply to all of them."
+          "text": "As you can see, the definition is pretty loose and there are tons of different types of graphs. In this section, we will cover what each of these mean and when to use them. For now, here are a few examples."
         }
       ]
     },
     {
       "id": "t-examples",
-      "type": "table",
-      "headers": [
-        "Situation",
-        "What a node is",
-        "What an edge means"
-      ],
       "rows": [
         [
           "A social network",
@@ -235,110 +91,151 @@
           "A junction in the maze",
           "A corridor joining two junctions"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Situation",
+        "What a node is",
+        "What an edge means"
       ]
     },
     {
-      "id": "p-examples-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That last pair is worth sitting with. A chess position and a maze junction feel like completely different kinds of object, and to a graph algorithm they are identical. Finding the fewest moves to checkmate and finding the shortest way out of a maze are the same computation, run on different inputs."
-        }
-      ]
-    },
-    {
-      "id": "p-examples-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "This is the practical payoff of learning graphs. You are not learning one technique per problem. You are learning a way of restating problems so that a small number of techniques cover an enormous number of cases."
-        }
-      ]
-    },
-    {
-      "id": "h-write",
+      "id": "h-origin",
+      "text": "Where the idea came from",
       "type": "heading",
-      "level": 2,
-      "text": "Writing one down"
+      "level": 2
     },
     {
-      "id": "p-write",
+      "id": "p-origin",
       "type": "paragraph",
       "content": [
         {
-          "text": "A picture is fine for humans and useless for a program. The usual way to write a graph down is to list, for each node, the nodes it connects to."
+          "text": "In the 1700s the city of Konigsberg sat on both banks of a river and included two islands, with seven bridges joining the four pieces of land. A popular local question was whether you could take a walk that crossed every bridge exactly once."
         }
       ]
     },
     {
-      "id": "code-friends",
-      "type": "code",
-      "language": "text",
-      "code": "alice  -> bob, carol\nbob    -> alice, dave\ncarol  -> alice\ndave   -> bob"
+      "id": "img_ce329ccc",
+      "alt": "Image of the Bridges of Konigsberg",
+      "src": "https://cdn.britannica.com/77/74877-050-F5DD4C34/Leonhard-Euler-route-each-question-bridges-Swiss.jpg",
+      "type": "image",
+      "caption": "Source: Britannica"
     },
     {
-      "id": "p-write-2",
+      "id": "p-origin-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "That is four nodes and, reading carefully, three edges. Notice that alice appears in bob's list and bob appears in alice's. In an undirected graph every edge has to be written twice, once from each end, and forgetting the second copy is one of the most common reasons a traversal mysteriously fails to reach part of the graph. The next page but one goes into how to store this properly."
+          "text": "People tried routes and failed, but nobody could say whether it was impossible or whether they had simply not been clever enough. Leonhard Euler settled it by noticing that almost everything about the map was irrelevant. In other words, the distances, paths, and even locations did not really matter, all that mattered were really just the connections between each point (node)."
         }
       ]
     },
     {
-      "id": "h-notgraph",
-      "type": "heading",
-      "level": 2,
-      "text": "When something is not a graph problem"
-    },
-    {
-      "id": "p-notgraph",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It would be misleading to leave the impression that everything is a graph, since the test is whether the connections carry the meaning."
-        }
-      ]
-    },
-    {
-      "id": "p-notgraph-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Sorting a list of numbers is not a graph problem. The numbers have an order, but they are not connected to each other in any structural way, and drawing edges between them tells you nothing you did not already know. Finding the average of a column is not a graph problem either."
-        }
-      ]
-    },
-    {
-      "id": "p-notgraph-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The signal to look for is a question about "
-        },
-        {
-          "text": "reachability, connection or ordering",
-          "marks": [
+      "id": "widget_ca6e29ee",
+      "data": {
+        "graph": {
+          "edges": [
             {
-              "kind": "bold"
+              "to": "A",
+              "from": "B"
+            },
+            {
+              "to": "B",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "C"
+            },
+            {
+              "to": "C",
+              "from": "A"
+            },
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "D"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            },
+            {
+              "to": "D",
+              "from": "B"
+            },
+            {
+              "to": "D",
+              "from": "C"
+            },
+            {
+              "to": "C",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 124.38619232177734,
+              "y": 124.27396392822266,
+              "id": "A"
+            },
+            {
+              "x": 125.02574920654297,
+              "y": 41.13152313232422,
+              "id": "B"
+            },
+            {
+              "x": 121.82796478271484,
+              "y": 204.85816955566406,
+              "id": "C"
+            },
+            {
+              "x": 293.8688659667969,
+              "y": 119.15750885009766,
+              "id": "D"
             }
           ]
-        },
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "p-origin-3",
+      "type": "paragraph",
+      "content": [
         {
-          "text": ": can I get from here to there, what is the cheapest way, what depends on what, which things form a closed loop. When a question sounds like that, drawing it as dots and lines is usually worth five minutes even if you end up discarding it."
+          "text": "What really mattered was which pieces of land connected to which, and how many times. From this perspective, the answer is now obvious: each time you enter a land mass you must also leave it, so every land mass needs an even number of bridges, apart from where you start and where you finish. In Konigsberg all four had an odd number, so no such walk exists."
         }
       ]
     },
     {
-      "id": "h-check",
+      "id": "h_80c38cd7",
+      "text": "Note",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
+    },
+    {
+      "id": "p_6b41f58e",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This part is on the theory behind graphs, we will tackle how to represent it in code later on."
+        }
+      ]
+    },
+    {
+      "id": "btn_fa85a1ae",
+      "href": "/tutorials/dsa/graph-representations",
+      "type": "button",
+      "label": "Next -> Graphs and Representations",
+      "style": "secondary"
     },
     {
       "id": "w-quiz",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -410,15 +307,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     }
-  ],
-  "seoTitle": "What Is a Graph in Data Structures? Vertices and Edges",
-  "seoDescription": "What a graph is, starting from the Konigsberg bridges: nodes, edges, degree, paths and cycles, why the same algorithms solve mazes and chess positions, and how to tell when a problem is not a graph problem.",
-  "keywords": [
-    "what is a graph in data structure",
-    "vertices and edges",
-    "graph theory basics",
-    "degree of a vertex"
   ]
 }

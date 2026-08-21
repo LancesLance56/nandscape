@@ -1,31 +1,51 @@
 {
+  "slug": "kmap-tabulation-fundamentals",
+  "title": "Karnaugh Map Context",
+  "excerpt": "Every truth table hides a formula in plain sight. Here's the brute-force way to pull it out, and the one habit worth building before Karnaugh maps make it fast.",
   "authorName": "Lance Dy Chua",
   "status": "published",
+  "publishedAt": "2026-07-28T09:00:00Z",
   "tags": [
     "fundamentals",
     "karnaugh-maps"
   ],
   "sectionSlug": "karnaugh-maps",
-  "slug": "kmap-tabulation-fundamentals",
-  "title": "From Truth Table to Formula, By Hand",
-  "excerpt": "Every truth table hides a formula in plain sight. Here's the brute-force way to pull it out, and the one habit worth building before Karnaugh maps make it fast.",
-  "publishedAt": "2026-07-28T09:00:00Z",
   "position": 2,
+  "seoTitle": "Truth Table to Boolean Expression: Sum of Products",
+  "seoDescription": "Convert any truth table into a boolean expression by hand using minterms and sum of products, the method Karnaugh maps later make fast.",
+  "keywords": [
+    "truth table to boolean expression",
+    "sum of products",
+    "minterm",
+    "boolean algebra"
+  ],
   "body": [
     {
       "id": "p-hook-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "A Karnaugh map looks complicated at first glance. It is really just a truth table with its rows reordered, so that one algebraic trick becomes something you can spot by eye instead of derive by hand. Before that reordering makes sense, it is worth seeing the brute-force version first: the version that always works and is never wrong, but is more work than it needs to be."
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " A Karnaugh map looks complicated but it really is just a truth table with its rows reordered."
         }
       ]
     },
     {
       "id": "h-minterms-1",
+      "text": "Reading 1s Off a Truth Table",
       "type": "heading",
-      "level": 2,
-      "text": "Reading 1s Off a Truth Table"
+      "level": 2
     },
     {
       "id": "p-1-1",
@@ -56,8 +76,6 @@
     },
     {
       "id": "mp-1-1",
-      "type": "interactive",
-      "widget": "minterm-picker",
       "data": {
         "variables": [
           "A",
@@ -69,63 +87,63 @@
           1,
           1
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "minterm-picker"
     },
     {
       "id": "h-minterm-def-1",
+      "text": "Minterms",
       "type": "heading",
-      "level": 2,
-      "text": "Giving It a Name: Minterm"
+      "level": 2
     },
     {
       "id": "p-2-1",
       "type": "paragraph",
       "content": [
         {
-          "text": "Each of those single-row AND terms has a name: a minterm, a product term that is true for exactly one input combination. Sum every minterm where the output is 1 and you get the canonical Sum-of-Products form of the function, which is always correct and almost never the simplest circuit you could build. It is reverse-engineering by brute force, one row at a time."
-        }
-      ]
-    },
-    {
-      "id": "divider-1-1",
-      "type": "divider"
-    },
-    {
-      "id": "p-next-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So the brute-force method works, but it never simplifies anything. The next step is the one real idea that lets you merge rows together instead of listing every single one, and Karnaugh maps exist purely to make that idea easy to spot."
+          "text": "Each of those single-row AND terms has a name: a minterm, a product term that is true for exactly one input combination. Sum every minterm where the output is 1 and you get the canonical Sum-of-Products form of the function, which is always correct and almost never the simplest circuit you could build. Essentially, this is the brute-force approach where we hardcode what we want the output to be."
         }
       ]
     },
     {
       "id": "h-intro-2",
+      "text": "The One Identity Behind Every Simplification",
       "type": "heading",
-      "level": 2,
-      "text": "The One Identity Behind Every Simplification"
+      "level": 2
     },
     {
       "id": "p-1-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Every simplification a Karnaugh map ever helps you find comes down to one algebraic identity, applied repeatedly: X + X' = 1. If two minterms are identical except for a single variable that appears true in one and complemented in the other, that variable cancels out completely."
+          "text": "Every simplification a Karnaugh map ever helps you find comes from the identity  "
+        },
+        {
+          "text": "X + X' = 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". If two minterms are identical except for a single variable that appears true in one and complemented in the other, that variable cancels out completely."
         }
       ]
     },
     {
       "id": "code-1-2",
+      "code": "AB'C + ABC\n= AB(C' + C)\n= AB * 1\n= AB",
       "type": "code",
-      "language": "verilog",
-      "code": "AB'C + ABC\n= AB(C' + C)\n= AB * 1\n= AB"
+      "language": "verilog"
     },
     {
       "id": "p-2-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Look closely at what happened. A and B stayed fixed across both terms, and C is the only thing that flipped, C' in one, C in the other, so it contributes nothing to the final answer and cancels, leaving AB. Two three-variable minterms merged into one two-variable term."
+          "text": "A and B stayed fixed across both terms, and C is the only thing that flipped, C' in one, C in the other, so it contributes nothing to the final answer and cancels, leaving AB. Two three-variable minterms merged into one two-variable term."
         }
       ]
     },
@@ -134,50 +152,34 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The merging rule is just this: two minterms combine into one shorter term whenever they differ in exactly one bit position. A Karnaugh map adds no new mathematics on top of that identity. What it adds is speed, making the qualifying pairs, and later the quads and larger groups, visible by eye rather than something you derive algebraically every time."
+          "text": "In summary, two minterms combine into one shorter term whenever they differ in exactly one bit position. What a karnaugh map adds is speed, making the qualifying pairs, and later the quads and larger groups, visible by eye without having to do all the algebra."
         }
       ]
     },
     {
-      "id": "p-4-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Quick gut check before moving on:"
-        }
-      ]
+      "id": "h_9d400dbe",
+      "text": "Check yourself",
+      "type": "heading",
+      "level": 2
     },
     {
       "id": "poll-1-2",
-      "type": "interactive",
-      "widget": "poll",
       "data": {
-        "question": "AB'C and ABC merge into AB. What made that legal?",
         "options": [
           "They differ in exactly one variable (C vs C'), and everything else matches",
           "They both contain the letter A",
           "They have the same number of letters"
-        ]
-      }
-    },
-    {
-      "id": "divider-1-2",
-      "type": "divider"
-    },
-    {
-      "id": "p-next-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Knowing the identity is one thing. Actually spotting which pairs of minterms qualify, just by scanning a truth table, turns out to be surprisingly painful, and that pain is exactly what motivates everything a Karnaugh map does."
-        }
-      ]
+        ],
+        "question": "AB'C and ABC merge into AB. What made that legal?"
+      },
+      "type": "interactive",
+      "widget": "poll"
     },
     {
       "id": "h-intro-3",
+      "text": "The Problem With an Ordinary Truth Table",
       "type": "heading",
-      "level": 2,
-      "text": "The Problem With an Ordinary Truth Table"
+      "level": 2
     },
     {
       "id": "p-1-3",
@@ -190,109 +192,32 @@
     },
     {
       "id": "code-1-3",
-      "type": "code",
-      "language": "text",
-      "code": "000\n001\n010\n011\n100\n101\n110\n111"
+      "code": "000 -> 001 -> 010 -> 011 -> 100 -> 101 -> 110 -> 111",
+      "type": "code"
     },
     {
       "id": "p-2-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Now find the pair that should be easy: 011 and 100. On paper they sit right next to each other, back to back in the list, but compare them bit by bit and they differ in all three positions. They are actually as far apart as two 3-bit rows can possibly be. Meanwhile 011 and 111, which really do differ by only one bit, sit three rows apart on the page."
-        }
-      ]
-    },
-    {
-      "id": "p-3-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Counting order was never designed to put mergeable rows near each other. It just counts. Spotting which pairs of minterms qualify to merge, from the identity above, means checking every row against every other row for a one-bit difference, which is fine for two variables. Past three or four, doing it reliably by eye is genuinely painful, and that is before you are even trying to spot groups of four or eight rows merging at once."
-        }
-      ]
-    },
-    {
-      "id": "divider-1-3",
-      "type": "divider"
-    },
-    {
-      "id": "p-next-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The fix does not add any new math. It just changes the order the rows are written in, and that one change is the entire reason a Karnaugh map works at all."
-        }
-      ]
-    },
-    {
-      "id": "h-intro-4",
-      "type": "heading",
-      "level": 2,
-      "text": "The Fix: Gray Code Ordering"
-    },
-    {
-      "id": "p-1-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Instead of counting in ordinary binary, label the rows in reflected binary Gray code instead: 00, 01, 11, 10. Every consecutive pair in that sequence differs in exactly one bit, by construction, not by coincidence and not just most of the time. Counting this way, separately, for rows and for columns of a grid, is the single design decision that makes the rest of a Karnaugh map work."
-        }
-      ]
-    },
-    {
-      "id": "p-2-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Step through the sequence below, one row at a time, for both orderings side by side. Binary counting order jumps by a different number of bits every step, sometimes one, sometimes all of them at once. Gray code never does. Pay attention to the very last step too: it wraps from the final row back to the first, and even that wraparound only changes one bit."
+          "text": "As you can see, as we keep incrementing our binary number there are multiple bit changes. A Karnaugh map uses a different ordering method, where the next number only has one difference compared to the previous number. This is called Gray Code ordering."
         }
       ]
     },
     {
       "id": "gray-1-4",
-      "type": "interactive",
-      "widget": "gray-code-explorer",
       "data": {
         "bits": 3
-      }
-    },
-    {
-      "id": "p-3-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That wraparound property is not a footnote. It is exactly what lets a Karnaugh map's leftmost and rightmost columns, or its top and bottom rows, count as neighbors too. You will meet that directly as the wraparound rule once grids show up."
-        }
-      ]
-    },
-    {
-      "id": "divider-1-4",
-      "type": "divider"
-    },
-    {
-      "id": "p-next-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "With rows and columns both labeled this way, a truth table can be poured directly into a grid, and that grid is a Karnaugh map."
-        }
-      ]
+      },
+      "type": "interactive",
+      "widget": "gray-code-explorer"
     },
     {
       "id": "b1-4",
+      "href": "/tutorials/kmap-two-variable",
       "type": "button",
-      "label": "See it become a Karnaugh map",
-      "href": "/tutorials/what-a-kmap-is",
+      "label": "Next --> Karnaugh Mapping",
       "style": "primary"
     }
-  ],
-  "seoTitle": "Truth Table to Boolean Expression: Sum of Products",
-  "seoDescription": "Convert any truth table into a boolean expression by hand using minterms and sum of products, the method Karnaugh maps later make fast.",
-  "keywords": [
-    "truth table to boolean expression",
-    "sum of products",
-    "minterm",
-    "boolean algebra"
   ]
 }

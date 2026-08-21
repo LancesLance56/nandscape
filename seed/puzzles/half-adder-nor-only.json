@@ -3,15 +3,78 @@
   "title": "Half Adder (NOR only)",
   "description": "NOR is also universal. Derive AND, OR, and NOT from NOR first, then produce SUM and CARRY for two bits.",
   "difficulty": "medium",
-  "tags": ["combinational", "arithmetic"],
+  "tags": [
+    "combinational",
+    "arithmetic"
+  ],
   "gateBudget": 12,
-  "allowedGateTypes": [3],
-  "inputs": [{ "name": "A" }, { "name": "B" }],
-  "outputs": [{ "name": "SUM" }, { "name": "CARRY" }],
+  "allowedGateTypes": [
+    3
+  ],
+  "inputs": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "SUM"
+    },
+    {
+      "name": "CARRY"
+    }
+  ],
   "testCases": [
-    { "row": { "inputs": { "A": 0, "B": 0 }, "outputs": { "SUM": 0, "CARRY": 0 } } },
-    { "row": { "inputs": { "A": 0, "B": 1 }, "outputs": { "SUM": 1, "CARRY": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 0 }, "outputs": { "SUM": 1, "CARRY": 0 } } },
-    { "row": { "inputs": { "A": 1, "B": 1 }, "outputs": { "SUM": 0, "CARRY": 1 } } }
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 0
+        },
+        "outputs": {
+          "SUM": 0,
+          "CARRY": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 0,
+          "B": 1
+        },
+        "outputs": {
+          "SUM": 1,
+          "CARRY": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 0
+        },
+        "outputs": {
+          "SUM": 1,
+          "CARRY": 0
+        }
+      }
+    },
+    {
+      "row": {
+        "inputs": {
+          "A": 1,
+          "B": 1
+        },
+        "outputs": {
+          "SUM": 0,
+          "CARRY": 1
+        }
+      }
+    }
   ]
 }

@@ -11,6 +11,14 @@
   ],
   "sectionSlug": "karnaugh-maps",
   "position": 30,
+  "seoTitle": "3-Variable Karnaugh Maps and the Wraparound Rule",
+  "seoDescription": "Why 3-variable Karnaugh maps use Gray code column order, and how wraparound groups work, with a worked example that crosses the map edge.",
+  "keywords": [
+    "3 variable karnaugh map",
+    "karnaugh map wraparound",
+    "gray code",
+    "k-map grouping rules"
+  ],
   "body": [
     {
       "id": "p-hook",
@@ -23,9 +31,9 @@
     },
     {
       "id": "h-wraparound",
+      "text": "The Wraparound Rule",
       "type": "heading",
-      "level": 2,
-      "text": "The Wraparound Rule"
+      "level": 2
     },
     {
       "id": "p-1",
@@ -38,9 +46,9 @@
     },
     {
       "id": "h-why-legal",
+      "text": "Why Wraparound Is Legal, Not a Special Case",
       "type": "heading",
-      "level": 2,
-      "text": "Why Wraparound Is Legal, Not a Special Case"
+      "level": 2
     },
     {
       "id": "p-2",
@@ -53,9 +61,9 @@
     },
     {
       "id": "h-example",
+      "text": "Worked Example: F = C'",
       "type": "heading",
-      "level": 2,
-      "text": "Worked Example: F = C'"
+      "level": 2
     },
     {
       "id": "p-3",
@@ -68,13 +76,22 @@
     },
     {
       "id": "kmap-1",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
         "variables": [
           "A",
           "B",
           "C"
+        ],
+        "hintGroups": [
+          {
+            "term": "C'",
+            "cells": [
+              0,
+              2,
+              4,
+              6
+            ]
+          }
         ],
         "truthTable": [
           1,
@@ -85,19 +102,10 @@
           0,
           1,
           0
-        ],
-        "hintGroups": [
-          {
-            "cells": [
-              0,
-              2,
-              4,
-              6
-            ],
-            "term": "C'"
-          }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-4",
@@ -110,9 +118,9 @@
     },
     {
       "id": "code-1",
+      "code": "Group cells at C=0: {A'B'C', A'BC', AB'C', ABC'}\nAll four share C = 0. A and B take every combination between them.\n=> only C' survives -> F = C'",
       "type": "code",
-      "language": "text",
-      "code": "Group cells at C=0: {A'B'C', A'BC', AB'C', ABC'}\nAll four share C = 0. A and B take every combination between them.\n=> only C' survives -> F = C'"
+      "language": "text"
     },
     {
       "id": "divider-1",
@@ -129,9 +137,9 @@
     },
     {
       "id": "h-ex2",
+      "text": "A second example: a block of four plus a leftover",
       "type": "heading",
-      "level": 2,
-      "text": "A second example: a block of four plus a leftover"
+      "level": 2
     },
     {
       "id": "p-ex2",
@@ -144,14 +152,8 @@
     },
     {
       "id": "w-ex2",
-      "type": "interactive",
-      "widget": "kmap-explorer",
       "data": {
-        "variables": [
-          "A",
-          "B",
-          "C"
-        ],
+        "mode": "practice",
         "cells": [
           1,
           1,
@@ -162,9 +164,15 @@
           0,
           0
         ],
-        "mode": "practice",
-        "title": "Group it yourself"
-      }
+        "title": "Group it yourself",
+        "variables": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "type": "interactive",
+      "widget": "kmap-explorer"
     },
     {
       "id": "p-ex2b",
@@ -186,18 +194,10 @@
     },
     {
       "id": "b1",
+      "href": "/tutorials/digital-logic/kmap-four-variable",
       "type": "button",
       "label": "Continue to 4-variable maps",
-      "href": "/tutorials/digital-logic/kmap-four-variable",
       "style": "primary"
     }
-  ],
-  "seoTitle": "3-Variable Karnaugh Maps and the Wraparound Rule",
-  "seoDescription": "Why 3-variable Karnaugh maps use Gray code column order, and how wraparound groups work, with a worked example that crosses the map edge.",
-  "keywords": [
-    "3 variable karnaugh map",
-    "karnaugh map wraparound",
-    "gray code",
-    "k-map grouping rules"
   ]
 }
