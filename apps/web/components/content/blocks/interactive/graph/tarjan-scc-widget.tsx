@@ -104,7 +104,7 @@ export function TarjanSccWidget({
           </PanelBox>
 
           <PanelBox title="arrival / lowlink">
-            <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               {graph.nodes.map((n) => (
                 <div key={n.id} className="flex items-center justify-between text-xs">
                   <span className="font-bold text-ink">{n.id}</span>

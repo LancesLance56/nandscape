@@ -122,7 +122,7 @@ export function TopologicalSortWidget({
           </PanelBox>
 
           <PanelBox title="In-degree (things still blocking it)">
-            <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               {graph.nodes.map((n) => {
                 const emitted = step.visited.includes(n.id);
                 const isStuck = step === lastStep && stuck.includes(n.id);

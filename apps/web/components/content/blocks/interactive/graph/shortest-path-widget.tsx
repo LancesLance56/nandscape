@@ -113,7 +113,7 @@ export function ShortestPathWidget({
       panel={(step) => (
         <>
           <PanelBox title={`Cheapest known cost from ${start}`}>
-            <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               {graph.nodes.map((n) => {
                 const value = step.table?.[n.id] ?? "∞";
                 const settled = step.visited.includes(n.id);

@@ -24,57 +24,17 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "In an undirected graph, asking which nodes belong together is easy. Run one traversal, and everything it reaches is a connected component, because reachability goes both ways."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Directed graphs take that symmetry away. A one-way street from A to B tells you nothing about getting from B back to A. So the interesting grouping is no longer \"can I reach it\" but "
-        },
-        {
-          "text": "\"can we reach each other\"",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". A set of nodes where every node can reach every other node, and which cannot be made any bigger without breaking that, is a "
-        },
-        {
-          "text": "strongly connected component",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": "."
-        }
-      ]
-    },
-    {
       "id": "p-hook-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "These matter more than they first appear. Mutually recursive functions form one in a call graph. Circular package dependencies form one in a build graph. Collapse each component to a single point and any directed graph becomes acyclic, which means you can then topologically sort it. Finding them is often the first step that makes a tangled graph tractable."
+          "text": "A strongly connected component (SCC) is a part of a directed graph where every node can reach every other node through a path of directed edges. More specifically, it is the largest possible group with this mutual loop. A node can reach all other nodes in the same SCC, and all other nodes in the SCC can reach it."
         }
       ]
     },
     {
       "id": "h-naive",
-      "text": "The obvious method, and its price",
+      "text": "The obvious method",
       "type": "heading",
       "level": 2
     },
@@ -83,7 +43,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a direct way to compute this, and it is worth pricing before reaching for anything clever. For each node, run a traversal forwards to find everything it reaches, then run a traversal along reversed edges to find everything that reaches it, and intersect the two sets to get exactly the nodes mutually reachable with it, which is its component."
+          "text": "Before learning about a complex algorithm, it sometimes helps to think about a more direct, less efficient method that works similarly. There is a very simple but slow way to find SCCs, and it is worth looking over before the clever solution. "
+        }
+      ]
+    },
+    {
+      "id": "p_60c52d17",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Pick a node, walk forwards to collect everything it reaches, then walk backwards along reversed edges to collect everything that reaches it. Whatever lands in both sets is mutually reachable with your node, and that set is its component. This algorithm works perfectly fine by the way, just a bit slow."
         }
       ]
     },
@@ -92,7 +61,125 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is completely correct and costs two traversals per node, so "
+          "text": "The map below is a slice of a real flight network. Click any airport to run both walks from it and see where they overlap."
+        }
+      ]
+    },
+    {
+      "id": "w-scc-reach",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "LHR",
+              "from": "JFK"
+            },
+            {
+              "to": "CDG",
+              "from": "LHR"
+            },
+            {
+              "to": "JFK",
+              "from": "CDG"
+            },
+            {
+              "to": "DXB",
+              "from": "LHR"
+            },
+            {
+              "to": "SIN",
+              "from": "DXB"
+            },
+            {
+              "to": "HND",
+              "from": "SIN"
+            },
+            {
+              "to": "SIN",
+              "from": "HND"
+            },
+            {
+              "to": "SYD",
+              "from": "DXB"
+            },
+            {
+              "to": "LAX",
+              "from": "JFK"
+            },
+            {
+              "to": "GRU",
+              "from": "JFK"
+            },
+            {
+              "to": "BKK",
+              "from": "DXB"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 65,
+              "y": 130,
+              "id": "JFK"
+            },
+            {
+              "x": 175,
+              "y": 55,
+              "id": "LHR"
+            },
+            {
+              "x": 175,
+              "y": 205,
+              "id": "CDG"
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "id": "LAX"
+            },
+            {
+              "x": 25,
+              "y": 215,
+              "id": "GRU"
+            },
+            {
+              "x": 300,
+              "y": 130,
+              "id": "DXB"
+            },
+            {
+              "x": 400,
+              "y": 55,
+              "id": "SIN"
+            },
+            {
+              "x": 400,
+              "y": 205,
+              "id": "HND"
+            },
+            {
+              "x": 270,
+              "y": 225,
+              "id": "SYD"
+            },
+            {
+              "x": 270,
+              "y": 35,
+              "id": "BKK"
+            }
+          ],
+          "directed": true
+        },
+        "start": "DXB"
+      },
+      "type": "interactive",
+      "widget": "mutual-reachability"
+    },
+    {
+      "id": "p-naive-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That method is correct, and it costs two traversals per node, so "
         },
         {
           "text": "O(V * (V + E))",
@@ -103,13 +190,13 @@
           ]
         },
         {
-          "text": " overall. On a graph with a hundred thousand nodes it is far too slow. The question is whether one pass can do it, and the answer turns out to be yes, using nothing but a depth-first search with two extra numbers per node."
+          "text": " overall. On a graph with a hundred thousand nodes it is far too slow. Everything below replaces it with a single depth-first search."
         }
       ]
     },
     {
       "id": "h-observation",
-      "text": "The observation everything rests on",
+      "text": "The trick",
       "type": "heading",
       "level": 2
     },
@@ -118,16 +205,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Run a depth-first search on a directed graph and it carves the graph into a tree, the edges it actually descended through, plus leftover edges that point to nodes already discovered."
-        }
-      ]
-    },
-    {
-      "id": "p-observation-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Now here is the fact that makes a one-pass algorithm possible. Every strongly connected component appears in that DFS tree as a "
+          "text": "A depth-first search carves a directed graph into a tree, plus leftover edges pointing back at nodes already discovered. Every strongly connected component sits in that tree as one "
         },
         {
           "text": "contiguous block",
@@ -138,7 +216,7 @@
           ]
         },
         {
-          "text": ". All its nodes sit in one subtree, and exactly one of them was discovered first. Call that node the component's "
+          "text": ": all its nodes in a single subtree, exactly one of them discovered first. Call that one the "
         },
         {
           "text": "root",
@@ -154,20 +232,31 @@
       ]
     },
     {
-      "id": "p-observation-3",
+      "id": "p-observation-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The reason is not hard to see. If two nodes are mutually reachable and DFS enters one of them, it can reach the other before it leaves, so the other is discovered somewhere below it. So a component never gets split across unrelated parts of the tree."
+          "text": "That follows from the definition. If two nodes can reach each other and DFS enters one, it finds the other before it leaves, so no component is ever split across the tree."
         }
       ]
     },
     {
-      "id": "p-observation-4",
+      "id": "p-observation-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "That reduces the whole problem to a single question. If you can recognize, at the moment DFS finishes with a node, whether that node is the root of a component, then everything discovered since you entered it and not yet claimed must be its component. Recognizing roots is the entire algorithm."
+          "text": "So Tarjan's algorithm basically asks the much simpler question: "
+        },
+        {
+          "text": "when DFS finishes a node, is that node a root",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "? If you can answer that, everything discovered since you entered it and not yet claimed is its component."
         }
       ]
     },
@@ -182,55 +271,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Give every node a discovery number as you enter it: 0 for the first node entered, 1 for the next, and so on. Call it index, and once a node has one it keeps it for the rest of the run, since nothing revisits a node to renumber it."
-        }
-      ]
-    },
-    {
-      "id": "p-lowlink-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Then give every node a second number called "
-        },
-        {
-          "text": "low",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", which answers this question: "
-        },
-        {
-          "text": "what is the smallest index I can reach, going down through my subtree and then taking at most one edge back up?",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "p-lowlink-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "A node starts with "
-        },
-        {
-          "text": "low",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " equal to its own "
+          "text": "Number each node as you enter it, 0 for the first, 1 for the next. That is its "
         },
         {
           "text": "index",
@@ -241,7 +282,7 @@
           ]
         },
         {
-          "text": ", because it can certainly reach itself. It then improves in two ways. When you return from a child, your "
+          "text": ", fixed once set. Give it a second number, "
         },
         {
           "text": "low",
@@ -252,7 +293,43 @@
           ]
         },
         {
-          "text": " takes the minimum of itself and the child's "
+          "text": ", answering one question: "
+        },
+        {
+          "text": "what is the smallest index I can reach by going down through my subtree and then taking at most one edge back up?",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p-lowlink-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " starts equal to "
+        },
+        {
+          "text": "index",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", since a node reaches itself. It improves twice: returning from a child, take the smaller of your "
         },
         {
           "text": "low",
@@ -263,7 +340,7 @@
           ]
         },
         {
-          "text": ", since anything the child can climb to, you can climb to through the child. And when you see an edge to a node that was already discovered and is still in play, your "
+          "text": " and the child's "
         },
         {
           "text": "low",
@@ -274,7 +351,18 @@
           ]
         },
         {
-          "text": " takes the minimum of itself and that node's "
+          "text": "; and on an edge to a node already discovered and still in play, take the smaller of your "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and that node's "
         },
         {
           "text": "index",
@@ -290,11 +378,11 @@
       ]
     },
     {
-      "id": "p-lowlink-4",
+      "id": "p-lowlink-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Now the payoff. If a node finishes with "
+          "text": "Finish with "
         },
         {
           "text": "low",
@@ -305,7 +393,7 @@
           ]
         },
         {
-          "text": " strictly less than its "
+          "text": " below your "
         },
         {
           "text": "index",
@@ -316,16 +404,7 @@
           ]
         },
         {
-          "text": ", something in its subtree found a way back to an ancestor. That ancestor and this node are on a cycle together, so they share a component, and this node cannot be the first one entered in it."
-        }
-      ]
-    },
-    {
-      "id": "p-lowlink-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "If a node finishes with "
+          "text": " and something under you reached an ancestor, so you share a component with it and were not the first into it. Finish with "
         },
         {
           "text": "low",
@@ -336,7 +415,7 @@
           ]
         },
         {
-          "text": " equal to its "
+          "text": " equal to "
         },
         {
           "text": "index",
@@ -347,10 +426,10 @@
           ]
         },
         {
-          "text": ", nothing beneath it escaped upward. Nothing in its subtree can reach anything discovered before it. That is exactly what being the first node of a component means. "
+          "text": " and nothing beneath you escaped, which is what being first in a component means. So "
         },
         {
-          "text": "low equals index identifies a root",
+          "text": "low equals index marks a root",
           "marks": [
             {
               "kind": "bold"
@@ -358,13 +437,196 @@
           ]
         },
         {
-          "text": ", and everything still unclaimed below it is its component."
+          "text": ", and everything unclaimed below it is that component."
+        }
+      ]
+    },
+    {
+      "id": "h-trace",
+      "text": "A full trace",
+      "type": "heading",
+      "level": 2
+    },
+    {
+      "id": "p-trace",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Same map, with Tarjan running on it. Everything the two-traversal method found one airport at a time, this finds in a single pass."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Starting at JFK, neighbors taken in alphabetical order at each stop. Watch the low values climb back up as the recursion unwinds, and each component get outlined the moment its root finishes."
+        }
+      ]
+    },
+    {
+      "id": "w-tarjan-live",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "LHR",
+              "from": "JFK"
+            },
+            {
+              "to": "CDG",
+              "from": "LHR"
+            },
+            {
+              "to": "JFK",
+              "from": "CDG"
+            },
+            {
+              "to": "DXB",
+              "from": "LHR"
+            },
+            {
+              "to": "SIN",
+              "from": "DXB"
+            },
+            {
+              "to": "HND",
+              "from": "SIN"
+            },
+            {
+              "to": "SIN",
+              "from": "HND"
+            },
+            {
+              "to": "SYD",
+              "from": "DXB"
+            },
+            {
+              "to": "LAX",
+              "from": "JFK"
+            },
+            {
+              "to": "GRU",
+              "from": "JFK"
+            },
+            {
+              "to": "BKK",
+              "from": "DXB"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 95.60611724853516,
+              "y": 127.25189971923828,
+              "id": "JFK",
+              "labelDx": -0.09262847900390625,
+              "labelDy": 1.7288055419921875
+            },
+            {
+              "x": 175,
+              "y": 55,
+              "id": "LHR",
+              "labelDx": 0,
+              "labelDy": -0.639556884765625
+            },
+            {
+              "x": 175,
+              "y": 205,
+              "id": "CDG"
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "id": "LAX"
+            },
+            {
+              "x": 25,
+              "y": 215,
+              "id": "GRU"
+            },
+            {
+              "x": 311.7764587402344,
+              "y": 129.8101348876953,
+              "id": "DXB"
+            },
+            {
+              "x": 369.9761657714844,
+              "y": 69.05219268798828,
+              "id": "SIN"
+            },
+            {
+              "x": 404.51226806640625,
+              "y": 203.3592071533203,
+              "id": "HND"
+            },
+            {
+              "x": 270,
+              "y": 225,
+              "id": "SYD"
+            },
+            {
+              "x": 270,
+              "y": 35,
+              "id": "BKK"
+            }
+          ],
+          "directed": true
+        }
+      },
+      "type": "interactive",
+      "widget": "tarjan-scc"
+    },
+    {
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A few things in that trace are worth going back to. JFK visits GRU and LAX before it ever reaches LHR, and both close immediately: each has "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " equal to its own index, since a leaf with no way back can never be anything but its own component. DXB does the same thing three times over. BKK, SYD, and DXB itself all close as singles, even though DXB is the node every one of those routes leaves from."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Also notice the order components come out: GRU, then LAX, then BKK, then SIN and HND together, then SYD, then DXB on its own, and only at the very end the big loop containing JFK. Tarjan produces components in reverse topological order of the collapsed graph, which is a free bonus. If you need that order the right way round, reverse the output rather than sorting it."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "And notice that JFK, the very first node entered, was a root with low 0 equal to its index 0, since the first node of a DFS is always a root of something, because nothing was discovered before it for anything to climb back to."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This has real uses beyond the puzzle. Airlines run exactly this kind of check to find aircraft and crew rotations that return to base without an empty repositioning flight, and to see which parts of a network stay mutually reachable if one hub goes down. The same algorithm, unchanged, finds cycles of mutual dependency in a package manager or clusters of accounts that all follow each other back in a social graph. Anywhere reachability has a direction, Tarjan's algorithm is the fast way to find where it loops back on itself."
         }
       ]
     },
     {
       "id": "h-stack",
-      "text": "Why there is a stack, and the subtlety inside it",
+      "text": "The stack",
       "type": "heading",
       "level": 2
     },
@@ -373,7 +635,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Keep a stack of every node discovered but not yet assigned to a finished component. Push a node when you enter it. When a root finishes, pop until you pop the root itself, and those nodes are the component."
+          "text": "Keep a stack of every node discovered but not yet placed in a finished component. Push on entry. When a root finishes, pop down to and including the root, and those nodes are the component."
         }
       ]
     },
@@ -382,16 +644,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That much is bookkeeping. The stack is also doing something less obvious, and this is the one part of Tarjan's algorithm that genuinely catches people out."
-        }
-      ]
-    },
-    {
-      "id": "p-stack-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "When DFS meets an edge to a node that has already been discovered, there are two very different situations, and they need opposite treatment."
+          "text": "The trace above skipped an edge that pointed into an already-finished component, and that is the one part of Tarjan's algorithm that genuinely catches people out. When DFS meets an edge to a node it has already discovered, two different situations need opposite treatment."
         }
       ]
     },
@@ -417,20 +670,11 @@
       ]
     },
     {
-      "id": "p-stack-4",
+      "id": "p-stack-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Miss that second case and components start merging that have no business merging. The edge exists, so you can get there, but there is no route back, and a component needs both directions."
-        }
-      ]
-    },
-    {
-      "id": "p-stack-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "One more detail in the same area. When you take an edge to a node on the stack, you use that node's "
+          "text": "One detail the table hides: for a node still on the stack, use its "
         },
         {
           "text": "index",
@@ -441,7 +685,7 @@
           ]
         },
         {
-          "text": " and not its "
+          "text": ", not its "
         },
         {
           "text": "low",
@@ -452,7 +696,7 @@
           ]
         },
         {
-          "text": ". Using "
+          "text": ". Its "
         },
         {
           "text": "low",
@@ -463,157 +707,35 @@
           ]
         },
         {
-          "text": " can pull in a value from a region that cannot actually reach you, which merges components that should stay apart. The version with "
-        },
-        {
-          "text": "index",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " is the one that is correct, and it is a common source of a solver that works on small tests and fails on larger ones."
-        }
-      ]
-    },
-    {
-      "id": "h-trace",
-      "text": "A full trace",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-trace",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Here is a graph with four components of different shapes: one cycle of three, one cycle of two, and two single nodes."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Starting the DFS at A, with neighbors taken in the order listed. Step through it below and watch the low values travel back up as the recursion unwinds."
-        }
-      ]
-    },
-    {
-      "id": "w-tarjan-live",
-      "data": {
-        "graph": {
-          "edges": [],
-          "nodes": [
-            {
-              "x": 80.89630126953125,
-              "y": 49.5656852722168,
-              "id": "ATL"
-            },
-            {
-              "x": 242.06472778320312,
-              "y": 32.937198638916016,
-              "id": "B"
-            },
-            {
-              "x": 344.3938903808594,
-              "y": 112.88185119628906,
-              "id": "C"
-            },
-            {
-              "x": 282.3568420410156,
-              "y": 189.62872314453125,
-              "id": "D"
-            },
-            {
-              "x": 135.2586669921875,
-              "y": 194.10562133789062,
-              "id": "E"
-            },
-            {
-              "x": 52.75578308105469,
-              "y": 133.98724365234375,
-              "id": "F"
-            },
-            {
-              "x": 176.19032287597656,
-              "y": 102.64893341064453,
-              "id": "DXB"
-            },
-            {
-              "x": 260.61187744140625,
-              "y": 125.6729965209961,
-              "id": "H"
-            },
-            {
-              "x": 343.75433349609375,
-              "y": 45.72834014892578,
-              "id": "I"
-            }
-          ],
-          "directed": true
-        }
-      },
-      "type": "interactive",
-      "widget": "tarjan-scc"
-    },
-    {
-      "id": "p-trace-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Four things in that trace are worth going back to. C reached A, an ancestor, so C's "
-        },
-        {
-          "text": "low",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " dropped to 0 and that 0 propagated up through B to A. D had a child, E, whose component finished underneath it, and D's own "
-        },
-        {
-          "text": "low",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " was untouched by it, which is exactly right: E's component cannot get back to D."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Also notice the order components come out. E and F finished first, then G, then D, then the big one containing A. Tarjan produces components in reverse topological order of the collapsed graph, which is a free bonus. If you need that order the right way round, reverse the output rather than sorting it."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "And notice that A, the very first node entered, was a root with low 0 equal to its index 0, since the first node of a DFS is always a root of something, because nothing was discovered before it for anything to climb back to."
+          "text": " can come from a region that cannot actually reach you, which merges components that should stay apart."
         }
       ]
     },
     {
       "id": "h-play",
-      "text": "Step through it",
+      "text": "Another example",
       "type": "heading",
       "level": 2
+    },
+    {
+      "id": "p-play-0",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In the airport problem we briefly discussed the technique of \"compressing\" a graph's SCCs into one super node to turn a cyclic graph to a DAG for our other algorithms. Here's another practical application of Tarjan's: python import circular dependency detection. In other words, Tarjan's algorithm for detecting cycles in a graph. An edge from one module to another means it imports that module. Python raises "
+        },
+        {
+          "text": "ImportError: cannot import name ... (most likely due to a circular import)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " the moment two modules need each other while either is still mid-import, so the cycle below is the exact shape of the bug, not just an abstract example."
+        }
+      ]
     },
     {
       "id": "p-play",
@@ -630,75 +752,87 @@
         "graph": {
           "edges": [
             {
-              "to": "B",
-              "from": "A"
+              "to": "models",
+              "from": "routes"
             },
             {
-              "to": "C",
-              "from": "B"
+              "to": "db",
+              "from": "models"
             },
             {
-              "to": "A",
-              "from": "C"
+              "to": "routes",
+              "from": "db"
             },
             {
-              "to": "D",
-              "from": "B"
+              "to": "schemas",
+              "from": "models"
             },
             {
-              "to": "E",
-              "from": "D"
+              "to": "auth",
+              "from": "schemas"
             },
             {
-              "to": "F",
-              "from": "E"
+              "to": "utils",
+              "from": "auth"
             },
             {
-              "to": "E",
-              "from": "F"
+              "to": "auth",
+              "from": "utils"
             },
             {
-              "to": "G",
-              "from": "D"
+              "to": "config",
+              "from": "schemas"
             }
           ],
           "nodes": [
             {
               "x": 41.8833122253418,
               "y": 59.79859924316406,
-              "id": "A"
+              "id": "routes",
+              "labelDx": 0,
+              "labelDy": -48.326541900634766
             },
             {
               "x": 142.933349609375,
-              "y": 62.35683059692383,
-              "id": "B",
-              "labelDx": 0,
-              "labelDy": -0.639556884765625
+              "y": 64.55530548095703,
+              "id": "models",
+              "labelDx": 7.6746978759765625,
+              "labelDy": -46.68767547607422
             },
             {
               "x": 88.57099151611328,
               "y": 172.3606719970703,
-              "id": "C"
+              "id": "db",
+              "labelDx": -4.476905822753906,
+              "labelDy": 37.37413024902344
             },
             {
-              "x": 246.5416259765625,
-              "y": 59.15904235839844,
-              "id": "D"
+              "x": 247.82073974609375,
+              "y": 65.19486236572266,
+              "id": "schemas",
+              "labelDx": 0.639556884765625,
+              "labelDy": -44.76900291442871
             },
             {
-              "x": 348.2312316894531,
-              "y": 60.43815994262695,
-              "id": "E"
+              "x": 353.3476867675781,
+              "y": 70.31132507324219,
+              "id": "auth",
+              "labelDx": 3.197784423828125,
+              "labelDy": -43.48989295959473
             },
             {
               "x": 348.2312316894531,
               "y": 178.11668395996094,
-              "id": "F"
+              "id": "utils",
+              "labelDx": -0.639556884765625,
+              "labelDy": 37.37413024902344
             },
             {
               "x": 248.46029663085938,
               "y": 174.9188995361328,
-              "id": "G"
+              "id": "config",
+              "labelDx": -1.27911376953125,
+              "labelDy": 34.17634582519531
             }
           ],
           "directed": true
@@ -706,6 +840,15 @@
       },
       "type": "interactive",
       "widget": "tarjan-scc"
+    },
+    {
+      "id": "p_f6a5ebd5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "PS: Python actually doesn't use Tarjan's for circular dependency detection but frameworks like python's pip and languages like rust or golang do. But the point is they can, its just python uses a memoization caching system."
+        }
+      ]
     },
     {
       "id": "h-cost",
@@ -755,7 +898,7 @@
     },
     {
       "id": "h-mistakes",
-      "text": "Where it goes wrong",
+      "text": "Common mistakes",
       "type": "heading",
       "level": 2
     },
@@ -823,7 +966,7 @@
           ]
         },
         {
-          "text": " They come out reversed. That is useful once you know it and a confusing off-by-everything bug until you do."
+          "text": " They actually come out reversed, very useful if you know it."
         }
       ]
     },
@@ -840,7 +983,7 @@
           ]
         },
         {
-          "text": " A node on no cycle at all forms a component of size one. In the trace above, D and G are each their own component. Code that only records components of two or more will silently drop most of the graph."
+          "text": " A node on no cycle at all forms a component of size one. In the trace above, schemas and config are each their own component. Code that only records components of two or more will silently drop most of the graph."
         }
       ]
     },
@@ -867,6 +1010,33 @@
       "variants": [
         {
           "code": "def tarjan(graph):\n    index, low, on_stack = {}, {}, set()\n    stack, components = [], []\n    counter = 0\n\n    def visit(v):\n        nonlocal counter\n        index[v] = low[v] = counter\n        counter += 1\n        stack.append(v)\n        on_stack.add(v)\n\n        for w in graph.neighbors(v):\n            if w not in index:\n                visit(w)                     # tree edge\n                low[v] = min(low[v], low[w])\n            elif w in on_stack:\n                # w can still reach back to v. Use its INDEX, not its low.\n                low[v] = min(low[v], index[w])\n            # w visited but off the stack: finished component, ignore it\n\n        if low[v] == index[v]:               # v is a root\n            component = []\n            while True:\n                w = stack.pop()\n                on_stack.discard(w)\n                component.append(w)\n                if w == v:\n                    break\n            components.append(component)\n\n    for v in graph.nodes:\n        if v not in index:\n            visit(v)\n    return components",
+          "language": "python"
+        }
+      ]
+    },
+    {
+      "id": "h-kosaraju",
+      "text": "Kosaraju's algorithm",
+      "type": "heading",
+      "level": 2
+    },
+    {
+      "id": "p-kosaraju",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Tarjan's algorithm finds every component in a single depth-first search. Kosaraju's algorithm gets the same answer with two passes, trading that extra work for an idea that's easier to hold in your head: run a DFS and record the order nodes finish in, then run a second DFS on the graph with every edge reversed, starting from whichever unvisited node finished last. The node that finishes last always belongs to a source component, one nothing else points into, and reversing every edge turns a source into a sink, so the second search can only wander inside that one component before it runs out of edges to follow. Each tree the second pass grows is exactly one strongly connected component."
+        }
+      ]
+    },
+    {
+      "id": "code-kosaraju",
+      "code": "function kosaraju(graph) {\n  const visited = new Set();\n  const finishOrder = [];\n\n  function dfs(v) {\n    visited.add(v);\n    for (const w of graph.neighbors(v)) {\n      if (!visited.has(w)) dfs(w);\n    }\n    finishOrder.push(v);          // record on the way out, not the way in\n  }\n  for (const v of graph.nodes) if (!visited.has(v)) dfs(v);\n\n  // Build the transpose: every edge flipped.\n  const reverse = new Map(graph.nodes.map((v) => [v, []]));\n  for (const v of graph.nodes) {\n    for (const w of graph.neighbors(v)) reverse.get(w).push(v);\n  }\n\n  visited.clear();\n  const components = [];\n\n  function collect(v, component) {\n    visited.add(v);\n    component.push(v);\n    for (const w of reverse.get(v)) {\n      if (!visited.has(w)) collect(w, component);\n    }\n  }\n\n  while (finishOrder.length > 0) {\n    const v = finishOrder.pop();    // latest finisher first\n    if (!visited.has(v)) {\n      const component = [];\n      collect(v, component);\n      components.push(component);\n    }\n  }\n  return components;\n}",
+      "type": "code",
+      "language": "javascript",
+      "variants": [
+        {
+          "code": "def kosaraju(graph):\n    visited = set()\n    finish_order = []\n\n    def dfs(v):\n        visited.add(v)\n        for w in graph.neighbors(v):\n            if w not in visited:\n                dfs(w)\n        finish_order.append(v)          # record on the way out, not the way in\n\n    for v in graph.nodes:\n        if v not in visited:\n            dfs(v)\n\n    # Build the transpose: every edge flipped.\n    reverse = {v: [] for v in graph.nodes}\n    for v in graph.nodes:\n        for w in graph.neighbors(v):\n            reverse[w].append(v)\n\n    visited.clear()\n    components = []\n\n    def collect(v, component):\n        visited.add(v)\n        component.append(v)\n        for w in reverse[v]:\n            if w not in visited:\n                collect(w, component)\n\n    while finish_order:\n        v = finish_order.pop()          # latest finisher first\n        if v not in visited:\n            component = []\n            collect(v, component)\n            components.append(component)\n\n    return components",
           "language": "python"
         }
       ]

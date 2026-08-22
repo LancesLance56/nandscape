@@ -20,6 +20,7 @@ import { ShortestPathWidget } from "@/components/content/blocks/interactive/grap
 import { GraphEmbedWidget, isGraphEmbedData } from "@/components/content/blocks/interactive/graph/graph-embed-widget";
 import { MstWidget } from "@/components/content/blocks/interactive/graph/mst-widget";
 import { TarjanSccWidget } from "@/components/content/blocks/interactive/graph/tarjan-scc-widget";
+import { MutualReachabilityWidget } from "@/components/content/blocks/interactive/graph/mutual-reachability-widget";
 import { TopologicalSortWidget } from "@/components/content/blocks/interactive/graph/topological-sort-widget";
 import { BacktrackingTreeWidget } from "@/components/content/blocks/interactive/backtracking/backtracking-tree-widget";
 import { PermutationsWidget } from "@/components/content/blocks/interactive/backtracking/permutations-widget";
@@ -49,6 +50,7 @@ import { GraphTraversalWidgetEditor } from "@/components/blog-editor/widgets/gra
 import { ShortestPathWidgetEditor } from "@/components/blog-editor/widgets/shortest-path-widget-editor";
 import { MstWidgetEditor } from "@/components/blog-editor/widgets/mst-widget-editor";
 import { TarjanSccWidgetEditor } from "@/components/blog-editor/widgets/tarjan-scc-widget-editor";
+import { MutualReachabilityWidgetEditor } from "@/components/blog-editor/widgets/mutual-reachability-widget-editor";
 import { TopologicalSortWidgetEditor } from "@/components/blog-editor/widgets/topological-sort-widget-editor";
 import { GraphColoringWidgetEditor } from "@/components/blog-editor/widgets/graph-coloring-widget-editor";
 
@@ -244,6 +246,13 @@ const registryImpl: Record<string, WidgetDefinition> = {
     label: "Tarjan Strongly Connected Components",
     Renderer: TarjanSccWidget,
     Editor: TarjanSccWidgetEditor,
+    createDefault: () => ({}),
+  },
+  "mutual-reachability": {
+    name: "mutual-reachability",
+    label: "Mutual Reachability (what an SCC is)",
+    Renderer: MutualReachabilityWidget,
+    Editor: MutualReachabilityWidgetEditor,
     createDefault: () => ({}),
   },
   "topological-sort": {

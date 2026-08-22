@@ -15,8 +15,11 @@ const HULL_PAD = 26;
 /**
  * Warm, on-brand tints for grouped nodes (union-find components, SCCs).
  * Deliberately no blues or purples - see the tutorials-showcase palette note.
+ *
+ * Exported so a widget that draws its own legend beside the canvas can use the
+ * exact swatch the canvas will paint, rather than a hand-copied hex that drifts.
  */
-const GROUP_COLORS = ["#C15A2A", "#4CAF7D", "#E0A339", "#B25A3B", "#8A8F5C", "#D9694F"];
+export const GROUP_COLORS = ["#C15A2A", "#4CAF7D", "#E0A339", "#B25A3B", "#8A8F5C", "#D9694F"];
 
 interface GraphCanvasProps {
   graph: GraphSpec;

@@ -119,7 +119,7 @@ export function MstWidget({
         return (
           <>
             <PanelBox title={mode === "kruskal" ? "Edges, sorted cheapest first" : "Edges by weight"}>
-              <div className="flex flex-col gap-1">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                 {sortedEdges.map((e) => {
                   const key = edgeKey(e.from, e.to, false);
                   const isTaken = taken.has(key);
