@@ -4,7 +4,7 @@ import { useId, useRef, useState, type PointerEvent as ReactPointerEvent } from 
 import { Button } from "@/components/ui/button";
 import { Field, fieldInputClass } from "@/components/blog-editor/fields/field";
 import { GRAPH_HEIGHT, GRAPH_WIDTH, NODE_R } from "@/components/content/blocks/interactive/graph/graph-canvas";
-import { edgeKey, type GraphEdge, type GraphNode, type GraphSpec } from "@/lib/graph/types";
+import { edgeKey, type GraphAnnotation, type GraphEdge, type GraphNode, type GraphSpec } from "@/lib/graph/types";
 
 /**
  * Point-and-click authoring for a GraphSpec, shared by every widget that
@@ -16,13 +16,18 @@ import { edgeKey, type GraphEdge, type GraphNode, type GraphSpec } from "@/lib/g
  * produce that class of bug.
  */
 
-type Mode = "node" | "edge" | "move" | "erase";
+type Mode = "node" | "edge" | "move" | "text" | "erase";
 
 const MODES: { id: Mode; label: string; hint: string }[] = [
   { id: "node", label: "Add node", hint: "Click empty canvas to place a node." },
   { id: "edge", label: "Draw edge", hint: "Drag from one node to another to connect them." },
-  { id: "move", label: "Move", hint: "Drag a node to reposition it. Click one to rename or delete it." },
-  { id: "erase", label: "Erase", hint: "Click a node or edge to delete it." },
+  { id: "move", label: "Move", hint: "Drag a node to reposition it. Click one to rename it, resize its label, or delete it." },
+  {
+    id: "text",
+    label: "Add text",
+    hint: "Click empty canvas to add a caption. Drag existing text to move it, or click it to edit.",
+  },
+  { id: "erase", label: "Erase", hint: "Click a node, edge or caption to delete it." },
 ];
 
 function clampX(x: number): number {
@@ -62,6 +67,8 @@ function nodeAt(nodes: GraphNode[], x: number, y: number): GraphNode | null {
 type DragState =
   | { kind: "move"; id: string; moved: boolean }
   | { kind: "edge"; from: string; x: number; y: number }
+  | { kind: "label"; id: string; moved: boolean }
+  | { kind: "annotation"; index: number; moved: boolean }
   | null;
 
 export interface GraphSpecEditorProps {
@@ -84,13 +91,16 @@ export function GraphSpecEditor({
   const [drag, setDrag] = useState<DragState>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [selectedEdgeIndex, setSelectedEdgeIndex] = useState<number | null>(null);
+  const [selectedAnnotationIndex, setSelectedAnnotationIndex] = useState<number | null>(null);
   const [nodeIdDraft, setNodeIdDraft] = useState("");
 
   const directed = graph.directed === true;
   const weighted = graph.weighted === true;
+  const annotations = graph.annotations ?? [];
 
   const setNodes = (nodes: GraphNode[]) => onChange({ ...graph, nodes });
   const setEdges = (edges: GraphEdge[]) => onChange({ ...graph, edges });
+  const setAnnotations = (next: GraphAnnotation[]) => onChange({ ...graph, annotations: next });
 
   const addNode = (x: number, y: number) => {
     const id = nextNodeId(new Set(graph.nodes.map((n) => n.id)));
@@ -127,7 +137,33 @@ export function GraphSpecEditor({
   const selectNode = (id: string) => {
     setSelectedNode(id);
     setSelectedEdgeIndex(null);
+    setSelectedAnnotationIndex(null);
     setNodeIdDraft(id);
+  };
+
+  const updateNode = (id: string, patch: Partial<GraphNode>) =>
+    setNodes(graph.nodes.map((n) => (n.id === id ? { ...n, ...patch } : n)));
+
+  const addAnnotation = (x: number, y: number) => {
+    const next = [...annotations, { x: clampX(x), y: clampY(y), text: "Label" }];
+    setAnnotations(next);
+    setSelectedNode(null);
+    setSelectedEdgeIndex(null);
+    setSelectedAnnotationIndex(next.length - 1);
+  };
+
+  const updateAnnotation = (index: number, patch: Partial<GraphAnnotation>) =>
+    setAnnotations(annotations.map((a, i) => (i === index ? { ...a, ...patch } : a)));
+
+  const removeAnnotation = (index: number) => {
+    setAnnotations(annotations.filter((_, i) => i !== index));
+    if (selectedAnnotationIndex === index) setSelectedAnnotationIndex(null);
+  };
+
+  const selectAnnotation = (index: number) => {
+    setSelectedAnnotationIndex(index);
+    setSelectedNode(null);
+    setSelectedEdgeIndex(null);
   };
 
   const commitRename = () => {
@@ -148,13 +184,14 @@ export function GraphSpecEditor({
   };
 
   const handlePointerDownCanvas = (e: ReactPointerEvent<SVGSVGElement>) => {
-    // Only fires when the background itself was hit, not a node or edge -
-    // those stop propagation in their own handlers below.
-    if (mode !== "node") return;
+    // Only fires when the background itself was hit, not a node, edge or
+    // caption - those stop propagation in their own handlers.
+    if (mode !== "node" && mode !== "text") return;
     const svg = svgRef.current;
     if (!svg) return;
     const { x, y } = toSvgPoint(svg, e.clientX, e.clientY);
-    addNode(x, y);
+    if (mode === "text") addAnnotation(x, y);
+    else addNode(x, y);
   };
 
   const handlePointerDownNode = (e: ReactPointerEvent<SVGGElement>, node: GraphNode) => {
@@ -179,6 +216,28 @@ export function GraphSpecEditor({
     selectNode(node.id);
   };
 
+  /** The small draggable handle at a selected node's label position - see the label group below. */
+  const handlePointerDownLabel = (e: ReactPointerEvent<SVGGElement>, id: string) => {
+    e.stopPropagation();
+    if (mode === "erase") return;
+    (e.target as Element).setPointerCapture(e.pointerId);
+    setDrag({ kind: "label", id, moved: false });
+  };
+
+  const handlePointerDownAnnotation = (e: ReactPointerEvent<SVGTextElement>, index: number) => {
+    e.stopPropagation();
+    if (mode === "erase") {
+      removeAnnotation(index);
+      return;
+    }
+    if (mode === "text") {
+      (e.target as Element).setPointerCapture(e.pointerId);
+      setDrag({ kind: "annotation", index, moved: false });
+      return;
+    }
+    selectAnnotation(index);
+  };
+
   const handlePointerMove = (e: ReactPointerEvent<SVGSVGElement>) => {
     if (!drag) return;
     const svg = svgRef.current;
@@ -190,6 +249,17 @@ export function GraphSpecEditor({
       if (!drag.moved) setDrag({ ...drag, moved: true });
       return;
     }
+    if (drag.kind === "label") {
+      const node = graph.nodes.find((n) => n.id === drag.id);
+      if (node) updateNode(drag.id, { labelDx: x - node.x, labelDy: y - node.y });
+      if (!drag.moved) setDrag({ ...drag, moved: true });
+      return;
+    }
+    if (drag.kind === "annotation") {
+      updateAnnotation(drag.index, { x: clampX(x), y: clampY(y) });
+      if (!drag.moved) setDrag({ ...drag, moved: true });
+      return;
+    }
     setDrag({ ...drag, x, y });
   };
 
@@ -198,6 +268,9 @@ export function GraphSpecEditor({
     if (drag.kind === "move" && !drag.moved) {
       // A click with no movement in Move mode is a select, not a no-op drag.
       selectNode(drag.id);
+    }
+    if (drag.kind === "annotation" && !drag.moved) {
+      selectAnnotation(drag.index);
     }
     if (drag.kind === "edge") {
       const svg = svgRef.current;
@@ -217,10 +290,13 @@ export function GraphSpecEditor({
     }
     setSelectedEdgeIndex(index);
     setSelectedNode(null);
+    setSelectedAnnotationIndex(null);
   };
 
   const activeMode = MODES.find((m) => m.id === mode) ?? MODES[0];
   const selectedEdge = selectedEdgeIndex !== null ? graph.edges[selectedEdgeIndex] : null;
+  const selectedNodeData = selectedNode ? (graph.nodes.find((n) => n.id === selectedNode) ?? null) : null;
+  const selectedAnnotation = selectedAnnotationIndex !== null ? annotations[selectedAnnotationIndex] : null;
 
   return (
     <div className="flex flex-col gap-2">
@@ -279,7 +355,9 @@ export function GraphSpecEditor({
         ref={svgRef}
         viewBox={`0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`}
         className="w-full touch-none rounded-lg border border-border-strong bg-surface-2/40"
-        style={{ cursor: mode === "node" ? "copy" : mode === "erase" ? "not-allowed" : "default" }}
+        style={{
+          cursor: mode === "node" || mode === "text" ? "copy" : mode === "erase" ? "not-allowed" : "default",
+        }}
         onPointerDown={handlePointerDownCanvas}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -387,25 +465,143 @@ export function GraphSpecEditor({
             </g>
           );
         })}
+
+        {/* The selected node's display label, draggable on its own. It only
+            shows for the selected node - every node dragging its own label
+            handle at once would be unreadable clutter, and the point is to
+            fix one overflowing label at a time. */}
+        {selectedNode &&
+          (() => {
+            const n = graph.nodes.find((node) => node.id === selectedNode);
+            if (!n) return null;
+            const lx = n.x + (n.labelDx ?? 0);
+            const ly = n.y + (n.labelDy ?? 0);
+            const offset = Boolean(n.labelDx || n.labelDy);
+            return (
+              <g style={{ cursor: "grab" }} onPointerDown={(e) => handlePointerDownLabel(e, n.id)}>
+                {offset && (
+                  <line x1={n.x} y1={n.y} x2={lx} y2={ly} stroke="var(--copper)" strokeWidth={1} strokeDasharray="2 3" />
+                )}
+                <rect x={lx - 22} y={ly - 11} width={44} height={22} rx={5} fill="var(--copper-bg)" opacity={0.6} />
+                <text
+                  x={lx}
+                  y={ly + 4}
+                  textAnchor="middle"
+                  className="select-none font-bold"
+                  style={{ fontSize: n.labelSize ?? 11 }}
+                  fill="var(--copper-dark)"
+                >
+                  {n.label ?? n.id}
+                </text>
+              </g>
+            );
+          })()}
+
+        {annotations.map((a, i) => (
+          <text
+            key={i}
+            x={a.x}
+            y={a.y}
+            textAnchor="middle"
+            className="select-none font-semibold"
+            style={{
+              fontSize: a.size ?? 12,
+              cursor: mode === "erase" ? "not-allowed" : mode === "text" ? "grab" : "pointer",
+            }}
+            fill={selectedAnnotationIndex === i ? "var(--copper-dark)" : "var(--ink-soft)"}
+            onPointerDown={(e) => handlePointerDownAnnotation(e, i)}
+          >
+            {a.text}
+          </text>
+        ))}
       </svg>
 
       <p className="text-[11px] text-slate">{activeMode.hint}</p>
 
-      {selectedNode && (
+      {selectedNode && selectedNodeData && (
+        <div className="flex flex-col gap-2 rounded-lg border border-border-strong p-2.5">
+          <div className="flex items-end gap-2">
+            <Field label="Node name">
+              <input
+                className={fieldInputClass}
+                value={nodeIdDraft}
+                onChange={(e) => setNodeIdDraft(e.target.value)}
+                onBlur={commitRename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                }}
+              />
+            </Field>
+            <Button type="button" variant="destructive" size="sm" onClick={() => removeNode(selectedNode)}>
+              Delete node
+            </Button>
+          </div>
+          <div className="flex items-end gap-2">
+            <Field label="Label (optional, shown instead of the name)">
+              <input
+                className={fieldInputClass}
+                value={selectedNodeData.label ?? ""}
+                placeholder={selectedNodeData.id}
+                onChange={(e) => updateNode(selectedNode, { label: e.target.value || undefined })}
+              />
+            </Field>
+            <Field label="Label size (px)">
+              <input
+                type="number"
+                min={8}
+                max={32}
+                className={`${fieldInputClass} w-20`}
+                value={selectedNodeData.labelSize ?? ""}
+                placeholder="13"
+                onChange={(e) =>
+                  updateNode(selectedNode, { labelSize: e.target.value ? Number(e.target.value) : undefined })
+                }
+              />
+            </Field>
+            {(selectedNodeData.labelDx || selectedNodeData.labelDy) && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => updateNode(selectedNode, { labelDx: undefined, labelDy: undefined })}
+              >
+                Reset position
+              </Button>
+            )}
+          </div>
+          <p className="text-[11px] text-slate">
+            A long label crowded into a small dot is what makes it look oversized. Drag the copper handle on the
+            canvas above to move the label outside the node instead of shrinking the text to fit.
+          </p>
+        </div>
+      )}
+
+      {selectedAnnotation && selectedAnnotationIndex !== null && (
         <div className="flex items-end gap-2 rounded-lg border border-border-strong p-2.5">
-          <Field label="Node name">
+          <Field label="Caption text">
             <input
               className={fieldInputClass}
-              value={nodeIdDraft}
-              onChange={(e) => setNodeIdDraft(e.target.value)}
-              onBlur={commitRename}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-              }}
+              value={selectedAnnotation.text}
+              onChange={(e) => updateAnnotation(selectedAnnotationIndex, { text: e.target.value })}
             />
           </Field>
-          <Button type="button" variant="destructive" size="sm" onClick={() => removeNode(selectedNode)}>
-            Delete node
+          <Field label="Size (px)">
+            <input
+              type="number"
+              min={8}
+              max={32}
+              className={`${fieldInputClass} w-20`}
+              value={selectedAnnotation.size ?? ""}
+              placeholder="12"
+              onChange={(e) =>
+                updateAnnotation(selectedAnnotationIndex, {
+                  size: e.target.value ? Number(e.target.value) : undefined,
+                })
+              }
+            />
+          </Field>
+          <Button type="button" variant="destructive" size="sm" onClick={() => removeAnnotation(selectedAnnotationIndex)}>
+            Delete text
           </Button>
         </div>
       )}

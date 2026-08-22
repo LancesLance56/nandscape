@@ -271,14 +271,20 @@ export function GraphCanvas({
             className="transition-all duration-300"
           />
           <text
-            x={n.x}
-            y={n.y + 4.5}
+            x={n.x + (n.labelDx ?? 0)}
+            y={n.y + 4.5 + (n.labelDy ?? 0)}
             textAnchor="middle"
-            className="text-[13px] font-bold"
-            fill={nodeTextFill(n.id)}
-            style={{ pointerEvents: "none" }}
+            className={n.labelSize ? "font-bold" : "text-[13px] font-bold"}
+            style={{ pointerEvents: "none", fontSize: n.labelSize }}
+            fill={
+              // An off-center label is no longer sitting on the node's own
+              // fill, so it needs a color that reads against the page
+              // background rather than the one chosen to read against copper
+              // or green.
+              n.labelDx || n.labelDy ? "var(--ink)" : nodeTextFill(n.id)
+            }
           >
-            {n.id}
+            {n.label ?? n.id}
           </text>
           {step?.table?.[n.id] !== undefined && step.table[n.id] !== "-" && (
             <text
@@ -293,6 +299,20 @@ export function GraphCanvas({
             </text>
           )}
         </g>
+      ))}
+
+      {graph.annotations?.map((a, i) => (
+        <text
+          key={`note-${i}`}
+          x={a.x}
+          y={a.y}
+          textAnchor="middle"
+          className={a.size ? "font-semibold" : "text-[12px] font-semibold"}
+          fill="var(--ink-soft)"
+          style={{ pointerEvents: "none", fontSize: a.size }}
+        >
+          {a.text}
+        </text>
       ))}
     </svg>
   );

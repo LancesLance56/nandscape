@@ -138,15 +138,17 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket."
+          "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket. Below is that graph, running."
         }
       ]
     },
     {
-      "id": "code-kahn",
-      "code": "in-degrees at the start\n  shirt 0   trousers 0   socks 0   tie 1   belt 2   shoes 2   jacket 1\n\nready queue [shirt, trousers, socks]\n\ntake shirt     output: shirt\n  tie    2 -> ... 1 -> 0   ready\n  belt   2 -> 1\ntake trousers  output: shirt, trousers\n  belt   1 -> 0   ready\n  shoes  2 -> 1\ntake socks     output: shirt, trousers, socks\n  shoes  1 -> 0   ready\ntake tie       output: ... tie        jacket 1 -> 0   ready\ntake belt      output: ... belt\ntake shoes     output: ... shoes\ntake jacket    output: ... jacket\n\n7 nodes emitted, 7 nodes in the graph, so there was no cycle.",
-      "type": "code",
-      "language": "text"
+      "id": "w-topo-live",
+      "type": "interactive",
+      "widget": "topological-sort",
+      "data": {
+        "example": "clothes"
+      }
     },
     {
       "id": "p-trace-2",
@@ -168,15 +170,17 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch to the DAG tab. Every arrow means \"must come before\", so a node cannot be taken until every arrow pointing at it has been dealt with."
+          "text": "Below is the same widget, opened this time on Circular dependency. A, B and C form a genuine loop, and C also feeds D, which needs C finished first. Step through it and watch the queue run dry with four nodes never emitted: E clears on its own, but nothing else ever reaches in-degree 0, because getting there would require the cycle to finish first, and it never does."
         }
       ]
     },
     {
-      "id": "w-explorer",
-      "data": {},
+      "id": "w-topo-cycle",
+      "data": {
+        "example": "circular"
+      },
       "type": "interactive",
-      "widget": "graph-explorer"
+      "widget": "topological-sort"
     },
     {
       "id": "h-dfs",

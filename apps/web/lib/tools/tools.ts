@@ -336,7 +336,58 @@ export const TOOLS: ToolDefinition[] = [
     related: [
       { label: "BFS vs DFS explained", href: "/tutorials/graph-bfs-dfs" },
       { label: "Dijkstra's algorithm, worked through", href: "/tutorials/graph-dijkstra" },
+      { label: "Topological sort visualizer", href: "/tools/topological-sort-visualizer" },
       { label: "All algorithms tutorials", href: "/tutorials/dsa" },
+    ],
+  },
+  {
+    slug: "topological-sort-visualizer",
+    title: "Topological Sort Visualizer",
+    seoTitle: "Topological Sort Visualizer: Kahn's Algorithm Step by Step",
+    seoDescription:
+      "Free topological sort visualizer using Kahn's algorithm. Watch the ready queue and in-degree counts update on a graph you can build yourself, including what happens when it hits a cycle.",
+    keywords: [
+      "topological sort visualizer",
+      "topological sort",
+      "kahn's algorithm",
+      "dependency graph",
+      "cycle detection",
+    ],
+    intro:
+      "Kahn's algorithm, one node at a time. The ready queue and every node's in-degree update as it runs, and building a cycle shows exactly what happens when no order exists: the queue runs dry with nodes left over.",
+    widget: "topological-sort",
+    howTo: [
+      "Press Play to run it, or Step to advance one node at a time.",
+      "Switch between the two built-in graphs: one is a valid order, the other is a genuine cycle.",
+      "Watch the in-degree panel. A node joins the ready queue the instant its count reaches zero.",
+      "On the cycle example, notice which nodes never turn green: they sit inside the cycle, or depend on something that does.",
+    ],
+    related: [
+      { label: "Topological sort, derived from scratch", href: "/tutorials/dsa/graph-topological-sort" },
+      { label: "Graph algorithm visualizer", href: "/tools/graph-algorithm-visualizer" },
+      { label: "All algorithms tutorials", href: "/tutorials/dsa" },
+    ],
+    faq: [
+      {
+        question: "What is a topological sort used for?",
+        answer:
+          "Ordering tasks so every dependency comes before whatever needs it: build systems compiling files, package managers installing dependencies, spreadsheet formulas recalculating in the right order, and course prerequisite planning are all topological sorts in disguise.",
+      },
+      {
+        question: "Does a topological order always exist?",
+        answer:
+          "Only when the graph is a DAG, a directed graph with no cycle. A cycle means A must come before B, which must come before A, and no linear order can satisfy both. Kahn's algorithm detects this for free: if it emits fewer nodes than the graph contains, whatever is left over is stuck in or behind a cycle.",
+      },
+      {
+        question: "Is the topological order unique?",
+        answer:
+          "Usually not. Whenever more than one node is ready at the same time, the algorithm has a real choice, and a different pick produces a different, equally valid order. A problem expecting one exact answer has to specify a tie-break, such as always taking the smallest available node.",
+      },
+      {
+        question: "How is this different from a graph traversal like BFS?",
+        answer:
+          "BFS explores outward from one starting node and answers questions about distance. A topological sort has no single starting point: it processes the whole graph at once, tracking how many unmet dependencies each node has left, and a node only becomes eligible once every dependency ahead of it has already been placed.",
+      },
     ],
   },
 ];

@@ -589,3 +589,92 @@ export function tarjanSteps(graph: GraphSpec): AlgorithmStep[] {
 
   return steps;
 }
+
+/**
+ * Kahn's algorithm: repeatedly emit any node with nothing left blocking it.
+ *
+ * The initial ready queue is built by scanning `graph.nodes` in the order
+ * the author listed them, not alphabetically - two nodes both starting at
+ * in-degree 0 have no other rule to break the tie, so the order they were
+ * written in is as good as any and keeps a run reproducible without
+ * pretending there is a deeper reason one goes first.
+ */
+export function topologicalSortSteps(graph: GraphSpec): AlgorithmStep[] {
+  const steps: AlgorithmStep[] = [];
+  const adj = adjacency(graph);
+  const directed = Boolean(graph.directed);
+
+  const inDegree = new Map<string, number>();
+  for (const n of graph.nodes) inDegree.set(n.id, 0);
+  for (const e of graph.edges) inDegree.set(e.to, (inDegree.get(e.to) ?? 0) + 1);
+
+  const table = (): Record<string, string> =>
+    Object.fromEntries(graph.nodes.map((n) => [n.id, String(inDegree.get(n.id) ?? 0)]));
+
+  const queue: string[] = graph.nodes.filter((n) => inDegree.get(n.id) === 0).map((n) => n.id);
+  const output: string[] = [];
+  const treeEdges: string[] = [];
+
+  steps.push({
+    caption:
+      queue.length > 0
+        ? `Every node starts tagged with its in-degree: how many arrows point at it. ${formatList(queue)} already ${queue.length === 1 ? "has" : "have"} nothing pointing at ${queue.length === 1 ? "it" : "them"}, so ${queue.length === 1 ? "it goes" : "they go"} straight into the ready queue.`
+        : `Every node starts tagged with its in-degree. Nothing starts at 0, so nothing is ready yet - on a graph with edges at all, that alone means a cycle is coming.`,
+    visited: [],
+    active: null,
+    frontier: [...queue],
+    treeEdges: [],
+    consideredEdge: null,
+    rejectedEdges: [],
+    table: table(),
+  });
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    output.push(current);
+
+    const readyNow: string[] = [];
+    for (const { to } of adj.get(current) ?? []) {
+      treeEdges.push(edgeKey(current, to, directed));
+      const next = (inDegree.get(to) ?? 0) - 1;
+      inDegree.set(to, next);
+      if (next === 0) {
+        queue.push(to);
+        readyNow.push(to);
+      }
+    }
+
+    steps.push({
+      caption:
+        readyNow.length > 0
+          ? `Take ${current} off the queue and emit it. ${formatList(readyNow)} ${readyNow.length === 1 ? "loses" : "lose"} its last dependency, so ${readyNow.length === 1 ? "it joins" : "they join"} the queue.`
+          : `Take ${current} off the queue and emit it. Nothing becomes newly ready.`,
+      visited: [...output],
+      active: current,
+      frontier: [...queue],
+      treeEdges: [...treeEdges],
+      consideredEdge: null,
+      rejectedEdges: [],
+      table: table(),
+    });
+  }
+
+  const stuck = graph.nodes.map((n) => n.id).filter((id) => !output.includes(id));
+
+  steps.push({
+    caption:
+      stuck.length === 0
+        ? `Every node is emitted: ${output.length} out of ${output.length}. The graph has no cycle, and this order is a valid one.`
+        : `The queue emptied with ${stuck.length} node${stuck.length === 1 ? "" : "s"} still stuck: ${formatList(stuck)}. ${stuck.length === 1 ? "It" : "They"} never reached in-degree 0, which only happens to a node sitting inside a cycle, or downstream of one. No topological order exists.`,
+    visited: [...output],
+    active: null,
+    frontier: [],
+    treeEdges: [...treeEdges],
+    consideredEdge: null,
+    rejectedEdges: [],
+    table: table(),
+    groups: stuck.length > 0 ? [stuck] : undefined,
+  });
+
+  return steps;
+}

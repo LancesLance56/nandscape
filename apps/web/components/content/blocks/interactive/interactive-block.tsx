@@ -18,6 +18,7 @@ import { GraphTraversalWidget } from "./graph/graph-traversal-widget";
 import { ShortestPathWidget } from "./graph/shortest-path-widget";
 import { MstWidget } from "./graph/mst-widget";
 import { TarjanSccWidget } from "./graph/tarjan-scc-widget";
+import { TopologicalSortWidget } from "./graph/topological-sort-widget";
 import { BacktrackingTreeWidget } from "./backtracking/backtracking-tree-widget";
 import { PermutationsWidget } from "./backtracking/permutations-widget";
 import { NQueensWidget } from "./backtracking/n-queens-widget";
@@ -64,6 +65,7 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "shortest-path": ShortestPathWidget,
   "mst-explorer": MstWidget,
   "tarjan-scc": TarjanSccWidget,
+  "topological-sort": TopologicalSortWidget,
   "backtracking-tree": BacktrackingTreeWidget,
   "permutations-explorer": PermutationsWidget,
   "n-queens": NQueensWidget,

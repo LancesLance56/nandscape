@@ -10,6 +10,19 @@ export interface GraphNode {
   id: string;
   x: number;
   y: number;
+  /**
+   * Text drawn in the node, when the id itself is not good display text -
+   * "trousers" is a fine id and a bad fit for a 34px dot. Falls back to the
+   * id, so nothing has to set this to keep working.
+   */
+  label?: string;
+  /** Offset from the node center where the label draws. Zero (the default)
+   *  centers it inside the node, which is right for a short label and wrong
+   *  for a long one. */
+  labelDx?: number;
+  labelDy?: number;
+  /** Overrides the default label font size, in px. */
+  labelSize?: number;
 }
 
 export interface GraphEdge {
@@ -18,11 +31,20 @@ export interface GraphEdge {
   weight?: number;
 }
 
+/** A caption or note placed on the canvas, tied to a point rather than a node. */
+export interface GraphAnnotation {
+  x: number;
+  y: number;
+  text: string;
+  size?: number;
+}
+
 export interface GraphSpec {
   nodes: GraphNode[];
   edges: GraphEdge[];
   directed?: boolean;
   weighted?: boolean;
+  annotations?: GraphAnnotation[];
 }
 
 /** Stable key for an edge, direction-insensitive for undirected graphs. */
