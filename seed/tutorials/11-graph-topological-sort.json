@@ -28,7 +28,19 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "You have a pile of things to do and some of them depend on others. Compile this file before that one. Take the prerequisite before the course. Put your socks on before your shoes. The question is whether there is an order that respects every constraint, and if so, what it is."
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " Topological sorting is a linear ordering of vertices for Directed Acyclic Graphs (DAGs). "
         }
       ]
     },
@@ -37,7 +49,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Written as a graph, each task is a node and each edge points from a thing to a thing that must come after it. Producing a valid order is called "
+          "text": "Producing a valid order is called "
         },
         {
           "text": "topological sorting",
@@ -48,13 +60,13 @@
           ]
         },
         {
-          "text": ", and it is one of the most directly useful algorithms in this section, because the answer is a build plan, a schedule or an install order."
+          "text": ", and it is one of the most directly useful algorithms in this section, because the algorithm is the key to products like build plans, scheduling systems, and other things that need order."
         }
       ]
     },
     {
       "id": "h-when",
-      "text": "When an answer exists at all",
+      "text": "When does an order exist?",
       "type": "heading",
       "level": 2
     },
@@ -72,7 +84,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. Any ordering has to put one of the three first, and whichever you pick has something in the cycle that must come before it. So no order exists, and no cleverness will produce one."
+          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. Any ordering has to put one of the three first, and whichever you pick has something in the cycle that must come before it. So no matter how hard you try you wont find a valid order."
         }
       ]
     },
@@ -81,7 +93,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The other direction holds too. If the graph has no directed cycle then an order always exists. So the question \"can these tasks be scheduled\" and the question \"is this graph a DAG\" are the same question, which is why the previous page bothered to name DAGs."
+          "text": "Proving that every DAG has a topological ordering is not as trivial but the key idea is that since there are no cycles, there will always be a source node, and after you add that as the first node in an ordering, you can essentially do the same for all its branches' top node.  So the question \"can these tasks be scheduled\" and the question \"is this graph a DAG\" are the same question, which is what makes DAGs so useful. In fact, the next page in this section discusses a method of turning a cyclic graph into a DAG, which proves to be useful for using other algorithms."
         }
       ]
     },
@@ -96,7 +108,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Think about what you would do by hand with a real to-do list. You would look for something with nothing blocking it, do that, cross it off, and notice that crossing it off may have unblocked other things. Then repeat."
+          "text": "Think about what you would do by hand with a real to-do list; you'd look for something with nothing blocking it, do that, cross it off, and notice that crossing it off may have unblocked other things. Then repeat."
         }
       ]
     },
@@ -105,7 +117,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That instinct is the algorithm, and it needs only one number per node, how many things are still blocking it, a count called the node's in-degree: the number of edges pointing at it."
+          "text": "That's pretty much the core idea of the algorithm, and it needs only one number per node, how many things are still blocking it, a count called the node's in-degree: the number of edges pointing at it."
         }
       ]
     },
@@ -129,7 +141,7 @@
     },
     {
       "id": "h-trace",
-      "text": "A trace, using the clothes",
+      "text": "Example ",
       "type": "heading",
       "level": 2
     },
@@ -141,6 +153,99 @@
           "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket."
         }
       ]
+    },
+    {
+      "id": "widget_84d3eb5c",
+      "data": {
+        "mode": "kruskal",
+        "graph": {
+          "edges": [],
+          "nodes": [],
+          "weighted": true
+        }
+      },
+      "type": "interactive",
+      "widget": "mst-explorer"
+    },
+    {
+      "id": "widget_71b84bd5",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "tie",
+              "from": "trousers"
+            },
+            {
+              "to": "tie",
+              "from": "shirt"
+            },
+            {
+              "to": "jacket",
+              "from": "shirt"
+            },
+            {
+              "to": "jacket",
+              "from": "socks"
+            },
+            {
+              "to": "shoes",
+              "from": "jacket"
+            },
+            {
+              "to": "belt",
+              "from": "jacket"
+            },
+            {
+              "to": "shoes",
+              "from": "tie"
+            },
+            {
+              "to": "belt",
+              "from": "tie"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 68.74471282958984,
+              "y": 58.99915313720703,
+              "id": "trousers"
+            },
+            {
+              "x": 214.5637664794922,
+              "y": 90.97701263427734,
+              "id": "tie"
+            },
+            {
+              "x": 64.9073715209961,
+              "y": 123.59443664550781,
+              "id": "shirt"
+            },
+            {
+              "x": 64.26781463623047,
+              "y": 193.30616760253906,
+              "id": "socks"
+            },
+            {
+              "x": 369.9761657714844,
+              "y": 197.1435089111328,
+              "id": "shoes"
+            },
+            {
+              "x": 368.0574951171875,
+              "y": 62.83649826049805,
+              "id": "belt"
+            },
+            {
+              "x": 212.0055389404297,
+              "y": 142.1416015625,
+              "id": "jacket"
+            }
+          ]
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
     },
     {
       "id": "code-kahn",
