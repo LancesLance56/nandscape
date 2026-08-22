@@ -28,7 +28,19 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "You have a pile of things to do and some of them depend on others. Compile this file before that one. Take the prerequisite before the course. Put your socks on before your shoes. The question is whether there is an order that respects every constraint, and if so, what it is."
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " Topological sorting is a linear ordering of vertices for Directed Acyclic Graphs (DAGs). "
         }
       ]
     },
@@ -37,7 +49,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Written as a graph, each task is a node and each edge points from a thing to a thing that must come after it. Producing a valid order is called "
+          "text": "Producing a valid order is called "
         },
         {
           "text": "topological sorting",
@@ -48,13 +60,13 @@
           ]
         },
         {
-          "text": ", and it is one of the most directly useful algorithms in this section, because the answer is a build plan, a schedule or an install order."
+          "text": ", and it is one of the most directly useful algorithms in this section, because the algorithm is the key to products like build plans, scheduling systems, and other things that need order."
         }
       ]
     },
     {
       "id": "h-when",
-      "text": "When an answer exists at all",
+      "text": "When does an order exist?",
       "type": "heading",
       "level": 2
     },
@@ -72,7 +84,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. Any ordering has to put one of the three first, and whichever you pick has something in the cycle that must come before it. So no order exists, and no cleverness will produce one."
+          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. Any ordering has to put one of the three first, and whichever you pick has something in the cycle that must come before it. So no matter how hard you try you wont find a valid order."
         }
       ]
     },
@@ -81,7 +93,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The other direction holds too. If the graph has no directed cycle then an order always exists. So the question \"can these tasks be scheduled\" and the question \"is this graph a DAG\" are the same question, which is why the previous page bothered to name DAGs."
+          "text": "Proving that every DAG has a topological ordering is not as trivial but the key idea is that since there are no cycles, there will always be a source node, and after you add that as the first node in an ordering, you can essentially do the same for all its branches' top node.  So the question \"can these tasks be scheduled\" and the question \"is this graph a DAG\" are the same question, which is what makes DAGs so useful. In fact, the next page in this section discusses a method of turning a cyclic graph into a DAG, which proves to be useful for using other algorithms."
         }
       ]
     },
@@ -96,7 +108,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Think about what you would do by hand with a real to-do list. You would look for something with nothing blocking it, do that, cross it off, and notice that crossing it off may have unblocked other things. Then repeat."
+          "text": "Think about what you would do by hand with a real to-do list; you'd look for something with nothing blocking it, do that, cross it off, and notice that crossing it off may have unblocked other things. Then repeat."
         }
       ]
     },
@@ -105,7 +117,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That instinct is the algorithm, and it needs only one number per node, how many things are still blocking it, a count called the node's in-degree: the number of edges pointing at it."
+          "text": "That's pretty much the core idea of the algorithm, and it needs only one number per node, how many things are still blocking it, a count called the node's in-degree: the number of edges pointing at it."
         }
       ]
     },
@@ -129,7 +141,7 @@
     },
     {
       "id": "h-trace",
-      "text": "A trace, using the clothes",
+      "text": "Example ",
       "type": "heading",
       "level": 2
     },
@@ -138,17 +150,15 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket. Below is that graph, running."
+          "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket."
         }
       ]
     },
     {
-      "id": "w-topo-live",
+      "id": "widget_0de64478",
+      "data": {},
       "type": "interactive",
-      "widget": "topological-sort",
-      "data": {
-        "example": "clothes"
-      }
+      "widget": "topological-sort"
     },
     {
       "id": "p-trace-2",
@@ -158,29 +168,6 @@
           "text": "Notice that there were three nodes available at the very start, and the algorithm had to pick one. A different pick gives a different valid order. Topological orders are usually not unique, and a problem that expects one specific answer has to say which tie-break to use. If you need the lexicographically smallest order, make the ready collection a min-heap instead of a plain list, and the rest is unchanged."
         }
       ]
-    },
-    {
-      "id": "h-play",
-      "text": "Try it",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-play",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Below is the same widget, opened this time on Circular dependency. A, B and C form a genuine loop, and C also feeds D, which needs C finished first. Step through it and watch the queue run dry with four nodes never emitted: E clears on its own, but nothing else ever reaches in-degree 0, because getting there would require the cycle to finish first, and it never does."
-        }
-      ]
-    },
-    {
-      "id": "w-topo-cycle",
-      "data": {
-        "example": "circular"
-      },
-      "type": "interactive",
-      "widget": "topological-sort"
     },
     {
       "id": "h-dfs",
@@ -280,7 +267,7 @@
           ]
         },
         {
-          "text": " rather than a partial order is deliberate. A half-finished topological order is not a useful object, and callers that silently use one will produce a build that fails much later for reasons that look unrelated."
+          "text": " rather than a partial order is intended behavior. A half-finished topological order is not a useful object, and callers that silently use one will produce a build that fails much later for reasons that look unrelated."
         }
       ]
     },
@@ -289,23 +276,6 @@
       "text": "Where it goes wrong",
       "type": "heading",
       "level": 2
-    },
-    {
-      "id": "p-mistake-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Pointing the edges the wrong way.",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " If an edge from A to B means \"A depends on B\" rather than \"A must come before B\", your output comes out exactly reversed. Both conventions exist in the wild, so decide which one you are using and write it down next to the code."
-        }
-      ]
     },
     {
       "id": "p-mistake-2",
@@ -320,7 +290,7 @@
           ]
         },
         {
-          "text": " It usually is not. Tests that compare against one specific expected order will fail on a perfectly correct implementation unless the problem pinned down a tie-break."
+          "text": " It usually is not, tests that compare against one specific expected order will fail on a perfectly correct implementation unless the problem pinned down a tie-break."
         }
       ]
     },
