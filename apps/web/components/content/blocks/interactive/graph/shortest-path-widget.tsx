@@ -97,6 +97,7 @@ export function ShortestPathWidget({
   };
 
   const steps = useMemo(() => dijkstraSteps(graph, start), [graph, start]);
+  const hasNegativeEdge = useMemo(() => graph.edges.some((e) => (e.weight ?? 1) < 0), [graph]);
 
   return (
     <AlgorithmRunner
@@ -130,13 +131,27 @@ export function ShortestPathWidget({
             </div>
           </PanelBox>
 
-          <PanelBox title="Why it never revisits">
-            <p className="text-[11px] leading-relaxed text-slate">
-              Once a node is locked in, no later discovery can beat it. Any other route would have to leave
-              through a node that already costs more, and edge weights are never negative, so it can only get
-              worse from there.
-            </p>
-          </PanelBox>
+          {/* The stock explanation is a proof that only holds while every
+              weight is non-negative. On a graph that breaks that premise the
+              same panel would be reassuring the reader precisely where the
+              algorithm is going wrong, so it says the opposite instead. */}
+          {hasNegativeEdge ? (
+            <PanelBox title="Why this run cannot be trusted">
+              <p className="text-[11px] leading-relaxed text-slate">
+                Locking a node in is only safe when no later route can undercut it, and that argument needs
+                every weight to be non-negative. This graph has one that is not, so a locked number here may
+                simply be wrong, and Dijkstra has no way to notice.
+              </p>
+            </PanelBox>
+          ) : (
+            <PanelBox title="Why it never revisits">
+              <p className="text-[11px] leading-relaxed text-slate">
+                Once a node is locked in, no later discovery can beat it. Any other route would have to leave
+                through a node that already costs more, and edge weights are never negative, so it can only get
+                worse from there.
+              </p>
+            </PanelBox>
+          )}
         </>
       )}
     />

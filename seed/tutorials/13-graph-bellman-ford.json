@@ -1,7 +1,7 @@
 {
   "slug": "graph-bellman-ford",
-  "title": "Negative Weights: Bellman-Ford and Floyd-Warshall",
-  "excerpt": "When an edge can be negative, Dijkstra's whole argument collapses. Bellman-Ford gives up on choosing a clever order, relaxes everything repeatedly, and detects the case where no answer exists at all.",
+  "title": "Bellman-Ford: Shortest Paths with Negative Weights",
+  "excerpt": "When an edge can be negative, Dijkstra's whole argument collapses and it returns a confident wrong answer. Bellman-Ford gives up on choosing a clever order, relaxes every edge repeatedly, and detects the case where no answer exists at all.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-14T10:20:00Z",
@@ -13,14 +13,14 @@
   ],
   "sectionSlug": "graph-theory-advanced",
   "position": 30,
-  "seoTitle": "Bellman-Ford and Floyd-Warshall: Negative Weight Paths",
-  "seoDescription": "Bellman-Ford explained: why negative weights break Dijkstra, why V-1 passes suffice, a full trace, how one extra pass detects negative cycles, the arbitrage application, and when the slower algorithm is the right call.",
+  "seoTitle": "Bellman-Ford Algorithm Explained Step by Step",
+  "seoDescription": "Bellman-Ford explained step by step: why a negative edge makes Dijkstra silently wrong, what relaxation actually does, why V-1 passes are exactly enough, how one extra pass detects a negative cycle, and when to reach for it over Dijkstra.",
   "keywords": [
     "bellman-ford algorithm",
-    "floyd-warshall",
     "negative weight edges",
-    "negative cycle",
-    "all pairs shortest path"
+    "negative cycle detection",
+    "shortest path algorithm",
+    "edge relaxation"
   ],
   "body": [
     {
@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Dijkstra's algorithm rests on one assumption: adding another edge to a route can never make it cheaper. That is obviously true when every weight is a distance or a duration, and it is what lets the algorithm commit to a node's distance and never look at it again."
+          "text": "Dijkstra's algorithm rests on one assumption: adding another edge to a route can never make it cheaper. That holds whenever a weight is a distance or a duration, and it is what lets the algorithm lock in a node's cost and never look at it again."
         }
       ]
     },
@@ -37,7 +37,99 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Some problems break the assumption. A currency exchange can leave you with more than you started. A financial model can have a step that pays out. A game can have a move that refunds. As soon as a weight can be negative, Dijkstra returns confident wrong answers, and you need something that does not rely on committing early."
+          "text": "Some problems break that assumption. A currency trade can leave you holding more than you started with. A financial model can have a step that pays out. A game can have a move that refunds. As soon as one weight is allowed to be negative, adding an edge really can make a route cheaper, and Dijkstra's licence to stop looking is gone."
+        }
+      ]
+    },
+    {
+      "id": "p-hook-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It does not fail loudly. It returns a number, confidently, and the number is wrong. Below is Dijkstra on a four node graph with a single negative edge. Step through it and keep your eye on B."
+        }
+      ]
+    },
+    {
+      "id": "w-dijkstra-fails",
+      "type": "interactive",
+      "widget": "shortest-path",
+      "data": {
+        "graph": {
+          "directed": true,
+          "weighted": true,
+          "nodes": [
+            {
+              "id": "A",
+              "x": 60,
+              "y": 130
+            },
+            {
+              "id": "B",
+              "x": 200,
+              "y": 60
+            },
+            {
+              "id": "C",
+              "x": 200,
+              "y": 205
+            },
+            {
+              "id": "D",
+              "x": 350,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B",
+              "weight": 1
+            },
+            {
+              "from": "A",
+              "to": "C",
+              "weight": 2
+            },
+            {
+              "from": "C",
+              "to": "B",
+              "weight": -2
+            },
+            {
+              "from": "B",
+              "to": "D",
+              "weight": 1
+            }
+          ]
+        },
+        "start": "A"
+      }
+    },
+    {
+      "id": "p-broke",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Dijkstra locks B in at 1 on its second step, because 1 is the smallest cost on the table at that moment. Only afterwards does it settle C at 2 and meet the C to B edge worth -2, which would have brought B down to 0. B is already finalised by then, and the algorithm will not reopen it. It reports 1 for B and 2 for D. The true answers are 0 and 1."
+        }
+      ]
+    },
+    {
+      "id": "p-broke-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The damage was done at the moment of committing. Dijkstra's proof that a locked node is safe depends on every remaining route costing at least as much as the one it just took, and a single negative edge is enough to kill that guarantee."
+        }
+      ]
+    },
+    {
+      "id": "p-broke-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One thing worth knowing before you go testing this. Not every negative edge breaks Dijkstra. If the cheaper route happens to turn up before the node gets locked in, the answer comes out right anyway, purely by luck of the ordering. That is what makes the bug so unpleasant to hunt: Dijkstra on a graph with negative weights is not reliably wrong, it is unreliably right."
         }
       ]
     },
@@ -52,25 +144,94 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Bellman-Ford's approach is almost aggressively simple: it does not try to work out a safe order to settle nodes in, and instead relaxes every edge in the graph, over and over, until nothing improves."
+          "text": "Bellman-Ford's answer is almost aggressively simple. It never works out a safe order to settle nodes in, so it never has to defend one. It relaxes every edge in the graph, then does the whole thing again, and again, until nothing improves."
         }
       ]
     },
     {
-      "id": "p-idea-2",
+      "id": "p-relax",
       "type": "paragraph",
       "content": [
         {
-          "text": "That sounds like it might never finish, so the question is how many passes are enough. The answer comes from thinking about what a shortest path looks like."
+          "text": "Relaxing an edge is a single comparison. If the cost of reaching "
+        },
+        {
+          "text": "from",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", plus the weight of the edge, is less than the current cost of reaching "
+        },
+        {
+          "text": "to",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", write down the smaller number. That is the entire operation. Bellman-Ford does nothing else, and it does it to every edge, whether or not that edge looks promising."
         }
       ]
     },
     {
-      "id": "p-idea-3",
+      "id": "h-run",
+      "text": "Watching it work",
+      "type": "heading",
+      "level": 2
+    },
+    {
+      "id": "p-run",
       "type": "paragraph",
       "content": [
         {
-          "text": "A shortest path never repeats a node. If it did, it would contain a loop, and removing that loop leaves a path that is no longer and visits fewer nodes. So a shortest path visits at most "
+          "text": "Here is Bellman-Ford on the same graph Dijkstra just got wrong. The edge list beside the canvas is swept top to bottom, once per pass. Watch the fourth step in particular: B already holds a cost of 1, and the C to B edge drops it to 0 in the middle of that same pass."
+        }
+      ]
+    },
+    {
+      "id": "w-bf-main",
+      "type": "interactive",
+      "widget": "bellman-ford",
+      "data": {
+        "example": "negative-edge"
+      }
+    },
+    {
+      "id": "p-after",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two things in that run are worth going back over. B improved twice, and the second improvement came from an edge whose source, C, had only just been given a value earlier in the very same sweep. Dijkstra cannot do that, because it works through nodes rather than edges, and a node it has finished with is closed for good."
+        }
+      ]
+    },
+    {
+      "id": "p-early",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The other is where it stopped. Pass 2 changed nothing at all, which means pass 3 would have read the same numbers and made the same comparisons, so the algorithm quit. A sweep that improves nothing proves the values have reached a fixed point. That raises the obvious question: this graph needed two passes, so how many could a graph possibly need?"
+        }
+      ]
+    },
+    {
+      "id": "h-bound",
+      "text": "Why V-1 passes",
+      "type": "heading",
+      "level": 2
+    },
+    {
+      "id": "p-bound",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A shortest path never repeats a node. If it did, it would contain a loop, and cutting that loop out leaves a route that is no longer than the original and visits fewer nodes. So a shortest path touches at most "
         },
         {
           "text": "V",
@@ -97,11 +258,11 @@
       ]
     },
     {
-      "id": "p-idea-4",
+      "id": "p-bound-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Now watch what one full pass achieves. After the first pass, every correct distance that uses one edge is in place. After the second, every one that uses two edges is in place, because the one-edge answers it builds on were already correct. By induction, after "
+          "text": "Now watch what one full sweep buys you. After the first sweep, every correct distance that needs a single edge is in place, because that edge got relaxed from a node whose cost was already right. After the second, every distance needing two edges is in place, since the one edge answers it builds on were correct. Each sweep locks in one more edge of depth, whatever order the edges happen to be listed in, so "
         },
         {
           "text": "V - 1",
@@ -112,66 +273,48 @@
           ]
         },
         {
-          "text": " passes every shortest path is found, whatever order you relaxed the edges in."
+          "text": " sweeps settle everything."
         }
       ]
     },
     {
-      "id": "p-idea-5",
+      "id": "p-bound-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "That last clause is the whole tradeoff. Dijkstra needs a carefully chosen order and pays for it with a heap and a correctness proof, while Bellman-Ford needs no order at all and pays for it in time instead."
+          "text": "That last clause is the whole trade. Dijkstra needs a carefully chosen order and pays for it with a heap and a correctness proof. Bellman-Ford needs no order at all and pays for it in time. The bound is a worst case rather than a schedule, which is why one boolean was enough to stop the run above two passes early."
         }
       ]
     },
     {
-      "id": "h-trace",
-      "text": "A trace",
+      "id": "h-worst",
+      "text": "When V-1 is not slack",
       "type": "heading",
       "level": 2
     },
     {
-      "id": "p-trace",
+      "id": "p-worst",
       "type": "paragraph",
       "content": [
         {
-          "text": "Four nodes, one negative edge, source A, and watch C get a value and then improve on it within the same pass."
+          "text": "It is fair to ask whether that worst case ever really happens. It does, and the shape that causes it is worth seeing once. Below is a plain five node chain, but its edge list is written back to front, so a sweep can only ever carry the frontier one hop further."
         }
       ]
     },
     {
-      "id": "code-bf-trace",
-      "code": "Graph: A->B 4, A->C 5, B->C -3, C->D 2\n\nstart        A 0    B inf   C inf   D inf\n\nround 1      relax every edge once, in the order listed\n  A->B       B = min(inf, 0 + 4)  = 4\n  A->C       C = min(inf, 0 + 5)  = 5\n  B->C       C = min(5, 4 - 3)  = 1     better route found\n  C->D       D = min(inf, 1 + 2)  = 3\n             A 0    B 4     C 1     D 3\n\nround 2      relax every edge again\n  nothing improves\n             A 0    B 4     C 1     D 3\n\nNothing changed in round 2, so we can stop early.",
-      "type": "code",
-      "language": "text"
+      "id": "w-bf-worst",
+      "type": "interactive",
+      "widget": "bellman-ford",
+      "data": {
+        "example": "worst-case"
+      }
     },
     {
-      "id": "p-trace-2",
+      "id": "p-worst-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "C went to 5 via the direct edge, then dropped to 1 when the B to C edge was relaxed later in the same round. This is exactly the situation that breaks Dijkstra: it would have settled C at 5 and never revisited it, because 5 was the smallest tentative value at the time."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Also notice the early exit. The graph needed one pass, not three, and the "
-        },
-        {
-          "text": "changed",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " flag caught that. The "
+          "text": "Pass 1 reaches B and stops, because by the time the sweep gets to the A to B edge it is the last one on the list and there is nothing after it to carry the new value onward. Pass 2 reaches C. It takes all four passes to reach E, which is exactly "
         },
         {
           "text": "V - 1",
@@ -182,13 +325,13 @@
           ]
         },
         {
-          "text": " bound is a worst case rather than a schedule, and on most real graphs the algorithm settles far sooner."
+          "text": ". Write the same four edges in the opposite order and the identical graph finishes in a single pass. The running cost depends entirely on an ordering the algorithm deliberately refuses to think about."
         }
       ]
     },
     {
       "id": "h-cycles",
-      "text": "Negative cycles, and detecting them for free",
+      "text": "When there is no answer at all",
       "type": "heading",
       "level": 2
     },
@@ -197,31 +340,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a case where the question itself has no answer. If the graph contains a cycle whose weights sum to a negative number, you can go round it repeatedly and get cheaper every time."
+          "text": "There is a case where the question itself has no answer. If a cycle's weights sum to a negative number, you can lap it forever and get cheaper every time. Ask for the shortest path and there is no smallest value to hand back, because for any route you name there is a cheaper one."
         }
       ]
-    },
-    {
-      "id": "code-bf-cycle",
-      "code": "Graph: A->B 1, B->C -1, C->B -1\n\nround 1   B = 1, C = 0\nround 2   B = min(1, 0 - 1) = -1, C = -2\nround 3   B = -3, C = -4\n...\nEvery extra lap around B->C->B subtracts 2. There is no shortest path,\nbecause \"shortest\" has no smallest value. Run one round past V-1 and\nif anything still improves, you have found a negative cycle.",
-      "type": "code",
-      "language": "text"
     },
     {
       "id": "p-cycles-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "There is no shortest path here, because for any route you name there is a cheaper one, and the right response is to report that, not to return a number."
-        }
-      ]
-    },
-    {
-      "id": "p-cycles-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Bellman-Ford detects this almost for free. You proved above that "
+          "text": "Bellman-Ford catches this almost for free, and the reason is the bound you just proved. "
         },
         {
           "text": "V - 1",
@@ -232,16 +360,42 @@
           ]
         },
         {
-          "text": " passes are enough for any graph where shortest paths exist. So run one extra pass. If anything still improves, no finite answer exists, and something must be looping to get cheaper. One extra loop over the edges turns the algorithm into a negative cycle detector, which is a large part of why it is still worth knowing."
+          "text": " passes are enough for every graph where shortest paths exist. So run one more. If any distance still improves on that extra sweep, no finite answer exists, because something must be looping to get cheaper."
         }
       ]
+    },
+    {
+      "id": "p-cycles-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The graph below has a loop through B, C and D worth -1 per lap. Run it and watch the distances keep sliding downward, then watch the extra pass catch them at it."
+        }
+      ]
+    },
+    {
+      "id": "w-bf-cycle",
+      "type": "interactive",
+      "widget": "bellman-ford",
+      "data": {
+        "example": "negative-cycle"
+      }
     },
     {
       "id": "p-cycles-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "That detector has real uses beyond graphs. Model currencies as nodes and exchange rates as edges, take the negative logarithm of each rate as the weight, and a negative cycle is an arbitrage opportunity: a sequence of trades returning more than you started with."
+          "text": "The outlined nodes are the cycle itself. You get them by following each node's best incoming route backwards until the trail closes on itself, and reporting which nodes are involved is usually far more useful to a caller than reporting that one exists somewhere."
+        }
+      ]
+    },
+    {
+      "id": "p-cycles-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That detector has uses well outside graph theory. Model currencies as nodes and exchange rates as edges, then weight each edge with the negative logarithm of its rate. Multiplying rates along a route becomes adding weights, so a negative cycle is a sequence of trades that hands back more than you put in. That is arbitrage, and finding it is the same computation you just watched."
         }
       ]
     },
@@ -470,6 +624,23 @@
             ]
           },
           {
+            "prompt": "You run Dijkstra on a graph with a negative edge and the answer comes out correct. What does that tell you?",
+            "options": [
+              {
+                "label": "Nothing reliable. Dijkstra is right only when the cheaper route happens to be found before the node is locked in",
+                "correct": true
+              },
+              {
+                "label": "That negative edges are safe as long as there is no negative cycle",
+                "correct": false
+              },
+              {
+                "label": "That the graph had no path using the negative edge",
+                "correct": false
+              }
+            ]
+          },
+          {
             "prompt": "Something still improves on the extra pass after V - 1. What does that mean?",
             "options": [
               {
@@ -516,6 +687,23 @@
               },
               {
                 "label": "Negative cycle detection triggers on every graph",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Two graphs have the same nodes, edges and weights, but the edges are listed in a different order. What changes?",
+            "options": [
+              {
+                "label": "How many passes are needed before nothing improves, though both reach the same distances",
+                "correct": true
+              },
+              {
+                "label": "The final distances, since relaxation order affects the result",
+                "correct": false
+              },
+              {
+                "label": "Nothing at all, since the algorithm sorts the edge list first",
                 "correct": false
               }
             ]

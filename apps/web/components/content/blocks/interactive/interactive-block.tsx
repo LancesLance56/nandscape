@@ -16,6 +16,7 @@ import { GraphExplorerWidget } from "./graph/graph-explorer-widget";
 import { GraphEmbedWidget } from "./graph/graph-embed-widget";
 import { GraphTraversalWidget } from "./graph/graph-traversal-widget";
 import { ShortestPathWidget } from "./graph/shortest-path-widget";
+import { BellmanFordWidget } from "./graph/bellman-ford-widget";
 import { MstWidget } from "./graph/mst-widget";
 import { TarjanSccWidget } from "./graph/tarjan-scc-widget";
 import { MutualReachabilityWidget } from "./graph/mutual-reachability-widget";
@@ -64,6 +65,7 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "graph-embed": GraphEmbedWidget,
   "graph-traversal": GraphTraversalWidget,
   "shortest-path": ShortestPathWidget,
+  "bellman-ford": BellmanFordWidget,
   "mst-explorer": MstWidget,
   "tarjan-scc": TarjanSccWidget,
   "mutual-reachability": MutualReachabilityWidget,

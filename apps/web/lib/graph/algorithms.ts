@@ -678,3 +678,256 @@ export function topologicalSortSteps(graph: GraphSpec): AlgorithmStep[] {
 
   return steps;
 }
+
+/**
+ * Bellman-Ford: no clever order, just sweep every edge V-1 times.
+ *
+ * This is the one generator here that never builds an adjacency list, because
+ * the algorithm genuinely does not need one. It only ever walks a flat edge
+ * list in the order the author wrote it, and watching that sweep hit edges
+ * with nothing to offer is half of why the cost is O(V * E).
+ *
+ * Frames are emitted per edge examined rather than per pass. A pass-level
+ * summary would hide the two things most worth seeing: that a node can improve
+ * more than once inside a single pass, and that most relaxations achieve
+ * nothing at all.
+ */
+export function bellmanFordSteps(graph: GraphSpec, start?: string): AlgorithmStep[] {
+  const source = firstNodeId(graph, start);
+  if (!source) return [];
+
+  const directed = Boolean(graph.directed);
+  const steps: AlgorithmStep[] = [];
+
+  const dist = new Map<string, number>(graph.nodes.map((n) => [n.id, n.id === source ? 0 : INF]));
+  const pred = new Map<string, string>();
+
+  // As far as the sweep is concerned an undirected edge is two directed ones.
+  const sweep: { from: string; to: string; weight: number }[] = [];
+  for (const e of graph.edges) {
+    const w = e.weight ?? 1;
+    sweep.push({ from: e.from, to: e.to, weight: w });
+    if (!directed) sweep.push({ from: e.to, to: e.from, weight: w });
+  }
+
+  const tree = (): string[] => [...pred].map(([to, from]) => edgeKey(from, to, directed));
+  const reached = (): string[] => graph.nodes.filter((n) => (dist.get(n.id) ?? INF) < INF).map((n) => n.id);
+  const show = (v: number): string => (v === INF ? "infinity" : String(v));
+  /** "2 + 3" or "2 - 3", rather than the "2 + -3" a plain template would give. */
+  const sum = (a: number, w: number): string => (w < 0 ? `${a} - ${Math.abs(w)}` : `${a} + ${w}`);
+
+  const rounds = Math.max(graph.nodes.length - 1, 0);
+
+  steps.push({
+    caption: `${source} starts at 0 and every other node at infinity. Bellman-Ford chooses no order and commits to nothing early. It sweeps the whole edge list, up to ${rounds} time${rounds === 1 ? "" : "s"}, and lets the numbers fall where they fall.`,
+    phase: "Setup",
+    visited: reached(),
+    active: source,
+    frontier: [],
+    treeEdges: [],
+    consideredEdge: null,
+    rejectedEdges: [],
+    table: distTable(dist),
+  });
+
+  let settled = false;
+
+  for (let round = 1; round <= rounds; round++) {
+    steps.push({
+      caption: `Pass ${round}. Start again at the top of the edge list and relax every edge, promising or not.`,
+      phase: `Pass ${round} of ${rounds}`,
+      visited: reached(),
+      active: null,
+      frontier: [],
+      treeEdges: tree(),
+      consideredEdge: null,
+      rejectedEdges: [],
+      table: distTable(dist),
+    });
+
+    let changed = false;
+
+    for (const e of sweep) {
+      const key = edgeKey(e.from, e.to, directed);
+      const du = dist.get(e.from) ?? INF;
+      const dv = dist.get(e.to) ?? INF;
+
+      if (du === INF) {
+        steps.push({
+          caption: `${e.from} to ${e.to}: there is no route to ${e.from} yet, so this edge has nothing to extend. Skip it.`,
+          phase: `Pass ${round} of ${rounds}`,
+          visited: reached(),
+          active: null,
+          frontier: [],
+          treeEdges: tree(),
+          consideredEdge: key,
+          rejectedEdges: [key],
+          table: distTable(dist),
+        });
+        continue;
+      }
+
+      const candidate = du + e.weight;
+
+      if (candidate < dv) {
+        dist.set(e.to, candidate);
+        pred.set(e.to, e.from);
+        changed = true;
+        steps.push({
+          caption: `${e.from} to ${e.to}: ${sum(du, e.weight)} = ${candidate}, which beats ${show(dv)}. ${e.to} drops to ${candidate}, and its best route now arrives from ${e.from}.`,
+          phase: `Pass ${round} of ${rounds}`,
+          visited: reached(),
+          active: e.to,
+          frontier: [],
+          treeEdges: tree(),
+          consideredEdge: key,
+          rejectedEdges: [],
+          table: distTable(dist),
+        });
+      } else {
+        steps.push({
+          caption: `${e.from} to ${e.to}: ${sum(du, e.weight)} = ${candidate}, no better than ${show(dv)}. Nothing changes, and that is what most of a sweep looks like.`,
+          phase: `Pass ${round} of ${rounds}`,
+          visited: reached(),
+          active: null,
+          frontier: [],
+          treeEdges: tree(),
+          consideredEdge: key,
+          rejectedEdges: [key],
+          table: distTable(dist),
+        });
+      }
+    }
+
+    if (!changed) {
+      settled = true;
+      steps.push({
+        caption: `A whole pass and not one number moved. Another pass would read the same values and make the same comparisons, so nothing can ever change again. The distances are final, and no negative cycle exists.`,
+        phase: "Settled early",
+        visited: reached(),
+        active: null,
+        frontier: [],
+        treeEdges: tree(),
+        consideredEdge: null,
+        rejectedEdges: [],
+        table: distTable(dist),
+      });
+      break;
+    }
+  }
+
+  if (settled) return steps;
+
+  steps.push({
+    caption: `That is ${rounds} passes, the most edges any shortest path can use. One more sweep now, purely as a test: if a distance still improves after the bound is spent, no finite answer exists.`,
+    phase: "Check for a negative cycle",
+    visited: reached(),
+    active: null,
+    frontier: [],
+    treeEdges: tree(),
+    consideredEdge: null,
+    rejectedEdges: [],
+    table: distTable(dist),
+  });
+
+  let culprit: string | null = null;
+
+  for (const e of sweep) {
+    const key = edgeKey(e.from, e.to, directed);
+    const du = dist.get(e.from) ?? INF;
+    const dv = dist.get(e.to) ?? INF;
+    if (du === INF) continue;
+
+    const candidate = du + e.weight;
+    if (candidate < dv) {
+      culprit = e.to;
+      pred.set(e.to, e.from);
+      steps.push({
+        caption: `${e.from} to ${e.to} still improves: ${sum(du, e.weight)} = ${candidate}, under ${show(dv)}. Past the bound, that can only mean one thing.`,
+        phase: "Check for a negative cycle",
+        visited: reached(),
+        active: e.to,
+        frontier: [],
+        treeEdges: tree(),
+        consideredEdge: key,
+        rejectedEdges: [],
+        table: distTable(dist),
+      });
+      break;
+    }
+
+    steps.push({
+      caption: `${e.from} to ${e.to}: ${sum(du, e.weight)} = ${candidate}, still no improvement. Keep checking.`,
+      phase: "Check for a negative cycle",
+      visited: reached(),
+      active: null,
+      frontier: [],
+      treeEdges: tree(),
+      consideredEdge: key,
+      rejectedEdges: [key],
+      table: distTable(dist),
+    });
+  }
+
+  if (culprit === null) {
+    steps.push({
+      caption: `The extra sweep improved nothing, so the distances are final. Each number is the cheapest total weight from ${source} to that node, negative edges included.`,
+      phase: "Done",
+      visited: reached(),
+      active: null,
+      frontier: [],
+      treeEdges: tree(),
+      consideredEdge: null,
+      rejectedEdges: [],
+      table: distTable(dist),
+    });
+    return steps;
+  }
+
+  // Walking back V predecessors from the improving node always lands inside
+  // the cycle, even when that node only hangs off it: the chain cannot stay
+  // outside a cycle for more than V steps.
+  let inside: string | null = culprit;
+  for (let i = 0; i < graph.nodes.length && inside !== null; i++) {
+    inside = pred.get(inside) ?? null;
+  }
+
+  const cycle: string[] = [];
+  if (inside !== null) {
+    const seen = new Set<string>();
+    let walk: string | null = inside;
+    while (walk !== null && !seen.has(walk)) {
+      seen.add(walk);
+      cycle.push(walk);
+      walk = pred.get(walk) ?? null;
+    }
+    // Drop the tail that led into the loop rather than being part of it.
+    if (walk !== null) cycle.splice(0, cycle.indexOf(walk));
+  }
+
+  let cycleWeight = 0;
+  for (let i = 0; i < cycle.length; i++) {
+    const from = cycle[(i + 1) % cycle.length];
+    const to = cycle[i];
+    const edge = sweep.find((s) => s.from === from && s.to === to);
+    cycleWeight += edge?.weight ?? 0;
+  }
+
+  steps.push({
+    caption:
+      cycle.length > 0
+        ? `Follow the improving routes backwards and they close into a loop: ${formatList([...cycle].reverse())}, total weight ${cycleWeight}. Every lap subtracts another ${Math.abs(cycleWeight)}, so there is no cheapest path to report, only an ever cheaper one.`
+        : `A distance still improved after the bound was spent, so a negative cycle is reachable from ${source}. There is no shortest path to report.`,
+    phase: "Negative cycle",
+    visited: reached(),
+    active: null,
+    frontier: [],
+    treeEdges: tree(),
+    consideredEdge: null,
+    rejectedEdges: [],
+    table: distTable(dist),
+    groups: cycle.length > 0 ? [cycle] : undefined,
+  });
+
+  return steps;
+}

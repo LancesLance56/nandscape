@@ -17,6 +17,7 @@ import { StateMachineWidget } from "@/components/content/blocks/interactive/stat
 import { GraphExplorerWidget } from "@/components/content/blocks/interactive/graph/graph-explorer-widget";
 import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
 import { ShortestPathWidget } from "@/components/content/blocks/interactive/graph/shortest-path-widget";
+import { BellmanFordWidget } from "@/components/content/blocks/interactive/graph/bellman-ford-widget";
 import { GraphEmbedWidget, isGraphEmbedData } from "@/components/content/blocks/interactive/graph/graph-embed-widget";
 import { MstWidget } from "@/components/content/blocks/interactive/graph/mst-widget";
 import { TarjanSccWidget } from "@/components/content/blocks/interactive/graph/tarjan-scc-widget";
@@ -48,6 +49,7 @@ import { CircuitEmbedWidgetEditor } from "@/components/blog-editor/widgets/circu
 import { GraphEmbedWidgetEditor } from "@/components/blog-editor/widgets/graph-embed-widget-editor";
 import { GraphTraversalWidgetEditor } from "@/components/blog-editor/widgets/graph-traversal-widget-editor";
 import { ShortestPathWidgetEditor } from "@/components/blog-editor/widgets/shortest-path-widget-editor";
+import { BellmanFordWidgetEditor } from "@/components/blog-editor/widgets/bellman-ford-widget-editor";
 import { MstWidgetEditor } from "@/components/blog-editor/widgets/mst-widget-editor";
 import { TarjanSccWidgetEditor } from "@/components/blog-editor/widgets/tarjan-scc-widget-editor";
 import { MutualReachabilityWidgetEditor } from "@/components/blog-editor/widgets/mutual-reachability-widget-editor";
@@ -233,6 +235,13 @@ const registryImpl: Record<string, WidgetDefinition> = {
     Renderer: ShortestPathWidget,
     Editor: ShortestPathWidgetEditor,
     createDefault: () => ({ start: "A" }),
+  },
+  "bellman-ford": {
+    name: "bellman-ford",
+    label: "Bellman-Ford (negative weights)",
+    Renderer: BellmanFordWidget,
+    Editor: BellmanFordWidgetEditor,
+    createDefault: () => ({}),
   },
   "mst-explorer": {
     name: "mst-explorer",

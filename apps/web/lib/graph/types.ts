@@ -61,6 +61,12 @@ export function edgeKey(from: string, to: string, directed: boolean): string {
 export interface AlgorithmStep {
   /** Plain-language narration of this single frame. */
   caption: string;
+  /**
+   * Short label for the stage this frame belongs to, e.g. "Pass 2 of 4".
+   * Algorithms that run in distinct rounds set it so a widget can show where
+   * it is without parsing the caption; the rest leave it undefined.
+   */
+  phase?: string;
   /** Nodes finished with (drawn solid). */
   visited: string[];
   /** The node being processed right now (drawn highlighted). */
