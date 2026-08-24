@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Dijkstra's algorithm rests on one assumption: adding another edge to a route can never make it cheaper. That holds whenever a weight is a distance or a duration, and it is what lets the algorithm lock in a node's cost and never look at it again."
+          "text": "Dijkstra's algorithm relies on the fact that adding another edge to a route can never make it cheaper. That holds whenever a weight is a distance or a duration, and it is what lets the algorithm lock in a node's cost and never look at it again, making for an efficient algorithm"
         }
       ]
     },
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Some problems break that assumption. A currency trade can leave you holding more than you started with. A financial model can have a step that pays out. A game can have a move that refunds. As soon as one weight is allowed to be negative, adding an edge really can make a route cheaper, and Dijkstra's licence to stop looking is gone."
+          "text": "But there are actually lots of instances where it makes sense for an edge to have negative weight. A currency trade can leave you holding more than you started with, a financial model can have a step that pays out, or a game can have a move that refunds. As soon as one weight is allowed to be negative, adding an edge really can make a route cheaper, and Dijkstra's license to stop looking is gone."
         }
       ]
     },
@@ -46,65 +46,65 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It does not fail loudly. It returns a number, confidently, and the number is wrong. Below is Dijkstra on a four node graph with a single negative edge. Step through it and keep your eye on B."
+          "text": "Dijkstra's algorithm wouldn't give an error when given negative weights, but usually the path it gives is not the best answer."
         }
       ]
     },
     {
       "id": "w-dijkstra-fails",
-      "type": "interactive",
-      "widget": "shortest-path",
       "data": {
         "graph": {
-          "directed": true,
-          "weighted": true,
-          "nodes": [
-            {
-              "id": "A",
-              "x": 60,
-              "y": 130
-            },
-            {
-              "id": "B",
-              "x": 200,
-              "y": 60
-            },
-            {
-              "id": "C",
-              "x": 200,
-              "y": 205
-            },
-            {
-              "id": "D",
-              "x": 350,
-              "y": 130
-            }
-          ],
           "edges": [
             {
-              "from": "A",
               "to": "B",
+              "from": "A",
               "weight": 1
             },
             {
-              "from": "A",
               "to": "C",
+              "from": "A",
               "weight": 2
             },
             {
-              "from": "C",
               "to": "B",
+              "from": "C",
               "weight": -2
             },
             {
-              "from": "B",
               "to": "D",
+              "from": "B",
               "weight": 1
             }
-          ]
+          ],
+          "nodes": [
+            {
+              "x": 60,
+              "y": 130,
+              "id": "A"
+            },
+            {
+              "x": 200,
+              "y": 60,
+              "id": "B"
+            },
+            {
+              "x": 200,
+              "y": 205,
+              "id": "C"
+            },
+            {
+              "x": 350,
+              "y": 130,
+              "id": "D"
+            }
+          ],
+          "directed": true,
+          "weighted": true
         },
         "start": "A"
-      }
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
     },
     {
       "id": "p-broke",
@@ -125,17 +125,8 @@
       ]
     },
     {
-      "id": "p-broke-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "One thing worth knowing before you go testing this. Not every negative edge breaks Dijkstra. If the cheaper route happens to turn up before the node gets locked in, the answer comes out right anyway, purely by luck of the ordering. That is what makes the bug so unpleasant to hunt: Dijkstra on a graph with negative weights is not reliably wrong, it is unreliably right."
-        }
-      ]
-    },
-    {
       "id": "h-idea",
-      "text": "Giving up the clever part",
+      "text": "The idea",
       "type": "heading",
       "level": 2
     },
@@ -144,38 +135,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Bellman-Ford's answer is almost aggressively simple. It never works out a safe order to settle nodes in, so it never has to defend one. It relaxes every edge in the graph, then does the whole thing again, and again, until nothing improves."
-        }
-      ]
-    },
-    {
-      "id": "p-relax",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Relaxing an edge is a single comparison. If the cost of reaching "
-        },
-        {
-          "text": "from",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", plus the weight of the edge, is less than the current cost of reaching "
-        },
-        {
-          "text": "to",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", write down the smaller number. That is the entire operation. Bellman-Ford does nothing else, and it does it to every edge, whether or not that edge looks promising."
+          "text": "Bellman-Ford's solution was simple but definitely not as efficient. It never works out a safe order to settle nodes in, so it never has to defend one. It relaxes every edge in the graph, then does the whole thing again, and again, until nothing improves. That's actually it, and you probably noticed that Bellman-Ford's algorithm is a lot easier to learn than Dijkstra's just slower."
         }
       ]
     },
@@ -196,11 +156,17 @@
     },
     {
       "id": "w-bf-main",
-      "type": "interactive",
-      "widget": "bellman-ford",
       "data": {
+        "graph": {
+          "edges": [],
+          "nodes": [],
+          "directed": true,
+          "weighted": true
+        },
         "example": "negative-edge"
-      }
+      },
+      "type": "interactive",
+      "widget": "bellman-ford"
     },
     {
       "id": "p-after",
@@ -303,11 +269,11 @@
     },
     {
       "id": "w-bf-worst",
-      "type": "interactive",
-      "widget": "bellman-ford",
       "data": {
         "example": "worst-case"
-      }
+      },
+      "type": "interactive",
+      "widget": "bellman-ford"
     },
     {
       "id": "p-worst-2",
@@ -375,11 +341,11 @@
     },
     {
       "id": "w-bf-cycle",
-      "type": "interactive",
-      "widget": "bellman-ford",
       "data": {
         "example": "negative-cycle"
-      }
+      },
+      "type": "interactive",
+      "widget": "bellman-ford"
     },
     {
       "id": "p-cycles-4",
