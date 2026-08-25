@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Cut a string into pieces so that every piece reads the same forwards and backwards. For "
+          "text": "Cut a string into pieces so every piece reads the same forwards and backwards. For "
         },
         {
           "text": "\"aab\"",
@@ -71,7 +71,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This problem is worth doing after N-Queens because the decision being made is a different shape. There is no board and nothing to place. The choice at each step is "
+          "text": "This one's worth doing right after N-Queens because the decision being made is a different shape. There's no board and nothing to place. The choice at each step is "
         },
         {
           "text": "where to cut next",
@@ -115,7 +115,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is the entire problem stated in the template's vocabulary, and it took one paragraph, though getting fluent at that translation is most of what this section is teaching."
+          "text": "That's the entire problem stated in the template's vocabulary, and it took one paragraph, though getting fluent at that translation is most of what this section is actually teaching."
         }
       ]
     },
@@ -124,7 +124,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Here it is on \"aab\", the smallest string with more than one answer."
+          "text": "Here it is on \"aab,\" the smallest string with more than one answer."
         }
       ]
     },
@@ -147,7 +147,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Both problems prune, and the two prunes are not the same kind of thing. The difference is worth noticing because it decides whether an optimization is available."
+          "text": "Both problems prune, and the two prunes aren't the same kind of thing. The difference is worth noticing, since it decides whether an optimization is even available."
         }
       ]
     },
@@ -156,7 +156,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A queen placement is rejected by comparing it against the other queens already on the board, so the test depends on the whole path you took to get there. Move one queen higher up and the same square may become legal."
+          "text": "A queen placement gets rejected by comparing it against the other queens already on the board, so the test depends on the whole path you took to get there. Move one queen higher up and the same square might become legal."
         }
       ]
     },
@@ -165,7 +165,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A cut is rejected by looking at the substring alone. Whether "
+          "text": "A cut gets rejected by looking at the substring alone. Whether "
         },
         {
           "text": "\"aba\"",
@@ -176,7 +176,7 @@
           ]
         },
         {
-          "text": " is a palindrome does not depend on anything else in the string, or on which cuts came before it. The test depends only on its own inputs."
+          "text": " is a palindrome doesn't depend on anything else in the string, or on which cuts came before it. The test depends only on its own inputs."
         }
       ]
     },
@@ -185,7 +185,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That independence is exactly what makes precomputation possible. A test that depends only on its inputs can be computed once for every possible input and looked up thereafter. A test that depends on the path cannot."
+          "text": "That independence is exactly what makes precomputation possible. A test that depends only on its inputs can be computed once for every possible input and looked up after that. A test that depends on the path can't."
         }
       ]
     },
@@ -200,7 +200,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Checking a palindrome by walking inward from both ends costs time proportional to its length, and the search asks the same questions again and again as it explores different cut positions."
+          "text": "Checking a palindrome by walking inward from both ends costs time proportional to its length, and the search asks the same questions over and over as it explores different cut positions."
         }
       ]
     },
@@ -235,7 +235,7 @@
           ]
         },
         {
-          "text": " the part between them is already known to be one. So work from short substrings outward, or equivalently fill the rows from the bottom up, and every entry you need is already available when you reach it."
+          "text": " the part between them is already known to be one. So work from short substrings outward, or equivalently fill the rows from the bottom up, and every entry you need is already sitting there by the time you reach it."
         }
       ]
     },
@@ -255,7 +255,7 @@
           ]
         },
         {
-          "text": " once. After that every prune in the search is a single array lookup instead of a scan, which matters because the search performs far more of those tests than the table has entries."
+          "text": " once. After that, every prune in the search is a single array lookup instead of a scan, which matters because the search runs far more of those tests than the table has entries."
         }
       ]
     },
@@ -270,7 +270,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Watch which cuts get rejected. Each rejection removes every partition that would have started with that piece, which on a longer string is a substantial part of the tree."
+          "text": "Watch which cuts get rejected. Each rejection removes every partition that would've started with that piece, which on a longer string is a substantial chunk of the tree."
         }
       ]
     },
@@ -310,7 +310,7 @@
           ]
         },
         {
-          "text": ", where every substring is a palindrome and nothing is ever pruned. Then every gap between characters is independently a cut or not, giving 2 to the power of "
+          "text": ", where every substring is a palindrome and nothing ever gets pruned. Then every gap between characters is independently a cut or not, giving 2 to the power of "
         },
         {
           "text": "(n - 1)",
@@ -341,7 +341,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is unavoidable, since the output really is that large. On ordinary strings the prune removes most of the tree, and the gap between the worst case and the typical case is again where the practical value sits."
+          "text": "That's unavoidable, since the output really is that large. On ordinary strings the prune removes most of the tree, and the gap between the worst case and the typical case is again where the practical value sits."
         }
       ]
     },
@@ -404,7 +404,7 @@
           ]
         },
         {
-          "text": ", which is a shorter substring starting later. Loop "
+          "text": ", a shorter substring starting later. Loop "
         },
         {
           "text": "i",
@@ -426,7 +426,7 @@
           ]
         },
         {
-          "text": " upward and everything you need is already there. Get it the other way round and you read entries that are still false."
+          "text": " upward and everything you need is already there. Get it backwards and you read entries that are still false."
         }
       ]
     },
@@ -443,7 +443,7 @@
           ]
         },
         {
-          "text": " Substrings of length 1 and 2 have no inside to check, which is what "
+          "text": " Substrings of length 1 and 2 have nothing inside to check, which is what "
         },
         {
           "text": "j - i < 2",
@@ -515,7 +515,7 @@
           ]
         },
         {
-          "text": " and the recursive call also needs "
+          "text": " and the recursive call needs "
         },
         {
           "text": "end + 1",
@@ -526,7 +526,7 @@
           ]
         },
         {
-          "text": ". Using "
+          "text": " too. Use "
         },
         {
           "text": "end",
@@ -537,7 +537,7 @@
           ]
         },
         {
-          "text": " in one but not the other produces overlapping or gapped pieces."
+          "text": " in one but not the other and you get overlapping or gapped pieces."
         }
       ]
     },
@@ -554,7 +554,7 @@
           ]
         },
         {
-          "text": " Correct and slower by a factor of "
+          "text": " Correct, and slower by a factor of "
         },
         {
           "text": "n",
@@ -565,7 +565,7 @@
           ]
         },
         {
-          "text": ". If the table is built anyway, use it."
+          "text": ". If the table's built anyway, use it."
         }
       ]
     },

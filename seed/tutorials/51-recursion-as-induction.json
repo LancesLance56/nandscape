@@ -1,6 +1,6 @@
 {
   "slug": "recursion-as-induction",
-  "title": "Recursion, and Why It Works",
+  "title": "Recursion: Why It Works",
   "excerpt": "A function that calls itself looks like circular reasoning. It is not, and the argument that rescues it is induction: settle the base case, assume the smaller answer, and the whole thing stands up.",
   "authorName": "Lance Dy Chua",
   "status": "published",
@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A function that calls itself looks like it should not work. If answering a question requires answering the same question, nothing has actually moved, and the whole arrangement has the smell of circular reasoning."
+          "text": "A function that calls itself looks like it shouldn't work. If answering a question requires answering the same question, nothing's actually moved, and the whole arrangement has the smell of circular reasoning."
         }
       ]
     },
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is not circular, and getting straight on why is worth doing before anything else in this section. Recursion is mathematical induction wearing different clothes. Once you can see the two as one argument, writing a recursive function stops being a matter of tracing calls in your head and becomes a matter of checking three short claims, none of which asks you to picture the whole tree at once."
+          "text": "But it isn't circular, and getting straight on why is worth doing before anything else in this section. Recursion is mathematical induction wearing different clothes. Once you can see the two as one argument, writing a recursive function stops being a matter of tracing calls in your head and becomes a matter of checking three short claims, none of which asks you to picture the whole tree at once."
         }
       ]
     },
@@ -61,7 +61,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Stare at that product for a second and something falls out of it. The tail of it, 4 x 3 x 2 x 1, is exactly 4!. That means 5! is simply 5 x 4!. Nothing about the number five made that work either. Every factorial has the next smaller factorial sitting inside it, and that gives you a definition of factorial written in terms of factorial."
+          "text": "Stare at that product for a second and something falls out of it. The tail of it, 4 x 3 x 2 x 1, is exactly 4!. That means 5! is just 5 x 4!. Nothing about the number five made that work either. Every factorial has the next smaller factorial sitting inside it, and that gives you a definition of factorial written in terms of factorial."
         }
       ]
     },
@@ -76,7 +76,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two of those lines are answers and the third is a rule. The first two say what to do when the problem has got small enough to settle outright, and they are the "
+          "text": "Two of those lines are answers and the third is a rule. The first two say what to do once the problem's gotten small enough to settle outright, and they're the "
         },
         {
           "text": "base cases",
@@ -87,7 +87,7 @@
           ]
         },
         {
-          "text": ". The third says how to turn a larger problem into a smaller one, and it is the "
+          "text": ". The third says how to turn a larger problem into a smaller one, and it's the "
         },
         {
           "text": "recursive case",
@@ -142,7 +142,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two features of that shape are worth noticing now, because both come back later. The chain goes all the way down before it comes back up, which means the call you made first is the last one to finish, and that ordering is not a quirk of this example but a property of every recursion ever written. No question gets asked twice here. Every call in the tree is about a different number."
+          "text": "Two things about that shape are worth noticing now, because both come back later. The chain goes all the way down before it comes back up, which means the call you made first is the last one to finish, and that ordering isn't a quirk of this example but a property of every recursion ever written. No question gets asked twice here, either. Every call in the tree is about a different number."
         }
       ]
     },
@@ -157,7 +157,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Here is the objection that bothers most people the first time they see this. The definition of factorial uses factorial. You have not been told what factorial is. You have been told what it equals in terms of itself, which sounds a lot like being told that a word means what the word means."
+          "text": "Here's the objection that bothers most people the first time they see this. The definition of factorial uses factorial. You haven't been told what factorial is. You've been told what it equals in terms of itself, which sounds a lot like being told that a word means what the word means."
         }
       ]
     },
@@ -166,7 +166,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The objection is a fair one and there is a real answer to it. The answer is not that the definition must be fine because the code happens to run. It is that the definition rests on a case which does not use factorial at all, and every other case can be traced back to that one in a finite number of steps, which is the whole difference between a definition that grounds out and one that spins."
+          "text": "It's a fair objection, and there's a real answer to it. The answer isn't that the definition must be fine because the code happens to run. It's that the definition rests on a case which doesn't use factorial at all, and every other case can be traced back to that one in a finite number of steps, which is the whole difference between a definition that grounds out and one that just spins."
         }
       ]
     },
@@ -181,7 +181,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If you have met mathematical induction before, this next part will feel familiar. Induction proves a claim about every whole number without checking them one at a time, which would take forever. It manages that in two moves."
+          "text": "If you've met mathematical induction before, this next part will feel familiar. Induction proves a claim about every whole number without checking them one at a time, which would take forever. It manages that in two moves."
         }
       ]
     },
@@ -199,7 +199,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is exactly the shape the factorial code has. Set the proof and the function out side by side and the correspondence runs line for line, with every move in the argument answered by a line of code doing the same job."
+          "text": "That's exactly the shape the factorial code has. Set the proof and the function side by side and the correspondence runs line for line, with every move in the argument answered by a line of code doing the same job."
         }
       ]
     },
@@ -235,7 +235,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The middle row is the one doing the work, and it is the one people distrust. You are allowed to assume the smaller call is correct. Not hope, assume. That assumption is not a leap of faith, because it is precisely what the induction step is entitled to help itself to, and the base case is what pays for it."
+          "text": "The middle row is the one doing the work, and it's the one people distrust. You're allowed to assume the smaller call is correct. Not hope, assume. That assumption isn't a leap of faith, since it's precisely what the induction step is entitled to help itself to, and the base case is what pays for it."
         }
       ]
     },
@@ -244,7 +244,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In practice this changes how you write recursive code, and the change is a big one. You never have to hold a call tree in your head. You write the base case, you write the combining step, and then you check one thing: would that step be right if the smaller answer were right? Three small checks. Each one fits inside a single line of thought."
+          "text": "In practice this changes how you write recursive code, and it's a big change. You never have to hold a call tree in your head. You write the base case, you write the combining step, and then you check one thing: would that step be right if the smaller answer were right? Three small checks. Each one fits inside a single line of thought."
         }
       ]
     },
@@ -253,7 +253,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The widget above has a panel that spells those three out for whichever call is running. Step through it again with that panel open and the assumption gets named for the call actually on screen, rather than left sitting there as an abstract n."
+          "text": "The widget above has a panel that spells those three out for whichever call is running. Step through it again with that panel open, and the assumption gets named for the call actually on screen, rather than left sitting there as an abstract n."
         }
       ]
     },
@@ -277,7 +277,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The first is a base case that is missing, or one that never gets reached. With nothing to stop the chain the calls keep coming until the program runs out of room to remember where it was, which in most languages means a stack overflow whose error message almost never points at the line that actually caused it."
+          "text": "The first is a base case that's missing, or one that never gets reached. With nothing to stop the chain, the calls keep coming until the program runs out of room to remember where it was, which in most languages means a stack overflow whose error message almost never points at the line that actually caused it."
         }
       ]
     },
@@ -286,7 +286,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The second is an argument that fails to shrink. A recursive call is only any use when it asks about a strictly smaller problem, and smaller has to be measured against something that cannot keep decreasing forever. Counting down toward zero qualifies. Passing the same value straight through does not."
+          "text": "The second is an argument that fails to shrink. A recursive call is only any use when it asks about a strictly smaller problem, and smaller has to be measured against something that can't keep decreasing forever. Counting down toward zero qualifies. Passing the same value straight through doesn't."
         }
       ]
     },
@@ -322,7 +322,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Factorial makes one call per level, so its tree is a straight chain. Most recursions worth writing branch instead, and the moment one call makes two calls of its own the tree stops being a line and starts being a shape, which is where a picture begins to earn its keep."
+          "text": "Factorial makes one call per level, so its tree is a straight chain. Most recursions worth writing branch instead, and the moment one call makes two calls of its own, the tree stops being a line and starts being a shape, which is where a picture starts earning its keep."
         }
       ]
     },
@@ -331,7 +331,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch the widget above over to Fibonacci and step through that instead. Each call now makes two, the tree fans out, and before long the same numbers start turning up in different corners of it. That repetition is not an artifact of the drawing. It is real work the program is doing more than once, and it is the whole subject of the next tutorial."
+          "text": "Switch the widget above over to Fibonacci and step through that instead. Each call now makes two, the tree fans out, and before long the same numbers start turning up in different corners of it. That repetition isn't an artifact of the drawing. It's real work the program is doing more than once, and it's the whole subject of the next tutorial."
         }
       ]
     },
@@ -400,7 +400,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Recursion is correct because of induction, and the base case is what the entire argument stands on. Carry that piece forward, because what comes next is not about whether recursion works. It is about what recursion costs, and for some very ordinary problems the answer turns out to be far more than it has any business costing."
+          "text": "Recursion is correct because of induction, and the base case is what the entire argument stands on. Carry that piece forward, because what comes next isn't about whether recursion works. It's about what recursion costs, and for some very ordinary problems the answer turns out to be far more than it has any business costing."
         }
       ]
     }

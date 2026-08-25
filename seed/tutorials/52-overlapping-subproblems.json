@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Written this way it is also close to unusable. Ask it for the fortieth Fibonacci number and a modern laptop will sit there thinking for a noticeable stretch of time, and ask for the sixtieth and you will not have an answer by the end of the week. The definition is correct and the translation into code is faithful, which means the fault lies somewhere neither of them can be blamed for."
+          "text": "Written this way it's also close to unusable. Ask it for the fortieth Fibonacci number and a modern laptop will sit there thinking for a noticeable stretch of time. Ask for the sixtieth and you won't have an answer by the end of the week. The definition is correct and the translation into code is faithful, so the fault sits somewhere neither of them can be blamed for."
         }
       ]
     },
@@ -68,7 +68,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The problem is invisible in the code and impossible to miss in the tree. Below is fib(6) running with nothing clever attached to it, and the thing to watch is not the shape of the tree so much as the labels written inside the boxes."
+          "text": "The problem is invisible in the code and impossible to miss in the tree. Below is fib(6) running with nothing clever attached to it, and the thing to watch isn't the shape of the tree so much as the labels written inside the boxes."
         }
       ]
     },
@@ -87,7 +87,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "By the end the counter reads 25 calls. Now count the different questions those calls asked: fib(6), fib(5), fib(4), fib(3), fib(2), fib(1), fib(0). Seven. Twenty-five calls to answer seven questions, and the dashed coral rings mark every call whose answer was already sitting somewhere to its left by the time it ran. Eighteen of the twenty-five calls are repeats."
+          "text": "By the end, the counter reads 25 calls. Now count the different questions those calls actually asked: fib(6), fib(5), fib(4), fib(3), fib(2), fib(1), fib(0). Seven. Twenty-five calls to answer seven questions, and the dashed coral rings mark every call whose answer was already sitting somewhere to its left by the time it ran. Eighteen of the twenty-five calls are repeats."
         }
       ]
     },
@@ -96,7 +96,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "fib(3) alone gets computed three separate times, and none of those three is cheap, because each one rebuilds the entire subtree underneath it from scratch. That subtree has its own repeats inside it, and those repeats have repeats of their own, so the waste compounds the whole way down instead of merely adding up. Nothing in the four lines of code hints at any of it."
+          "text": "fib(3) alone gets computed three separate times, and none of those three is cheap, since each one rebuilds the entire subtree underneath it from scratch. That subtree has its own repeats inside it, and those repeats have repeats of their own, so the waste compounds the whole way down instead of merely adding up. Nothing in the four lines of code hints at any of it."
         }
       ]
     },
@@ -105,7 +105,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a neat way to see why the total goes exponential without doing any algebra at all. Every call that is not a base case makes two more, so the number of calls on each level roughly doubles as you go down, and the tree runs about n levels deep before it bottoms out. Doubling n times is what 2 to the power of n means."
+          "text": "There's a neat way to see why the total goes exponential without doing any algebra at all. Every call that isn't a base case makes two more, so the number of calls on each level roughly doubles as you go down, and the tree runs about n levels deep before it bottoms out. Doubling n times is what 2 to the power of n means."
         }
       ]
     },
@@ -120,7 +120,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Push the input up to fib(9) and the counter reads 109 calls for ten distinct questions. The pattern behind those numbers is worth naming. Every step of n multiplies the number of calls by about 1.6, which is what exponential growth looks like when you meet it out in the open. The growth is not gentle."
+          "text": "Push the input up to fib(9) and the counter reads 109 calls for ten distinct questions. The pattern behind those numbers is worth naming. Every step of n multiplies the number of calls by about 1.6, which is what exponential growth looks like when you meet it out in the open. It isn't gentle."
         }
       ]
     },
@@ -176,7 +176,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Not every slow recursion can be rescued the same way, and it pays to be precise about which ones can. Two properties have to hold, and both carry names you will meet in every textbook that covers the topic, which makes them worth learning properly rather than by feel."
+          "text": "Not every slow recursion can be rescued the same way, and it pays to be precise about which ones can. Two properties have to hold, and both carry names you'll meet in every textbook that covers the topic, which makes them worth learning properly rather than by feel."
         }
       ]
     },
@@ -193,7 +193,7 @@
           ]
         },
         {
-          "text": ". The recursion has to keep asking the same questions. Fibonacci does this spectacularly, asking seven distinct questions twenty-five times over. If every call in the tree asked about something genuinely new, there would be nothing at all to save, and no technique in this section would apply. Fibonacci passes this one easily."
+          "text": ". The recursion has to keep asking the same questions. Fibonacci does this spectacularly, asking seven distinct questions twenty-five times over. If every call in the tree asked about something genuinely new, there'd be nothing at all to save, and no technique in this section would apply. Fibonacci passes this one easily."
         }
       ]
     },
@@ -210,7 +210,7 @@
           ]
         },
         {
-          "text": ". The answer to a problem has to be built out of answers to smaller versions of the same problem, and those smaller answers must not depend on which larger problem happened to ask for them. fib(4) is 3 no matter who is asking. That last clause is easy to read past."
+          "text": ". The answer to a problem has to be built out of answers to smaller versions of the same problem, and those smaller answers must not depend on which larger problem happened to ask for them. fib(4) is 3 no matter who's asking. That last clause is easy to read past."
         }
       ]
     },
@@ -219,7 +219,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That second condition sounds like a technicality and it is nothing of the kind, because it genuinely fails for real problems. Suppose the best route from one city to another depends on which cities you have already passed through, as it does the moment a rule says you cannot visit anywhere twice. The subproblem stops having one answer. It has a different answer for every history that could have led into it, and storing results by city buys you nothing at all."
+          "text": "That second condition sounds like a technicality, and it's nothing of the kind, because it genuinely fails for real problems. Suppose the best route from one city to another depends on which cities you've already passed through, as it does the moment a rule says you can't visit anywhere twice. The subproblem stops having one answer. It has a different answer for every history that could've led into it, and storing results by city buys you nothing at all."
         }
       ]
     },
@@ -243,7 +243,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The difference is that the two halves are different lists. Nothing merge sort works out about the left half is ever wanted for the right half, so there is no question asked twice and nothing a cache could catch. That family has its own name, "
+          "text": "The difference is that the two halves are different lists. Nothing merge sort works out about the left half is ever wanted for the right half, so there's no question asked twice and nothing a cache could catch. That family has its own name, "
         },
         {
           "text": "divide and conquer",
@@ -254,7 +254,7 @@
           ]
         },
         {
-          "text": ", and it is the case where recursion is already doing the right amount of work. Dynamic programming is what you reach for when the pieces overlap. The distinction is not academic."
+          "text": ", and it's the case where recursion's already doing the right amount of work. Dynamic programming is what you reach for when the pieces overlap. The distinction isn't academic."
         }
       ]
     },
@@ -296,7 +296,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci is a set piece, and set pieces are easy. The skill worth having is noticing the same shape in a problem nobody has labeled for you, and there is one reliable question that gets you there. Write down what a single call actually depends on, then ask how many different values that description can take. Then count the states."
+          "text": "Fibonacci is a set piece, and set pieces are easy. The skill worth having is noticing the same shape in a problem nobody's labeled for you, and there's one reliable question that gets you there. Write down what a single call actually depends on, then ask how many different values that description can take. Then count the states."
         }
       ]
     },
@@ -305,7 +305,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If the answer is some manageable number, a few thousand or a few million, and the recursion clearly wanders across that space more than once, you are looking at a dynamic programming problem whether or not anyone has said so out loud. If instead a call depends on the entire history of what came before it, you are not, and nothing in this section will save you."
+          "text": "If the answer is some manageable number, a few thousand or a few million, and the recursion clearly wanders across that space more than once, you're looking at a dynamic programming problem whether or not anyone's said so out loud. If instead a call depends on the entire history of what came before it, you're not, and nothing in this section will save you."
         }
       ]
     },

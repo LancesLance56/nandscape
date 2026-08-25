@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Most of the algorithms you meet early on compute an answer. You feed them a graph or a list, they run a fixed procedure, and a result comes out. Backtracking is for the problems where no such procedure exists, and the only honest thing to do is try possibilities and see which ones survive."
+          "text": "Most algorithms you meet early on just compute the answer. You feed them a graph or a list, they run a fixed procedure, and a result comes out. Backtracking is for the problems where no such procedure exists, and the only honest move is to try possibilities and see which ones survive."
         }
       ]
     },
@@ -38,7 +38,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Place eight queens on a chessboard so none attacks another. Fill in a Sudoku grid, or split a string so every piece reads the same forwards and backwards. There is no formula for any of these, and the only honest thing to do is try possibilities and see which ones survive."
+          "text": "Place eight queens on a chessboard so none of them attack each other. Fill in a Sudoku grid. Split a string so every piece reads the same forwards and backwards. None of these have a formula, so trying things and watching what holds up is the whole plan."
         }
       ]
     },
@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The straightforward plan is to generate every possible arrangement and then throw away the ones that break the rules. It is simple, it is obviously correct, and for anything but toy inputs it does not finish."
+          "text": "The obvious plan is to generate every possible arrangement, then throw out the ones that break the rules. It's simple, it's obviously correct, and for anything past a toy input, it just doesn't finish."
         }
       ]
     },
@@ -62,7 +62,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Eight queens on a chessboard is a good illustration. Choosing 8 squares out of 64 gives a little over 4.4 billion arrangements to check. Almost all of them are absurd: they put two queens on the same square of the board's first row, or stack three in one column."
+          "text": "Eight queens is a good example. Choosing 8 squares out of 64 gives you a little over 4.4 billion arrangements to check, and almost all of them are nonsense: two queens on the same square, three stacked in one column, that kind of thing."
         }
       ]
     },
@@ -71,7 +71,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "You can already improve on that by noticing something about the problem rather than about the code. Two queens in the same row always attack each other, so any valid solution has exactly one queen per row. Instead of choosing squares, choose a column for each of the 8 rows. That is 8 to the power of 8, which is about 16.7 million: still large, but nearly three hundred times smaller, and it came from thinking about the problem for a minute."
+          "text": "But you can already do better than that, just by thinking about the problem instead of the code. Two queens in the same row always attack each other, so any real solution has exactly one queen per row. So instead of choosing squares, choose a column for each of the 8 rows. That's 8 to the power of 8, about 16.7 million, still huge, but nearly three hundred times smaller, and it came from a minute of thinking rather than a clever trick."
         }
       ]
     },
@@ -102,7 +102,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That last row is what this page is about, and the gap between it and the others is the whole reason backtracking is worth learning."
+          "text": "That last row is what this whole page is about, and the gap between it and the other two is the entire reason backtracking is worth learning."
         }
       ]
     },
@@ -117,7 +117,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Generate-and-filter has one specific weakness: it builds a complete arrangement before it checks anything. But you very often know an arrangement is doomed long before it is complete."
+          "text": "Generate-and-filter has one specific weakness: it builds a complete arrangement before it checks anything. But you very often know an arrangement is doomed long before it's finished."
         }
       ]
     },
@@ -126,7 +126,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If the first two queens already attack each other, every single completion of that board is invalid. There are 8 to the power of 6 of them, which is 262,144 boards, and not one is worth building. Generate-and-filter builds all of them and rejects all of them individually."
+          "text": "Say the first two queens already attack each other. Every single completion of that board is invalid, that's 8 to the power of 6, or 262,144 boards, and not one of them is worth building. Generate-and-filter builds every single one and rejects them one at a time."
         }
       ]
     },
@@ -135,7 +135,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So the idea is to build the answer one piece at a time, and to check the rules after each piece rather than at the end. The moment a partial answer is already broken, abandon it and everything that could have grown from it. Cutting off a whole family of possibilities with one check is called "
+          "text": "So the actual idea is to build the answer one piece at a time, and check the rules after each piece instead of waiting until the end. The second a partial answer is broken, abandon it, and everything that could've grown from it goes with it. Cutting off a whole family of possibilities with one check is called "
         },
         {
           "text": "pruning",
@@ -146,7 +146,7 @@
           ]
         },
         {
-          "text": ", and it is where all the savings come from."
+          "text": ", and it's where every bit of the savings comes from."
         }
       ]
     },
@@ -155,7 +155,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The word backtracking describes the other half. Having abandoned a partial answer, you have to get back to a state where you can try something else. You undo your last decision and try the next option. If there is no next option, you undo the decision before that. That walking-backwards-to-try-again is the backtrack."
+          "text": "Backtracking is the other half of that. Once you've abandoned a partial answer, you need to get back to a state where you can try something else, so you undo your last decision and try the next option. No next option? Undo the one before that too. That walking-backwards-to-try-again part is the backtrack."
         }
       ]
     },
@@ -170,7 +170,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This is the mental model worth building carefully, because once you have it, every problem in this section looks like the same problem."
+          "text": "This is the mental model worth actually building, because once it clicks, every problem in this section starts looking like the same problem."
         }
       ]
     },
@@ -179,7 +179,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Think about the shape your search traces out. The root is the empty attempt, before you have decided anything. Each edge going down is one decision. Each node is the partial answer you have built so far. The leaves are complete attempts. Below is that tree, built live, for the smallest useful example: finding every subset of the numbers 1, 2 and 3, where each decision is simply whether to include the next number."
+          "text": "Think about the shape your search traces out. The root is the empty attempt, before you've decided anything. Every edge going down is one decision. Every node is the partial answer you've built so far. The leaves are complete attempts. Here's that tree, built live, for the smallest useful example: every subset of the numbers 1, 2 and 3, where each decision is just whether to include the next number."
         }
       ]
     },
@@ -201,13 +201,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Notice that your own code never builds this tree as a data structure, even though the widget above is drawing exactly this shape for you as a teaching aid. The tree exists only as the shape your recursive calls trace out over time. Going down an edge is a function call, and returning from that call is the backtrack. It is a way of seeing what your program is doing, and once you can see it, pruning has an obvious meaning: it is cutting off an entire subtree, along with every leaf underneath it."
+          "text": "Your own code never actually builds this tree as a data structure, even though the widget above is drawing that exact shape for you as a teaching aid. The tree only exists as the shape your recursive calls trace out over time. Going down an edge is a function call, and coming back up is the backtrack. Once you can see it that way, pruning has an obvious meaning: you're cutting off an entire subtree, leaves and all."
         }
       ]
     },
     {
       "id": "h-template",
-      "text": "The template, which is genuinely always the same",
+      "text": "The template, always the same shape",
       "type": "heading",
       "level": 2
     },
@@ -216,7 +216,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every problem in this section is this shape with different pieces filled in, and it is worth reading a few times, because the rest of the section is variations on it."
+          "text": "Every problem in this section is this shape with different pieces filled in, so it's worth reading a few times, because the rest of the section is basically variations on it."
         }
       ]
     },
@@ -231,7 +231,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The three lines at the bottom are the heart of it, and they are always in that order. Choose, explore, un-choose. Miss the third and you carry a decision into branches where it was never made."
+          "text": "The three lines at the bottom are the heart of it, and they always go in that order. Choose, explore, un-choose. Skip the third one and a decision ends up leaking into branches where it was never actually made."
         }
       ]
     },
@@ -251,7 +251,7 @@
           ]
         },
         {
-          "text": " above it is the prune. Everything you gain over brute force lives on that line, because skipping a choice there means the entire subtree below it is never built. In the queens table above, that single check is the difference between 16.7 million and 2,057."
+          "text": " right above it is the prune. Everything you gain over brute force lives on that one line, since skipping a choice there means the whole subtree underneath it never gets built. In the queens table above, that single check is the difference between 16.7 million and 2,057."
         }
       ]
     },
@@ -266,7 +266,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Subsets is the gentlest place to watch the template run, because the rules never reject anything and you can concentrate on the shape of the recursion alone. Step through the same widget above again, and this time follow the call stack panel rather than the tree. Recursion depth is exactly how deep that stack goes, and every push is a choose, every pop is an undo."
+          "text": "Subsets is the gentlest place to watch this run, since the rules never reject anything and you can just focus on the shape of the recursion. Step through that same widget again, but this time follow the call stack panel instead of the tree. Recursion depth is literally how deep that stack goes: every push is a choose, every pop is an undo."
         }
       ]
     },
@@ -275,7 +275,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two things are worth noticing. Every recorded answer is a snapshot taken at that instant, and the underlying list being built is a single object being edited in place the entire run. It finishes empty, exactly as it started."
+          "text": "Two things worth noticing. Every answer you see recorded is a snapshot taken at that exact instant, and the list actually being built is one single object getting edited in place the whole run. It ends empty, same as it started."
         }
       ]
     },
@@ -284,7 +284,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Also count the undos as you step through. There are exactly as many as there are chooses, and they always come back in the reverse order the choices were made. That symmetry is what keeps the state honest, and when a backtracking program misbehaves it is very often because that symmetry got broken somewhere."
+          "text": "Also count the undos as you go. There are always exactly as many as there were chooses, and they come back in the exact reverse order the choices were made. That symmetry is what keeps the state honest, and when a backtracking program starts misbehaving, it's usually because that symmetry broke somewhere."
         }
       ]
     },
@@ -299,7 +299,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Pruning is easier to believe than to picture, so here it is happening. This is the same template on a problem where the rules do reject candidates: combination sum, hunting for numbers from a fixed list that add up to a target. Flip pruning on and off and watch the two counters below the tree. Cutting overshooting branches early is the entire difference between them."
+          "text": "Pruning is easier to believe than to actually picture, so here it is happening. This is the same template on a problem where the rules do reject candidates: combination sum, hunting for numbers from a fixed list that add up to a target. Flip pruning on and off and watch the two counters below the tree. Cutting overshooting branches early is the entire difference between them."
         }
       ]
     },
@@ -329,7 +329,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is easy to underrate a single if statement, but the arithmetic is what makes the case."
+          "text": "It's easy to underrate a single if statement, but the math is what makes the case."
         }
       ]
     },
@@ -393,7 +393,7 @@
           ]
         },
         {
-          "text": " leaves. Cutting near the root is worth astronomically more than cutting near the bottom, which is why a cheap check applied early beats a clever check applied late."
+          "text": " leaves. Cutting near the root is worth astronomically more than cutting near the bottom, which is why a cheap check done early beats a clever check done late."
         }
       ]
     },
@@ -402,13 +402,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The queens numbers make it concrete. Checking whether a square is attacked before placing a queen costs almost nothing and is done as early as possible, and it takes the search from 16.7 million completions down to 2,057 boards ever being built. The algorithm did not get smarter. It just stopped building things it already knew were worthless."
+          "text": "The queens numbers make it concrete. Checking whether a square is under attack before placing a queen costs almost nothing, and doing it as early as possible takes the search from 16.7 million completions down to 2,057 boards ever actually built. The algorithm didn't get smarter. It just stopped building things it already knew were worthless."
         }
       ]
     },
     {
       "id": "h-cost",
-      "text": "What it costs, and why exponential is not always fatal",
+      "text": "What it costs, when exponential isn't fatal",
       "type": "heading",
       "level": 2
     },
@@ -417,7 +417,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is no way around it: the worst case is exponential. Subsets of "
+          "text": "There's no getting around it: the worst case really is exponential. Subsets of "
         },
         {
           "text": "n",
@@ -450,7 +450,7 @@
           ]
         },
         {
-          "text": " factorial. When the answer itself is exponentially large, the algorithm must be too."
+          "text": " factorial. When the answer itself is exponentially large, the algorithm has to be too."
         }
       ]
     },
@@ -459,7 +459,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "What pruning changes is the gap between the worst case and the case in front of you. Those two are routinely separated by several orders of magnitude, and that gap is the difference between a program that returns and one that does not."
+          "text": "What pruning actually changes is the gap between the worst case and whatever's actually in front of you. Those two are routinely separated by several orders of magnitude, and that gap is the difference between a program that returns and one that doesn't."
         }
       ]
     },
@@ -468,13 +468,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Memory is the reassuring part. At any moment you are holding one root-to-leaf path, so the space is proportional to the depth of the tree, not its size. A search that visits billions of nodes may only ever hold a few dozen items."
+          "text": "Memory's the reassuring part. At any moment you're only holding one root-to-leaf path, so the space you use is proportional to the depth of the tree, not its size. A search that visits billions of nodes might only ever hold a few dozen items."
         }
       ]
     },
     {
       "id": "h-mistakes",
-      "text": "The bugs, in the order you will meet them",
+      "text": "The bugs, in the order you'll meet them",
       "type": "heading",
       "level": 2
     },
@@ -491,7 +491,7 @@
           ]
         },
         {
-          "text": " This is the classic, and its symptom is answers that get longer and longer as the run goes on, with items in them from branches you thought you had left."
+          "text": " The classic one. Its symptom is answers that get longer and longer as the run goes on, with items showing up in them from branches you thought you'd already left."
         }
       ]
     },
@@ -506,7 +506,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The state is shared across every branch, so a choice made in one branch is still sitting there when a sibling branch runs. The fix is the missing line. The habit that prevents it is writing the undo immediately after writing the recursive call, before you do anything else."
+          "text": "The state is shared across every branch, so a choice made in one branch is still sitting there when a sibling branch runs. The fix is just the missing line. The habit that stops it from happening: write the undo right after the recursive call, before you do anything else."
         }
       ]
     },
@@ -515,7 +515,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Storing the working list instead of a copy of it is nearly as common a mistake and much more confusing, because the code looks right."
+          "text": "Storing the working list itself instead of a copy of it is almost as common a mistake, and way more confusing, because the code looks completely right."
         }
       ]
     },
@@ -530,7 +530,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The first line pushes a reference to the one list you keep editing. Since it finishes empty, every answer you collected turns out to be empty at the end, and the bug appears to come from nowhere. Take a snapshot at the moment you record."
+          "text": "That first line pushes a reference to the one list you keep editing. Since it ends empty, every answer you thought you collected turns out empty too, and the bug looks like it's coming from nowhere. Take a snapshot the moment you record."
         }
       ]
     },
@@ -547,7 +547,7 @@
           ]
         },
         {
-          "text": " Perfectly correct, and it quietly throws away every advantage backtracking has. If your solver is correct but far too slow, this is the first thing to look at: are you validating as early as you possibly could?"
+          "text": " Totally correct, and it quietly throws away every advantage backtracking gives you. If your solver works but is way too slow, this is the first thing to check: are you actually validating as early as you possibly could?"
         }
       ]
     },
@@ -564,7 +564,7 @@
           ]
         },
         {
-          "text": " The opposite failure, and the harder one to spot, because the program is fast and simply misses answers. When a solver returns 88 solutions to eight queens instead of 92, the prune is too aggressive rather than the search being broken."
+          "text": " The opposite failure, and the harder one to catch, because the program runs fast and just quietly misses answers. If your solver returns 88 solutions to eight queens instead of 92, the prune is too aggressive, not the search itself."
         }
       ]
     },
@@ -579,7 +579,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Subsets written out. Compare it against the template above line by line and you will find every part of it, including the "
+          "text": "Here's subsets written out. Compare it against the template above, line by line, and you'll find every piece of it in there, including the "
         },
         {
           "text": "start",
@@ -590,7 +590,7 @@
           ]
         },
         {
-          "text": " parameter, which exists so that a choice already considered is not offered again further down."
+          "text": " parameter, which exists so a choice you already considered doesn't get offered again further down."
         }
       ]
     },
@@ -615,7 +615,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "From here the rest of the section changes only what goes in the blanks. Permutations swap the "
+          "text": "From here, the rest of the section only changes what goes in the blanks. Permutations swaps the "
         },
         {
           "text": "start",
@@ -626,7 +626,7 @@
           ]
         },
         {
-          "text": " parameter for a used-marker. N-Queens adds a real prune. Sudoku adds a rule about which blank to fill next. The skeleton does not move."
+          "text": " parameter for a used-marker. N-Queens adds a real prune. Sudoku adds a rule about which blank to fill next. The skeleton never moves."
         }
       ]
     },

@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is "
+          "text": "That's "
         },
         {
           "text": "memoization",
@@ -48,7 +48,7 @@
           ]
         },
         {
-          "text": ", and in most languages it costs about three lines of change to a function you have already written. The function keeps its shape. It keeps its base case, it keeps its recursive case, and the induction argument from the first tutorial in this section goes through completely unchanged, which matters more than it might look: you are not being asked to trust a new algorithm, only a store sitting beside an old one."
+          "text": ", and in most languages it costs about three lines of change to a function you've already written. The function keeps its shape. It keeps its base case, it keeps its recursive case, and the induction argument from the first tutorial in this section goes through completely unchanged, which matters more than it might look: you're not being asked to trust a new algorithm, only a store sitting beside an old one."
         }
       ]
     },
@@ -79,7 +79,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two of those lines carry the whole idea. One checks the store before doing any work at all, and one writes the result into the store on the way back out. The arithmetic in between is the original recursion, untouched."
+          "text": "Two of those lines carry the whole idea. One checks the store before doing any work at all, one writes the result into the store on the way back out. The arithmetic in between is the original recursion, untouched."
         }
       ]
     },
@@ -88,7 +88,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The Python version takes a small detour that is worth flagging, because it catches people. Writing memo equals empty dictionary directly in the parameter list would build that dictionary once, at the moment the function is defined, and then every later call anywhere in the program would quietly share it. The None check builds a fresh one per top-level call."
+          "text": "The Python version takes a small detour worth flagging, since it catches people. Writing memo equals empty dictionary directly in the parameter list would build that dictionary once, at the moment the function is defined, and then every later call anywhere in the program would quietly share it. The None check builds a fresh one per top-level call."
         }
       ]
     },
@@ -115,7 +115,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Twenty-five calls become eleven. The repeated subtrees do not shrink, they stop existing altogether, because a call that finds its answer waiting in the memo returns on the spot and never grows anything beneath it. What is left is the seven distinct questions plus four lookups, drawn dashed so you can tell at a glance which calls did work and which merely collected it."
+          "text": "Twenty-five calls become eleven. The repeated subtrees don't shrink, they stop existing altogether, since a call that finds its answer waiting in the memo returns on the spot and never grows anything beneath it. What's left is the seven distinct questions plus four lookups, drawn dashed so you can tell at a glance which calls did work and which just collected it."
         }
       ]
     },
@@ -130,7 +130,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a formula for the cost of a memoized recursion, and it is friendlier than most complexity arguments. Count the distinct subproblems. Count the work each one does on its own, not counting its recursive calls. Multiply the two."
+          "text": "There's a formula for the cost of a memoized recursion, and it's friendlier than most complexity arguments. Count the distinct subproblems. Count the work each one does on its own, not counting its recursive calls. Multiply the two."
         }
       ]
     },
@@ -139,7 +139,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci has n plus 1 distinct subproblems and each does a single addition, so the whole thing runs in linear time. That is down from exponential, and the price is a table holding n entries. Trading memory for time is the standard bargain of this entire section, and it is very nearly always worth taking."
+          "text": "Fibonacci has n plus 1 distinct subproblems and each does a single addition, so the whole thing runs in linear time. That's down from exponential, and the price is a table holding n entries. Trading memory for time is the standard bargain of this entire section, and it's very nearly always worth taking."
         }
       ]
     },
@@ -195,7 +195,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Put too little in the key and the store hands back an answer that was computed under different circumstances, which shows up as the algorithm being subtly and inconsistently wrong. Put too much in and no two calls ever match, so the store fills up, never hits, and the only thing you have bought is memory pressure."
+          "text": "Put too little in the key and the store hands back an answer that was computed under different circumstances, which shows up as the algorithm being subtly and inconsistently wrong. Put too much in and no two calls ever match, so the store fills up, never hits, and the only thing you've bought is memory pressure."
         }
       ]
     },
@@ -204,7 +204,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci makes this look trivial, since there is one argument and it is obviously the key. Binomial coefficients are the honest version. C(n,k) counts the ways of choosing k things out of n, and it obeys a rule with the same shape as Fibonacci's."
+          "text": "Fibonacci makes this look trivial, since there's one argument and it's obviously the key. Binomial coefficients are the honest version. C(n,k) counts the ways of choosing k things out of n, and it obeys a rule with the same shape as Fibonacci's."
         }
       ]
     },
@@ -219,7 +219,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The reasoning behind that middle line is worth a moment. Fix your attention on the first item. Every group of k either contains it or does not, those two cases cannot both happen and between them they cover everything, so counting each and adding gives the total. Two arguments change on the way down, which means the key has to be the pair. Store on n alone and C(6,3) will cheerfully hand back whatever C(6,1) worked out earlier."
+          "text": "The reasoning behind that middle line is worth a moment. Fix your attention on the first item. Every group of k either contains it or doesn't, those two cases can't both happen and between them they cover everything, so counting each and adding gives the total. Two arguments change on the way down, which means the key has to be the pair. Store on n alone and C(6,3) will cheerfully hand back whatever C(6,1) worked out earlier."
         }
       ]
     },
@@ -252,7 +252,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two things, and neither is obscure. The first is the call stack. A memoized recursion still recurses, so a problem needing a hundred thousand levels of depth will run out of stack long before it runs out of ideas, and plenty of languages have no tail-call elimination to fall back on. Python stops at a thousand frames by default."
+          "text": "Two things, and neither is obscure. The first is the call stack. A memoized recursion still recurses, so a problem needing a hundred thousand levels of depth runs out of stack long before it runs out of ideas, and plenty of languages have no tail-call elimination to fall back on. Python stops at a thousand frames by default."
         }
       ]
     },
@@ -261,7 +261,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The second is that the cost formula cuts both ways. Distinct subproblems multiplied by work per subproblem is an honest number, and when the first factor is already astronomical, storing results does nothing for you. A memo turns repeated work into stored work. It cannot turn an exponential number of genuinely different questions into a small one."
+          "text": "The second is that the cost formula cuts both ways. Distinct subproblems multiplied by work per subproblem is an honest number, and when the first factor's already astronomical, storing results does nothing for you. A memo turns repeated work into stored work. It can't turn an exponential number of genuinely different questions into a small one."
         }
       ]
     },
@@ -291,7 +291,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is worth knowing and worth handling with some care. The decorator keys on the arguments, so every argument has to be hashable, and passing a list in will fail on the spot. It also holds entries forever unless you switch to the version that takes a size limit, which is harmless inside a script that runs once and a slow leak inside a service that runs for months."
+          "text": "It's worth knowing and worth handling with some care. The decorator keys on the arguments, so every argument has to be hashable, and passing a list in fails on the spot. It also holds entries forever unless you switch to the version that takes a size limit, which is harmless inside a script that runs once and a slow leak inside a service that runs for months."
         }
       ]
     },
@@ -300,7 +300,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a reason to write the store out by hand at least once before reaching for the decorator. The decorator quietly answers the question you are supposed to be thinking about. What identifies a subproblem is the decision this entire topic turns on, and a tool that settles it for you by taking the whole argument list is right most of the time and silently wrong the rest of it."
+          "text": "There's a reason to write the store out by hand at least once before reaching for the decorator. The decorator quietly answers the question you're supposed to be thinking about. What identifies a subproblem is the decision this entire topic turns on, and a tool that settles it for you by taking the whole argument list is right most of the time and silently wrong the rest of it."
         }
       ]
     },
@@ -315,7 +315,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Memoization does one thing that is genuinely awkward to reproduce any other way. It solves only the subproblems that actually arise, because the recursion asks for what it needs and never goes looking for anything else, so a problem with an enormous space of possible subproblems and a narrow path through it pays only for the path."
+          "text": "Memoization does one thing that's genuinely awkward to reproduce any other way. It solves only the subproblems that actually arise, because the recursion asks for what it needs and never goes looking for anything else, so a problem with an enormous space of possible subproblems and a narrow path through it pays only for the path."
         }
       ]
     },
@@ -324,7 +324,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci hides this, since reaching fib(40) means passing through every smaller value along the way and there is nothing to skip. Plenty of problems are not built like that. Hold on to the point, because the next tutorial trades this property away for something else worth having."
+          "text": "Fibonacci hides this, since reaching fib(40) means passing through every smaller value along the way and there's nothing to skip. Plenty of problems aren't built like that. Hold on to the point, because the next tutorial trades this property away for something else worth having."
         }
       ]
     },
@@ -393,7 +393,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Both of those limits point the same direction. If the recursion exists only to decide which subproblem gets solved first, and every subproblem is going to be solved sooner or later anyway, then the recursion can be thrown away and the answers filled in directly."
+          "text": "Both of those limits point the same direction. If the recursion exists only to decide which subproblem gets solved first, and every subproblem's going to be solved sooner or later anyway, then the recursion can be thrown away and the answers filled in directly."
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "slug": "backtracking-sudoku",
-  "title": "Sudoku, and Where Plain Backtracking Runs Out",
+  "title": "Sudoku: Where Plain Backtracking Runs Out",
   "excerpt": "The problem where choosing which decision to make next matters more than the algorithm around it. One change to the cell ordering takes the solver from 56 dead ends to none.",
   "authorName": "Lance Dy Chua",
   "status": "published",
@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sudoku is the problem where the choice of "
+          "text": "Sudoku is the problem where "
         },
         {
           "text": "which decision to make next",
@@ -55,7 +55,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Before the algorithm, a framing worth carrying. Make each of the 81 cells a node. Join two cells with an edge when they share a row, a column or a 3 by 3 box, meaning they are not allowed to hold the same digit. Now solving the puzzle is coloring that graph with 9 colors, where some nodes arrive pre-colored."
+          "text": "Before the algorithm, a framing worth carrying with you. Make each of the 81 cells a node. Join two cells with an edge when they share a row, a column or a 3 by 3 box, meaning they're not allowed to hold the same digit. Now solving the puzzle is coloring that graph with 9 colors, where some nodes arrive pre-colored."
         }
       ]
     },
@@ -64,7 +64,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The similarity runs deeper than a comparison. Coloring a graph and solving a puzzle board are the same search wearing different labels, which is why the previous page's algorithm works here with almost no modification. It also sets expectations: coloring is hard in general, so do not expect a formula."
+          "text": "The similarity runs deeper than a comparison. Coloring a graph and solving a puzzle board are the same search wearing different labels, which is why the previous page's algorithm works here with almost no changes. It also sets your expectations straight: coloring is hard in general, so don't go looking for a formula."
         }
       ]
     },
@@ -79,7 +79,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The obvious way to pick the next blank is reading order: top-left to bottom-right. It is simple and there is nothing wrong with it except that it ignores information sitting in plain view."
+          "text": "The obvious way to pick the next blank is reading order: top-left to bottom-right. It's simple, and there's nothing wrong with it except that it ignores information sitting right there in plain view."
         }
       ]
     },
@@ -88,7 +88,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Consider a blank with 6 legal digits and another with 1. Filling the 6-candidate cell means branching six ways, and if the puzzle is doomed from here you will discover that six times over. Filling the 1-candidate cell means branching once, and the digit is forced, so no guess is being made at all."
+          "text": "Consider a blank with 6 legal digits and another with 1. Filling the 6-candidate cell means branching six ways, and if the puzzle is doomed from here, you'll discover that six times over. Filling the 1-candidate cell means branching once, and the digit is forced, so no guess is being made at all."
         }
       ]
     },
@@ -108,7 +108,7 @@
           ]
         },
         {
-          "text": " heuristic, and versions of it appear across the whole of constraint solving."
+          "text": " heuristic, and versions of it show up across the whole of constraint solving."
         }
       ]
     },
@@ -117,7 +117,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two things happen at once. Forced cells get filled immediately and for free, which is exactly what a human solver does. And when a guess is genuinely required, it is made where the branching factor is smallest, so a wrong guess is discovered after the least possible work."
+          "text": "Two things happen at once. Forced cells get filled immediately and for free, which is exactly what a human solver does. And when a guess is genuinely required, it happens where the branching factor is smallest, so a wrong guess gets discovered after the least possible work."
         }
       ]
     },
@@ -158,7 +158,7 @@
           ]
         },
         {
-          "text": " dead ends. It never guessed wrong, not because it was lucky, but because it kept choosing cells where the answer was already determined, and by the time a real choice was needed the grid had enough information to make it safely."
+          "text": " dead ends. It never guessed wrong, not because it got lucky, but because it kept choosing cells where the answer was already determined, and by the time a real choice was needed, the grid had enough information to make it safely."
         }
       ]
     },
@@ -167,7 +167,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Nothing about the rules changed. No prune was added. The solver simply asked its questions in a better order, which is a genuinely different kind of optimization from the ones earlier in this section and often the most powerful one available."
+          "text": "Nothing about the rules changed. No prune was added. The solver simply asked its questions in a better order, which is a genuinely different kind of optimization from the ones earlier in this section, and often the most powerful one available."
         }
       ]
     },
@@ -226,7 +226,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The early return when a cell has exactly one candidate is a small but real saving. No cell can be better than forced, so there is no point scanning the remaining blanks once you have found one."
+          "text": "The early return when a cell has exactly one candidate is a small but real saving. No cell can beat forced, so there's no point scanning the remaining blanks once you've found one."
         }
       ]
     },
@@ -282,7 +282,7 @@
           ]
         },
         {
-          "text": " Correct, and it can cost more than the search it saves on large grids. Keep the counts updated as cells are filled and cleared."
+          "text": " Correct, and it can cost more than the search it's supposed to save on large grids. Keep the counts updated as cells are filled and cleared."
         }
       ]
     },
@@ -299,7 +299,7 @@
           ]
         },
         {
-          "text": " Row and column are easy to remember and the 3 by 3 box is easy to leave out. The solver then produces grids that look almost right and violate the rule everyone checks last."
+          "text": " Row and column are easy to remember, and the 3 by 3 box is easy to leave out. The solver then produces grids that look almost right and violate the one rule everyone checks last."
         }
       ]
     },
@@ -316,7 +316,7 @@
           ]
         },
         {
-          "text": " The same bug as everywhere else, and here it leaves stale digits that make later branches appear illegal, so the solver reports an unsolvable puzzle that is perfectly solvable."
+          "text": " Same bug as everywhere else in this section, and here it leaves stale digits that make later branches look illegal, so the solver reports an unsolvable puzzle that's perfectly solvable."
         }
       ]
     },
@@ -333,7 +333,7 @@
           ]
         },
         {
-          "text": " A proper Sudoku has exactly one. A puzzle with too few givens has many, and a solver that stops at the first will happily return one of them. If uniqueness matters, keep searching after the first success and count."
+          "text": " A proper Sudoku has exactly one. A puzzle with too few givens has many, and a solver that stops at the first will happily hand you back one of them. If uniqueness matters, keep searching after the first success and count."
         }
       ]
     },

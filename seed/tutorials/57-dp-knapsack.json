@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "One last problem, and it is the one that gets asked about most often. A bag that holds a fixed weight, a pile of items each with a weight and a value, and a rule that every item is either in the bag or out of it. No taking half of something."
+          "text": "One last problem, and it's the one that gets asked about most often. A bag that holds a fixed weight, a pile of items each with a weight and a value, and a rule that every item is either in the bag or out of it. No taking half of something."
         }
       ]
     },
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The 0/1 knapsack earns a tutorial of its own because of what the second axis turns into here. In the last tutorial that axis was a second sequence. Here it is a resource you are spending, and once you have seen that version, a whole family of problems that look unrelated turn out to be the same table with the arrows moved."
+          "text": "The 0/1 knapsack earns a tutorial of its own because of what the second axis turns into here. In the last tutorial that axis was a second sequence. Here it's a resource you're spending, and once you've seen that version, a whole family of problems that look unrelated turn out to be the same table with the arrows moved."
         }
       ]
     },
@@ -52,7 +52,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The tempting move is to sort the items by value and take greedily, or to sort them by value per unit of weight and take greedily. Both are wrong, and both are wrong for the same reason. An item that looks excellent on its own can crowd out a pair that would have been better together, and no amount of sorting sees that coming. Sorting cannot see a pair."
+          "text": "The tempting move is to sort the items by value and take greedily, or to sort them by value per unit of weight and take greedily. Both are wrong, and both are wrong for the same reason. An item that looks excellent on its own can crowd out a pair that would've been better together, and no amount of sorting sees that coming. Sorting can't see a pair."
         }
       ]
     },
@@ -76,7 +76,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A call in the brute-force version is deciding exactly one thing: does item i go in the bag? To settle that you have to know two things, which items are still on the table and how much room is left, and there is nothing else that could possibly matter."
+          "text": "A call in the brute-force version is deciding exactly one thing: does item i go in the bag? To settle that you have to know two things, which items are still on the table and how much room is left, and there's nothing else that could possibly matter."
         }
       ]
     },
@@ -85,7 +85,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That hands you the state directly. Cell (i, c) holds the best value obtainable from the first i items with a bag of capacity c. Nothing else needs tracking, because those two numbers already pin down every choice made so far."
+          "text": "That hands you the state directly. Cell (i, c) holds the best value obtainable from the first i items with a bag of capacity c. Nothing else needs tracking, since those two numbers already pin down every choice made so far."
         }
       ]
     },
@@ -94,7 +94,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The rule is the two-way decision from the house problem with a weight check bolted on. Leave item i out and the value is whatever the first i minus 1 items managed at the same capacity, which is the cell directly above. Take it and you collect its value, then land one row up and several columns to the left, at capacity c minus the item's weight. Keep the larger of the two. If the item weighs more than c there is nothing to compare, and the cell copies the one above it."
+          "text": "The rule is the two-way decision from the house problem with a weight check bolted on. Leave item i out and the value is whatever the first i minus 1 items managed at the same capacity, the cell directly above. Take it and you collect its value, then land one row up and several columns to the left, at capacity c minus the item's weight. Keep the larger of the two. If the item weighs more than c there's nothing to compare, and the cell copies the one above it."
         }
       ]
     },
@@ -103,7 +103,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The widget below packs a bag of capacity 7 from four items. Each row adds one more item to what you are allowed to consider."
+          "text": "The widget below packs a bag of capacity 7 from four items. Each row adds one more item to what you're allowed to consider."
         }
       ]
     },
@@ -130,13 +130,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is also how the traceback works, and it is simpler here than on the grid. Walk up the rows starting from the corner. Every time a cell differs from the one directly above it, the item belonging to that row is in the bag, so subtract its weight from the capacity and carry on upward. Every time the two match, that item was skipped."
+          "text": "That's also how the traceback works, and it's simpler here than on the grid. Walk up the rows starting from the corner. Every time a cell differs from the one directly above it, the item belonging to that row is in the bag, so subtract its weight from the capacity and carry on upward. Every time the two match, that item was skipped."
         }
       ]
     },
     {
       "id": "h-pseudo",
-      "text": "Pseudo-polynomial, and why the word matters",
+      "text": "What pseudo-polynomial actually means",
       "type": "heading",
       "level": 2
     },
@@ -174,7 +174,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In practice the rule of thumb is short. The table is fine when capacities are small and useless when they are large. A bag measured in grams is comfortable, and the same bag measured in micrograms has a table a million times wider holding exactly the same problem. Units matter here."
+          "text": "In practice the rule of thumb is short. The table's fine when capacities are small and useless when they're large. A bag measured in grams is comfortable, and the same bag measured in micrograms has a table a million times wider holding exactly the same problem. Units matter here."
         }
       ]
     },
@@ -216,7 +216,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Those are not four algorithms. They are one table with its arrows moved, and seeing that is most of what being comfortable with this topic amounts to. Learn the table, not the four names."
+          "text": "Those aren't four algorithms. They're one table with its arrows moved, and seeing that is most of what being comfortable with this topic amounts to. Learn the table, not the four names."
         }
       ]
     },
@@ -225,7 +225,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The unbounded row repays a second reading. Taking an item there reads the current row rather than the row above, because the item is still on the shelf afterwards, and that single change is the entire difference between taking something once and taking it as often as you like. It is one subscript."
+          "text": "The unbounded row repays a second reading. Taking an item there reads the current row rather than the row above, since the item's still on the shelf afterwards, and that single change is the entire difference between taking something once and taking it as often as you like. It's one subscript."
         }
       ]
     },
@@ -300,7 +300,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This section has been one idea told four ways. A recursion is correct because of induction. It is slow when it keeps asking the same question. Storing answers repairs that from the top down, filling a table repairs it from the bottom up, and the only genuinely difficult part is deciding what a single cell should mean."
+          "text": "This section has been one idea told four ways. A recursion is correct because of induction. It's slow when it keeps asking the same question. Storing answers repairs that from the top down, filling a table repairs it from the bottom up, and the only genuinely difficult part is deciding what a single cell should mean."
         }
       ]
     },
@@ -309,7 +309,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "What comes next is practice, and there is one piece of advice about practice worth taking seriously. Every problem in this section has a brute-force version that is short, obviously correct, and far too slow, so write both and run them against each other on small inputs. Agreement there is not a proof. But it catches nearly every bug a subtly wrong recurrence produces, since those bugs tend to show up long before the input gets large."
+          "text": "What comes next is practice, and there's one piece of advice about practice worth taking seriously. Every problem in this section has a brute-force version that's short, obviously correct, and far too slow, so write both and run them against each other on small inputs. Agreement there isn't a proof. But it catches nearly every bug a subtly wrong recurrence produces, since those bugs tend to show up long before the input gets large."
         }
       ]
     },

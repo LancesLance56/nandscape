@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Color every node of a graph so that no two connected nodes share a color, using at most "
+          "text": "Color every node of a graph so no two connected nodes share a color, using at most "
         },
         {
           "text": "m",
@@ -40,7 +40,7 @@
           ]
         },
         {
-          "text": " colors. It sounds like a puzzle and it is really a scheduling problem in disguise."
+          "text": " colors. Sounds like a puzzle, and it's really a scheduling problem wearing a disguise."
         }
       ]
     },
@@ -49,7 +49,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Exams that share students cannot run in the same slot. Radio towers that overlap cannot use the same frequency. Variables alive at the same moment cannot share a CPU register. In each case the things are nodes, the conflicts are edges, and the colors are the resource you are rationing."
+          "text": "Exams that share students can't run in the same slot. Radio towers that overlap can't use the same frequency. Variables alive at the same moment can't share a CPU register. In each case the things are nodes, the conflicts are edges, and the colors are whatever resource you're rationing."
         }
       ]
     },
@@ -75,7 +75,7 @@
           ]
         },
         {
-          "text": " the answers. Subsets listed every subset, N-Queens counted all 92 solutions. Coloring usually wants "
+          "text": " the answers. Subsets listed every subset, N-Queens counted all 92 solutions. Coloring usually just wants "
         },
         {
           "text": "one",
@@ -86,7 +86,7 @@
           ]
         },
         {
-          "text": " answer, or just a yes or no."
+          "text": " answer, or a plain yes or no."
         }
       ]
     },
@@ -95,7 +95,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That changes the code in a way worth being deliberate about. When you are collecting everything, the recursive call returns nothing and the loop always continues to the next choice. When you want one answer, the recursive call returns a boolean, and a success has to stop the search and travel all the way back up through every caller."
+          "text": "That changes the code in a way worth being deliberate about. When you're collecting everything, the recursive call returns nothing and the loop always moves on to the next choice. When you want one answer, the recursive call returns a boolean, and a success has to stop the search and travel all the way back up through every caller."
         }
       ]
     },
@@ -104,7 +104,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In the template that means the explore step becomes a decision rather than a plain statement: "
+          "text": "In the template that means the explore step becomes a decision instead of a plain statement: "
         },
         {
           "text": "if (solve(...)) return true;",
@@ -148,7 +148,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This example is easy enough to need no backtracking at all, which is itself worth seeing: backtracking algorithms do not always backtrack. Drop to two colors and it becomes impossible, and the search has to exhaust every branch before it can say so."
+          "text": "This example is easy enough to need no backtracking at all, which is worth seeing in itself: backtracking algorithms don't always backtrack. Drop to two colors and it becomes impossible, and the search has to exhaust every branch before it can say so."
         }
       ]
     },
@@ -157,7 +157,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That asymmetry is general. Proving something is possible means finding one example. Proving it is impossible means ruling out everything, which is usually far more expensive."
+          "text": "That asymmetry is general. Proving something is possible just means finding one example. Proving it's impossible means ruling out everything, which is usually far more expensive."
         }
       ]
     },
@@ -201,7 +201,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is redundancy in this search that is easy to miss. If you find a valid coloring, then swapping every red for green and every green for red gives another valid coloring. The colors have no meaning of their own, only their pattern of agreement and disagreement matters."
+          "text": "There's redundancy in this search that's easy to miss. If you find a valid coloring, swapping every red for green and every green for red gives you another valid coloring. The colors have no meaning of their own, only their pattern of agreement and disagreement matters."
         }
       ]
     },
@@ -210,7 +210,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So the search wastes time exploring branches that are relabelings of each other. The standard fix is to insist that the first node always takes color 0, and more generally that a node may only use a new color if every lower-numbered color has already been used somewhere. That removes whole families of duplicate branches without losing a single genuinely distinct answer."
+          "text": "So the search wastes time exploring branches that are just relabelings of each other. The standard fix is to insist that the first node always takes color 0, and more generally that a node may only use a new color once every lower-numbered color has already been used somewhere. That removes whole families of duplicate branches without losing a single genuinely distinct answer."
         }
       ]
     },
@@ -219,7 +219,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Symmetry breaking of this kind shows up all over search problems, and it is usually the largest available win after the basic prune."
+          "text": "Symmetry breaking of this kind shows up all over search problems, and it's usually the biggest win available after the basic prune."
         }
       ]
     },
@@ -234,7 +234,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is fair to ask whether some direct method exists that avoids searching. For 2 colors, yes: a graph is 2-colorable exactly when it contains no odd-length cycle, and one traversal decides it."
+          "text": "It's fair to ask whether some direct method exists that avoids searching. For 2 colors, yes: a graph is 2-colorable exactly when it has no odd-length cycle, and one traversal decides it."
         }
       ]
     },
@@ -243,7 +243,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "From 3 colors upward, no efficient method is known. The problem is NP-complete, which in practice means that if you find a fast general algorithm for it you have solved one of the major open problems in computer science. Until then, search with good pruning is the honest answer, and knowing that saves you from hunting for a formula that probably does not exist."
+          "text": "From 3 colors upward, no efficient method is known. The problem is NP-complete, which in practice means that if you find a fast general algorithm for it, you've solved one of the major open problems in computer science. Until then, search with good pruning is the honest answer, and knowing that saves you from hunting for a formula that probably doesn't exist."
         }
       ]
     },
@@ -252,7 +252,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It also explains why the four color theorem is famous. Every map drawn on a plane needs at most four colors, which is a strong statement about a specific family of graphs, and it took a computer-assisted proof to establish. General graphs have no such bound."
+          "text": "It also explains why the four color theorem is famous. Every map drawn on a plane needs at most four colors, a strong statement about a specific family of graphs, and it took a computer-assisted proof to establish. General graphs have no such bound."
         }
       ]
     },
@@ -310,7 +310,7 @@
           ]
         },
         {
-          "text": " The undo belongs in the failure path only. If it runs after a successful return, the answer is dismantled on the way back up and the caller receives an empty result."
+          "text": " The undo belongs on the failure path only. If it runs after a successful return, the answer gets dismantled on the way back up and the caller receives an empty result."
         }
       ]
     },
@@ -344,7 +344,7 @@
           ]
         },
         {
-          "text": " No pruning makes this problem easy in general. If your input is large and arbitrary, look for structure in it or accept an approximate answer."
+          "text": " No pruning makes this problem easy in general. If your input is large and arbitrary, go look for structure in it or accept an approximate answer."
         }
       ]
     },

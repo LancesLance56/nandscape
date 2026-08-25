@@ -1,6 +1,6 @@
 {
   "slug": "dp-two-dimensions",
-  "title": "Two Axes, and Reading the Answer Back Out",
+  "title": "Two Axes: Reading the Answer Back Out",
   "excerpt": "When one index is not enough the table grows a second axis and nothing else changes. Grid routes, shared letters and edit distance, plus the traceback that turns a number into an actual answer.",
   "authorName": "Lance Dy Chua",
   "status": "published",
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That really is the whole of the promotion. You still write a rule for one cell in terms of cells that are already filled, you still check that no arrow points forward, and you still fill in an order that respects them. Nothing new is being introduced here except a second subscript. Nothing else moves."
+          "text": "That's really the whole of the promotion. You still write a rule for one cell in terms of cells that are already filled, you still check that no arrow points forward, and you still fill in an order that respects them. Nothing new is being introduced here except a second subscript. Nothing else moves."
         }
       ]
     },
@@ -52,7 +52,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Start with the case where the table looks like the problem, because it makes everything after it easier to believe. A grid of tolls, one number per square, and the only legal moves are right and down. Get from the top-left corner to the bottom-right for as little money as you can manage."
+          "text": "Start with the case where the table looks like the problem, since it makes everything after it easier to believe. A grid of tolls, one number per square, and the only legal moves are right and down. Get from the top-left corner to the bottom-right for as little money as you can manage."
         }
       ]
     },
@@ -70,7 +70,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The edges are the fiddly part, and they are fiddly in a thoroughly boring way. The top row has nothing above it and the left column has nothing to its left, so each of those cells has exactly one way in and simply copies its single neighbor. The corner has no way in at all, so its cost is simply given rather than computed, and then the loop takes over."
+          "text": "The edges are the fiddly part, and they're fiddly in a thoroughly boring way. The top row has nothing above it and the left column has nothing to its left, so each of those cells has exactly one way in and simply copies its single neighbor. The corner has no way in at all, so its cost is just given rather than computed, and then the loop takes over."
         }
       ]
     },
@@ -79,7 +79,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Set the widget below to Cheapest route and play it through. Watch the arrows while the table fills, and then keep watching after it is full."
+          "text": "Set the widget below to Cheapest route and play it through. Watch the arrows while the table fills, then keep watching after it's full."
         }
       ]
     },
@@ -102,7 +102,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The corner cell says the trip costs 9. It does not say which way to go, and for most real uses the route is the thing you actually wanted."
+          "text": "The corner cell says the trip costs 9. It doesn't say which way to go, and for most real uses the route is the thing you actually wanted."
         }
       ]
     },
@@ -111,7 +111,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The table has it anyway. Stand on the finishing square and ask which neighbor it read from, which is whichever of the two was cheaper. Step onto that one and ask the same question again. Keep going until you reach the start, and the squares you touched are the route, recovered backwards. The route falls out backwards."
+          "text": "The table has it anyway. Stand on the finishing square and ask which neighbor it read from, whichever of the two was cheaper. Step onto that one and ask the same question again. Keep going until you reach the start, and the squares you touched are the route, recovered backwards."
         }
       ]
     },
@@ -120,7 +120,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This is a general move rather than a trick for grids, and it is worth filing as one. A dynamic programming table records the value of every subproblem, so walking backwards through it and asking which choice produced each value reconstructs the decisions that were made. It is also the reason the memory trick from two tutorials ago is not free: throw the table away and you keep the number while losing the answer."
+          "text": "This is a general move rather than a trick for grids, and it's worth filing as one. A dynamic programming table records the value of every subproblem, so walking backwards through it and asking which choice produced each value reconstructs the decisions that were made. It's also the reason the memory trick from two tutorials ago isn't free: throw the table away and you keep the number while losing the answer."
         }
       ]
     },
@@ -135,7 +135,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The grid was easy because the table looked like the input, and that will not happen again. The string problems are the same idea with the picture taken away, and they earn the extra effort several times over, since they turn up in spell-checkers, in file comparison, and in every version control system you have ever used. Diff is this algorithm."
+          "text": "The grid was easy because the table looked like the input, and that won't happen again. The string problems are the same idea with the picture taken away, and they earn the extra effort several times over, since they turn up in spell-checkers, in file comparison, and in every version control system you've ever used. Diff is this algorithm."
         }
       ]
     },
@@ -161,7 +161,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The rule splits on a single comparison. If the two prefixes end in the same letter, pair those two letters up and add 1 to the answer for both prefixes one shorter, which is the diagonal neighbor. If they end in different letters then at least one of those letters cannot be used in the answer, so give up whichever loses less and take the better of the cell above and the cell to the left."
+          "text": "The rule splits on a single comparison. If the two prefixes end in the same letter, pair those two letters up and add 1 to the answer for both prefixes one shorter, the diagonal neighbor. If they end in different letters, then at least one of those letters can't be used in the answer, so give up whichever loses less and take the better of the cell above and the cell to the left."
         }
       ]
     },
@@ -170,7 +170,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Row 0 and column 0 are all zeros. The reason is worth stating rather than asserting, since it is the base case doing exactly the job base cases always do: an empty prefix shares no letters with anything."
+          "text": "Row 0 and column 0 are all zeros. The reason is worth stating rather than asserting, since it's the base case doing exactly the job base cases always do: an empty prefix shares no letters with anything."
         }
       ]
     },
@@ -196,7 +196,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three neighbors this time, and each of the three is one of the edits. The cell above is a deletion, the cell to the left is an insertion, and the diagonal is a substitution. Take the cheapest of the three and add one for the edit you just made. The exception is the case that costs nothing: when both prefixes end in the same letter that letter is already correct, and the cell copies its diagonal neighbor untouched. Matches are free."
+          "text": "Three neighbors this time, and each of the three is one of the edits. The cell above is a deletion, the cell to the left is an insertion, and the diagonal is a substitution. Take the cheapest of the three and add one for the edit you just made. The exception is the case that costs nothing: when both prefixes end in the same letter, that letter's already correct, and the cell copies its diagonal neighbor untouched. Matches are free."
         }
       ]
     },
@@ -214,7 +214,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Turning kitten into sitting costs three edits. That is what the table lands on, and it is also what you get doing it by hand: substitute the k for an s, substitute the e for an i, and add a g on the end."
+          "text": "Turning kitten into sitting costs three edits. That's what the table lands on, and it's also what you get doing it by hand: substitute the k for an s, substitute the e for an i, and add a g on the end."
         }
       ]
     },
@@ -255,7 +255,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two strings of length 1000 make a million cells, which any computer fills without noticing. Two strings of length a million make a trillion cells, which it does not. That quadratic cost is the real ceiling on these algorithms, and the specialized versions used in production exist almost entirely to dodge it."
+          "text": "Two strings of length 1000 make a million cells, which any computer fills without noticing. Two strings of length a million make a trillion cells, which it doesn't. That quadratic cost is the real ceiling on these algorithms, and the specialized versions used in production exist almost entirely to dodge it."
         }
       ]
     },
@@ -324,7 +324,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Both string problems use one table and differ only in what a cell means and which neighbors it reads. That pattern is worth trusting, because it keeps holding. The last tutorial in this section puts it on a problem where the second axis is not a sequence at all."
+          "text": "Both string problems use one table and differ only in what a cell means and which neighbors it reads. That pattern is worth trusting, because it keeps holding. The last tutorial in this section puts it on a problem where the second axis isn't a sequence at all."
         }
       ]
     }

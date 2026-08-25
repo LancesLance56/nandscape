@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Subsets asked which items to take. Permutations asks something different: take all of them, and decide what order to put them in. The change sounds small and it moves the problem into a much more expensive part of the world."
+          "text": "Subsets asked which items to take. Permutations asks something different: take all of them, and decide what order to put them in. Sounds small, but it moves the problem into a much more expensive part of the world."
         }
       ]
     },
@@ -66,7 +66,7 @@
           ]
         },
         {
-          "text": " for the second since one item is used up, and so on. That product is "
+          "text": " for the second since one item is already used, and so on. That product is "
         },
         {
           "text": "n",
@@ -92,7 +92,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Compare that against subsets. At 20 items subsets produces about a million answers, which a laptop handles without complaint. Permutations of 20 items produce more arrangements than there have been seconds since the beginning of the universe."
+          "text": "Compare that against subsets. At 20 items, subsets produces about a million answers, which a laptop handles without complaint. Permutations of 20 items produce more arrangements than there have been seconds since the universe began."
         }
       ]
     },
@@ -101,7 +101,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The practical consequence is worth stating plainly. If a problem asks you to enumerate permutations and the input can exceed roughly 10 or 11 items, enumeration is not the intended solution and you should be looking for a different approach entirely. Recognizing that boundary saves a lot of wasted effort."
+          "text": "The practical takeaway is worth saying plainly. If a problem asks you to enumerate permutations and the input can exceed roughly 10 or 11 items, enumeration isn't the intended solution, and you should be looking for something else entirely. Recognizing that boundary saves you a lot of wasted effort."
         }
       ]
     },
@@ -116,7 +116,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Subsets kept order out of the way with a start index, and never needed to know which items were already taken, because it only ever looked forward."
+          "text": "Subsets kept order out of the way with a start index, and never needed to know which items were already taken, since it only ever looked forward."
         }
       ]
     },
@@ -125,7 +125,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Permutations cannot do that. Every remaining item is a legal next choice regardless of position, so the loop has to run over all of them, and you need some way to know which are still available."
+          "text": "Permutations can't do that. Every remaining item is a legal next choice regardless of position, so the loop has to run over all of them, and you need some way to know which are still available."
         }
       ]
     },
@@ -134,7 +134,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The direct approach is a parallel array of booleans, one per item, marking whether it is currently placed. Before choosing item "
+          "text": "The direct approach is a parallel array of booleans, one per item, marking whether it's currently placed. Before choosing item "
         },
         {
           "text": "i",
@@ -145,7 +145,7 @@
           ]
         },
         {
-          "text": " you check the flag; if it is set, that item is somewhere above you in the current arrangement and cannot be used again."
+          "text": " you check the flag; if it's set, that item is already somewhere above you in the current arrangement and can't be used again."
         }
       ]
     },
@@ -165,7 +165,7 @@
           ]
         },
         {
-          "text": " pieces of state to undo: the item comes off the arrangement and its flag goes back to false. Undo one and forget the other and the search goes wrong in a way that is genuinely difficult to read, because the arrangement looks correct while the availability flags no longer match it."
+          "text": " pieces of state to undo: the item comes off the arrangement, and its flag goes back to false. Undo one and forget the other, and the search goes wrong in a way that's genuinely hard to read, since the arrangement looks correct while the availability flags no longer match it."
         }
       ]
     },
@@ -200,7 +200,7 @@
     },
     {
       "id": "h-swap",
-      "text": "The other way, which trades clarity for memory",
+      "text": "The other way, trading clarity for memory",
       "type": "heading",
       "level": 2
     },
@@ -209,7 +209,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a second standard approach, and it avoids the flags entirely."
+          "text": "There's a second standard approach, and it avoids the flags entirely."
         }
       ]
     },
@@ -271,7 +271,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It uses no extra array and the un-choose is the same swap performed again, which is tidy. The cost is that the array gets scrambled during the search, so the items are not in their original order while you are inside the recursion. If a prune needs to know something about the original ordering, the used-array version is easier to reason about. Both produce the same set of permutations, occasionally in a different sequence."
+          "text": "It uses no extra array, and the un-choose is just the same swap performed again, which is tidy. The cost is that the array gets scrambled during the search, so the items aren't in their original order while you're inside the recursion. If a prune needs to know something about the original ordering, the used-array version is easier to reason about. Both produce the same set of permutations, just occasionally in a different sequence."
         }
       ]
     },
@@ -297,7 +297,7 @@
           ]
         },
         {
-          "text": " and it produces six answers where only three are actually different, because it treats the two 1s as separate objects."
+          "text": " and it produces six answers where only three are actually different, since it treats the two 1s as separate objects."
         }
       ]
     },
@@ -306,7 +306,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The fix is a small piece of reasoning worth following, since the same pattern turns up in several problems."
+          "text": "The fix is a small piece of reasoning worth following, since the same pattern turns up in several other problems."
         }
       ]
     },
@@ -315,7 +315,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sort the input first so equal items sit next to each other. Then, among a run of identical items, allow only one fixed order of use: an item may be placed only if the identical item immediately before it has already been placed. That forces the copies to be used left to right, so each distinct arrangement is generated exactly once."
+          "text": "Sort the input first so equal items sit next to each other. Then, among a run of identical items, allow only one fixed order of use: an item may only be placed if the identical item right before it has already been placed. That forces the copies to be used left to right, so each distinct arrangement gets generated exactly once."
         }
       ]
     },
@@ -330,7 +330,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The condition reads oddly the first time. It says: if this item equals the previous one, and the previous one is "
+          "text": "The condition reads oddly the first time. It's saying: if this item equals the previous one, and the previous one is "
         },
         {
           "text": "not",
@@ -341,7 +341,7 @@
           ]
         },
         {
-          "text": " currently in use, then we are about to start a duplicate branch that a sibling has already handled, so skip it."
+          "text": " currently in use, we're about to start a duplicate branch a sibling has already handled, so skip it."
         }
       ]
     },
@@ -382,7 +382,7 @@
           ]
         },
         {
-          "text": " The item is popped and the flag stays true, or the other way round. The symptom is answers that are too short or items that vanish from later branches."
+          "text": " The item gets popped and the flag stays true, or the other way round. The symptom is answers that are too short, or items that vanish from later branches."
         }
       ]
     },
@@ -399,7 +399,7 @@
           ]
         },
         {
-          "text": " The skip rule relies on equal items being adjacent. Unsorted, it removes some duplicates and misses others, which is worse than doing nothing because the output looks nearly right."
+          "text": " The skip rule relies on equal items being adjacent. Unsorted, it removes some duplicates and misses others, which is worse than doing nothing since the output looks nearly right."
         }
       ]
     },
@@ -416,7 +416,7 @@
           ]
         },
         {
-          "text": " The same bug as in subsets, and it bites harder here because the working array ends up back in its original order rather than empty, so every stored answer is the untouched input."
+          "text": " The same bug as in subsets, and it bites harder here, because the working array ends up back in its original order rather than empty, so every stored answer turns out to be the untouched input."
         }
       ]
     },
@@ -444,7 +444,7 @@
           ]
         },
         {
-          "text": " can reach 15, no amount of pruning will save an enumeration. The problem wants something else."
+          "text": " can reach 15, no amount of pruning is going to save an enumeration. The problem wants something else."
         }
       ]
     },

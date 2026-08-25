@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Eight queens on a chessboard, none of them attacking another. A queen covers her whole row, her whole column and both diagonals, so eight of them on 64 squares is a tight fit. There are exactly 92 solutions, and the problem is the standard demonstration of backtracking for a good reason: the naive approach is hopeless and one good idea plus one cheap check makes it instant."
+          "text": "Eight queens on a chessboard, none of them attacking another. A queen covers her whole row, her whole column, and both diagonals, so fitting eight of them onto 64 squares is a tight squeeze. There are exactly 92 solutions, and this problem is the standard demonstration of backtracking for a good reason: the naive approach is hopeless, and one good idea plus one cheap check makes it instant."
         }
       ]
     },
@@ -44,7 +44,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Before writing any code, the framing decides almost everything. The obvious statement of the problem is \"choose 8 squares out of 64\", which gives about 4.4 billion arrangements."
+          "text": "Before writing any code, the framing decides almost everything. The obvious statement of the problem is \"choose 8 squares out of 64,\" which gives you about 4.4 billion arrangements."
         }
       ]
     },
@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now use something you know about the answer. Two queens in the same row always attack each other, so any valid solution has exactly one queen per row. That is not a heuristic, it is a fact about every solution, so restricting to it loses nothing."
+          "text": "Now use something you actually know about the answer. Two queens in the same row always attack each other, so any valid solution has exactly one queen per row. That's not a heuristic, it's a fact about every solution, so restricting to it loses nothing."
         }
       ]
     },
@@ -62,7 +62,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Reframed, the question becomes \"which column does each row's queen go in\", which is 8 choices repeated 8 times: 16.7 million. Nearly three hundred times smaller, and it came from thinking rather than from code."
+          "text": "Reframed, the question becomes \"which column does each row's queen go in,\" which is 8 choices repeated 8 times: 16.7 million. Nearly three hundred times smaller, and it came from thinking rather than from code."
         }
       ]
     },
@@ -97,7 +97,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This generalizes past eight queens. Before reaching for a faster search, it is worth asking whether the representation itself can be made smaller, since a better encoding usually beats a better search."
+          "text": "This generalizes way past eight queens. Before reaching for a faster search, it's worth asking whether the representation itself can be made smaller, since a better encoding usually beats a better search."
         }
       ]
     },
@@ -112,7 +112,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "With one queen per row, rows take care of themselves, columns are easy since you keep a set of used columns, and diagonals are the part that looks fiddly and turns out not to be."
+          "text": "With one queen per row, rows take care of themselves, columns are easy since you just keep a set of used columns, and diagonals are the part that looks fiddly but actually isn't."
         }
       ]
     },
@@ -143,7 +143,7 @@
           ]
         },
         {
-          "text": " matches. So each diagonal has a single number naming it, and checking a diagonal is a set lookup like the column check."
+          "text": " matches. So each diagonal has a single number naming it, and checking one is just a set lookup, same as the column check."
         }
       ]
     },
@@ -158,7 +158,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three sets, three constant-time lookups, and a square is either safe or not. Without this you would scan the placed queens each time, which is fine at n = 8 and starts to hurt as the board grows."
+          "text": "Three sets, three constant-time lookups, and a square is either safe or it isn't. Without this you'd scan the placed queens every time, which is fine at n = 8 and starts to hurt as the board grows."
         }
       ]
     },
@@ -191,7 +191,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Watch what happens once queens are sitting on a1 and c2. Every column in row 3 is attacked, so the loop finishes having placed nothing and the call simply returns. That return is the backtrack. There is no special instruction for it, just a function running out of columns to try."
+          "text": "Watch what happens once queens are sitting on a1 and c2. Every column in row 3 is attacked, so the loop finishes having placed nothing and the call just returns. That return is the backtrack. There's no special instruction for it, just a function running out of columns to try."
         }
       ]
     },
@@ -200,7 +200,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Keep watching after that, and the search eventually abandons row 1 entirely: once every arrangement starting with a queen on a1 has failed, it concludes nothing beginning there can work and moves on to b1. Twenty tries proved a single fact about the first row, and every one of them was necessary. Skip any of it and you risk throwing away a real solution along with the dead ends."
+          "text": "Keep watching after that, and the search eventually abandons row 1 entirely: once every arrangement starting with a queen on a1 has failed, it concludes nothing beginning there can work, and moves on to b1. Twenty tries proved a single fact about the first row, and every one of them was necessary. Skip any of it and you risk throwing away a real solution along with the dead ends."
         }
       ]
     },
@@ -209,7 +209,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It reaches the first solution only after backing all the way out of the a1 branch and restarting from b1. Brute force over all 4-square placements would test 1,820 arrangements to get there."
+          "text": "It reaches the first solution only after backing all the way out of the a1 branch and restarting from b1. Brute force over all 4-square placements would test 1,820 arrangements just to get there."
         }
       ]
     },
@@ -224,7 +224,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Change the board size and watch the node counter. Between 6 and 8 the work grows quickly, and the difference between the pruned search and the raw arrangement count grows faster still."
+          "text": "Change the board size and watch the node counter. Between 6 and 8 the work grows fast, and the gap between the pruned search and the raw arrangement count grows even faster."
         }
       ]
     },
@@ -287,7 +287,7 @@
           ]
         },
         {
-          "text": " columns of the current row, the prune is the three-set lookup, and the un-choose removes exactly what the choose added. Four pieces of state go up and four come back down."
+          "text": " columns of the current row, the prune is the three-set lookup, and the un-choose removes exactly what the choose added. Four pieces of state go up, four come back down."
         }
       ]
     },
@@ -341,7 +341,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The dip at 6 is real and surprises people. There is no simple formula for these numbers, which is part of why the problem stayed interesting: for larger boards, counting the solutions is done by running a search rather than by evaluating an expression."
+          "text": "The dip at 6 is real, and it surprises people. There's no simple formula for these numbers, which is part of why the problem stayed interesting: for larger boards, you count the solutions by running a search rather than by evaluating an expression."
         }
       ]
     },
@@ -350,7 +350,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If your solver returns 88 rather than 92 on the 8 by 8 board, the search is not broken. A prune is rejecting placements that were actually legal, and the diagonal arithmetic is the first place to look."
+          "text": "If your solver returns 88 rather than 92 on the 8 by 8 board, the search isn't broken. A prune is rejecting placements that were actually legal, and the diagonal arithmetic is the first place to look."
         }
       ]
     },
@@ -384,7 +384,7 @@
           ]
         },
         {
-          "text": " for both diagonals is the classic slip. It runs, it produces fewer solutions than it should, and nothing looks wrong. Check against the table above."
+          "text": " for both diagonals is the classic slip. It runs, it produces fewer solutions than it should, and nothing looks wrong at a glance. Check against the table above."
         }
       ]
     },
@@ -401,7 +401,7 @@
           ]
         },
         {
-          "text": " Four things were added and all four must be removed. Missing one leaves a phantom queen blocking squares in sibling branches."
+          "text": " Four things were added, and all four have to be removed. Miss one and you leave a phantom queen blocking squares in sibling branches."
         }
       ]
     },
@@ -418,7 +418,7 @@
           ]
         },
         {
-          "text": " It works and it wastes the prune, since you build the state and then immediately tear it down."
+          "text": " It works, and it wastes the prune, since you build the state and then immediately tear it back down."
         }
       ]
     },

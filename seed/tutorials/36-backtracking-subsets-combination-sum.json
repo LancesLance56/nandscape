@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Subsets is the gentlest problem in this section, and it is worth doing carefully rather than quickly, since nothing here gets rejected, so you can watch the recursion's shape without a prune complicating the picture."
+          "text": "Subsets is the gentlest problem in this section, so it's worth doing carefully instead of rushing through it. Nothing here ever gets rejected, so you can just watch the recursion's shape without a prune muddying the picture."
         }
       ]
     },
@@ -38,7 +38,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The task: given a list of distinct numbers, produce every subset, which for [1,2,3] is eight answers, from the empty set up to the whole thing."
+          "text": "The task: given a list of distinct numbers, produce every subset. For [1,2,3] that's eight answers, from the empty set all the way up to the whole thing."
         }
       ]
     },
@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It pays to know how many answers to expect, because it tells you what your program is allowed to cost. Every item faces one independent decision, in or out, so with n items that is 2 multiplied by itself n times: 2 to the power of n subsets. For 3 items that is 8. For 20 items, about a million. For 40, over a trillion."
+          "text": "It pays to know how many answers to expect, since that's what tells you what your program is allowed to cost."
         }
       ]
     },
@@ -73,7 +73,7 @@
           ]
         },
         {
-          "text": " items that is "
+          "text": " items that's "
         },
         {
           "text": "2",
@@ -115,7 +115,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So there is no fast algorithm hiding here. Any correct program has to produce 2 to the power of "
+          "text": "So there's no fast algorithm hiding in here. Any correct program has to produce 2 to the power of "
         },
         {
           "text": "n",
@@ -126,7 +126,7 @@
           ]
         },
         {
-          "text": " answers, and printing them alone takes that long. When the output is exponential the algorithm has to be too, and this is one of the rare cases where an exponential runtime is not a sign of a mistake."
+          "text": " answers, and just printing them takes that long. When the output itself is exponential the algorithm has to be too, and this is one of the rare cases where an exponential runtime isn't a sign you did something wrong."
         }
       ]
     },
@@ -150,7 +150,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The natural reading is that a state is a partial subset and a choice is \"which item do I add next\". Every state is already a valid subset, so every node in the tree records an answer rather than only the leaves. That is unusual and worth noticing: in most problems only complete states count."
+          "text": "The natural reading is that a state is a partial subset, and a choice is \"which item do I add next.\" Every state is already a valid subset, so every node in the tree records an answer instead of only the leaves. That's unusual, and worth noticing: in most problems only complete states count."
         }
       ]
     },
@@ -159,7 +159,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now a real problem appears. If each step may choose any item, you will build the same subset repeatedly under different orderings."
+          "text": "But now a real problem shows up. If each step can choose any item, you'll build the same subset over and over under different orderings."
         }
       ]
     },
@@ -174,7 +174,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The fix is a single parameter. Pass down a start index, and only ever choose items at or after it, so having taken item 2, later steps consider only items 3 onward. Each subset is then built in exactly one order and appears exactly once."
+          "text": "The fix is a single parameter. Pass down a start index and only choose items at or after it, so once you've taken item 2, later steps only consider items 3 onward. Each subset then gets built in exactly one order and shows up exactly once."
         }
       ]
     },
@@ -205,7 +205,7 @@
           ]
         },
         {
-          "text": " factorial work. It is the most important line in the problem and it looks like nothing."
+          "text": " factorial work. It's the most important line in the problem, and it looks like nothing at all."
         }
       ]
     },
@@ -220,7 +220,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Step through and match the tree against the trace from the introduction. Every node is an answer here, so the count of recorded answers climbs steadily rather than only at the bottom."
+          "text": "Step through and match the tree against the trace from the introduction. Every node is an answer here, so the count of recorded answers climbs steadily instead of only jumping at the bottom."
         }
       ]
     },
@@ -242,7 +242,7 @@
     },
     {
       "id": "h-combo",
-      "text": "Combination sum, where pruning finally appears",
+      "text": "Combination sum, where pruning finally shows up",
       "type": "heading",
       "level": 2
     },
@@ -251,7 +251,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Subsets had no rules to break, so nothing was ever rejected, but combination sum adds one, and it is where the prune from the introduction earns its keep."
+          "text": "Subsets had no rules to break, so nothing ever got rejected. Combination sum adds one, and it's where the prune from the introduction finally earns its keep."
         }
       ]
     },
@@ -260,7 +260,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The task: given candidate numbers and a target, find every combination that sums to exactly the target, where each candidate may be used as many times as you like."
+          "text": "The task: given candidate numbers and a target, find every combination that sums to exactly the target, where each candidate can be used as many times as you like."
         }
       ]
     },
@@ -291,7 +291,7 @@
           ]
         },
         {
-          "text": ", so the same item stays available. Second, and this is the interesting part, you can tell a branch is doomed before finishing it. If the running total already exceeds the target, no amount of adding more positive numbers will bring it back down."
+          "text": ", so the same item stays available. Second, and this is the interesting part, you can tell a branch is doomed before you've even finished it. If the running total already blows past the target, no amount of adding more positive numbers is going to bring it back down."
         }
       ]
     },
@@ -300,7 +300,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That single check cuts an entire subtree. Below is the tree for candidates 2, 3 and 5 with target 8, pruning on: step through it and watch every branch that gets cut the moment a partial sum overshoots."
+          "text": "That single check cuts off an entire subtree. Below is the tree for candidates 2, 3 and 5 with target 8, pruning on: step through it and watch every branch get cut the moment a partial sum overshoots."
         }
       ]
     },
@@ -309,7 +309,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Watch the branches-cut counter as you go. Each cut is a subtree a generate-and-filter approach would have explored all the way to the bottom before throwing it away. The deeper the tree, the more each cut saves."
+          "text": "Watch the branches-cut counter as you go. Each cut is a subtree a generate-and-filter approach would've explored all the way to the bottom before throwing it away. The deeper the tree, the more each cut saves."
         }
       ]
     },
@@ -324,7 +324,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch pruning off and back on. The candidates, the target and the answers all stay the same, so the only thing worth watching is the node counter. That difference is the entire value of thinking about the problem before writing the loop."
+          "text": "Switch pruning off and back on. The candidates, the target and the answers all stay the same, so the node counter is the only thing worth watching. That difference is the entire value of thinking about the problem before you write the loop."
         }
       ]
     },
@@ -354,7 +354,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "If the candidates are sorted, the prune gets stronger. When you meet a candidate larger than the remaining target, every candidate after it is larger too, so instead of skipping this one you can stop the loop entirely."
+          "text": "If the candidates are sorted, the prune gets even stronger. Once you hit a candidate larger than the remaining target, every candidate after it is larger too, so instead of skipping just this one you can stop the loop entirely."
         }
       ]
     },
@@ -385,7 +385,7 @@
           ]
         },
         {
-          "text": " and skips the rest of the row rather than one cell of it. The sort costs "
+          "text": ", skipping the rest of the row instead of one cell of it. The sort costs "
         },
         {
           "text": "n log n",
@@ -396,7 +396,7 @@
           ]
         },
         {
-          "text": " once and pays for itself immediately. It is a good habit generally: sorting the input often makes a prune sharper."
+          "text": " once and pays for itself right away. It's a good habit generally: sorting the input often makes a prune sharper."
         }
       ]
     },
@@ -423,7 +423,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Compare this against the subsets code from the introduction. The skeleton is untouched. What changed is the stopping test, one prune, and "
+          "text": "Compare this against the subsets code from the introduction. The skeleton hasn't moved. What changed is the stopping test, one prune, and "
         },
         {
           "text": "i",
@@ -460,7 +460,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Passing i + 1 when reuse is allowed, or i when it is not.",
+          "text": "Passing i + 1 when reuse is allowed, or i when it isn't.",
           "marks": [
             {
               "kind": "bold"
@@ -485,7 +485,7 @@
           ]
         },
         {
-          "text": " You get every permutation of every subset, so the answer count jumps from 8 to 16 on three items and the duplicates are not obvious at a glance."
+          "text": " You get every permutation of every subset, so the answer count jumps from 8 to 16 on three items, and the duplicates aren't obvious at a glance."
         }
       ]
     },
@@ -494,7 +494,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Checking the total only at the leaves is correct and slow, since the whole point is to reject as early as the rules allow."
+          "text": "Checking the total only at the leaves is correct, and slow, since the whole point is to reject as early as the rules allow."
         }
       ]
     },
@@ -511,7 +511,7 @@
           ]
         },
         {
-          "text": " If a candidate can be negative, exceeding the target no longer means the branch is dead, because a later negative can bring the sum back. The prune quietly becomes wrong. Check the constraints before relying on it."
+          "text": " If a candidate can be negative, exceeding the target no longer means the branch is dead, since a later negative can bring the sum back. The prune quietly becomes wrong. Check the constraints before you rely on it."
         }
       ]
     },

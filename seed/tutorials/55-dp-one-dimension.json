@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every problem in this tutorial fits inside a single row of cells. That is not a coincidence about the problems so much as a fact about their states: each one can be answered by knowing a single number, an index into a list, and nothing else whatsoever."
+          "text": "Every problem in this tutorial fits inside a single row of cells. That's not a coincidence about the problems so much as a fact about their states: each one can be answered by knowing a single number, an index into a list, and nothing else whatsoever."
         }
       ]
     },
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Getting to that point is the hard part, and it is worth saying plainly that it is hard. The recurrence usually falls out in a line or two once the state is right. Choosing the state is where the thinking goes."
+          "text": "Getting to that point is the hard part, and it's worth saying plainly that it's hard. The recurrence usually falls out in a line or two once the state is right. Choosing the state is where the thinking goes."
         }
       ]
     },
@@ -52,7 +52,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A state is a complete description of a subproblem. Complete is doing real work in that sentence: two calls carrying the same state have to produce the same answer, whatever happened before either of them. When that fails, the description is missing something, and the table will end up holding two contradictory values in one cell."
+          "text": "A state is a complete description of a subproblem. Complete is doing real work in that sentence: two calls carrying the same state have to produce the same answer, whatever happened before either of them. When that fails, the description is missing something, and the table ends up holding two contradictory values in one cell."
         }
       ]
     },
@@ -61,7 +61,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Most one-dimensional problems use one of two standard shapes, and both are worth committing to memory because they turn up constantly. The first is the best answer using the first i items. The second is the best answer for a run that ends exactly at item i. Those are not the same thing, and confusing them is the most common mistake in this material."
+          "text": "Most one-dimensional problems use one of two standard shapes, and both are worth committing to memory since they turn up constantly. The first is the best answer using the first i items. The second is the best answer for a run that ends exactly at item i. Those aren't the same thing, and confusing them is the most common mistake in this material."
         }
       ]
     },
@@ -70,7 +70,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The difference shows up at the end, when you go to read the answer off. If the table holds the best answer using the first i items, the final cell is the answer and you are done. If it holds the best answer ending at item i, the answer is the largest value anywhere in the table, because the winning run may well have finished somewhere in the middle."
+          "text": "The difference shows up at the end, when you go to read the answer off. If the table holds the best answer using the first i items, the final cell is the answer and you're done. If it holds the best answer ending at item i, the answer is the largest value anywhere in the table, since the winning run may well have finished somewhere in the middle."
         }
       ]
     },
@@ -93,7 +93,7 @@
           ]
         },
         {
-          "text": ". A line of houses with an amount in each, and a rule that you cannot take from two houses standing next door to each other. Collect as much as you can."
+          "text": ". A line of houses with an amount in each, and a rule that you can't take from two houses standing next door to each other. Collect as much as you can."
         }
       ]
     },
@@ -111,7 +111,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "With the amounts 2, 7, 9, 3 and 1 the answer is 12, collected from the first, third and fifth houses. Notice what the winning selection leaves behind. It skips 7, which is the second largest number on the list, because taking it would have cost both of its neighbors."
+          "text": "With the amounts 2, 7, 9, 3 and 1, the answer is 12, collected from the first, third and fifth houses. Notice what the winning selection leaves behind. It skips 7, the second largest number on the list, because taking it would've cost both of its neighbors."
         }
       ]
     },
@@ -137,7 +137,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This one deserves a moment, because the obvious approach fails and fails quietly. Taking the largest coin that still fits, over and over, is what everyone does at a till, and it happens to be correct for the coin systems most countries actually use. Give it coins of 1, 3 and 4 with a target of 6 and greed takes the 4, then a 1, then another 1, and reports three coins. Two threes would have done it."
+          "text": "This one deserves a moment, because the obvious approach fails, and it fails quietly. Taking the largest coin that still fits, over and over, is what everyone does at a till, and it happens to be correct for the coin systems most countries actually use. Give it coins of 1, 3 and 4 with a target of 6, though, and greed takes the 4, then a 1, then another 1, and reports three coins. Two threes would've done it."
         }
       ]
     },
@@ -146,7 +146,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "State: the fewest coins that make amount a. The rule here reads over every coin rather than over a fixed pair of neighbors, since any coin at all could have been the last one paid. Try each in turn, look up what the remainder already costs, add one for the coin you just spent, and keep the smallest result."
+          "text": "State: the fewest coins that make amount a. The rule here reads over every coin rather than over a fixed pair of neighbors, since any coin at all could've been the last one paid. Try each in turn, look up what the remainder already costs, add one for the coin you just spent, and keep the smallest result."
         }
       ]
     },
@@ -163,7 +163,7 @@
           ]
         },
         {
-          "text": ". Pick out the longest subsequence of a list whose values increase. Skipping is allowed, reordering is not."
+          "text": ". Pick out the longest subsequence of a list whose values increase. Skipping is allowed, reordering isn't."
         }
       ]
     },
@@ -172,7 +172,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This is the one that forces the second shape of state. To extend a run you have to know what value it finished on, and the best answer among the first i items does not tell you that, because the best answer might have ended on something huge that nothing can follow. The longest run ending exactly at item i does tell you, since item i is right there in the description."
+          "text": "This is the one that forces the second shape of state. To extend a run you have to know what value it finished on, and the best answer among the first i items doesn't tell you that, since the best answer might've ended on something huge that nothing can follow. The longest run ending exactly at item i does tell you, since item i is right there in the description."
         }
       ]
     },
@@ -181,7 +181,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The cost is different too, and the arrows in the widget show why. Each cell has to look back over every earlier cell rather than a fixed two of them, so the work per cell grows as you go and the whole thing lands at n squared instead of n. On the list 3, 1, 4, 1, 5, 9, 2 and 6 the answer is 4."
+          "text": "The cost is different too, and the arrows in the widget show why. Each cell has to look back over every earlier cell rather than a fixed two of them, so the work per cell grows as you go and the whole thing lands at n squared instead of n. On the list 3, 1, 4, 1, 5, 9, 2 and 6, the answer is 4."
         }
       ]
     },
@@ -213,7 +213,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "When a problem does not obviously match any shape you already know, three questions asked in this order will usually get you there."
+          "text": "When a problem doesn't obviously match any shape you already know, three questions asked in this order will usually get you there."
         }
       ]
     },
@@ -245,7 +245,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The order is not decoration. People reach for the recurrence first, get halfway through writing it, and discover that the thing they need to look at is not in the state they chose. Working out what a decision requires, before writing the rule that makes the decision, saves all of that."
+          "text": "The order isn't decoration. People reach for the recurrence first, get halfway through writing it, and discover the thing they need to look at isn't in the state they chose. Working out what a decision requires, before writing the rule that makes the decision, saves you all of that."
         }
       ]
     },
@@ -254,7 +254,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "One more habit worth building. Once you have a candidate state, say it out loud as a full sentence with the word best or the word number in it, and check that the sentence would still make sense to somebody who had not seen the problem. The best total from the first i houses passes. The best total so far does not, because so far is not a description of anything."
+          "text": "One more habit worth building. Once you have a candidate state, say it out loud as a full sentence with the word best or the word number in it, and check that the sentence would still make sense to somebody who hadn't seen the problem. The best total from the first i houses passes. The best total so far doesn't, because so far isn't a description of anything."
         }
       ]
     },
@@ -323,7 +323,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "One index, one row, and one number in each cell. The next tutorial covers what happens when one index is not enough, which is the situation you land in the moment a problem involves two sequences rather than one."
+          "text": "One index, one row, one number in each cell. The next tutorial covers what happens when one index isn't enough, which is the situation you land in the moment a problem involves two sequences rather than one."
         }
       ]
     }

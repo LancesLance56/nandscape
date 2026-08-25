@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The memo from the last tutorial is already a table. It is keyed by subproblem, it holds one answer per key, and by the time the program finishes, every entry that was ever going to be filled has been filled. The only thing the recursion contributed was deciding what order to fill them in."
+          "text": "The memo from the last tutorial is already a table. It's keyed by subproblem, it holds one answer per key, and by the time the program finishes, every entry that was ever going to be filled has been filled. The only thing the recursion contributed was deciding what order to fill them in."
         }
       ]
     },
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So skip it. Work the order out yourself, fill the table from one end to the other, and never make a recursive call at all. That is "
+          "text": "So skip it. Work the order out yourself, fill the table from one end to the other, and never make a recursive call at all. That's "
         },
         {
           "text": "tabulation",
@@ -48,7 +48,7 @@
           ]
         },
         {
-          "text": ", and it is what most people have in mind when they say dynamic programming."
+          "text": ", and it's what most people picture when they say dynamic programming."
         }
       ]
     },
@@ -63,7 +63,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci is a poor advertisement for any of this, because nobody has ever urgently needed the fortieth Fibonacci number. Here is the same arithmetic attached to a question somebody might actually ask. A staircase has n steps, you can climb either one step or two at a time, and the task is to count the different ways of reaching the top."
+          "text": "Fibonacci is a poor advertisement for any of this, because nobody's ever urgently needed the fortieth Fibonacci number. Here's the same arithmetic attached to a question somebody might actually ask. A staircase has n steps, you can climb either one step or two at a time, and the task is to count the different ways of reaching the top."
         }
       ]
     },
@@ -81,7 +81,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The base cases deserve a second of thought rather than a guess. There is exactly one way to be standing at the bottom, which is to not have moved yet. There is exactly one way to be on step 1. Those two anchor everything above them."
+          "text": "The base cases deserve a second of thought rather than a guess. There's exactly one way to be standing at the bottom, which is to not have moved yet. There's exactly one way to be on step 1. Those two anchor everything above them."
         }
       ]
     },
@@ -90,7 +90,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Below is that table being filled in, one cell at a time, and the arrows are the part to watch: each one points from a cell that is already settled into the cell currently being worked out, which is the recurrence drawn rather than written."
+          "text": "Below is that table being filled in, one cell at a time, and the arrows are the part to watch: each one points from a cell that's already settled into the cell currently being worked out, which is the recurrence drawn rather than written."
         }
       ]
     },
@@ -139,7 +139,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a mechanical way across, and it is worth knowing because it means you never have to invent a bottom-up solution from nothing. Write the memoized recursion first, get it correct, and then translate it a piece at a time."
+          "text": "There's a mechanical way across, and it's worth knowing because it means you never have to invent a bottom-up solution from nothing. Write the memoized recursion first, get it correct, then translate it a piece at a time."
         }
       ]
     },
@@ -179,7 +179,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Only the last row asks anything of you. Everything above it is transcription, and if the recursive version was correct then the transcribed version computes exactly the same numbers, for exactly the same reasons, in a different order, which is exactly why the translation is worth trusting: nothing about the reasoning changed, only the order it runs in."
+          "text": "Only the last row asks anything of you. Everything above it is transcription, and if the recursive version was correct, then the transcribed version computes exactly the same numbers, for exactly the same reasons, in a different order. That's exactly why the translation is worth trusting: nothing about the reasoning changed, only the order it runs in."
         }
       ]
     },
@@ -188,7 +188,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two habits make this less error-prone than it sounds. Fill the base cells before the loop rather than special-casing them inside it, so the loop body has one job. And write the loop bounds before the loop body, since the bounds are where the fill order actually lives and it is easier to get them right while the dependency arrows are still fresh in your head."
+          "text": "Two habits make this less error-prone than it sounds. Fill the base cells before the loop rather than special-casing them inside it, so the loop body has one job. And write the loop bounds before the loop body, since the bounds are where the fill order actually lives, and it's easier to get them right while the dependency arrows are still fresh in your head."
         }
       ]
     },
@@ -203,7 +203,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The one thing tabulation asks of you that memoization does not is an order. A cell can only be filled once every cell it depends on has been filled already, and working that out is more or less the entire design work in a bottom-up solution. Everything else is transcription."
+          "text": "The one thing tabulation asks of you that memoization doesn't is an order. A cell can only be filled once every cell it depends on has been filled already, and working that out is more or less the entire design work in a bottom-up solution. Everything else is transcription."
         }
       ]
     },
@@ -212,7 +212,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Climbing stairs makes it look like a non-issue, since every cell reads to its left and left to right is the obvious sweep. Get it wrong on a harder problem and the failure is not subtle. You read a cell that has not been written yet, and depending on the language you get a zero, an undefined, or a crash, none of which points at the real mistake."
+          "text": "Climbing stairs makes it look like a non-issue, since every cell reads to its left and left to right is the obvious sweep. Get it wrong on a harder problem and the failure isn't subtle. You read a cell that hasn't been written yet, and depending on the language you get a zero, an undefined, or a crash, none of which points at the real mistake."
         }
       ]
     },
@@ -221,7 +221,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A reliable way to check an order is to draw every dependency as an arrow and confirm that none of them point forward. If they all run backwards along the direction you are filling, the order is safe. The grid problems later in this section are that same test applied in two directions at once."
+          "text": "A reliable way to check an order is to draw every dependency as an arrow and confirm none of them point forward. If they all run backwards along the direction you're filling, the order is safe. The grid problems later in this section are that same test applied in two directions at once."
         }
       ]
     },
@@ -273,7 +273,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Memoization is usually quicker to write, because you take a recursion you already believe in and bolt a store onto the side of it, and it has the advantage of skipping subproblems that never come up. Tabulation avoids the stack entirely and opens the door to the memory trick below."
+          "text": "Memoization is usually quicker to write, since you take a recursion you already believe in and bolt a store onto the side of it, and it has the advantage of skipping subproblems that never come up. Tabulation avoids the stack entirely and opens the door to the memory trick below."
         }
       ]
     },
@@ -297,7 +297,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Look at the arrows in the widget once more. Each cell reads the two immediately to its left, and nothing ever reaches further back than that. By the time the loop is filling cell 20, cell 3 will never be read again, and it is still sitting there occupying memory for no reason at all. Cell 3 is dead weight."
+          "text": "Look at the arrows in the widget once more. Each cell reads the two immediately to its left, and nothing ever reaches further back than that. By the time the loop is filling cell 20, cell 3 will never be read again, and it's still sitting there occupying memory for no reason at all. Cell 3 is dead weight."
         }
       ]
     },
@@ -327,7 +327,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Memory drops from n cells to a fixed handful, and the running time does not change at all. The trick works whenever a recurrence reaches back only a fixed distance, which covers a surprising share of the problems in this section. Look for it once the algorithm is correct, never before."
+          "text": "Memory drops from n cells to a fixed handful, and the running time doesn't change at all. The trick works whenever a recurrence reaches back only a fixed distance, which covers a surprising share of the problems in this section. Look for it once the algorithm's correct, never before."
         }
       ]
     },
@@ -336,7 +336,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It costs you one thing worth naming out loud. With the table gone, there is nothing left to walk back through, so you can report the answer but not the route that produced it. That trade returns in the grid problems, where the filled table is the only record of how the answer was assembled."
+          "text": "It costs you one thing worth naming out loud. With the table gone, there's nothing left to walk back through, so you can report the answer but not the route that produced it. That trade returns in the grid problems, where the filled table is the only record of how the answer was assembled."
         }
       ]
     },
@@ -405,7 +405,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Climbing stairs was picked because its recurrence was already familiar from Fibonacci, which let the fill order and the memory trick have the stage to themselves without a second idea competing for attention. The harder skill is different. It is taking a problem you have never seen and working out what the table should hold in the first place."
+          "text": "Climbing stairs was picked because its recurrence was already familiar from Fibonacci, which let the fill order and the memory trick have the stage to themselves without a second idea competing for attention. The harder skill is different. It's taking a problem you've never seen and working out what the table should hold in the first place."
         }
       ]
     }
