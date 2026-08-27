@@ -16,6 +16,8 @@ export const BLOCK_ACCENT: Record<ContentBlock["type"], string | null> = {
   divider: DEFAULT_BLOCK_COLORS[6], // pink - otherwise the only block with zero visible content in the list
   paragraph: DEFAULT_BLOCK_COLORS[7], // neutral gray - the default, most common block; shouldn't compete for attention
   table: DEFAULT_BLOCK_COLORS[8], // blue - structured data, distinct from every other block's meaning
+  list: DEFAULT_BLOCK_COLORS[3], // signal coral - ordered/unordered items, a sibling of table
+  callout: DEFAULT_BLOCK_COLORS[2], // amber - a set-apart aside, shares the "attention" read with video
   // No color: interactive blocks get a dashed/muted treatment instead (see
   // block-card.tsx) - the visual difference itself signals "not editable
   // yet," which is more honest than assigning a color that implies parity

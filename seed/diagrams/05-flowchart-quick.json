@@ -1,0 +1,123 @@
+{
+  "slug": "quick",
+  "kind": "flowchart",
+  "title": "Quick sort (one call)",
+  "group": "Sorting",
+  "position": 5,
+  "spec": {
+    "title": "Quick sort (one call)",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "quickSort(a, low, high)"
+      },
+      {
+        "id": "base",
+        "type": "decision",
+        "text": "low >= high ?",
+        "badge": "1",
+        "note": "A range of zero or one element is already sorted."
+      },
+      {
+        "id": "ret",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "part",
+        "type": "process",
+        "text": "p = partition(a, low, high)",
+        "accent": "blue",
+        "badge": "2",
+        "note": "All the work happens here, before the recursion rather than after it. Once this returns, a[p] is in its final position permanently and will never move again."
+      },
+      {
+        "id": "conquer",
+        "type": "group",
+        "text": "Conquer",
+        "accent": "violet",
+        "badge": "3",
+        "groupLayout": "column"
+      },
+      {
+        "id": "left",
+        "type": "process",
+        "text": "quickSort(a, low, p-1)",
+        "accent": "violet",
+        "parentId": "conquer",
+        "note": "Everything smaller than the pivot."
+      },
+      {
+        "id": "right",
+        "type": "process",
+        "text": "quickSort(a, p+1, high)",
+        "accent": "violet",
+        "parentId": "conquer",
+        "note": "Note that p itself is excluded from both calls. Including it would give a range that never shrinks, which is an infinite loop waiting to happen."
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "return",
+        "note": "There is no merge step. Once both sides return, the range is sorted."
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "base"
+      },
+      {
+        "from": "base",
+        "to": "ret",
+        "label": "yes"
+      },
+      {
+        "from": "base",
+        "to": "part",
+        "label": "no"
+      },
+      {
+        "from": "part",
+        "to": "left"
+      },
+      {
+        "from": "left",
+        "to": "right"
+      },
+      {
+        "from": "right",
+        "to": "end"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "process",
+        "shape": "process",
+        "accent": "neutral"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "calls itself",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "moves data",
+        "shape": "process",
+        "accent": "blue"
+      }
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "slug": "palindrome",
+  "kind": "flowchart",
+  "title": "Palindrome partitioning",
+  "group": "Backtracking",
+  "position": 4,
+  "spec": {
+    "title": "Palindrome partitioning",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "partition(start, parts)"
+      },
+      {
+        "id": "done",
+        "type": "decision",
+        "text": "start == n ?",
+        "badge": "1",
+        "note": "The whole string has been consumed, so every character is inside some palindromic piece."
+      },
+      {
+        "id": "record",
+        "type": "process",
+        "text": "record parts"
+      },
+      {
+        "id": "ret1",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "end = start",
+        "note": "The choice at each level is where the next piece ends, so the branching factor shrinks as start moves right."
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "end < n ?"
+      },
+      {
+        "id": "ret2",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "ispal",
+        "type": "decision",
+        "text": "s[start..end] a\npalindrome ?",
+        "badge": "2",
+        "accent": "amber",
+        "note": "The prune. Unlike n-queens, this test depends only on the piece itself and not on the choices above it, which is what allows it to be precomputed into a table."
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "parts.push(piece)",
+        "accent": "blue",
+        "parentId": "cycle"
+      },
+      {
+        "id": "explore",
+        "type": "process",
+        "text": "partition(end + 1, parts)",
+        "accent": "violet",
+        "parentId": "cycle",
+        "note": "end + 1: the next piece starts one past where this one stopped."
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "parts.pop()",
+        "accent": "coral",
+        "parentId": "cycle"
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "end = end + 1"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "done"
+      },
+      {
+        "from": "done",
+        "to": "record",
+        "label": "yes"
+      },
+      {
+        "from": "done",
+        "to": "init",
+        "label": "no"
+      },
+      {
+        "from": "record",
+        "to": "ret1"
+      },
+      {
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "from": "loop",
+        "to": "ispal",
+        "label": "yes"
+      },
+      {
+        "from": "loop",
+        "to": "ret2",
+        "label": "no"
+      },
+      {
+        "from": "ispal",
+        "to": "next",
+        "label": "no (prune)"
+      },
+      {
+        "from": "ispal",
+        "to": "choose",
+        "label": "yes"
+      },
+      {
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "from": "explore",
+        "to": "undo"
+      },
+      {
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ]
+  }
+}

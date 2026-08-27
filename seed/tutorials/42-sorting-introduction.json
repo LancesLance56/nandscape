@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sorting is the most studied problem in computing, and the reason is not that ordered data is pretty, but that an enormous number of problems become easy once the input is sorted, and stay hard otherwise."
+          "text": "Sorting is the most studied problem in computing, and it's not because ordered data is pretty. It's that an enormous number of problems become easy once the input is sorted, and stay hard otherwise."
         }
       ]
     },
@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Finding a duplicate, finding the closest pair, merging two datasets, answering \"is this value present\" quickly, detecting overlapping bookings: all of these are awkward on unordered data and nearly trivial on sorted data. Most of this section is really about that second effect."
+          "text": "Finding a duplicate, finding the closest pair, merging two datasets, answering \"is this value present\" quickly, spotting overlapping bookings: all of these are awkward on unordered data and nearly trivial on sorted data. Most of this section is really about that second effect."
         }
       ]
     },
@@ -103,7 +103,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is worth seeing this before reading any of the theory. Pick an algorithm and press play, then switch the input to \"nearly sorted\" and run insertion sort and selection sort in turn. The counters tell the story better than any complexity table does."
+          "text": "Worth seeing this before reading any of the theory below. Pick an algorithm and press play, then switch the input to \"nearly sorted\" and run insertion sort and selection sort in turn. The counters tell the story better than any complexity table does."
         }
       ]
     },
@@ -128,7 +128,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Textbooks lead with time complexity. In practice you choose a sort on three axes, and the complexity is only the first."
+          "text": "Textbooks lead with time complexity. In practice you choose a sort on three axes, and complexity is only the first one."
         }
       ]
     },
@@ -154,7 +154,7 @@
           ]
         },
         {
-          "text": " when equal elements come out in the same relative order they went in. With bare numbers this is invisible, because two equal numbers are indistinguishable. It matters the moment you sort records."
+          "text": " when equal elements come out in the same relative order they went in. With bare numbers this is invisible, since two equal numbers are indistinguishable. It matters the moment you sort records."
         }
       ]
     },
@@ -163,7 +163,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Suppose you have employees sorted by name, and you now sort them by department. With a stable sort, each department's employees remain in name order and you have effectively sorted by two keys for the price of one. With an unstable sort, that ordering is destroyed and the second sort has to compare both fields."
+          "text": "Say you have employees sorted by name, and you now sort them by department. With a stable sort, each department's employees stay in name order, and you've effectively sorted by two keys for the price of one. With an unstable sort, that ordering gets destroyed and the second sort has to compare both fields."
         }
       ]
     },
@@ -192,7 +192,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "An in-place sort uses O(1) or O(log n) extra memory beyond the array itself. Merge sort does not, since it needs a scratch buffer as large as the input, and on a large dataset that is the difference between fitting in memory and not."
+          "text": "An in-place sort uses O(1) or O(log n) extra memory beyond the array itself. Merge sort doesn't, since it needs a scratch buffer as large as the input, and on a large dataset that's the difference between fitting in memory and not."
         }
       ]
     },
@@ -218,7 +218,7 @@
           ]
         },
         {
-          "text": " sort runs faster on input that is already partly ordered. Insertion sort is strongly adaptive and runs in O(n) on sorted input; selection sort is not adaptive at all and does the same n²/2 comparisons no matter what you feed it. Real-world data is very often partly ordered, so this is worth more than it looks."
+          "text": " sort runs faster on input that's already partly ordered. Insertion sort is strongly adaptive and runs in O(n) on sorted input; selection sort isn't adaptive at all and does the same n²/2 comparisons no matter what you feed it. Real-world data is very often partly ordered, so this is worth more than it looks."
         }
       ]
     },
@@ -253,7 +253,7 @@
           ]
         },
         {
-          "text": ": it learns about the input only by asking \"is a bigger than b?\". That restriction alone forces a lower bound, and the argument is short enough to follow completely."
+          "text": ": it learns about the input only by asking \"is a bigger than b?\". That restriction alone forces a lower bound, and the argument is short enough to follow all the way through."
         }
       ]
     },
@@ -262,7 +262,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A run of the algorithm is a sequence of yes/no answers. With c comparisons there are at most 2^c distinct answer sequences, so the algorithm can distinguish at most 2^c different inputs. There are n! possible orderings of n distinct values, and the algorithm must produce a different output for each, so:"
+          "text": "A run of the algorithm is a sequence of yes/no answers. With c comparisons there are at most 2^c distinct answer sequences, so the algorithm can distinguish at most 2^c different inputs. There are n! possible orderings of n distinct values, and the algorithm has to produce a different output for each, so:"
         }
       ]
     },
@@ -278,7 +278,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So no comparison sort can do better than n log n comparisons in the worst case, and merge sort and heap sort achieve it. This is a statement about the problem, not about anyone's cleverness. The "
+          "text": "So no comparison sort can do better than n log n comparisons in the worst case, and merge sort and heap sort actually achieve it. This is a statement about the problem, not about anyone's cleverness. The "
         },
         {
           "text": "comparison sort lower bound",
@@ -299,7 +299,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Counting sort escapes it by never comparing anything, which is covered later in this section."
+          "text": "Counting sort escapes it by never comparing anything at all, which is covered later in this section."
         }
       ]
     },
@@ -314,7 +314,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "No production sort is a textbook algorithm, since real ones are hybrids, and the hybrid is instructive."
+          "text": "No production sort is a textbook algorithm. Real ones are hybrids, and the hybrid is instructive."
         }
       ]
     },
@@ -332,7 +332,7 @@
           ]
         },
         {
-          "text": " was written by Tim Peters in 2002 for Python. It is a merge sort that first scans for runs of already-ordered elements, extends short runs using insertion sort, then merges the runs. It is stable, and it is close to O(n) on data that is nearly sorted, which real data often is. It became the default sort in Python, in Java SE 7 for objects, on Android, in V8, and in Swift."
+          "text": " was written by Tim Peters in 2002 for Python. It's a merge sort that first scans for runs of already-ordered elements, extends short runs using insertion sort, then merges the runs. It's stable, and it's close to O(n) on data that's nearly sorted, which real data often is. It became the default sort in Python, in Java SE 7 for objects, on Android, in V8, and in Swift."
         }
       ]
     },
@@ -361,7 +361,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The shared lesson is that insertion sort is not a toy. Every one of these falls back to it for small inputs, because at that size its low constant factor beats an asymptotically better algorithm."
+          "text": "The shared lesson is that insertion sort isn't a toy. Every one of these falls back to it for small inputs, because at that size its low constant factor beats an asymptotically better algorithm."
         }
       ]
     },

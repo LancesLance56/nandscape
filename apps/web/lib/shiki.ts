@@ -1,7 +1,9 @@
 import { createHighlighter } from "shiki";
 
 export const highlighter = await createHighlighter({
-  themes: ["github-dark", "dark-plus"],
+  // `dark-plus` / `light-plus` are the dual-theme pair CodeBlockView emits
+  // (as CSS variables), so code follows the site's light/dark toggle.
+  themes: ["dark-plus", "light-plus"],
   langs: [
     "typescript",
     "javascript",

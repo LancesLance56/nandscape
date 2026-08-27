@@ -1,0 +1,185 @@
+{
+  "slug": "permutations",
+  "kind": "flowchart",
+  "title": "Permutations (used array)",
+  "group": "Backtracking",
+  "position": 2,
+  "spec": {
+    "title": "Permutations (used array)",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "permute(current, used)"
+      },
+      {
+        "id": "full",
+        "type": "decision",
+        "text": "current.length\n== n ?",
+        "badge": "1",
+        "note": "Only a full-length arrangement is a permutation, so unlike subsets, only the leaves are answers."
+      },
+      {
+        "id": "record",
+        "type": "process",
+        "text": "record a copy"
+      },
+      {
+        "id": "ret1",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "i = 0",
+        "note": "Every position scans all n characters, not a suffix, because any unused character may go next. This is the structural difference from subsets."
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "i < n ?"
+      },
+      {
+        "id": "ret2",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "used",
+        "type": "decision",
+        "text": "used[i] ?",
+        "badge": "2",
+        "accent": "amber",
+        "note": "Already placed higher up this path, so it cannot be used again on this branch. The used array is what replaces the `start` index that subsets relies on."
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "used[i] = true\ncurrent.push(a[i])",
+        "accent": "blue",
+        "parentId": "cycle"
+      },
+      {
+        "id": "explore",
+        "type": "process",
+        "text": "permute(current, used)",
+        "accent": "violet",
+        "parentId": "cycle"
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "current.pop()\nused[i] = false",
+        "accent": "coral",
+        "parentId": "cycle",
+        "note": "Both halves have to be undone. Popping without clearing used[i] loses that character for every later branch."
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "i = i + 1"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "full"
+      },
+      {
+        "from": "full",
+        "to": "record",
+        "label": "yes"
+      },
+      {
+        "from": "full",
+        "to": "init",
+        "label": "no"
+      },
+      {
+        "from": "record",
+        "to": "ret1"
+      },
+      {
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "from": "loop",
+        "to": "used",
+        "label": "yes"
+      },
+      {
+        "from": "loop",
+        "to": "ret2",
+        "label": "no"
+      },
+      {
+        "from": "used",
+        "to": "next",
+        "label": "yes (skip)"
+      },
+      {
+        "from": "used",
+        "to": "choose",
+        "label": "no"
+      },
+      {
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "from": "explore",
+        "to": "undo"
+      },
+      {
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ]
+  }
+}

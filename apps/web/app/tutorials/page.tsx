@@ -83,7 +83,7 @@ export default async function TutorialsIndexPage() {
   return (
     <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
       <header className="mb-10">
-        <h1 className="font-display text-3xl font-bold leading-tight text-ink">Tutorials</h1>
+        <h1 className="text-balance font-display text-3xl font-bold leading-tight text-ink sm:text-4xl">Tutorials</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
           Pick a subject to start. Every lesson is free, needs no signup, and is built around something you can
           actually interact with rather than a wall of text.

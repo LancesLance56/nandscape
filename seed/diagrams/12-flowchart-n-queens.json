@@ -1,0 +1,187 @@
+{
+  "slug": "n-queens",
+  "kind": "flowchart",
+  "title": "N-Queens",
+  "group": "Backtracking",
+  "position": 3,
+  "spec": {
+    "title": "N-Queens",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "placeQueens(row)"
+      },
+      {
+        "id": "done",
+        "type": "decision",
+        "text": "row == n ?",
+        "badge": "1",
+        "note": "Every row has a queen, so by construction no two share a row, and the checks below guaranteed the rest."
+      },
+      {
+        "id": "record",
+        "type": "process",
+        "text": "record the board"
+      },
+      {
+        "id": "ret1",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "col = 0",
+        "note": "One queen per row is a decision made before the search starts. It is what shrinks 64-choose-8 to 8 columns per row."
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "col < n ?"
+      },
+      {
+        "id": "ret2",
+        "type": "end",
+        "text": "return\n(backtrack)",
+        "accent": "coral",
+        "note": "No column in this row works, so the queen placed in the row above must be wrong. Returning lets the caller move it."
+      },
+      {
+        "id": "safe",
+        "type": "decision",
+        "text": "(row, col)\nattacked ?",
+        "badge": "2",
+        "accent": "amber",
+        "note": "Checked against columns and both diagonals of the queens already placed. This is O(1) with three sets, and it is where nearly all the search space disappears."
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "place queen\nat (row, col)",
+        "accent": "blue",
+        "parentId": "cycle"
+      },
+      {
+        "id": "explore",
+        "type": "process",
+        "text": "placeQueens(row + 1)",
+        "accent": "violet",
+        "parentId": "cycle"
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "remove queen\nfrom (row, col)",
+        "accent": "coral",
+        "parentId": "cycle",
+        "note": "The board is one shared array. A queen left behind poisons every arrangement tried after this one."
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "col = col + 1"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "done"
+      },
+      {
+        "from": "done",
+        "to": "record",
+        "label": "yes"
+      },
+      {
+        "from": "done",
+        "to": "init",
+        "label": "no"
+      },
+      {
+        "from": "record",
+        "to": "ret1"
+      },
+      {
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "from": "loop",
+        "to": "safe",
+        "label": "yes"
+      },
+      {
+        "from": "loop",
+        "to": "ret2",
+        "label": "no"
+      },
+      {
+        "from": "safe",
+        "to": "next",
+        "label": "yes (prune)"
+      },
+      {
+        "from": "safe",
+        "to": "choose",
+        "label": "no"
+      },
+      {
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "from": "explore",
+        "to": "undo"
+      },
+      {
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ]
+  }
+}

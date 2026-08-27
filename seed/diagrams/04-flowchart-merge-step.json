@@ -1,0 +1,182 @@
+{
+  "slug": "merge-step",
+  "kind": "flowchart",
+  "title": "The merge step",
+  "group": "Sorting",
+  "position": 4,
+  "spec": {
+    "title": "The merge step",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "merge(left, right)"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "i = 0, j = 0\nout = []"
+      },
+      {
+        "id": "both",
+        "type": "decision",
+        "text": "i < left.len and\nj < right.len ?"
+      },
+      {
+        "id": "cmp",
+        "type": "decision",
+        "text": "left[i] <= right[j] ?",
+        "accent": "amber",
+        "badge": "!",
+        "note": "<= and not <. On a tie the left value is taken first, which is exactly what makes merge sort stable. With plain numbers you cannot tell; with records that share a key, you very much can."
+      },
+      {
+        "id": "takeL",
+        "type": "process",
+        "text": "out.push(left[i])\ni = i + 1",
+        "accent": "blue"
+      },
+      {
+        "id": "takeR",
+        "type": "process",
+        "text": "out.push(right[j])\nj = j + 1",
+        "accent": "blue"
+      },
+      {
+        "id": "drain",
+        "type": "group",
+        "text": "Drain whichever side is left",
+        "groupLayout": "column",
+        "note": "At most one of these two does anything."
+      },
+      {
+        "id": "drainL",
+        "type": "process",
+        "text": "append rest of left",
+        "parentId": "drain",
+        "note": "Whatever is left is already sorted and already larger than everything emitted, so it is copied wholesale rather than compared."
+      },
+      {
+        "id": "drainR",
+        "type": "process",
+        "text": "append rest of right",
+        "parentId": "drain"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "return out"
+      }
+    ],
+    "edges": [
+      {
+        "id": "m1",
+        "from": "start",
+        "to": "init"
+      },
+      {
+        "id": "m2",
+        "from": "init",
+        "to": "both"
+      },
+      {
+        "id": "m3",
+        "from": "both",
+        "to": "cmp",
+        "label": "yes"
+      },
+      {
+        "id": "m4",
+        "from": "both",
+        "to": "drainL",
+        "label": "no"
+      },
+      {
+        "id": "m5",
+        "from": "cmp",
+        "to": "takeL",
+        "label": "yes"
+      },
+      {
+        "id": "m6",
+        "from": "cmp",
+        "to": "takeR",
+        "label": "no"
+      },
+      {
+        "id": "m7",
+        "from": "takeL",
+        "to": "both"
+      },
+      {
+        "id": "m8",
+        "from": "takeR",
+        "to": "both"
+      },
+      {
+        "id": "m9",
+        "from": "drainL",
+        "to": "drainR"
+      },
+      {
+        "id": "m10",
+        "from": "drainR",
+        "to": "end"
+      }
+    ],
+    "walkthrough": [
+      {
+        "node": "start",
+        "caption": "Merging left = [27, 38] with right = [3, 9]. Both are already sorted."
+      },
+      {
+        "node": "init",
+        "caption": "Two pointers at the front of each side, and an empty output."
+      },
+      {
+        "node": "both",
+        "caption": "Both sides still have elements ? Yes."
+      },
+      {
+        "node": "cmp",
+        "caption": "left[0] = 27, right[0] = 3. Is 27 <= 3 ? No."
+      },
+      {
+        "node": "takeR",
+        "caption": "Take 3 from the right. out = [3], j moves to 1."
+      },
+      {
+        "node": "both",
+        "caption": "Still both non-empty ? Yes."
+      },
+      {
+        "node": "cmp",
+        "caption": "27 vs 9. Is 27 <= 9 ? No."
+      },
+      {
+        "node": "takeR",
+        "caption": "Take 9. out = [3, 9], j moves to 2 and the right side is now exhausted."
+      },
+      {
+        "node": "both",
+        "caption": "j has run off the end of right, so the loop stops."
+      },
+      {
+        "node": "drainL",
+        "caption": "Copy the rest of the left side across: out = [3, 9, 27, 38]."
+      },
+      {
+        "node": "drainR",
+        "caption": "The right side is empty, so this does nothing."
+      },
+      {
+        "node": "end",
+        "caption": "Four elements out, three comparisons, one pass. That is the whole merge."
+      }
+    ],
+    "interactive": {
+      "walkthrough": true
+    }
+  }
+}

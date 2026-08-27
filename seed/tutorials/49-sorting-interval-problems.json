@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Interval problems look like they need every pair compared: does booking A clash with booking B, for all A and B? That is O(n²). Sorting by start time removes the need entirely, because once the intervals are in time order you only ever have to compare against what you are currently holding."
+          "text": "Interval problems look like they need every pair compared: does booking A clash with booking B, for all A and B? That's O(n²). Sorting by start time removes the need entirely, since once the intervals are in time order you only ever have to compare against what you're currently holding."
         }
       ]
     },
@@ -61,7 +61,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The reason sorting by start makes one pass sufficient: any interval that could overlap the current one must start at or before the current end, and since starts are ascending, once you find one that starts later, no later interval can overlap either."
+          "text": "Why sorting by start makes one pass enough: any interval that could overlap the current one has to start at or before the current end, and since starts are ascending, once you find one that starts later, no later interval can overlap either."
         }
       ]
     },
@@ -92,7 +92,7 @@
           ]
         },
         {
-          "text": ", because the next interval may be entirely contained within the current one. And decide explicitly whether touching intervals like [1,3] and [3,5] count as overlapping; that is a specification question, not an algorithmic one, and it changes "
+          "text": ", since the next interval might be entirely contained within the current one. And decide explicitly whether touching intervals like [1,3] and [3,5] count as overlapping; that's a specification question, not an algorithmic one, and it changes "
         },
         {
           "text": ">",
@@ -129,7 +129,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Given arrival and departure times, how many platforms does a station need so no train ever waits? Equivalently: how many meeting rooms, how many servers, what is the peak concurrency."
+          "text": "Given arrival and departure times, how many platforms does a station need so no train ever waits? Equivalently: how many meeting rooms, how many servers, what's the peak concurrency."
         }
       ]
     },
@@ -156,7 +156,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Note that you never need to know which train is which. Only the times matter, which is what allows the two lists to be sorted independently and destroys the pairing entirely."
+          "text": "You never actually need to know which train is which. Only the times matter, which is what lets the two lists be sorted independently, destroying the pairing entirely."
         }
       ]
     },
@@ -165,7 +165,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The tie-breaking rule matters: if a departure and an arrival happen at the same instant, does the platform free up in time? Handle the departure first and it does; handle the arrival first and it does not. Both are defensible, and the problem statement has to say which."
+          "text": "The tie-breaking rule matters: if a departure and an arrival happen at the same instant, does the platform free up in time? Handle the departure first and it does; handle the arrival first and it doesn't. Both are defensible, and the problem statement has to say which."
         }
       ]
     },

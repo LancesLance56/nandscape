@@ -253,19 +253,23 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
           page runs out, and `top`/`max-h`/`overflow-y-auto` still give it
           its own independent scrollbar while a lesson is on screen. */}
       {railCollapsed ? (
-        <button
-          type="button"
-          onClick={toggleRail}
-          aria-label="Show tutorial navigation"
-          title="Show tutorial navigation"
-          className="sticky top-32 hidden shrink-0 rounded-lg border border-border bg-surface-card p-2 text-ink-soft transition-colors hover:text-copper-dark lg:block"
-        >
-          <PanelIcon />
-        </button>
+        // Collapsed, but the column keeps its full width and border so the
+        // lesson area beside it does not reflow when the rail is toggled.
+        <div className="sticky top-36 hidden w-72 shrink-0 pl-6 lg:block lg:border-r lg:border-border xl:pl-10">
+          <button
+            type="button"
+            onClick={toggleRail}
+            aria-label="Show tutorial navigation"
+            title="Show tutorial navigation"
+            className="rounded-lg border border-border bg-surface-card p-2 text-ink-soft transition-colors hover:text-copper-dark"
+          >
+            <PanelIcon />
+          </button>
+        </div>
       ) : (
         <aside
           ref={desktopNavRef}
-          className="sticky top-32 hidden max-h-[calc(100vh-10rem)] w-64 shrink-0 flex-col overflow-y-auto overscroll-contain pb-4 lg:flex"
+          className="sticky top-36 hidden max-h-[calc(100vh-11rem)] w-72 shrink-0 flex-col overflow-y-auto overscroll-contain pb-4 pl-6 pr-3 lg:flex lg:border-r lg:border-border xl:pl-10"
         >
           <div className="mb-1 flex items-center justify-between pl-3">
             <span className="text-[10px] font-bold uppercase tracking-wide text-slate">Contents</span>

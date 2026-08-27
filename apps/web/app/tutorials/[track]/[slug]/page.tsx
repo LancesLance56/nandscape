@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { BlockRenderer } from "@/components/content/blocks/block-renderer";
+import { ArticleShell, ArticleMeta } from "@/components/content/article-shell";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
+import { readingTimeLabel } from "@/lib/content/reading-time";
 import { getPublishedTutorialPageBySlug, listTutorialPages } from "@/lib/tutorials/tutorials";
 import { getTrackSlugForPage, getTutorialTrackBySlug } from "@/lib/tutorials/tutorial-tracks";
 
@@ -67,9 +69,10 @@ export default async function TutorialPage({ params }: PageProps) {
 
   const trackRecord = realTrack ? await getTutorialTrackBySlug(realTrack) : null;
   const path = `/tutorials/${track}/${page.slug}`;
+  const updated = formatDate(page.updatedAt);
 
   return (
-    <article>
+    <>
       {/* TechArticle rather than Article: these are step-by-step
           explanations of how something works, which is what the subtype is
           for. */}
@@ -92,24 +95,37 @@ export default async function TutorialPage({ params }: PageProps) {
         ]}
       />
 
-      <nav aria-label="Breadcrumb" className="mb-3 text-xs text-slate">
-        <Link href="/tutorials" className="hover:text-copper-dark">
-          Tutorials
-        </Link>
-        {trackRecord && (
-          <>
-            <span className="mx-1.5 text-border-strong">/</span>
-            <Link href={`/tutorials/${trackRecord.slug}`} className="hover:text-copper-dark">
-              {trackRecord.title}
+      <ArticleShell
+        // Lessons run wider than a blog post - the layout column already
+        // caps and centres them (max-w-5xl), so the shell shouldn't also
+        // clamp to its default reading measure.
+        className="max-w-none"
+        title={page.title}
+        lede={page.excerpt ?? undefined}
+        breadcrumb={
+          <nav aria-label="Breadcrumb" className="mb-4 text-xs text-slate">
+            <Link href="/tutorials" className="hover:text-copper-dark">
+              Tutorials
             </Link>
-          </>
-        )}
-      </nav>
-
-      <h1 className="font-display text-3xl font-bold leading-tight text-ink">{page.title}</h1>
-      <div className="mt-8">
+            {trackRecord && (
+              <>
+                <span className="mx-1.5 text-border-strong">/</span>
+                <Link href={`/tutorials/${trackRecord.slug}`} className="hover:text-copper-dark">
+                  {trackRecord.title}
+                </Link>
+              </>
+            )}
+          </nav>
+        }
+        meta={<ArticleMeta items={[updated && `Updated ${updated}`, readingTimeLabel(page.body)]} />}
+      >
         <BlockRenderer blocks={page.body} />
-      </div>
-    </article>
+      </ArticleShell>
+    </>
   );
+}
+
+function formatDate(iso: string | null): string | null {
+  if (!iso) return null;
+  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }

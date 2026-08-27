@@ -1,0 +1,132 @@
+{
+  "slug": "selection",
+  "kind": "flowchart",
+  "title": "Selection sort",
+  "group": "Sorting",
+  "position": 1,
+  "spec": {
+    "title": "Selection sort",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "Start"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "i = 0"
+      },
+      {
+        "id": "outer",
+        "type": "decision",
+        "text": "i < n-1 ?"
+      },
+      {
+        "id": "setmin",
+        "type": "process",
+        "text": "min = i\nj = i + 1",
+        "note": "Assume the first unsorted element is the smallest until proven otherwise."
+      },
+      {
+        "id": "inner",
+        "type": "decision",
+        "text": "j < n ?"
+      },
+      {
+        "id": "cmp",
+        "type": "decision",
+        "text": "a[j] < a[min] ?"
+      },
+      {
+        "id": "newmin",
+        "type": "process",
+        "text": "min = j",
+        "note": "Only the index is recorded. Nothing moves during the scan, which is exactly why selection sort does so few writes."
+      },
+      {
+        "id": "inc-j",
+        "type": "process",
+        "text": "j = j + 1"
+      },
+      {
+        "id": "swap",
+        "type": "process",
+        "text": "swap a[i], a[min]",
+        "accent": "blue",
+        "note": "Exactly one swap per outer iteration, which is the algorithm's whole selling point: n-1 writes total, no matter how scrambled the input."
+      },
+      {
+        "id": "inc-i",
+        "type": "process",
+        "text": "i = i + 1"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "Sorted"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "init"
+      },
+      {
+        "from": "init",
+        "to": "outer"
+      },
+      {
+        "from": "outer",
+        "to": "setmin",
+        "label": "yes"
+      },
+      {
+        "from": "outer",
+        "to": "end",
+        "label": "no"
+      },
+      {
+        "from": "setmin",
+        "to": "inner"
+      },
+      {
+        "from": "inner",
+        "to": "cmp",
+        "label": "yes"
+      },
+      {
+        "from": "inner",
+        "to": "swap",
+        "label": "no"
+      },
+      {
+        "from": "cmp",
+        "to": "newmin",
+        "label": "yes"
+      },
+      {
+        "from": "cmp",
+        "to": "inc-j",
+        "label": "no"
+      },
+      {
+        "from": "newmin",
+        "to": "inc-j"
+      },
+      {
+        "from": "inc-j",
+        "to": "inner"
+      },
+      {
+        "from": "swap",
+        "to": "inc-i"
+      },
+      {
+        "from": "inc-i",
+        "to": "outer"
+      }
+    ]
+  }
+}

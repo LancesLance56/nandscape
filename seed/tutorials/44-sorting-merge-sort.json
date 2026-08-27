@@ -30,7 +30,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Merge sort rests on two facts, both of them obvious on their own."
+          "text": "Merge sort rests on two facts, and both are obvious on their own."
         }
       ]
     },
@@ -48,7 +48,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Put those together and you have the algorithm. Split the array until every piece has one element, which makes them all sorted by definition, then merge pairs back together until there is one array left."
+          "text": "Put those together and that's the algorithm. Split the array until every piece has one element, which makes them all sorted by definition, then merge pairs back together until there's one array left."
         }
       ]
     },
@@ -63,7 +63,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Everything below traces this array all the way through:"
+          "text": "Everything below traces this array all the way through, live, so you don't have to take any of it on faith:"
         }
       ]
     },
@@ -75,38 +75,86 @@
       "variants": []
     },
     {
-      "id": "h-split",
-      "text": "Step 1: splitting",
+      "id": "h-trace",
+      "text": "Tracing the recursion",
       "type": "heading",
       "level": 2
     },
     {
-      "id": "p-split",
+      "id": "p-trace",
       "type": "paragraph",
       "content": [
         {
-          "text": "Each call finds the midpoint and splits there. Seven elements split into three and four, then those split again, and so on until every piece has one element."
+          "text": "Each call finds the midpoint and splits there, and it never once looks at the values, only the length. That's why merge sort costs the same on sorted, reversed and random input: the shape of this recursion depends only on n."
         }
       ]
     },
     {
-      "id": "code-tree",
-      "code": "               [38, 27, 43, 3, 9, 82, 10]\n                /                      \\\n       [38, 27, 43]              [3, 9, 82, 10]\n        /       \\                 /          \\\n    [38]    [27, 43]          [3, 9]      [82, 10]\n             /    \\            /   \\       /    \\\n          [27]   [43]        [3]   [9]  [82]   [10]",
-      "type": "code",
-      "language": "text",
-      "variants": []
-    },
-    {
-      "id": "p-split-2",
+      "id": "p-trace-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Notice the splitting never looks at the values. It only looks at the length. That is why merge sort takes the same time on sorted, reversed and random input: the shape of this tree depends only on n."
+          "text": "There's a detail here that trips people up, so it's worth being precise about it. Merge sort does "
+        },
+        {
+          "text": "not",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " split everything into single elements and then merge everything back. It's depth-first: it fully finishes the entire left half, all the way down and all the way back up, before it even looks at the right half."
         }
       ]
     },
     {
-      "id": "p-split-3",
+      "id": "p-trace-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step through the tree below one call at a time. Watch the call stack panel on the right as much as the tree itself: every frame sitting in it is a paused call, holding onto its left result and waiting on its right one, and that's exactly where the sorted halves live between a split and its merge, not in some array off to the side."
+        }
+      ]
+    },
+    {
+      "id": "w-tree",
+      "data": {
+        "algorithm": "merge",
+        "array": [
+          38,
+          27,
+          43,
+          3,
+          9,
+          82,
+          10
+        ]
+      },
+      "type": "interactive",
+      "widget": "sort-recursion-tree"
+    },
+    {
+      "id": "p-trace-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice how early the first merge happens. [27,43] merges back together, and then [38] merges with it, before mergeSort([3,9,82,10]) has even been entered. The whole right half of the original array hasn't been touched yet."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That's what depth-first means here, made concrete: the call handling [38,27,43,3,9,82,10] can't merge until both its children have returned, and the left one has to fully resolve, splits and merges and all, before the right one is even called."
+        }
+      ]
+    },
+    {
+      "id": "p-trace-6",
       "type": "paragraph",
       "content": [
         {
@@ -121,127 +169,22 @@
           ]
         },
         {
-          "text": " levels deep, because each level halves the size. Seven elements gives three levels of splitting."
+          "text": " levels deep, since each level halves the size. Seven elements gives three levels of splitting, which is also as deep as the call stack ever gets."
         }
       ]
     },
     {
-      "id": "h-order",
-      "text": "Step 2: the order things actually happen",
+      "id": "h-watch",
+      "text": "The same run in bars",
       "type": "heading",
       "level": 2
     },
     {
-      "id": "p-order",
+      "id": "p-watch",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is the part that trips people up, so it is worth being precise. Merge sort does "
-        },
-        {
-          "text": "not",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": " split everything into single elements and then merge everything back. It is depth-first: it fully finishes the entire left half, all the way down and all the way back up, before it even looks at the right half."
-        }
-      ]
-    },
-    {
-      "id": "p-order-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Here is every call, in the exact order it happens, with indentation showing recursion depth."
-        }
-      ]
-    },
-    {
-      "id": "code-trace",
-      "code": " 1  mergeSort([38,27,43,3,9,82,10])  ->  split into [38,27,43] and [3,9,82,10]\n 2    mergeSort([38,27,43])          ->  split into [38] and [27,43]\n 3      mergeSort([38])              ->  base case, return [38]\n 4      mergeSort([27,43])           ->  split into [27] and [43]\n 5        mergeSort([27])            ->  base case, return [27]\n 6        mergeSort([43])            ->  base case, return [43]\n 7      merge([27], [43])            ->  [27,43]\n 8    merge([38], [27,43])           ->  [27,38,43]      <- left half done\n 9    mergeSort([3,9,82,10])         ->  split into [3,9] and [82,10]\n10      mergeSort([3,9])             ->  split into [3] and [9]\n11        mergeSort([3])             ->  base case, return [3]\n12        mergeSort([9])             ->  base case, return [9]\n13      merge([3], [9])              ->  [3,9]\n14      mergeSort([82,10])           ->  split into [82] and [10]\n15        mergeSort([82])            ->  base case, return [82]\n16        mergeSort([10])            ->  base case, return [10]\n17      merge([82], [10])            ->  [10,82]\n18    merge([3,9], [10,82])          ->  [3,9,10,82]     <- right half done\n19  merge([27,38,43], [3,9,10,82])   ->  [3,9,10,27,38,43,82]",
-      "type": "code",
-      "language": "text",
-      "variants": []
-    },
-    {
-      "id": "p-order-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Look at step 7. A merge happens at step 7, before the right half of the original array has been touched at all: "
-        },
-        {
-          "text": "mergeSort([3,9,82,10])",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " does not begin until step 9."
-        }
-      ]
-    },
-    {
-      "id": "p-order-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That is what \"depth-first\" means here. The call at step 2 cannot return until steps 3 through 8 have all completed, and the call at step 1 cannot merge until both step 8 and step 18 have returned."
-        }
-      ]
-    },
-    {
-      "id": "p-order-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Nineteen steps in total: 7 base cases, 6 merges, and 6 splits. In general there are n leaves, n-1 merges, and n-1 splits."
-        }
-      ]
-    },
-    {
-      "id": "h-stack",
-      "text": "Why the recursion works out",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-stack",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "At any moment during the run, the call stack holds one path from the root down to wherever you currently are. At step 5, for instance, the stack looks like this, most recent call last:"
-        }
-      ]
-    },
-    {
-      "id": "code-stack",
-      "code": "mergeSort([38,27,43,3,9,82,10])     waiting on its left half\n  mergeSort([38,27,43])             waiting on its left half\n    mergeSort([27,43])              waiting on its left half\n      mergeSort([27])               running now, returns immediately",
-      "type": "code",
-      "language": "text",
-      "variants": []
-    },
-    {
-      "id": "p-stack-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Every frame below the top is parked, holding a local variable for its left result and waiting. That is where the sorted halves live between the split and the merge: not in some global structure, but in the local variables of paused function calls, one per level. Since the tree is log n deep, so is the stack."
-        }
-      ]
-    },
-    {
-      "id": "p-stack-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Step through the visualizer below and watch the highlighted range narrow as it descends, then widen again as merges complete. The highlighted region is exactly the call at the top of the stack."
+          "text": "Here's the same algorithm again, but drawn as an array instead of a tree. Step through it and watch the highlighted range narrow as the recursion descends, then widen again as merges complete: that range is exactly the call sitting at the top of the stack in the widget above."
         }
       ]
     },
@@ -258,7 +201,7 @@
     },
     {
       "id": "h-mergestep",
-      "text": "Step 3: inside one merge",
+      "text": "Inside one merge",
       "type": "heading",
       "level": 2
     },
@@ -267,7 +210,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The merge is where the actual sorting happens. Take step 19, the final merge of "
+          "text": "The merge is where the actual sorting happens. Take the final merge of "
         },
         {
           "text": "[27,38,43]",
@@ -289,7 +232,7 @@
           ]
         },
         {
-          "text": ". Both inputs are already sorted, which is the only thing that makes this work."
+          "text": " from the tree above. Both inputs are already sorted, and that's the only thing that makes this work."
         }
       ]
     },
@@ -353,7 +296,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Seven elements, six comparisons, one pass. The loop ends as soon as either side runs out, and whatever is left on the other side is copied across wholesale, because it is already sorted and already larger than everything emitted so far."
+          "text": "Seven elements, six comparisons, one pass. The loop ends the moment either side runs out, and whatever's left on the other side gets copied across wholesale, since it's already sorted and already larger than everything emitted so far."
         }
       ]
     },
@@ -416,7 +359,7 @@
           ]
         },
         {
-          "text": ". The left half came earlier in the original array, so taking it first preserves the original relative order of equal elements, which is the definition of a stable sort. In code that is the difference between "
+          "text": ". The left half came earlier in the original array, so taking it first preserves the original relative order of equal elements, which is the definition of a stable sort. In code that's the difference between "
         },
         {
           "text": "left[i] <= right[j]",
@@ -447,7 +390,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "With plain numbers you cannot tell the difference, because two equal numbers are indistinguishable. Sort records with equal keys and it matters a great deal, which is why that comparison operator is worth being deliberate about."
+          "text": "With plain numbers you can't tell the difference, since two equal numbers are indistinguishable. Sort records with equal keys and it matters a great deal, which is why that comparison operator is worth being deliberate about."
         }
       ]
     },
@@ -462,7 +405,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A flowchart cannot express \"call yourself\", so what follows is the shape of a "
+          "text": "A flowchart can't express \"call yourself\", so what follows is the shape of a "
         },
         {
           "text": "single call",
@@ -473,7 +416,7 @@
           ]
         },
         {
-          "text": ", with the two recursive steps shown as ordinary boxes. Click any box with a dot to see what it is for."
+          "text": ", with the two recursive steps drawn as ordinary boxes. Click any box with a dot to see what it's for."
         }
       ]
     },
@@ -490,7 +433,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The base case is the exit that stops the recursion, and without it, splitting would continue forever on empty arrays."
+          "text": "The base case is the exit that stops the recursion. Without it, splitting would just keep going forever on empty arrays."
         }
       ]
     },
@@ -499,7 +442,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "And here is the merge step, which does have a genuine loop:"
+          "text": "And here's the merge step, which does have a genuine loop:"
         }
       ]
     },
@@ -516,7 +459,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The dashed copper arrows are the loop: both branches of the comparison rejoin and go back to the \"are both sides non-empty\" test. When that test fails, at most one of the two drain steps has anything left to do."
+          "text": "The dashed copper arrows are the loop: both branches of the comparison rejoin and go back to the \"are both sides non-empty\" test. Once that test fails, at most one of the two drain steps has anything left to do."
         }
       ]
     },
@@ -549,7 +492,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "No input changes this, because the split is positional. That is both merge sort's guarantee and its limitation: it cannot exploit input that is already partly sorted, which is exactly the gap Timsort fills by detecting existing runs before it starts."
+          "text": "No input changes this, since the split is positional. That's both merge sort's guarantee and its limitation: it can't exploit input that's already partly sorted, which is exactly the gap Timsort fills by detecting existing runs before it starts."
         }
       ]
     },
@@ -602,7 +545,7 @@
           ]
         },
         {
-          "text": ". If the data does not fit in memory, merge sort still works: sort chunks that do fit, write them to disk, then merge the sorted files by streaming them. The merge only ever needs the front of each run, so it can combine files far larger than RAM."
+          "text": ". If the data doesn't fit in memory, merge sort still works: sort chunks that do fit, write them to disk, then merge the sorted files by streaming them. The merge only ever needs the front of each run, so it can combine files far larger than RAM."
         }
       ]
     },
@@ -619,7 +562,7 @@
           ]
         },
         {
-          "text": ". Merging a linked list needs no extra memory at all, since it is just relinking. Quick sort is awkward on lists because it depends on indexing."
+          "text": ". Merging a linked list needs no extra memory at all, since it's just relinking. Quick sort is awkward on lists because it depends on indexing."
         }
       ]
     },
@@ -628,7 +571,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "When the worst case matters, quick sort is usually faster but can degrade to O(n²), and merge sort cannot."
+          "text": "When the worst case matters, quick sort is usually faster but can degrade to O(n²), and merge sort can't."
         }
       ]
     },
@@ -637,7 +580,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is also the basis of "
+          "text": "It's also the basis of "
         },
         {
           "text": "Timsort",
@@ -686,7 +629,7 @@
       "data": {
         "questions": [
           {
-            "prompt": "In the trace, merge([27],[43]) happens at step 7. What has NOT happened yet at that point?",
+            "prompt": "In the trace, merge([27],[43]) happens early. What has NOT happened yet at that point?",
             "options": [
               {
                 "label": "The right half [3,9,82,10] has not been touched at all",

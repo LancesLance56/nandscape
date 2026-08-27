@@ -37,7 +37,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "What makes them worth studying is not the loop, which is trivial, but the argument for why the sorted arrangement is optimal. That argument is nearly always an exchange argument. Assume an optimal solution that differs from the sorted one, find two elements that are \"crossed\", and show that uncrossing them does not make the answer worse. Repeat until you have the sorted arrangement, so it is optimal too."
+          "text": "What makes them worth studying isn't the loop, which is trivial, but the argument for why the sorted arrangement is optimal. That argument is nearly always an exchange argument. Assume an optimal solution that differs from the sorted one, find two elements that are \"crossed,\" and show that uncrossing them doesn't make the answer worse. Repeat until you have the sorted arrangement, so it's optimal too."
         }
       ]
     },
@@ -69,7 +69,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sort, and the closest pair must be adjacent. If two values are closest but not adjacent after sorting, then something sits between them, and that something is closer to each of them than they are to each other, which contradicts the assumption. So only the n-1 adjacent pairs need checking, giving O(n log n) dominated by the sort."
+          "text": "Sort, and the closest pair has to be adjacent. If two values are closest but not adjacent after sorting, something sits between them, and that something is closer to each of them than they are to each other, which contradicts the assumption. So only the n-1 adjacent pairs need checking, giving O(n log n) dominated by the sort."
         }
       ]
     },
@@ -102,7 +102,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is also an O(n) solution that skips the sort entirely: walk the array and swap any adjacent pair that violates the pattern. It works, and it produces a different valid answer. Worth knowing that \"sort first\" is the obvious approach here rather than the only one."
+          "text": "There's also an O(n) solution that skips the sort entirely: walk the array and swap any adjacent pair that violates the pattern. It works, and it produces a different valid answer. Worth knowing that \"sort first\" is the obvious approach here rather than the only one."
         }
       ]
     },
@@ -126,7 +126,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sort ascending. The largest index carries the most weight, so it should hold the largest value. The exchange argument: if a larger value sits at a smaller index than some smaller value, swapping them increases the sum, because the larger value gains more weight than the smaller one loses. So no arrangement other than the sorted one can be optimal."
+          "text": "Sort ascending. The largest index carries the most weight, so it should hold the largest value. The exchange argument: if a larger value sits at a smaller index than some smaller value, swapping them increases the sum, since the larger value gains more weight than the smaller one loses. So no arrangement other than the sorted one can be optimal."
         }
       ]
     },
@@ -161,7 +161,7 @@
           ]
         },
         {
-          "text": " of your units that can still beat it. Units too weak to beat the current enemy can never beat any later one either, since the enemies only get stronger, so they are spent as sacrifices."
+          "text": " of your units that can still beat it. Units too weak to beat the current enemy can never beat any later one either, since the enemies only get stronger, so they get spent as sacrifices."
         }
       ]
     },
@@ -254,7 +254,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In every row the code is a loop of two or three lines. If a problem feels like it needs to try every arrangement, it is worth asking whether sorting first makes one particular arrangement provably best."
+          "text": "In every row the code is a loop of two or three lines. If a problem feels like it needs to try every arrangement, it's worth asking whether sorting first makes one particular arrangement provably best."
         }
       ]
     },

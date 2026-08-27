@@ -1,0 +1,199 @@
+{
+  "slug": "sudoku",
+  "kind": "flowchart",
+  "title": "Sudoku solver",
+  "group": "Backtracking",
+  "position": 6,
+  "spec": {
+    "title": "Sudoku solver",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "solve()"
+      },
+      {
+        "id": "pick",
+        "type": "process",
+        "text": "cell = pick an\nempty cell",
+        "accent": "amber",
+        "badge": "!",
+        "note": "Which cell is picked here is the whole ballgame. Reading order works; fewest-candidates-first does a quarter of the work, because it fails fast on the cells most likely to fail at all."
+      },
+      {
+        "id": "none",
+        "type": "decision",
+        "text": "no empty cell ?",
+        "badge": "1"
+      },
+      {
+        "id": "ret1",
+        "type": "end",
+        "text": "return true\n(solved)"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "v = 1"
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "v <= 9 ?"
+      },
+      {
+        "id": "ret2",
+        "type": "end",
+        "text": "return false\n(backtrack)",
+        "accent": "coral",
+        "note": "No digit fits, so a guess made earlier was wrong. If the chosen cell had zero candidates, this fires immediately, which is exactly the fast failure a good cell-picker is buying."
+      },
+      {
+        "id": "legal",
+        "type": "decision",
+        "text": "v legal in row,\ncolumn and box ?",
+        "badge": "2",
+        "accent": "amber",
+        "note": "The three sudoku constraints, all checked at once."
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "board[cell] = v",
+        "accent": "blue",
+        "parentId": "cycle"
+      },
+      {
+        "id": "explore",
+        "type": "decision",
+        "text": "solve()\nsucceeded ?",
+        "accent": "violet",
+        "parentId": "cycle"
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "board[cell] = 0",
+        "accent": "coral",
+        "parentId": "cycle",
+        "note": "Erasing the guess is what lets the next value be tried on a clean board."
+      },
+      {
+        "id": "win",
+        "type": "end",
+        "text": "return true"
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "v = v + 1"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "pick"
+      },
+      {
+        "from": "pick",
+        "to": "none"
+      },
+      {
+        "from": "none",
+        "to": "ret1",
+        "label": "yes"
+      },
+      {
+        "from": "none",
+        "to": "init",
+        "label": "no"
+      },
+      {
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "from": "loop",
+        "to": "legal",
+        "label": "yes"
+      },
+      {
+        "from": "loop",
+        "to": "ret2",
+        "label": "no"
+      },
+      {
+        "from": "legal",
+        "to": "next",
+        "label": "no (prune)"
+      },
+      {
+        "from": "legal",
+        "to": "choose",
+        "label": "yes"
+      },
+      {
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "from": "explore",
+        "to": "win",
+        "label": "yes"
+      },
+      {
+        "from": "explore",
+        "to": "undo",
+        "label": "no"
+      },
+      {
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ]
+  }
+}

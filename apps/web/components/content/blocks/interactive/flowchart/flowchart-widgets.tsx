@@ -1,70 +1,307 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { validateFlowchart, type FlowNodeType, type FlowchartSpec } from "@/lib/flowchart/types";
-import { ALL_CHARTS, CHART_GROUPS, STARTER_CHART } from "@/lib/flowchart/charts";
-import { WidgetFrame } from "../widget-frame";
+import { useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ReactFlowProvider } from "@xyflow/react";
+
 import { cn } from "@/lib/cn";
-import { FlowchartCanvas, FlowchartLegend } from "./flowchart-canvas";
-import { WidgetButton } from "../shared/widget-ui";
+import {
+  edgeKey,
+  isFlowchartSpec,
+  resolveInteractive,
+  type FlowStep,
+  type FlowchartInteractive,
+  type FlowchartSpec,
+} from "@/lib/flowchart/types";
+import { ALL_CHARTS, STARTER_CHART } from "@/lib/flowchart/charts";
+import { WidgetFrame } from "../widget-frame";
+import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+import { FlowchartCanvas } from "./flowchart-canvas";
+import { DownloadButton, FlowchartLegend, FlowchartNotePanel, deriveLegend } from "./flowchart-chrome";
+import { FlowchartEditor } from "./flowchart-editor";
+
+/* -------------------------------------------------------------------------
+ * Spec resolution
+ * ---------------------------------------------------------------------- */
+
+/**
+ * A block either carries a chart inline or names a stored one.
+ *
+ * Inline wins, and that ordering is load-bearing: a block that names a preset
+ * has the stored spec injected into `chart` on the server before it ever
+ * reaches here (see lib/diagrams/resolve-block-diagrams). Checking the
+ * built-in table first would quietly shadow the database with a stale copy
+ * compiled into the bundle - an edit to a diagram would appear to do nothing.
+ *
+ * ALL_CHARTS remains only as a fallback for surfaces with no server pass,
+ * such as the admin editor's live preview.
+ */
+function resolveSpec(data: Record<string, unknown>): FlowchartSpec {
+  if (isFlowchartSpec(data.chart)) return data.chart;
+  if (typeof data.preset === "string" && ALL_CHARTS[data.preset]) return ALL_CHARTS[data.preset];
+  if (isFlowchartSpec(data)) return data;
+  return STARTER_CHART;
+}
+
+/** Block-level overrides beat whatever the preset says, so a page can turn a feature on. */
+function mergeSpec(spec: FlowchartSpec, data: Record<string, unknown>): FlowchartSpec {
+  const overrides: Partial<FlowchartSpec> = {};
+  if (typeof data.title === "string") overrides.title = data.title;
+  if (typeof data.height === "number") overrides.height = data.height;
+  if (data.direction === "TB" || data.direction === "LR") overrides.direction = data.direction;
+  if (typeof data.interactive === "object" && data.interactive !== null) {
+    overrides.interactive = { ...spec.interactive, ...(data.interactive as FlowchartInteractive) };
+  }
+  return Object.keys(overrides).length > 0 ? { ...spec, ...overrides } : spec;
+}
+
+const EMPTY: ReadonlySet<string> = new Set();
+const NO_STEPS: FlowStep[] = [];
 
 /* -------------------------------------------------------------------------
  * Display widget
  * ---------------------------------------------------------------------- */
 
-function isSpec(value: unknown): value is FlowchartSpec {
-  if (typeof value !== "object" || value === null) return false;
-  const v = value as FlowchartSpec;
-  return Array.isArray(v.nodes) && Array.isArray(v.edges);
-}
-
 /**
- * Renders a flowchart, either a named preset or one supplied inline.
+ * Renders a flowchart with every interactive layer the spec asks for.
  *
- * Nodes carrying a note get a dot in the corner and become clickable. That
- * is deliberate: a flowchart box has room for "swap a[i], a[j]" and nothing
- * else, so the reason a step exists has to live somewhere, and a panel that
- * appears on demand beats cluttering every box with prose.
+ * Nodes carrying a note get a dot in the corner and become clickable. That is
+ * deliberate: a flowchart box has room for "swap a[i], a[j]" and nothing else,
+ * so the reason a step exists has to live somewhere, and a panel that appears
+ * on demand beats cluttering every box with prose.
  */
 export function FlowchartWidget({ data }: { data: Record<string, unknown> }) {
-  const spec: FlowchartSpec = useMemo(() => {
-    if (typeof data.preset === "string" && ALL_CHARTS[data.preset]) return ALL_CHARTS[data.preset];
-    if (isSpec(data.chart)) return data.chart;
-    if (isSpec(data)) return data as FlowchartSpec;
-    return STARTER_CHART;
-  }, [data]);
+  const spec = useMemo(() => mergeSpec(resolveSpec(data), data), [data]);
+  return <FlowchartView spec={spec} />;
+}
+
+export function FlowchartView({ spec, className }: { spec: FlowchartSpec; className?: string }) {
+  const interactive = useMemo(() => resolveInteractive(spec), [spec]);
+  const legend = useMemo(() => deriveLegend(spec), [spec]);
 
   const [selected, setSelected] = useState<string | null>(null);
-  const selectedNode = spec.nodes.find((n) => n.id === selected) ?? null;
-  const withNotes = spec.nodes.filter((n) => n.note).length;
+  // Tracing starts on. A chart that ships a recorded walkthrough is one where
+  // the order of events is the hard part, and making the reader find a button
+  // before the diagram explains itself wastes the best thing it has.
+  const [tracing, setTracing] = useState(true);
+  const [focusOn, setFocusOn] = useState(interactive.focus);
+  const [expanded, setExpanded] = useState(false);
+
+  // A stable identity matters here: `steps` feeds the walkthrough memo below,
+  // and `spec.walkthrough ?? []` would hand it a fresh array every render.
+  const steps = spec.walkthrough ?? NO_STEPS;
+  const player = useStepPlayer(Math.max(steps.length, 1));
+
+  const nodeById = useMemo(() => new Map(spec.nodes.map((n) => [n.id, n])), [spec]);
+  const notesCount = spec.nodes.filter((n) => n.note).length;
+  const selectedNode = selected ? nodeById.get(selected) : undefined;
+
+  /* --- walkthrough state --------------------------------------------- */
+
+  const { visited, activeNodes, activeEdges } = useMemo(() => {
+    if (!tracing || steps.length === 0) {
+      return { visited: EMPTY, activeNodes: EMPTY, activeEdges: EMPTY };
+    }
+    const seen = new Set<string>();
+    for (let i = 0; i <= player.index && i < steps.length; i++) {
+      if (steps[i].node) seen.add(steps[i].node!);
+    }
+    const current = steps[Math.min(player.index, steps.length - 1)];
+    return {
+      visited: seen,
+      activeNodes: current.node ? new Set([current.node]) : EMPTY,
+      activeEdges: current.edge ? new Set([current.edge]) : EMPTY,
+    };
+  }, [tracing, steps, player.index]);
+
+  /* --- what to fade -------------------------------------------------- */
+
+  const dimmed = useMemo(() => {
+    const hide = new Set<string>();
+    // Groups are scenery. Fading a container because its children are not
+    // the current step just makes the chart look broken.
+    const targets = spec.nodes.filter((n) => n.type !== "group").map((n) => n.id);
+
+    if (focusOn && selected) {
+      const keep = new Set<string>([selected]);
+      for (const e of spec.edges) {
+        if (e.from === selected) keep.add(e.to);
+        if (e.to === selected) keep.add(e.from);
+      }
+      for (const id of targets) if (!keep.has(id)) hide.add(id);
+    }
+    if (tracing && steps.length > 0) {
+      for (const id of targets) if (!visited.has(id)) hide.add(id);
+    }
+    return hide;
+  }, [spec, focusOn, selected, tracing, steps.length, visited]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // The controls and the legend ride on the canvas rather than in rows of
+  // their own. They are small, and a chart always has slack around its own
+  // outline for them to sit in; a row each cost roughly eighty pixels of
+  // height and bought nothing.
+  const controls = (
+    <>
+      {steps.length > 0 && interactive.walkthrough && (
+        <ToggleChip active={tracing} onClick={() => setTracing((v) => !v)}>
+          {tracing ? "Tracing" : "Trace it"}
+        </ToggleChip>
+      )}
+      {interactive.focus && (
+        <ToggleChip active={focusOn} onClick={() => setFocusOn((v) => !v)}>
+          Focus
+        </ToggleChip>
+      )}
+      {interactive.download && <DownloadButton container={containerRef} filename={spec.title ?? "flowchart"} />}
+    </>
+  );
+
+  const body = (fullscreen: boolean) => (
+    <div className={cn("flex flex-col gap-3", className)} ref={fullscreen ? undefined : containerRef}>
+      <FlowchartCanvas
+        spec={spec}
+        interactive={interactive}
+        // Fullscreen gets a fixed tall box; inline lets the canvas size itself.
+        height={fullscreen ? Math.max(spec.height ?? 0, 620) : spec.height}
+        selectedId={selected}
+        onSelectNode={interactive.notes || interactive.focus ? setSelected : undefined}
+        dimmed={dimmed}
+        activeNodes={activeNodes}
+        activeEdges={activeEdges}
+        visitedNodes={visited}
+        overlayTop={
+          <>
+            {controls}
+            {interactive.fullscreen && !fullscreen && (
+              <button
+                type="button"
+                onClick={() => setExpanded(true)}
+                className="rounded-md border border-border-strong bg-surface-card/85 px-2 py-1 text-[10px] font-semibold text-ink-soft backdrop-blur-sm transition-colors hover:bg-surface-2 hover:text-ink"
+              >
+                Expand
+              </button>
+            )}
+          </>
+        }
+        overlayBottom={
+          interactive.legend ? (
+            <div className="rounded-md bg-surface-card/85 px-2 py-1 backdrop-blur-sm">
+              <FlowchartLegend items={legend} />
+            </div>
+          ) : undefined
+        }
+      />
+
+      {tracing && steps.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <StepCaption text={steps[Math.min(player.index, steps.length - 1)].caption} />
+          <StepControls
+            index={player.index}
+            total={steps.length}
+            playing={player.playing}
+            onPlay={player.play}
+            onPause={player.pause}
+            onNext={player.next}
+            onPrev={player.prev}
+            onReset={player.reset}
+            onScrub={player.setIndex}
+          />
+        </div>
+      )}
+
+      {interactive.notes && notesCount > 0 && (
+        <FlowchartNotePanel
+          title={selectedNode?.text}
+          note={selectedNode?.note}
+          placeholder={
+            selectedNode
+              ? "No note for this step."
+              : "Click any box with a dot in its corner to see why that step is there."
+          }
+        />
+      )}
+
+    </div>
+  );
+
+  const subtitle = [
+    `${spec.nodes.filter((n) => n.type !== "group").length} steps`,
+    notesCount > 0 ? `${notesCount} annotated` : null,
+    steps.length > 0 ? `${steps.length}-step trace` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
-    <WidgetFrame
-      title={spec.title ?? "Flowchart"}
-      subtitle={`${spec.nodes.length} steps${withNotes > 0 ? ` · ${withNotes} annotated` : ""}`}
-    >
-      <div className="flex flex-col gap-3">
-        <FlowchartCanvas spec={spec} selectedId={selected} onSelect={(id) => setSelected((p) => (p === id ? null : id))} />
-        <FlowchartLegend />
+    <>
+      <WidgetFrame title={spec.title ?? "Flowchart"} subtitle={subtitle}>
+        <ReactFlowProvider>{body(false)}</ReactFlowProvider>
+      </WidgetFrame>
 
-        {withNotes > 0 && (
-          <div className="rounded-lg border border-border bg-surface-2/40 p-3">
-            {selectedNode ? (
-              <>
-                <div className="mb-1 text-[11px] font-semibold text-copper-dark">{selectedNode.text.replace(/\n/g, " · ")}</div>
-                <p className="text-xs leading-relaxed text-ink-soft">
-                  {selectedNode.note ?? "No note for this step."}
-                </p>
-              </>
-            ) : (
-              <p className="text-xs italic text-slate">
-                Click any box with a dot in its corner to see why that step is there.
-              </p>
-            )}
-          </div>
+      {/* No mounted guard: `expanded` only becomes true from a click, so this
+          never renders during SSR and `document` is always there by then. */}
+      {expanded &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={spec.title ?? "Flowchart"}
+            className="fixed inset-0 z-999 flex items-center justify-center bg-ink/40 p-6 backdrop-blur-sm"
+            onClick={() => setExpanded(false)}
+          >
+            <div
+              className="flex h-[86vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-border bg-surface-card shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-2.5 border-b border-border bg-surface-2 px-4 py-2.5">
+                <span className="text-[11px] font-semibold text-ink">{spec.title ?? "Flowchart"}</span>
+                <button
+                  type="button"
+                  onClick={() => setExpanded(false)}
+                  aria-label="Close"
+                  className="ml-auto rounded-md border border-border-strong px-2 py-1 text-[10px] font-semibold text-ink-soft hover:bg-surface-card"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-4">
+                <ReactFlowProvider>{body(true)}</ReactFlowProvider>
+              </div>
+            </div>
+          </div>,
+          document.body,
         )}
-      </div>
-    </WidgetFrame>
+    </>
+  );
+}
+
+function ToggleChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        // Translucent rather than flat: these sit on the drawing now, and a
+        // solid chip over a diagram reads as a hole punched in it.
+        "rounded-md border px-2 py-1 text-[10px] font-semibold backdrop-blur-sm transition-colors",
+        active
+          ? "border-copper bg-copper text-white"
+          : "border-border-strong bg-surface-card/85 text-ink-soft hover:bg-surface-2 hover:text-ink",
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -72,272 +309,27 @@ export function FlowchartWidget({ data }: { data: Record<string, unknown> }) {
  * Maker
  * ---------------------------------------------------------------------- */
 
-const NODE_TYPES: { id: FlowNodeType; label: string }[] = [
-  { id: "start", label: "Start" },
-  { id: "process", label: "Process" },
-  { id: "decision", label: "Decision" },
-  { id: "io", label: "Input/Output" },
-  { id: "end", label: "End" },
-];
-
-let idCounter = 0;
-const nextId = () => `n${Date.now().toString(36)}${idCounter++}`;
-
 /**
- * An editable flowchart. Nodes and edges are added through the panel rather
- * than by dragging: the layout is computed, so there is nowhere to drag a
- * node *to*. Editing the graph and letting the layout re-run is both simpler
- * to use and impossible to leave in a tangled state.
+ * The reader-facing editable chart. Same editor the admin page uses, wrapped
+ * in local state so a reader can pull a template apart without saving
+ * anything anywhere.
  */
 export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }) {
-  const initial: FlowchartSpec = isSpec(data.chart) ? data.chart : STARTER_CHART;
-  const [spec, setSpec] = useState<FlowchartSpec>(() => JSON.parse(JSON.stringify(initial)));
-  const [selected, setSelected] = useState<string | null>(null);
-  const [edgeFrom, setEdgeFrom] = useState("");
-  const [edgeTo, setEdgeTo] = useState("");
-  const [edgeLabel, setEdgeLabel] = useState("");
-  const [copied, setCopied] = useState(false);
+  const initial = useMemo<FlowchartSpec>(() => {
+    const base = isFlowchartSpec(data.chart) ? data.chart : STARTER_CHART;
+    return JSON.parse(JSON.stringify(base)) as FlowchartSpec;
+  }, [data]);
 
-  const issues = useMemo(() => validateFlowchart(spec), [spec]);
-  const selectedNode = spec.nodes.find((n) => n.id === selected) ?? null;
-
-  const update = (fn: (draft: FlowchartSpec) => void) => {
-    setSpec((prev) => {
-      const draft: FlowchartSpec = JSON.parse(JSON.stringify(prev));
-      fn(draft);
-      return draft;
-    });
-  };
-
-  const addNode = (type: FlowNodeType) => {
-    const id = nextId();
-    update((d) => {
-      d.nodes.push({ id, type, text: type === "decision" ? "Condition ?" : "New step" });
-    });
-    setSelected(id);
-  };
-
-  const removeNode = (id: string) => {
-    update((d) => {
-      d.nodes = d.nodes.filter((n) => n.id !== id);
-      // Edges touching a removed node would render as dangling arrows, so
-      // they go with it.
-      d.edges = d.edges.filter((e) => e.from !== id && e.to !== id);
-    });
-    setSelected(null);
-  };
-
-  const addEdge = () => {
-    if (!edgeFrom || !edgeTo || edgeFrom === edgeTo) return;
-    update((d) => {
-      if (!d.edges.some((e) => e.from === edgeFrom && e.to === edgeTo)) {
-        d.edges.push({ from: edgeFrom, to: edgeTo, label: edgeLabel.trim() || undefined });
-      }
-    });
-    setEdgeLabel("");
-  };
-
-  const label = (id: string) => spec.nodes.find((n) => n.id === id)?.text.replace(/\n/g, " ") ?? id;
-
-  const copyJson = async () => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(spec, null, 2));
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  };
+  const [spec, setSpec] = useState<FlowchartSpec>(initial);
 
   return (
-    <WidgetFrame title="Flowchart maker" subtitle={`${spec.nodes.length} nodes · ${spec.edges.length} edges`}>
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <FlowchartCanvas spec={spec} selectedId={selected} onSelect={(id) => setSelected((p) => (p === id ? null : id))} />
-          <FlowchartLegend />
-          {issues.length > 0 && (
-            <ul className="flex flex-col gap-1 rounded-lg border border-copper/40 bg-copper-bg/30 p-3">
-              {issues.map((issue) => (
-                <li key={issue} className="text-[11px] text-copper-dark">
-                  {issue}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="flex w-full flex-col gap-3 xl:w-80">
-          <Panel title="Start from">
-            <select
-              value=""
-              onChange={(e) => {
-                const t = e.target.value;
-                if (!t) return;
-                const chart = t === "starter" ? STARTER_CHART : ALL_CHARTS[t];
-                if (chart) {
-                  setSpec(JSON.parse(JSON.stringify(chart)));
-                  setSelected(null);
-                }
-              }}
-              aria-label="Load a template"
-              className="w-full rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-            >
-              <option value="">Load a template…</option>
-              <option value="starter">Blank starter</option>
-              {CHART_GROUPS.map((group) => (
-                <optgroup key={group.label} label={group.label}>
-                  {group.charts.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.label}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </Panel>
-
-          <Panel title="Add a box">
-            <div className="flex flex-wrap gap-1.5">
-              {NODE_TYPES.map((t) => (
-                <WidgetButton key={t.id} onClick={() => addNode(t.id)}>
-                  + {t.label}
-                </WidgetButton>
-              ))}
-            </div>
-          </Panel>
-
-          {selectedNode ? (
-            <Panel title="Selected box">
-              <div className="flex flex-col gap-2">
-                <textarea
-                  value={selectedNode.text}
-                  onChange={(e) => update((d) => {
-                    const n = d.nodes.find((x) => x.id === selectedNode.id);
-                    if (n) n.text = e.target.value;
-                  })}
-                  rows={2}
-                  aria-label="Box text"
-                  className="w-full resize-y rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-                />
-                <select
-                  value={selectedNode.type}
-                  onChange={(e) => update((d) => {
-                    const n = d.nodes.find((x) => x.id === selectedNode.id);
-                    if (n) n.type = e.target.value as FlowNodeType;
-                  })}
-                  aria-label="Box type"
-                  className="w-full rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-                >
-                  {NODE_TYPES.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  value={selectedNode.note ?? ""}
-                  onChange={(e) => update((d) => {
-                    const n = d.nodes.find((x) => x.id === selectedNode.id);
-                    if (n) n.note = e.target.value || undefined;
-                  })}
-                  placeholder="Note (optional)"
-                  aria-label="Box note"
-                  className="w-full rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeNode(selectedNode.id)}
-                  className="self-start rounded-md border border-border-strong px-2.5 py-1 text-[11px] font-semibold text-signal-coral hover:bg-surface-2"
-                >
-                  Delete box
-                </button>
-              </div>
-            </Panel>
-          ) : (
-            <Panel title="Selected box">
-              <p className="text-[11px] italic text-slate">Click a box in the chart to edit it.</p>
-            </Panel>
-          )}
-
-          <Panel title="Connect two boxes">
-            <div className="flex flex-col gap-2">
-              <select
-                value={edgeFrom}
-                onChange={(e) => setEdgeFrom(e.target.value)}
-                aria-label="Edge from"
-                className="w-full rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-              >
-                <option value="">from…</option>
-                {spec.nodes.map((nd) => (
-                  <option key={nd.id} value={nd.id}>
-                    {label(nd.id)}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={edgeTo}
-                onChange={(e) => setEdgeTo(e.target.value)}
-                aria-label="Edge to"
-                className="w-full rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-              >
-                <option value="">to…</option>
-                {spec.nodes.map((nd) => (
-                  <option key={nd.id} value={nd.id}>
-                    {label(nd.id)}
-                  </option>
-                ))}
-              </select>
-              <div className="flex gap-2">
-                <input
-                  value={edgeLabel}
-                  onChange={(e) => setEdgeLabel(e.target.value)}
-                  placeholder="label, e.g. yes"
-                  aria-label="Edge label"
-                  className="min-w-0 flex-1 rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
-                />
-                <WidgetButton tone="primary" onClick={addEdge} disabled={!edgeFrom || !edgeTo || edgeFrom === edgeTo}>
-                  Connect
-                </WidgetButton>
-              </div>
-            </div>
-          </Panel>
-
-          <Panel title={`Arrows (${spec.edges.length})`}>
-            <div className="flex flex-col gap-1">
-              {spec.edges.length === 0 && <span className="text-[11px] italic text-slate">none yet</span>}
-              {spec.edges.map((e, i) => (
-                <div key={`${e.from}-${e.to}-${i}`} className="flex items-center gap-1.5 text-[11px]">
-                  <span className="min-w-0 flex-1 truncate text-ink-soft">
-                    {label(e.from)} → {label(e.to)}
-                    {e.label && <span className="ml-1 font-bold text-copper-dark">[{e.label}]</span>}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => update((d) => { d.edges.splice(i, 1); })}
-                    aria-label={`Remove arrow from ${label(e.from)} to ${label(e.to)}`}
-                    className="shrink-0 rounded px-1.5 text-signal-coral hover:bg-surface-2"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <WidgetButton onClick={copyJson}>
-            {copied ? "Copied" : "Copy chart as JSON"}
-          </WidgetButton>
-        </div>
-      </div>
+    <WidgetFrame
+      title="Flowchart maker"
+      subtitle={`${spec.nodes.length} nodes · ${spec.edges.length} edges`}
+    >
+      <FlowchartEditor spec={spec} onChange={setSpec} showTemplates showJson />
     </WidgetFrame>
   );
 }
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className={cn("rounded-lg border border-border bg-surface-2/40 p-3")}>
-      <div className="mb-2 text-[11px] font-semibold text-slate">{title}</div>
-      {children}
-    </div>
-  );
-}
+export { edgeKey };

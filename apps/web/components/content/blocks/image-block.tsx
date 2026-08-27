@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 
 export function ImageBlockView({ block }: { block: ImageBlock & { className?: string } }) {
   return (
-    <figure className={cn("my-2", block.className)}>
+    <figure className={cn(block.className)}>
       <img
         src={block.src}
         alt={block.alt}

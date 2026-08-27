@@ -1,0 +1,110 @@
+{
+  "slug": "insertion",
+  "kind": "flowchart",
+  "title": "Insertion sort",
+  "group": "Sorting",
+  "position": 2,
+  "spec": {
+    "title": "Insertion sort",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "Start"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "i = 1",
+        "note": "A single element is already a sorted prefix, so start at the second."
+      },
+      {
+        "id": "outer",
+        "type": "decision",
+        "text": "i < n ?"
+      },
+      {
+        "id": "take",
+        "type": "process",
+        "text": "value = a[i]\nj = i - 1",
+        "note": "value is held outside the array while the shifting happens, which is what frees the slot it used to occupy."
+      },
+      {
+        "id": "inner",
+        "type": "decision",
+        "text": "j >= 0 and\na[j] > value ?"
+      },
+      {
+        "id": "shift",
+        "type": "process",
+        "text": "a[j+1] = a[j]\nj = j - 1",
+        "accent": "blue",
+        "note": "Shifting, not swapping. Each step moves one element right by one, and a swap would cost three writes where this costs one."
+      },
+      {
+        "id": "place",
+        "type": "process",
+        "text": "a[j+1] = value",
+        "accent": "blue",
+        "note": "The gap left by shifting is exactly where value belongs."
+      },
+      {
+        "id": "inc-i",
+        "type": "process",
+        "text": "i = i + 1"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "Sorted"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "init"
+      },
+      {
+        "from": "init",
+        "to": "outer"
+      },
+      {
+        "from": "outer",
+        "to": "take",
+        "label": "yes"
+      },
+      {
+        "from": "outer",
+        "to": "end",
+        "label": "no"
+      },
+      {
+        "from": "take",
+        "to": "inner"
+      },
+      {
+        "from": "inner",
+        "to": "shift",
+        "label": "yes"
+      },
+      {
+        "from": "inner",
+        "to": "place",
+        "label": "no"
+      },
+      {
+        "from": "shift",
+        "to": "inner"
+      },
+      {
+        "from": "place",
+        "to": "inc-i"
+      },
+      {
+        "from": "inc-i",
+        "to": "outer"
+      }
+    ]
+  }
+}

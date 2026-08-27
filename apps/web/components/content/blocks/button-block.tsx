@@ -12,7 +12,7 @@ export function ButtonBlockView({ block }: { block: ButtonBlock & { className?: 
       : "bg-copper text-white hover:bg-copper-dark";
 
   return (
-    <div className="my-2">
+    <div>
       <a
         href={href}
         target={isExternal ? "_blank" : undefined}

@@ -10,6 +10,8 @@ import type {
   DividerBlock,
   TableBlock,
   InteractiveBlock,
+  ListBlock,
+  CalloutBlock,
 } from "@/types/content-block";
 
 import { ParagraphBlockView } from "@/components/content/blocks/paragraph-block";
@@ -20,6 +22,8 @@ import { ButtonBlockView } from "@/components/content/blocks/button-block";
 import { DividerBlockView } from "@/components/content/blocks/divider-block";
 import { TableBlockView } from "@/components/content/blocks/table-block";
 import { InteractiveBlockView } from "@/components/content/blocks/interactive/interactive-block";
+import { ListBlockView } from "@/components/content/blocks/list-block";
+import { CalloutBlockView } from "@/components/content/blocks/callout-block";
 
 import { PreviewCodeBlock } from "@/components/blog-editor/preview-code-block";
 import { ParagraphBlockEditor } from "@/components/blog-editor/blocks/paragraph-block-editor";
@@ -31,6 +35,8 @@ import { CodeBlockEditor } from "@/components/blog-editor/blocks/code-block-edit
 import { DividerBlockEditor } from "@/components/blog-editor/blocks/divider-block-editor";
 import { TableBlockEditor } from "@/components/blog-editor/blocks/table-block-editor";
 import { InteractiveBlockEditor } from "@/components/blog-editor/blocks/interactive-block-editor";
+import { ListBlockEditor } from "@/components/blog-editor/blocks/list-block-editor";
+import { CalloutBlockEditor } from "@/components/blog-editor/blocks/callout-block-editor";
 import { widgetDefinitions, getWidgetDefinition } from "@/lib/blog-editor/widget-registry";
 
 /**
@@ -134,6 +140,32 @@ const registryImpl = {
     }),
     Renderer: TableBlockView,
     Editor: TableBlockEditor,
+  },
+  list: {
+    type: "list",
+    label: "List",
+    creatable: true,
+    createDefault: (): ListBlock => ({
+      id: newId("list"),
+      type: "list",
+      ordered: false,
+      items: [[{ text: "" }]],
+    }),
+    Renderer: ListBlockView,
+    Editor: ListBlockEditor,
+  },
+  callout: {
+    type: "callout",
+    label: "Callout",
+    creatable: true,
+    createDefault: (): CalloutBlock => ({
+      id: newId("callout"),
+      type: "callout",
+      tone: "note",
+      content: [{ text: "" }],
+    }),
+    Renderer: CalloutBlockView,
+    Editor: CalloutBlockEditor,
   },
   interactive: {
     type: "interactive",

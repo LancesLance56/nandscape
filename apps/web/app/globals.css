@@ -48,6 +48,17 @@
   --signal-coral-bg: #fbe3dd;
 
   --signal-unknown: #ff00ff;
+
+  /* Diagram accents. The palette above is deliberately warm and narrow, which
+     is right for site chrome but leaves a flowchart unable to say "these two
+     stages are different kinds of thing". These add the two hues the ramp is
+     missing, scoped to diagrams by convention rather than used as UI colour. */
+  --diagram-blue: #2f6fd0;
+  --diagram-blue-bg: #e2ecfb;
+  --diagram-violet: #7a4fd0;
+  --diagram-violet-bg: #ece3fb;
+  --diagram-amber: #b8860b;
+  --diagram-amber-bg: #faf0d4;
 }
 
 .dark {
@@ -79,6 +90,13 @@
   --signal-coral-bg: #3a1a14;
 
   --signal-unknown: #ff00ff;
+
+  --diagram-blue: #5b9bf5;
+  --diagram-blue-bg: #16233a;
+  --diagram-violet: #a684f0;
+  --diagram-violet-bg: #241a3a;
+  --diagram-amber: #e0b341;
+  --diagram-amber-bg: #332a12;
 }
 
 /* ---------------------------------------------------------------------------
@@ -228,6 +246,124 @@ body {
   * {
     border-color: var(--border);
   }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Article prose.
+
+   The reading view (blog posts, tutorial lessons) renders a flat list of
+   block components (see components/content/blocks/block-renderer.tsx). This
+   class owns the vertical rhythm between those blocks and the reading
+   measure, so the block components themselves carry no ad-hoc margins:
+
+     - consecutive blocks sit 1.25rem apart;
+     - a heading gets noticeably more air above it than below, so it groups
+       the content that follows rather than floating between two paragraphs;
+     - set-apart blocks (figures, code, tables, lists, rules, and any block
+       marked `.not-prose` such as an interactive widget) get a wider gutter
+       on both sides.
+   --------------------------------------------------------------------------- */
+
+.article-prose {
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.article-prose > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.article-prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.article-prose > * + h2 {
+  margin-top: 2.75rem;
+}
+
+.article-prose > * + h3 {
+  margin-top: 2.25rem;
+}
+
+.article-prose > * + h4 {
+  margin-top: 1.75rem;
+}
+
+.article-prose > :is(h1, h2, h3, h4) + * {
+  margin-top: 0.6rem;
+}
+
+.article-prose > * + :is(figure, pre, table, hr, ul, ol, .not-prose) {
+  margin-top: 2.25rem;
+}
+
+.article-prose > :is(figure, pre, table, hr, ul, ol, .not-prose) + * {
+  margin-top: 2.25rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Scrollbars.
+
+   One quiet, consistent scrollbar for the whole app - the platform defaults
+   are heavy and differ across OSes. Firefox reads `scrollbar-width` /
+   `scrollbar-color`; Chromium and Safari read the `::-webkit-scrollbar-*`
+   pseudo-elements. The thumb is a rounded hairline (inset via a transparent
+   border + padding-box clip) that darkens on hover; the track is invisible.
+   Applied globally so every scroll container - the page, the tutorial rail,
+   an overflowing code block, a dropdown - matches.
+   --------------------------------------------------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: var(--border-strong);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--slate);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Shiki dual theme.
+
+   CodeBlockView highlights with `defaultColor: false`, so every token span
+   carries `--shiki-light` / `--shiki-dark` custom properties and no literal
+   `color`. These rules pick which one applies from the site's `.dark` class
+   (set by next-themes on <html>), so a code block re-colours with the theme
+   toggle instead of staying dark-on-light in light mode.
+   --------------------------------------------------------------------------- */
+
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
 }
 
 

@@ -1,0 +1,223 @@
+{
+  "slug": "subsets",
+  "kind": "flowchart",
+  "title": "Subsets",
+  "group": "Backtracking",
+  "position": 1,
+  "spec": {
+    "title": "Subsets",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "subsets(start, current)"
+      },
+      {
+        "id": "record",
+        "type": "process",
+        "text": "record a copy\nof current",
+        "badge": "!",
+        "accent": "amber",
+        "note": "Every node is an answer here, so recording happens on entry rather than at a leaf. That is what makes this tree have 2^n nodes and 2^n answers, with no wasted work anywhere."
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "i = start",
+        "note": "Starting at `start` rather than 0 is what stops {a,b} and {b,a} both being generated."
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "i < n ?"
+      },
+      {
+        "id": "ret",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "current.push(a[i])",
+        "accent": "blue",
+        "parentId": "cycle"
+      },
+      {
+        "id": "explore",
+        "type": "process",
+        "text": "subsets(i + 1, current)",
+        "accent": "violet",
+        "parentId": "cycle",
+        "note": "i + 1, not start + 1. Each level may only pick from what comes after its own choice."
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "current.pop()",
+        "accent": "coral",
+        "parentId": "cycle",
+        "note": "Without this pop, the next iteration of the loop would build on top of a choice that was supposed to be finished."
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "i = i + 1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "s1",
+        "from": "start",
+        "to": "record"
+      },
+      {
+        "id": "s2",
+        "from": "record",
+        "to": "init"
+      },
+      {
+        "id": "s3",
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "id": "s4",
+        "from": "loop",
+        "to": "choose",
+        "label": "yes"
+      },
+      {
+        "id": "s5",
+        "from": "loop",
+        "to": "ret",
+        "label": "no"
+      },
+      {
+        "id": "s6",
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "id": "s7",
+        "from": "explore",
+        "to": "undo"
+      },
+      {
+        "id": "s8",
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "id": "s9",
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ],
+    "walkthrough": [
+      {
+        "node": "start",
+        "caption": "Generating subsets of [a, b]. This is the outermost call: start = 0, current = []."
+      },
+      {
+        "node": "record",
+        "caption": "Record a copy of current, which is the empty set. Yes, that counts as a subset."
+      },
+      {
+        "node": "init",
+        "caption": "i = start = 0."
+      },
+      {
+        "node": "loop",
+        "caption": "i < n, that is 0 < 2 ? Yes."
+      },
+      {
+        "node": "choose",
+        "caption": "Push a[0] = a. current is now [a]."
+      },
+      {
+        "node": "explore",
+        "caption": "Recurse with start = 1. That call records [a], then goes on to record [a, b] before returning."
+      },
+      {
+        "node": "undo",
+        "caption": "Pop. current is back to [], exactly as it was before this choice was made."
+      },
+      {
+        "node": "next",
+        "caption": "i = 1."
+      },
+      {
+        "node": "loop",
+        "caption": "1 < 2 ? Yes, there is still a choice left at this level."
+      },
+      {
+        "node": "choose",
+        "caption": "Push a[1] = b. current is now [b]."
+      },
+      {
+        "node": "explore",
+        "caption": "Recurse with start = 2. That call records [b] and finds no further choices. Note it never produces [b, a]: start has moved past a."
+      },
+      {
+        "node": "undo",
+        "caption": "Pop. current is [] again."
+      },
+      {
+        "node": "next",
+        "caption": "i = 2."
+      },
+      {
+        "node": "loop",
+        "caption": "2 < 2 ? No. Out of choices."
+      },
+      {
+        "node": "ret",
+        "caption": "Return. Four subsets recorded: [], [a], [a, b], [b]. That is 2^2, as promised."
+      }
+    ],
+    "interactive": {
+      "walkthrough": true
+    }
+  }
+}

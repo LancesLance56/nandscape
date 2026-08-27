@@ -38,7 +38,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sorting solves all of them in O(n log n). All of them can also be done in O(n) with a single pass and no extra memory, because with only a handful of distinct values you do not need to compare anything. You can decide where a value belongs just by looking at it."
+          "text": "Sorting solves all of them in O(n log n). All of them can also be done in O(n) with a single pass and no extra memory, because with only a handful of distinct values you don't need to compare anything. You can decide where a value belongs just by looking at it."
         }
       ]
     },
@@ -70,7 +70,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A counting approach also works: count the zeroes, then write that many 0s followed by 1s. It is equally O(n) and arguably simpler, but it destroys any other data attached to the elements, so it only works when the values really are just 0 and 1."
+          "text": "A counting approach also works: count the zeroes, then write that many 0s followed by 1s. It's equally O(n) and arguably simpler, but it destroys any other data attached to the elements, so it only works when the values really are just 0 and 1."
         }
       ]
     },
@@ -85,7 +85,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The catch here is that the non-zero values must keep their original relative order, so the two-pointer swap-from-both-ends trick is wrong: it would scramble them."
+          "text": "The catch here is that the non-zero values have to keep their original relative order, so the two-pointer swap-from-both-ends trick is wrong: it would scramble them."
         }
       ]
     },
@@ -94,7 +94,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Instead use a read pointer and a write pointer. Scan with the read pointer; every time you find a non-zero value, place it at the write pointer and advance the write pointer. Zeroes are simply skipped, and fall to the back as a consequence."
+          "text": "Instead use a read pointer and a write pointer. Scan with the read pointer; every time you find a non-zero value, place it at the write pointer and advance the write pointer. Zeroes just get skipped, and fall to the back as a consequence."
         }
       ]
     },
@@ -130,7 +130,7 @@
           ]
         },
         {
-          "text": ", named for the flag's three horizontal bands, and it is the one genuinely tricky member of the family."
+          "text": ", named for the flag's three horizontal bands, and it's the one genuinely tricky member of the family."
         }
       ]
     },
@@ -229,7 +229,7 @@
           ]
         },
         {
-          "text": " must stay put and look at it on the next iteration. Advancing past it can leave a 0 or a 2 stranded in the middle region."
+          "text": " has to stay put and look at it on the next iteration. Advancing past it can leave a 0 or a 2 stranded in the middle region."
         }
       ]
     },
@@ -286,7 +286,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three-way partitioning is exactly what quick sort needs when the input has many duplicate keys. A standard two-way partition puts values equal to the pivot on one side, so an array of all-equal elements produces maximally unbalanced splits and degrades to O(n²). Partitioning into less-than, equal-to and greater-than instead makes that same input O(n), because the entire equal region is finished in one step."
+          "text": "Three-way partitioning is exactly what quick sort needs when the input has many duplicate keys. A standard two-way partition puts values equal to the pivot on one side, so an array of all-equal elements produces maximally unbalanced splits and degrades to O(n²). Partitioning into less-than, equal-to and greater-than instead makes that same input O(n), since the entire equal region finishes in one step."
         }
       ]
     },

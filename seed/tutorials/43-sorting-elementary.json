@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "All three of these are O(n²) and all three are taught together, which gives the impression they are the same algorithm with cosmetic differences. They are not. They differ in how many writes they do, whether they notice sorted input, and whether they are stable, and those differences decide which one survives into real code."
+          "text": "All three of these are O(n²) and all three get taught together, which makes it look like they're the same algorithm with cosmetic differences. They're not. They differ in how many writes they do, whether they notice sorted input, and whether they're stable, and those differences decide which one survives into real code."
         }
       ]
     },
@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Its one redeeming feature is the early exit: if a whole pass makes no swaps, the array is sorted and you can stop. That makes it O(n) on already-sorted input. Without that check it is O(n²) unconditionally, and the version without the check is the one most people write."
+          "text": "Its one redeeming feature is the early exit: if a whole pass makes no swaps, the array is sorted and you can stop. That makes it O(n) on already-sorted input. Without that check it's O(n²) unconditionally, and the version without the check is the one most people write."
         }
       ]
     },
@@ -88,7 +88,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Find the smallest remaining value, swap it into place, repeat. The comparison count is fixed at n(n-1)/2 no matter what, because it always scans the whole remaining array."
+          "text": "Find the smallest remaining value, swap it into place, repeat. The comparison count is fixed at n(n-1)/2 no matter what, since it always scans the whole remaining array."
         }
       ]
     },
@@ -97,7 +97,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "What it does have is the fewest writes of any of these: exactly n-1 swaps, regardless of the input. If comparisons are cheap and writes are expensive, which is the case for flash memory or for records that are large to move, that is a real advantage."
+          "text": "What it does have is the fewest writes of any of these: exactly n-1 swaps, regardless of the input. If comparisons are cheap and writes are expensive, which is the case for flash memory or for records that are large to move, that's a real advantage."
         }
       ]
     },
@@ -117,7 +117,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It is not stable, and the reason is worth seeing: swapping a distant minimum into position can jump one of a pair of equal values over the other."
+          "text": "It's not stable, and the reason is worth seeing: swapping a distant minimum into position can jump one of a pair of equal values over the other."
         }
       ]
     },
@@ -163,7 +163,7 @@
           ]
         },
         {
-          "text": " row underneath. While the shifting loop runs, the value being placed is out of the array entirely, held in a variable, and its old slot has been overwritten. That is why the bars briefly show a duplicate: it is real, not a rendering artifact."
+          "text": " row underneath. While the shifting loop runs, the value being placed is out of the array entirely, held in a variable, and its old slot has already been overwritten. That's why the bars briefly show a duplicate: it's real, not a rendering artifact."
         }
       ]
     },
@@ -172,7 +172,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Insertion sort is stable, adaptive, and in place. On nearly-sorted input each value moves only a step or two, so the inner loop barely runs and the whole thing is close to O(n). That combination is why it is the only one of the three that appears in production sorts."
+          "text": "Insertion sort is stable, adaptive, and in place. On nearly-sorted input each value moves only a step or two, so the inner loop barely runs and the whole thing is close to O(n). That combination is why it's the only one of the three that shows up in production sorts."
         }
       ]
     },
@@ -352,7 +352,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step, and clicking any box with a dot shows why that step is there."
+          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step. Click any box with a dot to see why that step is there."
         }
       ]
     },

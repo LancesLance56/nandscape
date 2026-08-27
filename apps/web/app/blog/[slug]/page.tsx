@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { BlockRenderer } from "@/components/content/blocks/block-renderer";
+import { ArticleShell, ArticleMeta } from "@/components/content/article-shell";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
+import { readingTimeLabel } from "@/lib/content/reading-time";
 import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog/posts";
 
 export const revalidate = 60;
@@ -60,48 +62,41 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-4xl px-6 pb-24 pt-32 sm:px-10">
-        <article>
-          <ArticleJsonLd
-            headline={post.title}
-            description={post.seoDescription ?? post.excerpt}
-            path={`/blog/${post.slug}`}
-            publishedAt={post.publishedAt}
-            updatedAt={post.updatedAt}
-            authorName={post.authorName}
-            image={post.coverImage}
-            keywords={post.keywords}
-          />
-          <BreadcrumbJsonLd
-            items={[
-              { name: "Blog", path: "/blog" },
-              { name: post.title, path: `/blog/${post.slug}` },
-            ]}
-          />
-          <header className="mb-8">
-            <div className="mb-3 flex items-center gap-2 text-[11px] font-medium text-slate">
-              {date && <span>{date}</span>}
-              {post.authorName && (
-                <>
-                  <span className="text-border-strong">·</span>
-                  <span>{post.authorName}</span>
-                </>
-              )}
-            </div>
-            <h1 className="font-display text-3xl font-bold leading-tight text-ink lg:text-4xl">{post.title}</h1>
-          </header>
+      <main className="mx-auto max-w-3xl px-6 pb-28 pt-32 sm:px-10">
+        <ArticleJsonLd
+          headline={post.title}
+          description={post.seoDescription ?? post.excerpt}
+          path={`/blog/${post.slug}`}
+          publishedAt={post.publishedAt}
+          updatedAt={post.updatedAt}
+          authorName={post.authorName}
+          image={post.coverImage}
+          keywords={post.keywords}
+        />
+        <BreadcrumbJsonLd
+          items={[
+            { name: "Blog", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ]}
+        />
 
-          {post.coverImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.coverImage}
-              alt=""
-              className="mb-8 w-full rounded-2xl border border-border object-cover"
-            />
-          )}
-
+        <ArticleShell
+          title={post.title}
+          lede={post.excerpt ?? undefined}
+          meta={<ArticleMeta items={[date, post.authorName, readingTimeLabel(post.body)]} />}
+          cover={
+            post.coverImage && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={post.coverImage}
+                alt=""
+                className="w-full rounded-2xl border border-border object-cover"
+              />
+            )
+          }
+        >
           <BlockRenderer blocks={post.body} />
-        </article>
+        </ArticleShell>
       </main>
       <Footer />
     </>

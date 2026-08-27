@@ -4,7 +4,7 @@ import type { ParagraphBlock } from "@/types/blog";
 
 export function ParagraphBlockView({ block }: { block: ParagraphBlock & { className?: string } }) {
   return (
-    <p className={cn("text-base leading-relaxed text-ink-soft", block.className)}>
+    <p className={cn("text-pretty text-ink-soft", block.className)}>
       <RichText spans={block.content} />
     </p>
   );

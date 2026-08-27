@@ -1,0 +1,151 @@
+{
+  "slug": "heap",
+  "kind": "flowchart",
+  "title": "Heap sort",
+  "group": "Sorting",
+  "position": 7,
+  "spec": {
+    "title": "Heap sort",
+    "direction": "LR",
+    "lanes": [
+      {
+        "id": "build",
+        "label": "Build the heap"
+      },
+      {
+        "id": "extract",
+        "label": "Extract, repeatedly"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "Start",
+        "lane": "build"
+      },
+      {
+        "id": "buildinit",
+        "type": "process",
+        "text": "i = n/2 - 1",
+        "lane": "build",
+        "note": "The last internal node. Everything after it is a leaf, and a leaf is already a valid heap, so there is nothing to do to them."
+      },
+      {
+        "id": "buildloop",
+        "type": "decision",
+        "text": "i >= 0 ?",
+        "lane": "build"
+      },
+      {
+        "id": "sift1",
+        "type": "process",
+        "text": "siftDown(a, i, n-1)",
+        "accent": "blue",
+        "lane": "build"
+      },
+      {
+        "id": "dec-i",
+        "type": "process",
+        "text": "i = i - 1",
+        "lane": "build"
+      },
+      {
+        "id": "endinit",
+        "type": "process",
+        "text": "end = n - 1",
+        "lane": "extract",
+        "badge": "2",
+        "note": "The heap is built, and it took O(n), not O(n log n). Now repeatedly extract the maximum."
+      },
+      {
+        "id": "sortloop",
+        "type": "decision",
+        "text": "end > 0 ?",
+        "lane": "extract"
+      },
+      {
+        "id": "swap",
+        "type": "process",
+        "text": "swap a[0], a[end]",
+        "accent": "blue",
+        "lane": "extract",
+        "note": "a[0] is the largest remaining value, and a[end] is exactly where it belongs. One swap finalises one element."
+      },
+      {
+        "id": "sift2",
+        "type": "process",
+        "text": "siftDown(a, 0, end-1)",
+        "accent": "blue",
+        "lane": "extract",
+        "note": "Restore the heap over the shrunken range. The element just placed is outside it now, so it is never touched again."
+      },
+      {
+        "id": "dec-end",
+        "type": "process",
+        "text": "end = end - 1",
+        "lane": "extract"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "Sorted",
+        "lane": "extract"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "buildinit"
+      },
+      {
+        "from": "buildinit",
+        "to": "buildloop"
+      },
+      {
+        "from": "buildloop",
+        "to": "sift1",
+        "label": "yes"
+      },
+      {
+        "from": "buildloop",
+        "to": "endinit",
+        "label": "no"
+      },
+      {
+        "from": "sift1",
+        "to": "dec-i"
+      },
+      {
+        "from": "dec-i",
+        "to": "buildloop"
+      },
+      {
+        "from": "endinit",
+        "to": "sortloop"
+      },
+      {
+        "from": "sortloop",
+        "to": "swap",
+        "label": "yes"
+      },
+      {
+        "from": "sortloop",
+        "to": "end",
+        "label": "no"
+      },
+      {
+        "from": "swap",
+        "to": "sift2"
+      },
+      {
+        "from": "sift2",
+        "to": "dec-end"
+      },
+      {
+        "from": "dec-end",
+        "to": "sortloop"
+      }
+    ]
+  }
+}

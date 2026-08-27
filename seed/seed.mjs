@@ -109,6 +109,9 @@ async function main() {
     console.log("- warning      SEED_SECRET not set,  posts/route.ts requires an admin session or this secret, seeding posts will 403 without it");
   }
 
+  // Diagrams first: tutorial pages name flowcharts by slug, and a page whose
+  // diagram is missing renders a gap where the explanation should be.
+  await seedResource("diagrams", path.join(here, "diagrams"), "/api/diagrams", seedHeaders());
   await seedResource("posts", path.join(here, "posts"), "/api/posts", seedHeaders());
   // Projects before tutorials: several tutorial pages embed a companion
   // circuit by projectSlug (see components/content/blocks/circuit/circuit-embed.tsx),

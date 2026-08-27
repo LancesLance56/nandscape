@@ -54,8 +54,14 @@ export interface CallStep {
   /** Calls made so far. Everything else renders as a faint ghost. */
   revealed: string[];
   status: Record<string, CallStatus>;
-  /** Return value per call id, once that call has returned. */
-  values: Record<string, number>;
+  /**
+   * Return value per call id, once that call has returned.
+   *
+   * A number for the DP problems this was built for. A string too, because the
+   * sorting recursion trees reuse this same recorder to show a returned array
+   * such as `[3,9,10]`, and the two never need to share a node.
+   */
+  values: Record<string, number | string>;
   activeId: string | null;
   /** Root-to-current labels, rendered as the call stack. */
   stack: string[];
@@ -101,7 +107,7 @@ export function createCallRecorder(options: CallRecorderOptions = {}) {
   const nodes: PendingCall[] = [];
   const steps: CallStep[] = [];
   const status: Record<string, CallStatus> = {};
-  const values: Record<string, number> = {};
+  const values: Record<string, number | string> = {};
   const revealed: string[] = [];
   const memo: MemoEntry[] = [];
   const stack: PendingCall[] = [];
@@ -164,7 +170,7 @@ export function createCallRecorder(options: CallRecorderOptions = {}) {
    * from the stopping condition from one that came from combining children,
    * which is the distinction the induction framing rests on.
    */
-  function ret(value: number, caption: string, base = false) {
+  function ret(value: number | string, caption: string, base = false) {
     const node = stack[stack.length - 1];
     if (!node) return;
     values[node.id] = value;
@@ -178,7 +184,7 @@ export function createCallRecorder(options: CallRecorderOptions = {}) {
    * the reader needs to see that the call was made at all; it just never grows
    * a subtree beneath it, and that missing subtree is the entire saving.
    */
-  function hit(label: string, key: string, value: number, caption: string) {
+  function hit(label: string, key: string, value: number | string, caption: string) {
     const node = add(label, key);
     calls += 1;
     hits += 1;

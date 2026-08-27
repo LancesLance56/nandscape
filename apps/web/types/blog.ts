@@ -14,6 +14,9 @@ export type {
   DividerBlock,
   TableBlock,
   InteractiveBlock,
+  ListBlock,
+  CalloutBlock,
+  CalloutTone,
   ContentBlock as PostBlock,
 } from "./content-block";
 

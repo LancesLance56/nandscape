@@ -5,7 +5,7 @@ export function TableBlockView({ block }: { block: TableBlock & { className?: st
   const { headers, rows, caption } = block;
 
   return (
-    <div className={cn("my-2 overflow-hidden rounded-xl border border-border", block.className)}>
+    <div className={cn("not-prose overflow-hidden rounded-xl border border-border", block.className)}>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           {headers && headers.length > 0 && (

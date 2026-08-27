@@ -11,7 +11,7 @@ export function VideoBlockView({ block }: { block: VideoBlock & { className?: st
   if (!src) return null;
 
   return (
-    <figure className={cn("my-2", block.className)}>
+    <figure className={cn(block.className)}>
       <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-black">
         <iframe
           src={src}

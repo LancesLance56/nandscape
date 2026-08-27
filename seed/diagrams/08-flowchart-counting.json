@@ -1,0 +1,155 @@
+{
+  "slug": "counting",
+  "kind": "flowchart",
+  "title": "Counting sort",
+  "group": "Sorting",
+  "position": 8,
+  "spec": {
+    "title": "Counting sort",
+    "direction": "LR",
+    "lanes": [
+      {
+        "id": "count",
+        "label": "Count"
+      },
+      {
+        "id": "write",
+        "label": "Write back"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "Start",
+        "lane": "count"
+      },
+      {
+        "id": "alloc",
+        "type": "process",
+        "text": "counts = array of k zeros",
+        "lane": "count",
+        "accent": "amber",
+        "note": "One bucket per possible value. This is why k must be small: the memory bill is the size of the value range, not the size of the input."
+      },
+      {
+        "id": "countinit",
+        "type": "process",
+        "text": "i = 0",
+        "lane": "count"
+      },
+      {
+        "id": "countloop",
+        "type": "decision",
+        "text": "i < n ?",
+        "lane": "count"
+      },
+      {
+        "id": "tally",
+        "type": "process",
+        "text": "counts[a[i]] += 1\ni = i + 1",
+        "accent": "blue",
+        "lane": "count",
+        "badge": "!",
+        "note": "No comparison happens anywhere in this algorithm. The value is used directly as an index, which is how counting sort dodges the O(n log n) lower bound entirely."
+      },
+      {
+        "id": "writeinit",
+        "type": "process",
+        "text": "write = 0\nvalue = 0",
+        "lane": "write"
+      },
+      {
+        "id": "outer",
+        "type": "decision",
+        "text": "value < k ?",
+        "lane": "write"
+      },
+      {
+        "id": "inner",
+        "type": "decision",
+        "text": "counts[value] > 0 ?",
+        "lane": "write"
+      },
+      {
+        "id": "emit",
+        "type": "process",
+        "text": "a[write] = value\nwrite += 1\ncounts[value] -= 1",
+        "accent": "blue",
+        "lane": "write"
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "value = value + 1",
+        "lane": "write"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "Sorted",
+        "lane": "write"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "alloc"
+      },
+      {
+        "from": "alloc",
+        "to": "countinit"
+      },
+      {
+        "from": "countinit",
+        "to": "countloop"
+      },
+      {
+        "from": "countloop",
+        "to": "tally",
+        "label": "yes"
+      },
+      {
+        "from": "countloop",
+        "to": "writeinit",
+        "label": "no"
+      },
+      {
+        "from": "tally",
+        "to": "countloop"
+      },
+      {
+        "from": "writeinit",
+        "to": "outer"
+      },
+      {
+        "from": "outer",
+        "to": "inner",
+        "label": "yes"
+      },
+      {
+        "from": "outer",
+        "to": "end",
+        "label": "no"
+      },
+      {
+        "from": "inner",
+        "to": "emit",
+        "label": "yes"
+      },
+      {
+        "from": "inner",
+        "to": "next",
+        "label": "no"
+      },
+      {
+        "from": "emit",
+        "to": "inner"
+      },
+      {
+        "from": "next",
+        "to": "outer"
+      }
+    ]
+  }
+}

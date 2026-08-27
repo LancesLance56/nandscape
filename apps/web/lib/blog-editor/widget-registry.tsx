@@ -32,6 +32,8 @@ import { SudokuWidget } from "@/components/content/blocks/interactive/backtracki
 import { RecursionTreeWidget } from "@/components/content/blocks/interactive/dp/recursion-tree-widget";
 import { DpArrayWidget, DpTableWidget } from "@/components/content/blocks/interactive/dp/dp-table-widgets";
 import { SortingVisualizerWidget } from "@/components/content/blocks/interactive/sorting/sorting-visualizer-widget";
+import { SortRecursionTreeWidget } from "@/components/content/blocks/interactive/sorting/sort-recursion-tree-widget";
+import { SortRecursionTreeWidgetEditor } from "@/components/blog-editor/widgets/sort-recursion-tree-widget-editor";
 import {
   PartitionExplorerWidget,
   MergeExplorerWidget,
@@ -55,6 +57,9 @@ import { TarjanSccWidgetEditor } from "@/components/blog-editor/widgets/tarjan-s
 import { MutualReachabilityWidgetEditor } from "@/components/blog-editor/widgets/mutual-reachability-widget-editor";
 import { TopologicalSortWidgetEditor } from "@/components/blog-editor/widgets/topological-sort-widget-editor";
 import { GraphColoringWidgetEditor } from "@/components/blog-editor/widgets/graph-coloring-widget-editor";
+import { FlowchartWidgetEditor, FlowchartMakerWidgetEditor } from "@/components/blog-editor/widgets/flowchart-widget-editor";
+import { ALL_CHARTS } from "@/lib/flowchart/charts";
+import { isFlowchartSpec, validateFlowchart } from "@/lib/flowchart/types";
 
 export interface WidgetEditorProps {
   data: Record<string, unknown>;
@@ -77,6 +82,21 @@ export interface WidgetDefinition {
 
 function validateCircuitEmbed(data: unknown): string[] {
   return isCircuitEmbedData(data as Record<string, unknown>) ? [] : ["Needs `nodes` and `edges` arrays."];
+}
+
+/**
+ * A flowchart block is either a preset name or an inline chart. Structural
+ * problems inside an inline chart (a dangling edge, a one-exit decision) are
+ * worth surfacing here, since the renderer draws them without complaint.
+ */
+function validateFlowchartBlock(data: unknown): string[] {
+  const d = data as Record<string, unknown>;
+  if (typeof d?.preset === "string") {
+    return ALL_CHARTS[d.preset] ? [] : [`Unknown chart preset "${d.preset}".`];
+  }
+  if (isFlowchartSpec(d?.chart)) return validateFlowchart(d.chart);
+  if (isFlowchartSpec(d)) return validateFlowchart(d);
+  return ["Pick a built-in chart or build a custom one."];
 }
 
 const registryImpl: Record<string, WidgetDefinition> = {
@@ -349,6 +369,13 @@ const registryImpl: Record<string, WidgetDefinition> = {
     Editor: (props) => <RawJsonField {...props} />,
     createDefault: () => ({ algorithm: "bubble", preset: "random" }),
   },
+  "sort-recursion-tree": {
+    name: "sort-recursion-tree",
+    label: "Sort Recursion Tree (merge / quick)",
+    Renderer: SortRecursionTreeWidget,
+    Editor: SortRecursionTreeWidgetEditor,
+    createDefault: () => ({ algorithm: "merge" }),
+  },
   "partition-explorer": {
     name: "partition-explorer",
     label: "Partition Explorer (0s/1s/2s)",
@@ -381,14 +408,15 @@ const registryImpl: Record<string, WidgetDefinition> = {
     name: "flowchart",
     label: "Flowchart",
     Renderer: FlowchartWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: FlowchartWidgetEditor,
     createDefault: () => ({ preset: "bubble" }),
+    validate: validateFlowchartBlock,
   },
   "flowchart-maker": {
     name: "flowchart-maker",
     label: "Flowchart Maker (editable)",
     Renderer: FlowchartMakerWidget,
-    Editor: (props) => <RawJsonField {...props} />,
+    Editor: FlowchartMakerWidgetEditor,
     createDefault: () => ({}),
   },
   "circuit-embed": {

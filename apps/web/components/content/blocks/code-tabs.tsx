@@ -32,7 +32,7 @@ export function CodeTabs({ variants, className }: { variants: RenderedVariant[];
   const current = variants[Math.min(active, variants.length - 1)];
 
   return (
-    <div className={cn("my-2 overflow-hidden rounded-xl border border-border bg-surface-2", className)}>
+    <div className={cn("not-prose overflow-hidden rounded-xl border border-border bg-surface-2", className)}>
       <div className="flex flex-wrap items-center gap-1 border-b border-border px-2 py-1.5" role="tablist">
         {variants.map((v, i) => (
           <button

@@ -11,6 +11,10 @@ import React from "react";
  * the aside to the row's full height, and a sticky child of a
  * full-height column has nothing left to stick within. That's what made
  * the old rail drift as you neared the bottom of a long lesson.
+ *
+ * The row is full-bleed (no `max-w`/`mx-auto`) so the sidebar sits flush
+ * against the viewport edge like a real app rail; the lesson column
+ * re-centres itself with its own `max-w`.
  */
 export default async function TutorialTrackLayout({ children }: { children: React.ReactNode }) {
   let tracks: TutorialTrackTree[] = [];
@@ -21,9 +25,15 @@ export default async function TutorialTrackLayout({ children }: { children: Reac
   }
 
   return (
-    <div className="mx-auto flex max-w-330 flex-col gap-4 px-4 pb-24 pt-28 sm:px-10 lg:flex-row lg:items-start lg:gap-8 lg:pt-32">
+    <div className="flex flex-col px-5 pb-32 pt-28 sm:px-8 lg:flex-row lg:items-start lg:px-0 lg:pb-0 lg:pt-36">
       <TutorialSidebar tracks={tracks} />
-      <main className="min-w-0 flex-1">{children}</main>
+      {/* The lesson column is a fixed-max-width block centred in the space
+          left of the (fixed-width) sidebar. Because the sidebar keeps its
+          width whether expanded or collapsed, this centre never shifts when
+          the rail is toggled. */}
+      <main className="min-w-0 flex-1 lg:pb-32 lg:px-10">
+        <div className="mx-auto w-full max-w-5xl">{children}</div>
+      </main>
     </div>
   );
 }

@@ -1,0 +1,62 @@
+{
+  "slug": "starter",
+  "kind": "flowchart",
+  "title": "Untitled flowchart",
+  "group": "Blank",
+  "position": 0,
+  "spec": {
+    "title": "Untitled flowchart",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "Start"
+      },
+      {
+        "id": "step",
+        "type": "process",
+        "text": "Do something"
+      },
+      {
+        "id": "check",
+        "type": "decision",
+        "text": "Condition ?"
+      },
+      {
+        "id": "again",
+        "type": "process",
+        "text": "Try again"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "End"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "step"
+      },
+      {
+        "from": "step",
+        "to": "check"
+      },
+      {
+        "from": "check",
+        "to": "end",
+        "label": "yes"
+      },
+      {
+        "from": "check",
+        "to": "again",
+        "label": "no"
+      },
+      {
+        "from": "again",
+        "to": "step"
+      }
+    ]
+  }
+}

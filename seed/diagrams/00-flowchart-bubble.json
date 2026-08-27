@@ -1,0 +1,253 @@
+{
+  "slug": "bubble",
+  "kind": "flowchart",
+  "title": "Bubble sort",
+  "group": "Sorting",
+  "position": 0,
+  "spec": {
+    "title": "Bubble sort",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "Start"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "pass = 0",
+        "note": "One pass per element, minus one."
+      },
+      {
+        "id": "outer",
+        "type": "decision",
+        "text": "pass < n-1 ?"
+      },
+      {
+        "id": "reset",
+        "type": "process",
+        "text": "i = 0\nswapped = false",
+        "note": "swapped is what allows the early exit. Clearing it at the top of every pass is what makes it mean 'did anything move during this pass', rather than 'ever'."
+      },
+      {
+        "id": "inner",
+        "type": "decision",
+        "text": "i < n-1-pass ?",
+        "note": "The tail is already sorted, so each pass looks at one fewer element."
+      },
+      {
+        "id": "cmp",
+        "type": "decision",
+        "text": "a[i] > a[i+1] ?"
+      },
+      {
+        "id": "swap",
+        "type": "process",
+        "text": "swap a[i], a[i+1]\nswapped = true",
+        "accent": "blue",
+        "note": "The only step that moves data. Everything else in this chart is bookkeeping around it."
+      },
+      {
+        "id": "inc-i",
+        "type": "process",
+        "text": "i = i + 1"
+      },
+      {
+        "id": "check",
+        "type": "decision",
+        "text": "swapped ?",
+        "accent": "amber",
+        "badge": "!",
+        "note": "A whole pass with no swaps means the array is already ordered, so the remaining passes would all do nothing. This one test is what makes bubble sort O(n) on sorted input."
+      },
+      {
+        "id": "inc-pass",
+        "type": "process",
+        "text": "pass = pass + 1"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "text": "Sorted"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "from": "start",
+        "to": "init"
+      },
+      {
+        "id": "e2",
+        "from": "init",
+        "to": "outer"
+      },
+      {
+        "id": "e3",
+        "from": "outer",
+        "to": "reset",
+        "label": "yes"
+      },
+      {
+        "id": "e4",
+        "from": "outer",
+        "to": "end",
+        "label": "no"
+      },
+      {
+        "id": "e5",
+        "from": "reset",
+        "to": "inner"
+      },
+      {
+        "id": "e6",
+        "from": "inner",
+        "to": "cmp",
+        "label": "yes"
+      },
+      {
+        "id": "e7",
+        "from": "inner",
+        "to": "check",
+        "label": "no"
+      },
+      {
+        "id": "e8",
+        "from": "cmp",
+        "to": "swap",
+        "label": "yes"
+      },
+      {
+        "id": "e9",
+        "from": "cmp",
+        "to": "inc-i",
+        "label": "no"
+      },
+      {
+        "id": "e10",
+        "from": "swap",
+        "to": "inc-i"
+      },
+      {
+        "id": "e11",
+        "from": "inc-i",
+        "to": "inner"
+      },
+      {
+        "id": "e12",
+        "from": "check",
+        "to": "inc-pass",
+        "label": "yes"
+      },
+      {
+        "id": "e13",
+        "from": "check",
+        "to": "end",
+        "label": "no"
+      },
+      {
+        "id": "e14",
+        "from": "inc-pass",
+        "to": "outer"
+      }
+    ],
+    "walkthrough": [
+      {
+        "node": "start",
+        "caption": "Sorting [5, 1, 4]. Three elements, so n = 3."
+      },
+      {
+        "node": "init",
+        "caption": "pass = 0. The outer loop will run at most n-1 = 2 times."
+      },
+      {
+        "node": "outer",
+        "caption": "pass < 2 ? Yes, so start a pass."
+      },
+      {
+        "node": "reset",
+        "caption": "i = 0, swapped = false. Every pass starts by forgetting what the last one did."
+      },
+      {
+        "node": "inner",
+        "caption": "i < n-1-pass, that is 0 < 2 ? Yes."
+      },
+      {
+        "node": "cmp",
+        "caption": "a[0] = 5, a[1] = 1. Is 5 > 1 ? Yes, they are out of order."
+      },
+      {
+        "node": "swap",
+        "caption": "Swap them. The array is now [1, 5, 4] and swapped = true."
+      },
+      {
+        "node": "inc-i",
+        "caption": "i = 1."
+      },
+      {
+        "node": "inner",
+        "caption": "1 < 2 ? Yes, keep going."
+      },
+      {
+        "node": "cmp",
+        "caption": "a[1] = 5, a[2] = 4. Is 5 > 4 ? Yes."
+      },
+      {
+        "node": "swap",
+        "caption": "Swap. The array is [1, 4, 5]. The largest value has bubbled to the end."
+      },
+      {
+        "node": "inc-i",
+        "caption": "i = 2."
+      },
+      {
+        "node": "inner",
+        "caption": "2 < 2 ? No. This pass is over."
+      },
+      {
+        "node": "check",
+        "caption": "swapped ? Yes, this pass moved things, so the array might still be unsorted."
+      },
+      {
+        "node": "inc-pass",
+        "caption": "pass = 1."
+      },
+      {
+        "node": "outer",
+        "caption": "1 < 2 ? Yes, one more pass."
+      },
+      {
+        "node": "reset",
+        "caption": "i = 0, swapped = false again."
+      },
+      {
+        "node": "inner",
+        "caption": "i < n-1-pass is 0 < 1 ? Yes. Note the range shrank: a[2] is already final."
+      },
+      {
+        "node": "cmp",
+        "caption": "a[0] = 1, a[1] = 4. Is 1 > 4 ? No, already in order."
+      },
+      {
+        "node": "inc-i",
+        "caption": "i = 1. Nothing moved."
+      },
+      {
+        "node": "inner",
+        "caption": "1 < 1 ? No. Pass over."
+      },
+      {
+        "node": "check",
+        "caption": "swapped ? No. Nothing moved all pass, so the array is sorted."
+      },
+      {
+        "node": "end",
+        "caption": "Done in two passes instead of the full n-1, purely because of that swapped flag."
+      }
+    ],
+    "interactive": {
+      "walkthrough": true
+    }
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "slug": "backtracking-template",
+  "kind": "flowchart",
+  "title": "The backtracking template",
+  "group": "Backtracking",
+  "position": 0,
+  "spec": {
+    "title": "The backtracking template",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "backtrack(state)"
+      },
+      {
+        "id": "issol",
+        "type": "decision",
+        "text": "is state a\nsolution ?",
+        "badge": "1",
+        "note": "The stopping condition. Without it the recursion never bottoms out, and with the wrong one you record partial answers."
+      },
+      {
+        "id": "record",
+        "type": "process",
+        "text": "record(state)",
+        "note": "Record a copy. Storing the shared state itself means every recorded answer ends up pointing at the same object, which is empty by the time the search finishes."
+      },
+      {
+        "id": "ret1",
+        "type": "end",
+        "text": "return"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "i = 0",
+        "note": "Index into the choices available from this state."
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "i < choices ?"
+      },
+      {
+        "id": "ret2",
+        "type": "end",
+        "text": "return",
+        "note": "Out of choices at this level, so hand control back to the caller. This return is the backtrack."
+      },
+      {
+        "id": "valid",
+        "type": "decision",
+        "text": "choice[i] legal ?",
+        "badge": "2",
+        "accent": "amber",
+        "note": "The pruning test, and the only thing separating backtracking from brute force. Failing here means the entire subtree under this choice is never built."
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "apply choice",
+        "accent": "blue",
+        "parentId": "cycle",
+        "note": "Mutate the shared state so the deeper call sees this choice as already made."
+      },
+      {
+        "id": "explore",
+        "type": "process",
+        "text": "backtrack(state)",
+        "accent": "violet",
+        "parentId": "cycle",
+        "note": "One level deeper. This call runs all the way to completion before the next choice at this level is tried."
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "undo choice",
+        "accent": "coral",
+        "parentId": "cycle",
+        "note": "The step people forget. State is shared across the whole search, so a choice left applied silently corrupts every branch explored after it."
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "i = i + 1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "t1",
+        "from": "start",
+        "to": "issol"
+      },
+      {
+        "id": "t2",
+        "from": "issol",
+        "to": "record",
+        "label": "yes"
+      },
+      {
+        "id": "t3",
+        "from": "issol",
+        "to": "init",
+        "label": "no"
+      },
+      {
+        "id": "t4",
+        "from": "record",
+        "to": "ret1"
+      },
+      {
+        "id": "t5",
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "id": "t6",
+        "from": "loop",
+        "to": "valid",
+        "label": "yes"
+      },
+      {
+        "id": "t7",
+        "from": "loop",
+        "to": "ret2",
+        "label": "no"
+      },
+      {
+        "id": "t8",
+        "from": "valid",
+        "to": "choose",
+        "label": "yes"
+      },
+      {
+        "id": "t9",
+        "from": "valid",
+        "to": "next",
+        "label": "no (prune)"
+      },
+      {
+        "id": "t10",
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "id": "t11",
+        "from": "explore",
+        "to": "undo"
+      },
+      {
+        "id": "t12",
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "id": "t13",
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ]
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "slug": "m-coloring",
+  "kind": "flowchart",
+  "title": "Graph m-coloring",
+  "group": "Backtracking",
+  "position": 5,
+  "spec": {
+    "title": "Graph m-coloring",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "color(i)"
+      },
+      {
+        "id": "done",
+        "type": "decision",
+        "text": "i == nodeCount ?",
+        "badge": "1",
+        "note": "Every node has a colour and no check ever failed, so the colouring is valid."
+      },
+      {
+        "id": "ret1",
+        "type": "end",
+        "text": "return true"
+      },
+      {
+        "id": "init",
+        "type": "process",
+        "text": "c = 0"
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "c < m ?"
+      },
+      {
+        "id": "ret2",
+        "type": "end",
+        "text": "return false\n(backtrack)",
+        "accent": "coral",
+        "note": "Every colour was rejected for this node, so an earlier node must be recoloured. This is the failure that propagates upward."
+      },
+      {
+        "id": "ok",
+        "type": "decision",
+        "text": "a neighbour\nalready has c ?",
+        "badge": "2",
+        "accent": "amber",
+        "note": "The prune, and the only constraint in the problem."
+      },
+      {
+        "id": "cycle",
+        "type": "group",
+        "text": "choose · explore · un-choose",
+        "groupLayout": "column"
+      },
+      {
+        "id": "choose",
+        "type": "process",
+        "text": "colors[node] = c",
+        "accent": "blue",
+        "parentId": "cycle"
+      },
+      {
+        "id": "explore",
+        "type": "decision",
+        "text": "color(i + 1)\nsucceeded ?",
+        "accent": "violet",
+        "parentId": "cycle",
+        "note": "Unlike the enumeration problems, this one stops at the first success, so the recursive call returns a boolean rather than nothing. That boolean is what lets success short-circuit all the way out."
+      },
+      {
+        "id": "undo",
+        "type": "process",
+        "text": "uncolor node",
+        "accent": "coral",
+        "parentId": "cycle",
+        "note": "Only reached when the deeper call failed. On success the colouring is kept and returned straight up."
+      },
+      {
+        "id": "win",
+        "type": "end",
+        "text": "return true"
+      },
+      {
+        "id": "next",
+        "type": "process",
+        "text": "c = c + 1"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "done"
+      },
+      {
+        "from": "done",
+        "to": "ret1",
+        "label": "yes"
+      },
+      {
+        "from": "done",
+        "to": "init",
+        "label": "no"
+      },
+      {
+        "from": "init",
+        "to": "loop"
+      },
+      {
+        "from": "loop",
+        "to": "ok",
+        "label": "yes"
+      },
+      {
+        "from": "loop",
+        "to": "ret2",
+        "label": "no"
+      },
+      {
+        "from": "ok",
+        "to": "next",
+        "label": "yes (prune)"
+      },
+      {
+        "from": "ok",
+        "to": "choose",
+        "label": "no"
+      },
+      {
+        "from": "choose",
+        "to": "explore"
+      },
+      {
+        "from": "explore",
+        "to": "win",
+        "label": "yes"
+      },
+      {
+        "from": "explore",
+        "to": "undo",
+        "label": "no"
+      },
+      {
+        "from": "undo",
+        "to": "next"
+      },
+      {
+        "from": "next",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "apply a choice",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "recurse",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "take it back",
+        "shape": "process",
+        "accent": "coral"
+      },
+      {
+        "label": "loop back",
+        "kind": "edge",
+        "shape": "decision",
+        "accent": "copper"
+      }
+    ]
+  }
+}

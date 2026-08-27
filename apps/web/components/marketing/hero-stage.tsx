@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ReactFlowProvider } from "@xyflow/react";
 import { FlowchartCanvas } from "@/components/content/blocks/interactive/flowchart/flowchart-canvas";
 import { GraphCanvas } from "@/components/content/blocks/interactive/graph/graph-canvas";
 import { KMapGrid, type DrawnGroup } from "@/components/content/blocks/interactive/kmap/kmap-grid";
@@ -129,6 +130,24 @@ const HERO_CHART: FlowchartSpec = {
   ],
 };
 
+/**
+ * Panning, zooming and dragging are all off here. The chart is a sample of
+ * what the tutorials render, not something to operate, and a hero element
+ * that eats scroll gestures on a phone is actively hostile.
+ */
+const HERO_FLOW_INTERACTIVE = {
+  notes: true,
+  walkthrough: false,
+  focus: false,
+  draggable: false,
+  zoom: false,
+  minimap: false,
+  search: false,
+  fullscreen: false,
+  download: false,
+  legend: false,
+} as const;
+
 function HeroFlowchart() {
   const [selected, setSelected] = useState<string | null>("d");
   const note = HERO_CHART.nodes.find((n) => n.id === selected)?.note;
@@ -136,21 +155,18 @@ function HeroFlowchart() {
   return (
     <figure className="m-0 flex w-full max-w-[22rem] flex-col">
       <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Flowchart</p>
-      {/* No frame and no scroller. The canvas defaults to a bordered, tinted,
-          overflow-auto box sized for a tutorial column; here the chart is the
-          object on display, so the chrome comes off and the height cap is
-          lifted so nothing clips. */}
-      <FlowchartCanvas
-        spec={HERO_CHART}
-        selectedId={selected}
-        onSelect={setSelected}
-        maxHeight={9999}
-        // The canvas sets an explicit pixel width on its svg, which is right
-        // in a tutorial column but overflows a phone. The viewBox is already
-        // there, so letting CSS cap the width scales the whole chart down
-        // proportionally instead of handing it a scrollbar.
-        className="overflow-visible border-0 bg-transparent p-0 [&>svg]:h-auto [&>svg]:max-w-full"
-      />
+      <ReactFlowProvider>
+        <FlowchartCanvas
+          spec={HERO_CHART}
+          interactive={HERO_FLOW_INTERACTIVE}
+          height={260}
+          selectedId={selected}
+          onSelectNode={setSelected}
+          // The chart is the object on display here, so the tutorial column's
+          // frame and tint come off and the canvas sits directly on the hero.
+          className="border-0 bg-transparent"
+        />
+      </ReactFlowProvider>
       <figcaption className="mt-2 min-h-[2.5rem] text-xs text-slate">
         {note ?? "Click a box to see what it is for."}
       </figcaption>

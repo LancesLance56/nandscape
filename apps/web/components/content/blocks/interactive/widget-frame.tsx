@@ -15,14 +15,14 @@ export function WidgetFrame({ title, subtitle, children, className, contentClass
   return (
     <div
       className={cn(
-        "not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)] ",
+        "not-prose overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)] ",
         className,
       )}
     >
+      {/* No macOS-style window dots. They dressed every demo up as a little
+          application window, which is decoration the reader gains nothing
+          from - the widget already shows what it is. */}
       <div className="flex items-center gap-2.5 border-b border-border bg-surface-2 px-4 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-signal-coral" />
-        <span className="h-2.5 w-2.5 rounded-full bg-copper" />
-        <span className="h-2.5 w-2.5 rounded-full bg-signal-green" />
         <span className=" text-[11px] font-semibold text-ink">{title}</span>
         {subtitle && <span className="ml-auto text-[10px] text-slate">{subtitle}</span>}
       </div>

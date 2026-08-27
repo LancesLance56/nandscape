@@ -1,0 +1,124 @@
+{
+  "slug": "merge",
+  "kind": "flowchart",
+  "title": "Merge sort (one call)",
+  "group": "Sorting",
+  "position": 3,
+  "spec": {
+    "title": "Merge sort (one call)",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "mergeSort(a)"
+      },
+      {
+        "id": "base",
+        "type": "decision",
+        "text": "length <= 1 ?",
+        "badge": "1",
+        "note": "The base case. A single element is already sorted, and this is what stops the recursion."
+      },
+      {
+        "id": "ret",
+        "type": "end",
+        "text": "return a",
+        "note": "Returning here is what lets the level above start merging."
+      },
+      {
+        "id": "split",
+        "type": "process",
+        "text": "mid = length / 2",
+        "note": "The split is positional and never looks at the values, which is why merge sort's cost is identical on sorted, reversed and random input."
+      },
+      {
+        "id": "divide",
+        "type": "group",
+        "text": "Divide",
+        "accent": "violet",
+        "badge": "2",
+        "groupLayout": "column"
+      },
+      {
+        "id": "left",
+        "type": "process",
+        "text": "left = mergeSort(a[0..mid])",
+        "accent": "violet",
+        "parentId": "divide",
+        "note": "This call runs to completion, all the way down and all the way back up, before the right half is touched at all."
+      },
+      {
+        "id": "right",
+        "type": "process",
+        "text": "right = mergeSort(a[mid..])",
+        "accent": "violet",
+        "parentId": "divide",
+        "note": "Only reached once the entire left subtree has finished and returned."
+      },
+      {
+        "id": "merge",
+        "type": "process",
+        "text": "return merge(left, right)",
+        "accent": "blue",
+        "badge": "3",
+        "note": "Both halves are sorted by now, so one linear pass combines them. All of merge sort's actual work happens here, on the way back up."
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "base"
+      },
+      {
+        "from": "base",
+        "to": "ret",
+        "label": "yes"
+      },
+      {
+        "from": "base",
+        "to": "split",
+        "label": "no"
+      },
+      {
+        "from": "split",
+        "to": "left"
+      },
+      {
+        "from": "left",
+        "to": "right"
+      },
+      {
+        "from": "right",
+        "to": "merge"
+      }
+    ],
+    "legend": [
+      {
+        "label": "start / end",
+        "shape": "start",
+        "accent": "green"
+      },
+      {
+        "label": "process",
+        "shape": "process",
+        "accent": "neutral"
+      },
+      {
+        "label": "decision",
+        "shape": "decision",
+        "accent": "copper"
+      },
+      {
+        "label": "calls itself",
+        "shape": "process",
+        "accent": "violet"
+      },
+      {
+        "label": "moves data",
+        "shape": "process",
+        "accent": "blue"
+      }
+    ]
+  }
+}

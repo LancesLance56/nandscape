@@ -45,7 +45,7 @@ export function TrackLanding({ track }: { track: TutorialTrackTree }) {
       </nav>
 
       <header className="mb-8">
-        <h1 className="font-display text-3xl font-bold leading-tight text-ink">{track.title}</h1>
+        <h1 className="text-balance font-display text-3xl font-bold leading-tight text-ink sm:text-4xl">{track.title}</h1>
         {track.description && (
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">{track.description}</p>
         )}

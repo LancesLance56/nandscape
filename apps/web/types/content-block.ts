@@ -94,6 +94,33 @@ export interface InteractiveBlock {
   data: Record<string, unknown>;
 }
 
+/**
+ * An ordered or unordered list. Each item is its own run of rich-text spans
+ * (the same shape as a paragraph's `content`), so an item can carry bold,
+ * code, links, and so on - not just a plain string.
+ */
+export interface ListBlock {
+  id: string;
+  type: "list";
+  ordered: boolean;
+  items: TextSpan[][];
+}
+
+export type CalloutTone = "note" | "tip" | "warning" | "important";
+
+/**
+ * A set-apart aside: a note, tip, warning, or "important" box. `tone` picks
+ * the accent colour and icon; `title` is optional and falls back to a label
+ * derived from the tone.
+ */
+export interface CalloutBlock {
+  id: string;
+  type: "callout";
+  tone: CalloutTone;
+  title?: string;
+  content: TextSpan[];
+}
+
 export type ContentBlock =
   | ParagraphBlock
   | HeadingBlock
@@ -103,4 +130,6 @@ export type ContentBlock =
   | CodeBlock
   | DividerBlock
   | TableBlock
-  | InteractiveBlock;
+  | InteractiveBlock
+  | ListBlock
+  | CalloutBlock;

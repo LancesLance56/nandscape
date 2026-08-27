@@ -30,6 +30,7 @@ import { SudokuWidget } from "./backtracking/sudoku-widget";
 import { RecursionTreeWidget } from "./dp/recursion-tree-widget";
 import { DpArrayWidget, DpTableWidget } from "./dp/dp-table-widgets";
 import { SortingVisualizerWidget } from "./sorting/sorting-visualizer-widget";
+import { SortRecursionTreeWidget } from "./sorting/sort-recursion-tree-widget";
 import {
   PartitionExplorerWidget,
   MergeExplorerWidget,
@@ -80,6 +81,7 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "dp-array": DpArrayWidget,
   "dp-table": DpTableWidget,
   "sorting-visualizer": SortingVisualizerWidget,
+  "sort-recursion-tree": SortRecursionTreeWidget,
   "partition-explorer": PartitionExplorerWidget,
   "merge-explorer": MergeExplorerWidget,
   "interval-explorer": IntervalExplorerWidget,
@@ -100,13 +102,13 @@ export function InteractiveBlockView({ block }: { block: InteractiveBlock & { cl
   const Widget = widgetRegistry[block.widget];
   if (!Widget) {
     return (
-      <div className="my-2 rounded-xl border border-dashed border-border-strong p-4 text-sm text-slate">
+      <div className="not-prose rounded-xl border border-dashed border-border-strong p-4 text-sm text-slate">
         Unknown interactive widget: &ldquo;{block.widget}&rdquo;
       </div>
     );
   }
   return (
-    <div className={cn("my-2", block.className)}>
+    <div className={cn("not-prose", block.className)}>
       <Widget data={block.data} />
     </div>
   );

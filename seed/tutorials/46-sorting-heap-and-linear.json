@@ -30,7 +30,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Merge sort is O(n log n) but needs O(n) memory. Quick sort is in place but has an O(n²) worst case. Heap sort is the algorithm that gives you both guarantees at once, and it is still not the one anyone uses by default."
+          "text": "Merge sort is O(n log n) but needs O(n) memory. Quick sort is in place but has an O(n²) worst case. Heap sort is the algorithm that gives you both guarantees at once, and it's still not the one anyone uses by default."
         }
       ]
     },
@@ -45,7 +45,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A max-heap is an array read as a binary tree, where every parent is at least as large as its children. Node i has children at 2i+1 and 2i+2. So the largest value is always at index 0."
+          "text": "A max-heap is an array read as a binary tree, where every parent is at least as large as its children. Node i has children at 2i+1 and 2i+2, so the largest value is always sitting at index 0."
         }
       ]
     },
@@ -54,7 +54,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That gives an algorithm: build a heap, swap the root to the end (where it belongs), shrink the heap by one, and restore the heap property. Repeat."
+          "text": "That gives you an algorithm: build a heap, swap the root to the end (where it belongs), shrink the heap by one, and restore the heap property. Repeat."
         }
       ]
     },
@@ -83,7 +83,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "So why is it not the default? Cache behavior. Sift-down jumps between indices i, 2i+1 and 2i+2, which on a large array means jumping across memory and missing the cache constantly. Quick sort scans linearly and is often two or three times faster in wall-clock terms despite the worse asymptotic worst case. Heap sort survives mostly as introsort's safety net."
+          "text": "So why isn't it the default? Cache behavior. Sift-down jumps between indices i, 2i+1 and 2i+2, which on a large array means jumping across memory and missing the cache constantly. Quick sort scans linearly and is often two or three times faster in wall-clock terms despite the worse asymptotic worst case. Heap sort mostly survives as introsort's safety net."
         }
       ]
     },
@@ -98,7 +98,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The lower bound from the introduction applies only to algorithms that learn about the data by comparing elements. If you use the values themselves as array indices, the argument does not apply at all."
+          "text": "The lower bound from the introduction only applies to algorithms that learn about the data by comparing elements. If you use the values themselves as array indices, the argument doesn't apply at all."
         }
       ]
     },
@@ -133,7 +133,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It runs in O(n + k), where k is the size of the value range. That is linear when k is comparable to n, and catastrophic when it is not: sorting a handful of 32-bit integers this way would allocate four billion buckets. The precondition is not a footnote, it is the whole trade."
+          "text": "It runs in O(n + k), where k is the size of the value range. That's linear when k is comparable to n, and catastrophic when it isn't: sorting a handful of 32-bit integers this way would allocate four billion buckets. The precondition isn't a footnote, it's the whole trade."
         }
       ]
     },
@@ -157,7 +157,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Radix sort applies a stable counting sort to one digit at a time, least significant first. After processing every digit the array is fully sorted, in O(d × (n + k)) for d digits."
+          "text": "Radix sort applies a stable counting sort to one digit at a time, least significant first. After processing every digit, the array is fully sorted, in O(d × (n + k)) for d digits."
         }
       ]
     },
@@ -166,7 +166,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The stability requirement is load-bearing rather than a nicety, since each pass must preserve the ordering established by the previous, less significant, digits. Swap in an unstable sort for the per-digit pass and radix sort simply produces the wrong answer."
+          "text": "The stability requirement is load-bearing rather than a nicety, since each pass has to preserve the ordering established by the previous, less significant, digits. Swap in an unstable sort for the per-digit pass and radix sort just produces the wrong answer."
         }
       ]
     },
@@ -314,7 +314,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step, and clicking any box with a dot shows why that step is there."
+          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step. Click any box with a dot to see why that step is there."
         }
       ]
     },

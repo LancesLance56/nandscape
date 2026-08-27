@@ -96,7 +96,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The detail to get right is duplicates. If the inputs can contain repeats and the output should not, compare each candidate against the last thing you emitted before emitting it."
+          "text": "The detail to get right is duplicates. If the inputs can contain repeats and the output shouldn't, compare each candidate against the last thing you emitted before emitting it."
         }
       ]
     },
@@ -122,7 +122,7 @@
           ]
         },
         {
-          "text": " is a pair of positions i < j where a[i] > a[j]: a pair that is out of order. The count measures how far from sorted an array is. Zero means sorted; n(n-1)/2 means exactly reversed."
+          "text": " is a pair of positions i < j where a[i] > a[j]: a pair that's out of order. The count measures how far from sorted an array is. Zero means sorted; n(n-1)/2 means exactly reversed."
         }
       ]
     },
@@ -131,7 +131,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It has real uses: it is the number of swaps bubble sort would perform, and as Kendall's tau distance it measures how much two rankings disagree, which is how you compare a recommender's output against a user's actual preference order."
+          "text": "It has real uses: it's the number of swaps bubble sort would perform, and as Kendall's tau distance it measures how much two rankings disagree, which is how you'd compare a recommender's output against a user's actual preference order."
         }
       ]
     },
@@ -167,7 +167,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "During a merge, when you take a value from the right half, every element still remaining in the left half is greater than it, and each of those is sitting at an earlier index. So they are all inversions with it, and you can add the whole batch at once with "
+          "text": "During a merge, when you take a value from the right half, every element still remaining in the left half is greater than it, and each of those is sitting at an earlier index. So they're all inversions with it, and you can add the whole batch at once with "
         },
         {
           "text": "count += left.length - i",
@@ -196,7 +196,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Inversions between the two halves are counted during their merge; inversions within a half are counted by the recursive calls. So every pair is counted exactly once, at the level where the two elements first end up in different halves."
+          "text": "Inversions between the two halves get counted during their merge; inversions within a half get counted by the recursive calls. So every pair is counted exactly once, at the level where the two elements first end up in different halves."
         }
       ]
     },

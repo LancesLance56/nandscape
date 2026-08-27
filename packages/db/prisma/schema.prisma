@@ -268,6 +268,33 @@ model FeaturedCircuit {
   @@map("featured_circuits")
 }
 
+/// A named diagram that content refers to by slug rather than embedding.
+///
+/// Flowcharts and the worked examples the graph widgets ship with used to be
+/// TypeScript literals compiled into the bundle, which meant a typo in a
+/// teaching diagram was a code change and a deploy. They live here instead:
+/// `spec` is the same JSON shape the widgets already accept inline, so a
+/// block can either name one of these or carry its own.
+model DiagramPreset {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  /// Which widget family reads this: "flowchart" or "graph".
+  kind     String
+  title    String
+  /// Optional heading for the editor's picker, e.g. "Sorting".
+  group    String?
+  /// Order within a group in that picker.
+  position Int     @default(0)
+  /// A FlowchartSpec or GraphSpec, exactly as the widget consumes it.
+  spec     Json
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([kind, group, position])
+  @@map("diagram_presets")
+}
+
 enum Role {
   USER
   ADMIN
