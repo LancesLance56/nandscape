@@ -100,7 +100,7 @@ export function TarjanSccWidget({
       panel={(step) => (
         <>
           <PanelBox title="Stack (nodes in an unfinished component)">
-            <ChipRow items={step.frontier} emptyLabel="empty" />
+            <ChipRow items={step.frontier} emptyLabel="empty" reserveRows={2} />
           </PanelBox>
 
           <PanelBox title="arrival / lowlink">
@@ -114,7 +114,7 @@ export function TarjanSccWidget({
             </div>
           </PanelBox>
 
-          <PanelBox title="Components found">
+          <PanelBox title="Components found" bodyClassName="h-[4.5rem] overflow-y-auto">
             {step.groups && step.groups.length > 0 ? (
               <div className="flex flex-col gap-1">
                 {step.groups.map((g) => (

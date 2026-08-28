@@ -5,7 +5,7 @@ import {FeatureStrip} from "@/components/marketing/feature-strip";
 import {LiveDemo} from "@/components/marketing/live-demo";
 import {PuzzlesShowcase} from "@/components/marketing/puzzles-showcase";
 import {TutorialsShowcase} from "@/components/marketing/tutorials-showcase";
-import {SortingShowcase} from "@/components/marketing/sorting-showcase";
+import {ToolsBento} from "@/components/marketing/tools-bento";
 import {BlogShowcase} from "@/components/marketing/blog-showcase";
 import {SiteGradient} from "@/components/site-gradient";
 import {listPublishedPosts} from "@/lib/blog/posts";
@@ -30,7 +30,7 @@ export default async function Home() {
       <main className="relative mx-auto max-w-330 px-6 sm:px-10">
         <Hero/>
           <TutorialsShowcase/>
-          <SortingShowcase/>
+          <ToolsBento/>
           <LiveDemo/>
           <FeatureStrip/>
           <PuzzlesShowcase/>

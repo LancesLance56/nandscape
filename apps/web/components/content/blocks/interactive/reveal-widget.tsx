@@ -48,27 +48,33 @@ export function RevealWidget({ data }: { data: Record<string, unknown> }) {
       <WidgetButton tone="primary" size="md" onClick={handleReveal}>
         {data.buttonLabel}
       </WidgetButton>
-      {revealed && (
-        <div className="mt-4 border-t border-dashed border-border pt-4">
-          {data.beforeCode && (
-            <>
-              <span className="mb-1.5 block text-[11px] font-semibold text-signal-coral">
-                {data.beforeLabel ?? "Before"}
-              </span>
-              <pre className="mb-3 overflow-x-auto rounded-lg border border-border bg-surface-2 p-3 text-[13px] leading-relaxed text-ink-soft">
-                {data.beforeCode}
-              </pre>
-            </>
-          )}
-          <span className="mb-1.5 block text-[11px] font-semibold text-copper">
-            {data.afterLabel}
-          </span>
-          <pre className="mb-3 overflow-x-auto rounded-lg border border-copper/50 bg-surface-2 p-3 text-[13px] leading-relaxed text-ink">
-            {data.afterCode}
-          </pre>
-          <p className="text-sm leading-relaxed text-ink-soft">{data.explanation}</p>
-        </div>
-      )}
+      {/* The answer area is always present at a fixed height (scrolling if the
+          answer is long), so revealing it never shoves the page down. */}
+      <div className="mt-4 h-56 overflow-y-auto border-t border-dashed border-border pt-4">
+        {revealed ? (
+          <>
+            {data.beforeCode && (
+              <>
+                <span className="mb-1.5 block text-[11px] font-semibold text-signal-coral">
+                  {data.beforeLabel ?? "Before"}
+                </span>
+                <pre className="mb-3 overflow-x-auto rounded-lg border border-border bg-surface-2 p-3 text-[13px] leading-relaxed text-ink-soft">
+                  {data.beforeCode}
+                </pre>
+              </>
+            )}
+            <span className="mb-1.5 block text-[11px] font-semibold text-copper">
+              {data.afterLabel}
+            </span>
+            <pre className="mb-3 overflow-x-auto rounded-lg border border-copper/50 bg-surface-2 p-3 text-[13px] leading-relaxed text-ink">
+              {data.afterCode}
+            </pre>
+            <p className="text-sm leading-relaxed text-ink-soft">{data.explanation}</p>
+          </>
+        ) : (
+          <p className="text-xs italic text-slate">The answer appears here once you reveal it.</p>
+        )}
+      </div>
     </div>
   );
 }

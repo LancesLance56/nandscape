@@ -6,8 +6,13 @@ import { ArticleShell, ArticleMeta } from "@/components/content/article-shell";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { readingTimeLabel } from "@/lib/content/reading-time";
+import { TutorialPager } from "@/components/tutorials/tutorial-pager";
 import { getPublishedTutorialPageBySlug, listTutorialPages } from "@/lib/tutorials/tutorials";
-import { getTrackSlugForPage, getTutorialTrackBySlug } from "@/lib/tutorials/tutorial-tracks";
+import {
+  getAdjacentTutorialPages,
+  getTrackSlugForPage,
+  getTutorialTrackBySlug,
+} from "@/lib/tutorials/tutorial-tracks";
 
 export const revalidate = 60;
 
@@ -68,6 +73,7 @@ export default async function TutorialPage({ params }: PageProps) {
   if (realTrack && realTrack !== track) permanentRedirect(`/tutorials/${realTrack}/${slug}`);
 
   const trackRecord = realTrack ? await getTutorialTrackBySlug(realTrack) : null;
+  const { prev, next } = await getAdjacentTutorialPages(realTrack ?? track, slug);
   const path = `/tutorials/${track}/${page.slug}`;
   const updated = formatDate(page.updatedAt);
 
@@ -120,6 +126,7 @@ export default async function TutorialPage({ params }: PageProps) {
         meta={<ArticleMeta items={[updated && `Updated ${updated}`, readingTimeLabel(page.body)]} />}
       >
         <BlockRenderer blocks={page.body} />
+        <TutorialPager prev={prev} next={next} />
       </ArticleShell>
     </>
   );

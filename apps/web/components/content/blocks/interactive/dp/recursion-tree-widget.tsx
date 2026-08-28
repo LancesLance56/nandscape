@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { recursionSteps, type RecursionMode, type RecursionProblem } from "@/lib/dp/recursion";
 import type { CallNode } from "@/lib/dp/types";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { ChipRow, PanelBox, SegmentedRow, WidgetFrame, type SegmentedGroup } from "../shared/widget-ui";
+import { ChipRow, PanelBox, SegmentedRow, StatusSlot, WidgetFrame, type SegmentedGroup } from "../shared/widget-ui";
 import { CallTreeCanvas, CallTreeLegend } from "./call-tree-canvas";
 
 /**
@@ -215,7 +215,7 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
 
           {/* The panel the whole widget is built around: reading a recursion as
               an induction proof, for whichever call is on screen right now. */}
-          <PanelBox title="Why this is correct">
+          <PanelBox title="Why this is correct" bodyClassName="h-28 overflow-y-auto">
             <div className="flex flex-col gap-2 text-xs leading-relaxed">
               <div>
                 <span className="font-semibold text-signal-green-strong">Base case. </span>
@@ -233,11 +233,11 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
           </PanelBox>
 
           <PanelBox title="Call stack">
-            <ChipRow items={step.stack} emptyLabel="nothing running" />
+            <ChipRow items={step.stack} emptyLabel="nothing running" reserveRows={2} />
           </PanelBox>
 
           {mode === "memo" && (
-            <PanelBox title="Memo">
+            <PanelBox title="Memo" bodyClassName="h-14 overflow-y-auto">
               {step.memo.length === 0 ? (
                 <span className="text-xs italic text-slate">still empty</span>
               ) : (
@@ -273,12 +273,14 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
           onReset={player.reset}
           onScrub={player.setIndex}
         />
-        {run.truncated && (
-          <p className="text-[11px] text-copper-dark">
-            This run hit the frame limit and stopped early: without a memo the tree outgrows what is watchable long
-            before it outgrows what a computer would attempt.
-          </p>
-        )}
+        <StatusSlot lines={2}>
+          {run.truncated && (
+            <p className="text-[11px] text-copper-dark">
+              This run hit the frame limit and stopped early: without a memo the tree outgrows what is watchable long
+              before it outgrows what a computer would attempt.
+            </p>
+          )}
+        </StatusSlot>
       </div>
     </WidgetFrame>
   );

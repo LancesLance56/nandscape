@@ -149,10 +149,14 @@ export function StepControls({
   );
 }
 
-/** The narration line under the diagram. Fixed height so the layout doesn't jump. */
+/**
+ * The narration line under the diagram. Height is *fixed*, not just a minimum:
+ * a long caption scrolls inside its own box rather than pushing everything
+ * below it down, so the widget never changes height as the reader steps.
+ */
 export function StepCaption({ text }: { text: string }) {
   return (
-    <p className="min-h-[3.5rem] rounded-lg border border-border bg-surface-2/50 px-3 py-2.5 text-sm leading-relaxed text-ink-soft">
+    <p className="h-[3.75rem] overflow-y-auto rounded-lg border border-border bg-surface-2/50 px-3 py-2.5 text-sm leading-relaxed text-ink-soft">
       {text}
     </p>
   );

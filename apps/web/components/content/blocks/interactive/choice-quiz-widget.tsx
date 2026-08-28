@@ -89,14 +89,18 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
           );
         })}
       </div>
-      {answered !== null && (
-        <div className="mt-4 border-t border-dashed border-border pt-4">
-          <div className="mb-2 text-xs font-semibold tracking-wide text-copper">
-            {data.verdictGood}
+      {/* Reserved so choosing an option (which reveals the explanation) does
+          not push the rest of the article down. */}
+      <div className="mt-4 min-h-[6rem]">
+        {answered !== null && (
+          <div className="border-t border-dashed border-border pt-4">
+            <div className="mb-2 text-xs font-semibold tracking-wide text-copper">
+              {data.verdictGood}
+            </div>
+            <p className="text-sm leading-relaxed text-ink-soft">{data.explanation}</p>
           </div>
-          <p className="text-sm leading-relaxed text-ink-soft">{data.explanation}</p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

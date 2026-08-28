@@ -10,7 +10,7 @@ import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player"
 // they stay re-exported for those callers.
 import { Segmented } from "../shared/widget-ui";
 
-export { ChipRow, PanelBox } from "../shared/widget-ui";
+export { ChipRow, PanelBox, StatusSlot, ReservedBox } from "../shared/widget-ui";
 
 interface AlgorithmRunnerProps {
   graph: GraphSpec;
@@ -99,7 +99,9 @@ export function AlgorithmRunner({
             groupHulls={groupHulls}
             groupLabel={groupLabel}
           />
-          {hint && <p className="mt-1 text-center text-[11px] text-slate">{hint}</p>}
+          {/* Reserved whether or not a hint is passed, so its presence never
+              shifts the canvas. */}
+          <p className="mt-1 min-h-[1.25rem] text-center text-[11px] text-slate">{hint}</p>
         </div>
         {panel && <div className="flex flex-col gap-3">{panel(step)}</div>}
       </div>

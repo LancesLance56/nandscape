@@ -163,7 +163,11 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
           <div className="mb-2 text-[11px] font-semibold text-slate">
             {mode === "inversions" ? "merged output" : "result"}
           </div>
-          <Chips values={step.output} highlight={step.emitted !== undefined ? [step.emitted] : []} tone="green" />
+          {/* Fixed height + scroll: the output grows every step, and without
+              this the widget would get taller with each emitted value. */}
+          <div className="h-16 overflow-y-auto">
+            <Chips values={step.output} highlight={step.emitted !== undefined ? [step.emitted] : []} tone="green" />
+          </div>
         </div>
 
         {mode === "inversions" && (
@@ -179,14 +183,17 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
           </div>
         )}
 
-        {step.creditedFrom && step.creditedFrom.length > 0 && (
-          <div className="rounded-lg border border-copper/40 bg-copper-bg/40 p-3">
-            <div className="mb-1.5 text-[11px] font-semibold text-copper-dark">
-              These {step.creditedFrom.length} left value(s) are all greater, so each forms an inversion
+        {/* Reserved whether or not this step credits any inversions. */}
+        <div className="min-h-[4.5rem]">
+          {step.creditedFrom && step.creditedFrom.length > 0 && (
+            <div className="rounded-lg border border-copper/40 bg-copper-bg/40 p-3">
+              <div className="mb-1.5 text-[11px] font-semibold text-copper-dark">
+                These {step.creditedFrom.length} left value(s) are all greater, so each forms an inversion
+              </div>
+              <Chips values={step.creditedFrom} />
             </div>
-            <Chips values={step.creditedFrom} />
-          </div>
-        )}
+          )}
+        </div>
 
         <StepCaption text={step.caption} />
         <StepControls
@@ -299,21 +306,25 @@ export function IntervalExplorerWidget({ data }: { data: Record<string, unknown>
         </div>
 
         {mode === "merge" && (
-          <div className="flex flex-col gap-1.5 rounded-lg border border-signal-green/40 bg-signal-green-bg/30 p-3">
+          <div className="rounded-lg border border-signal-green/40 bg-signal-green-bg/30 p-3">
             <div className="mb-1 text-[11px] font-semibold text-signal-green-strong">
               Merged output ({step.merged.length})
             </div>
-            {step.merged.length === 0 && <span className="text-xs italic text-slate">nothing yet</span>}
-            {step.merged.map((iv, i) => (
-              <div key={i} className="relative h-6">
-                <div
-                  className="absolute flex h-full items-center justify-center rounded bg-signal-green text-[10px] font-bold text-white"
-                  style={{ left: `${pct(iv.start)}%`, width: `${Math.max(pct(iv.end - iv.start), 6)}%` }}
-                >
-                  {iv.start}-{iv.end}
+            {/* Fixed height + scroll so the list growing per step doesn't
+                stretch the widget. */}
+            <div className="flex h-24 flex-col gap-1.5 overflow-y-auto">
+              {step.merged.length === 0 && <span className="text-xs italic text-slate">nothing yet</span>}
+              {step.merged.map((iv, i) => (
+                <div key={i} className="relative h-6 shrink-0">
+                  <div
+                    className="absolute flex h-full items-center justify-center rounded bg-signal-green text-[10px] font-bold text-white"
+                    style={{ left: `${pct(iv.start)}%`, width: `${Math.max(pct(iv.end - iv.start), 6)}%` }}
+                  >
+                    {iv.start}-{iv.end}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
@@ -391,27 +402,33 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
             </div>
             <Chips values={step.values} highlight={step.highlight} />
           </div>
-          {step.other && (
-            <div>
-              <div className="mb-1.5 text-[10px] font-semibold uppercase text-slate">
-                {mode === "tywin" ? "enemy army (sorted)" : "chairs (sorted)"}
-              </div>
-              <Chips values={step.other} highlight={step.otherHighlight} />
-            </div>
-          )}
+          <div className="min-h-[3.5rem]">
+            {step.other && (
+              <>
+                <div className="mb-1.5 text-[10px] font-semibold uppercase text-slate">
+                  {mode === "tywin" ? "enemy army (sorted)" : "chairs (sorted)"}
+                </div>
+                <Chips values={step.other} highlight={step.otherHighlight} />
+              </>
+            )}
+          </div>
         </div>
 
-        {step.running && (
-          <div className="rounded-lg border border-border bg-surface-2/40 px-3 py-2">
-            <span className="font-mono text-sm font-bold text-ink">{step.running}</span>
-          </div>
-        )}
+        {/* One reserved slot for the running-total line and the final answer,
+            so neither one appearing changes the widget's height. */}
+        <div className="min-h-[2.75rem]">
+          {step.running && (
+            <div className="rounded-lg border border-border bg-surface-2/40 px-3 py-2">
+              <span className="font-mono text-sm font-bold text-ink">{step.running}</span>
+            </div>
+          )}
 
-        {step.done && (
-          <p className="rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 text-xs font-semibold text-signal-green-strong">
-            Answer: {run.answer}
-          </p>
-        )}
+          {step.done && (
+            <p className="rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 text-xs font-semibold text-signal-green-strong">
+              Answer: {run.answer}
+            </p>
+          )}
+        </div>
 
         <StepCaption text={step.caption} />
         <StepControls

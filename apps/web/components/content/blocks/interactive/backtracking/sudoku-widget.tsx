@@ -105,7 +105,7 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
         </div>
 
         <div className="flex flex-col gap-3">
-          <PanelBox title="Candidates for the active cell">
+          <PanelBox title="Candidates for the active cell" bodyClassName="h-14 overflow-y-auto">
             {payload?.candidates && payload.candidates.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {payload.candidates.map((c) => (

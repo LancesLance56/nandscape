@@ -167,8 +167,8 @@ export function MutualReachabilityWidget({
           </PanelBox>
 
           <PanelBox title={`Mutually reachable with ${selected}`}>
-            <ChipRow items={component} emptyLabel="none" />
-            <p className="mt-2 text-[11px] leading-relaxed text-slate">
+            <ChipRow items={component} emptyLabel="none" reserveRows={2} />
+            <p className="mt-2 min-h-[2.75rem] text-[11px] leading-relaxed text-slate">
               {component.length === 1
                 ? `${selected} is on no cycle, so it is a component all by itself. That still counts as one.`
                 : `${component.length} airports, each able to reach every other and get back again.`}
@@ -179,11 +179,11 @@ export function MutualReachabilityWidget({
             <div className="flex flex-col gap-2">
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate">Can get to</div>
-                <ChipRow items={forwardOnly} emptyLabel="nothing new" tone="muted" />
+                <ChipRow items={forwardOnly} emptyLabel="nothing new" tone="muted" reserveRows={1} />
               </div>
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate">Can be reached from</div>
-                <ChipRow items={backwardOnly} emptyLabel="nothing new" tone="muted" />
+                <ChipRow items={backwardOnly} emptyLabel="nothing new" tone="muted" reserveRows={1} />
               </div>
             </div>
           </PanelBox>

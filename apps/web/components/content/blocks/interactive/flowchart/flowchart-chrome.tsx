@@ -142,14 +142,18 @@ export function FlowchartNotePanel({
 }) {
   return (
     <div className="rounded-lg border border-border bg-surface-2/40 p-3">
-      {note ? (
-        <>
-          {title && <div className="mb-1 text-[11px] font-semibold text-copper-dark">{title.replace(/\n/g, " · ")}</div>}
-          <p className="text-xs leading-relaxed text-ink-soft">{note}</p>
-        </>
-      ) : (
-        <p className="text-xs italic text-slate">{placeholder}</p>
-      )}
+      {/* Fixed height + scroll so notes of different lengths (and the
+          no-selection placeholder) all leave the panel the same size. */}
+      <div className="h-16 overflow-y-auto">
+        {note ? (
+          <>
+            {title && <div className="mb-1 text-[11px] font-semibold text-copper-dark">{title.replace(/\n/g, " · ")}</div>}
+            <p className="text-xs leading-relaxed text-ink-soft">{note}</p>
+          </>
+        ) : (
+          <p className="text-xs italic text-slate">{placeholder}</p>
+        )}
+      </div>
     </div>
   );
 }

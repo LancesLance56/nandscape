@@ -127,7 +127,7 @@ export function PermutationsWidget({ data }: { data: Record<string, unknown> }) 
         );
       }}
       panel={(step) => (
-        <PanelBox title={mode === "used" ? "Characters still free" : "Positions still open"}>
+        <PanelBox title={mode === "used" ? "Characters still free" : "Positions still open"} bodyClassName="h-16 overflow-y-auto">
           <div className="flex flex-wrap gap-1.5">
             {mode === "used"
               ? freeLetters(letters, step.path.slice(1)).map((ch, i) => (

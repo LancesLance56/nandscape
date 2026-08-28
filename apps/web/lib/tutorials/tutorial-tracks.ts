@@ -1,6 +1,7 @@
 import { query } from "@/lib/db/client";
 import type {
   NewTutorialTrackInput,
+  TutorialNavPage,
   TutorialTrack,
   TutorialTrackTree,
   UpdateTutorialTrackInput,
@@ -158,6 +159,30 @@ export async function listTutorialTrackTrees(): Promise<TutorialTrackTree[]> {
 export async function getTutorialTrackTree(slug: string): Promise<TutorialTrackTree | null> {
   const trees = await listTutorialTrackTrees();
   return trees.find((t) => t.slug === slug) ?? null;
+}
+
+/**
+ * The lesson before and after `pageSlug` within its track, walking the track
+ * as one flat sequence across section boundaries (sections and pages are
+ * already returned in `position` order by listTutorialTrackTrees). Either end
+ * is null at the first / last lesson. Drives the "Previous / Next" pager so a
+ * reader finishing a page always has somewhere to go.
+ */
+export async function getAdjacentTutorialPages(
+  trackSlug: string,
+  pageSlug: string,
+): Promise<{ prev: TutorialNavPage | null; next: TutorialNavPage | null }> {
+  const tree = await getTutorialTrackTree(trackSlug);
+  if (!tree) return { prev: null, next: null };
+
+  const pages = tree.sections.flatMap((s) => s.pages);
+  const index = pages.findIndex((p) => p.slug === pageSlug);
+  if (index === -1) return { prev: null, next: null };
+
+  return {
+    prev: index > 0 ? pages[index - 1] : null,
+    next: index < pages.length - 1 ? pages[index + 1] : null,
+  };
 }
 
 /**

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { TREE_WIDTH, type BacktrackStep, type NodeStatus, type SearchNode } from "@/lib/backtracking/types";
 import { cn } from "@/lib/cn";
+import { RfTree, type RfTreeNode } from "../shared/rf-tree";
 
 /** Horizontal room per leaf. Below this, sibling labels start colliding. */
 const LEAF_SPACING = 44;
@@ -72,20 +72,18 @@ interface SearchTreeCanvasProps {
  * nothing about which problem produced it, which is what lets subsets,
  * permutations, n-queens, palindromes and colouring share one renderer.
  *
- * Coordinates arrive normalised to TREE_WIDTH from layoutTree, and get scaled
- * here rather than through a viewBox: scaling the viewBox would shrink the
- * labels along with the spacing, and a wide tree would end up unreadable
- * instead of merely scrollable.
+ * The tree is a React Flow canvas: it pans and zooms live rather than
+ * scrolling. Layout coordinates arrive normalised to TREE_WIDTH from
+ * layoutTree and are scaled to pixels here (not via a viewBox, which would
+ * shrink the labels along with the spacing and make a wide tree unreadable).
  */
 export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 300, view = "tree" }: SearchTreeCanvasProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const revealed = new Set(step.revealed);
 
   if (nodes.length === 0) {
     return <p className="text-sm text-slate">Nothing to draw yet.</p>;
   }
 
-  const byId = new Map(nodes.map((n) => [n.id, n]));
   const hasChild = new Set(nodes.map((n) => n.parentId).filter((id): id is string => Boolean(id)));
   const leafCount = Math.max(nodes.filter((n) => !hasChild.has(n.id)).length, 1);
   const maxDepth = nodes.reduce((m, n) => Math.max(m, n.depth), 0);
@@ -96,97 +94,48 @@ export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 3
 
   const renderWidth = Math.max(360, leafCount * LEAF_SPACING);
   const renderHeight = (maxDepth + 1) * 62 + 20;
-  const sx = (x: number) => (x * renderWidth) / TREE_WIDTH;
 
-  const activeNode = step.activeId ? byId.get(step.activeId) : null;
+  const treeNodes: RfTreeNode[] = [];
+  for (const n of nodes) {
+    const shown = revealed.has(n.id);
+    if (!shown && !showGhosts) continue;
+
+    const status = step.status[n.id];
+    const style = nodeStyle(status, shown);
+    const isPruned = status === "pruned";
+
+    treeNodes.push({
+      id: n.id,
+      parentId: n.parentId,
+      x: n.x,
+      y: n.y,
+      width: nodeWidth(n.label),
+      label: shown ? n.label : "",
+      fill: style.fill,
+      stroke: style.stroke,
+      text: style.text,
+      dash: style.dash,
+      strokeWidth: status === "active" ? 2.4 : 1.5,
+      opacity: style.opacity,
+      slash: isPruned && shown,
+      edgeStroke: isPruned ? "var(--signal-coral)" : shown ? "var(--border-strong)" : "var(--border)",
+      edgeWidth: status === "onPath" || status === "active" ? 2.2 : 1.3,
+      edgeDash: isPruned ? "4 3" : !shown ? "2 3" : undefined,
+      edgeOpacity: shown ? (isPruned ? 0.6 : 1) : 0.3,
+    });
+  }
 
   return (
-    <TreeScroller scrollRef={scrollRef} activeX={activeNode ? sx(activeNode.x) : null} maxHeight={maxHeight}>
-      <svg
-        width={renderWidth}
-        height={renderHeight}
-        viewBox={`0 0 ${renderWidth} ${renderHeight}`}
-        role="img"
-        aria-label="Backtracking search tree"
-        className="block"
-      >
-        {nodes.map((n) => {
-          if (!n.parentId) return null;
-          const parent = byId.get(n.parentId);
-          if (!parent) return null;
-
-          const shown = revealed.has(n.id);
-          if (!shown && !showGhosts) return null;
-
-          const status = step.status[n.id];
-          const isPruned = status === "pruned";
-
-          return (
-            <line
-              key={`e-${n.id}`}
-              x1={sx(parent.x)}
-              y1={parent.y + NODE_H / 2}
-              x2={sx(n.x)}
-              y2={n.y - NODE_H / 2}
-              stroke={isPruned ? "var(--signal-coral)" : shown ? "var(--border-strong)" : "var(--border)"}
-              strokeWidth={status === "onPath" || status === "active" ? 2.2 : 1.3}
-              strokeDasharray={isPruned ? "4 3" : !shown ? "2 3" : undefined}
-              opacity={shown ? (isPruned ? 0.6 : 1) : 0.3}
-            />
-          );
-        })}
-
-        {nodes.map((n) => {
-          const shown = revealed.has(n.id);
-          if (!shown && !showGhosts) return null;
-
-          const status = step.status[n.id];
-          const style = nodeStyle(status, shown);
-          const w = nodeWidth(n.label);
-
-          return (
-            <g key={n.id} opacity={style.opacity} className="transition-opacity duration-200">
-              <rect
-                x={sx(n.x) - w / 2}
-                y={n.y - NODE_H / 2}
-                width={w}
-                height={NODE_H}
-                rx={8}
-                fill={style.fill}
-                stroke={style.stroke}
-                strokeWidth={status === "active" ? 2.4 : 1.5}
-                strokeDasharray={style.dash}
-              />
-              {shown && (
-                <text
-                  x={sx(n.x)}
-                  y={n.y + 4}
-                  textAnchor="middle"
-                  className="text-[11px] font-bold"
-                  fill={style.text}
-                  style={{ pointerEvents: "none" }}
-                >
-                  {n.label}
-                </text>
-              )}
-              {/* A slash through rejected nodes, so the reason reads even in
-                  a screenshot where the coral border alone is ambiguous. */}
-              {status === "pruned" && shown && (
-                <line
-                  x1={sx(n.x) - w / 2 + 4}
-                  y1={n.y + NODE_H / 2 - 4}
-                  x2={sx(n.x) + w / 2 - 4}
-                  y2={n.y - NODE_H / 2 + 4}
-                  stroke="var(--signal-coral)"
-                  strokeWidth={1.4}
-                  opacity={0.75}
-                />
-              )}
-            </g>
-          );
-        })}
-      </svg>
-    </TreeScroller>
+    <RfTree
+      nodes={treeNodes}
+      layoutWidth={TREE_WIDTH}
+      renderWidth={renderWidth}
+      renderHeight={renderHeight}
+      nodeHeight={NODE_H}
+      activeId={step.activeId}
+      maxHeight={maxHeight}
+      ariaLabel="Backtracking search tree"
+    />
   );
 }
 
@@ -276,46 +225,6 @@ function TreeShapeSummary({
         One bar per level of the search. Copper is the level being worked on now, grey is opened, coral is rejected
         before exploring. Useful when the tree itself is too wide to read: this one is {leafCount} leaves across.
       </p>
-    </div>
-  );
-}
-
-/** Keeps the active node in view as the search walks sideways. */
-function TreeScroller({
-  scrollRef,
-  activeX,
-  maxHeight,
-  children,
-}: {
-  scrollRef: React.RefObject<HTMLDivElement | null>;
-  activeX: number | null;
-  maxHeight: number;
-  children: React.ReactNode;
-}) {
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || activeX === null) return;
-
-    const target = activeX - el.clientWidth / 2;
-    const max = el.scrollWidth - el.clientWidth;
-    const next = Math.max(0, Math.min(target, max));
-
-    // Only nudge when the node is actually off-screen, otherwise every frame
-    // re-centres the view and the tree appears to drift on its own.
-    const visibleLeft = el.scrollLeft + 40;
-    const visibleRight = el.scrollLeft + el.clientWidth - 40;
-    if (activeX < visibleLeft || activeX > visibleRight) {
-      el.scrollTo({ left: next, behavior: "smooth" });
-    }
-  }, [activeX, scrollRef]);
-
-  return (
-    <div
-      ref={scrollRef}
-      style={{ maxHeight }}
-      className="overflow-auto rounded-lg border border-border bg-surface-2/30 p-2"
-    >
-      {children}
     </div>
   );
 }

@@ -259,39 +259,67 @@ export function PanelBox({
   title,
   children,
   className,
+  bodyClassName,
 }: {
   title: string;
   children: ReactNode;
   className?: string;
+  /** Applied to the body wrapper - use a fixed `h-*` + `overflow-y-auto` here
+   *  for a panel whose contents grow step to step (a visited list, a distance
+   *  table) so the panel keeps one height for the whole run. */
+  bodyClassName?: string;
 }) {
   return (
     <div className={cn("rounded-lg border border-border bg-surface-2/50 p-3", className)}>
       <div className="mb-2 text-[11px] font-semibold text-slate">{title}</div>
-      {children}
+      <div className={bodyClassName}>{children}</div>
     </div>
   );
 }
 
-/** Horizontal row of chips, used for queues, stacks, call paths and candidate sets. */
+/** One chip line's height (`py-1` + text), for reserving space below. */
+const CHIP_ROW_LINE = "1.875rem";
+
+/**
+ * Horizontal row of chips, used for queues, stacks, call paths and candidate
+ * sets.
+ *
+ * `reserveRows` locks the row to that many chip-lines tall (scrolling if it
+ * overflows, and holding the height even while empty) so a queue that fills as
+ * the algorithm runs never changes the widget's height.
+ */
 export function ChipRow({
   items,
   emptyLabel,
   tone = "copper",
+  reserveRows,
 }: {
   items: string[];
   emptyLabel: string;
   tone?: "copper" | "muted";
+  reserveRows?: number;
 }) {
+  const reserve = reserveRows
+    ? {
+        minHeight: `calc(${reserveRows} * ${CHIP_ROW_LINE} + ${reserveRows - 1} * 0.375rem)`,
+        maxHeight: `calc(${reserveRows} * ${CHIP_ROW_LINE} + ${reserveRows - 1} * 0.375rem)`,
+      }
+    : undefined;
+
   if (items.length === 0) {
-    return <span className="text-xs italic text-slate">{emptyLabel}</span>;
+    return (
+      <div className="flex items-start" style={reserve}>
+        <span className="text-xs italic text-slate">{emptyLabel}</span>
+      </div>
+    );
   }
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className={cn("flex flex-wrap gap-1.5", reserveRows && "overflow-y-auto")} style={reserve}>
       {items.map((item, i) => (
         <span
           key={`${item}-${i}`}
           className={cn(
-            "rounded-md px-2 py-1 text-xs font-bold",
+            "inline-flex h-[1.875rem] items-center rounded-md px-2 text-xs font-bold",
             tone === "copper" ? "bg-copper-bg text-copper-dark" : "bg-surface-3 text-ink-soft",
           )}
         >
@@ -300,6 +328,49 @@ export function ChipRow({
       ))}
     </div>
   );
+}
+
+/**
+ * A slot for a message that comes and goes - a hint, a correct/incorrect
+ * banner, a "run hit the step limit" note. Always occupies the same height
+ * whether or not there is anything to say, so revealing feedback never shoves
+ * the page. Pass `lines` for how many lines of banner text to reserve for.
+ */
+export function StatusSlot({
+  children,
+  lines = 2,
+  className,
+}: {
+  children?: ReactNode;
+  lines?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(className)}
+      style={{ minHeight: `calc(${lines} * 1.5em + 1rem)` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * A generic fixed-footprint scroll box, for a widget-specific region that
+ * grows with interaction and doesn't fit ChipRow or PanelBox (a move log, a
+ * state history).
+ */
+export function ReservedBox({
+  height,
+  children,
+  className,
+}: {
+  /** A Tailwind height class, e.g. "h-24". */
+  height: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={cn(height, "overflow-y-auto", className)}>{children}</div>;
 }
 
 /** The outer frame every widget shares, so the border and padding stay in step. */

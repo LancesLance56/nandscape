@@ -15,7 +15,7 @@ import { WidgetFrame } from "../widget-frame";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
 import { cn } from "@/lib/cn";
 import { SortingBars, SortingLegend } from "./sorting-bars";
-import { Segmented, Stat, WidgetButton } from "../shared/widget-ui";
+import { Segmented, Stat, StatusSlot, WidgetButton } from "../shared/widget-ui";
 
 const SPEEDS = [
   { id: "slow", label: "Slow", ms: 700 },
@@ -164,12 +164,14 @@ export function SortingVisualizerWidget({
         }
       />
 
-      {run.truncated && (
-        <p className="text-[11px] text-copper-dark">
-          This run hit the frame limit. {meta.label} needs more steps than are watchable at this size, which is itself the
-          argument for the O(n log n) sorts.
-        </p>
-      )}
+      <StatusSlot lines={2}>
+        {run.truncated && (
+          <p className="text-[11px] text-copper-dark">
+            This run hit the frame limit. {meta.label} needs more steps than are watchable at this size, which is itself the
+            argument for the O(n log n) sorts.
+          </p>
+        )}
+      </StatusSlot>
 
       {!compact && (
         <div className="rounded-lg border border-border bg-surface-2/40 p-3">

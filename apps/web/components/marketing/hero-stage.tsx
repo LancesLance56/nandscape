@@ -2,12 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
-import { FlowchartCanvas } from "@/components/content/blocks/interactive/flowchart/flowchart-canvas";
+import { SignalState } from "@nandscape/engine";
+import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage";
 import { GraphCanvas } from "@/components/content/blocks/interactive/graph/graph-canvas";
+import { SortingBars } from "@/components/content/blocks/interactive/sorting/sorting-bars";
 import { KMapGrid, type DrawnGroup } from "@/components/content/blocks/interactive/kmap/kmap-grid";
 import { bfsSteps } from "@/lib/graph/algorithms";
+import { mergeSortSteps } from "@/lib/sorting/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
-import type { FlowchartSpec } from "@/lib/flowchart/types";
+import type { EditorEdge, EditorNode } from "@/types/editor";
 import { layoutFor, type CellValue } from "@/lib/kmap/kmap";
 import { solveKMap } from "@/lib/kmap/solve";
 import { ACCENT_PALETTE } from "@/lib/ui/accent-palette";
@@ -20,23 +23,145 @@ import { ACCENT_PALETTE } from "@/lib/ui/accent-palette";
  * rather than a bespoke hero illustration. The landing page cannot promise a
  * look the lessons do not deliver, because it is showing the lessons' own
  * renderers.
+ *
+ * The picks are the two things this project does that nothing else on a
+ * "learn CS" page does: a gate-level circuit simulating live (it is called
+ * Nandscape), and an algorithm animating frame by frame. The quieter margin
+ * cards carry a graph traversal and a solved Karnaugh map so both halves of
+ * the site - digital logic and DSA - are represented in each tier.
  */
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 /* -------------------------------------------------------------------------- */
-/* Breadth-first search                                                       */
+/* Live circuit - XOR from four NANDs                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The canonical "everything is a NAND" construction, lifted straight from the
+ * `xor-from-nand` project so the hero shows the exact circuit a reader can
+ * open in the editor. `gateType: 0` is NAND.
+ */
+const HERO_XOR_NODES: EditorNode[] = [
+  { id: "in_1", type: "io-input", position: { x: 40, y: 60 }, data: { kind: "input", name: "A", value: SignalState.LOW } },
+  { id: "in_2", type: "io-input", position: { x: 40, y: 340 }, data: { kind: "input", name: "B", value: SignalState.LOW } },
+  { id: "gate_3", type: "gate", position: { x: 240, y: 200 }, data: { kind: "gate", gateType: 0 } },
+  { id: "gate_4", type: "gate", position: { x: 460, y: 60 }, data: { kind: "gate", gateType: 0 } },
+  { id: "gate_5", type: "gate", position: { x: 460, y: 340 }, data: { kind: "gate", gateType: 0 } },
+  { id: "gate_6", type: "gate", position: { x: 680, y: 200 }, data: { kind: "gate", gateType: 0 } },
+  { id: "out_7", type: "io-output", position: { x: 880, y: 200 }, data: { kind: "output", name: "Y" } },
+] as EditorNode[];
+
+const HERO_XOR_EDGES: EditorEdge[] = [
+  { id: "e1", source: "in_1", sourceHandle: "out-0", target: "gate_3", targetHandle: "in-0", type: "wire", data: {} },
+  { id: "e2", source: "in_2", sourceHandle: "out-0", target: "gate_3", targetHandle: "in-1", type: "wire", data: {} },
+  { id: "e3", source: "in_1", sourceHandle: "out-0", target: "gate_4", targetHandle: "in-0", type: "wire", data: {} },
+  { id: "e4", source: "gate_3", sourceHandle: "out-0", target: "gate_4", targetHandle: "in-1", type: "wire", data: {} },
+  { id: "e5", source: "in_2", sourceHandle: "out-0", target: "gate_5", targetHandle: "in-0", type: "wire", data: {} },
+  { id: "e6", source: "gate_3", sourceHandle: "out-0", target: "gate_5", targetHandle: "in-1", type: "wire", data: {} },
+  { id: "e7", source: "gate_4", sourceHandle: "out-0", target: "gate_6", targetHandle: "in-0", type: "wire", data: {} },
+  { id: "e8", source: "gate_5", sourceHandle: "out-0", target: "gate_6", targetHandle: "in-1", type: "wire", data: {} },
+  { id: "e9", source: "gate_6", sourceHandle: "out-0", target: "out_7", targetHandle: "in-0", type: "wire", data: {} },
+] as EditorEdge[];
+
+/** Walked in Gray-code order so exactly one input flips per step. */
+const INPUT_COMBOS: [SignalState, SignalState][] = [
+  [SignalState.LOW, SignalState.LOW],
+  [SignalState.LOW, SignalState.HIGH],
+  [SignalState.HIGH, SignalState.HIGH],
+  [SignalState.HIGH, SignalState.LOW],
+];
+
+const CIRCUIT_FRAME_MS = 1600;
+
+function HeroCircuit() {
+  const [combo, setCombo] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const id = window.setInterval(() => setCombo((c) => (c + 1) % INPUT_COMBOS.length), CIRCUIT_FRAME_MS);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const [a, b] = INPUT_COMBOS[combo];
+  const nodes = useMemo(
+    () =>
+      HERO_XOR_NODES.map((n) => {
+        if (n.id === "in_1") return { ...n, data: { ...n.data, value: a } };
+        if (n.id === "in_2") return { ...n, data: { ...n.data, value: b } };
+        return n;
+      }),
+    [a, b],
+  );
+
+  return (
+    <figure className="m-0 flex w-full max-w-[26rem] flex-col">
+      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Logic circuit</p>
+      <div className="h-[240px] overflow-hidden rounded-xl border border-border bg-surface-card/50">
+        <ReactFlowProvider>
+          <CircuitStage
+            nodes={nodes}
+            edges={HERO_XOR_EDGES}
+            pannable={false}
+            allowScrollZoom={false}
+            showBackground={false}
+            fitPadding={0.32}
+          />
+        </ReactFlowProvider>
+      </div>
+      <figcaption className="mt-2 text-xs text-slate">
+        An XOR gate built from four NANDs, simulating live. The inputs cycle through every case; the wires carry the
+        real signal.
+      </figcaption>
+    </figure>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Sorting - merge sort, animated                                             */
+/* -------------------------------------------------------------------------- */
+
+const HERO_ARRAY = [24, 8, 41, 15, 32, 5, 19, 37, 11, 28, 3, 22];
+const SORT_FRAME_MS = 280;
+
+function HeroSorting() {
+  const run = useMemo(() => mergeSortSteps(HERO_ARRAY), []);
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const id = window.setInterval(() => setFrame((f) => (f + 1) % run.steps.length), SORT_FRAME_MS);
+    return () => window.clearInterval(id);
+  }, [run.steps.length]);
+
+  const step = run.steps[Math.min(frame, run.steps.length - 1)];
+  const maxValue = useMemo(() => Math.max(...HERO_ARRAY), []);
+
+  return (
+    <figure className="m-0 flex w-full max-w-[26rem] flex-col">
+      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Sorting</p>
+      {/* Same 240px box as the circuit canvas so the two demos sit level
+          (SortingBars is border-box, so height includes its border/padding). */}
+      <SortingBars step={step} maxValue={maxValue} height={240} compact />
+      <figcaption className="mt-2 text-xs text-slate">
+        Merge sort, running. Copper bars are being compared, green ones have reached their final place.
+      </figcaption>
+    </figure>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Margin card - breadth-first search                                         */
 /* -------------------------------------------------------------------------- */
 
 /**
  * A deliberately asymmetric graph: a tight triangle on one side of the hub, a
  * three-hop chain on the other, a shorter pendant branch, and a diamond that
- * lets two paths rejoin at the same node.
- *
- * A symmetric layout is the wrong demo, because it makes every branch look
- * interchangeable and the frontier just draws a neat circle no matter where
- * you start it. Irregular branch lengths mean BFS visibly explores unevenly,
- * some neighbors settle in one hop, others in three, and the diamond gives it
- * a real merge point to reach from two directions at once. Laid out by hand
- * in the canvas's own 440x260 space.
+ * lets two paths rejoin at the same node - so BFS visibly explores unevenly
+ * rather than drawing a neat expanding circle. Laid out by hand in the
+ * canvas's own 440x260 space.
  */
 const HERO_GRAPH: GraphSpec = {
   nodes: [
@@ -64,118 +189,30 @@ const HERO_GRAPH: GraphSpec = {
   ],
 };
 
-const FRAME_MS = 850;
+const GRAPH_FRAME_MS = 850;
 
-function HeroGraph() {
-  const [start, setStart] = useState("H");
+export function HeroGraphCard() {
   const [frame, setFrame] = useState(0);
-
-  const steps = useMemo(() => bfsSteps(HERO_GRAPH, start), [start]);
+  const steps = useMemo(() => bfsSteps(HERO_GRAPH, "H"), []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const id = window.setInterval(() => {
-      // Looping rather than stopping: a still frame at the end would read as a
-      // screenshot, which is the one thing this section exists to disprove.
-      setFrame((f) => (f + 1) % steps.length);
-    }, FRAME_MS);
-
+    if (prefersReducedMotion()) return;
+    const id = window.setInterval(() => setFrame((f) => (f + 1) % steps.length), GRAPH_FRAME_MS);
     return () => window.clearInterval(id);
   }, [steps.length]);
 
   const step = steps[Math.min(frame, steps.length - 1)];
 
   return (
-    <figure className="m-0 w-full max-w-[28rem]">
-      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Graph traversal</p>
-      <GraphCanvas
-        graph={HERO_GRAPH}
-        step={step}
-        markedNode={start}
-        onNodeClick={(id) => {
-          setStart(id);
-          setFrame(0);
-        }}
-      />
-      <figcaption className="mt-2 text-xs text-slate">
-        Breadth-first search, running. Click any node to start it from there.
-      </figcaption>
-    </figure>
+    <div className="w-[17rem] rounded-2xl border border-border bg-surface-card/80 p-3 backdrop-blur-sm">
+      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate">Graph traversal</p>
+      <GraphCanvas graph={HERO_GRAPH} step={step} markedNode="H" height={170} />
+    </div>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* Flowchart                                                                  */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Bubble sort's inner loop, small enough to take in at a glance.
- *
- * A real chart from the tutorials runs twenty nodes deep and would be
- * illegible here, so this is a purpose-cut spec fed to the same renderer.
- */
-const HERO_CHART: FlowchartSpec = {
-  nodes: [
-    { id: "s", type: "start", text: "Start", note: "One pass over the list." },
-    { id: "d", type: "decision", text: "a > b ?", note: "The only comparison the whole sort makes." },
-    { id: "p", type: "process", text: "Swap them", note: "Then check the same pair's neighbours again." },
-    { id: "e", type: "end", text: "Sorted", note: "No swaps left to make, so the list is in order." },
-  ],
-  edges: [
-    { from: "s", to: "d" },
-    { from: "d", to: "p", label: "yes" },
-    { from: "p", to: "d" },
-    { from: "d", to: "e", label: "no" },
-  ],
-};
-
-/**
- * Panning, zooming and dragging are all off here. The chart is a sample of
- * what the tutorials render, not something to operate, and a hero element
- * that eats scroll gestures on a phone is actively hostile.
- */
-const HERO_FLOW_INTERACTIVE = {
-  notes: true,
-  walkthrough: false,
-  focus: false,
-  draggable: false,
-  zoom: false,
-  minimap: false,
-  search: false,
-  fullscreen: false,
-  download: false,
-  legend: false,
-} as const;
-
-function HeroFlowchart() {
-  const [selected, setSelected] = useState<string | null>("d");
-  const note = HERO_CHART.nodes.find((n) => n.id === selected)?.note;
-
-  return (
-    <figure className="m-0 flex w-full max-w-[22rem] flex-col">
-      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Flowchart</p>
-      <ReactFlowProvider>
-        <FlowchartCanvas
-          spec={HERO_CHART}
-          interactive={HERO_FLOW_INTERACTIVE}
-          height={260}
-          selectedId={selected}
-          onSelectNode={setSelected}
-          // The chart is the object on display here, so the tutorial column's
-          // frame and tint come off and the canvas sits directly on the hero.
-          className="border-0 bg-transparent"
-        />
-      </ReactFlowProvider>
-      <figcaption className="mt-2 min-h-[2.5rem] text-xs text-slate">
-        {note ?? "Click a box to see what it is for."}
-      </figcaption>
-    </figure>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Margin cards                                                               */
+/* Margin card - solved Karnaugh map                                          */
 /* -------------------------------------------------------------------------- */
 
 const KMAP_VARS = ["A", "B", "C"];
@@ -206,42 +243,14 @@ export function HeroKMapCard() {
   );
 }
 
-/** A binary tree, drawn by the graph canvas, for the opposite margin. */
-const HERO_TREE: GraphSpec = {
-  nodes: [
-    { id: "1", x: 220, y: 40 },
-    { id: "2", x: 110, y: 140 },
-    { id: "3", x: 330, y: 140 },
-    { id: "4", x: 50, y: 235 },
-    { id: "5", x: 170, y: 235 },
-    { id: "6", x: 330, y: 235 },
-  ],
-  edges: [
-    { from: "1", to: "2" },
-    { from: "1", to: "3" },
-    { from: "2", to: "4" },
-    { from: "2", to: "5" },
-    { from: "3", to: "6" },
-  ],
-};
-
-export function HeroTreeCard() {
-  return (
-    <div className="w-[15rem] rounded-2xl border border-border bg-surface-card/80 p-3 backdrop-blur-sm">
-      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate">Trees are graphs</p>
-      <GraphCanvas graph={HERO_TREE} />
-    </div>
-  );
-}
-
 /* -------------------------------------------------------------------------- */
 
 /** The two full-size canvases, side by side once there is room. */
 export function HeroStage() {
   return (
     <div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-14">
-      <HeroGraph />
-      <HeroFlowchart />
+      <HeroCircuit />
+      <HeroSorting />
     </div>
   );
 }

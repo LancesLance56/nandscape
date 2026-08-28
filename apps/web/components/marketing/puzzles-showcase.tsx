@@ -1,24 +1,17 @@
 import Link from "next/link";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
-import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
-import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
-import { gateTypeToString } from "@nandscape/engine";
+import { PuzzleChip } from "@/components/puzzles/puzzle-chip";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { RowItem, RowList } from "@/components/ui/rail";
 import type { PuzzleSpec } from "@/types/puzzle";
 
-function tagColor(tag: string): string {
-  let hash = 0;
-  for (let i = 0; i < tag.length; i++) hash = (hash * 31 + tag.charCodeAt(i)) >>> 0;
-  return DEFAULT_BLOCK_COLORS[hash % DEFAULT_BLOCK_COLORS.length];
-}
-
-function restriction(puzzle: PuzzleSpec): string | null {
-  if (puzzle.allowedGateTypes?.length) return `${puzzle.allowedGateTypes.map(gateTypeToString).join(", ")} only`;
-  if (puzzle.disallowedGateTypes?.length) return `No ${puzzle.disallowedGateTypes.map(gateTypeToString).join(", ")}`;
-  return null;
-}
-
+/**
+ * The puzzles block: a tray of chips waiting to be filled in.
+ *
+ * Each problem is drawn as the package it asks you to build - see PuzzleChip,
+ * which is the same component the worked example on this page uses, so the
+ * problem you are shown solved and the problems you are offered look like the
+ * same kind of object.
+ */
 const FEATURED_SLUGS = [
   "and-from-nand",
   "two-to-one-multiplexer",
@@ -37,9 +30,7 @@ export async function PuzzlesShowcase() {
   }
 
   const bySlug = new Map(puzzles.map((p) => [p.slug, p]));
-  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter(
-    (p): p is PuzzleSpec => Boolean(p),
-  );
+  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter((p): p is PuzzleSpec => Boolean(p));
   if (featured.length === 0) featured = puzzles.slice(0, 6);
 
   return (
@@ -51,51 +42,34 @@ export async function PuzzlesShowcase() {
             Practice
           </div>
           <h2 className="font-display text-3xl font-semibold text-ink">Try a Logic Problem</h2>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft">
+            Each one is a chip with its pins named and its gate budget stamped on the lid. What it has to do, and
+            whether you managed it, is on the other side of the click. Your job is the inside.
+          </p>
         </div>
         <Link
           href="/puzzles"
           className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
         >
-          Browse all problems →
+          Browse all problems &rarr;
         </Link>
       </ScrollReveal>
 
-      <RowList>
-        {featured.map((puzzle, i) => (
-          <ScrollReveal key={puzzle.slug} delay={i * 50}>
-            <RowItem
-              href={`/puzzles/${puzzle.slug}`}
-              index={String(i + 1).padStart(2, "0")}
-              title={puzzle.title}
-              description={puzzle.description}
-              meta={puzzle.gateBudget !== null ? `≤${puzzle.gateBudget} gates` : "no budget"}
-              badges={
-                <>
-                  <DifficultyTag difficulty={puzzle.difficulty} />
-                  {puzzle.tags.slice(0, 2).map((tag) => {
-                    const color = tagColor(tag);
-                    return (
-                      <span
-                        key={tag}
-                        style={{ backgroundColor: hexToRgba(color, 0.12), color }}
-                        className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })}
-                  {restriction(puzzle) && (
-                    <span className="text-[10px] text-slate">{restriction(puzzle)}</span>
-                  )}
-                </>
-              }
-            />
-          </ScrollReveal>
-        ))}
-      </RowList>
-
-      {featured.length === 0 && (
+      {featured.length === 0 ? (
         <p className="text-sm text-ink-soft">No puzzles in the database yet.</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((puzzle, i) => (
+            <ScrollReveal key={puzzle.slug} delay={i * 50}>
+              <Link
+                href={`/puzzles/${puzzle.slug}`}
+                className="group flex h-full items-center justify-center rounded-2xl border border-border bg-surface-card p-4 transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:border-copper/40 hover:shadow-[0_18px_36px_-24px_rgba(20,27,20,0.5)] motion-reduce:transition-none"
+              >
+                <PuzzleChip puzzle={puzzle} className="w-full" />
+              </Link>
+            </ScrollReveal>
+          ))}
+        </div>
       )}
     </section>
   );

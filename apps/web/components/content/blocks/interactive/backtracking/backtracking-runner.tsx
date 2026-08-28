@@ -4,7 +4,7 @@ import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import type { BacktrackRun, BacktrackStep } from "@/lib/backtracking/types";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { ChipRow, PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
+import { ChipRow, PanelBox, SegmentedRow, StatReadout, StatusSlot, type SegmentedGroup } from "../shared/widget-ui";
 import { SearchTreeCanvas, TreeLegend } from "./search-tree-canvas";
 
 export type TreeView = "tree" | "profile";
@@ -115,16 +115,17 @@ export function BacktrackingRunner<P>({
           {/* Unboxed rather than another titled panel: this is the one readout
               that never has anything problem-specific in it, so it does not
               need the same weight as the panels that do. */}
+          {/* The running solution count lives in the Solutions panel below,
+              which also lists them - no need to also carry it here. */}
           <StatReadout
             stats={[
               { label: "nodes entered", value: step.visited },
               { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
-              { label: solutionsLabel.toLowerCase().includes("solution") ? "solutions" : "found", value: step.solutions.length, tone: "good" },
             ]}
           />
 
           <PanelBox title="Call stack">
-            <ChipRow items={step.path} emptyLabel="back at the root" />
+            <ChipRow items={step.path} emptyLabel="back at the root" reserveRows={2} />
           </PanelBox>
 
           {panel?.(step)}
@@ -162,27 +163,27 @@ export function BacktrackingRunner<P>({
           onReset={player.reset}
           onScrub={player.setIndex}
         />
-        {run.truncated && (
-          <p className="text-[11px] text-copper-dark">
-            This run hit the step limit and stopped early. The tree keeps growing past this point, which is rather the
-            lesson: the search space outgrows what is watchable long before it outgrows what is computable.
-          </p>
-        )}
+        {/* Reserved whether or not the run truncated, so reaching the final
+            step never grows the widget. */}
+        <StatusSlot lines={2}>
+          {run.truncated && (
+            <p className="text-[11px] text-copper-dark">
+              This run hit the step limit and stopped early. The tree keeps growing past this point, which is rather the
+              lesson: the search space outgrows what is watchable long before it outgrows what is computable.
+            </p>
+          )}
+        </StatusSlot>
       </div>
 
-      {/* Last, and collapsible: the search view is reference material you
-          consult, not something you drive, so it should not stand between
-          the board and its controls. */}
+      {/* The search view is reference material you consult rather than drive,
+          so it sits last - but it is always shown at a fixed height (the tree
+          canvas pans and zooms in place) rather than behind a disclosure whose
+          open/closed state would change the widget's height. */}
       {visual && showTree && (
-        <details open className="group mt-4">
-          <summary className="mb-2 cursor-pointer list-none text-[11px] font-semibold text-slate marker:hidden hover:text-ink">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="transition-transform group-open:rotate-90">&rsaquo;</span>
-              Search view
-            </span>
-          </summary>
+        <div className="mt-4">
+          <div className="mb-2 text-[11px] font-semibold text-slate">Search view</div>
           <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} />
-        </details>
+        </div>
       )}
     </div>
   );

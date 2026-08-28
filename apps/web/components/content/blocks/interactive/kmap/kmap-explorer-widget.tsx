@@ -276,13 +276,17 @@ export function KMapExplorerWidget({
           />
         </div>
 
+        {/* Fixed height so the feedback message changing as you build groups
+            never resizes the widget. */}
         {mode === "practice" && (
-          <PracticeFeedback
-            grade={grade}
-            hasGroups={confirmed.length > 0}
-            onesCount={ones.length}
-            message={message}
-          />
+          <div className="min-h-[4.5rem]">
+            <PracticeFeedback
+              grade={grade}
+              hasGroups={confirmed.length > 0}
+              onesCount={ones.length}
+              message={message}
+            />
+          </div>
         )}
 
         {mode === "solve" && (

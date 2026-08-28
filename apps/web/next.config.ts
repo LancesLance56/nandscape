@@ -15,6 +15,26 @@ const nextConfig: NextConfig = {
     root: path.join(__dirname, "../../"),
   },
   allowedDevOrigins: [`localhost:${devPort}`, 'nandscape.dev', '192.168.5.67'],
+
+  // Several thin graph-theory / sorting intro lessons were merged into one
+  // stronger page each (better for search, one canonical URL instead of
+  // three). The old lessons were published and linked, so their URLs 308 to
+  // the relevant section of the merged page rather than 404ing. Both the
+  // nested form and the legacy flat form (which app/tutorials/[track]/page.tsx
+  // used to rewrite) are covered.
+  async redirects() {
+    const merges: Array<[string, string]> = [
+      ["graph-what-is-a-graph", "graph-theory-basics#what-a-graph-actually-is"],
+      ["graph-kinds-and-digraphs", "graph-theory-basics#directed-weighted-and-other-flavours"],
+      ["graph-representations", "graph-theory-basics#storing-a-graph-in-code"],
+      ["sorting-elementary", "sorting-introduction#bubble-selection-and-insertion-sort"],
+    ];
+
+    return merges.flatMap(([from, to]) => [
+      { source: `/tutorials/dsa/${from}`, destination: `/tutorials/dsa/${to}`, permanent: true },
+      { source: `/tutorials/${from}`, destination: `/tutorials/dsa/${to}`, permanent: true },
+    ]);
+  },
 };
 
 export default nextConfig;

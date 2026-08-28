@@ -1,0 +1,1571 @@
+{
+  "slug": "graph-theory-basics",
+  "title": "Graph Theory Basics for CS",
+  "excerpt": "One primer for the whole foundation: vertices and edges, the graph types that decide which algorithms are even available (directed, weighted, trees, DAGs), and how to store a graph as an adjacency list or matrix.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-08-14T09:00:00Z",
+  "tags": [
+    "graph-theory",
+    "fundamentals",
+    "digraphs",
+    "data-structures"
+  ],
+  "sectionSlug": "graph-theory-basics",
+  "position": 10,
+  "seoTitle": "Graph Theory Basics for CS: Vertices, Edges, Types & Representation",
+  "seoDescription": "A single foundational guide to graphs: what vertices and edges are, directed vs undirected vs weighted graphs, trees and DAGs, and adjacency list vs adjacency matrix - with worked examples and interactive widgets.",
+  "keywords": [
+    "what is a graph in data structure",
+    "vertices and edges",
+    "graph theory basics",
+    "degree of a vertex",
+    "types of graphs",
+    "directed graph",
+    "digraph",
+    "weighted graph",
+    "dag",
+    "graph vs tree",
+    "adjacency list vs adjacency matrix",
+    "graph representation",
+    "adjacency list",
+    "sparse vs dense graph"
+  ],
+  "body": [
+    {
+      "id": "lead",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three ideas sit underneath every graph algorithm: what a graph is, which kinds of graph exist, and how you store one in code. This page covers all three in order. Once they are solid, the traversal and shortest-path algorithms that follow are mostly a matter of bookkeeping."
+        }
+      ]
+    },
+    {
+      "id": "what-a-graph-actually-is",
+      "type": "heading",
+      "level": 2,
+      "text": "What a Graph Actually Is"
+    },
+    {
+      "id": "whatis-0",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Graphs are one of the most important data structures in DSA. It's often the most effective tool at modeling certain relations. Its common to see graphs model things like Facebook friends, airport connections, web pages (in search engines), Google Maps, etc."
+        }
+      ]
+    },
+    {
+      "id": "whatis-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In discrete math (and in computer science), a graph is formally defined as a set of items called vertices (nodes), and a set of connections called edges (links) that join pairs of vertices."
+        }
+      ]
+    },
+    {
+      "id": "whatis-2",
+      "data": {},
+      "type": "interactive",
+      "widget": "graph-explorer"
+    },
+    {
+      "id": "whatis-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "As you can see, the definition is pretty loose and there are tons of different types of graphs. In this section, we will cover what each of these mean and when to use them. For now, here are a few examples."
+        }
+      ]
+    },
+    {
+      "id": "whatis-4",
+      "rows": [
+        [
+          "A social network",
+          "A person",
+          "They know each other"
+        ],
+        [
+          "A road map",
+          "A junction",
+          "A road between two junctions"
+        ],
+        [
+          "A web crawl",
+          "A page",
+          "A link from one page to another"
+        ],
+        [
+          "A spreadsheet",
+          "A cell",
+          "This cell's formula reads that one"
+        ],
+        [
+          "A build system",
+          "A file to compile",
+          "This file must be built before that one"
+        ],
+        [
+          "A chess puzzle",
+          "A board position",
+          "One legal move turns this into that"
+        ],
+        [
+          "A maze",
+          "A junction in the maze",
+          "A corridor joining two junctions"
+        ]
+      ],
+      "type": "table",
+      "headers": [
+        "Situation",
+        "What a node is",
+        "What an edge means"
+      ]
+    },
+    {
+      "id": "whatis-5",
+      "text": "Where the idea came from",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "whatis-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In the 1700s the city of Konigsberg sat on both banks of a river and included two islands, with seven bridges joining the four pieces of land. A popular local question was whether you could take a walk that crossed every bridge exactly once."
+        }
+      ]
+    },
+    {
+      "id": "whatis-7",
+      "alt": "Image of the Bridges of Konigsberg",
+      "src": "https://cdn.britannica.com/77/74877-050-F5DD4C34/Leonhard-Euler-route-each-question-bridges-Swiss.jpg",
+      "type": "image",
+      "caption": "Source: Britannica"
+    },
+    {
+      "id": "whatis-8",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "People tried routes and failed, but nobody could say whether it was impossible or whether they had simply not been clever enough. Leonhard Euler settled it by noticing that almost everything about the map was irrelevant. In other words, the distances, paths, and even locations did not really matter, all that mattered were really just the connections between each point (node)."
+        }
+      ]
+    },
+    {
+      "id": "whatis-9",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "A",
+              "from": "B"
+            },
+            {
+              "to": "B",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "C"
+            },
+            {
+              "to": "C",
+              "from": "A"
+            },
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "D"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            },
+            {
+              "to": "D",
+              "from": "B"
+            },
+            {
+              "to": "D",
+              "from": "C"
+            },
+            {
+              "to": "C",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 124.38619232177734,
+              "y": 124.27396392822266,
+              "id": "A"
+            },
+            {
+              "x": 125.02574920654297,
+              "y": 41.13152313232422,
+              "id": "B"
+            },
+            {
+              "x": 121.82796478271484,
+              "y": 204.85816955566406,
+              "id": "C"
+            },
+            {
+              "x": 293.8688659667969,
+              "y": 119.15750885009766,
+              "id": "D"
+            }
+          ]
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "whatis-10",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What really mattered was which pieces of land connected to which, and how many times. From this perspective, the answer is now obvious: each time you enter a land mass you must also leave it, so every land mass needs an even number of bridges, apart from where you start and where you finish. In Konigsberg all four had an odd number, so no such walk exists."
+        }
+      ]
+    },
+    {
+      "id": "whatis-11",
+      "text": "Note",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "whatis-12",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This part is on the theory behind graphs, we will tackle how to represent it in code later on."
+        }
+      ]
+    },
+    {
+      "id": "whatis-13",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Why did Euler's argument about the bridges not depend on the distances between them?",
+            "options": [
+              {
+                "label": "A graph records only which things connect to which, so lengths and shapes carry no information",
+                "correct": true
+              },
+              {
+                "label": "The bridges in Konigsberg happened to be roughly the same length",
+                "correct": false
+              },
+              {
+                "label": "Distances matter only for directed graphs",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "What is the degree of a node?",
+            "options": [
+              {
+                "label": "The number of edges touching it",
+                "correct": true
+              },
+              {
+                "label": "The number of nodes it can eventually reach",
+                "correct": false
+              },
+              {
+                "label": "How far it is from the start of the graph",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Two drawings of the same graph look completely different. How can that be?",
+            "options": [
+              {
+                "label": "A graph has no geometry, so any drawing that preserves the connections is equally correct",
+                "correct": true
+              },
+              {
+                "label": "One of the drawings must contain an error",
+                "correct": false
+              },
+              {
+                "label": "They are different graphs that share a node count",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Which of these is least likely to be worth modeling as a graph?",
+            "options": [
+              {
+                "label": "Computing the average of a column of numbers",
+                "correct": true
+              },
+              {
+                "label": "Finding the fewest moves to reach a chess position",
+                "correct": false
+              },
+              {
+                "label": "Deciding which files a build must compile first",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "type": "interactive",
+      "widget": "quiz"
+    },
+    {
+      "id": "directed-weighted-and-other-flavours",
+      "type": "heading",
+      "level": 2,
+      "text": "Directed, Weighted, and Other Flavours"
+    },
+    {
+      "id": "flavours-0",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Previously we discussed a simple case where a graph has a collection of nodes in edges all of the same kind. In many scenarios, you will need to make use of a slightly more complicated representation where some nodes and edges are different from one another. For example, representing instagram following as a graph would require something called a directed graph, where each edge points in a direction, since not everybody follows the people that follow them. We will discuss that in this chapter."
+        }
+      ]
+    },
+    {
+      "id": "flavours-1",
+      "text": "Direction",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In an undirected graph, an edge between A and B means the two are connected, with no orientation attached, and friendship works like this: if you are my friend, then I am yours."
+        }
+      ]
+    },
+    {
+      "id": "flavours-3",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "B"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 82.81497192382812,
+              "y": 208.17587280273438,
+              "id": "A"
+            },
+            {
+              "x": 192.17926025390625,
+              "y": 109.04450988769531,
+              "id": "B"
+            },
+            {
+              "x": 346.9521179199219,
+              "y": 109.04450988769531,
+              "id": "C"
+            },
+            {
+              "x": 82.1754150390625,
+              "y": 37.41409683227539,
+              "id": "D"
+            }
+          ]
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "flavours-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In a "
+        },
+        {
+          "text": "directed",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " graph, often shortened to digraph, each edge points. An edge from A to B says nothing whatsoever about getting from B to A. Following someone on social media works this way, and so do one-way streets, web links, and \"this task must finish before that one\"."
+        }
+      ]
+    },
+    {
+      "id": "flavours-5",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "B"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 82.81497192382812,
+              "y": 208.17587280273438,
+              "id": "A"
+            },
+            {
+              "x": 192.17926025390625,
+              "y": 109.04450988769531,
+              "id": "B"
+            },
+            {
+              "x": 346.9521179199219,
+              "y": 109.04450988769531,
+              "id": "C"
+            },
+            {
+              "x": 82.1754150390625,
+              "y": 37.41409683227539,
+              "id": "D"
+            }
+          ],
+          "directed": true
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "flavours-6",
+      "text": "Weight",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A weighted graph attaches a number to each edge, usually a cost such as kilometers, milliseconds, money, or risk, though occasionally it is a capacity or a probability instead. Weight's can also be negative, in a real application this could mean a certain path that gives you a benefit like a profit or a gain rather than cost."
+        }
+      ]
+    },
+    {
+      "id": "flavours-8",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Adding weights changes what \"shortest\" means, and that single change makes calculation a lot more complicated. Breadth-first search finds the route with the fewest edges, which stops being the cheapest route the moment the edges differ in cost. Below is an example of what a weighted graph might look like, alongside an algorithm known as Dijkstra's algorithm, which we will tackle in a future chapter."
+        }
+      ]
+    },
+    {
+      "id": "flavours-9",
+      "data": {
+        "start": "A"
+      },
+      "type": "interactive",
+      "widget": "shortest-path"
+    },
+    {
+      "id": "flavours-10",
+      "text": "Trees",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " A "
+        },
+        {
+          "text": "tree",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " is a graph that is connected and has no cycles."
+        }
+      ]
+    },
+    {
+      "id": "flavours-12",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "home",
+              "from": "/"
+            },
+            {
+              "to": "bob",
+              "from": "home"
+            },
+            {
+              "to": "etc",
+              "from": "/"
+            },
+            {
+              "to": "dev",
+              "from": "/"
+            },
+            {
+              "to": "alice",
+              "from": "home"
+            },
+            {
+              "to": "null",
+              "from": "dev"
+            },
+            {
+              "to": "tty",
+              "from": "dev"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 198.5748291015625,
+              "y": 30.958566665649414,
+              "id": "/"
+            },
+            {
+              "x": 87.29187774658203,
+              "y": 74.44845581054688,
+              "id": "dev"
+            },
+            {
+              "x": 336.7192077636719,
+              "y": 78.92536163330078,
+              "id": "etc"
+            },
+            {
+              "x": 194.73748779296875,
+              "y": 137.76461791992188,
+              "id": "home"
+            },
+            {
+              "x": 168.51564025878906,
+              "y": 211.31370544433594,
+              "id": "bob"
+            },
+            {
+              "x": 225.4362335205078,
+              "y": 213.87193298339844,
+              "id": "alice"
+            },
+            {
+              "x": 38.685523986816406,
+              "y": 181.2545166015625,
+              "id": "null"
+            },
+            {
+              "x": 91.12921905517578,
+              "y": 187.01052856445312,
+              "id": "tty"
+            }
+          ],
+          "directed": true
+        },
+        "title": "linux filesystem"
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "flavours-13",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is important for a few reasons. First of all, it means that at any node we can pick a branch and we will end up at completely different places compared to if we pick another branch. In other words, there's only one unique path to get to any node, which can make some calculations simpler."
+        }
+      ]
+    },
+    {
+      "id": "flavours-14",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second reason is that a tree on "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " nodes has precisely "
+        },
+        {
+          "text": "n - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " edges. This is because starting with one node and no edges, every additional node needs exactly one edge to attach it to what is already there. This also works vice versa, so a tree with "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " nodes and "
+        },
+        {
+          "text": "n - 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " edges is "
+        },
+        {
+          "text": "always",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " a tree (if all vertices are connected)."
+        }
+      ]
+    },
+    {
+      "id": "flavours-15",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "So checking whether something is a tree is easy: count the edges, then run one traversal to confirm it is connected. "
+        }
+      ]
+    },
+    {
+      "id": "flavours-16",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Trees turn up so often that people forget they are graphs at all. Your file system is one example of a tree, also the DOM is another. A binary search tree is obviously one. Anything you have written a recursive function over was probably a tree, and every graph algorithm in this section works on trees without modification, usually faster, because there are no cycles to guard against."
+        }
+      ]
+    },
+    {
+      "id": "flavours-17",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "One warning about vocabulary. Trees in computer science usually have a designated "
+        },
+        {
+          "text": "root",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " and talk about parents and children, but rooting is a choice you make rather than a property the graph has. Any node of a tree can be picked as the root, and the parent relationships rearrange themselves around your choice. A graph theorist's tree has no root at all."
+        }
+      ]
+    },
+    {
+      "id": "flavours-18",
+      "text": "Directed acyclic graphs",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-19",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "|",
+          "marks": [
+            {
+              "kind": "bold"
+            },
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": " A directed acyclic graph (DAG) is a directed graph with no directed cycles"
+        }
+      ]
+    },
+    {
+      "id": "flavours-20",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "DAGs are what you get whenever the edges mean \"must come before\": build dependencies, course prerequisites, spreadsheet formulas, task schedules, and the order you put clothes on."
+        }
+      ]
+    },
+    {
+      "id": "flavours-21",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "B",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "E",
+              "from": "C"
+            },
+            {
+              "to": "F",
+              "from": "E"
+            },
+            {
+              "to": "D",
+              "from": "B"
+            },
+            {
+              "to": "F",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 38.685523986816406,
+              "y": 121.43592834472656,
+              "id": "A"
+            },
+            {
+              "x": 135.2586669921875,
+              "y": 122.71504211425781,
+              "id": "B"
+            },
+            {
+              "x": 169.1551971435547,
+              "y": 191.14767456054688,
+              "id": "C"
+            },
+            {
+              "x": 231.83180236816406,
+              "y": 120.15681457519531,
+              "id": "D"
+            },
+            {
+              "x": 280.43817138671875,
+              "y": 191.14767456054688,
+              "id": "E"
+            },
+            {
+              "x": 343.1147766113281,
+              "y": 120.79637145996094,
+              "id": "F"
+            }
+          ],
+          "directed": true
+        },
+        "title": "git version control"
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "flavours-22",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "DAGs are so useful because since there are no cycles, its much easier to work with using algorithms, since you're never gonna end up in an endless loop. In fact, you'll discover when we start coding that its common to \"compress\" a directed graph to a directed acyclic graph in some problems. Finding a valid order is topological sorting, which is the next page."
+        }
+      ]
+    },
+    {
+      "id": "flavours-23",
+      "text": "See the differences",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-24",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try visualizing each different graph using the widget."
+        }
+      ]
+    },
+    {
+      "id": "flavours-25",
+      "data": {},
+      "type": "interactive",
+      "widget": "graph-explorer"
+    },
+    {
+      "id": "flavours-26",
+      "text": "Note",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-27",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A "
+        },
+        {
+          "text": "self-loop",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " is an edge from a node to itself. A "
+        },
+        {
+          "text": "multigraph",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " allows several edges between the same pair of nodes, which matters when the edges are genuinely distinct, as the seven bridges of Konigsberg were."
+        }
+      ]
+    },
+    {
+      "id": "flavours-28",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Most algorithms and most problem statements quietly assume neither exists. That assumption is usually safe, and when it is wrong it tends to produce a confusing bug rather than a crash, so it is worth checking the constraints of a problem before assuming a clean simple graph."
+        }
+      ]
+    },
+    {
+      "id": "flavours-29",
+      "text": "Check yourself",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "flavours-30",
+      "data": {
+        "questions": [
+          {
+            "prompt": "A connected graph has 12 nodes and 11 edges. What must it be?",
+            "options": [
+              {
+                "label": "A tree, because connected plus n-1 edges forces acyclic",
+                "correct": true
+              },
+              {
+                "label": "A DAG, though possibly not a tree",
+                "correct": false
+              },
+              {
+                "label": "Not enough information to say",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why does making a graph directed require new algorithms for finding groups?",
+            "options": [
+              {
+                "label": "Reachability stops being symmetric, so who I can reach and who can reach me are different questions",
+                "correct": true
+              },
+              {
+                "label": "Directed graphs can have more edges",
+                "correct": false
+              },
+              {
+                "label": "Traversals cannot follow directed edges",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A build tool reports a circular dependency. In graph terms, what has happened?",
+            "options": [
+              {
+                "label": "The dependency graph contains a directed cycle, so it is not a DAG and no valid build order exists",
+                "correct": true
+              },
+              {
+                "label": "The graph became disconnected",
+                "correct": false
+              },
+              {
+                "label": "Two files were given the same node",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "How many paths are there between any two nodes of a tree?",
+            "options": [
+              {
+                "label": "Exactly one",
+                "correct": true
+              },
+              {
+                "label": "At least one, possibly more",
+                "correct": false
+              },
+              {
+                "label": "It depends which node is the root",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "type": "interactive",
+      "widget": "quiz"
+    },
+    {
+      "id": "storing-a-graph-in-code",
+      "type": "heading",
+      "level": 2,
+      "text": "Storing a Graph in Code"
+    },
+    {
+      "id": "storing-0",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "We already tackled the types of graphs and when they can be used. This chapter will go about how to represent graphs in code, and there are actually several ways."
+        }
+      ]
+    },
+    {
+      "id": "storing-1",
+      "text": "The adjacency matrix",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "storing-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Make a grid with one row and one column per node. Put a 1 in row A, column B when there is an edge between A and B, and a 0 when there is not."
+        }
+      ]
+    },
+    {
+      "id": "storing-3",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "B",
+              "from": "A"
+            },
+            {
+              "to": "A",
+              "from": "C"
+            },
+            {
+              "to": "B",
+              "from": "C"
+            },
+            {
+              "to": "C",
+              "from": "D"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 64.26781463623047,
+              "y": 50.20524215698242,
+              "id": "A"
+            },
+            {
+              "x": 75.77984619140625,
+              "y": 188.98916625976562,
+              "id": "B"
+            },
+            {
+              "x": 217.7615509033203,
+              "y": 121.19609832763672,
+              "id": "C"
+            },
+            {
+              "x": 334.1609802246094,
+              "y": 119.27742004394531,
+              "id": "D"
+            }
+          ]
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
+    },
+    {
+      "id": "storing-4",
+      "code": "      A  B  C  D            Adjacency matrix\n   A [ 0  1  1  0 ]         row A, column B is 1\n   B [ 1  0  1  0 ]         because A and B share an edge\n   C [ 1  1  0  1 ]\n   D [ 0  0  1  0 ]         16 cells for 4 nodes",
+      "type": "code"
+    },
+    {
+      "id": "storing-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The benefit here is that one specific question becomes "
+        },
+        {
+          "text": "O(1)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". \"Is there an edge between A and D?\" is a single array lookup, "
+        },
+        {
+          "text": "matrix[A][D]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " If your algorithm asks that question constantly, this is worth considering. Here it is in code:"
+        }
+      ]
+    },
+    {
+      "id": "storing-6",
+      "code": "import numpy as np\n\n# Initialize a 4x4 matrix of zeros\nnum_vertices = 4\nadj_matrix = np.zeros((num_vertices, num_vertices), dtype=int)\n\n# Define edges as pairs of (u, v)\nedges = [(0, 1), (0, 2), (1, 2), (2, 3)]\n\n# Populate the matrix (Undirected Graph)\nfor u, v in edges:\n    adj_matrix[u, v] = 1\n    adj_matrix[v, u] = 1\n\nprint(adj_matrix)",
+      "type": "code",
+      "language": "python",
+      "variants": [
+        {
+          "code": "#include <iostream>\n#include <vector>\n\nclass Graph {\nprivate:\n    int V; // Number of vertices\n    std::vector<std::vector<int>> matrix;\n\npublic:\n    // Constructor to initialize a V x V matrix with zeros\n    Graph(int num_vertices) : V(num_vertices) {\n        matrix.resize(V, std::vector<int>(V, 0));\n    }\n\n    // Adds an edge between vertex u and vertex v\n    void addEdge(int u, int v, int weight = 1, bool directed = false) {\n        matrix[u][v] = weight;\n        if (!directed) {\n            matrix[v][u] = weight; // Symmetric entry for undirected graphs\n        }\n    }\n\n    // Prints the matrix structure to console\n    void printMatrix() const {\n        for (int i = 0; i < V; ++i) {\n            for (int j = 0; j < V; ++j) {\n                std::cout << matrix[i][j] << \" \";\n            }\n            std::cout << \"\\n\";\n        }\n    }\n};\n\nint main() {\n    // Create an undirected graph with 4 vertices (0, 1, 2, 3)\n    Graph g(4);\n    \n    g.addEdge(0, 1);\n    g.addEdge(0, 2);\n    g.addEdge(1, 2);\n    g.addEdge(2, 3);\n\n    g.printMatrix();\n\n    return 0;\n}",
+          "language": "cpp"
+        }
+      ]
+    },
+    {
+      "id": "storing-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The cost is that the grid has V times V cells no matter how few edges you actually have. A social network with a million people would need a matrix with a trillion cells, almost all of them 0, because no one has a million friends. That means that its a good deal if you have lots of edges and few nodes which is pretty rare. "
+        }
+      ]
+    },
+    {
+      "id": "storing-8",
+      "text": "The adjacency list",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "storing-9",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This is the data type that is the most obvious, and its also the one you'd used for most applications. In a LeetCode style problem, 95% of the time this is the graph representation you'd use. Store, for each node, a list of its neighbors, and write nothing down for pairs that are not connected."
+        }
+      ]
+    },
+    {
+      "id": "storing-10",
+      "code": "A -> B, C                  Adjacency list\nB -> A, C                  each node keeps its own neighbors\nC -> A, B, D\nD -> C                     8 entries for 4 edges, counted twice",
+      "type": "code"
+    },
+    {
+      "id": "storing-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Back to our analogy of Facebook friends, you could store the graph by having a key value pair, where the key is a user, and the value is the list of his friends."
+        }
+      ]
+    },
+    {
+      "id": "storing-12",
+      "code": "# Keys are users; values are lists of their friends.\nfacebook_network = {\n    \"Alice\":   [\"Bob\", \"Charlie\"],\n    \"Bob\":     [\"Alice\", \"Charlie\"],\n    \"Charlie\": [\"Alice\", \"Bob\", \"David\"],\n    \"David\":   [\"Charlie\"],\n}\n\n# Add a new user (Node)\nfacebook_network[\"Eva\"] = []\n\ndef add_friendship(network, user1, user2):\n    network[user1].append(user2)\n    network[user2].append(user1)\n\ndef are_friends(network, user1, user2):\n    return user2 in network[user1]\n\nadd_friendship(facebook_network, \"Alice\", \"Eva\")\n",
+      "type": "code",
+      "language": "python"
+    },
+    {
+      "id": "storing-13",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The memory is now proportional to the number of edges rather than the square of the number of nodes. The same million-person network stores a few hundred million entries instead of a trillion, which is comfortable."
+        }
+      ]
+    },
+    {
+      "id": "storing-14",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What you give up is the instant edge check. Asking \"is A connected to D?\" means scanning A's neighbor list, which costs as much as A has neighbors. In exchange you get something you needed more often than you expected: iterating a node's neighbors is now free, because they are sitting in a list rather than scattered across a row of mostly zeros."
+        }
+      ]
+    },
+    {
+      "id": "storing-15",
+      "text": "Choosing between them",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "storing-16",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The deciding question is whether your graph is "
+        },
+        {
+          "text": "dense",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " or "
+        },
+        {
+          "text": "sparse",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". A graph is dense when the number of edges is close to the maximum possible, roughly "
+        },
+        {
+          "text": "V",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " squared. It is sparse when each node has only a handful of neighbors regardless of how big the graph gets."
+        }
+      ]
+    },
+    {
+      "id": "storing-17",
+      "rows": [
+        [
+          "Memory",
+          "V squared always",
+          "Proportional to V plus E"
+        ],
+        [
+          "Is there an edge u to v?",
+          "O(1)",
+          "O(degree of u)"
+        ],
+        [
+          "Visit all neighbors of u",
+          "O(V), you scan the whole row",
+          "O(degree of u)"
+        ],
+        [
+          "Add an edge",
+          "O(1)",
+          "O(1)"
+        ],
+        [
+          "Good when",
+          "The graph is dense, or you check specific edges constantly",
+          "The graph is sparse, which is most real data"
+        ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Adjacency matrix",
+        "Adjacency list"
+      ]
+    },
+    {
+      "id": "storing-18",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Almost every real graph is sparse. Road networks, social graphs, dependency graphs, web links: in all of them a node connects to a few dozen others at most, however large the graph grows. So the adjacency list is the default, and the matrix is the specialist tool you reach for on small dense graphs or when an algorithm genuinely leans on constant-time edge checks."
+        }
+      ]
+    },
+    {
+      "id": "storing-19",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice the third row, because it decides more cases than the second one does. Traversals, shortest paths and almost everything else in this section spend their time asking a node for its neighbors. On a matrix that means scanning "
+        },
+        {
+          "text": "V",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " cells to find maybe three neighbors. Run that for every node and a traversal that should cost "
+        },
+        {
+          "text": "O(V + E)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " becomes "
+        },
+        {
+          "text": "O(V squared)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", which on a large sparse graph is the difference between a second and an hour."
+        }
+      ]
+    },
+    {
+      "id": "storing-20",
+      "text": "Building one",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "storing-21",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Most problems hand you a list of edges and expect you to build the structure yourself. It is a few lines, and one of them is the line everyone forgets."
+        }
+      ]
+    },
+    {
+      "id": "storing-22",
+      "code": "function buildAdjacencyList(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  for (const [u, v] of edges) {\n    adj[u].push(v);\n    adj[v].push(u);        // undirected: write it from both ends\n  }\n  return adj;\n}",
+      "type": "code",
+      "language": "javascript",
+      "variants": [
+        {
+          "code": "def build_adjacency_list(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    for u, v in edges:\n        adj[u].append(v)\n        adj[v].append(u)   # undirected: write it from both ends\n    return adj",
+          "language": "python"
+        },
+        {
+          "code": "vector<vector<int>> buildAdjacencyList(int nodeCount,\n                                      const vector<pair<int,int>>& edges) {\n    vector<vector<int>> adj(nodeCount);\n    for (auto [u, v] : edges) {\n        adj[u].push_back(v);\n        adj[v].push_back(u);   // undirected: write it from both ends\n    }\n    return adj;\n}",
+          "language": "cpp"
+        }
+      ]
+    },
+    {
+      "id": "storing-23",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The second "
+        },
+        {
+          "text": "push",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the one that gets left out. In an undirected graph an edge between A and B has to appear in both neighbor lists, because the algorithm reading the structure has no way to know the edge exists unless the node it is standing on mentions it. Leave it out and your traversal will reach roughly half the graph and you will spend an hour looking for the bug in the traversal."
+        }
+      ]
+    },
+    {
+      "id": "storing-24",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "For a directed graph you write only the first line, which is the whole difference between the two cases, and for a weighted graph you store pairs of neighbor and weight instead of bare neighbors, with everything else staying the same."
+        }
+      ]
+    },
+    {
+      "id": "storing-25",
+      "text": "Edge List",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "storing-26",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "An edge list is just a list of edges, with no per-node grouping at all, useless for traversal since you cannot ask a node for its neighbors without scanning everything. The one thing edge list is better than the other two at is storage, it can store a graph in just "
+        },
+        {
+          "text": "O(E)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " compared to "
+        },
+        {
+          "text": "O(V²)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for adjacency matrices and "
+        },
+        {
+          "text": "O(V + E)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for adjacency lists, however as you can see it's really not much better than adjacency lists."
+        }
+      ]
+    },
+    {
+      "id": "storing-27",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "In some very specific use cases you might see Edge Lists, like in an implementation of "
+        },
+        {
+          "text": "Kruskal's algorithm",
+          "marks": [
+            {
+              "href": "https://nandscape.dev/tutorials/dsa/graph-mst-kruskal-prim",
+              "kind": "link"
+            }
+          ]
+        },
+        {
+          "text": " which finds the path to "
+        },
+        {
+          "text": "all ",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": "nodes with the minimum cost in a weighted graph (Minimum Spanning Tree). It's also seen in the "
+        },
+        {
+          "text": "Bellman-Ford algorithm",
+          "marks": [
+            {
+              "href": "https://nandscape.dev/tutorials/dsa/graph-bellman-ford",
+              "kind": "link"
+            }
+          ]
+        },
+        {
+          "text": ", which finds the shortest path from one starting point to all other points in a weighted graph."
+        }
+      ]
+    },
+    {
+      "id": "storing-28",
+      "text": "Check yourself",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "storing-29",
+      "data": {
+        "questions": [
+          {
+            "prompt": "A graph has a million nodes and each node has about ten neighbors. Which representation?",
+            "options": [
+              {
+                "label": "Adjacency list, since a matrix would need a trillion cells for ten million edges",
+                "correct": true
+              },
+              {
+                "label": "Adjacency matrix, since edge lookups are faster",
+                "correct": false
+              },
+              {
+                "label": "Either, since they use similar memory at that size",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why can an adjacency matrix turn an O(V + E) traversal into O(V squared)?",
+            "options": [
+              {
+                "label": "Getting a node's neighbors means scanning its entire row, which is V cells regardless of how few neighbors it has",
+                "correct": true
+              },
+              {
+                "label": "Matrices cannot represent undirected edges without duplication",
+                "correct": false
+              },
+              {
+                "label": "Checking whether an edge exists takes O(V) in a matrix",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Your BFS reaches only part of an undirected graph. What is the first thing to check?",
+            "options": [
+              {
+                "label": "Whether each edge was added to both nodes' neighbor lists when the structure was built",
+                "correct": true
+              },
+              {
+                "label": "Whether the queue is being drained from the wrong end",
+                "correct": false
+              },
+              {
+                "label": "Whether the seen set is being marked too early",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Which algorithm is happiest with a plain list of edges and no adjacency structure?",
+            "options": [
+              {
+                "label": "Kruskal's, since it sorts the edges and walks through them in order",
+                "correct": true
+              },
+              {
+                "label": "Breadth-first search",
+                "correct": false
+              },
+              {
+                "label": "Dijkstra's algorithm",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "type": "interactive",
+      "widget": "quiz"
+    }
+  ]
+}

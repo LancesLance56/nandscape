@@ -74,9 +74,10 @@ export function SortingBars({
         })}
       </div>
 
-      {/* Pointer markers, only when the algorithm uses them. */}
-      {!compact && pointerAt.size > 0 && (
-        <div className="flex w-full gap-[2px] px-2">
+      {/* Pointer markers. The row is always present (fixed height) so a step
+          that happens to use no pointers doesn't shrink the widget. */}
+      {!compact && (
+        <div className="flex min-h-[1.125rem] w-full gap-[2px] px-2">
           {step.array.map((_, i) => (
             <div key={i} className="flex min-w-0 flex-1 justify-center">
               {pointerAt.has(i) && (
@@ -89,15 +90,21 @@ export function SortingBars({
         </div>
       )}
 
-      {!compact && step.aux && <AuxRow aux={step.aux} />}
+      {!compact && <AuxRow aux={step.aux} />}
     </div>
   );
 }
 
-function AuxRow({ aux }: { aux: NonNullable<SortStep["aux"]> }) {
-  const highlight = new Set(aux.highlight ?? []);
+/** The scratch buffer (merge sort's temp array, counting sort's buckets).
+ *  Always rendered at a fixed height - blank on steps that have no aux - so
+ *  it appearing and disappearing never changes the widget's height. */
+function AuxRow({ aux }: { aux?: SortStep["aux"] }) {
+  const highlight = new Set(aux?.highlight ?? []);
+  if (!aux) {
+    return <div className="mt-1 min-h-[2.25rem]" aria-hidden />;
+  }
   return (
-    <div className="mt-1 flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-surface-2/30 px-2 py-1.5">
+    <div className="mt-1 flex min-h-[2.25rem] flex-wrap items-center gap-1.5 rounded-lg border border-border bg-surface-2/30 px-2 py-1.5">
       <span className="text-[10px] font-semibold uppercase tracking-wide text-slate">{aux.label}</span>
       <div className="flex flex-wrap gap-1">
         {aux.values.map((v, i) => (

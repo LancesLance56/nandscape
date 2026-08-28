@@ -253,6 +253,9 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
               </p>
             </div>
 
+            {/* One reserved slot for the running feedback, so it changing as
+                you build groups never resizes the widget. */}
+            <div className="min-h-[5rem]">
             {error ? (
               <Banner tone="bad">{error}</Banner>
             ) : revealed ? (
@@ -294,6 +297,7 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
                 {grade.optimalTermCount} / {grade.optimalLiteralCount}. Look for bigger groups.
               </Banner>
             )}
+            </div>
           </div>
         </div>
       </div>

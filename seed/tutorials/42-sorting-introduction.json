@@ -13,14 +13,19 @@
   ],
   "sectionSlug": "sorting",
   "position": 10,
-  "seoTitle": "Introduction to Sorting Algorithms: Stability, Memory and the n log n Bound",
-  "seoDescription": "What sorting actually buys you, what stable, in-place and adaptive mean, and the full proof that no comparison sort can beat O(n log n). With an interactive visualizer.",
+  "seoTitle": "Introduction to Sorting: Stability, Memory, n log n, and the Elementary Sorts",
+  "seoDescription": "What sorting actually buys you; what stable, in-place and adaptive mean; the full proof no comparison sort beats O(n log n); and bubble, selection and insertion sort compared properly. With interactive visualizers.",
   "keywords": [
     "sorting algorithms",
     "introduction to sorting",
     "stable sort",
     "comparison sort lower bound",
-    "n log n lower bound"
+    "n log n lower bound",
+    "bubble sort",
+    "selection sort",
+    "insertion sort",
+    "comparison of sorting algorithms",
+    "insertion sort adaptive"
   ],
   "body": [
     {
@@ -471,14 +476,403 @@
       ]
     },
     {
-      "id": "d1",
+      "id": "bubble-selection-and-insertion-sort",
+      "type": "heading",
+      "level": 2,
+      "text": "Bubble, Selection and Insertion Sort"
+    },
+    {
+      "id": "elem-0",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "All three of these are O(n²) and all three get taught together, which makes it look like they're the same algorithm with cosmetic differences. They're not. They differ in how many writes they do, whether they notice sorted input, and whether they're stable, and those differences decide which one survives into real code."
+        }
+      ]
+    },
+    {
+      "id": "elem-1",
+      "text": "Bubble sort",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Walk the array comparing neighbors and swapping any that are out of order, and after one pass the largest value has been carried to the end. Repeat."
+        }
+      ]
+    },
+    {
+      "id": "elem-3",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Its one redeeming feature is the early exit: if a whole pass makes no swaps, the array is sorted and you can stop. That makes it O(n) on already-sorted input. Without that check it's O(n²) unconditionally, and the version without the check is the one most people write."
+        }
+      ]
+    },
+    {
+      "id": "elem-4",
+      "data": {
+        "size": 10,
+        "preset": "random",
+        "algorithm": "bubble",
+        "showComparison": false
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
+    },
+    {
+      "id": "elem-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Switch the input to \"already sorted\" and watch it stop after a single pass with zero writes."
+        }
+      ]
+    },
+    {
+      "id": "elem-6",
+      "text": "Selection sort",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Find the smallest remaining value, swap it into place, repeat. The comparison count is fixed at n(n-1)/2 no matter what, since it always scans the whole remaining array."
+        }
+      ]
+    },
+    {
+      "id": "elem-8",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What it does have is the fewest writes of any of these: exactly n-1 swaps, regardless of the input. If comparisons are cheap and writes are expensive, which is the case for flash memory or for records that are large to move, that's a real advantage."
+        }
+      ]
+    },
+    {
+      "id": "elem-9",
+      "data": {
+        "size": 10,
+        "preset": "random",
+        "algorithm": "selection",
+        "showComparison": false
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
+    },
+    {
+      "id": "elem-10",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It's not stable, and the reason is worth seeing: swapping a distant minimum into position can jump one of a pair of equal values over the other."
+        }
+      ]
+    },
+    {
+      "id": "elem-11",
+      "text": "Insertion sort",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-12",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Grow a sorted prefix. Take the next value, slide it left past everything larger, and drop it in. This is how most people sort a hand of cards."
+        }
+      ]
+    },
+    {
+      "id": "elem-13",
+      "data": {
+        "size": 12,
+        "preset": "nearly",
+        "algorithm": "insertion",
+        "showComparison": false
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
+    },
+    {
+      "id": "elem-14",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice the "
+        },
+        {
+          "text": "holding",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " row underneath. While the shifting loop runs, the value being placed is out of the array entirely, held in a variable, and its old slot has already been overwritten. That's why the bars briefly show a duplicate: it's real, not a rendering artifact."
+        }
+      ]
+    },
+    {
+      "id": "elem-15",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Insertion sort is stable, adaptive, and in place. On nearly-sorted input each value moves only a step or two, so the inner loop barely runs and the whole thing is close to O(n). That combination is why it's the only one of the three that shows up in production sorts."
+        }
+      ]
+    },
+    {
+      "id": "elem-16",
+      "text": "Side by side",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-17",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Run all three on the same input using the full visualizer, and read the table at the bottom. The interesting comparisons are on the non-random presets."
+        }
+      ]
+    },
+    {
+      "id": "elem-18",
+      "data": {
+        "size": 14,
+        "preset": "nearly",
+        "algorithms": [
+          "bubble",
+          "selection",
+          "insertion"
+        ]
+      },
+      "type": "interactive",
+      "widget": "sorting-visualizer"
+    },
+    {
+      "id": "elem-19",
+      "rows": [
+        [
+          "Best case",
+          "O(n) with early exit",
+          "O(n²) always",
+          "O(n)"
+        ],
+        [
+          "Worst case",
+          "O(n²)",
+          "O(n²)",
+          "O(n²)"
+        ],
+        [
+          "Writes",
+          "O(n²)",
+          "O(n), exactly n-1 swaps",
+          "O(n²)"
+        ],
+        [
+          "Stable",
+          "Yes",
+          "No",
+          "Yes"
+        ],
+        [
+          "Adaptive",
+          "Only via early exit",
+          "No",
+          "Strongly"
+        ],
+        [
+          "Used in practice",
+          "No",
+          "Rarely",
+          "Yes, for small inputs"
+        ]
+      ],
+      "type": "table",
+      "headers": [
+        "",
+        "Bubble",
+        "Selection",
+        "Insertion"
+      ]
+    },
+    {
+      "id": "elem-20",
+      "text": "In code",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-21",
+      "code": "function bubbleSort(a) {\n  for (let pass = 0; pass < a.length - 1; pass++) {\n    let swapped = false;\n    for (let i = 0; i < a.length - 1 - pass; i++) {\n      if (a[i] > a[i + 1]) {\n        [a[i], a[i + 1]] = [a[i + 1], a[i]];\n        swapped = true;\n      }\n    }\n    if (!swapped) break;      // the whole point: sorted input costs one pass\n  }\n  return a;\n}\n\nfunction selectionSort(a) {\n  for (let i = 0; i < a.length - 1; i++) {\n    let min = i;\n    for (let j = i + 1; j < a.length; j++) if (a[j] < a[min]) min = j;\n    if (min !== i) [a[i], a[min]] = [a[min], a[i]];   // exactly one swap per i\n  }\n  return a;\n}\n\nfunction insertionSort(a) {\n  for (let i = 1; i < a.length; i++) {\n    const value = a[i];        // held out of the array while we shift\n    let j = i - 1;\n    while (j >= 0 && a[j] > value) {\n      a[j + 1] = a[j];\n      j--;\n    }\n    a[j + 1] = value;\n  }\n  return a;\n}",
+      "type": "code",
+      "language": "javascript",
+      "variants": [
+        {
+          "code": "def bubble_sort(a):\n    for p in range(len(a) - 1):\n        swapped = False\n        for i in range(len(a) - 1 - p):\n            if a[i] > a[i + 1]:\n                a[i], a[i + 1] = a[i + 1], a[i]\n                swapped = True\n        if not swapped:\n            break            # sorted input costs one pass\n    return a\n\n\ndef selection_sort(a):\n    for i in range(len(a) - 1):\n        m = min(range(i, len(a)), key=lambda j: a[j])\n        if m != i:\n            a[i], a[m] = a[m], a[i]   # exactly one swap per i\n    return a\n\n\ndef insertion_sort(a):\n    for i in range(1, len(a)):\n        value = a[i]         # held out of the list while we shift\n        j = i - 1\n        while j >= 0 and a[j] > value:\n            a[j + 1] = a[j]\n            j -= 1\n        a[j + 1] = value\n    return a",
+          "language": "python"
+        },
+        {
+          "code": "#include <vector>\n#include <utility>\n\nvoid bubbleSort(std::vector<int>& a) {\n    for (size_t p = 0; p + 1 < a.size(); p++) {\n        bool swapped = false;\n        for (size_t i = 0; i + 1 < a.size() - p; i++) {\n            if (a[i] > a[i + 1]) { std::swap(a[i], a[i + 1]); swapped = true; }\n        }\n        if (!swapped) break;   // sorted input costs one pass\n    }\n}\n\nvoid selectionSort(std::vector<int>& a) {\n    for (size_t i = 0; i + 1 < a.size(); i++) {\n        size_t m = i;\n        for (size_t j = i + 1; j < a.size(); j++) if (a[j] < a[m]) m = j;\n        if (m != i) std::swap(a[i], a[m]);   // exactly one swap per i\n    }\n}\n\nvoid insertionSort(std::vector<int>& a) {\n    for (size_t i = 1; i < a.size(); i++) {\n        int value = a[i];      // held out of the array while we shift\n        size_t j = i;\n        while (j > 0 && a[j - 1] > value) { a[j] = a[j - 1]; j--; }\n        a[j] = value;\n    }\n}",
+          "language": "cpp"
+        }
+      ]
+    },
+    {
+      "id": "elem-22",
+      "text": "Check yourself",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-23",
+      "data": {
+        "questions": [
+          {
+            "prompt": "Which of these three is used inside real production sorts, and why?",
+            "options": [
+              {
+                "label": "Insertion sort, because it is fast on small and nearly-sorted inputs",
+                "correct": true
+              },
+              {
+                "label": "Bubble sort, because of its early exit",
+                "correct": false
+              },
+              {
+                "label": "Selection sort, because it does the fewest swaps",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Selection sort's headline advantage is:",
+            "options": [
+              {
+                "label": "It does exactly n-1 swaps, which matters when writing is expensive",
+                "correct": true
+              },
+              {
+                "label": "It is stable",
+                "correct": false
+              },
+              {
+                "label": "It is adaptive to sorted input",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why do the bars briefly show a duplicate during insertion sort?",
+            "options": [
+              {
+                "label": "The value being inserted is held in a variable while its old slot is overwritten",
+                "correct": true
+              },
+              {
+                "label": "It is a rendering bug in the visualizer",
+                "correct": false
+              },
+              {
+                "label": "Insertion sort genuinely duplicates values and removes them later",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "type": "interactive",
+      "widget": "quiz"
+    },
+    {
+      "id": "elem-24",
+      "text": "As flowcharts",
+      "type": "heading",
+      "level": 3
+    },
+    {
+      "id": "elem-25",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The same algorithms, drawn as flowcharts, where the dashed copper arrows are loops back to an earlier step. Click any box with a dot to see why that step is there."
+        }
+      ]
+    },
+    {
+      "id": "elem-26",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Bubble sort as a flowchart."
+        }
+      ]
+    },
+    {
+      "id": "elem-27",
+      "data": {
+        "preset": "bubble"
+      },
+      "type": "interactive",
+      "widget": "flowchart"
+    },
+    {
+      "id": "elem-28",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Selection sort as a flowchart."
+        }
+      ]
+    },
+    {
+      "id": "elem-29",
+      "data": {
+        "preset": "selection"
+      },
+      "type": "interactive",
+      "widget": "flowchart"
+    },
+    {
+      "id": "elem-30",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Insertion sort as a flowchart."
+        }
+      ]
+    },
+    {
+      "id": "elem-31",
+      "data": {
+        "preset": "insertion"
+      },
+      "type": "interactive",
+      "widget": "flowchart"
+    },
+    {
+      "id": "elem-32",
       "type": "divider"
     },
     {
-      "id": "b-next",
-      "href": "/tutorials/dsa/sorting-elementary",
+      "id": "elem-33",
+      "href": "/tutorials/dsa/sorting-merge-sort",
       "type": "button",
-      "label": "Continue to the elementary sorts",
+      "label": "Continue to merge sort",
       "style": "primary"
     }
   ]

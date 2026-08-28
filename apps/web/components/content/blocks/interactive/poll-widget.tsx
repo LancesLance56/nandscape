@@ -46,9 +46,9 @@ export function PollWidget({ data }: { data: Record<string, unknown> }) {
           </button>
         ))}
       </div>
-      {selected !== null && (
-        <p className="mt-3 text-xs text-slate">Thanks for voting</p>
-      )}
+      <div className="mt-3 min-h-[1rem]">
+        {selected !== null && <p className="text-xs text-slate">Thanks for voting</p>}
+      </div>
     </div>
   );
 }

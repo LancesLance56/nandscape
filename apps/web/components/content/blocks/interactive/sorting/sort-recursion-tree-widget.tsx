@@ -66,7 +66,7 @@ export function SortRecursionTreeWidget({ data }: { data: Record<string, unknown
           </div>
 
           <PanelBox title="Call stack">
-            <ChipRow items={step.stack} emptyLabel="nothing running" />
+            <ChipRow items={step.stack} emptyLabel="nothing running" reserveRows={2} />
           </PanelBox>
         </div>
       </div>

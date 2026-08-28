@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { CALL_TREE_WIDTH, type CallNode, type CallStatus, type CallStep } from "@/lib/dp/types";
+import { RfTree, type RfTreeNode } from "../shared/rf-tree";
 
 /**
  * The recursion tree.
@@ -85,164 +85,59 @@ interface CallTreeCanvasProps {
 }
 
 export function CallTreeCanvas({ nodes, step, markRepeats = false, maxHeight = 340 }: CallTreeCanvasProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
   if (nodes.length === 0) {
     return <p className="text-sm text-slate">Nothing to draw yet.</p>;
   }
 
   const revealed = new Set(step.revealed);
   const repeats = markRepeats ? repeatedIds(nodes) : new Set<string>();
-  const byId = new Map(nodes.map((n) => [n.id, n]));
   const hasChild = new Set(nodes.map((n) => n.parentId).filter((id): id is string => Boolean(id)));
   const leaves = Math.max(nodes.filter((n) => !hasChild.has(n.id)).length, 1);
   const maxDepth = nodes.reduce((m, n) => Math.max(m, n.depth), 0);
 
   const renderWidth = Math.max(340, leaves * LEAF_SPACING);
   const renderHeight = (maxDepth + 1) * 60 + 24;
-  const sx = (x: number) => (x * renderWidth) / CALL_TREE_WIDTH;
 
-  const activeNode = step.activeId ? byId.get(step.activeId) : null;
+  const treeNodes: RfTreeNode[] = nodes.map((n) => {
+    const shown = revealed.has(n.id);
+    const status = step.status[n.id];
+    const style = nodeStyle(status, shown);
+    const value = step.values[n.id];
+    const hasValue = shown && value !== undefined;
 
-  return (
-    <TreeScroller scrollRef={scrollRef} activeX={activeNode ? sx(activeNode.x) : null} maxHeight={maxHeight}>
-      <svg
-        width={renderWidth}
-        height={renderHeight}
-        viewBox={`0 0 ${renderWidth} ${renderHeight}`}
-        role="img"
-        aria-label="Recursion call tree"
-        className="block"
-      >
-        {nodes.map((n) => {
-          if (!n.parentId) return null;
-          const parent = byId.get(n.parentId);
-          if (!parent) return null;
-          const shown = revealed.has(n.id);
-          const status = step.status[n.id];
-
-          return (
-            <line
-              key={`e-${n.id}`}
-              x1={sx(parent.x)}
-              y1={parent.y + NODE_H / 2}
-              x2={sx(n.x)}
-              y2={n.y - NODE_H / 2}
-              stroke={shown ? "var(--border-strong)" : "var(--border)"}
-              strokeWidth={status === "onStack" || status === "active" ? 2.2 : 1.3}
-              strokeDasharray={shown ? undefined : "2 3"}
-              opacity={shown ? 1 : 0.3}
-            />
-          );
-        })}
-
-        {nodes.map((n) => {
-          const shown = revealed.has(n.id);
-          const status = step.status[n.id];
-          const style = nodeStyle(status, shown);
-          const w = nodeWidth(n.label);
-          const value = step.values[n.id];
-          const hasValue = shown && value !== undefined;
-
-          return (
-            <g key={n.id} opacity={style.opacity} className="transition-opacity duration-200">
-              {/* The repeat ring sits outside the node rather than recolouring
-                  it, so a call can be both a repeat and, say, a base case
-                  without the two facts competing for the same pixels. */}
-              {shown && repeats.has(n.id) && (
-                <rect
-                  x={sx(n.x) - w / 2 - 3.5}
-                  y={n.y - NODE_H / 2 - 3.5}
-                  width={w + 7}
-                  height={NODE_H + 7}
-                  rx={10}
-                  fill="none"
-                  stroke="var(--signal-coral)"
-                  strokeWidth={1.4}
-                  strokeDasharray="3 2"
-                  opacity={0.8}
-                />
-              )}
-              <rect
-                x={sx(n.x) - w / 2}
-                y={n.y - NODE_H / 2}
-                width={w}
-                height={NODE_H}
-                rx={8}
-                fill={style.fill}
-                stroke={style.stroke}
-                strokeWidth={status === "active" ? 2.4 : 1.5}
-                strokeDasharray={style.dash}
-              />
-              {shown && (
-                <text
-                  x={sx(n.x)}
-                  y={hasValue ? n.y - 2 : n.y + 4}
-                  textAnchor="middle"
-                  className="text-[10.5px] font-bold"
-                  fill={style.text}
-                  style={{ pointerEvents: "none" }}
-                >
-                  {n.label}
-                </text>
-              )}
-              {hasValue && (
-                <text
-                  x={sx(n.x)}
-                  y={n.y + 11}
-                  textAnchor="middle"
-                  className="text-[10px] font-semibold tabular-nums"
-                  fill={style.text}
-                  style={{ pointerEvents: "none" }}
-                >
-                  {`= ${value}`}
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
-    </TreeScroller>
-  );
-}
-
-/** Keeps the active call in view without dragging the tree around every frame. */
-function TreeScroller({
-  scrollRef,
-  activeX,
-  maxHeight,
-  children,
-}: {
-  scrollRef: React.RefObject<HTMLDivElement | null>;
-  activeX: number | null;
-  maxHeight: number;
-  children: React.ReactNode;
-}) {
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || activeX === null) return;
-
-    const target = activeX - el.clientWidth / 2;
-    const max = el.scrollWidth - el.clientWidth;
-    const next = Math.max(0, Math.min(target, max));
-
-    // Only nudge when the call is actually off-screen. Re-centring on every
-    // frame makes the tree look like it is drifting on its own.
-    const visibleLeft = el.scrollLeft + 40;
-    const visibleRight = el.scrollLeft + el.clientWidth - 40;
-    if (activeX < visibleLeft || activeX > visibleRight) {
-      el.scrollTo({ left: next, behavior: "smooth" });
-    }
-  }, [activeX, scrollRef]);
+    return {
+      id: n.id,
+      parentId: n.parentId,
+      x: n.x,
+      y: n.y,
+      width: nodeWidth(n.label),
+      label: shown ? n.label : "",
+      sublabel: hasValue ? `= ${value}` : undefined,
+      fill: style.fill,
+      stroke: style.stroke,
+      text: style.text,
+      dash: style.dash,
+      strokeWidth: status === "active" ? 2.4 : 1.5,
+      opacity: style.opacity,
+      ring: shown && repeats.has(n.id),
+      edgeStroke: shown ? "var(--border-strong)" : "var(--border)",
+      edgeWidth: status === "onStack" || status === "active" ? 2.2 : 1.3,
+      edgeDash: shown ? undefined : "2 3",
+      edgeOpacity: shown ? 1 : 0.3,
+    };
+  });
 
   return (
-    <div
-      ref={scrollRef}
-      style={{ maxHeight }}
-      className="overflow-auto rounded-lg border border-border bg-surface-2/30 p-2"
-    >
-      {children}
-    </div>
+    <RfTree
+      nodes={treeNodes}
+      layoutWidth={CALL_TREE_WIDTH}
+      renderWidth={renderWidth}
+      renderHeight={renderHeight}
+      nodeHeight={NODE_H}
+      activeId={step.activeId}
+      maxHeight={maxHeight}
+      ariaLabel="Recursion call tree"
+    />
   );
 }
 

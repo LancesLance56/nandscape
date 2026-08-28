@@ -20,7 +20,28 @@
   --surface: #f6f8f3;
   --surface-2: #edf2e8;
   --surface-3: #e2e9db;
+  --surface-4: #d8e1cd;
   --surface-card: #ffffff;
+
+  /* A sheet of paper laid *on* a surface. Paper is white in both themes - a
+     sheet that went dark would stop being paper - so this little family is
+     deliberately *not* redefined under .dark, and carries its own ink, rule
+     and accent rather than borrowing the ones that flip. Anything drawn on a
+     sheet must use these; anything drawn on a surface must not. */
+  --paper: #ffffff;
+  --paper-ink: #151b18;
+  --paper-ink-soft: #4e594f;
+  --paper-muted: #8b9187;
+  --paper-line: #dce3d6;
+  --paper-accent: #9c4720;
+
+  /* Tints for the tutorials drawer. Four hues rather than a grey ramp, kept
+     at very low chroma so a stack of them still reads as quiet paper stock:
+     sage, manila, clay, mist. */
+  --folder-1: #e7eede;
+  --folder-2: #f4e8d2;
+  --folder-3: #f3e1d7;
+  --folder-4: #e3eaef;
 
   --ink: #151b18;
   --ink-soft: #4e594f;
@@ -67,6 +88,12 @@
   --surface-card: #1c1c1c;
   --surface-2: #242424;
   --surface-3: #2e2e2e;
+  --surface-4: #383838;
+
+  --folder-1: #262c22;
+  --folder-2: #2f2b20;
+  --folder-3: #302823;
+  --folder-4: #232930;
 
   --border: #2a2a2a;
   --border-strong: #3a3a3a;
@@ -158,7 +185,14 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
   --color-surface-card: var(--surface-card);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-paper-ink-soft: var(--paper-ink-soft);
+  --color-paper-muted: var(--paper-muted);
+  --color-paper-line: var(--paper-line);
+  --color-paper-accent: var(--paper-accent);
 
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);

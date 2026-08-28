@@ -127,20 +127,17 @@ export function GraphTraversalWidget({
       panel={(step) => (
         <>
           <PanelBox title={isBfs ? "Queue (first in, first out)" : "Stack (last in, first out)"}>
-            <ChipRow items={step.frontier} emptyLabel="empty" />
-            <p className="mt-2 text-[11px] leading-relaxed text-slate">
-              {isBfs
-                ? "We always take from the left. New nodes join on the right."
-                : "We always take from the right, the most recently added node."}
-            </p>
+            <ChipRow items={step.frontier} emptyLabel="empty" reserveRows={2} />
           </PanelBox>
 
-          <PanelBox title="Visited, in order">
-            {step.visited.length > 0 ? (
-              <p className="text-xs font-semibold text-ink">{step.visited.join(" → ")}</p>
-            ) : (
-              <span className="text-xs italic text-slate">nothing yet</span>
-            )}
+          <PanelBox title="Visited, in order" bodyClassName="h-9 overflow-y-auto">
+            <p className="text-xs font-semibold text-ink">
+              {step.visited.length > 0 ? (
+                step.visited.join(" → ")
+              ) : (
+                <span className="italic text-slate">nothing yet</span>
+              )}
+            </p>
           </PanelBox>
         </>
       )}

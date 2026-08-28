@@ -4,7 +4,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { arraySteps, gridSteps, type ArrayProblem, type GridProblem } from "@/lib/dp/tables";
 import type { TableRun } from "@/lib/dp/types";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { PanelBox, SegmentedRow, WidgetFrame, type SegmentedGroup } from "../shared/widget-ui";
+import { PanelBox, SegmentedRow, StatusSlot, WidgetFrame, type SegmentedGroup } from "../shared/widget-ui";
 import { DpTableCanvas, DpTableLegend } from "./dp-table-canvas";
 
 /**
@@ -80,7 +80,7 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
           {/* The arithmetic for one cell, spelled out. The table shows what the
               answer is and the arrows show where it came from; this is the only
               place that says how the two are connected. */}
-          <PanelBox title="This cell">
+          <PanelBox title="This cell" bodyClassName="min-h-[1.5rem]">
             {step.formula ? (
               <span className="font-mono text-xs font-semibold text-copper-dark">{step.formula}</span>
             ) : (
@@ -88,7 +88,7 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
             )}
           </PanelBox>
 
-          {hint && <p className="text-[11px] leading-relaxed text-slate">{hint}</p>}
+          <p className="min-h-[1.25rem] text-[11px] leading-relaxed text-slate">{hint}</p>
         </div>
       </div>
 
@@ -105,9 +105,11 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
           onReset={player.reset}
           onScrub={player.setIndex}
         />
-        {run.truncated && (
-          <p className="text-[11px] text-copper-dark">This run hit the frame limit and stopped early.</p>
-        )}
+        <StatusSlot lines={1}>
+          {run.truncated && (
+            <p className="text-[11px] text-copper-dark">This run hit the frame limit and stopped early.</p>
+          )}
+        </StatusSlot>
       </div>
     </WidgetFrame>
   );

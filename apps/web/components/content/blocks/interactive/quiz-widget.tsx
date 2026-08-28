@@ -100,6 +100,7 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
       subtitle={finished ? `score: ${score} / ${questions.length}` : `question ${step + 1} of ${questions.length}`}
       className={data.className}
     >
+      <div className="min-h-[18rem]">
       {finished ? (
         <div className="flex flex-col items-center gap-4 py-4 text-center">
           <span className=" text-3xl font-bold text-ink">
@@ -150,18 +151,23 @@ export function QuizWidget({ data }: { data: Record<string, unknown> }) {
             })}
           </div>
 
-          {answeredCurrent && (
-            <div className="border-t border-dashed border-border pt-4">
-              {current.explanation && (
-                <p className="mb-3 text-sm leading-relaxed text-ink-soft">{current.explanation}</p>
-              )}
-              <WidgetButton tone="primary" size="md" onClick={goNext}>
-                {isLast ? "See results" : "Next question"}
-              </WidgetButton>
-            </div>
-          )}
+          {/* Reserved so answering (which reveals the explanation and the
+              Next button) never changes the widget's height. */}
+          <div className="min-h-[7rem]">
+            {answeredCurrent && (
+              <div className="border-t border-dashed border-border pt-4">
+                {current.explanation && (
+                  <p className="mb-3 text-sm leading-relaxed text-ink-soft">{current.explanation}</p>
+                )}
+                <WidgetButton tone="primary" size="md" onClick={goNext}>
+                  {isLast ? "See results" : "Next question"}
+                </WidgetButton>
+              </div>
+            )}
+          </div>
         </div>
       )}
+      </div>
     </WidgetFrame>
   );
 }

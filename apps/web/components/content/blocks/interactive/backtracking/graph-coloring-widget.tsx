@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { COLOR_NAMES, mColoringSteps, type ColoringPayload } from "@/lib/backtracking/puzzles";
 import type { GraphSpec } from "@/lib/graph/types";
-import { PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
+import { PanelBox, SegmentedRow, StatReadout, StatusSlot, type SegmentedGroup } from "../shared/widget-ui";
 import { BacktrackingRunner } from "./backtracking-runner";
 
 type Example = { id: string; label: string; graph: GraphSpec; note: string };
@@ -324,7 +324,7 @@ function ManualColoring({
             />
           </PanelBox>
 
-          <PanelBox title="Edges joining two of the same colour">
+          <PanelBox title="Edges joining two of the same colour" bodyClassName="h-16 overflow-y-auto">
             {brokenEdges.length === 0 ? (
               <span className="text-xs italic text-slate">none</span>
             ) : (
@@ -338,11 +338,13 @@ function ManualColoring({
             )}
           </PanelBox>
 
-          {solved && (
-            <p className="rounded-lg border border-signal-green bg-signal-green/10 px-3 py-2 text-sm font-semibold text-signal-green">
-              Every node coloured, no edge broken, {m} colours used.
-            </p>
-          )}
+          <StatusSlot lines={2}>
+            {solved && (
+              <p className="rounded-lg border border-signal-green bg-signal-green/10 px-3 py-2 text-sm font-semibold text-signal-green">
+                Every node coloured, no edge broken, {m} colours used.
+              </p>
+            )}
+          </StatusSlot>
 
           <button
             type="button"

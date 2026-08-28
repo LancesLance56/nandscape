@@ -114,11 +114,11 @@ export function TopologicalSortWidget({
       panel={(step) => (
         <>
           <PanelBox title="Ready queue">
-            <ChipRow items={step.frontier} emptyLabel="empty" />
+            <ChipRow items={step.frontier} emptyLabel="empty" reserveRows={2} />
           </PanelBox>
 
           <PanelBox title="Output order so far">
-            <ChipRow items={step.visited} emptyLabel="nothing emitted yet" tone="muted" />
+            <ChipRow items={step.visited} emptyLabel="nothing emitted yet" tone="muted" reserveRows={2} />
           </PanelBox>
 
           <PanelBox title="In-degree (things still blocking it)">

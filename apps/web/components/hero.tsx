@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { HeroBackdrop } from "@/components/marketing/hero-backdrop";
-import { HeroKMapCard, HeroStage, HeroTreeCard } from "@/components/marketing/hero-stage";
+import { HeroGraphCard, HeroKMapCard, HeroStage } from "@/components/marketing/hero-stage";
 
 /**
  * The landing hero.
@@ -31,7 +31,7 @@ export function Hero() {
 
         <div className="pointer-events-none absolute right-0 top-16 hidden xl:block">
           <div className="pointer-events-auto origin-right rotate-1 scale-90">
-            <HeroTreeCard />
+            <HeroGraphCard />
           </div>
         </div>
 
@@ -49,8 +49,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
-            Every lesson is something you can drive. Wire the gate, step the algorithm, watch it break, and find out
-            why it works instead of being told.
+            Each lesson has interactive puzzles, quizzes, and live simulation to make the learning process as seamless as possible.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">

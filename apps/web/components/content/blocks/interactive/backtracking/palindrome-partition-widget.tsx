@@ -63,7 +63,7 @@ export function PalindromePartitionWidget({ data }: { data: Record<string, unkno
       panel={(step) => {
         const p = step.payload as PalindromePayload | undefined;
         return (
-          <PanelBox title="Pieces committed so far">
+          <PanelBox title="Pieces committed so far" bodyClassName="h-14 overflow-y-auto">
             {p && p.parts.length > 0 ? (
               <div className="flex flex-wrap items-center gap-1">
                 {p.parts.map((part, i) => (

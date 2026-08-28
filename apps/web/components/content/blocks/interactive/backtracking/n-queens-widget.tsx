@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { allQueensSolutions, nQueensSteps, type QueensPayload } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox, SegmentedRow, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
+import { PanelBox, SegmentedRow, StatReadout, StatusSlot, type SegmentedGroup } from "../shared/widget-ui";
 import { BacktrackingRunner } from "./backtracking-runner";
 
 const SIZES = [4, 5, 6, 7, 8];
@@ -282,13 +282,13 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
             />
           </PanelBox>
 
-          <PanelBox title="What is attacking what">
+          <PanelBox title="What is attacking what" bodyClassName="h-16 overflow-y-auto">
             {conflicts.length === 0 ? (
               <span className="text-xs italic text-slate">
                 {placed.length === 0 ? "nothing placed yet" : "no conflicts so far"}
               </span>
             ) : (
-              <div className="flex max-h-32 flex-col gap-1 overflow-y-auto">
+              <div className="flex flex-col gap-1">
                 {conflicts.map((c, i) => (
                   <span key={i} className="text-xs text-signal-coral">
                     {c.a} and {c.b}: {c.why}
@@ -298,11 +298,13 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
             )}
           </PanelBox>
 
-          {solved && (
-            <p className="rounded-lg border border-signal-green bg-signal-green/10 px-3 py-2 text-sm font-semibold text-signal-green">
-              That is a valid solution. There are {totalSolutions} in total on this board.
-            </p>
-          )}
+          <StatusSlot lines={2}>
+            {solved && (
+              <p className="rounded-lg border border-signal-green bg-signal-green/10 px-3 py-2 text-sm font-semibold text-signal-green">
+                That is a valid solution. There are {totalSolutions} in total on this board.
+              </p>
+            )}
+          </StatusSlot>
 
           <button
             type="button"
