@@ -14,14 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model FeaturedCircuit
- * * Admin-curated candidates for the homepage's live-demo embed (see
- *  *  apps/web/components/marketing/live-demo.tsx) - marketing can add several
- *  *  projects here over time and switch which one is live without touching
- *  *  code. At most one row should have `active = true` at a time; that's
- *  *  enforced at the application layer (see featured-circuits.ts's
- *  *  setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
- *  *  `active` from an `id = $1` comparison), not a DB constraint, matching how
- *  *  simple admin toggles are handled elsewhere in this codebase.
+ * 
  */
 export type FeaturedCircuitModel = runtime.Types.Result.DefaultSelection<Prisma.$FeaturedCircuitPayload>
 
@@ -34,6 +27,7 @@ export type AggregateFeaturedCircuit = {
 export type FeaturedCircuitMinAggregateOutputType = {
   id: string | null
   projectId: string | null
+  placement: $Enums.FeaturedPlacement | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -42,6 +36,7 @@ export type FeaturedCircuitMinAggregateOutputType = {
 export type FeaturedCircuitMaxAggregateOutputType = {
   id: string | null
   projectId: string | null
+  placement: $Enums.FeaturedPlacement | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,6 +45,7 @@ export type FeaturedCircuitMaxAggregateOutputType = {
 export type FeaturedCircuitCountAggregateOutputType = {
   id: number
   projectId: number
+  placement: number
   active: number
   createdAt: number
   updatedAt: number
@@ -60,6 +56,7 @@ export type FeaturedCircuitCountAggregateOutputType = {
 export type FeaturedCircuitMinAggregateInputType = {
   id?: true
   projectId?: true
+  placement?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -68,6 +65,7 @@ export type FeaturedCircuitMinAggregateInputType = {
 export type FeaturedCircuitMaxAggregateInputType = {
   id?: true
   projectId?: true
+  placement?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +74,7 @@ export type FeaturedCircuitMaxAggregateInputType = {
 export type FeaturedCircuitCountAggregateInputType = {
   id?: true
   projectId?: true
+  placement?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -157,6 +156,7 @@ export type FeaturedCircuitGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type FeaturedCircuitGroupByOutputType = {
   id: string
   projectId: string
+  placement: $Enums.FeaturedPlacement
   active: boolean
   createdAt: Date
   updatedAt: Date
@@ -186,6 +186,7 @@ export type FeaturedCircuitWhereInput = {
   NOT?: Prisma.FeaturedCircuitWhereInput | Prisma.FeaturedCircuitWhereInput[]
   id?: Prisma.StringFilter<"FeaturedCircuit"> | string
   projectId?: Prisma.StringFilter<"FeaturedCircuit"> | string
+  placement?: Prisma.EnumFeaturedPlacementFilter<"FeaturedCircuit"> | $Enums.FeaturedPlacement
   active?: Prisma.BoolFilter<"FeaturedCircuit"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FeaturedCircuit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FeaturedCircuit"> | Date | string
@@ -195,6 +196,7 @@ export type FeaturedCircuitWhereInput = {
 export type FeaturedCircuitOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -207,6 +209,7 @@ export type FeaturedCircuitWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.FeaturedCircuitWhereInput[]
   NOT?: Prisma.FeaturedCircuitWhereInput | Prisma.FeaturedCircuitWhereInput[]
   projectId?: Prisma.StringFilter<"FeaturedCircuit"> | string
+  placement?: Prisma.EnumFeaturedPlacementFilter<"FeaturedCircuit"> | $Enums.FeaturedPlacement
   active?: Prisma.BoolFilter<"FeaturedCircuit"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FeaturedCircuit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FeaturedCircuit"> | Date | string
@@ -216,6 +219,7 @@ export type FeaturedCircuitWhereUniqueInput = Prisma.AtLeast<{
 export type FeaturedCircuitOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -230,6 +234,7 @@ export type FeaturedCircuitScalarWhereWithAggregatesInput = {
   NOT?: Prisma.FeaturedCircuitScalarWhereWithAggregatesInput | Prisma.FeaturedCircuitScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"FeaturedCircuit"> | string
   projectId?: Prisma.StringWithAggregatesFilter<"FeaturedCircuit"> | string
+  placement?: Prisma.EnumFeaturedPlacementWithAggregatesFilter<"FeaturedCircuit"> | $Enums.FeaturedPlacement
   active?: Prisma.BoolWithAggregatesFilter<"FeaturedCircuit"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FeaturedCircuit"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FeaturedCircuit"> | Date | string
@@ -237,6 +242,7 @@ export type FeaturedCircuitScalarWhereWithAggregatesInput = {
 
 export type FeaturedCircuitCreateInput = {
   id?: string
+  placement?: $Enums.FeaturedPlacement
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -246,6 +252,7 @@ export type FeaturedCircuitCreateInput = {
 export type FeaturedCircuitUncheckedCreateInput = {
   id?: string
   projectId: string
+  placement?: $Enums.FeaturedPlacement
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -253,6 +260,7 @@ export type FeaturedCircuitUncheckedCreateInput = {
 
 export type FeaturedCircuitUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -262,6 +270,7 @@ export type FeaturedCircuitUpdateInput = {
 export type FeaturedCircuitUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -270,6 +279,7 @@ export type FeaturedCircuitUncheckedUpdateInput = {
 export type FeaturedCircuitCreateManyInput = {
   id?: string
   projectId: string
+  placement?: $Enums.FeaturedPlacement
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -277,6 +287,7 @@ export type FeaturedCircuitCreateManyInput = {
 
 export type FeaturedCircuitUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -285,6 +296,7 @@ export type FeaturedCircuitUpdateManyMutationInput = {
 export type FeaturedCircuitUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -303,6 +315,7 @@ export type FeaturedCircuitOrderByRelationAggregateInput = {
 export type FeaturedCircuitCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -311,6 +324,7 @@ export type FeaturedCircuitCountOrderByAggregateInput = {
 export type FeaturedCircuitMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -319,6 +333,7 @@ export type FeaturedCircuitMaxOrderByAggregateInput = {
 export type FeaturedCircuitMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -366,8 +381,13 @@ export type FeaturedCircuitUncheckedUpdateManyWithoutProjectNestedInput = {
   deleteMany?: Prisma.FeaturedCircuitScalarWhereInput | Prisma.FeaturedCircuitScalarWhereInput[]
 }
 
+export type EnumFeaturedPlacementFieldUpdateOperationsInput = {
+  set?: $Enums.FeaturedPlacement
+}
+
 export type FeaturedCircuitCreateWithoutProjectInput = {
   id?: string
+  placement?: $Enums.FeaturedPlacement
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -375,6 +395,7 @@ export type FeaturedCircuitCreateWithoutProjectInput = {
 
 export type FeaturedCircuitUncheckedCreateWithoutProjectInput = {
   id?: string
+  placement?: $Enums.FeaturedPlacement
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -412,6 +433,7 @@ export type FeaturedCircuitScalarWhereInput = {
   NOT?: Prisma.FeaturedCircuitScalarWhereInput | Prisma.FeaturedCircuitScalarWhereInput[]
   id?: Prisma.StringFilter<"FeaturedCircuit"> | string
   projectId?: Prisma.StringFilter<"FeaturedCircuit"> | string
+  placement?: Prisma.EnumFeaturedPlacementFilter<"FeaturedCircuit"> | $Enums.FeaturedPlacement
   active?: Prisma.BoolFilter<"FeaturedCircuit"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FeaturedCircuit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FeaturedCircuit"> | Date | string
@@ -419,6 +441,7 @@ export type FeaturedCircuitScalarWhereInput = {
 
 export type FeaturedCircuitCreateManyProjectInput = {
   id?: string
+  placement?: $Enums.FeaturedPlacement
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -426,6 +449,7 @@ export type FeaturedCircuitCreateManyProjectInput = {
 
 export type FeaturedCircuitUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -433,6 +457,7 @@ export type FeaturedCircuitUpdateWithoutProjectInput = {
 
 export type FeaturedCircuitUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -440,6 +465,7 @@ export type FeaturedCircuitUncheckedUpdateWithoutProjectInput = {
 
 export type FeaturedCircuitUncheckedUpdateManyWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  placement?: Prisma.EnumFeaturedPlacementFieldUpdateOperationsInput | $Enums.FeaturedPlacement
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -450,6 +476,7 @@ export type FeaturedCircuitUncheckedUpdateManyWithoutProjectInput = {
 export type FeaturedCircuitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
+  placement?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -459,6 +486,7 @@ export type FeaturedCircuitSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type FeaturedCircuitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
+  placement?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -468,6 +496,7 @@ export type FeaturedCircuitSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 export type FeaturedCircuitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
+  placement?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -477,12 +506,13 @@ export type FeaturedCircuitSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type FeaturedCircuitSelectScalar = {
   id?: boolean
   projectId?: boolean
+  placement?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FeaturedCircuitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["featuredCircuit"]>
+export type FeaturedCircuitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "placement" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["featuredCircuit"]>
 export type FeaturedCircuitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
@@ -501,6 +531,7 @@ export type $FeaturedCircuitPayload<ExtArgs extends runtime.Types.Extensions.Int
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     projectId: string
+    placement: $Enums.FeaturedPlacement
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -930,6 +961,7 @@ export interface Prisma__FeaturedCircuitClient<T, Null = never, ExtArgs extends 
 export interface FeaturedCircuitFieldRefs {
   readonly id: Prisma.FieldRef<"FeaturedCircuit", 'String'>
   readonly projectId: Prisma.FieldRef<"FeaturedCircuit", 'String'>
+  readonly placement: Prisma.FieldRef<"FeaturedCircuit", 'FeaturedPlacement'>
   readonly active: Prisma.FieldRef<"FeaturedCircuit", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"FeaturedCircuit", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FeaturedCircuit", 'DateTime'>

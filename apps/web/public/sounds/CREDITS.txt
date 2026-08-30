@@ -1,0 +1,4 @@
+paper-shuffle.mp3
+  Source:  "Road map #1" by Joseph SARDIN — https://bigsoundbank.com/road-map-1-s2796.html
+  License: CC0 1.0 (public domain) — no attribution required, credited here anyway.
+  Used by: components/marketing/folder-stack.tsx (hover shuffle on the tutorials drawer).

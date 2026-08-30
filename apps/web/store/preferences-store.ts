@@ -6,8 +6,6 @@ export type EdgeRoutingStyle = "bezier" | "smoothstep" | "straight";
 export interface PreferencesState {
   snapToGrid: boolean;
   snapGridSize: number;
-  visualGridSize: number;
-  showGrid: boolean;
   edgeRouting: EdgeRoutingStyle;
   edgeMinLength: number;
   edgeCornerRadius: number;
@@ -26,8 +24,6 @@ export interface PreferencesState {
 
   setSnapToGrid: (value: boolean) => void;
   setSnapGridSize: (size: number) => void;
-  setVisualGridSize: (size: number) => void;
-  setShowGrid: (value: boolean) => void;
   setEdgeRouting: (style: EdgeRoutingStyle) => void;
   setEdgeMinLength: (length: number) => void;
   setEdgeCornerRadius: (radius: number) => void;
@@ -50,8 +46,6 @@ export const usePreferencesStore = create<PreferencesState>()(
     (set) => ({
       snapToGrid: true,
       snapGridSize: 10,
-      visualGridSize: 50,
-      showGrid: true,
       edgeRouting: "smoothstep",
       edgeMinLength: 8,
       edgeCornerRadius: 0,  
@@ -70,8 +64,6 @@ export const usePreferencesStore = create<PreferencesState>()(
 
       setSnapToGrid: (value) => set({snapToGrid: value}),
       setSnapGridSize: (size) => set({snapGridSize: Math.max(4, size)}),
-      setVisualGridSize: (size) => set({visualGridSize: Math.max(4, size)}),
-      setShowGrid: (value) => set({showGrid: value}),
       setEdgeRouting: (style) => set({edgeRouting: style}),
       setEdgeMinLength: (length) => set({edgeMinLength: Math.max(0, length)}),
       setEdgeCornerRadius: (radius) => set({edgeCornerRadius: Math.max(0, radius)}),

@@ -2,9 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
+import { AuthCard, AuthField, AuthPasswordField } from "@/components/auth/auth-card";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -48,88 +47,54 @@ export default function SignupPage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6 pb-24 pt-32">
-        <h1 className="mb-6 font-display text-2xl font-bold text-ink">Create an account</h1>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-ink-soft">Email</span>
-            <input
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface-card px-3 py-2 text-sm text-ink outline-none focus:border-copper"
-            />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-ink-soft">Username</span>
-            <input
-              type="text"
-              required
-              minLength={3}
-              maxLength={20}
-              pattern="[a-zA-Z0-9_]+"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface-card px-3 py-2 text-sm text-ink outline-none focus:border-copper"
-            />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-ink-soft">Password</span>
-            <input
-              type="password"
-              required
-              minLength={8}
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface-card px-3 py-2 text-sm text-ink outline-none focus:border-copper"
-            />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-ink-soft">Confirm password</span>
-            <input
-              type="password"
-              required
-              autoComplete="new-password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface-card px-3 py-2 text-sm text-ink outline-none focus:border-copper"
-            />
-          </label>
-
-          {error && <p className="text-sm text-signal-coral">{error}</p>}
-
-          <Button type="submit" variant="default" size="app-lg" disabled={submitting}>
-            {submitting ? "Creating account…" : "Create account"}
-          </Button>
-        </form>
-
-        <div className="my-5 flex items-center gap-3 text-xs text-slate">
-          <span className="h-px flex-1 bg-border" />
-          or
-          <span className="h-px flex-1 bg-border" />
-        </div>
-
-        <a
-          href="/api/auth/google"
-          className="rounded-xl border border-border-strong bg-transparent px-7 py-3.5 text-center text-base font-semibold text-ink transition-colors hover:border-ink-soft"
+      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 pb-24 pt-32">
+        <AuthCard
+          mode="signup"
+          title="Create your account"
+          error={error}
+          submitting={submitting}
+          submitLabel="Create account"
+          onSubmit={handleSubmit}
         >
-          Continue with Google
-        </a>
+          <AuthField
+            id="signup-email"
+            label="Email"
+            icon="mail"
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <p className="mt-4 text-sm text-ink-soft">
-          Already have an account?{" "}
-          <Link href="/login" className="font-medium text-copper hover:text-copper-dark">
-            Log in
-          </Link>
-        </p>
+          <AuthField
+            id="signup-username"
+            label="Username"
+            icon="user"
+            required
+            autoComplete="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <AuthPasswordField
+            id="signup-password"
+            label="Password"
+            required
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <AuthPasswordField
+            id="signup-confirm-password"
+            label="Confirm password"
+            required
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </AuthCard>
       </main>
     </>
   );

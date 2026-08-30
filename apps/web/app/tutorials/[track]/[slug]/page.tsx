@@ -7,6 +7,10 @@ import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { readingTimeLabel } from "@/lib/content/reading-time";
 import { TutorialPager } from "@/components/tutorials/tutorial-pager";
+import { Claps } from "@/components/engagement/claps";
+import { TutorialComplete } from "@/components/engagement/tutorial-complete";
+import { getCurrentUser } from "@/lib/auth/current-user";
+import { getCompletedSlugs } from "@/lib/engagement/progress";
 import { getPublishedTutorialPageBySlug, listTutorialPages } from "@/lib/tutorials/tutorials";
 import {
   getAdjacentTutorialPages,
@@ -73,6 +77,14 @@ export default async function TutorialPage({ params }: PageProps) {
   if (realTrack && realTrack !== track) permanentRedirect(`/tutorials/${realTrack}/${slug}`);
 
   const trackRecord = realTrack ? await getTutorialTrackBySlug(realTrack) : null;
+
+  // Progress is per-reader, so it cannot come from the cached page shell.
+  // Both calls degrade to "signed out, nothing completed" rather than failing
+  // the lesson around them.
+  const user = await getCurrentUser().catch(() => null);
+  const completed = user
+    ? (await getCompletedSlugs(user.id, [page.slug]).catch(() => new Set<string>())).has(page.slug)
+    : false;
   const { prev, next } = await getAdjacentTutorialPages(realTrack ?? track, slug);
   const path = `/tutorials/${track}/${page.slug}`;
   const updated = formatDate(page.updatedAt);
@@ -126,6 +138,20 @@ export default async function TutorialPage({ params }: PageProps) {
         meta={<ArticleMeta items={[updated && `Updated ${updated}`, readingTimeLabel(page.body)]} />}
       >
         <BlockRenderer blocks={page.body} />
+
+        {/* The two things a reader can do with a finished lesson: say it was
+            useful, and record that they did it. Claps work signed out; the
+            completion toggle explains itself when they are not. */}
+        <div className="not-prose mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
+          <TutorialComplete
+            pageSlug={page.slug}
+            trackSlug={trackRecord?.slug ?? null}
+            initialCompleted={completed}
+            signedIn={Boolean(user)}
+          />
+          <Claps kind="TUTORIAL" slug={page.slug} />
+        </div>
+
         <TutorialPager prev={prev} next={next} />
       </ArticleShell>
     </>

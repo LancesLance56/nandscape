@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { Slider } from "@/components/ui/slider";
 
 /**
  * Renamed/generalized from `boolean-algebra/boolean-slider-widget.tsx`.
@@ -54,13 +55,13 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
     <div className={cn("rounded-xl border border-border bg-surface-card p-5 ", data.className)}>
       <div className="mb-3 text-xs font-semibold text-slate">{prompt}</div>
       <div className="mb-5 flex items-center gap-4">
-        <input
-          type="range"
+        <Slider
           min={0}
           max={100}
           value={pct}
-          onChange={(e) => setPct(Number(e.target.value))}
-          className="flex-1 accent-copper"
+          onChange={setPct}
+          aria-label={prompt}
+          className="flex-1"
         />
         <span className="w-14 text-right text-sm font-semibold text-copper">{pct}%</span>
       </div>

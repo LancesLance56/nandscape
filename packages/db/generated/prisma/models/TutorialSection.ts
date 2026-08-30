@@ -39,6 +39,7 @@ export type TutorialSectionMinAggregateOutputType = {
   slug: string | null
   title: string | null
   position: number | null
+  trackId: string | null
 }
 
 export type TutorialSectionMaxAggregateOutputType = {
@@ -46,6 +47,7 @@ export type TutorialSectionMaxAggregateOutputType = {
   slug: string | null
   title: string | null
   position: number | null
+  trackId: string | null
 }
 
 export type TutorialSectionCountAggregateOutputType = {
@@ -53,6 +55,7 @@ export type TutorialSectionCountAggregateOutputType = {
   slug: number
   title: number
   position: number
+  trackId: number
   _all: number
 }
 
@@ -70,6 +73,7 @@ export type TutorialSectionMinAggregateInputType = {
   slug?: true
   title?: true
   position?: true
+  trackId?: true
 }
 
 export type TutorialSectionMaxAggregateInputType = {
@@ -77,6 +81,7 @@ export type TutorialSectionMaxAggregateInputType = {
   slug?: true
   title?: true
   position?: true
+  trackId?: true
 }
 
 export type TutorialSectionCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type TutorialSectionCountAggregateInputType = {
   slug?: true
   title?: true
   position?: true
+  trackId?: true
   _all?: true
 }
 
@@ -178,6 +184,7 @@ export type TutorialSectionGroupByOutputType = {
   slug: string
   title: string
   position: number
+  trackId: string | null
   _count: TutorialSectionCountAggregateOutputType | null
   _avg: TutorialSectionAvgAggregateOutputType | null
   _sum: TutorialSectionSumAggregateOutputType | null
@@ -208,6 +215,8 @@ export type TutorialSectionWhereInput = {
   slug?: Prisma.StringFilter<"TutorialSection"> | string
   title?: Prisma.StringFilter<"TutorialSection"> | string
   position?: Prisma.IntFilter<"TutorialSection"> | number
+  trackId?: Prisma.UuidNullableFilter<"TutorialSection"> | string | null
+  track?: Prisma.XOR<Prisma.TutorialTrackNullableScalarRelationFilter, Prisma.TutorialTrackWhereInput> | null
   pages?: Prisma.TutorialPageListRelationFilter
 }
 
@@ -216,6 +225,8 @@ export type TutorialSectionOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  trackId?: Prisma.SortOrderInput | Prisma.SortOrder
+  track?: Prisma.TutorialTrackOrderByWithRelationInput
   pages?: Prisma.TutorialPageOrderByRelationAggregateInput
 }
 
@@ -227,6 +238,8 @@ export type TutorialSectionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TutorialSectionWhereInput | Prisma.TutorialSectionWhereInput[]
   title?: Prisma.StringFilter<"TutorialSection"> | string
   position?: Prisma.IntFilter<"TutorialSection"> | number
+  trackId?: Prisma.UuidNullableFilter<"TutorialSection"> | string | null
+  track?: Prisma.XOR<Prisma.TutorialTrackNullableScalarRelationFilter, Prisma.TutorialTrackWhereInput> | null
   pages?: Prisma.TutorialPageListRelationFilter
 }, "id" | "slug">
 
@@ -235,6 +248,7 @@ export type TutorialSectionOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  trackId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TutorialSectionCountOrderByAggregateInput
   _avg?: Prisma.TutorialSectionAvgOrderByAggregateInput
   _max?: Prisma.TutorialSectionMaxOrderByAggregateInput
@@ -250,6 +264,7 @@ export type TutorialSectionScalarWhereWithAggregatesInput = {
   slug?: Prisma.StringWithAggregatesFilter<"TutorialSection"> | string
   title?: Prisma.StringWithAggregatesFilter<"TutorialSection"> | string
   position?: Prisma.IntWithAggregatesFilter<"TutorialSection"> | number
+  trackId?: Prisma.UuidNullableWithAggregatesFilter<"TutorialSection"> | string | null
 }
 
 export type TutorialSectionCreateInput = {
@@ -257,6 +272,7 @@ export type TutorialSectionCreateInput = {
   slug: string
   title: string
   position?: number
+  track?: Prisma.TutorialTrackCreateNestedOneWithoutSectionsInput
   pages?: Prisma.TutorialPageCreateNestedManyWithoutSectionInput
 }
 
@@ -265,6 +281,7 @@ export type TutorialSectionUncheckedCreateInput = {
   slug: string
   title: string
   position?: number
+  trackId?: string | null
   pages?: Prisma.TutorialPageUncheckedCreateNestedManyWithoutSectionInput
 }
 
@@ -273,6 +290,7 @@ export type TutorialSectionUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  track?: Prisma.TutorialTrackUpdateOneWithoutSectionsNestedInput
   pages?: Prisma.TutorialPageUpdateManyWithoutSectionNestedInput
 }
 
@@ -281,6 +299,7 @@ export type TutorialSectionUncheckedUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  trackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pages?: Prisma.TutorialPageUncheckedUpdateManyWithoutSectionNestedInput
 }
 
@@ -289,6 +308,7 @@ export type TutorialSectionCreateManyInput = {
   slug: string
   title: string
   position?: number
+  trackId?: string | null
 }
 
 export type TutorialSectionUpdateManyMutationInput = {
@@ -303,6 +323,17 @@ export type TutorialSectionUncheckedUpdateManyInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  trackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type TutorialSectionListRelationFilter = {
+  every?: Prisma.TutorialSectionWhereInput
+  some?: Prisma.TutorialSectionWhereInput
+  none?: Prisma.TutorialSectionWhereInput
+}
+
+export type TutorialSectionOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type TutorialSectionCountOrderByAggregateInput = {
@@ -310,6 +341,7 @@ export type TutorialSectionCountOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  trackId?: Prisma.SortOrder
 }
 
 export type TutorialSectionAvgOrderByAggregateInput = {
@@ -321,6 +353,7 @@ export type TutorialSectionMaxOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  trackId?: Prisma.SortOrder
 }
 
 export type TutorialSectionMinOrderByAggregateInput = {
@@ -328,6 +361,7 @@ export type TutorialSectionMinOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  trackId?: Prisma.SortOrder
 }
 
 export type TutorialSectionSumOrderByAggregateInput = {
@@ -339,12 +373,46 @@ export type TutorialSectionNullableScalarRelationFilter = {
   isNot?: Prisma.TutorialSectionWhereInput | null
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type TutorialSectionCreateNestedManyWithoutTrackInput = {
+  create?: Prisma.XOR<Prisma.TutorialSectionCreateWithoutTrackInput, Prisma.TutorialSectionUncheckedCreateWithoutTrackInput> | Prisma.TutorialSectionCreateWithoutTrackInput[] | Prisma.TutorialSectionUncheckedCreateWithoutTrackInput[]
+  connectOrCreate?: Prisma.TutorialSectionCreateOrConnectWithoutTrackInput | Prisma.TutorialSectionCreateOrConnectWithoutTrackInput[]
+  createMany?: Prisma.TutorialSectionCreateManyTrackInputEnvelope
+  connect?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+}
+
+export type TutorialSectionUncheckedCreateNestedManyWithoutTrackInput = {
+  create?: Prisma.XOR<Prisma.TutorialSectionCreateWithoutTrackInput, Prisma.TutorialSectionUncheckedCreateWithoutTrackInput> | Prisma.TutorialSectionCreateWithoutTrackInput[] | Prisma.TutorialSectionUncheckedCreateWithoutTrackInput[]
+  connectOrCreate?: Prisma.TutorialSectionCreateOrConnectWithoutTrackInput | Prisma.TutorialSectionCreateOrConnectWithoutTrackInput[]
+  createMany?: Prisma.TutorialSectionCreateManyTrackInputEnvelope
+  connect?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+}
+
+export type TutorialSectionUpdateManyWithoutTrackNestedInput = {
+  create?: Prisma.XOR<Prisma.TutorialSectionCreateWithoutTrackInput, Prisma.TutorialSectionUncheckedCreateWithoutTrackInput> | Prisma.TutorialSectionCreateWithoutTrackInput[] | Prisma.TutorialSectionUncheckedCreateWithoutTrackInput[]
+  connectOrCreate?: Prisma.TutorialSectionCreateOrConnectWithoutTrackInput | Prisma.TutorialSectionCreateOrConnectWithoutTrackInput[]
+  upsert?: Prisma.TutorialSectionUpsertWithWhereUniqueWithoutTrackInput | Prisma.TutorialSectionUpsertWithWhereUniqueWithoutTrackInput[]
+  createMany?: Prisma.TutorialSectionCreateManyTrackInputEnvelope
+  set?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  disconnect?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  delete?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  connect?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  update?: Prisma.TutorialSectionUpdateWithWhereUniqueWithoutTrackInput | Prisma.TutorialSectionUpdateWithWhereUniqueWithoutTrackInput[]
+  updateMany?: Prisma.TutorialSectionUpdateManyWithWhereWithoutTrackInput | Prisma.TutorialSectionUpdateManyWithWhereWithoutTrackInput[]
+  deleteMany?: Prisma.TutorialSectionScalarWhereInput | Prisma.TutorialSectionScalarWhereInput[]
+}
+
+export type TutorialSectionUncheckedUpdateManyWithoutTrackNestedInput = {
+  create?: Prisma.XOR<Prisma.TutorialSectionCreateWithoutTrackInput, Prisma.TutorialSectionUncheckedCreateWithoutTrackInput> | Prisma.TutorialSectionCreateWithoutTrackInput[] | Prisma.TutorialSectionUncheckedCreateWithoutTrackInput[]
+  connectOrCreate?: Prisma.TutorialSectionCreateOrConnectWithoutTrackInput | Prisma.TutorialSectionCreateOrConnectWithoutTrackInput[]
+  upsert?: Prisma.TutorialSectionUpsertWithWhereUniqueWithoutTrackInput | Prisma.TutorialSectionUpsertWithWhereUniqueWithoutTrackInput[]
+  createMany?: Prisma.TutorialSectionCreateManyTrackInputEnvelope
+  set?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  disconnect?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  delete?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  connect?: Prisma.TutorialSectionWhereUniqueInput | Prisma.TutorialSectionWhereUniqueInput[]
+  update?: Prisma.TutorialSectionUpdateWithWhereUniqueWithoutTrackInput | Prisma.TutorialSectionUpdateWithWhereUniqueWithoutTrackInput[]
+  updateMany?: Prisma.TutorialSectionUpdateManyWithWhereWithoutTrackInput | Prisma.TutorialSectionUpdateManyWithWhereWithoutTrackInput[]
+  deleteMany?: Prisma.TutorialSectionScalarWhereInput | Prisma.TutorialSectionScalarWhereInput[]
 }
 
 export type TutorialSectionCreateNestedOneWithoutPagesInput = {
@@ -363,11 +431,65 @@ export type TutorialSectionUpdateOneWithoutPagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TutorialSectionUpdateToOneWithWhereWithoutPagesInput, Prisma.TutorialSectionUpdateWithoutPagesInput>, Prisma.TutorialSectionUncheckedUpdateWithoutPagesInput>
 }
 
+export type TutorialSectionCreateWithoutTrackInput = {
+  id?: string
+  slug: string
+  title: string
+  position?: number
+  pages?: Prisma.TutorialPageCreateNestedManyWithoutSectionInput
+}
+
+export type TutorialSectionUncheckedCreateWithoutTrackInput = {
+  id?: string
+  slug: string
+  title: string
+  position?: number
+  pages?: Prisma.TutorialPageUncheckedCreateNestedManyWithoutSectionInput
+}
+
+export type TutorialSectionCreateOrConnectWithoutTrackInput = {
+  where: Prisma.TutorialSectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.TutorialSectionCreateWithoutTrackInput, Prisma.TutorialSectionUncheckedCreateWithoutTrackInput>
+}
+
+export type TutorialSectionCreateManyTrackInputEnvelope = {
+  data: Prisma.TutorialSectionCreateManyTrackInput | Prisma.TutorialSectionCreateManyTrackInput[]
+  skipDuplicates?: boolean
+}
+
+export type TutorialSectionUpsertWithWhereUniqueWithoutTrackInput = {
+  where: Prisma.TutorialSectionWhereUniqueInput
+  update: Prisma.XOR<Prisma.TutorialSectionUpdateWithoutTrackInput, Prisma.TutorialSectionUncheckedUpdateWithoutTrackInput>
+  create: Prisma.XOR<Prisma.TutorialSectionCreateWithoutTrackInput, Prisma.TutorialSectionUncheckedCreateWithoutTrackInput>
+}
+
+export type TutorialSectionUpdateWithWhereUniqueWithoutTrackInput = {
+  where: Prisma.TutorialSectionWhereUniqueInput
+  data: Prisma.XOR<Prisma.TutorialSectionUpdateWithoutTrackInput, Prisma.TutorialSectionUncheckedUpdateWithoutTrackInput>
+}
+
+export type TutorialSectionUpdateManyWithWhereWithoutTrackInput = {
+  where: Prisma.TutorialSectionScalarWhereInput
+  data: Prisma.XOR<Prisma.TutorialSectionUpdateManyMutationInput, Prisma.TutorialSectionUncheckedUpdateManyWithoutTrackInput>
+}
+
+export type TutorialSectionScalarWhereInput = {
+  AND?: Prisma.TutorialSectionScalarWhereInput | Prisma.TutorialSectionScalarWhereInput[]
+  OR?: Prisma.TutorialSectionScalarWhereInput[]
+  NOT?: Prisma.TutorialSectionScalarWhereInput | Prisma.TutorialSectionScalarWhereInput[]
+  id?: Prisma.UuidFilter<"TutorialSection"> | string
+  slug?: Prisma.StringFilter<"TutorialSection"> | string
+  title?: Prisma.StringFilter<"TutorialSection"> | string
+  position?: Prisma.IntFilter<"TutorialSection"> | number
+  trackId?: Prisma.UuidNullableFilter<"TutorialSection"> | string | null
+}
+
 export type TutorialSectionCreateWithoutPagesInput = {
   id?: string
   slug: string
   title: string
   position?: number
+  track?: Prisma.TutorialTrackCreateNestedOneWithoutSectionsInput
 }
 
 export type TutorialSectionUncheckedCreateWithoutPagesInput = {
@@ -375,6 +497,7 @@ export type TutorialSectionUncheckedCreateWithoutPagesInput = {
   slug: string
   title: string
   position?: number
+  trackId?: string | null
 }
 
 export type TutorialSectionCreateOrConnectWithoutPagesInput = {
@@ -398,9 +521,41 @@ export type TutorialSectionUpdateWithoutPagesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  track?: Prisma.TutorialTrackUpdateOneWithoutSectionsNestedInput
 }
 
 export type TutorialSectionUncheckedUpdateWithoutPagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  trackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type TutorialSectionCreateManyTrackInput = {
+  id?: string
+  slug: string
+  title: string
+  position?: number
+}
+
+export type TutorialSectionUpdateWithoutTrackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  pages?: Prisma.TutorialPageUpdateManyWithoutSectionNestedInput
+}
+
+export type TutorialSectionUncheckedUpdateWithoutTrackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  pages?: Prisma.TutorialPageUncheckedUpdateManyWithoutSectionNestedInput
+}
+
+export type TutorialSectionUncheckedUpdateManyWithoutTrackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -443,6 +598,8 @@ export type TutorialSectionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   slug?: boolean
   title?: boolean
   position?: boolean
+  trackId?: boolean
+  track?: boolean | Prisma.TutorialSection$trackArgs<ExtArgs>
   pages?: boolean | Prisma.TutorialSection$pagesArgs<ExtArgs>
   _count?: boolean | Prisma.TutorialSectionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tutorialSection"]>
@@ -452,6 +609,8 @@ export type TutorialSectionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   slug?: boolean
   title?: boolean
   position?: boolean
+  trackId?: boolean
+  track?: boolean | Prisma.TutorialSection$trackArgs<ExtArgs>
 }, ExtArgs["result"]["tutorialSection"]>
 
 export type TutorialSectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -459,6 +618,8 @@ export type TutorialSectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   slug?: boolean
   title?: boolean
   position?: boolean
+  trackId?: boolean
+  track?: boolean | Prisma.TutorialSection$trackArgs<ExtArgs>
 }, ExtArgs["result"]["tutorialSection"]>
 
 export type TutorialSectionSelectScalar = {
@@ -466,19 +627,26 @@ export type TutorialSectionSelectScalar = {
   slug?: boolean
   title?: boolean
   position?: boolean
+  trackId?: boolean
 }
 
-export type TutorialSectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "position", ExtArgs["result"]["tutorialSection"]>
+export type TutorialSectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "position" | "trackId", ExtArgs["result"]["tutorialSection"]>
 export type TutorialSectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  track?: boolean | Prisma.TutorialSection$trackArgs<ExtArgs>
   pages?: boolean | Prisma.TutorialSection$pagesArgs<ExtArgs>
   _count?: boolean | Prisma.TutorialSectionCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type TutorialSectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type TutorialSectionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TutorialSectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  track?: boolean | Prisma.TutorialSection$trackArgs<ExtArgs>
+}
+export type TutorialSectionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  track?: boolean | Prisma.TutorialSection$trackArgs<ExtArgs>
+}
 
 export type $TutorialSectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TutorialSection"
   objects: {
+    track: Prisma.$TutorialTrackPayload<ExtArgs> | null
     pages: Prisma.$TutorialPagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -486,6 +654,7 @@ export type $TutorialSectionPayload<ExtArgs extends runtime.Types.Extensions.Int
     slug: string
     title: string
     position: number
+    trackId: string | null
   }, ExtArgs["result"]["tutorialSection"]>
   composites: {}
 }
@@ -880,6 +1049,7 @@ readonly fields: TutorialSectionFieldRefs;
  */
 export interface Prisma__TutorialSectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  track<T extends Prisma.TutorialSection$trackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TutorialSection$trackArgs<ExtArgs>>): Prisma.Prisma__TutorialTrackClient<runtime.Types.Result.GetResult<Prisma.$TutorialTrackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pages<T extends Prisma.TutorialSection$pagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TutorialSection$pagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TutorialPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -914,6 +1084,7 @@ export interface TutorialSectionFieldRefs {
   readonly slug: Prisma.FieldRef<"TutorialSection", 'String'>
   readonly title: Prisma.FieldRef<"TutorialSection", 'String'>
   readonly position: Prisma.FieldRef<"TutorialSection", 'Int'>
+  readonly trackId: Prisma.FieldRef<"TutorialSection", 'String'>
 }
     
 
@@ -1168,6 +1339,10 @@ export type TutorialSectionCreateManyAndReturnArgs<ExtArgs extends runtime.Types
    */
   data: Prisma.TutorialSectionCreateManyInput | Prisma.TutorialSectionCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TutorialSectionIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1238,6 +1413,10 @@ export type TutorialSectionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types
    * Limit how many TutorialSections to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TutorialSectionIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1304,6 +1483,25 @@ export type TutorialSectionDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many TutorialSections to delete.
    */
   limit?: number
+}
+
+/**
+ * TutorialSection.track
+ */
+export type TutorialSection$trackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TutorialTrack
+   */
+  select?: Prisma.TutorialTrackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TutorialTrack
+   */
+  omit?: Prisma.TutorialTrackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TutorialTrackInclude<ExtArgs> | null
+  where?: Prisma.TutorialTrackWhereInput
 }
 
 /**

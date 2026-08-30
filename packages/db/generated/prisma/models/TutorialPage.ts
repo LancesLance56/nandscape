@@ -42,6 +42,8 @@ export type TutorialPageMinAggregateOutputType = {
   coverImage: string | null
   authorName: string | null
   status: string | null
+  seoTitle: string | null
+  seoDescription: string | null
   position: number | null
   sectionId: string | null
   publishedAt: Date | null
@@ -57,6 +59,8 @@ export type TutorialPageMaxAggregateOutputType = {
   coverImage: string | null
   authorName: string | null
   status: string | null
+  seoTitle: string | null
+  seoDescription: string | null
   position: number | null
   sectionId: string | null
   publishedAt: Date | null
@@ -74,6 +78,9 @@ export type TutorialPageCountAggregateOutputType = {
   status: number
   body: number
   tags: number
+  seoTitle: number
+  seoDescription: number
+  keywords: number
   position: number
   sectionId: number
   publishedAt: number
@@ -99,6 +106,8 @@ export type TutorialPageMinAggregateInputType = {
   coverImage?: true
   authorName?: true
   status?: true
+  seoTitle?: true
+  seoDescription?: true
   position?: true
   sectionId?: true
   publishedAt?: true
@@ -114,6 +123,8 @@ export type TutorialPageMaxAggregateInputType = {
   coverImage?: true
   authorName?: true
   status?: true
+  seoTitle?: true
+  seoDescription?: true
   position?: true
   sectionId?: true
   publishedAt?: true
@@ -131,6 +142,9 @@ export type TutorialPageCountAggregateInputType = {
   status?: true
   body?: true
   tags?: true
+  seoTitle?: true
+  seoDescription?: true
+  keywords?: true
   position?: true
   sectionId?: true
   publishedAt?: true
@@ -235,6 +249,9 @@ export type TutorialPageGroupByOutputType = {
   status: string
   body: runtime.JsonValue
   tags: string[]
+  seoTitle: string | null
+  seoDescription: string | null
+  keywords: string[]
   position: number
   sectionId: string | null
   publishedAt: Date | null
@@ -275,6 +292,9 @@ export type TutorialPageWhereInput = {
   status?: Prisma.StringFilter<"TutorialPage"> | string
   body?: Prisma.JsonFilter<"TutorialPage">
   tags?: Prisma.StringNullableListFilter<"TutorialPage">
+  seoTitle?: Prisma.StringNullableFilter<"TutorialPage"> | string | null
+  seoDescription?: Prisma.StringNullableFilter<"TutorialPage"> | string | null
+  keywords?: Prisma.StringNullableListFilter<"TutorialPage">
   position?: Prisma.IntFilter<"TutorialPage"> | number
   sectionId?: Prisma.UuidNullableFilter<"TutorialPage"> | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"TutorialPage"> | Date | string | null
@@ -293,6 +313,9 @@ export type TutorialPageOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   body?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  seoDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  keywords?: Prisma.SortOrder
   position?: Prisma.SortOrder
   sectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -314,6 +337,9 @@ export type TutorialPageWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"TutorialPage"> | string
   body?: Prisma.JsonFilter<"TutorialPage">
   tags?: Prisma.StringNullableListFilter<"TutorialPage">
+  seoTitle?: Prisma.StringNullableFilter<"TutorialPage"> | string | null
+  seoDescription?: Prisma.StringNullableFilter<"TutorialPage"> | string | null
+  keywords?: Prisma.StringNullableListFilter<"TutorialPage">
   position?: Prisma.IntFilter<"TutorialPage"> | number
   sectionId?: Prisma.UuidNullableFilter<"TutorialPage"> | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"TutorialPage"> | Date | string | null
@@ -332,6 +358,9 @@ export type TutorialPageOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   body?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  seoDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  keywords?: Prisma.SortOrder
   position?: Prisma.SortOrder
   sectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -357,6 +386,9 @@ export type TutorialPageScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"TutorialPage"> | string
   body?: Prisma.JsonWithAggregatesFilter<"TutorialPage">
   tags?: Prisma.StringNullableListFilter<"TutorialPage">
+  seoTitle?: Prisma.StringNullableWithAggregatesFilter<"TutorialPage"> | string | null
+  seoDescription?: Prisma.StringNullableWithAggregatesFilter<"TutorialPage"> | string | null
+  keywords?: Prisma.StringNullableListFilter<"TutorialPage">
   position?: Prisma.IntWithAggregatesFilter<"TutorialPage"> | number
   sectionId?: Prisma.UuidNullableWithAggregatesFilter<"TutorialPage"> | string | null
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TutorialPage"> | Date | string | null
@@ -374,6 +406,9 @@ export type TutorialPageCreateInput = {
   status?: string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageCreatetagsInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  keywords?: Prisma.TutorialPageCreatekeywordsInput | string[]
   position?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
@@ -391,6 +426,9 @@ export type TutorialPageUncheckedCreateInput = {
   status?: string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageCreatetagsInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  keywords?: Prisma.TutorialPageCreatekeywordsInput | string[]
   position?: number
   sectionId?: string | null
   publishedAt?: Date | string | null
@@ -408,6 +446,9 @@ export type TutorialPageUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -425,6 +466,9 @@ export type TutorialPageUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -442,6 +486,9 @@ export type TutorialPageCreateManyInput = {
   status?: string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageCreatetagsInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  keywords?: Prisma.TutorialPageCreatekeywordsInput | string[]
   position?: number
   sectionId?: string | null
   publishedAt?: Date | string | null
@@ -459,6 +506,9 @@ export type TutorialPageUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -475,6 +525,9 @@ export type TutorialPageUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -502,6 +555,9 @@ export type TutorialPageCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   body?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrder
+  seoDescription?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
   position?: Prisma.SortOrder
   sectionId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -521,6 +577,8 @@ export type TutorialPageMaxOrderByAggregateInput = {
   coverImage?: Prisma.SortOrder
   authorName?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrder
+  seoDescription?: Prisma.SortOrder
   position?: Prisma.SortOrder
   sectionId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -536,6 +594,8 @@ export type TutorialPageMinOrderByAggregateInput = {
   coverImage?: Prisma.SortOrder
   authorName?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrder
+  seoDescription?: Prisma.SortOrder
   position?: Prisma.SortOrder
   sectionId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -593,7 +653,16 @@ export type TutorialPageCreatetagsInput = {
   set: string[]
 }
 
+export type TutorialPageCreatekeywordsInput = {
+  set: string[]
+}
+
 export type TutorialPageUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TutorialPageUpdatekeywordsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -608,6 +677,9 @@ export type TutorialPageCreateWithoutSectionInput = {
   status?: string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageCreatetagsInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  keywords?: Prisma.TutorialPageCreatekeywordsInput | string[]
   position?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
@@ -624,6 +696,9 @@ export type TutorialPageUncheckedCreateWithoutSectionInput = {
   status?: string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageCreatetagsInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  keywords?: Prisma.TutorialPageCreatekeywordsInput | string[]
   position?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
@@ -669,6 +744,9 @@ export type TutorialPageScalarWhereInput = {
   status?: Prisma.StringFilter<"TutorialPage"> | string
   body?: Prisma.JsonFilter<"TutorialPage">
   tags?: Prisma.StringNullableListFilter<"TutorialPage">
+  seoTitle?: Prisma.StringNullableFilter<"TutorialPage"> | string | null
+  seoDescription?: Prisma.StringNullableFilter<"TutorialPage"> | string | null
+  keywords?: Prisma.StringNullableListFilter<"TutorialPage">
   position?: Prisma.IntFilter<"TutorialPage"> | number
   sectionId?: Prisma.UuidNullableFilter<"TutorialPage"> | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"TutorialPage"> | Date | string | null
@@ -686,6 +764,9 @@ export type TutorialPageCreateManySectionInput = {
   status?: string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageCreatetagsInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  keywords?: Prisma.TutorialPageCreatekeywordsInput | string[]
   position?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
@@ -702,6 +783,9 @@ export type TutorialPageUpdateWithoutSectionInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -718,6 +802,9 @@ export type TutorialPageUncheckedUpdateWithoutSectionInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +821,9 @@ export type TutorialPageUncheckedUpdateManyWithoutSectionInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   tags?: Prisma.TutorialPageUpdatetagsInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.TutorialPageUpdatekeywordsInput | string[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -752,6 +842,9 @@ export type TutorialPageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   status?: boolean
   body?: boolean
   tags?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  keywords?: boolean
   position?: boolean
   sectionId?: boolean
   publishedAt?: boolean
@@ -770,6 +863,9 @@ export type TutorialPageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   body?: boolean
   tags?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  keywords?: boolean
   position?: boolean
   sectionId?: boolean
   publishedAt?: boolean
@@ -788,6 +884,9 @@ export type TutorialPageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   body?: boolean
   tags?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  keywords?: boolean
   position?: boolean
   sectionId?: boolean
   publishedAt?: boolean
@@ -806,6 +905,9 @@ export type TutorialPageSelectScalar = {
   status?: boolean
   body?: boolean
   tags?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  keywords?: boolean
   position?: boolean
   sectionId?: boolean
   publishedAt?: boolean
@@ -813,7 +915,7 @@ export type TutorialPageSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TutorialPageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "excerpt" | "coverImage" | "authorName" | "status" | "body" | "tags" | "position" | "sectionId" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tutorialPage"]>
+export type TutorialPageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "excerpt" | "coverImage" | "authorName" | "status" | "body" | "tags" | "seoTitle" | "seoDescription" | "keywords" | "position" | "sectionId" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tutorialPage"]>
 export type TutorialPageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.TutorialPage$sectionArgs<ExtArgs>
 }
@@ -839,6 +941,13 @@ export type $TutorialPagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     status: string
     body: runtime.JsonValue
     tags: string[]
+    /**
+     * *
+     *    * See the matching fields on BlogPost for what each is for.
+     */
+    seoTitle: string | null
+    seoDescription: string | null
+    keywords: string[]
     position: number
     sectionId: string | null
     publishedAt: Date | null
@@ -1277,6 +1386,9 @@ export interface TutorialPageFieldRefs {
   readonly status: Prisma.FieldRef<"TutorialPage", 'String'>
   readonly body: Prisma.FieldRef<"TutorialPage", 'Json'>
   readonly tags: Prisma.FieldRef<"TutorialPage", 'String[]'>
+  readonly seoTitle: Prisma.FieldRef<"TutorialPage", 'String'>
+  readonly seoDescription: Prisma.FieldRef<"TutorialPage", 'String'>
+  readonly keywords: Prisma.FieldRef<"TutorialPage", 'String[]'>
   readonly position: Prisma.FieldRef<"TutorialPage", 'Int'>
   readonly sectionId: Prisma.FieldRef<"TutorialPage", 'String'>
   readonly publishedAt: Prisma.FieldRef<"TutorialPage", 'DateTime'>

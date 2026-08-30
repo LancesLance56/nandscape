@@ -7,6 +7,8 @@ import { InteractiveBlockView } from "@/components/content/blocks/interactive/in
 import { BreadcrumbJsonLd, FaqJsonLd, SoftwareAppJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { TOOLS, getTool } from "@/lib/tools/tools";
+import { EmbedBuilder } from "@/components/embeds/embed-builder";
+import { OEmbedDiscovery } from "@/components/embeds/oembed-discovery";
 
 export const revalidate = 3600;
 
@@ -59,8 +61,24 @@ export default async function ToolPage({ params }: PageProps) {
           <span className="text-ink-soft">{tool.title}</span>
         </nav>
 
-        <h1 className="font-display text-3xl font-bold leading-tight text-ink">{tool.title}</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft">{tool.intro}</p>
+        <OEmbedDiscovery path={`/tools/${tool.slug}`} />
+
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="font-display text-3xl font-bold leading-tight text-ink">{tool.title}</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft">{tool.intro}</p>
+          </div>
+
+          {/* Every tool is embeddable, so every tool page offers the snippet.
+              Putting it beside the title rather than at the foot is the point:
+              a teacher who came here to use the tool is the person most likely
+              to want it on their own page. */}
+          <EmbedBuilder
+            target={{ kind: "tool", id: tool.slug }}
+            title={tool.title}
+            defaultHeight={tool.embedHeight ?? 520}
+          />
+        </div>
 
         <div className="mt-8">
           <InteractiveBlockView

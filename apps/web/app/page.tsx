@@ -5,6 +5,7 @@ import {FeatureStrip} from "@/components/marketing/feature-strip";
 import {LiveDemo} from "@/components/marketing/live-demo";
 import {PuzzlesShowcase} from "@/components/marketing/puzzles-showcase";
 import {TutorialsShowcase} from "@/components/marketing/tutorials-showcase";
+import {EmbedsShowcase} from "@/components/marketing/embeds-showcase";
 import {ToolsBento} from "@/components/marketing/tools-bento";
 import {BlogShowcase} from "@/components/marketing/blog-showcase";
 import {SiteGradient} from "@/components/site-gradient";
@@ -31,6 +32,7 @@ export default async function Home() {
         <Hero/>
           <TutorialsShowcase/>
           <ToolsBento/>
+          <EmbedsShowcase/>
           <LiveDemo/>
           <FeatureStrip/>
           <PuzzlesShowcase/>

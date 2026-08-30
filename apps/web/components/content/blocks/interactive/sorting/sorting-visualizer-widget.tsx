@@ -16,6 +16,7 @@ import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player"
 import { cn } from "@/lib/cn";
 import { SortingBars, SortingLegend } from "./sorting-bars";
 import { Segmented, Stat, StatusSlot, WidgetButton } from "../shared/widget-ui";
+import { Slider } from "@/components/ui/slider";
 
 const SPEEDS = [
   { id: "slow", label: "Slow", ms: 700 },
@@ -105,13 +106,13 @@ export function SortingVisualizerWidget({
 
           <label className="flex items-center gap-2 text-[11px] font-semibold text-slate">
             Size
-            <input
-              type="range"
+            <Slider
               min={5}
               max={30}
               value={size}
-              onChange={(e) => setSize(Number(e.target.value))}
-              className="w-24 accent-copper"
+              onChange={setSize}
+              aria-label="Number of values to sort"
+              className="w-24"
             />
             <span className="w-5 tabular-nums text-ink">{size}</span>
           </label>

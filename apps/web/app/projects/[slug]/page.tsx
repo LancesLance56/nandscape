@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { getProjectBySlug } from "@/lib/projects/projects";
 import { CircuitEditor } from "@/components/editor";
 import { ProjectViewer } from "@/components/projects/project-viewer";
+import { OEmbedDiscovery } from "@/components/embeds/oembed-discovery";
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -24,6 +25,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <>
+      {/* Only public circuits: an unlisted one is reachable by link, but
+          advertising it to every oEmbed consumer that sees the URL is not
+          what "unlisted" means. */}
+      {project.visibility === "PUBLIC" && <OEmbedDiscovery path={`/projects/${project.slug}`} />}
       <Navbar />
       <ProjectViewer project={project} canFork={Boolean(user)} canDelete={canDelete} />
     </>

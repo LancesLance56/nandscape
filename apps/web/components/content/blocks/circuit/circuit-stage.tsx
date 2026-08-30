@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ReactFlow, Background, BackgroundVariant, type NodeTypes, type EdgeTypes } from "@xyflow/react";
+import { ReactFlow, type NodeTypes, type EdgeTypes } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { SignalState } from "@nandscape/engine";
 import { evaluateLiveCircuit } from "@/lib/editor/live-simulate";
@@ -47,7 +47,6 @@ export function CircuitStage({
   scopes,
   allowScrollZoom = false,
   pannable = true,
-  showBackground = true,
   fitPadding = 0.3,
 }: {
   nodes: EditorNode[];
@@ -70,7 +69,6 @@ export function CircuitStage({
   scopes?: CircuitScope[];
   allowScrollZoom?: boolean;
   pannable?: boolean;
-  showBackground?: boolean;
   fitPadding?: number;
 }) {
   const [nodes, setNodes] = useState<EditorNode[]>(initialNodes);
@@ -204,10 +202,6 @@ export function CircuitStage({
       minZoom={0.3}
       maxZoom={2}
       proOptions={{ hideAttribution: true }}
-    >
-      {showBackground && (
-        <Background variant={BackgroundVariant.Dots} gap={22} size={1.2} className="opacity-60" color="var(--border-strong)" />
-      )}
-    </ReactFlow>
+    />
   );
 }

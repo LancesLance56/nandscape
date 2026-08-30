@@ -19,6 +19,12 @@ export interface ToolDefinition {
   /** Key into the interactive widget registry (see interactive-block.tsx). */
   widget: string;
   widgetData?: Record<string, unknown>;
+  /**
+   * Iframe height the embed snippet suggests for this tool, in pixels.
+   * Optional: the default suits most widgets, and only the notably taller or
+   * shorter ones need to say so (see lib/embeds/embeddable.ts).
+   */
+  embedHeight?: number;
   /** Short "how to use this" bullets, rendered under the widget. */
   howTo: string[];
   /** Deeper reading, keeping the tool pages wired into the tutorial library
@@ -110,6 +116,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "A fresh randomly generated K-map every time, marked as you go. Group the cells yourself and find out whether your answer is minimal, not merely correct.",
     widget: "kmap-practice",
+    embedHeight: 640,
     widgetData: { difficulty: "easy" },
     howTo: [
       "Pick a difficulty. Easy is 3 variables; medium and hard are 4 variables and add don't-cares.",
@@ -155,6 +162,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "Flip any bit and watch binary, decimal and hexadecimal move together. Built to show you why the conversion works, not just to hand you an answer.",
     widget: "number-base-explorer",
+    embedHeight: 360,
     howTo: [
       "Click any bit to flip it between 0 and 1.",
       "Each column is labelled with its place value, so you can see what each bit contributes.",
@@ -172,6 +180,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "See the same bits read as unsigned and as two's complement side by side, and watch what negation actually does to them.",
     widget: "twos-complement-explorer",
+    embedHeight: 400,
     howTo: [
       "Click a bit to flip it. The leftmost bit is the sign bit.",
       "Compare the unsigned and two's complement readings of the identical pattern.",
@@ -189,6 +198,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "Pick a gate and step through every input combination. Useful when you need to check a row rather than trust your memory of it.",
     widget: "truth-table-explorer",
+    embedHeight: 460,
     howTo: [
       "Choose which gate the table describes.",
       "Each row is one possible input combination, with the resulting output.",
@@ -217,6 +227,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "Seven sorting algorithms on the input of your choice, one frame at a time. The counters underneath show exactly how many comparisons and writes each one spends, so the difference between them is a number rather than a claim.",
     widget: "sorting-visualizer",
+    embedHeight: 720,
     widgetData: { algorithm: "quick", preset: "random", size: 16 },
     howTo: [
       "Pick an algorithm, then press Play or step through one frame at a time.",
@@ -276,6 +287,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "Build a flowchart by adding boxes and connecting them. The layout is computed for you, so there is nothing to drag and nothing to align. Start from a blank chart or load one of the sorting algorithms.",
     widget: "flowchart-maker",
+    embedHeight: 700,
     howTo: [
       "Add boxes with the buttons on the right: start and end are pills, process is a rectangle, decision is a diamond.",
       "Click a box in the chart to rename it, change its shape, add a note, or delete it.",

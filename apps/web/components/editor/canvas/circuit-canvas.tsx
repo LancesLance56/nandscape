@@ -4,8 +4,6 @@ import type React from "react";
 import {useCallback, useEffect, useRef} from "react";
 import {
   ReactFlow,
-  Background,
-  BackgroundVariant,
   useReactFlow,
   type OnSelectionChangeFunc, ReactFlowProps,
 } from "@xyflow/react";
@@ -51,9 +49,7 @@ export function CircuitCanvas() {
   const lastLoadedAt = useEditorStore((s) => s.lastLoadedAt);
   const { screenToFlowPosition, fitView } = useReactFlow();
 
-  const showGrid = usePreferencesStore((s) => s.showGrid);
   const snapGridSize = usePreferencesStore((s) => s.snapGridSize);
-  const visualGridSize = usePreferencesStore((s) => s.visualGridSize);
   const snapToGrid = usePreferencesStore((s) => s.snapToGrid);
 
   const isDrafting = useWireDraftStore((s) => s.draft !== null);
@@ -250,15 +246,6 @@ export function CircuitCanvas() {
         maxZoom={2.5}
         proOptions={{hideAttribution: true}}
       >
-        {showGrid && (
-          <Background
-            variant={BackgroundVariant.Dots}
-            gap={24}
-            size={1.4}          // was ~1
-            className="opacity-70"  // was implicit 100%,  dots were tuned for the old lighter surface
-            color="var(--border-strong)"
-          />
-        )}
         <WireDraftOverlay/>
         <CanvasControls/>
       </ReactFlow>

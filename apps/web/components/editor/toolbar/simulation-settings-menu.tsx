@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { useSimulationStore } from "@/store/simulation-store";
 import { ToolbarButton } from "./toolbar-button";
+import { Slider } from "@/components/ui/slider";
 
 const MIN_SPEED = 10;
 const MAX_SPEED = 1000;
@@ -89,14 +90,13 @@ export function SimulationSettingsMenu() {
                 <span className="text-xs font-medium text-ink-soft">Playback speed</span>
                 <span className=" text-xs text-ink">{speed}/s</span>
               </div>
-              <input
-                type="range"
+              <Slider
                 min={MIN_SPEED}
                 max={MAX_SPEED}
                 step={10}
                 value={speed}
-                onChange={(e) => setSpeed(Number(e.target.value))}
-                className="accent-[var(--copper)]"
+                onChange={setSpeed}
+                aria-label="Playback speed"
               />
               <span className="text-[11px] text-ink-soft">
                 Simulated time units advanced per real second while running,  this scales every clock in the

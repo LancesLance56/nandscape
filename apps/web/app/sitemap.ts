@@ -21,6 +21,10 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
   { path: "/blog", changeFrequency: "daily", priority: 0.8 },
   { path: "/community", changeFrequency: "daily", priority: 0.6 },
   { path: "/tools", changeFrequency: "monthly", priority: 0.9 },
+  // The embed URLs themselves are noindex (they're the same content as the
+  // page they came from), but the page *about* embedding is a landing page in
+  // its own right and the thing worth ranking.
+  { path: "/embeds", changeFrequency: "monthly", priority: 0.8 },
   { path: "/about", changeFrequency: "yearly", priority: 0.4 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.3 },
 ];

@@ -106,14 +106,12 @@ function HeroCircuit() {
             edges={HERO_XOR_EDGES}
             pannable={false}
             allowScrollZoom={false}
-            showBackground={false}
             fitPadding={0.32}
           />
         </ReactFlowProvider>
       </div>
       <figcaption className="mt-2 text-xs text-slate">
-        An XOR gate built from four NANDs, simulating live. The inputs cycle through every case; the wires carry the
-        real signal.
+        XOR from NAND
       </figcaption>
     </figure>
   );
@@ -146,7 +144,7 @@ function HeroSorting() {
           (SortingBars is border-box, so height includes its border/padding). */}
       <SortingBars step={step} maxValue={maxValue} height={240} compact />
       <figcaption className="mt-2 text-xs text-slate">
-        Merge sort, running. Copper bars are being compared, green ones have reached their final place.
+        Merge Sort
       </figcaption>
     </figure>
   );

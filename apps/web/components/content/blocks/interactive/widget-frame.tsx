@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useIsEmbedded } from "@/components/embeds/embed-chrome";
 import { cn } from "@/lib/cn";
 
 interface WidgetFrameProps {
@@ -12,6 +13,15 @@ interface WidgetFrameProps {
 }
 
 export function WidgetFrame({ title, subtitle, children, className, contentClassName }: WidgetFrameProps) {
+  const embedded = useIsEmbedded();
+
+  // Inside an embed the host page has already provided the box and the
+  // caption, so everything this component draws would be duplication. See
+  // components/embeds/embed-chrome.tsx. The widget itself is unchanged.
+  if (embedded) {
+    return <div className={cn("not-prose", contentClassName)}>{children}</div>;
+  }
+
   return (
     <div
       className={cn(

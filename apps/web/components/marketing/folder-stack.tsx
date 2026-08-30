@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import useSound from "use-sound";
 import { cn } from "@/lib/cn";
 
 /**
@@ -82,7 +83,7 @@ const TAIL_LINES = 2;
 
 /** Headroom for the shoulder tabs and the lift. */
 const TOP_PAD = 34;
-const HOVER_LIFT = 7;
+const HOVER_LIFT = 10;
 const OPEN_LIFT = 12;
 
 /** Punched holes: this far apart, centred, as many as the sheet has room for.
@@ -116,9 +117,52 @@ function bodyHeight(folder: Folder): number {
   return PAPER_TOP + paperHeight(folder) + PAPER_BOTTOM;
 }
 
+/**
+ * The shuffle. Nudging a folder in the drawer makes a soft paper sound, so
+ * hovering one plays a short slice of a real paper-handling recording
+ * (bigsoundbank.com "Road map #1", CC0, in public/sounds/). `use-sound` loads
+ * Howler on the first play and handles the browser's autoplay unlock. Seven
+ * windows into the ~6s clip, one picked at random per hover, so a sweep down
+ * the stack reads as shuffling rather than one sample on repeat. Silent for
+ * reduced-motion.
+ *
+ * Pitch jitter would be the obvious next touch, but `use-sound` v5 calls
+ * Howler's `rate()` on the no-id path when you pass `playbackRate` to `play()`,
+ * and that throws when a sprite is defined, so the variety comes from the
+ * windows alone.
+ */
+const SHUFFLE_SRC = "/sounds/paper-shuffle.mp3";
+
+/** [start, length] in ms into the ~6s clip. */
+const SHUFFLE_SPRITE: Record<string, [number, number]> = {
+  a: [120, 340],
+  b: [900, 320],
+  c: [1700, 340],
+  d: [2600, 320],
+  e: [3400, 340],
+  f: [4300, 340],
+  g: [5100, 320],
+};
+const SHUFFLE_IDS = Object.keys(SHUFFLE_SPRITE);
+
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function FolderStack({ folders }: { folders: Folder[] }) {
   const [openId, setOpenId] = useState<string | null>(folders[0]?.id ?? null);
   const [hoverId, setHoverId] = useState<string | null>(null);
+
+  const [playShuffle] = useSound(SHUFFLE_SRC, {
+    volume: 0.28,
+    sprite: SHUFFLE_SPRITE,
+    interrupt: true,
+  });
+
+  const shuffle = () => {
+    if (prefersReducedMotion()) return;
+    playShuffle({ id: SHUFFLE_IDS[Math.floor(Math.random() * SHUFFLE_IDS.length)] });
+  };
 
   const n = folders.length;
   if (n === 0) return null;
@@ -160,7 +204,10 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
               zIndex: fi,
               transform: `translate3d(0, ${shift}px, 0)`,
             }}
-            onPointerEnter={() => setHoverId(folder.id)}
+            onPointerEnter={() => {
+              setHoverId(folder.id);
+              shuffle();
+            }}
             onPointerLeave={() => setHoverId((id) => (id === folder.id ? null : id))}
             onFocusCapture={() => setHoverId(folder.id)}
             onBlurCapture={() => setHoverId((id) => (id === folder.id ? null : id))}
@@ -197,7 +244,10 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
                   folder opens it. */}
               <button
                 type="button"
-                onClick={() => setOpenId(isOpen ? null : folder.id)}
+                onClick={() => {
+                  shuffle();
+                  setOpenId(isOpen ? null : folder.id);
+                }}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 className="absolute inset-0 z-0 cursor-pointer rounded-t-2xl focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-copper"
@@ -277,13 +327,14 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
                     />
                   ))}
 
-                  <div className="absolute inset-x-0 pl-10 pr-4 sm:pl-[50px] sm:pr-6" style={{ top: PAPER_PAD }}>
+                  <div className="absolute inset-x-0 pl-10 pr-4 pt-5.5 sm:pl-12.5 sm:pr-6" style={{ top: PAPER_PAD }}>
+                    { /* Looks a bit weird
                     <p
                       className="truncate text-[12px] text-paper-ink-soft"
                       style={{ lineHeight: `${LINE}px`, height: BLURB_LINES * LINE }}
                     >
                       {folder.blurb}
-                    </p>
+                    </p> */ }
 
                     {folder.tabs.map((tab) => {
                       const rest = tab.count - tab.lessons.length;

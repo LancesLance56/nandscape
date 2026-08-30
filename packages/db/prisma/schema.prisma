@@ -13,9 +13,11 @@ model User {
   username                String                   @unique
   passwordHash            String?
   googleId                String?                  @unique
-  /** Null until the address is confirmed via the emailed verification link
-   *  (or, for Google sign-in, immediately set at creation when Google
-   *  already reports the address verified - see findOrCreateGoogleUser). */
+  /**
+   * Null until the address is confirmed via the emailed verification link
+   * (or, for Google sign-in, immediately set at creation when Google
+   * already reports the address verified - see findOrCreateGoogleUser).
+   */
   emailVerifiedAt         DateTime?
   name                    String?
   avatarUrl               String?
@@ -28,6 +30,8 @@ model User {
   sessions                Session[]
   projects                Project[]
   emailVerificationTokens EmailVerificationToken[]
+  tutorialProgress        TutorialProgress[]
+  quizAttempts            QuizAttempt[]
 
   @@index([email])
 }
@@ -55,41 +59,49 @@ model Session {
 }
 
 model BlogPost {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  slug        String    @unique
-  title       String
-  excerpt     String?
-  coverImage  String?   @map("cover_image")
-  authorName  String?   @map("author_name")
-  status      String    @default("draft")
-  body        Json      @default("[]")
-  tags        String[]  @default([])
-  /** The <title> tag, which wants ~50-60 characters and the target keyword
-   *  near the front - a different job from `title`, the on-page H1, which is
-   *  written for a reader already on the page. Null falls back to `title`. */
-  seoTitle       String?  @map("seo_title")
-  /** The meta description (~150-160 chars). Distinct from `excerpt`, which
-   *  is card/listing copy; this one is written to earn the click from a
-   *  search result. Null falls back to `excerpt`. */
-  seoDescription String?  @map("seo_description")
-  /** Target search keywords, most important first. Not emitted as the
-   *  long-dead <meta keywords> tag - it's editorial intent, used to keep
-   *  headings/copy honest and to fill schema.org `keywords`. */
-  keywords       String[] @default([])
-  publishedAt DateTime? @map("published_at") @db.Timestamptz(6)
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug           String    @unique
+  title          String
+  excerpt        String?
+  coverImage     String?   @map("cover_image")
+  authorName     String?   @map("author_name")
+  status         String    @default("draft")
+  body           Json      @default("[]")
+  tags           String[]  @default([])
+  /**
+   * The <title> tag, which wants ~50-60 characters and the target keyword
+   * near the front - a different job from `title`, the on-page H1, which is
+   * written for a reader already on the page. Null falls back to `title`.
+   */
+  seoTitle       String?   @map("seo_title")
+  /**
+   * The meta description (~150-160 chars). Distinct from `excerpt`, which
+   * is card/listing copy; this one is written to earn the click from a
+   * search result. Null falls back to `excerpt`.
+   */
+  seoDescription String?   @map("seo_description")
+  /**
+   * Target search keywords, most important first. Not emitted as the
+   * long-dead <meta keywords> tag - it's editorial intent, used to keep
+   * headings/copy honest and to fill schema.org `keywords`.
+   */
+  keywords       String[]  @default([])
+  publishedAt    DateTime? @map("published_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@index([status])
   @@index([publishedAt(sort: Desc)], map: "idx_blog_posts_published_at")
   @@map("blog_posts")
 }
 
-/** The top level of the tutorial library: a broad subject area ("Digital
- *  Logic", "Data Structures & Algorithms") that owns several sections, each
- *  of which owns its pages. Sections existed first and were flat, so
- *  `trackId` is nullable - an untracked section still renders, it just sits
- *  outside the directory listing rather than breaking it. */
+/**
+ * The top level of the tutorial library: a broad subject area ("Digital
+ * Logic", "Data Structures & Algorithms") that owns several sections, each
+ * of which owns its pages. Sections existed first and were flat, so
+ * `trackId` is nullable - an untracked section still renders, it just sits
+ * outside the directory listing rather than breaking it.
+ */
 model TutorialTrack {
   id          String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   slug        String            @unique
@@ -115,25 +127,27 @@ model TutorialSection {
 }
 
 model TutorialPage {
-  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  slug        String           @unique
-  title       String
-  excerpt     String?
-  coverImage  String?          @map("cover_image")
-  authorName  String?          @map("author_name")
-  status      String           @default("draft")
-  body        Json             @default("[]")
-  tags        String[]         @default([])
-  /** See the matching fields on BlogPost for what each is for. */
-  seoTitle       String?       @map("seo_title")
-  seoDescription String?       @map("seo_description")
-  keywords       String[]      @default([])
-  position    Int              @default(0)
-  sectionId   String?          @map("section_id") @db.Uuid
-  section     TutorialSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
-  publishedAt DateTime?        @map("published_at") @db.Timestamptz(6)
-  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug           String           @unique
+  title          String
+  excerpt        String?
+  coverImage     String?          @map("cover_image")
+  authorName     String?          @map("author_name")
+  status         String           @default("draft")
+  body           Json             @default("[]")
+  tags           String[]         @default([])
+  /**
+   * See the matching fields on BlogPost for what each is for.
+   */
+  seoTitle       String?          @map("seo_title")
+  seoDescription String?          @map("seo_description")
+  keywords       String[]         @default([])
+  position       Int              @default(0)
+  sectionId      String?          @map("section_id") @db.Uuid
+  section        TutorialSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  publishedAt    DateTime?        @map("published_at") @db.Timestamptz(6)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime         @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@index([status])
   @@index([sectionId, position])
@@ -195,25 +209,33 @@ model Project {
   slug         String            @unique
   name         String
   description  String?
-  /** `nodes`/`edges` always mirror `scopes[0]` (the project's first tab), so
-   *  every reader that predates tabs - embeds, thumbnails, the sitemap -
-   *  keeps working unchanged against a single flat circuit. */
+  /**
+   * `nodes`/`edges` always mirror `scopes[0]` (the project's first tab), so
+   * every reader that predates tabs - embeds, thumbnails, the sitemap -
+   * keeps working unchanged against a single flat circuit.
+   */
   nodes        Json              @default("[]")
   edges        Json              @default("[]")
-  /** Every tab (CircuitVerse calls these "scopes") in this project. Any tab
-   *  can be dropped into another as a subcircuit instance - see
-   *  apps/web/types/scope.ts and apps/web/store/scopes-store.ts. */
+  /**
+   * Every tab (CircuitVerse calls these "scopes") in this project. Any tab
+   * can be dropped into another as a subcircuit instance - see
+   * apps/web/types/scope.ts and apps/web/store/scopes-store.ts.
+   */
   scopes       Json              @default("[]")
-  /** Snapshot of every non-builtin custom block this project's subcircuit
-   *  nodes reference (transitively), so the project stays self-contained
-   *  regardless of what's in any particular browser's local block library
-   *  - see apps/web/lib/editor/subcircuit-flatten.ts's resolveBlockClosure,
-   *  which computes this at save time. */
+  /**
+   * Snapshot of every non-builtin custom block this project's subcircuit
+   * nodes reference (transitively), so the project stays self-contained
+   * regardless of what's in any particular browser's local block library
+   * - see apps/web/lib/editor/subcircuit-flatten.ts's resolveBlockClosure,
+   * which computes this at save time.
+   */
   blocks       Json              @default("[]")
-  /** Freeform, owner- or seed-set (e.g. "tutorial" marks a tutorial's
-   *  companion circuit - see FeaturedCircuit's doc comment for the parallel
-   *  curated-pick concept). Drives the community page's filter chips and
-   *  its "From the Tutorials" section. */
+  /**
+   * Freeform, owner- or seed-set (e.g. "tutorial" marks a tutorial's
+   * companion circuit - see FeaturedCircuit's doc comment for the parallel
+   * curated-pick concept). Drives the community page's filter chips and
+   * its "From the Tutorials" section.
+   */
   tags         String[]          @default([])
   visibility   ProjectVisibility @default(PRIVATE)
   ownerId      String            @map("owner_id")
@@ -236,19 +258,23 @@ enum ProjectVisibility {
   PUBLIC
 }
 
-/** Admin-curated candidates for the homepage's live-demo embed (see
- *  apps/web/components/marketing/live-demo.tsx) - marketing can add several
- *  projects here over time and switch which one is live without touching
- *  code. At most one row should have `active = true` at a time; that's
- *  enforced at the application layer (see featured-circuits.ts's
- *  setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
- *  `active` from an `id = $1` comparison), not a DB constraint, matching how
- *  simple admin toggles are handled elsewhere in this codebase. */
-/** `placement` scopes the "exactly one active row" invariant: setting one
- *  HOMEPAGE_DEMO row active never touches a COMMUNITY_WEEKLY row's active
- *  state, and vice versa - two independent admin-curated single-picks
- *  sharing one table and one UI pattern, see
- *  lib/featured-circuits/featured-circuits.ts's setActiveFeaturedCircuit. */
+/**
+ * Admin-curated candidates for the homepage's live-demo embed (see
+ * apps/web/components/marketing/live-demo.tsx) - marketing can add several
+ * projects here over time and switch which one is live without touching
+ * code. At most one row should have `active = true` at a time; that's
+ * enforced at the application layer (see featured-circuits.ts's
+ * setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
+ * `active` from an `id = $1` comparison), not a DB constraint, matching how
+ * simple admin toggles are handled elsewhere in this codebase.
+ */
+/**
+ * `placement` scopes the "exactly one active row" invariant: setting one
+ * HOMEPAGE_DEMO row active never touches a COMMUNITY_WEEKLY row's active
+ * state, and vice versa - two independent admin-curated single-picks
+ * sharing one table and one UI pattern, see
+ * lib/featured-circuits/featured-circuits.ts's setActiveFeaturedCircuit.
+ */
 enum FeaturedPlacement {
   HOMEPAGE_DEMO
   COMMUNITY_WEEKLY
@@ -305,4 +331,74 @@ enum Difficulty {
   MEDIUM
   HARD
   EXPERT
+}
+
+/// What a clap or a completion is attached to. Slugs rather than foreign keys
+/// because tutorial pages and blog posts are addressed by slug everywhere else
+/// in the app, and a clap should survive a post being re-seeded (which is a
+/// delete plus an insert, and so a new id).
+enum ContentKind {
+  BLOG
+  TUTORIAL
+}
+
+/// Medium-style applause, countable and available to signed-out readers.
+///
+/// `clapperId` is either `user:<id>` or `anon:<random>`; collapsing both into
+/// one column keeps this to a single unique constraint, where a nullable
+/// userId would not (Postgres treats NULLs as distinct, so a nullable column
+/// in a unique index stops preventing duplicates for exactly the anonymous
+/// rows that need it most).
+model Clap {
+  id         String      @id @default(cuid())
+  targetKind ContentKind
+  targetSlug String
+  clapperId  String
+  /// Per-clapper tally, capped in application code. One row per clapper per
+  /// thing, incremented in place, so the total is a SUM rather than a count of
+  /// rows.
+  count      Int         @default(1)
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  @@unique([targetKind, targetSlug, clapperId])
+  @@index([targetKind, targetSlug])
+  @@map("claps")
+}
+
+/// A tutorial page a signed-in reader has marked done.
+///
+/// Rows only exist for completed pages: "not started" is the absence of a row,
+/// so nothing has to be backfilled when a new lesson is published.
+model TutorialProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  pageSlug    String   @map("page_slug")
+  /// Denormalised so the dashboard can group by track without joining through
+  /// TutorialPage, which resolves its parent by slug rather than by id.
+  trackSlug   String?  @map("track_slug")
+  completedAt DateTime @default(now()) @map("completed_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pageSlug])
+  @@index([userId])
+  @@map("tutorial_progress")
+}
+
+/// One finished run of a quiz widget, kept per attempt rather than as a single
+/// best score so the activity heatmap has something dated to plot.
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  /// `<pageSlug>:<widgetId>` - quizzes are blocks inside a page, so neither
+  /// half identifies one on its own.
+  quizKey   String   @map("quiz_key")
+  score     Int
+  total     Int
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, quizKey])
+  @@index([userId, createdAt])
+  @@map("quiz_attempts")
 }

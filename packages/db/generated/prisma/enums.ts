@@ -18,6 +18,14 @@ export const ProjectVisibility = {
 export type ProjectVisibility = (typeof ProjectVisibility)[keyof typeof ProjectVisibility]
 
 
+export const FeaturedPlacement = {
+  HOMEPAGE_DEMO: 'HOMEPAGE_DEMO',
+  COMMUNITY_WEEKLY: 'COMMUNITY_WEEKLY'
+} as const
+
+export type FeaturedPlacement = (typeof FeaturedPlacement)[keyof typeof FeaturedPlacement]
+
+
 export const Role = {
   USER: 'USER',
   ADMIN: 'ADMIN'
@@ -34,3 +42,11 @@ export const Difficulty = {
 } as const
 
 export type Difficulty = (typeof Difficulty)[keyof typeof Difficulty]
+
+
+export const ContentKind = {
+  BLOG: 'BLOG',
+  TUTORIAL: 'TUTORIAL'
+} as const
+
+export type ContentKind = (typeof ContentKind)[keyof typeof ContentKind]

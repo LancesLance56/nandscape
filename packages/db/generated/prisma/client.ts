@@ -60,6 +60,16 @@ export type Session = Prisma.SessionModel
  */
 export type BlogPost = Prisma.BlogPostModel
 /**
+ * Model TutorialTrack
+ * *
+ *  * The top level of the tutorial library: a broad subject area ("Digital
+ *  * Logic", "Data Structures & Algorithms") that owns several sections, each
+ *  * of which owns its pages. Sections existed first and were flat, so
+ *  * `trackId` is nullable - an untracked section still renders, it just sits
+ *  * outside the directory listing rather than breaking it.
+ */
+export type TutorialTrack = Prisma.TutorialTrackModel
+/**
  * Model TutorialSection
  * 
  */
@@ -91,13 +101,42 @@ export type PuzzleProgress = Prisma.PuzzleProgressModel
 export type Project = Prisma.ProjectModel
 /**
  * Model FeaturedCircuit
- * * Admin-curated candidates for the homepage's live-demo embed (see
- *  *  apps/web/components/marketing/live-demo.tsx) - marketing can add several
- *  *  projects here over time and switch which one is live without touching
- *  *  code. At most one row should have `active = true` at a time; that's
- *  *  enforced at the application layer (see featured-circuits.ts's
- *  *  setActiveFeaturedCircuit, a single atomic UPDATE that sets every row's
- *  *  `active` from an `id = $1` comparison), not a DB constraint, matching how
- *  *  simple admin toggles are handled elsewhere in this codebase.
+ * 
  */
 export type FeaturedCircuit = Prisma.FeaturedCircuitModel
+/**
+ * Model DiagramPreset
+ * A named diagram that content refers to by slug rather than embedding.
+ * 
+ * Flowcharts and the worked examples the graph widgets ship with used to be
+ * TypeScript literals compiled into the bundle, which meant a typo in a
+ * teaching diagram was a code change and a deploy. They live here instead:
+ * `spec` is the same JSON shape the widgets already accept inline, so a
+ * block can either name one of these or carry its own.
+ */
+export type DiagramPreset = Prisma.DiagramPresetModel
+/**
+ * Model Clap
+ * Medium-style applause, countable and available to signed-out readers.
+ * 
+ * `clapperId` is either `user:<id>` or `anon:<random>`; collapsing both into
+ * one column keeps this to a single unique constraint, where a nullable
+ * userId would not (Postgres treats NULLs as distinct, so a nullable column
+ * in a unique index stops preventing duplicates for exactly the anonymous
+ * rows that need it most).
+ */
+export type Clap = Prisma.ClapModel
+/**
+ * Model TutorialProgress
+ * A tutorial page a signed-in reader has marked done.
+ * 
+ * Rows only exist for completed pages: "not started" is the absence of a row,
+ * so nothing has to be backfilled when a new lesson is published.
+ */
+export type TutorialProgress = Prisma.TutorialProgressModel
+/**
+ * Model QuizAttempt
+ * One finished run of a quiz widget, kept per attempt rather than as a single
+ * best score so the activity heatmap has something dated to plot.
+ */
+export type QuizAttempt = Prisma.QuizAttemptModel

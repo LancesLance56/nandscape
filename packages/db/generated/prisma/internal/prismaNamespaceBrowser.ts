@@ -55,13 +55,18 @@ export const ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Session: 'Session',
   BlogPost: 'BlogPost',
+  TutorialTrack: 'TutorialTrack',
   TutorialSection: 'TutorialSection',
   TutorialPage: 'TutorialPage',
   Puzzle: 'Puzzle',
   PuzzleAttempt: 'PuzzleAttempt',
   PuzzleProgress: 'PuzzleProgress',
   Project: 'Project',
-  FeaturedCircuit: 'FeaturedCircuit'
+  FeaturedCircuit: 'FeaturedCircuit',
+  DiagramPreset: 'DiagramPreset',
+  Clap: 'Clap',
+  TutorialProgress: 'TutorialProgress',
+  QuizAttempt: 'QuizAttempt'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -129,6 +134,9 @@ export const BlogPostScalarFieldEnum = {
   status: 'status',
   body: 'body',
   tags: 'tags',
+  seoTitle: 'seoTitle',
+  seoDescription: 'seoDescription',
+  keywords: 'keywords',
   publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -137,11 +145,23 @@ export const BlogPostScalarFieldEnum = {
 export type BlogPostScalarFieldEnum = (typeof BlogPostScalarFieldEnum)[keyof typeof BlogPostScalarFieldEnum]
 
 
+export const TutorialTrackScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  position: 'position'
+} as const
+
+export type TutorialTrackScalarFieldEnum = (typeof TutorialTrackScalarFieldEnum)[keyof typeof TutorialTrackScalarFieldEnum]
+
+
 export const TutorialSectionScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
   title: 'title',
-  position: 'position'
+  position: 'position',
+  trackId: 'trackId'
 } as const
 
 export type TutorialSectionScalarFieldEnum = (typeof TutorialSectionScalarFieldEnum)[keyof typeof TutorialSectionScalarFieldEnum]
@@ -157,6 +177,9 @@ export const TutorialPageScalarFieldEnum = {
   status: 'status',
   body: 'body',
   tags: 'tags',
+  seoTitle: 'seoTitle',
+  seoDescription: 'seoDescription',
+  keywords: 'keywords',
   position: 'position',
   sectionId: 'sectionId',
   publishedAt: 'publishedAt',
@@ -220,6 +243,7 @@ export const ProjectScalarFieldEnum = {
   edges: 'edges',
   scopes: 'scopes',
   blocks: 'blocks',
+  tags: 'tags',
   visibility: 'visibility',
   ownerId: 'ownerId',
   forkedFromId: 'forkedFromId',
@@ -233,12 +257,64 @@ export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeo
 export const FeaturedCircuitScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
+  placement: 'placement',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type FeaturedCircuitScalarFieldEnum = (typeof FeaturedCircuitScalarFieldEnum)[keyof typeof FeaturedCircuitScalarFieldEnum]
+
+
+export const DiagramPresetScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  kind: 'kind',
+  title: 'title',
+  group: 'group',
+  position: 'position',
+  spec: 'spec',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiagramPresetScalarFieldEnum = (typeof DiagramPresetScalarFieldEnum)[keyof typeof DiagramPresetScalarFieldEnum]
+
+
+export const ClapScalarFieldEnum = {
+  id: 'id',
+  targetKind: 'targetKind',
+  targetSlug: 'targetSlug',
+  clapperId: 'clapperId',
+  count: 'count',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClapScalarFieldEnum = (typeof ClapScalarFieldEnum)[keyof typeof ClapScalarFieldEnum]
+
+
+export const TutorialProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  pageSlug: 'pageSlug',
+  trackSlug: 'trackSlug',
+  completedAt: 'completedAt'
+} as const
+
+export type TutorialProgressScalarFieldEnum = (typeof TutorialProgressScalarFieldEnum)[keyof typeof TutorialProgressScalarFieldEnum]
+
+
+export const QuizAttemptScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  quizKey: 'quizKey',
+  score: 'score',
+  total: 'total',
+  createdAt: 'createdAt'
+} as const
+
+export type QuizAttemptScalarFieldEnum = (typeof QuizAttemptScalarFieldEnum)[keyof typeof QuizAttemptScalarFieldEnum]
 
 
 export const SortOrder = {

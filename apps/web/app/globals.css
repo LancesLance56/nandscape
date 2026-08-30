@@ -35,13 +35,13 @@
   --paper-line: #dce3d6;
   --paper-accent: #9c4720;
 
-  /* Tints for the tutorials drawer. Four hues rather than a grey ramp, kept
-     at very low chroma so a stack of them still reads as quiet paper stock:
-     sage, manila, clay, mist. */
-  --folder-1: #e7eede;
-  --folder-2: #f4e8d2;
-  --folder-3: #f3e1d7;
-  --folder-4: #e3eaef;
+  /* Tints for the tutorials drawer. Four hues rather than a grey ramp, given
+     enough chroma to read as coloured folder stock while staying quiet enough
+     for the page: sage, manila, clay, mist. */
+  --folder-1: #d7e4c2;
+  --folder-2: #f0dfb7;
+  --folder-3: #eed4c3;
+  --folder-4: #d2e0ec;
 
   --ink: #151b18;
   --ink-soft: #4e594f;
@@ -90,10 +90,10 @@
   --surface-3: #2e2e2e;
   --surface-4: #383838;
 
-  --folder-1: #262c22;
-  --folder-2: #2f2b20;
-  --folder-3: #302823;
-  --folder-4: #232930;
+  --folder-1: #2d3826;
+  --folder-2: #3b331f;
+  --folder-3: #3d2f26;
+  --folder-4: #263240;
 
   --border: #2a2a2a;
   --border-strong: #3a3a3a;

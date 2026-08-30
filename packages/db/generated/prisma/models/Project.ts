@@ -57,6 +57,7 @@ export type ProjectCountAggregateOutputType = {
   edges: number
   scopes: number
   blocks: number
+  tags: number
   visibility: number
   ownerId: number
   forkedFromId: number
@@ -99,6 +100,7 @@ export type ProjectCountAggregateInputType = {
   edges?: true
   scopes?: true
   blocks?: true
+  tags?: true
   visibility?: true
   ownerId?: true
   forkedFromId?: true
@@ -188,6 +190,7 @@ export type ProjectGroupByOutputType = {
   edges: runtime.JsonValue
   scopes: runtime.JsonValue
   blocks: runtime.JsonValue
+  tags: string[]
   visibility: $Enums.ProjectVisibility
   ownerId: string
   forkedFromId: string | null
@@ -225,6 +228,7 @@ export type ProjectWhereInput = {
   edges?: Prisma.JsonFilter<"Project">
   scopes?: Prisma.JsonFilter<"Project">
   blocks?: Prisma.JsonFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
   visibility?: Prisma.EnumProjectVisibilityFilter<"Project"> | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFilter<"Project"> | string
   forkedFromId?: Prisma.StringNullableFilter<"Project"> | string | null
@@ -245,6 +249,7 @@ export type ProjectOrderByWithRelationInput = {
   edges?: Prisma.SortOrder
   scopes?: Prisma.SortOrder
   blocks?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   visibility?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   forkedFromId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -268,6 +273,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   edges?: Prisma.JsonFilter<"Project">
   scopes?: Prisma.JsonFilter<"Project">
   blocks?: Prisma.JsonFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
   visibility?: Prisma.EnumProjectVisibilityFilter<"Project"> | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFilter<"Project"> | string
   forkedFromId?: Prisma.StringNullableFilter<"Project"> | string | null
@@ -288,6 +294,7 @@ export type ProjectOrderByWithAggregationInput = {
   edges?: Prisma.SortOrder
   scopes?: Prisma.SortOrder
   blocks?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   visibility?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   forkedFromId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -310,6 +317,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   edges?: Prisma.JsonWithAggregatesFilter<"Project">
   scopes?: Prisma.JsonWithAggregatesFilter<"Project">
   blocks?: Prisma.JsonWithAggregatesFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
   visibility?: Prisma.EnumProjectVisibilityWithAggregatesFilter<"Project"> | $Enums.ProjectVisibility
   ownerId?: Prisma.StringWithAggregatesFilter<"Project"> | string
   forkedFromId?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
@@ -326,6 +334,7 @@ export type ProjectCreateInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -344,6 +353,7 @@ export type ProjectUncheckedCreateInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   ownerId: string
   forkedFromId?: string | null
@@ -362,6 +372,7 @@ export type ProjectUpdateInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +391,7 @@ export type ProjectUncheckedUpdateInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   forkedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -398,6 +410,7 @@ export type ProjectCreateManyInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   ownerId: string
   forkedFromId?: string | null
@@ -414,6 +427,7 @@ export type ProjectUpdateManyMutationInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -428,6 +442,7 @@ export type ProjectUncheckedUpdateManyInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   forkedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -459,6 +474,7 @@ export type ProjectCountOrderByAggregateInput = {
   edges?: Prisma.SortOrder
   scopes?: Prisma.SortOrder
   blocks?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   visibility?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   forkedFromId?: Prisma.SortOrder
@@ -537,6 +553,10 @@ export type ProjectUncheckedUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
+export type ProjectCreatetagsInput = {
+  set: string[]
+}
+
 export type ProjectCreateNestedOneWithoutForksInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutForksInput, Prisma.ProjectUncheckedCreateWithoutForksInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutForksInput
@@ -555,6 +575,11 @@ export type ProjectUncheckedCreateNestedManyWithoutForkedFromInput = {
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutForkedFromInput | Prisma.ProjectCreateOrConnectWithoutForkedFromInput[]
   createMany?: Prisma.ProjectCreateManyForkedFromInputEnvelope
   connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+}
+
+export type ProjectUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type EnumProjectVisibilityFieldUpdateOperationsInput = {
@@ -622,6 +647,7 @@ export type ProjectCreateWithoutOwnerInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -639,6 +665,7 @@ export type ProjectUncheckedCreateWithoutOwnerInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   forkedFromId?: string | null
   createdAt?: Date | string
@@ -685,6 +712,7 @@ export type ProjectScalarWhereInput = {
   edges?: Prisma.JsonFilter<"Project">
   scopes?: Prisma.JsonFilter<"Project">
   blocks?: Prisma.JsonFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
   visibility?: Prisma.EnumProjectVisibilityFilter<"Project"> | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFilter<"Project"> | string
   forkedFromId?: Prisma.StringNullableFilter<"Project"> | string | null
@@ -701,6 +729,7 @@ export type ProjectCreateWithoutForksInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -718,6 +747,7 @@ export type ProjectUncheckedCreateWithoutForksInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   ownerId: string
   forkedFromId?: string | null
@@ -740,6 +770,7 @@ export type ProjectCreateWithoutForkedFromInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -757,6 +788,7 @@ export type ProjectUncheckedCreateWithoutForkedFromInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   ownerId: string
   createdAt?: Date | string
@@ -795,6 +827,7 @@ export type ProjectUpdateWithoutForksInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -812,6 +845,7 @@ export type ProjectUncheckedUpdateWithoutForksInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   forkedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -845,6 +879,7 @@ export type ProjectCreateWithoutFeaturedInInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -862,6 +897,7 @@ export type ProjectUncheckedCreateWithoutFeaturedInInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   ownerId: string
   forkedFromId?: string | null
@@ -895,6 +931,7 @@ export type ProjectUpdateWithoutFeaturedInInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -912,6 +949,7 @@ export type ProjectUncheckedUpdateWithoutFeaturedInInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   forkedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -929,6 +967,7 @@ export type ProjectCreateManyOwnerInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   forkedFromId?: string | null
   createdAt?: Date | string
@@ -944,6 +983,7 @@ export type ProjectUpdateWithoutOwnerInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -961,6 +1001,7 @@ export type ProjectUncheckedUpdateWithoutOwnerInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   forkedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -978,6 +1019,7 @@ export type ProjectUncheckedUpdateManyWithoutOwnerInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   forkedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -993,6 +1035,7 @@ export type ProjectCreateManyForkedFromInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectCreatetagsInput | string[]
   visibility?: $Enums.ProjectVisibility
   ownerId: string
   createdAt?: Date | string
@@ -1008,6 +1051,7 @@ export type ProjectUpdateWithoutForkedFromInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1025,6 +1069,7 @@ export type ProjectUncheckedUpdateWithoutForkedFromInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1042,6 +1087,7 @@ export type ProjectUncheckedUpdateManyWithoutForkedFromInput = {
   edges?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   scopes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   blocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
   visibility?: Prisma.EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1097,6 +1143,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   edges?: boolean
   scopes?: boolean
   blocks?: boolean
+  tags?: boolean
   visibility?: boolean
   ownerId?: boolean
   forkedFromId?: boolean
@@ -1118,6 +1165,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   edges?: boolean
   scopes?: boolean
   blocks?: boolean
+  tags?: boolean
   visibility?: boolean
   ownerId?: boolean
   forkedFromId?: boolean
@@ -1136,6 +1184,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   edges?: boolean
   scopes?: boolean
   blocks?: boolean
+  tags?: boolean
   visibility?: boolean
   ownerId?: boolean
   forkedFromId?: boolean
@@ -1154,6 +1203,7 @@ export type ProjectSelectScalar = {
   edges?: boolean
   scopes?: boolean
   blocks?: boolean
+  tags?: boolean
   visibility?: boolean
   ownerId?: boolean
   forkedFromId?: boolean
@@ -1161,7 +1211,7 @@ export type ProjectSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "description" | "nodes" | "edges" | "scopes" | "blocks" | "visibility" | "ownerId" | "forkedFromId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "description" | "nodes" | "edges" | "scopes" | "blocks" | "tags" | "visibility" | "ownerId" | "forkedFromId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   forkedFrom?: boolean | Prisma.Project$forkedFromArgs<ExtArgs>
@@ -1192,26 +1242,37 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     description: string | null
     /**
-     * * `nodes`/`edges` always mirror `scopes[0]` (the project's first tab), so
-     *    *  every reader that predates tabs - embeds, thumbnails, the sitemap -
-     *    *  keeps working unchanged against a single flat circuit.
+     * *
+     *    * `nodes`/`edges` always mirror `scopes[0]` (the project's first tab), so
+     *    * every reader that predates tabs - embeds, thumbnails, the sitemap -
+     *    * keeps working unchanged against a single flat circuit.
      */
     nodes: runtime.JsonValue
     edges: runtime.JsonValue
     /**
-     * * Every tab (CircuitVerse calls these "scopes") in this project. Any tab
-     *    *  can be dropped into another as a subcircuit instance - see
-     *    *  apps/web/types/scope.ts and apps/web/store/scopes-store.ts.
+     * *
+     *    * Every tab (CircuitVerse calls these "scopes") in this project. Any tab
+     *    * can be dropped into another as a subcircuit instance - see
+     *    * apps/web/types/scope.ts and apps/web/store/scopes-store.ts.
      */
     scopes: runtime.JsonValue
     /**
-     * * Snapshot of every non-builtin custom block this project's subcircuit
-     *    *  nodes reference (transitively), so the project stays self-contained
-     *    *  regardless of what's in any particular browser's local block library
-     *    *  - see apps/web/lib/editor/subcircuit-flatten.ts's resolveBlockClosure,
-     *    *  which computes this at save time.
+     * *
+     *    * Snapshot of every non-builtin custom block this project's subcircuit
+     *    * nodes reference (transitively), so the project stays self-contained
+     *    * regardless of what's in any particular browser's local block library
+     *    * - see apps/web/lib/editor/subcircuit-flatten.ts's resolveBlockClosure,
+     *    * which computes this at save time.
      */
     blocks: runtime.JsonValue
+    /**
+     * *
+     *    * Freeform, owner- or seed-set (e.g. "tutorial" marks a tutorial's
+     *    * companion circuit - see FeaturedCircuit's doc comment for the parallel
+     *    * curated-pick concept). Drives the community page's filter chips and
+     *    * its "From the Tutorials" section.
+     */
+    tags: string[]
     visibility: $Enums.ProjectVisibility
     ownerId: string
     forkedFromId: string | null
@@ -1652,6 +1713,7 @@ export interface ProjectFieldRefs {
   readonly edges: Prisma.FieldRef<"Project", 'Json'>
   readonly scopes: Prisma.FieldRef<"Project", 'Json'>
   readonly blocks: Prisma.FieldRef<"Project", 'Json'>
+  readonly tags: Prisma.FieldRef<"Project", 'String[]'>
   readonly visibility: Prisma.FieldRef<"Project", 'ProjectVisibility'>
   readonly ownerId: Prisma.FieldRef<"Project", 'String'>
   readonly forkedFromId: Prisma.FieldRef<"Project", 'String'>

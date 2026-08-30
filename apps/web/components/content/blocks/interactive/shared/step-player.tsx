@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { Slider } from "@/components/ui/slider";
 
 const PLAY_INTERVAL_MS = 1400;
 
@@ -105,14 +106,12 @@ export function StepControls({
 
   return (
     <div className="flex flex-col gap-3">
-      <input
-        type="range"
+      <Slider
         min={0}
         max={Math.max(total - 1, 0)}
         value={index}
-        onChange={(e) => onScrub(Number(e.target.value))}
+        onChange={onScrub}
         aria-label="Scrub through the algorithm steps"
-        className="w-full accent-copper"
       />
 
       <div className="flex flex-wrap items-center gap-2">

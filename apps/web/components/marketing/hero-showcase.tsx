@@ -223,7 +223,6 @@ const ITEMS: ShowcaseItem[] = [
             edges={demoEdges}
             pannable={false}
             fitPadding={0.15}
-            showBackground={false}
           />
         </ReactFlowProvider>
       </div>

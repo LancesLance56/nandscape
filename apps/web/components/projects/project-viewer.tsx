@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ReactFlowProvider } from "@xyflow/react";
 import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage";
-import { EmbedSnippet } from "@/components/projects/embed-snippet";
+import { EmbedBuilder } from "@/components/embeds/embed-builder";
 import type { ProjectRecord } from "@/lib/projects/projects";
 
 export function ProjectViewer({
@@ -58,7 +58,7 @@ export function ProjectViewer({
         </div>
         <div className="flex shrink-0 items-start gap-2">
           {error && <span className="text-xs text-signal-coral">{error}</span>}
-          <EmbedSnippet slug={project.slug} name={project.name} />
+          <EmbedBuilder target={{ kind: "circuit", id: project.slug }} title={project.name} defaultHeight={420} />
           {canFork && (
             <button
               type="button"

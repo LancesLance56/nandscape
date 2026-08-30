@@ -2,9 +2,8 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
+import { AuthCard, AuthField, AuthPasswordField } from "@/components/auth/auth-card";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -49,60 +48,35 @@ export default function LoginPage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6 pb-24 pt-32">
-        <h1 className="mb-6 font-display text-2xl font-bold text-ink">Log in</h1>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-ink-soft">Email</span>
-            <input
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface-card px-3 py-2 text-sm text-ink outline-none focus:border-copper"
-            />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-ink-soft">Password</span>
-            <input
-              type="password"
-              required
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg border border-border-strong bg-surface-card px-3 py-2 text-sm text-ink outline-none focus:border-copper"
-            />
-          </label>
-
-          {error && <p className="text-sm text-signal-coral">{error}</p>}
-
-          <Button type="submit" variant="default" size="app-lg" disabled={submitting}>
-            {submitting ? "Logging in…" : "Log in"}
-          </Button>
-        </form>
-
-        <div className="my-5 flex items-center gap-3 text-xs text-slate">
-          <span className="h-px flex-1 bg-border" />
-          or
-          <span className="h-px flex-1 bg-border" />
-        </div>
-
-        <a
-          href="/api/auth/google"
-          className="rounded-xl border border-border-strong bg-transparent px-7 py-3.5 text-center text-base font-semibold text-ink transition-colors hover:border-ink-soft"
+      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 pb-24 pt-32">
+        <AuthCard
+          mode="login"
+          title="Welcome back"
+          error={error}
+          submitting={submitting}
+          submitLabel="Log in"
+          onSubmit={handleSubmit}
         >
-          Continue with Google
-        </a>
+          <AuthField
+            id="login-email"
+            label="Email"
+            icon="mail"
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <p className="mt-4 text-sm text-ink-soft">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-medium text-copper hover:text-copper-dark">
-            Sign up
-          </Link>
-        </p>
+          <AuthPasswordField
+            id="login-password"
+            label="Password"
+            required
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </AuthCard>
       </main>
     </>
   );

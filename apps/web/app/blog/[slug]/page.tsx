@@ -8,6 +8,7 @@ import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
 import { readingTimeLabel } from "@/lib/content/reading-time";
 import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog/posts";
+import { Claps } from "@/components/engagement/claps";
 
 export const revalidate = 60;
 
@@ -96,6 +97,10 @@ export default async function BlogPostPage({ params }: PageProps) {
           }
         >
           <BlockRenderer blocks={post.body} />
+
+          <div className="not-prose mt-10 border-t border-border pt-6">
+            <Claps kind="BLOG" slug={post.slug} />
+          </div>
         </ArticleShell>
       </main>
       <Footer />
