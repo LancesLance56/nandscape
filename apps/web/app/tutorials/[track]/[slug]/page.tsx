@@ -115,8 +115,8 @@ export default async function TutorialPage({ params }: PageProps) {
 
       <ArticleShell
         // Lessons run wider than a blog post - the layout column already
-        // caps and centres them (max-w-5xl), so the shell shouldn't also
-        // clamp to its default reading measure.
+        // caps and centres them, so the shell shouldn't also clamp to its
+        // default reading measure.
         className="max-w-none"
         title={page.title}
         lede={page.excerpt ?? undefined}

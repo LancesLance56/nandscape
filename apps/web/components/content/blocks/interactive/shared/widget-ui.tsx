@@ -332,9 +332,13 @@ export function ChipRow({
 
 /**
  * A slot for a message that comes and goes - a hint, a correct/incorrect
- * banner, a "run hit the step limit" note. Always occupies the same height
- * whether or not there is anything to say, so revealing feedback never shoves
- * the page. Pass `lines` for how many lines of banner text to reserve for.
+ * banner, a "run hit the step limit" note. Renders nothing at all when there
+ * is nothing to say, rather than reserving a fixed height up front: most of
+ * these messages are rare (hitting a step limit, solving a board), so a
+ * slot that's always "on" left a permanent blank gap at the bottom of every
+ * widget that never fires it. Pass `lines` for how many lines of banner text
+ * to reserve *while a message is showing*, so a multi-line banner doesn't
+ * jump the moment it wraps.
  */
 export function StatusSlot({
   children,
@@ -345,6 +349,7 @@ export function StatusSlot({
   lines?: number;
   className?: string;
 }) {
+  if (!children) return null;
   return (
     <div
       className={cn(className)}

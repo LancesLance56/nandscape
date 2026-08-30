@@ -149,21 +149,18 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
           </WidgetButton>
         </div>
 
-        {/* Reserved whether or not the answer has been checked. */}
-        <div className="min-h-[3.25rem]">
-          {checked && (
-            <p
-              className={cn(
-                "rounded-lg border px-3 py-2 text-xs font-semibold",
-                correct
-                  ? "border-signal-green/40 bg-signal-green-bg text-signal-green-strong"
-                  : "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",
-              )}
-            >
-              {correct ? correctMessage : incorrectMessage}
-            </p>
-          )}
-        </div>
+        {checked && (
+          <p
+            className={cn(
+              "rounded-lg border px-3 py-2 text-xs font-semibold",
+              correct
+                ? "border-signal-green/40 bg-signal-green-bg text-signal-green-strong"
+                : "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",
+            )}
+          >
+            {correct ? correctMessage : incorrectMessage}
+          </p>
+        )}
       </div>
     </WidgetFrame>
   );

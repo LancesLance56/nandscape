@@ -140,3 +140,15 @@ export type TutorialProgress = Prisma.TutorialProgressModel
  * best score so the activity heatmap has something dated to plot.
  */
 export type QuizAttempt = Prisma.QuizAttemptModel
+/**
+ * Model UserPreference
+ * Per-user dashboard settings: the knobs that make /account personal rather
+ * than identical for everyone.
+ * 
+ * A separate table rather than columns on User because none of it is identity.
+ * User is read on every authenticated request to build the session; these
+ * fields are read by one page, and they will keep growing as the dashboard
+ * does. The row is created lazily on first save, so `null` here means
+ * "defaults", not "broken" - see lib/account/preferences.ts.
+ */
+export type UserPreference = Prisma.UserPreferenceModel

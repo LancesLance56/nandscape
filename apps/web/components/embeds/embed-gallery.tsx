@@ -41,7 +41,7 @@ export function EmbedGallery({ catalog }: { catalog: EmbedCatalogEntry[] }) {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
       {/* The menu. */}
-      <div className="flex max-h-[36rem] flex-col overflow-hidden rounded-2xl border border-border bg-surface-card">
+      <div className="flex max-h-144 flex-col overflow-hidden rounded-2xl border border-border bg-surface-card">
         <div className="border-b border-border p-2.5">
           <input
             type="search"
@@ -95,7 +95,7 @@ export function EmbedGallery({ catalog }: { catalog: EmbedCatalogEntry[] }) {
             src={embedPath(selected)}
             title={`${selected.title} embed preview`}
             loading="lazy"
-            style={{ height: Math.min(selected.height, 460), border: 0 }}
+            style={{ height: Math.min(selected.height, 1000), border: 0 }}
             className="w-full bg-surface"
           />
         </div>

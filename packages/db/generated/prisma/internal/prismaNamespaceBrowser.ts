@@ -66,7 +66,8 @@ export const ModelName = {
   DiagramPreset: 'DiagramPreset',
   Clap: 'Clap',
   TutorialProgress: 'TutorialProgress',
-  QuizAttempt: 'QuizAttempt'
+  QuizAttempt: 'QuizAttempt',
+  UserPreference: 'UserPreference'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -315,6 +316,20 @@ export const QuizAttemptScalarFieldEnum = {
 } as const
 
 export type QuizAttemptScalarFieldEnum = (typeof QuizAttemptScalarFieldEnum)[keyof typeof QuizAttemptScalarFieldEnum]
+
+
+export const UserPreferenceScalarFieldEnum = {
+  userId: 'userId',
+  focusTrackSlug: 'focusTrackSlug',
+  weeklyGoal: 'weeklyGoal',
+  preferredDifficulty: 'preferredDifficulty',
+  pinnedProjectIds: 'pinnedProjectIds',
+  hiddenWidgets: 'hiddenWidgets',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
 
 
 export const SortOrder = {

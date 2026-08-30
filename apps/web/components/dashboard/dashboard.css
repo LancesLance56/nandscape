@@ -1,0 +1,113 @@
+/* ---------------------------------------------------------------------------
+   Dashboard shell extras.
+
+   The structure of this shell - fixed sidebar, inset content pane floating on
+   the sidebar's colour, sticky topbar - comes from Watermelon UI's agndex
+   dashboard block (registry.watermelon.sh). Its stylesheet is not reproduced
+   here, and could not have been: it ships a complete shadcn token set in
+   neutral grey with a pink primary, scoped to `.agndex-dashboard`, which would
+   have overridden Nandscape's palette for every component inside the shell and
+   given the app two different visual identities depending on which page you
+   were on.
+
+   globals.css already maps every shadcn token onto the site's palette, so the
+   sidebar, dropdowns and avatars land in copper and sage without any help.
+   What is left is the handful of things the template's markup reaches for that
+   the site had no token for - three sidebar shades, a card hover, and its type
+   scale - plus the chart series colours. That is all this file is.
+   --------------------------------------------------------------------------- */
+
+.dashboard-shell,
+body:has(.dashboard-shell) [data-slot="sidebar"][data-mobile="true"],
+body:has(.dashboard-shell) [data-slot="dropdown-menu-content"],
+body:has(.dashboard-shell) [data-slot="sheet-content"] {
+  --card-hover: var(--surface-2);
+  --sidebar-muted: var(--slate);
+  --sidebar-muted-foreground: var(--ink-soft);
+  --sidebar-badge: var(--surface-3);
+
+  /* Categorical chart slots, in fixed order: lessons, quizzes, puzzles.
+     Assigned to the entity, never to its rank, so filtering or reordering a
+     chart never repaints a series out from under a reader who has already
+     learned that copper means lessons.
+
+     Both modes were selected rather than flipped, and both were validated as a
+     set against their own surface: adjacent CVD dE 24.5 light / 23.6 dark
+     (>=8 target), normal-vision dE 25.7 / 25.9 (>=15 floor), all three >=3:1
+     against the surface. Blue sits between copper and green on purpose - the
+     copper/green pair is the weak one under deuteranopia (dE 6.8), and keeping
+     them non-adjacent is what buys the margin. */
+  --series-lessons: #c15a2a;
+  --series-quizzes: #2f6fd0;
+  --series-puzzles: #1ca463;
+  /* Grid, axes and the empty half of a meter track: one shade off the surface,
+     never a dash. */
+  --chart-grid: var(--border);
+  --chart-track: var(--surface-2);
+}
+
+.dark .dashboard-shell,
+.dark body:has(.dashboard-shell) [data-slot="sidebar"][data-mobile="true"],
+.dark body:has(.dashboard-shell) [data-slot="dropdown-menu-content"],
+.dark body:has(.dashboard-shell) [data-slot="sheet-content"] {
+  --card-hover: var(--surface-3);
+  --sidebar-badge: var(--surface-4);
+
+  /* Not the light values lightened: their own steps, chosen inside the dark
+     lightness band (OKLCH L 0.48-0.67) and re-validated against #1c1c1c. */
+  --series-lessons: #d36a3b;
+  --series-quizzes: #498aee;
+  --series-puzzles: #008648;
+}
+
+/* The three sizes the template's sidebar and chips are drawn at, which sit
+   between Tailwind's xs and sm. */
+.text-xxs {
+  font-size: 0.625rem;
+  line-height: 1rem;
+}
+
+.text-xsm {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.text-smd {
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+}
+
+/* The shell scrolls in two independent panes; hiding their bars keeps the
+   inset card reading as one surface rather than a frame around a scrollport. */
+.no-scrollbar,
+.no-scrollbar * {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.no-scrollbar *::-webkit-scrollbar {
+  display: none;
+}
+
+/* Wide tables and charts scroll inside their own card instead of pushing the
+   page sideways. */
+.custom-scrollbar-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar {
+  height: 0.375rem;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 9999px;
+}

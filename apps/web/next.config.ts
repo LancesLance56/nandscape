@@ -28,6 +28,17 @@ const nextConfig: NextConfig = {
       ["graph-kinds-and-digraphs", "graph-theory-basics#directed-weighted-and-other-flavours"],
       ["graph-representations", "graph-theory-basics#storing-a-graph-in-code"],
       ["sorting-elementary", "sorting-introduction#bubble-selection-and-insertion-sort"],
+      // The recursion pair and the memoization/tabulation pair were each one
+      // lesson split in two. "recursion-as-induction" and
+      // "memoization-top-down" led their merged page, so they land at the top
+      // of it; the other two open a section partway down.
+      ["recursion-as-induction", "recursion"],
+      ["overlapping-subproblems", "recursion#when-recursion-does-the-same-work-twice"],
+      ["memoization-top-down", "memoization-vs-tabulation"],
+      [
+        "tabulation-bottom-up",
+        "memoization-vs-tabulation#tabulation-the-same-table-without-the-recursion",
+      ],
     ];
 
     return merges.flatMap(([from, to]) => [

@@ -9,7 +9,12 @@ import { Skeleton, SkeletonScreen, SkeletonText } from "@/components/ui/skeleton
 export default function TutorialTrackLoading() {
   return (
     <SkeletonScreen label="Loading tutorial">
-      <div className="mx-auto max-w-5xl">
+      {/* No width of its own: the <main> in the layout above already caps and
+          centres this column. Repeating the cap here is how a skeleton ends up
+          a different width from the content it stands in for, and the reflow
+          when the real page arrives is exactly what a skeleton exists to
+          prevent. */}
+      <div>
         <Skeleton className="h-4 w-40" />
         <Skeleton className="mt-4 h-9 w-full sm:h-11" />
         <Skeleton className="mt-3 h-4 w-32" />

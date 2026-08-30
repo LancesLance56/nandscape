@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { listAllPosts } from "@/lib/blog/posts";
-import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 
 function formatDate(iso: string | null): string {
   if (!iso) return "-";
@@ -16,9 +15,8 @@ export default async function AdminBlogIndexPage() {
   const posts = await listAllPosts();
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-16">
-      <AdminBreadcrumb trail={[{ label: "Posts" }]} />
-      <div className="mb-6 mt-3 flex items-center justify-between">
+    <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-ink">Posts</h1>
           <Link href="/admin/tutorials" className=" text-xs text-slate hover:text-copper-dark">
@@ -64,6 +62,6 @@ export default async function AdminBlogIndexPage() {
           </tbody>
         </table>
       </div>
-    </main>
+    </div>
   );
 }

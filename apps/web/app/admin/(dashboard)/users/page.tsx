@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { listUsers } from "@repo/auth";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { UserRoleTable } from "@/components/admin/user-role-table";
 
 export default async function AdminUsersPage() {
@@ -11,9 +10,8 @@ export default async function AdminUsersPage() {
   const users = await listUsers();
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-16">
-      <AdminBreadcrumb trail={[{ label: "Users" }]} />
-      <div className="mb-6 mt-3">
+    <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
+      <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-ink">Users</h1>
         <p className="mt-1 text-sm text-slate">{users.length} registered</p>
       </div>
@@ -29,6 +27,6 @@ export default async function AdminUsersPage() {
           createdAt: u.createdAt.toISOString(),
         }))}
       />
-    </main>
+    </div>
   );
 }

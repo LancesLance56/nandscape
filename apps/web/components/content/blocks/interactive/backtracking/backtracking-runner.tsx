@@ -163,8 +163,6 @@ export function BacktrackingRunner<P>({
           onReset={player.reset}
           onScrub={player.setIndex}
         />
-        {/* Reserved whether or not the run truncated, so reaching the final
-            step never grows the widget. */}
         <StatusSlot lines={2}>
           {run.truncated && (
             <p className="text-[11px] text-copper-dark">

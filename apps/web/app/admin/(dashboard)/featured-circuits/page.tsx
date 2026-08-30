@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { listFeaturedCircuits } from "@/lib/featured-circuits/featured-circuits";
-import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { FeaturedCircuitsManager } from "@/components/admin/featured-circuits-manager";
 
 export default async function AdminFeaturedCircuitsPage() {
@@ -14,9 +13,8 @@ export default async function AdminFeaturedCircuitsPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-16">
-      <AdminBreadcrumb trail={[{ label: "Featured circuits" }]} />
-      <div className="mb-6 mt-3">
+    <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
+      <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-ink">Featured circuits</h1>
         <p className="mt-1 text-sm text-slate">
           Two independent single-picks, each with its own candidate list. Add a candidate by project slug, then
@@ -35,6 +33,6 @@ export default async function AdminFeaturedCircuitsPage() {
         <p className="mb-4 text-xs text-slate">The highlighted circuit at the top of the community page.</p>
         <FeaturedCircuitsManager placement="COMMUNITY_WEEKLY" featured={communityFeatured} />
       </section>
-    </main>
+    </div>
   );
 }

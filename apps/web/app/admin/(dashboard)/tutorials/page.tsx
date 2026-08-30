@@ -4,7 +4,6 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { listTutorialPages } from "@/lib/tutorials/tutorials";
 import { listTutorialSections } from "@/lib/tutorials/tutorial-sections";
 import { listTutorialTracks } from "@/lib/tutorials/tutorial-tracks";
-import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { AdminTutorialTree } from "@/components/admin/admin-tutorial-tree";
 
 export default async function AdminTutorialsIndexPage() {
@@ -18,9 +17,8 @@ export default async function AdminTutorialsIndexPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-16">
-      <AdminBreadcrumb trail={[{ label: "Tutorial pages" }]} />
-      <div className="mb-6 mt-3 flex items-center justify-between">
+    <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-ink">Tutorial pages</h1>
           <Link href="/admin/blog" className=" text-xs text-slate hover:text-copper-dark">
@@ -36,6 +34,6 @@ export default async function AdminTutorialsIndexPage() {
       </div>
 
       <AdminTutorialTree pages={pages} sections={sections} tracks={tracks} />
-    </main>
+    </div>
   );
 }

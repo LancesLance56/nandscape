@@ -93,17 +93,10 @@ export default function EmbedsPage() {
             Embeds
           </div>
           <h1 className="font-display text-3xl font-bold leading-tight text-ink sm:text-4xl">
-            Every tool here works on your site too
+            Embed our interactives on your site
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-            There are {catalog.length} of them: sorting visualizers, Karnaugh map solvers, algorithm flowcharts, graph
-            traversals and logic circuits. Each one is an iframe you can paste into a lesson plan, a course page, a
-            blog post or your LMS, and your readers can drive it exactly as you can here. It is free, and you will not
-            need a script tag, an account or an API key.
-          </p>
-          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            Anything built here later is embeddable straight away, because the embed system reads the same registry the
-            site renders from. A new tool arrives with its embed URL already working.
+            {catalog.length} customizable embeds for teaching computer science. Works on all platforms (scroll down for Wordpress, Notion, etc.)
           </p>
         </div>
 

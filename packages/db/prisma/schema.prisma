@@ -32,6 +32,7 @@ model User {
   emailVerificationTokens EmailVerificationToken[]
   tutorialProgress        TutorialProgress[]
   quizAttempts            QuizAttempt[]
+  preference              UserPreference?
 
   @@index([email])
 }
@@ -401,4 +402,51 @@ model QuizAttempt {
   @@index([userId, quizKey])
   @@index([userId, createdAt])
   @@map("quiz_attempts")
+}
+
+/// Per-user dashboard settings: the knobs that make /account personal rather
+/// than identical for everyone.
+///
+/// A separate table rather than columns on User because none of it is identity.
+/// User is read on every authenticated request to build the session; these
+/// fields are read by one page, and they will keep growing as the dashboard
+/// does. The row is created lazily on first save, so `null` here means
+/// "defaults", not "broken" - see lib/account/preferences.ts.
+model UserPreference {
+  /// Also the primary key: exactly one row per user, so there is no way to end
+  /// up with two competing preference sets and no need for a uniqueness rule
+  /// beyond the one the PK already gives.
+  userId String @id
+
+  /// Slug of the TutorialTrack the reader is working through right now. Drives
+  /// the "continue where you left off" card and the goal ring's denominator.
+  /// A slug rather than an FK because tracks are re-seeded (delete + insert, so
+  /// a new id) and a focus should survive that, matching how TutorialProgress
+  /// already stores trackSlug.
+  focusTrackSlug String? @map("focus_track_slug")
+
+  /// Lessons + quizzes the reader is aiming to finish in a week. Clamped in
+  /// application code to 1-20; zero would make the ring divide by zero and the
+  /// goal meaningless.
+  weeklyGoal Int @default(3) @map("weekly_goal")
+
+  /// Which difficulty to suggest unsolved puzzles from. Null = no preference,
+  /// so recommendations span everything.
+  preferredDifficulty Difficulty? @map("preferred_difficulty")
+
+  /// Project ids the reader pinned to the top of their dashboard. Ids, not
+  /// slugs: renaming a circuit rewrites its slug, and a pin should follow the
+  /// circuit rather than quietly detaching.
+  pinnedProjectIds String[] @default([]) @map("pinned_project_ids")
+
+  /// Ids of the overview cards this reader has hidden. Storing what is *off*
+  /// rather than what is on means a newly added card shows up for everyone by
+  /// default instead of staying invisible until they opt in.
+  hiddenWidgets String[] @default([]) @map("hidden_widgets")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
 }
