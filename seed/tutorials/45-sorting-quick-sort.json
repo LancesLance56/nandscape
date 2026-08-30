@@ -319,7 +319,6 @@
     {
       "id": "w-tree",
       "data": {
-        "algorithm": "quick",
         "array": [
           7,
           2,
@@ -328,7 +327,8 @@
           3,
           7,
           6
-        ]
+        ],
+        "algorithm": "quick"
       },
       "type": "interactive",
       "widget": "sort-recursion-tree"

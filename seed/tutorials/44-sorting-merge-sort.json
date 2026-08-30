@@ -121,7 +121,6 @@
     {
       "id": "w-tree",
       "data": {
-        "algorithm": "merge",
         "array": [
           38,
           27,
@@ -130,7 +129,8 @@
           9,
           82,
           10
-        ]
+        ],
+        "algorithm": "merge"
       },
       "type": "interactive",
       "widget": "sort-recursion-tree"

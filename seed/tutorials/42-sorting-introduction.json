@@ -477,9 +477,9 @@
     },
     {
       "id": "bubble-selection-and-insertion-sort",
+      "text": "Bubble, Selection and Insertion Sort",
       "type": "heading",
-      "level": 2,
-      "text": "Bubble, Selection and Insertion Sort"
+      "level": 2
     },
     {
       "id": "elem-0",

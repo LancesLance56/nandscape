@@ -1,6 +1,6 @@
 {
   "slug": "recursion-as-induction",
-  "title": "Recursion: Why It Works",
+  "title": "Recursion (FULL GUIDE)",
   "excerpt": "A function that calls itself looks like circular reasoning. It is not, and the argument that rescues it is induction: settle the base case, assume the smaller answer, and the whole thing stands up.",
   "authorName": "Lance Dy Chua",
   "status": "published",
@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A function that calls itself looks like it shouldn't work. If answering a question requires answering the same question, nothing's actually moved, and the whole arrangement has the smell of circular reasoning."
+          "text": "A function that calls itself looks like it shouldn't work, if answering a question requires answering the same question, nothing's actually moved, and the whole arrangement has the smell of circular reasoning."
         }
       ]
     },
@@ -37,7 +37,15 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "But it isn't circular, and getting straight on why is worth doing before anything else in this section. Recursion is mathematical induction wearing different clothes. Once you can see the two as one argument, writing a recursive function stops being a matter of tracing calls in your head and becomes a matter of checking three short claims, none of which asks you to picture the whole tree at once."
+          "text": "But it isn't circular, and getting straight on why is worth doing before anything else in this section. Recursion is like the CS equivalent of mathematical induction. "
+        },
+        {
+          "text": "This guide will teach you how to systematically write and understand recursive functions.",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
         }
       ]
     },
@@ -52,7 +60,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Factorial earns its place as the standard first example. The factorial of a whole number n, written n!, is what you get by multiplying every whole number from 1 up to n. So 5! is 5 x 4 x 3 x 2 x 1, which comes to 120."
+          "text": "The factorial of a whole number n, written n!, is what you get by multiplying every whole number from 1 up to n. So 5! is 5 x 4 x 3 x 2 x 1, which comes to 120."
         }
       ]
     },
@@ -61,7 +69,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Stare at that product for a second and something falls out of it. The tail of it, 4 x 3 x 2 x 1, is exactly 4!. That means 5! is just 5 x 4!. Nothing about the number five made that work either. Every factorial has the next smaller factorial sitting inside it, and that gives you a definition of factorial written in terms of factorial."
+          "text": "The tail of it, 4 x 3 x 2 x 1, is exactly 4!. That means 5! is just 5 x 4!. Nothing about the number five made that work either. Every factorial has the next smaller factorial sitting inside it, and that gives you a definition of factorial written in terms of factorial."
         }
       ]
     },
@@ -69,7 +77,7 @@
       "id": "code-def",
       "code": "fact(0) = 1\nfact(1) = 1\nfact(n) = n x fact(n - 1)",
       "type": "code",
-      "language": "text"
+      "language": "math"
     },
     {
       "id": "p-fact-3",
@@ -87,7 +95,7 @@
           ]
         },
         {
-          "text": ". The third says how to turn a larger problem into a smaller one, and it's the "
+          "text": ". The third says how to turn a larger problem into a smaller one, and we'll call it the "
         },
         {
           "text": "recursive case",
@@ -98,7 +106,7 @@
           ]
         },
         {
-          "text": ". Every recursive definition you meet from here on has that same two-part shape."
+          "text": ". Every recursive definition you'll see has these two core parts."
         }
       ]
     },
@@ -143,30 +151,6 @@
       "content": [
         {
           "text": "Two things about that shape are worth noticing now, because both come back later. The chain goes all the way down before it comes back up, which means the call you made first is the last one to finish, and that ordering isn't a quirk of this example but a property of every recursion ever written. No question gets asked twice here, either. Every call in the tree is about a different number."
-        }
-      ]
-    },
-    {
-      "id": "h-cheat",
-      "text": "The part that feels like cheating",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-cheat-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Here's the objection that bothers most people the first time they see this. The definition of factorial uses factorial. You haven't been told what factorial is. You've been told what it equals in terms of itself, which sounds a lot like being told that a word means what the word means."
-        }
-      ]
-    },
-    {
-      "id": "p-cheat-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It's a fair objection, and there's a real answer to it. The answer isn't that the definition must be fine because the code happens to run. It's that the definition rests on a case which doesn't use factorial at all, and every other case can be traced back to that one in a finite number of steps, which is the whole difference between a definition that grounds out and one that just spins."
         }
       ]
     },
@@ -235,25 +219,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The middle row is the one doing the work, and it's the one people distrust. You're allowed to assume the smaller call is correct. Not hope, assume. That assumption isn't a leap of faith, since it's precisely what the induction step is entitled to help itself to, and the base case is what pays for it."
-        }
-      ]
-    },
-    {
-      "id": "p-ind-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "In practice this changes how you write recursive code, and it's a big change. You never have to hold a call tree in your head. You write the base case, you write the combining step, and then you check one thing: would that step be right if the smaller answer were right? Three small checks. Each one fits inside a single line of thought."
-        }
-      ]
-    },
-    {
-      "id": "p-ind-6",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The widget above has a panel that spells those three out for whichever call is running. Step through it again with that panel open, and the assumption gets named for the call actually on screen, rather than left sitting there as an abstract n."
+          "text": "The middle row can be the most confusing part for those learning recursion. You're allowed to assume the smaller call is correct, then by our formula (the rule), we can then calculate the value for the next few cases."
         }
       ]
     },
@@ -268,7 +234,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two things can go wrong here, and awkwardly, both show up as the same symptom."
+          "text": "Two things can go wrong here:"
         }
       ]
     },
@@ -277,7 +243,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The first is a base case that's missing, or one that never gets reached. With nothing to stop the chain, the calls keep coming until the program runs out of room to remember where it was, which in most languages means a stack overflow whose error message almost never points at the line that actually caused it."
+          "text": "The first is a base case that's missing. With nothing to stop the chain, the calls keep coming until the program runs out of room to remember where it was, which in most languages means a stack overflow whose error message almost never points at the line that actually caused it."
         }
       ]
     },
@@ -286,7 +252,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The second is an argument that fails to shrink. A recursive call is only any use when it asks about a strictly smaller problem, and smaller has to be measured against something that can't keep decreasing forever. Counting down toward zero qualifies. Passing the same value straight through doesn't."
+          "text": "The second common mistake is that the function doesn't always reach the base case. A recursive call is only any use when it asks about a strictly smaller problem, and smaller has to be measured against something that can't keep decreasing forever."
         }
       ]
     },
@@ -307,7 +273,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The second one is nastier than the first, because it works. Feed it an even number and it terminates and hands back something that looks perfectly reasonable, so the function sails through whatever test you happened to write for it. Feed it 5 and it counts 5, 3, 1, then minus 1, minus 3, and never so much as touches zero. Half the inputs are fine. Bugs like that are the ones that reach production."
+          "text": "Notice the second function "
+        },
+        {
+          "text": "alsoBroken(n)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " , it actually works for even inputs but wont even run for odd ones which is a mistake that can be hard to debug."
         }
       ]
     },

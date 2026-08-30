@@ -25,26 +25,17 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Most algorithms you meet early on just compute the answer. You feed them a graph or a list, they run a fixed procedure, and a result comes out. Backtracking is for the problems where no such procedure exists, and the only honest move is to try possibilities and see which ones survive."
-        }
-      ]
-    },
-    {
       "id": "p-hook-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Place eight queens on a chessboard so none of them attack each other. Fill in a Sudoku grid. Split a string so every piece reads the same forwards and backwards. None of these have a formula, so trying things and watching what holds up is the whole plan."
+          "text": "Imagine trying write a program which places eight queens on a chessboard so none of them attack each other, or say fill in a Sudoku grid. None of these problems have an easy solution just using loops."
         }
       ]
     },
     {
       "id": "h-naive",
-      "text": "Why the obvious approach dies",
+      "text": "When you can't brute force",
       "type": "heading",
       "level": 2
     },
@@ -53,7 +44,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The obvious plan is to generate every possible arrangement, then throw out the ones that break the rules. It's simple, it's obviously correct, and for anything past a toy input, it just doesn't finish."
+          "text": "The obvious plan is to generate every possible arrangement, then throw out the ones that break the rules. "
         }
       ]
     },
@@ -102,66 +93,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That last row is what this whole page is about, and the gap between it and the other two is the entire reason backtracking is worth learning."
-        }
-      ]
-    },
-    {
-      "id": "h-insight",
-      "text": "The idea: fail early, not at the end",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-insight",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Generate-and-filter has one specific weakness: it builds a complete arrangement before it checks anything. But you very often know an arrangement is doomed long before it's finished."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Say the first two queens already attack each other. Every single completion of that board is invalid, that's 8 to the power of 6, or 262,144 boards, and not one of them is worth building. Generate-and-filter builds every single one and rejects them one at a time."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So the actual idea is to build the answer one piece at a time, and check the rules after each piece instead of waiting until the end. The second a partial answer is broken, abandon it, and everything that could've grown from it goes with it. Cutting off a whole family of possibilities with one check is called "
-        },
-        {
-          "text": "pruning",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", and it's where every bit of the savings comes from."
-        }
-      ]
-    },
-    {
-      "id": "p-insight-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Backtracking is the other half of that. Once you've abandoned a partial answer, you need to get back to a state where you can try something else, so you undo your last decision and try the next option. No next option? Undo the one before that too. That walking-backwards-to-try-again part is the backtrack."
+          "text": "That last row is the way a backtracking style solution would solve the N-queens problem."
         }
       ]
     },
     {
       "id": "h-tree",
-      "text": "Every one of these problems is secretly a tree",
+      "text": " Thinking in Trees",
       "type": "heading",
       "level": 2
     },
@@ -170,7 +108,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This is the mental model worth actually building, because once it clicks, every problem in this section starts looking like the same problem."
+          "text": "Since it's impossible to check all possible answers, backtracking uses a tree to check all possible legal boards step by step."
         }
       ]
     },
@@ -179,7 +117,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Think about the shape your search traces out. The root is the empty attempt, before you've decided anything. Every edge going down is one decision. Every node is the partial answer you've built so far. The leaves are complete attempts. Here's that tree, built live, for the smallest useful example: every subset of the numbers 1, 2 and 3, where each decision is just whether to include the next number."
+          "text": "The root is the empty attempt, before you've decided anything. Every edge going down is a possible legal move, and every node is the partial answer you've built so far. It follows then that this tree has all possible legal board configurations, since we "
+        },
+        {
+          "text": "failed early",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "."
         }
       ]
     },
@@ -201,13 +150,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Your own code never actually builds this tree as a data structure, even though the widget above is drawing that exact shape for you as a teaching aid. The tree only exists as the shape your recursive calls trace out over time. Going down an edge is a function call, and coming back up is the backtrack. Once you can see it that way, pruning has an obvious meaning: you're cutting off an entire subtree, leaves and all."
+          "text": "Your own code never actually builds this tree as a data structure, but it illustrates the shape your recursive calls trace out over time. Going down an edge is a function call, and coming back up is the backtrack. Once you can see it that way, pruning has an obvious meaning: you're cutting off an entire subtree, leaves and all."
         }
       ]
     },
     {
       "id": "h-template",
-      "text": "The template, always the same shape",
+      "text": "The formula",
       "type": "heading",
       "level": 2
     },
@@ -216,7 +165,47 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Every problem in this section is this shape with different pieces filled in, so it's worth reading a few times, because the rest of the section is basically variations on it."
+          "text": "Backtracking seems complicated, but every single backtracking algorithm looks roughly the same."
+        }
+      ]
+    },
+    {
+      "id": "p_18b24f10",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "We start by checking if we are at the "
+        },
+        {
+          "text": "bottom ",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": "of the tree, for the N-queens example this would mean we already have 8 queens down. If so, we record our answers, then we exit (because its the end of that specific path. "
+        }
+      ]
+    },
+    {
+      "id": "p_4b003ddb",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "After that, we recursively run the backtracking function, for the first legal move, undo, then run it for the second legal move, undo, then run it for the third legal move, etc. Remember, we undo because we want to check out every single possible branch of our tree. This is the "
+        },
+        {
+          "text": "exact",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " same pattern for Depth-First Search (DFS), it checks it branch by branch going as deep as possible."
         }
       ]
     },
@@ -225,15 +214,6 @@
       "code": "function solve(state):\n    if state is a complete answer:\n        record it\n        return\n\n    for each choice available from state:\n        if choice is not allowed:\n            continue          # prune: never build anything below here\n\n        apply choice          # choose\n        solve(state)          # explore\n        undo choice           # un-choose",
       "type": "code",
       "language": "text"
-    },
-    {
-      "id": "p-template-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The three lines at the bottom are the heart of it, and they always go in that order. Choose, explore, un-choose. Skip the third one and a decision ends up leaking into branches where it was never actually made."
-        }
-      ]
     },
     {
       "id": "p-template-3",
@@ -251,40 +231,7 @@
           ]
         },
         {
-          "text": " right above it is the prune. Everything you gain over brute force lives on that one line, since skipping a choice there means the whole subtree underneath it never gets built. In the queens table above, that single check is the difference between 16.7 million and 2,057."
-        }
-      ]
-    },
-    {
-      "id": "h-trace",
-      "text": "A trace you can follow with a finger",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-trace",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Subsets is the gentlest place to watch this run, since the rules never reject anything and you can just focus on the shape of the recursion. Step through that same widget again, but this time follow the call stack panel instead of the tree. Recursion depth is literally how deep that stack goes: every push is a choose, every pop is an undo."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Two things worth noticing. Every answer you see recorded is a snapshot taken at that exact instant, and the list actually being built is one single object getting edited in place the whole run. It ends empty, same as it started."
-        }
-      ]
-    },
-    {
-      "id": "p-trace-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Also count the undos as you go. There are always exactly as many as there were chooses, and they come back in the exact reverse order the choices were made. That symmetry is what keeps the state honest, and when a backtracking program starts misbehaving, it's usually because that symmetry broke somewhere."
+          "text": " right above it is the prune, essentially optimizing our algorithm by only making moves that are \"legal\"."
         }
       ]
     },
@@ -299,7 +246,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Pruning is easier to believe than to actually picture, so here it is happening. This is the same template on a problem where the rules do reject candidates: combination sum, hunting for numbers from a fixed list that add up to a target. Flip pruning on and off and watch the two counters below the tree. Cutting overshooting branches early is the entire difference between them."
+          "text": "This is the same template on a problem where the rules do reject candidates: combination sum, hunting for numbers from a fixed list that add up to a target. Flip pruning on and off and watch the two counters below the tree. Cutting overshooting branches early is the entire difference between them."
         }
       ]
     },
@@ -319,96 +266,8 @@
       "widget": "backtracking-tree"
     },
     {
-      "id": "h-pruning",
-      "text": "What pruning is actually worth",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-pruning",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It's easy to underrate a single if statement, but the math is what makes the case."
-        }
-      ]
-    },
-    {
-      "id": "p-pruning-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "In a tree where each node has "
-        },
-        {
-          "text": "k",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " children and the tree runs "
-        },
-        {
-          "text": "d",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " levels deep, cutting one node at depth "
-        },
-        {
-          "text": "i",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " removes "
-        },
-        {
-          "text": "k",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " to the power of "
-        },
-        {
-          "text": "(d - i)",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " leaves. Cutting near the root is worth astronomically more than cutting near the bottom, which is why a cheap check done early beats a clever check done late."
-        }
-      ]
-    },
-    {
-      "id": "p-pruning-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The queens numbers make it concrete. Checking whether a square is under attack before placing a queen costs almost nothing, and doing it as early as possible takes the search from 16.7 million completions down to 2,057 boards ever actually built. The algorithm didn't get smarter. It just stopped building things it already knew were worthless."
-        }
-      ]
-    },
-    {
       "id": "h-cost",
-      "text": "What it costs, when exponential isn't fatal",
+      "text": "Time complexity",
       "type": "heading",
       "level": 2
     },
@@ -417,7 +276,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There's no getting around it: the worst case really is exponential. Subsets of "
+          "text": "Even though backtracking is relatively efficient, it's still usually really slow and often runs in exponential time. Subsets of "
         },
         {
           "text": "n",
@@ -455,15 +314,6 @@
       ]
     },
     {
-      "id": "p-cost-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "What pruning actually changes is the gap between the worst case and whatever's actually in front of you. Those two are routinely separated by several orders of magnitude, and that gap is the difference between a program that returns and one that doesn't."
-        }
-      ]
-    },
-    {
       "id": "p-cost-3",
       "type": "paragraph",
       "content": [
@@ -474,7 +324,7 @@
     },
     {
       "id": "h-mistakes",
-      "text": "The bugs, in the order you'll meet them",
+      "text": "Common Mistakes",
       "type": "heading",
       "level": 2
     },
@@ -570,7 +420,7 @@
     },
     {
       "id": "h-code",
-      "text": "The template, filled in",
+      "text": "In code",
       "type": "heading",
       "level": 2
     },
@@ -729,6 +579,28 @@
       },
       "type": "interactive",
       "widget": "quiz"
+    },
+    {
+      "id": "h_b3b59ac6",
+      "text": "Homework",
+      "type": "heading",
+      "level": 2
+    },
+    {
+      "id": "p_e3a73f50",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Try out the classic N-queens problem on LeetCode. It's classified as hard, but now that you have read this article, you already know all you need to know."
+        }
+      ]
+    },
+    {
+      "id": "btn_d481300f",
+      "href": "https://leetcode.com/problems/n-queens/description/",
+      "type": "button",
+      "label": "Do the homework ->",
+      "style": "secondary"
     }
   ]
 }

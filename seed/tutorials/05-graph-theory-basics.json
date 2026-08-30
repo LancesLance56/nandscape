@@ -33,19 +33,10 @@
   ],
   "body": [
     {
-      "id": "lead",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Three ideas sit underneath every graph algorithm: what a graph is, which kinds of graph exist, and how you store one in code. This page covers all three in order. Once they are solid, the traversal and shortest-path algorithms that follow are mostly a matter of bookkeeping."
-        }
-      ]
-    },
-    {
       "id": "what-a-graph-actually-is",
+      "text": "What a Graph Actually Is",
       "type": "heading",
-      "level": 2,
-      "text": "What a Graph Actually Is"
+      "level": 2
     },
     {
       "id": "whatis-0",
@@ -333,16 +324,16 @@
     },
     {
       "id": "directed-weighted-and-other-flavours",
+      "text": "Directed, Weighted, and Other Flavours",
       "type": "heading",
-      "level": 2,
-      "text": "Directed, Weighted, and Other Flavours"
+      "level": 2
     },
     {
       "id": "flavours-0",
       "type": "paragraph",
       "content": [
         {
-          "text": "Previously we discussed a simple case where a graph has a collection of nodes in edges all of the same kind. In many scenarios, you will need to make use of a slightly more complicated representation where some nodes and edges are different from one another. For example, representing instagram following as a graph would require something called a directed graph, where each edge points in a direction, since not everybody follows the people that follow them. We will discuss that in this chapter."
+          "text": "We discussed a simple case where a graph has a collection of nodes in edges all of the same kind. In many scenarios, you will need to make use of a slightly more complicated representation where some nodes and edges are different from one another. For example, representing instagram following as a graph would require something called a directed graph, where each edge points in a direction, since not everybody follows the people that follow them. We will discuss that in this chapter."
         }
       ]
     },
@@ -1010,9 +1001,9 @@
     },
     {
       "id": "storing-a-graph-in-code",
+      "text": "Storing a Graph in Code",
       "type": "heading",
-      "level": 2,
-      "text": "Storing a Graph in Code"
+      "level": 2
     },
     {
       "id": "storing-0",
