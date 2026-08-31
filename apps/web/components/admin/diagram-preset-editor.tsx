@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AlertTriangle, Check, Loader2, Trash2 } from "lucide-react";
-import { FlowchartEditor } from "@/components/content/blocks/interactive/flowchart/flowchart-editor";
+import { FlowchartWorkbench } from "@/components/flowchart/workbench";
+import { useFlowchartDoc } from "@/components/flowchart/use-flowchart-doc";
 import { STARTER_CHART } from "@/lib/flowchart/charts";
 import { isFlowchartSpec, type FlowchartSpec } from "@/lib/flowchart/types";
 import type { DiagramKind } from "@/lib/diagrams/diagram-records";
@@ -23,9 +24,36 @@ import { cn } from "@/lib/cn";
  * every page reading that slug picks it up.
  *
  * Graph presets get a JSON field rather than a canvas. There is no graph
- * equivalent of FlowchartEditor, and the honest answer is a text area that
+ * equivalent of the flowchart workbench, and the honest answer is a text area that
  * validates rather than a half-built canvas that quietly mangles a spec.
  */
+
+/**
+ * The canvas, wired to this form's state.
+ *
+ * The workbench owns the document so that undo and the coalescing of a drag
+ * into a single history step behave the same here as in the studio; this
+ * publishes each version back to the form, one way only, because syncing the
+ * other direction would fight every keystroke.
+ */
+function ChartField({
+  initial,
+  onChange,
+}: {
+  initial: FlowchartSpec;
+  onChange: (spec: FlowchartSpec) => void;
+}) {
+  const doc = useFlowchartDoc(initial);
+
+  useEffect(() => {
+    onChange(doc.spec);
+    // `onChange` is a fresh setter identity on each parent render, so
+    // depending on it would publish in a loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doc.spec]);
+
+  return <FlowchartWorkbench doc={doc} variant="embedded" />;
+}
 
 export interface DiagramPresetFormValues {
   slug: string;
@@ -278,7 +306,7 @@ export function DiagramPresetEditor({ initial, usage }: DiagramPresetEditorProps
       {kind === "flowchart" ? (
         <div className="flex flex-col gap-2">
           <span className={labelClass}>Diagram</span>
-          <FlowchartEditor spec={chart} onChange={setChart} showTemplates showJson />
+          <ChartField initial={chart} onChange={setChart} />
         </div>
       ) : (
         <div className="flex flex-col gap-2">

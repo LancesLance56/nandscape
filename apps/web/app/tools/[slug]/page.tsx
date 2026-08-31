@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { InteractiveBlockView } from "@/components/content/blocks/interactive/interactive-block";
 import { BreadcrumbJsonLd, FaqJsonLd, SoftwareAppJsonLd } from "@/components/seo/json-ld";
 import { buildContentMetadata } from "@/lib/seo/metadata";
-import { TOOLS, getTool } from "@/lib/tools/tools";
+import { PAGED_TOOLS, getTool } from "@/lib/tools/tools";
 import { EmbedBuilder } from "@/components/embeds/embed-builder";
 import { OEmbedDiscovery } from "@/components/embeds/oembed-discovery";
 
@@ -17,7 +17,9 @@ interface PageProps {
 }
 
 export function generateStaticParams() {
-  return TOOLS.map((tool) => ({ slug: tool.slug }));
+  // A tool with its own route is served there and redirected from here, so
+  // generating this page for it would build a second copy of the same thing.
+  return PAGED_TOOLS.map((tool) => ({ slug: tool.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ToolPage({ params }: PageProps) {
   const { slug } = await params;
   const tool = getTool(slug);
-  if (!tool) notFound();
+  if (!tool || tool.href) notFound();
 
   return (
     <>

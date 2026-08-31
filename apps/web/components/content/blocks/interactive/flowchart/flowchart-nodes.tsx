@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Handle, Position, type NodeProps, type Node } from "@xyflow/react";
 import { cn } from "@/lib/cn";
 import type { HandleSlot } from "@/lib/flowchart/layout";
@@ -44,6 +45,12 @@ export interface FlowNodeData extends Record<string, unknown> {
   /** Already passed on this walkthrough. */
   visited: boolean;
   clickable: boolean;
+  /** Draw the connect ports and make the whole box a drop target. */
+  connectable?: boolean;
+  /** This box's label is being renamed in place. */
+  editing?: boolean;
+  onTextChange?: (id: string, text: string) => void;
+  onTextDone?: () => void;
 }
 
 export type FlowchartNode = Node<FlowNodeData>;
@@ -67,7 +74,7 @@ const POSITION_FOR: Record<FlowSide, Position> = {
  * picks which pair an edge uses, so every side has to exist even though a
  * given chart uses two of them.
  */
-function Handles({ slots }: { slots: HandleSlot[] }) {
+function Handles({ slots, connectable = false }: { slots: HandleSlot[]; connectable?: boolean }) {
   return (
     <>
       {SIDES.map(({ side, position }) => (
@@ -90,6 +97,51 @@ function Handles({ slots }: { slots: HandleSlot[] }) {
           className="!h-px !w-px !min-h-0 !min-w-0 !border-0 !bg-transparent !opacity-0"
         />
       ))}
+
+      {/* The editor's connect ports: four grab dots, hidden until the box is
+          hovered or selected so an idle chart stays a chart. Separate ids
+          from the invisible anchor handles above, which the layout owns. */}
+      {connectable &&
+        SIDES.map(({ side, position }) => (
+          <Handle
+            key={`c-${side}`}
+            id={`c-${side}`}
+            type="source"
+            position={position}
+            isConnectable
+            className="fc-port"
+          />
+        ))}
+
+      {/* One drop target covering the whole box, because aiming at a 9px dot
+          to *finish* an arrow is a different and much harder task than
+          grabbing one to start it. React Flow resolves a drop with
+          elementFromPoint, so this has to be a real handle sitting on top -
+          which is why it only takes pointer events while a connection is
+          actually in flight (see .fc-connecting in globals.css). */}
+      {connectable && (
+        <Handle
+          id="c-in"
+          type="target"
+          position={Position.Left}
+          isConnectable
+          className="fc-drop"
+          style={{
+            left: 0,
+            top: 0,
+            right: "auto",
+            bottom: "auto",
+            width: "100%",
+            height: "100%",
+            minWidth: 0,
+            minHeight: 0,
+            transform: "none",
+            border: 0,
+            borderRadius: 10,
+            background: "transparent",
+          }}
+        />
+      )}
 
       {/* The per-edge attachment points, as real elements at their real
           coordinates. React Flow measures a node's handles out of the DOM
@@ -156,6 +208,67 @@ function Label({ text, mono, color }: { text: string; mono: boolean; color: stri
   );
 }
 
+/**
+ * Rename in place, on double-click.
+ *
+ * The alternative - select the box, cross the canvas, find the text field in
+ * a panel - is the single most repeated action in building a chart, and
+ * making it a round trip is most of why editing one felt like paperwork.
+ *
+ * `nodrag`/`nowheel` are load-bearing: without them React Flow treats a
+ * text selection drag as a node drag and a scroll as a canvas zoom.
+ */
+function LabelEditor({
+  id,
+  text,
+  mono,
+  color,
+  onChange,
+  onDone,
+}: {
+  id: string;
+  text: string;
+  mono: boolean;
+  color: string;
+  onChange?: (id: string, text: string) => void;
+  onDone?: () => void;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.focus();
+    el.select();
+  }, []);
+
+  return (
+    <textarea
+      ref={ref}
+      value={text}
+      onChange={(e) => onChange?.(id, e.target.value)}
+      onBlur={() => onDone?.()}
+      onKeyDown={(e) => {
+        e.stopPropagation();
+        // Enter commits, shift+Enter is a line break - a flowchart box is
+        // usually one line, so the common case should not need a modifier.
+        if ((e.key === "Enter" && !e.shiftKey) || e.key === "Escape") {
+          e.preventDefault();
+          onDone?.();
+        }
+      }}
+      onPointerDown={(e) => e.stopPropagation()}
+      rows={Math.max(1, text.split("\n").length)}
+      spellCheck={false}
+      className={cn(
+        "nodrag nowheel relative z-[3] w-[86%] resize-none rounded border border-copper bg-surface-card px-1 py-0.5 text-center text-[11px] font-semibold leading-[16px] outline-none",
+        mono && "font-mono tracking-tight",
+      )}
+      style={{ color }}
+    />
+  );
+}
+
 /** Shared wrapper: sizing, focus ring, dim/active state, handles, badge. */
 function Shell({
   data,
@@ -174,15 +287,15 @@ function Shell({
   return (
     <div
       className={cn(
-        "relative flex h-full w-full items-center justify-center transition-[opacity,filter] duration-200",
+        "group/node relative flex h-full w-full items-center justify-center transition-[opacity,filter] duration-200",
         data.clickable && "cursor-pointer",
         data.dimmed && "opacity-25",
         className,
       )}
       style={style}
-      title={data.spec.note ? data.spec.note : undefined}
+      title={data.spec.note && !data.editing ? data.spec.note : undefined}
     >
-      <Handles slots={data.slots} />
+      <Handles slots={data.slots} connectable={data.connectable} />
       {data.spec.badge && <Badge text={data.spec.badge} color={accent.line} />}
       {children}
       {(selected || data.active) && (
@@ -210,7 +323,18 @@ export function TerminalNode({ data, selected }: NodeProps<FlowchartNode>) {
         style={{ background: accent.fill, borderColor: accent.line }}
       />
       {data.spec.note && <NoteDot color={accent.line} />}
-      <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      {data.editing ? (
+        <LabelEditor
+          id={data.spec.id}
+          text={data.spec.text}
+          mono={data.mono}
+          color={accent.text}
+          onChange={data.onTextChange}
+          onDone={data.onTextDone}
+        />
+      ) : (
+        <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      )}
     </Shell>
   );
 }
@@ -229,7 +353,18 @@ export function ProcessNode({ data, selected }: NodeProps<FlowchartNode>) {
         }}
       />
       {data.spec.note && <NoteDot color={accent.line} />}
-      <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      {data.editing ? (
+        <LabelEditor
+          id={data.spec.id}
+          text={data.spec.text}
+          mono={data.mono}
+          color={accent.text}
+          onChange={data.onTextChange}
+          onDone={data.onTextDone}
+        />
+      ) : (
+        <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      )}
     </Shell>
   );
 }
@@ -253,7 +388,18 @@ export function DecisionNode({ data, selected }: NodeProps<FlowchartNode>) {
         />
       </svg>
       {data.spec.note && <NoteDot color={accent.line} />}
-      <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      {data.editing ? (
+        <LabelEditor
+          id={data.spec.id}
+          text={data.spec.text}
+          mono={data.mono}
+          color={accent.text}
+          onChange={data.onTextChange}
+          onDone={data.onTextDone}
+        />
+      ) : (
+        <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      )}
     </Shell>
   );
 }
@@ -274,7 +420,18 @@ export function IoNode({ data, selected }: NodeProps<FlowchartNode>) {
         />
       </svg>
       {data.spec.note && <NoteDot color={accent.line} />}
-      <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      {data.editing ? (
+        <LabelEditor
+          id={data.spec.id}
+          text={data.spec.text}
+          mono={data.mono}
+          color={accent.text}
+          onChange={data.onTextChange}
+          onDone={data.onTextDone}
+        />
+      ) : (
+        <Label text={data.spec.text} mono={data.mono} color={accent.text} />
+      )}
     </Shell>
   );
 }
@@ -293,7 +450,7 @@ export function GroupNode({ data, selected }: NodeProps<FlowchartNode>) {
         data.dimmed && "opacity-25",
       )}
     >
-      <Handles slots={data.slots} />
+      <Handles slots={data.slots} connectable={data.connectable} />
       {data.spec.badge && <Badge text={data.spec.badge} color={accent.line} />}
       <span
         className="absolute inset-0 rounded-xl border-2"

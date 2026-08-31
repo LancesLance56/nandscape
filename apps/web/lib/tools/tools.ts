@@ -18,6 +18,16 @@ export interface ToolDefinition {
   intro: string;
   /** Key into the interactive widget registry (see interactive-block.tsx). */
   widget: string;
+  /**
+   * Where this tool actually lives, when that is not `/tools/<slug>`.
+   *
+   * A tool big enough to need the whole window earns its own route, and
+   * serving it at both URLs would be two pages of identical content. The
+   * entry stays here so the tool keeps its place in the index, the homepage
+   * bento and the embed catalog; only the page moves, and `/tools/<slug>`
+   * redirects to it (see next.config.ts).
+   */
+  href?: string;
   widgetData?: Record<string, unknown>;
   /**
    * Iframe height the embed snippet suggests for this tool, in pixels.
@@ -271,6 +281,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "flowchart-maker",
+    href: "/flowchart",
     title: "Flowchart Maker",
     seoTitle: "Free Flowchart Maker for Algorithms: Build and Edit Online",
     seoDescription:
@@ -285,15 +296,17 @@ export const TOOLS: ToolDefinition[] = [
       "pseudocode flowchart",
     ],
     intro:
-      "Build a flowchart by adding boxes and connecting them. The layout is computed for you, so there is nothing to drag and nothing to align. Start from a blank chart or load one of the sorting algorithms.",
+      "Build a flowchart by adding boxes and dragging arrows between them. Boxes place themselves until you move one, and then they stay put. Start from a blank chart or load one of the sorting algorithms.",
     widget: "flowchart-maker",
     embedHeight: 700,
     howTo: [
-      "Add boxes with the buttons on the right: start and end are pills, process is a rectangle, decision is a diamond.",
-      "Click a box in the chart to rename it, change its shape, add a note, or delete it.",
-      "Connect two boxes with the from/to selectors. Label the branches out of a decision, usually yes and no.",
+      "Add boxes from the palette: start and end are pills, process is a rectangle, decision is a diamond.",
+      "Adding a box while another is selected connects the two, so a chain of steps builds itself.",
+      "Double-click a box to rename it where it sits, or press Enter with it selected.",
+      "Drag from the dot on a box's edge to another box to draw an arrow. Label the branches out of a decision, usually yes and no.",
+      "Drag a box to pin it exactly where you want it; everything you have not moved keeps arranging itself around it.",
       "Arrows that point back up the chart are drawn dashed, so loops are visible at a glance.",
-      "Warnings appear under the chart for common mistakes: a decision with one exit, an unreachable box, a missing start.",
+      "Warnings call out the common mistakes: a decision with one exit, an unreachable box, a missing start.",
       "Copy the chart as JSON to save it or paste it into a tutorial page.",
     ],
     related: [
@@ -318,9 +331,9 @@ export const TOOLS: ToolDefinition[] = [
           "Not directly. A flowchart describes one pass through a procedure, and recursion means the procedure invokes itself, which the notation has no symbol for. The usual convention is to draw a single call and show the recursive step as an ordinary process box, which is how the merge sort and quick sort charts here are drawn.",
       },
       {
-        question: "Why can I not drag the boxes around?",
+        question: "Can I move the boxes myself?",
         answer:
-          "Positions are computed rather than stored. The tool works out how many layers deep the chart is, places each box on its layer, and routes the arrows. That means a chart can never end up overlapping or tangled, and adding a box in the middle rearranges everything automatically instead of requiring you to move the rest by hand.",
+          "Yes. Every box is placed automatically until you drag it, and from then on it stays exactly where you dropped it while the rest of the chart keeps arranging itself around it. Auto-layout releases every box at once, or a single box can be unpinned from its own panel, so a chart can never get stuck in a half-arranged state you cannot escape.",
       },
     ],
   },
@@ -407,3 +420,11 @@ export const TOOLS: ToolDefinition[] = [
 export function getTool(slug: string): ToolDefinition | undefined {
   return TOOLS.find((tool) => tool.slug === slug);
 }
+
+/** Where to link a tool. The single place that knows about `href`. */
+export function toolHref(tool: ToolDefinition): string {
+  return tool.href ?? `/tools/${tool.slug}`;
+}
+
+/** Tools whose page really is `/tools/<slug>`, for routing and the sitemap. */
+export const PAGED_TOOLS = TOOLS.filter((tool) => !tool.href);

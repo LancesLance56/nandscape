@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  Background,
+  BackgroundVariant,
   BaseEdge,
-  Controls,
+  ConnectionMode,
   MarkerType,
   MiniMap,
   Panel,
@@ -12,9 +14,11 @@ import {
   useReactFlow,
   useStore,
   useUpdateNodeInternals,
+  type Connection,
   type Edge,
   type EdgeProps,
   type EdgeTypes,
+  type NodeChange,
   type NodeHandle,
   type NodeProps,
   type NodeTypes,
@@ -168,6 +172,8 @@ function ViewportFit({
   height,
   insets,
   onFitChange,
+  follow,
+  token,
 }: {
   width: number;
   height: number;
@@ -175,13 +181,33 @@ function ViewportFit({
   insets: { top: number; bottom: number };
   /** Reports whether the whole chart is on screen, so panning can be switched off. */
   onFitChange: (fits: boolean) => void;
+  /**
+   * Refit every time the drawing changes shape.
+   *
+   * Right for a reading widget, where the spec never changes and the only
+   * shape changes are a direction flip or a resize. Wrong for an editor: the
+   * layout's bounding box moves on every keystroke and every pixel of a drag,
+   * so following it would yank the canvas out from under whoever is working
+   * in it. Editors pass false and refit on demand via `token` instead.
+   */
+  follow: boolean;
+  /** Bump to force a refit. The only way to refit when `follow` is false. */
+  token: number;
 }) {
   const { setViewport } = useReactFlow();
   const viewWidth = useStore((s) => s.width);
   const viewHeight = useStore((s) => s.height);
+  // What the last fit was triggered by. In follow mode this is ignored; in
+  // manual mode a run is skipped unless one of these actually moved, which is
+  // what stops an edit from re-centring the canvas.
+  const lastRun = useRef<string | null>(null);
 
   useEffect(() => {
     if (!viewWidth || !viewHeight || width <= 0 || height <= 0) return;
+
+    const trigger = `${viewWidth}x${viewHeight}#${token}`;
+    if (!follow && lastRun.current === trigger) return;
+    lastRun.current = trigger;
 
     const pad = 16;
     // The strips the controls and legend occupy. Centring in the full box
@@ -206,7 +232,7 @@ function ViewportFit({
     // frame: if the honest fit was legible, everything is on screen and
     // there is nothing to pan to.
     onFitChange(fitted >= MIN_READABLE_ZOOM);
-  }, [viewWidth, viewHeight, width, height, insets.top, insets.bottom, setViewport, onFitChange]);
+  }, [viewWidth, viewHeight, width, height, insets.top, insets.bottom, setViewport, onFitChange, follow, token]);
 
   return null;
 }
@@ -299,7 +325,45 @@ export interface FlowchartCanvasProps {
   activeNodes?: ReadonlySet<string>;
   activeEdges?: ReadonlySet<string>;
   visitedNodes?: ReadonlySet<string>;
+  /**
+   * Called continuously while a box is dragged, not just when it is dropped.
+   *
+   * React Flow will not move a node it does not own, and this canvas hands it
+   * a `nodes` array derived from the layout on every render. So the position
+   * has to make the round trip through the spec: the change is written here,
+   * the layout re-runs, and the box arrives back under the cursor with its
+   * arrows re-routed to match. Doing it per frame rather than on drop is what
+   * makes that round trip look like a drag instead of a jump.
+   */
   onNodeMove?: (id: string, position: { x: number; y: number }) => void;
+  /** Drag from a box's port to another box. Enables the connect ports. */
+  onConnectNodes?: (from: string, to: string) => void;
+  /** Backspace/Delete on the current selection. */
+  onDelete?: (nodeIds: string[], edgeIds: string[]) => void;
+  /** Double-click a box, for rename-in-place. */
+  onNodeDoubleClick?: (id: string) => void;
+  selectedEdgeId?: string | null;
+  onSelectEdge?: (id: string | null) => void;
+  /** The box currently being renamed in place, if any. */
+  editingNodeId?: string | null;
+  onEditingText?: (id: string, text: string) => void;
+  onEditingDone?: () => void;
+  /** Refit whenever the drawing changes shape. Off for editors - see ViewportFit. */
+  autoFit?: boolean;
+  /** Bump to refit on demand. Only route to a fit when `autoFit` is false. */
+  fitToken?: number;
+  /** Pan and zoom even when the whole chart already fits. */
+  freeMove?: boolean;
+  /** Dot grid behind the drawing. Reads as a workspace, so: editors only. */
+  showGrid?: boolean;
+  /**
+   * Fill the parent instead of taking a computed pixel height.
+   *
+   * A chart in an article sizes itself to its own drawing, because the space
+   * around it belongs to the prose. A chart in a full-window editor is the
+   * opposite: the canvas is the room, and the drawing sits inside it.
+   */
+  fill?: boolean;
   /**
    * Floated over the drawing rather than stacked above it. A chart is mostly
    * empty space around its own shape, so controls and a legend sit in that
@@ -312,6 +376,7 @@ export interface FlowchartCanvasProps {
 }
 
 const EMPTY_SET: ReadonlySet<string> = new Set();
+const ORIGIN = { x: 0, y: 0 };
 
 export function FlowchartCanvas({
   spec,
@@ -324,17 +389,50 @@ export function FlowchartCanvas({
   activeEdges = EMPTY_SET,
   visitedNodes = EMPTY_SET,
   onNodeMove,
+  onConnectNodes,
+  onDelete,
+  onNodeDoubleClick,
+  selectedEdgeId = null,
+  onSelectEdge,
+  editingNodeId = null,
+  onEditingText,
+  onEditingDone,
+  autoFit = true,
+  fitToken = 0,
+  freeMove = false,
+  showGrid = false,
+  fill = false,
   overlayTop,
   overlayBottom,
   className,
 }: FlowchartCanvasProps) {
   const layout = useMemo(() => layoutFlowchart(spec), [spec]);
 
+  // Only top-level boxes are shifted to make room for the corridors.
+  const topLevel = useMemo(
+    () => new Set(layout.nodes.filter((n) => !n.parentId).map((n) => n.id)),
+    [layout],
+  );
+
   // A chart that is entirely on screen has nowhere to pan to, and letting it
   // drift under the cursor just feels broken. Panning and zooming switch on
   // only once the drawing is genuinely too big for its frame.
   const [fitsInView, setFitsInView] = useState(true);
-  const canMove = interactive.zoom && !fitsInView;
+  const canMove = freeMove || (interactive.zoom && !fitsInView);
+
+  // Who owns the wheel. A canvas that fills its container is the page, so it
+  // takes the scroll; a canvas sitting in an article is a widget the reader is
+  // scrolling *past*, and swallowing that gesture is maddening on a phone
+  // where every scroll starts on top of something. An editor in an article
+  // therefore pans by dragging but never by scrolling.
+  const ownsScroll = fill ? canMove : interactive.zoom && !fitsInView;
+
+  // While a connection is being dragged, every box has to become a drop
+  // target across its whole face. The rest of the time that same element
+  // would sit on top of the box and swallow clicks, so it is switched on
+  // through this class rather than mounted and unmounted.
+  const [connecting, setConnecting] = useState(false);
+  const editable = Boolean(onConnectNodes);
 
   // Changes whenever any node's set of attachment points changes, which is
   // precisely when React Flow's measured handle bounds have gone stale.
@@ -392,6 +490,10 @@ export function FlowchartCanvas({
         active: activeNodes.has(n.id),
         visited: visitedNodes.has(n.id),
         clickable: Boolean(onSelectNode) && !isGroup,
+        connectable: editable,
+        editing: editingNodeId === n.id,
+        onTextChange: onEditingText,
+        onTextDone: onEditingDone,
       };
 
       return {
@@ -412,7 +514,19 @@ export function FlowchartCanvas({
     });
 
     return [...lanes, ...boxes];
-  }, [layout, dimmed, activeNodes, visitedNodes, selectedId, interactive.draggable, onSelectNode]);
+  }, [
+    layout,
+    dimmed,
+    activeNodes,
+    visitedNodes,
+    selectedId,
+    interactive.draggable,
+    onSelectNode,
+    editable,
+    editingNodeId,
+    onEditingText,
+    onEditingDone,
+  ]);
 
   const edges = useMemo<Edge<FlowPathData>[]>(
     () =>
@@ -426,10 +540,18 @@ export function FlowchartCanvas({
         const stroke = isActive ? "var(--copper)" : e.back ? colors.line : "var(--border-strong)";
         const faded = dimmed.has(e.from) || dimmed.has(e.to);
 
+        const isSelected = selectedEdgeId === key;
+
         return {
           id: key,
           source: e.from,
           target: e.to,
+          selected: isSelected,
+          selectable: Boolean(onSelectEdge),
+          // A 1.7px line is not a click target. Widening only the invisible
+          // interaction band keeps the drawing unchanged while making an
+          // arrow something you can actually hit.
+          interactionWidth: onSelectEdge ? 18 : 0,
           // Still needed so React Flow considers this edge drawable at all -
           // it will not render an edge whose nodes are not "initialised" -
           // but the actual path comes from `data.points`, computed by the
@@ -450,59 +572,146 @@ export function FlowchartCanvas({
           },
           labelBgStyle: { fill: "var(--surface-card)", stroke: "var(--border)", strokeWidth: 0.8 },
           style: {
-            stroke,
-            strokeWidth: isActive ? 2.6 : e.back ? 1.9 : 1.7,
+            stroke: isSelected ? "var(--ink)" : stroke,
+            strokeWidth: isSelected ? 2.8 : isActive ? 2.6 : e.back ? 1.9 : 1.7,
             strokeDasharray: e.kind === "dashed" || (e.back && e.kind !== "solid") ? "5 4" : undefined,
             opacity: faded ? 0.18 : 1,
             transition: "opacity 200ms, stroke 200ms",
           },
-          markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16, color: stroke },
-          zIndex: isActive ? 5 : 1,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 16,
+            height: 16,
+            color: isSelected ? "var(--ink)" : stroke,
+          },
+          zIndex: isSelected || isActive ? 5 : 1,
         };
       }),
-    [layout, activeEdges, dimmed],
+    [layout, activeEdges, dimmed, selectedEdgeId, onSelectEdge],
   );
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: FlowchartNode) => {
-      if (!onSelectNode || node.type === "lane" || node.type === "group") return;
+      if (node.type === "lane") return;
+      onSelectEdge?.(null);
+      if (!onSelectNode || node.type === "group") return;
       onSelectNode(node.id === selectedId ? null : node.id);
     },
-    [onSelectNode, selectedId],
+    [onSelectNode, onSelectEdge, selectedId],
   );
 
-  const handleNodeDragStop = useCallback(
-    (_: MouseEvent | TouchEvent, node: FlowchartNode) => {
-      onNodeMove?.(node.id, { x: Math.round(node.position.x), y: Math.round(node.position.y) });
+  /**
+   * The one thing that makes dragging work at all.
+   *
+   * React Flow only applies a position change itself when it owns the node
+   * array (`defaultNodes`). This canvas passes `nodes`, so without an
+   * `onNodesChange` the library computes the drag, emits the change, and
+   * drops it on the floor: the box never moves and `onNodeDragStop` reports
+   * the position the box started at. Forwarding position changes into the
+   * spec is what closes that loop.
+   */
+  const handleNodesChange = useCallback(
+    (changes: NodeChange<FlowchartNode>[]) => {
+      if (!onNodeMove) return;
+      for (const change of changes) {
+        if (change.type !== "position" || !change.position) continue;
+
+        // Back out of the layout's frame into the spec's. The layout pushes
+        // every top-level box over to leave room for the corridors that run
+        // outside the drawing, so what React Flow reports is that far from
+        // the number a spec stores; writing it back untranslated moved a box
+        // by the corridor depth every single time it was picked up. A box
+        // inside a group is positioned relative to its parent and is never
+        // pushed, so it is already in the right frame.
+        const shift = topLevel.has(change.id) ? layout.offset : ORIGIN;
+        onNodeMove(change.id, {
+          x: Math.round(change.position.x - shift.x),
+          y: Math.round(change.position.y - shift.y),
+        });
+      }
     },
-    [onNodeMove],
+    [onNodeMove, layout.offset, topLevel],
+  );
+
+  const handleConnect = useCallback(
+    (connection: Connection) => {
+      if (!connection.source || !connection.target || connection.source === connection.target) return;
+      onConnectNodes?.(connection.source, connection.target);
+    },
+    [onConnectNodes],
+  );
+
+  /**
+   * React Flow's combined delete callback rather than the per-kind pair.
+   *
+   * Deleting a box also deletes the arrows touching it, and the two separate
+   * callbacks would report those as two events - which the editor would
+   * record as two undo steps for one press of Delete.
+   */
+  const handleDelete = useCallback(
+    ({ nodes: deletedNodes, edges: deletedEdges }: { nodes: FlowchartNode[]; edges: Edge[] }) => {
+      const nodeIds = deletedNodes.filter((n) => n.type !== "lane").map((n) => n.id);
+      const edgeIds = deletedEdges.map((e) => e.id);
+      if (nodeIds.length > 0 || edgeIds.length > 0) onDelete?.(nodeIds, edgeIds);
+    },
+    [onDelete],
   );
 
   return (
     <div
-      className={cn("relative overflow-hidden rounded-xl border border-border bg-surface-2/25", className)}
-      style={{ height: boxHeight }}
+      className={cn(
+        "relative overflow-hidden bg-surface-2/25",
+        !fill && "rounded-xl border border-border",
+        fill && "h-full w-full",
+        connecting && "fc-connecting",
+        className,
+      )}
+      style={fill ? undefined : { height: boxHeight }}
     >
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={NODE_TYPES}
         edgeTypes={EDGE_TYPES}
+        onNodesChange={handleNodesChange}
         onNodeClick={handleNodeClick}
-        onPaneClick={() => onSelectNode?.(null)}
-        onNodeDragStop={handleNodeDragStop}
+        onNodeDoubleClick={(_, node) => {
+          if (node.type !== "lane") onNodeDoubleClick?.(node.id);
+        }}
+        onEdgeClick={(_, edge) => {
+          onSelectNode?.(null);
+          onSelectEdge?.(edge.id === selectedEdgeId ? null : edge.id);
+        }}
+        onPaneClick={() => {
+          onSelectNode?.(null);
+          onSelectEdge?.(null);
+        }}
+        onConnect={handleConnect}
+        onConnectStart={() => setConnecting(true)}
+        onConnectEnd={() => setConnecting(false)}
+        onDelete={handleDelete}
         nodesDraggable={interactive.draggable}
-        nodesConnectable={false}
+        nodesConnectable={editable}
+        // Loose: a port is whichever end the drag needs it to be, so an
+        // arrow can be pulled from any side of a box to any side of another
+        // without the author having to know which ports are sources.
+        connectionMode={ConnectionMode.Loose}
+        connectionRadius={26}
+        connectionLineStyle={{ stroke: "var(--copper)", strokeWidth: 2, strokeDasharray: "4 3" }}
+        // React Flow already ignores these keys while a text field has focus,
+        // so this does not fight the inspector.
+        deleteKeyCode={onDelete ? ["Backspace", "Delete"] : null}
         elementsSelectable={Boolean(onSelectNode)}
         minZoom={0.2}
         maxZoom={2.5}
-        zoomOnScroll={canMove}
+        zoomOnScroll={ownsScroll}
         zoomOnPinch={canMove}
-        zoomOnDoubleClick={canMove}
+        // Double-click means "rename this box" wherever editing is on, so it
+        // cannot also mean "zoom in".
+        zoomOnDoubleClick={!editable && canMove}
         panOnDrag={canMove}
-        // Without this a diagram mid-article swallows the page scroll, which
-        // is maddening on a phone where every scroll starts on some widget.
-        preventScrolling={canMove}
+        selectionOnDrag={false}
+        preventScrolling={ownsScroll}
         proOptions={{ hideAttribution: true }}
         attributionPosition="bottom-left"
         // React Flow drops an edge it cannot place and says nothing, which is
@@ -520,8 +729,14 @@ export function FlowchartCanvas({
           height={layout.height}
           insets={{ top: overlayTop ? OVERLAY_STRIP : 0, bottom: overlayBottom ? OVERLAY_STRIP : 0 }}
           onFitChange={setFitsInView}
+          follow={autoFit}
+          token={fitToken}
         />
         <SyncNodeInternals signature={handleSignature} />
+
+        {showGrid && (
+          <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="var(--border-strong)" />
+        )}
 
         {/* pointer-events only on the controls themselves, so the empty parts
             of these strips never swallow a drag meant for the canvas. */}
@@ -535,7 +750,6 @@ export function FlowchartCanvas({
             <div className="pointer-events-auto">{overlayBottom}</div>
           </Panel>
         )}
-        {canMove && <Controls showInteractive={false} position="bottom-right" />}
         {interactive.minimap && (
           <MiniMap
             pannable

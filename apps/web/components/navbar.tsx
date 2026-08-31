@@ -15,6 +15,7 @@ const links = [
   { label: "Tutorials", href: "/tutorials" },
   { label: "Practice", href: "/puzzles" },
   { label: "Logic Editor", href: "/logic-editor" },
+  { label: "Flowcharts", href: "/flowchart" },
   { label: "Tools", href: "/tools" },
   { label: "Embeds", href: "/embeds" },
   { label: "Projects", href: "/projects" },

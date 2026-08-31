@@ -1,14 +1,44 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { cn } from "@/lib/cn";
 import { STARTER_CHART } from "@/lib/flowchart/charts";
 import { useStoredFlowcharts } from "@/lib/diagrams/use-stored-flowcharts";
 import { isFlowchartSpec, type FlowchartSpec } from "@/lib/flowchart/types";
-import { FlowchartEditor } from "@/components/content/blocks/interactive/flowchart/flowchart-editor";
+import { FlowchartWorkbench } from "@/components/flowchart/workbench";
+import { useFlowchartDoc } from "@/components/flowchart/use-flowchart-doc";
 import { FlowchartView } from "@/components/content/blocks/interactive/flowchart/flowchart-widgets";
 import type { WidgetEditorProps } from "@/lib/blog-editor/widget-registry";
+
+/**
+ * The chart editor, wired to a block's `onChange`.
+ *
+ * The workbench owns its own document so that undo and the coalescing of a
+ * drag into one history step work the same everywhere; this pushes each
+ * settled version back into the block. The block is the source of truth for
+ * what gets saved, the doc is the source of truth for what is being edited,
+ * and the sync only runs one way because the other direction would fight
+ * every keystroke.
+ */
+function ChartEditor({
+  initial,
+  onChange,
+}: {
+  initial: FlowchartSpec;
+  onChange: (spec: FlowchartSpec) => void;
+}) {
+  const doc = useFlowchartDoc(initial);
+
+  useEffect(() => {
+    onChange(doc.spec);
+    // `onChange` is rebuilt on every render of the parent, so depending on it
+    // would publish the chart in a loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doc.spec]);
+
+  return <FlowchartWorkbench doc={doc} variant="embedded" />;
+}
 
 /**
  * Two ways to put a flowchart on a page, and the block records which one it is.
@@ -98,12 +128,7 @@ export function FlowchartWidgetEditor({ data, onChange }: WidgetEditorProps) {
           )}
         </div>
       ) : (
-        <FlowchartEditor
-          spec={inline ?? STARTER_CHART}
-          onChange={(spec) => onChange({ chart: spec })}
-          showTemplates
-          showJson
-        />
+        <ChartEditor initial={inline ?? STARTER_CHART} onChange={(spec) => onChange({ chart: spec })} />
       )}
     </div>
   );
@@ -124,12 +149,7 @@ export function FlowchartMakerWidgetEditor({ data, onChange }: WidgetEditorProps
       <p className="text-[11px] italic text-slate">
         This is the chart readers start from. They can edit it themselves; nothing they do is saved.
       </p>
-      <FlowchartEditor
-        spec={inline ?? STARTER_CHART}
-        onChange={(spec) => onChange({ chart: spec })}
-        showTemplates
-        showJson
-      />
+      <ChartEditor initial={inline ?? STARTER_CHART} onChange={(spec) => onChange({ chart: spec })} />
     </div>
   );
 }

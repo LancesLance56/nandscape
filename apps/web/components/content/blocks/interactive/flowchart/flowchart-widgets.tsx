@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { ReactFlowProvider } from "@xyflow/react";
 
 import { cn } from "@/lib/cn";
@@ -18,7 +19,8 @@ import { WidgetFrame } from "../widget-frame";
 import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
 import { FlowchartCanvas } from "./flowchart-canvas";
 import { DownloadButton, FlowchartLegend, FlowchartNotePanel, deriveLegend } from "./flowchart-chrome";
-import { FlowchartEditor } from "./flowchart-editor";
+import { FlowchartWorkbench } from "@/components/flowchart/workbench";
+import { useFlowchartDoc } from "@/components/flowchart/use-flowchart-doc";
 
 /* -------------------------------------------------------------------------
  * Spec resolution
@@ -75,11 +77,58 @@ export function FlowchartWidget({ data }: { data: Record<string, unknown> }) {
   return <FlowchartView spec={spec} />;
 }
 
+const NO_MOVES: Readonly<Record<string, { x: number; y: number }>> = {};
+
 export function FlowchartView({ spec, className }: { spec: FlowchartSpec; className?: string }) {
   const interactive = useMemo(() => resolveInteractive(spec), [spec]);
   const legend = useMemo(() => deriveLegend(spec), [spec]);
 
   const [selected, setSelected] = useState<string | null>(null);
+
+  /**
+   * Boxes this reader has dragged.
+   *
+   * Kept here rather than written into the spec, because the spec is the
+   * published diagram and a reader moving a box to see it better is not an
+   * edit to it. Nothing is saved and a reload brings the chart back as its
+   * author drew it.
+   *
+   * The source spec is stored alongside so that a chart being swapped for
+   * another one (the admin preview switching presets) drops the positions
+   * with it, rather than applying one diagram's arrangement to the next one
+   * because two of the boxes happened to share an id. Comparing during
+   * render beats resetting from an effect: there is no frame in between
+   * where the wrong positions are on screen.
+   */
+  const [dragged, setDragged] = useState<{
+    source: FlowchartSpec;
+    moves: Record<string, { x: number; y: number }>;
+  }>(() => ({ source: spec, moves: NO_MOVES }));
+
+  const moves = dragged.source === spec ? dragged.moves : NO_MOVES;
+  const hasMoved = Object.keys(moves).length > 0;
+
+  const moveNode = useCallback(
+    (id: string, position: { x: number; y: number }) =>
+      setDragged((prev) => ({
+        source: spec,
+        moves: { ...(prev.source === spec ? prev.moves : NO_MOVES), [id]: position },
+      })),
+    [spec],
+  );
+
+  const resetPositions = useCallback(() => setDragged({ source: spec, moves: NO_MOVES }), [spec]);
+
+  // What the canvas actually draws: the author's chart with this reader's
+  // boxes moved. The layout re-routes the arrows around wherever they end up,
+  // so a rearranged chart is still a chart with no arrow crossing a box.
+  const shown = useMemo(
+    () =>
+      hasMoved
+        ? { ...spec, nodes: spec.nodes.map((n) => (moves[n.id] ? { ...n, position: moves[n.id] } : n)) }
+        : spec,
+    [spec, moves, hasMoved],
+  );
   // Tracing starts on. A chart that ships a recorded walkthrough is one where
   // the order of events is the hard part, and making the reader find a button
   // before the diagram explains itself wastes the best thing it has.
@@ -155,16 +204,26 @@ export function FlowchartView({ spec, className }: { spec: FlowchartSpec; classN
         </ToggleChip>
       )}
       {interactive.download && <DownloadButton container={containerRef} filename={spec.title ?? "flowchart"} />}
+      {hasMoved && (
+        <ToggleChip active={false} onClick={resetPositions}>
+          Reset layout
+        </ToggleChip>
+      )}
     </>
   );
 
   const body = (fullscreen: boolean) => (
     <div className={cn("flex flex-col gap-3", className)} ref={fullscreen ? undefined : containerRef}>
       <FlowchartCanvas
-        spec={spec}
+        spec={shown}
         interactive={interactive}
         // Fullscreen gets a fixed tall box; inline lets the canvas size itself.
         height={fullscreen ? Math.max(spec.height ?? 0, 620) : spec.height}
+        onNodeMove={interactive.draggable ? moveNode : undefined}
+        // Refitting follows the drawing's shape, which is the right default
+        // for a chart nobody is touching. Once a reader starts moving boxes
+        // it would re-centre the canvas under their hand on every frame.
+        autoFit={!hasMoved}
         selectedId={selected}
         onSelectNode={interactive.notes || interactive.focus ? setSelected : undefined}
         dimmed={dimmed}
@@ -310,24 +369,36 @@ function ToggleChip({
  * ---------------------------------------------------------------------- */
 
 /**
- * The reader-facing editable chart. Same editor the admin page uses, wrapped
- * in local state so a reader can pull a template apart without saving
- * anything anywhere.
+ * The reader-facing editable chart, for a tutorial page or an embed.
+ *
+ * The same editor the studio at /flowchart runs, in its embedded shape: no
+ * draft is kept, because several of these can share a page and a chart pulled
+ * apart while reading an article is not a document anybody wants back.
+ * Readers who want the room are pointed at the studio.
  */
 export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }) {
-  const initial = useMemo<FlowchartSpec>(() => {
-    const base = isFlowchartSpec(data.chart) ? data.chart : STARTER_CHART;
-    return JSON.parse(JSON.stringify(base)) as FlowchartSpec;
-  }, [data]);
+  const initial = useMemo<FlowchartSpec>(
+    () => (isFlowchartSpec(data.chart) ? data.chart : STARTER_CHART),
+    [data],
+  );
 
-  const [spec, setSpec] = useState<FlowchartSpec>(initial);
+  const doc = useFlowchartDoc(initial);
+  const boxes = doc.spec.nodes.filter((n) => n.type !== "group").length;
 
   return (
     <WidgetFrame
       title="Flowchart maker"
-      subtitle={`${spec.nodes.length} nodes · ${spec.edges.length} edges`}
+      subtitle={`${boxes} boxes · ${doc.spec.edges.length} arrows`}
+      action={
+        <Link
+          href="/flowchart"
+          className="text-[11px] font-semibold text-copper hover:text-copper-dark"
+        >
+          Open the full studio &rarr;
+        </Link>
+      }
     >
-      <FlowchartEditor spec={spec} onChange={setSpec} showTemplates showJson />
+      <FlowchartWorkbench doc={doc} variant="embedded" />
     </WidgetFrame>
   );
 }

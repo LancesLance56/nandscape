@@ -3,7 +3,7 @@ import { siteUrl } from "@/lib/site-url";
 import { listPublishedPosts } from "@/lib/blog/posts";
 import { listPublishedTutorialPages } from "@/lib/tutorials/tutorials";
 import { listTutorialTracks, listTutorialTrackTrees } from "@/lib/tutorials/tutorial-tracks";
-import { TOOLS } from "@/lib/tools/tools";
+import { TOOLS, toolHref } from "@/lib/tools/tools";
 import { listPuzzleRecords } from "@/lib/puzzles/puzzle-records";
 import { listPublicProjects } from "@/lib/projects/projects";
 
@@ -89,7 +89,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // most likely to attract an inbound link, so they rank alongside the
   // track hubs rather than below the lessons.
   const toolEntries: MetadataRoute.Sitemap = TOOLS.map((tool) => ({
-    url: `${base}/tools/${tool.slug}`,
+    url: `${base}${toolHref(tool)}`,
     changeFrequency: "monthly",
     priority: 0.8,
   }));

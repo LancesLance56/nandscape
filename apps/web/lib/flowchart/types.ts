@@ -112,7 +112,7 @@ export interface FlowchartInteractive {
   walkthrough?: boolean;
   /** Selecting a node dims everything not adjacent to it. */
   focus?: boolean;
-  /** Let the reader drag boxes around. */
+  /** Let the reader drag boxes around. On by default; see resolveInteractive. */
   draggable?: boolean;
   /** Scroll-to-zoom and pan, plus the zoom control cluster. */
   zoom?: boolean;
@@ -145,9 +145,15 @@ export interface FlowchartSpec {
 
 /**
  * Notes, legend, zoom and fullscreen are on by default because they cost the
- * reader nothing until used. Dragging is off: on a teaching diagram the
- * layout carries meaning, and a reader who nudges a box has quietly broken
- * it. The maker turns it on.
+ * reader nothing until used.
+ *
+ * So is dragging. The worry that a reader who nudges a box has quietly broken
+ * a diagram whose layout carries meaning is a real one, but it is answered by
+ * making the nudge undoable rather than impossible: a chart that has been
+ * rearranged offers to put itself back, and the arrows re-route around the
+ * boxes as they move, so a dragged diagram stays a legible diagram. Pulling a
+ * confusing box out to where you can see it is a normal thing to want to do
+ * while reading one.
  */
 export function resolveInteractive(spec: FlowchartSpec): Required<FlowchartInteractive> {
   const i = spec.interactive ?? {};
@@ -156,7 +162,7 @@ export function resolveInteractive(spec: FlowchartSpec): Required<FlowchartInter
     notes: i.notes ?? true,
     walkthrough: (i.walkthrough ?? true) && hasSteps,
     focus: i.focus ?? false,
-    draggable: i.draggable ?? false,
+    draggable: i.draggable ?? true,
     zoom: i.zoom ?? true,
     minimap: i.minimap ?? false,
     fullscreen: i.fullscreen ?? true,

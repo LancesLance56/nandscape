@@ -24,6 +24,16 @@ import {
   type FlowSide,
   type FlowchartSpec,
 } from "./types";
+import {
+  NODE_CLEARANCE,
+  isVerticalSide,
+  longestRunMidpoint,
+  pathHitsBoxes,
+  routeAroundBoxes,
+  simpleRoute,
+  type Obstacle,
+  type Point,
+} from "./routing";
 
 /* -------------------------------------------------------------------------
  * Geometry
@@ -127,6 +137,18 @@ export interface FlowchartLayout {
   lanes: PlacedLane[];
   width: number;
   height: number;
+  /**
+   * How far every top-level box was pushed to make room for the corridors
+   * that run outside the drawing.
+   *
+   * Published because a manual `position` is stored in the frame *before*
+   * that push, while what gets drawn - and so what a drag reports back - is
+   * in the frame after it. Anything writing a dragged position into a spec
+   * has to take this back off, or a box moves by the corridor depth every
+   * time it is picked up. Children of a group are positioned relative to
+   * their parent and are not pushed, so it does not apply to them.
+   */
+  offset: { x: number; y: number };
 }
 
 /** Text metrics for a leaf box. Groups are sized from their children instead. */
@@ -301,7 +323,14 @@ function diamondPoint(side: FlowSide, u: number, w: number, h: number): { x: num
   }
 }
 
-const EMPTY: FlowchartLayout = { nodes: [], edges: [], lanes: [], width: 0, height: 0 };
+const EMPTY: FlowchartLayout = {
+  nodes: [],
+  edges: [],
+  lanes: [],
+  width: 0,
+  height: 0,
+  offset: { x: 0, y: 0 },
+};
 
 export function layoutFlowchart(spec: FlowchartSpec): FlowchartLayout {
   if (!spec.nodes || spec.nodes.length === 0) return EMPTY;
@@ -707,6 +736,42 @@ function finish(
   const loops = routed.filter((e) => e.back);
   const skips = routed.filter((e) => !e.back && span(e) > 1);
 
+  /* --- boxes an arrow must not cross ------------------------------------ */
+
+  // Obstacles are the real boxes only. A group is scenery: an arrow into a
+  // step that lives inside one has to cross its border to get there, and
+  // counting that as a collision would send every such arrow the long way
+  // round for nothing.
+  // Built after the boxes have stopped moving. Making room for the corridors
+  // shifts every top-level node along the cross axis, and a collision test
+  // run against where they used to be answers a question nobody asked.
+  const snapshotObstacles = (): Obstacle[] =>
+    out
+      .filter((n) => n.type !== "group")
+      .map((n) => {
+        const c = centre(n.id);
+        return {
+          id: n.id,
+          x: c.x - n.width / 2 - NODE_CLEARANCE,
+          y: c.y - n.height / 2 - NODE_CLEARANCE,
+          w: n.width + NODE_CLEARANCE * 2,
+          h: n.height + NODE_CLEARANCE * 2,
+        };
+      });
+
+  /** Nothing but this arrow's own two boxes may be in its way. */
+  const clearanceFor = (boxes: Obstacle[]) => (e: RoutedEdge) => {
+    const own = new Set([e.from, e.to]);
+    return (points: Point[]) => !pathHitsBoxes(points, boxes, own);
+  };
+
+  // Which arrows get a corridor is decided by the shape of the graph alone -
+  // a loop, or a jump across layers - and never by where the boxes happen to
+  // sit. That matters more than it looks: the corridors decide how far the
+  // whole drawing is pushed over, so anything position-dependent here would
+  // shift every box on the canvas in the middle of dragging one of them.
+  // Arrows that merely have something in the way are dealt with by routing
+  // them around it, further down.
   const posDepth = assignCorridor(loops, FLANK_POS);
   const negDepth = assignCorridor(skips, FLANK_NEG);
 
@@ -784,6 +849,11 @@ function finish(
       else lane.x += negDepth;
     }
   }
+
+  // Every box is at its final position now, so this is the set the paths are
+  // actually drawn against.
+  const obstacles = snapshotObstacles();
+  const clearFor = clearanceFor(obstacles);
 
   /* --- handle slots ----------------------------------------------------- */
 
@@ -878,8 +948,6 @@ function finish(
   // where "the path never overlaps another one" actually gets guaranteed:
   // detours travel to a fixed line at a fixed distance from the node band,
   // one distance per edge, so two of them are parallel lines that never meet.
-  const isVerticalSide = (side: FlowSide) => side === "top" || side === "bottom";
-
   /** Absolute position of one endpoint's attachment slot. */
   const slotPoint = (nodeId: string, handleId: string): { x: number; y: number } => {
     const n = positionOf.get(nodeId);
@@ -892,15 +960,6 @@ function finish(
 
   type Pt = { x: number; y: number };
   type Seg = { a: Pt; b: Pt };
-
-  const straight = (p0: Pt, p1: Pt) => ({
-    points: [p0, p1],
-    labelAt: { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 },
-  });
-  const bent = (p0: Pt, m0: Pt, m1: Pt, p1: Pt) => ({
-    points: [p0, m0, m1, p1],
-    labelAt: { x: (m0.x + m1.x) / 2, y: (m0.y + m1.y) / 2 },
-  });
 
   const segsOf = (points: Pt[]): Seg[] => {
     const out: Seg[] = [];
@@ -999,41 +1058,61 @@ function finish(
         points = buildDetour(p0, p1, e.fromSide, cross0, nudge);
       }
 
+      // The staple keeps every detour parallel to every other one, but its
+      // two approach legs run straight from the corridor to the node, and
+      // whatever happens to be stacked between them is in the way. When that
+      // happens the arrow is routed around the obstruction instead, with its
+      // own corridor line marked preferred so it still travels where the
+      // layout put it and only leaves the corridor to get past the boxes.
+      const detourClear = clearFor(e);
+      if (!detourClear(points)) {
+        const around = routeAroundBoxes(
+          p0,
+          e.fromSide,
+          p1,
+          e.toSide,
+          obstacles,
+          new Set([e.from, e.to]),
+          { axis: isVerticalSide(e.fromSide) ? "y" : "x", value: cross0 },
+        );
+        if (around) {
+          placedDetourSegs.push(...segsOf(around));
+          e.points = around;
+          e.labelAt = longestRunMidpoint(around);
+          continue;
+        }
+      }
+
       placedDetourSegs.push(...segsOf(points));
       e.points = points;
       e.labelAt = { x: (points[2].x + points[3].x) / 2, y: (points[2].y + points[3].y) / 2 };
       continue;
     }
 
-    const v0 = isVerticalSide(e.fromSide);
-    const v1 = isVerticalSide(e.toSide);
-    let built: { points: Pt[]; labelAt: Pt };
+    const built = simpleRoute(p0, p1, e.fromSide, e.toSide);
+    const isClear = clearFor(e);
 
-    if (v0 === v1) {
-      // Both stubs leave along the same axis: bend through the shared
-      // midline on the other axis, or go straight if already aligned.
-      if (v0) {
-        built =
-          Math.abs(p0.x - p1.x) < 2
-            ? straight(p0, p1)
-            : bent(p0, { x: p0.x, y: (p0.y + p1.y) / 2 }, { x: p1.x, y: (p0.y + p1.y) / 2 }, p1);
-      } else {
-        built =
-          Math.abs(p0.y - p1.y) < 2
-            ? straight(p0, p1)
-            : bent(p0, { x: (p0.x + p1.x) / 2, y: p0.y }, { x: (p0.x + p1.x) / 2, y: p1.y }, p1);
-      }
-    } else {
-      // One stub vertical, one horizontal: a single corner where they meet
-      // connects them with exactly one bend. The corner has to share the
-      // vertical-tangent point's x (so that first leg is vertical) and the
-      // horizontal-tangent point's y (so the second leg is horizontal).
-      const corner = v0 ? { x: p0.x, y: p1.y } : { x: p1.x, y: p0.y };
-      built = { points: [p0, corner, p1], labelAt: corner };
+    if (isClear(built.points)) {
+      e.points = built.points;
+      e.labelAt = built.labelAt;
+      continue;
     }
 
-    e.points = built.points;
-    e.labelAt = built.labelAt;
+    // The ordinary route runs over a box, so go around it. The pre-check
+    // above already sent anything unroutable out to a corridor, so a null
+    // here means the exact attachment points turned out slightly worse than
+    // the provisional ones this was decided on - rare, and the original path
+    // is still the least-bad thing to draw.
+    const around = routeAroundBoxes(
+      p0,
+      e.fromSide,
+      p1,
+      e.toSide,
+      obstacles,
+      new Set([e.from, e.to]),
+    );
+    e.points = around ?? built.points;
+    e.labelAt = around ? longestRunMidpoint(around) : built.labelAt;
   }
 
   // Manual positions can push boxes past the computed frame, so the canvas
@@ -1046,7 +1125,14 @@ function finish(
     height = Math.max(height, n.y + n.height + MARGIN + (horizontal ? posDepth : 0));
   }
 
-  return { nodes: out, edges: routed, lanes: frame.lanes, width, height };
+  return {
+    nodes: out,
+    edges: routed,
+    lanes: frame.lanes,
+    width,
+    height,
+    offset: horizontal ? { x: 0, y: negDepth } : { x: negDepth, y: 0 },
+  };
 }
 
 /** Node types in use, for the auto-derived legend. */

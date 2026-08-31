@@ -1,5 +1,6 @@
 import type {Metadata, Viewport} from "next";
 import {Inter, JetBrains_Mono} from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import {ThemeProvider} from "@/components/theme-provider";
 import {siteUrl} from "@/lib/site-url";
@@ -50,6 +51,17 @@ export default function RootLayout({
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       {children}
     </ThemeProvider>
+    {/* GoatCounter: cookieless pageview counting, no consent banner needed.
+        Production only, so `pnpm dev` and a Docker dev build never pollute
+        the real count with your own testing. `afterInteractive` (next/script's
+        default) matches the vendor's own `async` recommendation - it loads
+        without blocking the page and does not need to run before hydration. */}
+    {process.env.NODE_ENV === "production" && (
+      <Script
+        data-goatcounter="https://lanceslance.goatcounter.com/count"
+        src="https://gc.zgo.at/count.js"
+      />
+    )}
     </body>
     </html>
   );

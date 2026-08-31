@@ -419,3 +419,65 @@ body {
     animation: nandscape-wire-flow 0.6s linear infinite;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Flowchart editor ports.
+
+   The connect ports and the whole-box drop target that let an arrow be pulled
+   from one box to another. Both are React Flow handles, and both need to sit
+   outside Tailwind: the library ships its own `.react-flow__handle` rules with
+   enough specificity that utility classes lose, and the drop target's
+   pointer-events have to be driven by an ancestor's state rather than by a
+   prop, so that it is inert except while a connection is actually in flight.
+   --------------------------------------------------------------------------- */
+
+.react-flow__handle.fc-port {
+  width: 9px;
+  height: 9px;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 9999px;
+  background: var(--copper);
+  border: 2px solid var(--surface-card);
+  opacity: 0;
+  z-index: 20;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.react-flow__node:hover .fc-port,
+.react-flow__node.selected .fc-port,
+.fc-connecting .react-flow__handle.fc-port {
+  opacity: 1;
+}
+
+.react-flow__handle.fc-port:hover {
+  transform: scale(1.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__handle.fc-port {
+    transition: none;
+  }
+  .react-flow__handle.fc-port:hover {
+    transform: none;
+  }
+}
+
+/* Inert by default so it never steals a click meant for the box underneath.
+   Only a drag in progress turns the whole face into somewhere to drop. */
+.react-flow__handle.fc-drop {
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+}
+
+.fc-connecting .react-flow__handle.fc-drop {
+  pointer-events: all;
+}
+
+.fc-connecting .react-flow__node:hover .fc-drop {
+  opacity: 1;
+  background: var(--copper-bg);
+  outline: 2px dashed var(--copper);
+  outline-offset: 1px;
+}

@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { AccentTile, SplitIndex } from "@/components/ui/rail";
 import { accentsFor } from "@/lib/ui/accent-palette";
 import { buildContentMetadata } from "@/lib/seo/metadata";
-import { TOOLS } from "@/lib/tools/tools";
+import { TOOLS, toolHref } from "@/lib/tools/tools";
 
 export const revalidate = 3600;
 
@@ -46,7 +46,7 @@ export default function ToolsIndexPage() {
           {TOOLS.map((tool, i) => (
             <AccentTile
               key={tool.slug}
-              href={`/tools/${tool.slug}`}
+              href={toolHref(tool)}
               index={String(i + 1).padStart(2, "0")}
               title={tool.title}
               accent={accents[i]}

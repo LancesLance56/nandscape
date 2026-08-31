@@ -5,7 +5,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { SortingVisualizerWidget } from "@/components/content/blocks/interactive/sorting/sorting-visualizer-widget";
 import { NumberBaseExplorerWidget } from "@/components/content/blocks/interactive/number-base-explorer-widget";
 import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
-import { TOOLS } from "@/lib/tools/tools";
+import { TOOLS, toolHref } from "@/lib/tools/tools";
 import { accentsFor } from "@/lib/ui/accent-palette";
 import { cn } from "@/lib/cn";
 
@@ -247,7 +247,7 @@ export function ToolsBento() {
           {tiles.map((tile, i) => {
             const tool = bySlug.get(tile.slug)!;
             const accent = accents[i];
-            const href = `/tools/${tool.slug}`;
+            const href = toolHref(tool);
             const chrome = "relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-card p-4";
 
             // A tile running a widget cannot be a link - every click inside it

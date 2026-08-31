@@ -41,10 +41,17 @@ const nextConfig: NextConfig = {
       ],
     ];
 
-    return merges.flatMap(([from, to]) => [
-      { source: `/tutorials/dsa/${from}`, destination: `/tutorials/dsa/${to}`, permanent: true },
-      { source: `/tutorials/${from}`, destination: `/tutorials/dsa/${to}`, permanent: true },
-    ]);
+    return [
+      // The flowchart maker outgrew a widget in an article column and moved to
+      // its own full-window route. Its old tool page was indexed and linked,
+      // so it points at the new one rather than 404ing or serving a duplicate.
+      { source: "/tools/flowchart-maker", destination: "/flowchart", permanent: true },
+
+      ...merges.flatMap(([from, to]) => [
+        { source: `/tutorials/dsa/${from}`, destination: `/tutorials/dsa/${to}`, permanent: true },
+        { source: `/tutorials/${from}`, destination: `/tutorials/dsa/${to}`, permanent: true },
+      ]),
+    ];
   },
 };
 
