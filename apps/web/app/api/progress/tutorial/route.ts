@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import { setTutorialCompletion } from "@/lib/engagement/progress";
+import { getCompletedSlugs, setTutorialCompletion } from "@/lib/engagement/progress";
 
 /**
  * Mark a tutorial page done, or undo it.
@@ -34,4 +34,26 @@ export async function POST(request: NextRequest) {
   );
 
   return NextResponse.json({ completed: now });
+}
+
+/**
+ * Whether *this* reader has finished a given page.
+ *
+ * Read from the browser rather than rendered into the page, because the
+ * lesson itself is statically prerendered and revalidated for everyone:
+ * touching the session cookie while building it would flip the whole route
+ * to dynamic at runtime and lose the cached shell. Signed-out is a normal
+ * answer here, not an error.
+ */
+export async function GET(request: NextRequest) {
+  const pageSlug = request.nextUrl.searchParams.get("pageSlug");
+  if (!pageSlug) {
+    return NextResponse.json({ error: "`pageSlug` is required" }, { status: 422 });
+  }
+
+  const user = await getCurrentUser().catch(() => null);
+  if (!user) return NextResponse.json({ signedIn: false, completed: false });
+
+  const completed = await getCompletedSlugs(user.id, [pageSlug]).catch(() => new Set<string>());
+  return NextResponse.json({ signedIn: true, completed: completed.has(pageSlug) });
 }

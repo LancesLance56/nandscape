@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -16,22 +16,55 @@ import { cn } from "@/lib/cn";
  * cannot persist. That is the honest version: progress is the one part of this
  * feature set that genuinely needs an account, because the place it is read
  * back (the dashboard) is behind one.
+ *
+ * Who the reader is and what they have finished are both fetched here rather
+ * than passed down from the page. The lesson around this is statically
+ * prerendered and revalidated for everyone, so reading the session cookie
+ * while rendering it would turn the whole route dynamic at runtime. Same
+ * reasoning as Claps.
  */
+
+interface ProgressState {
+  signedIn: boolean;
+  completed: boolean;
+}
+
 export function TutorialComplete({
   pageSlug,
   trackSlug,
-  initialCompleted,
-  signedIn,
 }: {
   pageSlug: string;
   trackSlug?: string | null;
-  initialCompleted: boolean;
-  signedIn: boolean;
 }) {
-  const [completed, setCompleted] = useState(initialCompleted);
+  const [state, setState] = useState<ProgressState | null>(null);
   const [saving, setSaving] = useState(false);
 
-  if (!signedIn) {
+  useEffect(() => {
+    const controller = new AbortController();
+
+    void (async () => {
+      try {
+        const res = await fetch(`/api/progress/tutorial?pageSlug=${encodeURIComponent(pageSlug)}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error();
+        setState((await res.json()) as ProgressState);
+      } catch {
+        // Nothing to show is better than a button that claims a state it
+        // could not read; treat an unreachable answer as signed out.
+        if (!controller.signal.aborted) setState({ signedIn: false, completed: false });
+      }
+    })();
+
+    return () => controller.abort();
+  }, [pageSlug]);
+
+  // Until the answer arrives the control has no honest shape to take - it is
+  // either a button or a sign-in prompt - so it holds its place silently.
+  if (!state) return <div aria-hidden className="h-11" />;
+
+  if (!state.signedIn) {
     return (
       <div className="flex flex-wrap items-center gap-2 rounded-xl border border-dashed border-border-strong px-4 py-3 text-sm text-ink-soft">
         <Link href="/login" className="font-semibold text-copper hover:text-copper-dark">
@@ -42,9 +75,11 @@ export function TutorialComplete({
     );
   }
 
+  const completed = state.completed;
+
   const toggle = async () => {
     const next = !completed;
-    setCompleted(next);
+    setState({ signedIn: true, completed: next });
     setSaving(true);
 
     try {
@@ -57,9 +92,9 @@ export function TutorialComplete({
       const body = (await res.json()) as { completed: boolean };
       // Trust the server's answer over the optimistic guess, so a rejected
       // toggle does not leave a tick that is not really there.
-      setCompleted(body.completed);
+      setState({ signedIn: true, completed: body.completed });
     } catch {
-      setCompleted(!next);
+      setState({ signedIn: true, completed: !next });
     } finally {
       setSaving(false);
     }

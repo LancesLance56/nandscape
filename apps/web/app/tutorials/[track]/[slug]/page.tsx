@@ -9,8 +9,6 @@ import { readingTimeLabel } from "@/lib/content/reading-time";
 import { TutorialPager } from "@/components/tutorials/tutorial-pager";
 import { Claps } from "@/components/engagement/claps";
 import { TutorialComplete } from "@/components/engagement/tutorial-complete";
-import { getCurrentUser } from "@/lib/auth/current-user";
-import { getCompletedSlugs } from "@/lib/engagement/progress";
 import { getPublishedTutorialPageBySlug, listTutorialPages } from "@/lib/tutorials/tutorials";
 import {
   getAdjacentTutorialPages,
@@ -78,13 +76,9 @@ export default async function TutorialPage({ params }: PageProps) {
 
   const trackRecord = realTrack ? await getTutorialTrackBySlug(realTrack) : null;
 
-  // Progress is per-reader, so it cannot come from the cached page shell.
-  // Both calls degrade to "signed out, nothing completed" rather than failing
-  // the lesson around them.
-  const user = await getCurrentUser().catch(() => null);
-  const completed = user
-    ? (await getCompletedSlugs(user.id, [page.slug]).catch(() => new Set<string>())).has(page.slug)
-    : false;
+  // Progress is per-reader, so it cannot come from the cached page shell -
+  // TutorialComplete fetches it in the browser. Reading the session cookie
+  // here would flip this statically prerendered route to dynamic at runtime.
   const { prev, next } = await getAdjacentTutorialPages(realTrack ?? track, slug);
   const path = `/tutorials/${track}/${page.slug}`;
   const updated = formatDate(page.updatedAt);
@@ -143,12 +137,7 @@ export default async function TutorialPage({ params }: PageProps) {
             useful, and record that they did it. Claps work signed out; the
             completion toggle explains itself when they are not. */}
         <div className="not-prose mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
-          <TutorialComplete
-            pageSlug={page.slug}
-            trackSlug={trackRecord?.slug ?? null}
-            initialCompleted={completed}
-            signedIn={Boolean(user)}
-          />
+          <TutorialComplete pageSlug={page.slug} trackSlug={trackRecord?.slug ?? null} />
           <Claps kind="TUTORIAL" slug={page.slug} />
         </div>
 
