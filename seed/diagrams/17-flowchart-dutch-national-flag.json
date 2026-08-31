@@ -1,0 +1,97 @@
+{
+  "slug": "dutch-national-flag",
+  "kind": "flowchart",
+  "title": "Dutch national flag",
+  "group": "Sorting",
+  "position": 9,
+  "spec": {
+    "title": "Dutch national flag",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "sortColors(a)\nlow = 0, mid = 0\nhigh = a.length - 1"
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "mid <= high ?"
+      },
+      {
+        "id": "chk0",
+        "type": "decision",
+        "text": "a[mid] == 0 ?"
+      },
+      {
+        "id": "chk2",
+        "type": "decision",
+        "text": "a[mid] == 2 ?",
+        "note": "The three tests mirror the tutorial's code: first 0, then 2, and 1 is whatever is left. Order does not matter for correctness, only that every case is covered."
+      },
+      {
+        "id": "do0",
+        "type": "process",
+        "text": "swap a[low], a[mid]\nlow += 1\nmid += 1",
+        "accent": "green",
+        "note": "A 0 belongs in the left region. Send it there, then step both low and mid, because everything behind mid is already in place."
+      },
+      {
+        "id": "do1",
+        "type": "process",
+        "text": "mid += 1",
+        "note": "a[mid] is a 1. It already sits in the middle region, so only mid moves."
+      },
+      {
+        "id": "do2",
+        "type": "process",
+        "text": "swap a[mid], a[high]\nhigh -= 1",
+        "accent": "coral",
+        "badge": "!",
+        "note": "A 2 belongs on the right. Swap it past high and shrink high. mid does NOT move: the value that just arrived from high has never been examined."
+      },
+      {
+        "id": "done",
+        "type": "end",
+        "text": "return a\n[0, low) = 0s\n[low, mid) = 1s\n(high, end] = 2s"
+      }
+    ],
+    "edges": [
+      { "id": "e1", "from": "start", "to": "loop" },
+      { "id": "e2", "from": "loop", "to": "chk0", "label": "yes" },
+      { "id": "e3", "from": "loop", "to": "done", "label": "no" },
+      { "id": "e4", "from": "chk0", "to": "do0", "label": "yes" },
+      { "id": "e5", "from": "chk0", "to": "chk2", "label": "no" },
+      { "id": "e6", "from": "chk2", "to": "do2", "label": "yes" },
+      { "id": "e7", "from": "chk2", "to": "do1", "label": "no" },
+      { "id": "e8", "from": "do0", "to": "loop" },
+      { "id": "e9", "from": "do1", "to": "loop" },
+      { "id": "e10", "from": "do2", "to": "loop" }
+    ],
+    "walkthrough": [
+      { "node": "start", "caption": "Sorting [2, 0, 2, 1, 1, 0]. low and mid start at index 0, high at index 5." },
+      { "node": "loop", "caption": "mid (0) <= high (5) ? Yes." },
+      { "node": "chk0", "caption": "a[mid] = 2. Is it 0 ? No." },
+      { "node": "chk2", "caption": "Is a[mid] 2 ? Yes." },
+      { "node": "do2", "caption": "Swap index 0 with high at index 5, then drop high to 4. Array: [0, 0, 2, 1, 1, 2]. mid stays at 0." },
+      { "node": "loop", "caption": "mid (0) <= high (4) ? Yes." },
+      { "node": "chk0", "caption": "a[mid] = 0. Is it 0 ? Yes." },
+      { "node": "do0", "caption": "Swap a[low] and a[mid], both index 0, so nothing visibly moves. low and mid both advance to 1." },
+      { "node": "loop", "caption": "mid (1) <= high (4) ? Yes." },
+      { "node": "chk0", "caption": "a[mid] = 0 again. low and mid both advance to 2." },
+      { "node": "loop", "caption": "mid (2) <= high (4) ? Yes." },
+      { "node": "chk0", "caption": "a[mid] = 2. Is it 0 ? No." },
+      { "node": "chk2", "caption": "Is it 2 ? Yes." },
+      { "node": "do2", "caption": "Swap index 2 with high at index 4, then drop high to 3. Array: [0, 0, 1, 1, 2, 2]. mid stays at 2." },
+      { "node": "loop", "caption": "mid (2) <= high (3) ? Yes." },
+      { "node": "chk0", "caption": "a[mid] = 1. Is it 0 ? No." },
+      { "node": "chk2", "caption": "Is it 2 ? No, so it is a 1." },
+      { "node": "do1", "caption": "Step mid to 3. The next value is also a 1, so mid steps again to 4." },
+      { "node": "loop", "caption": "mid (4) <= high (3) ? No." },
+      { "node": "done", "caption": "mid has passed high, so the pass ends before reaching the end of the array. Result: [0, 0, 1, 1, 2, 2]." }
+    ],
+    "interactive": {
+      "walkthrough": true
+    }
+  }
+}

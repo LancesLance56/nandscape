@@ -1,7 +1,7 @@
 {
   "slug": "sorting-partition-problems",
   "title": "Partition Problems: 0s, 1s and 2s",
-  "excerpt": "When the values come from a tiny fixed set, sorting is overkill. Two or three pointers do the job in one pass with no extra memory.",
+  "excerpt": "When an array's entries are drawn from just two or three possible values, a full sort is more machinery than the task calls for. A couple of carefully driven pointers can do the whole rearrangement in a single pass, with no extra memory.",
   "authorName": "Lance Dy Chua",
   "status": "published",
   "publishedAt": "2026-08-16T12:50:00Z",
@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A family of interview problems asks you to rearrange an array whose values come from a very small set. Separate 0s from 1s. Push all zeroes to the end. Sort an array of 0s, 1s and 2s."
+          "text": "A whole family of coding-interview questions is built on one premise: you are handed an array whose entries are drawn from a tiny set of possible values, and you have to shuffle them into contiguous groups. One version asks you to separate the 0s from the 1s, another wants every zero pushed to the back while the rest keep their places, and a third hands you a mixture of 0s, 1s and 2s to put in order."
         }
       ]
     },
@@ -38,7 +38,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Sorting solves all of them in O(n log n). All of them can also be done in O(n) with a single pass and no extra memory, because with only a handful of distinct values you don't need to compare anything. You can decide where a value belongs just by looking at it."
+          "text": "Sorting",
+          "marks": [
+            {
+              "href": "/tutorials/dsa/sorting-introduction",
+              "kind": "link"
+            }
+          ]
+        },
+        {
+          "text": " any of these arrays into shape is an O(n log n) operation, and it always works, but it does far more than the problem requires. Because the range of possible values is so narrow, you never have to compare one element against another; the value you are holding already tells you which group it belongs to. A single sweep from one end of the array to the other is therefore enough to finish the job, and you can carry it out in place without borrowing a scratch array."
         }
       ]
     },
@@ -61,7 +70,25 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two pointers walk inward. The left pointer advances while it sees 0s, the right advances backward while it sees 1s, and when both stop you have a 1 on the left and a 0 on the right, so swap them."
+          "text": "Imagine one pointer starting at the front of the array and another at the back, each walking toward the centre. The front pointer keeps advancing for as long as it lands on 0s, since those are already on the side where they belong, and the back pointer mirrors that behaviour, sliding left past every 1 it meets. Sooner or later both of them stall: the front pointer is sitting on a 1 that ought to be near the back, and the back pointer is sitting on a 0 that ought to be near the front. Exchanging that pair corrects both positions in one move, after which the two pointers resume their walk until they cross."
+        }
+      ]
+    },
+    {
+      "id": "w-binary-demo",
+      "data": {
+        "mode": "binary",
+        "seed": 3
+      },
+      "type": "interactive",
+      "widget": "partition-explorer"
+    },
+    {
+      "id": "p-binary-note",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step the run above one frame at a time. The two highlighted bars are the pointers; the caption under them names the swap or the skip that each frame performs, and the comparison count never moves because nothing here is ever compared."
         }
       ]
     },
@@ -70,7 +97,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A counting approach also works: count the zeroes, then write that many 0s followed by 1s. It's equally O(n) and arguably simpler, but it destroys any other data attached to the elements, so it only works when the values really are just 0 and 1."
+          "text": "A cruder approach reaches the same result just as quickly. Walk the array once to count how many zeroes it contains, then rewrite it from the beginning as a run of that many 0s followed by 1s for the remainder. It is almost impossible to get wrong, but it carries a real cost: it discards everything each element was carrying beyond its bare value, so it is only safe when the entries really are nothing more than the numbers 0 and 1. The moment those numbers are keys attached to larger records, overwriting them throws away data you cannot recover."
         }
       ]
     },
@@ -85,7 +112,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The catch here is that the non-zero values have to keep their original relative order, so the two-pointer swap-from-both-ends trick is wrong: it would scramble them."
+          "text": "This version looks almost identical, but it adds one demanding rule: everything that is not a zero has to end up in the same order it started in. That single constraint rules out the swap-from-both-ends idea, which moves elements across long distances and would leave the surviving values scrambled relative to their original sequence."
         }
       ]
     },
@@ -94,16 +121,25 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Instead use a read pointer and a write pointer. Scan with the read pointer; every time you find a non-zero value, place it at the write pointer and advance the write pointer. Zeroes just get skipped, and fall to the back as a consequence."
+          "text": "The method that preserves the order uses two pointers travelling in the same direction rather than converging. The first, which you can think of as the reader, visits every position in turn. The second, the writer, holds the place where the next value worth keeping should be dropped. Whenever the reader finds something other than a zero, that value is copied back to the writer's slot and the writer moves forward by one. Zeroes are passed over without comment, and because every non-zero value gets packed toward the front in its original order, the zeroes are left to accumulate at the end of the array as a side effect."
         }
       ]
+    },
+    {
+      "id": "w-zeroes-demo",
+      "data": {
+        "mode": "zeroes",
+        "seed": 5
+      },
+      "type": "interactive",
+      "widget": "partition-explorer"
     },
     {
       "id": "p-zeroes-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Switch the widget above to \"Move zeroes\" and watch the two pointers separate: the gap between them is exactly the number of zeroes seen so far."
+          "text": "Step through the run above and watch the writer trail behind the reader. The gap that opens between the two pointers is never accidental: at any moment it is exactly the count of zeroes the reader has already passed over, which is also how many positions every surviving value has shifted toward the front."
         }
       ]
     },
@@ -118,7 +154,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three values, one pass. This is "
+          "text": "Introduce a third value and the exercise becomes distinctly harder. Arranging an array of 0s, 1s and 2s in a single sweep is the classic problem known as "
         },
         {
           "text": "Dijkstra's Dutch national flag problem",
@@ -130,7 +166,7 @@
           ]
         },
         {
-          "text": ", named for the flag's three horizontal bands, and it's the one genuinely tricky member of the family."
+          "text": ", a name taken from the three horizontal bands of the Netherlands' flag, and it is the one member of this family where the bookkeeping is genuinely easy to get subtly wrong."
         }
       ]
     },
@@ -139,7 +175,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Keep three pointers. Everything before "
+          "text": "The method tracks three indices, "
         },
         {
           "text": "low",
@@ -150,18 +186,7 @@
           ]
         },
         {
-          "text": " is 0, everything after "
-        },
-        {
-          "text": "high",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " is 2, and "
+          "text": ", "
         },
         {
           "text": "mid",
@@ -172,7 +197,106 @@
           ]
         },
         {
-          "text": " scans the unknown middle:"
+          "text": ", and "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", which between them divide the array into four regions. Everything to the left of "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " has already been settled as 0, everything to the right of "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " has been settled as 2, and the stretch running from "
+        },
+        {
+          "text": "low",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " up to "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " holds the 1s placed so far. That leaves the section between "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "high",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " as the only part still unexamined, and "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the marker that advances through it one element at a time. The action you take at each step is decided entirely by the value currently under "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ":"
         }
       ]
     },
@@ -203,11 +327,19 @@
       ]
     },
     {
+      "id": "w-dnf-flow",
+      "data": {
+        "preset": "dutch-national-flag"
+      },
+      "type": "interactive",
+      "widget": "flowchart"
+    },
+    {
       "id": "p-dnf-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "That last row is where almost everyone gets it wrong. The value swapped in from "
+          "text": "That last row is the one people stumble on. When the swap happens against the "
         },
         {
           "text": "high",
@@ -218,7 +350,7 @@
           ]
         },
         {
-          "text": " has never been examined, so "
+          "text": " end, the element pulled into the slot under "
         },
         {
           "text": "mid",
@@ -229,16 +361,47 @@
           ]
         },
         {
-          "text": " has to stay put and look at it on the next iteration. Advancing past it can leave a 0 or a 2 stranded in the middle region."
+          "text": " has come straight from unexplored ground and could just as easily be a 0, a 1 or a 2, so "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " has to hold its ground and judge the newcomer on the following pass. If "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " strides past it instead, a stray 0 or 2 can be left marooned in the middle band, and the final arrangement is quietly wrong."
         }
       ]
+    },
+    {
+      "id": "w-ternary-demo",
+      "data": {
+        "mode": "ternary",
+        "seed": 42
+      },
+      "type": "interactive",
+      "widget": "partition-explorer"
     },
     {
       "id": "p-dnf-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "The loop ends when "
+          "text": "The scan is over the instant "
         },
         {
           "text": "mid",
@@ -249,7 +412,7 @@
           ]
         },
         {
-          "text": " passes "
+          "text": " climbs past "
         },
         {
           "text": "high",
@@ -260,7 +423,18 @@
           ]
         },
         {
-          "text": ", not when it reaches the end of the array: everything above "
+          "text": ", which normally happens well before "
+        },
+        {
+          "text": "mid",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " would have reached the physical end of the array. Carrying on would be pointless, because every position beyond "
         },
         {
           "text": "high",
@@ -271,7 +445,7 @@
           ]
         },
         {
-          "text": " is already known to be 2."
+          "text": " was already fixed as a 2 while the pointers were getting there."
         }
       ]
     },
@@ -286,7 +460,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Three-way partitioning is exactly what quick sort needs when the input has many duplicate keys. A standard two-way partition puts values equal to the pivot on one side, so an array of all-equal elements produces maximally unbalanced splits and degrades to O(n²). Partitioning into less-than, equal-to and greater-than instead makes that same input O(n), since the entire equal region finishes in one step."
+          "text": "Quick sort",
+          "marks": [
+            {
+              "href": "/tutorials/dsa/sorting-quick-sort",
+              "kind": "link"
+            }
+          ]
+        },
+        {
+          "text": " runs into this exact issue whenever its input is dense with repeated keys. The standard two-way partition drops every element equal to the pivot onto a single side, so an array in which every value is the same splits as unevenly as it possibly can and the running time collapses to O(n²). Splitting into three parts instead, one below the pivot, one equal to it and one above, clears the entire block of equal elements in one move, and that same pathological input then finishes in linear time."
         }
       ]
     },
