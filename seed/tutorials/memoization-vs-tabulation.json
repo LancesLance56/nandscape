@@ -1,6 +1,6 @@
 {
   "slug": "memoization-vs-tabulation",
-  "title": "Memoization vs Tabulation: Two Routes to the Same Answers",
+  "title": "Memoization and Tabulation",
   "excerpt": "Three lines turn an exponential recursion into a linear one. Drop the recursion altogether and the same answers appear in a table, with no stack, no calls, and often no table left at the end either.",
   "authorName": "Lance Dy Chua",
   "status": "published",
