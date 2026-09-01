@@ -1,0 +1,526 @@
+{
+  "slug": "two-pointers-converging",
+  "title": "Walking In From Both Ends",
+  "excerpt": "2 Sum on a sorted array, sentence palindromes and container with most water: three problems, one loop, and three different arguments for why a pointer is safe to abandon.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-09-01T09:10:00Z",
+  "tags": [
+    "two-pointers",
+    "arrays",
+    "strings",
+    "dsa"
+  ],
+  "sectionSlug": "two-pointers",
+  "position": 20,
+  "seoTitle": "Converging Two Pointers: 2 Sum, Palindromes, Max Water",
+  "seoDescription": "Converging two-pointer solutions to 2 Sum in a sorted array, sentence palindrome checking and container with most water, each with the elimination argument that makes one pass enough.",
+  "keywords": [
+    "two sum sorted array",
+    "valid palindrome two pointers",
+    "container with most water",
+    "converging two pointers",
+    "two pointer array problems"
+  ],
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Three problems that share one loop: a pointer at each end of the array, walking inward until they meet. They ask completely different questions - which pair sums to a target, is this a palindrome, which two walls hold the most water - and the difference between them is a single comparison in the middle."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "What to watch for on this page is not the code. It is the argument each problem makes for why the pointer it moves is safe to give up on forever."
+        }
+      ]
+    },
+    {
+      "id": "h-3",
+      "type": "heading",
+      "level": 2,
+      "text": "2 Sum in a sorted array"
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Given a sorted array and a target, find the pairs that sum to it. The nested-loop version is O(n²); the hash-map version is O(n) but allocates a table and gives up the sorted order. The two-pointer version is O(n), allocates nothing, and falls out of one observation."
+        }
+      ]
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "a[lo]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is paired with the largest value available, and "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " with the smallest. So a sum that lands short is not a rejection of that pair, it is a rejection of "
+        },
+        {
+          "text": "a[lo]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " against everything left, and a sum that overshoots rejects "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " the same way. Step through it and watch the greyed-out region grow - those are the pairs the algorithm never examines."
+        }
+      ]
+    },
+    {
+      "id": "w-6",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "two-sum",
+        "values": [
+          -3,
+          1,
+          2,
+          4,
+          6,
+          8,
+          11,
+          15
+        ],
+        "target": 12
+      }
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two details that are easy to get wrong. The loop condition is "
+        },
+        {
+          "text": "lo < hi",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and not "
+        },
+        {
+          "text": "lo <= hi",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", because a value is not allowed to pair with itself. And after a hit, "
+        },
+        {
+          "text": "both",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " pointers move: keeping either one fixed only re-finds the same pair, or a duplicate of it if the array holds repeats, which is what the two skip loops in the code below are for."
+        }
+      ]
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "code": "function twoSumSorted(a, target) {\n  const pairs = [];\n  let lo = 0, hi = a.length - 1;\n\n  while (lo < hi) {\n    const sum = a[lo] + a[hi];\n    if (sum === target) {\n      pairs.push([a[lo], a[hi]]);\n      lo++; hi--;\n      while (lo < hi && a[lo] === a[lo - 1]) lo++;   // skip duplicate lefts\n      while (lo < hi && a[hi] === a[hi + 1]) hi--;   // skip duplicate rights\n    } else if (sum < target) {\n      lo++;\n    } else {\n      hi--;\n    }\n  }\n  return pairs;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def two_sum_sorted(a, target):\n    pairs = []\n    lo, hi = 0, len(a) - 1\n\n    while lo < hi:\n        total = a[lo] + a[hi]\n        if total == target:\n            pairs.append((a[lo], a[hi]))\n            lo += 1\n            hi -= 1\n            while lo < hi and a[lo] == a[lo - 1]:   # skip duplicate lefts\n                lo += 1\n            while lo < hi and a[hi] == a[hi + 1]:   # skip duplicate rights\n                hi -= 1\n        elif total < target:\n            lo += 1\n        else:\n            hi -= 1\n    return pairs"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n#include <utility>\n\nstd::vector<std::pair<int, int>> twoSumSorted(const std::vector<int>& a, int target) {\n    std::vector<std::pair<int, int>> pairs;\n    int lo = 0, hi = (int)a.size() - 1;\n\n    while (lo < hi) {\n        int sum = a[lo] + a[hi];\n        if (sum == target) {\n            pairs.push_back({a[lo], a[hi]});\n            lo++; hi--;\n            while (lo < hi && a[lo] == a[lo - 1]) lo++;   // skip duplicate lefts\n            while (lo < hi && a[hi] == a[hi + 1]) hi--;   // skip duplicate rights\n        } else if (sum < target) {\n            lo++;\n        } else {\n            hi--;\n        }\n    }\n    return pairs;\n}"
+        }
+      ]
+    },
+    {
+      "id": "c-9",
+      "type": "callout",
+      "tone": "note",
+      "title": "When the array is not sorted",
+      "content": [
+        {
+          "text": "Sorting to enable this costs O(n log n), which is worse than the O(n) hash-map solution. Two pointers win when the array arrives sorted, when you need the pairs in order, when memory is tight, or when the problem asks for something a hash map cannot answer - the closest pair rather than an exact one, or every pair rather than the first."
+        }
+      ]
+    },
+    {
+      "id": "h-10",
+      "type": "heading",
+      "level": 2,
+      "text": "Sentence palindrome"
+    },
+    {
+      "id": "p-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Is a sentence a palindrome once case, spaces and punctuation are ignored? The same converging loop, with equality in the middle instead of a sum, and one wrinkle: each pointer has to skip characters that do not count."
+        }
+      ]
+    },
+    {
+      "id": "p-12",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The wrinkle matters more than it looks. Skipping is "
+        },
+        {
+          "text": "per pointer",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", not symmetric - the left pointer might step over three punctuation marks while the right one stays put. Written as one combined skip, the code drifts out of alignment and starts comparing the wrong characters. Written as two separate guards before the comparison, it stays honest."
+        }
+      ]
+    },
+    {
+      "id": "w-13",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "palindrome",
+        "text": "A man, a plan, a canal: Panama"
+      }
+    },
+    {
+      "id": "p-14",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Notice that a mismatch ends the run immediately. A palindrome check is the cheap case of the technique: it usually fails long before the pointers meet, and there is no reason to keep looking once one pair disagrees."
+        }
+      ]
+    },
+    {
+      "id": "code-15",
+      "type": "code",
+      "language": "javascript",
+      "code": "const isAlnum = (c) => /[a-z0-9]/i.test(c);\n\nfunction isPalindromeSentence(s) {\n  let lo = 0, hi = s.length - 1;\n\n  while (lo < hi) {\n    // Each pointer skips on its own. Combining these two loops into one\n    // is the classic bug: the pointers fall out of step.\n    if (!isAlnum(s[lo])) { lo++; continue; }\n    if (!isAlnum(s[hi])) { hi--; continue; }\n\n    if (s[lo].toLowerCase() !== s[hi].toLowerCase()) return false;\n    lo++; hi--;\n  }\n  return true;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def is_palindrome_sentence(s):\n    lo, hi = 0, len(s) - 1\n\n    while lo < hi:\n        # Each pointer skips on its own. Combining these two guards into\n        # one is the classic bug: the pointers fall out of step.\n        if not s[lo].isalnum():\n            lo += 1\n            continue\n        if not s[hi].isalnum():\n            hi -= 1\n            continue\n\n        if s[lo].lower() != s[hi].lower():\n            return False\n        lo += 1\n        hi -= 1\n    return True"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <cctype>\n#include <string>\n\nbool isPalindromeSentence(const std::string& s) {\n    int lo = 0, hi = (int)s.size() - 1;\n\n    while (lo < hi) {\n        // Each pointer skips on its own.\n        if (!std::isalnum((unsigned char)s[lo])) { lo++; continue; }\n        if (!std::isalnum((unsigned char)s[hi])) { hi--; continue; }\n\n        if (std::tolower((unsigned char)s[lo]) != std::tolower((unsigned char)s[hi])) return false;\n        lo++; hi--;\n    }\n    return true;\n}"
+        }
+      ]
+    },
+    {
+      "id": "p-16",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The O(1) space is the point of doing it this way. Stripping the string down to its letters first and comparing it against its own reverse is two lines and perfectly readable, but it builds two new strings to answer a yes/no question."
+        }
+      ]
+    },
+    {
+      "id": "h-17",
+      "type": "heading",
+      "level": 2,
+      "text": "Container with most water"
+    },
+    {
+      "id": "p-18",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "An array of wall heights, one unit apart. Pick two walls; the water they hold is "
+        },
+        {
+          "text": "min(height[i], height[j])",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " multiplied by the distance between them. Which pair holds the most?"
+        }
+      ]
+    },
+    {
+      "id": "p-19",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every pair is O(n²) again, and the greedy instinct - pick the two tallest walls - is wrong, because two tall walls standing next to each other hold almost nothing. What makes one pass enough is this: start at the widest possible pair, so width is at its maximum and can only get worse from here. Any move inward has to be paid for in height."
+        }
+      ]
+    },
+    {
+      "id": "p-20",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now ask which wall to move. The water level is pinned to the "
+        },
+        {
+          "text": "shorter",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " wall. Moving the taller one inward loses width and cannot raise the level, because the shorter wall still caps it - every container you could reach that way is worse than the one you have. So the only move that can possibly help is moving the shorter wall, and moving it retires that wall against every partner it had left."
+        }
+      ]
+    },
+    {
+      "id": "w-21",
+      "type": "interactive",
+      "widget": "water-container",
+      "data": {
+        "values": [
+          1,
+          8,
+          6,
+          2,
+          5,
+          4,
+          8,
+          3,
+          7
+        ]
+      }
+    },
+    {
+      "id": "c-22",
+      "type": "callout",
+      "tone": "tip",
+      "title": "Ties",
+      "content": [
+        {
+          "text": "When the two walls are the same height, either one can move and the answer is the same. Both are capped by that shared height, so neither can do better with any partner further in."
+        }
+      ]
+    },
+    {
+      "id": "code-23",
+      "type": "code",
+      "language": "javascript",
+      "code": "function maxArea(height) {\n  let lo = 0, hi = height.length - 1;\n  let best = 0;\n\n  while (lo < hi) {\n    best = Math.max(best, Math.min(height[lo], height[hi]) * (hi - lo));\n\n    // Only the shorter wall is worth moving: moving the taller one\n    // loses width and cannot raise the water level.\n    if (height[lo] <= height[hi]) lo++;\n    else hi--;\n  }\n  return best;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def max_area(height):\n    lo, hi = 0, len(height) - 1\n    best = 0\n\n    while lo < hi:\n        best = max(best, min(height[lo], height[hi]) * (hi - lo))\n\n        # Only the shorter wall is worth moving: moving the taller one\n        # loses width and cannot raise the water level.\n        if height[lo] <= height[hi]:\n            lo += 1\n        else:\n            hi -= 1\n    return best"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <vector>\n\nint maxArea(const std::vector<int>& height) {\n    int lo = 0, hi = (int)height.size() - 1;\n    int best = 0;\n\n    while (lo < hi) {\n        best = std::max(best, std::min(height[lo], height[hi]) * (hi - lo));\n\n        // Only the shorter wall is worth moving.\n        if (height[lo] <= height[hi]) lo++;\n        else hi--;\n    }\n    return best;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-24",
+      "type": "heading",
+      "level": 2,
+      "text": "The three side by side"
+    },
+    {
+      "id": "t-25",
+      "type": "table",
+      "headers": [
+        "Problem",
+        "What the comparison asks",
+        "What moving a pointer gives up"
+      ],
+      "rows": [
+        [
+          "2 Sum, sorted",
+          "is the pair sum under, over or equal to the target",
+          "that value, against every remaining partner"
+        ],
+        [
+          "Sentence palindrome",
+          "do the two characters match",
+          "nothing - a match is confirmed, a mismatch ends the run"
+        ],
+        [
+          "Container with most water",
+          "which wall is shorter",
+          "the shorter wall, whose height caps every container it is in"
+        ]
+      ],
+      "caption": "One loop, three questions. Only the middle line changes."
+    },
+    {
+      "id": "p-26",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "None of the three needs an extra data structure, and all three are O(n) once the input is in the right order - which for the last two costs nothing, since neither needs sorting at all."
+        }
+      ]
+    },
+    {
+      "id": "h-27",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-28",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "In the container problem, why is moving the taller wall never useful?",
+            "options": [
+              {
+                "label": "The water level is capped by the shorter wall, so moving the taller one loses width without any chance of gaining height",
+                "correct": true
+              },
+              {
+                "label": "Because the taller wall is more likely to be part of the answer",
+                "correct": false
+              },
+              {
+                "label": "Because the array is sorted, so the taller wall is already at the end",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why must the palindrome check use two separate skip guards rather than one combined loop?",
+            "options": [
+              {
+                "label": "Each pointer may need to skip a different number of characters, and one shared loop lets them fall out of step",
+                "correct": true
+              },
+              {
+                "label": "Because a combined loop would be O(n²)",
+                "correct": false
+              },
+              {
+                "label": "Because otherwise the loop would never terminate",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Two Sum on a sorted array: what does `lo < hi` (rather than `lo <= hi`) prevent?",
+            "options": [
+              {
+                "label": "Pairing a value with itself",
+                "correct": true
+              },
+              {
+                "label": "An out-of-bounds read at the end of the array",
+                "correct": false
+              },
+              {
+                "label": "Reporting the same pair twice",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "When is a hash map the better choice for Two Sum?",
+            "options": [
+              {
+                "label": "When the array is unsorted and you only need existence, since sorting to enable two pointers costs O(n log n)",
+                "correct": true
+              },
+              {
+                "label": "Always, because O(n) beats O(n) with a smaller constant",
+                "correct": false
+              },
+              {
+                "label": "When the array holds duplicates",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d-29",
+      "type": "divider"
+    },
+    {
+      "id": "p-30",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Next: "
+        },
+        {
+          "text": "the same trick with both pointers moving forward",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-same-direction"
+            }
+          ]
+        },
+        {
+          "text": " - sliding windows, in-place rewrites and reversing the words of a sentence."
+        }
+      ]
+    }
+  ]
+}

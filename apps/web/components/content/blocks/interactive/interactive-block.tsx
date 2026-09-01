@@ -38,6 +38,7 @@ import {
   PairingExplorerWidget,
 } from "./sorting/pattern-widgets";
 import { FlowchartWidget, FlowchartMakerWidget } from "./flowchart/flowchart-widgets";
+import { TwoPointerExplorerWidget, WaterContainerWidget } from "./two-pointers/two-pointer-widgets";
 import { CircuitEmbedWidget } from "@/components/content/blocks/circuit/circuit-embed";
 import type { InteractiveBlock } from "@/types/blog";
 import type { ComponentType } from "react";
@@ -86,6 +87,8 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "merge-explorer": MergeExplorerWidget,
   "interval-explorer": IntervalExplorerWidget,
   "pairing-explorer": PairingExplorerWidget,
+  "two-pointer-explorer": TwoPointerExplorerWidget,
+  "water-container": WaterContainerWidget,
   flowchart: FlowchartWidget,
   "flowchart-maker": FlowchartMakerWidget,
   "circuit-embed": CircuitEmbedWidget,

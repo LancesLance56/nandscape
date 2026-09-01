@@ -1,0 +1,556 @@
+{
+  "slug": "two-pointers-introduction",
+  "title": "Two Pointers: Throwing Work Away on Purpose",
+  "excerpt": "The technique behind pair sums, sliding windows and in-place rewrites, and the elimination argument that makes one pass enough where two nested loops looked necessary.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-09-01T09:00:00Z",
+  "tags": [
+    "two-pointers",
+    "arrays",
+    "technique",
+    "dsa"
+  ],
+  "sectionSlug": "two-pointers",
+  "position": 10,
+  "seoTitle": "Two Pointer Technique Explained: Why One Pass Is Enough",
+  "seoDescription": "A visual introduction to the two-pointer technique: the elimination argument behind it, the three pointer shapes (converging, same-direction, one per sequence) and when each one applies.",
+  "keywords": [
+    "two pointer technique",
+    "two pointers algorithm",
+    "converging pointers",
+    "sliding window vs two pointers",
+    "two pointer time complexity"
+  ],
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Most array problems have an obvious solution that looks at every pair: two nested loops, O(n²) comparisons, and an answer you can trust. The two-pointer technique is the habit of noticing when almost all of those pairs can be thrown away without ever being looked at."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is not one algorithm. It is a shape that turns up in pair sums, palindromes, sliding windows, in-place rewrites, merging, and a handful of problems that look nothing like any of those until you see it. This section works through fourteen of them, and every one is the same three lines of bookkeeping with a different question in the middle."
+        }
+      ]
+    },
+    {
+      "id": "w-3",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "two-sum",
+        "modes": [
+          "two-sum",
+          "window",
+          "common-three"
+        ]
+      }
+    },
+    {
+      "id": "h-4",
+      "type": "heading",
+      "level": 2,
+      "text": "The argument that makes it legal"
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Start with the problem the whole technique grew out of. Given a "
+        },
+        {
+          "text": "sorted",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " array and a target, find the pairs that sum to it. Put one pointer on the smallest value and one on the largest, and look at what a single comparison tells you."
+        }
+      ]
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Say "
+        },
+        {
+          "text": "a[lo] + a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " comes out "
+        },
+        {
+          "text": "under",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " the target. The tempting reading is that this particular pair is too small, so try another one. The useful reading is far stronger: "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the largest value left in the array, so it is the best partner "
+        },
+        {
+          "text": "a[lo]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " will ever be offered. If even that partner is not enough, "
+        },
+        {
+          "text": "a[lo]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " cannot reach the target with "
+        },
+        {
+          "text": "anything",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " that remains. That is not one pair being rejected, it is one value being eliminated against every candidate at once."
+        }
+      ]
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The mirror image holds when the sum is over the target. "
+        },
+        {
+          "text": "a[lo]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the smallest value left, so "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is too big for every partner still in play, and "
+        },
+        {
+          "text": "hi",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " moves down."
+        }
+      ]
+    },
+    {
+      "id": "p-8",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is the entire justification. Each comparison retires one value permanently, there are n values, so the pass makes at most n comparisons where the nested loops made about n²/2. Sorting first costs O(n log n), which is why nearly every problem in this section starts with a sort and still comes out ahead."
+        }
+      ]
+    },
+    {
+      "id": "c-9",
+      "type": "callout",
+      "tone": "important",
+      "title": "The precondition is order, not sortedness",
+      "content": [
+        {
+          "text": "Two pointers need the data ordered by whatever the comparison is asking about. For pair sums that means sorted values. For the sliding window two pages on it means all-positive values, so that growing the window can only raise the sum. Break the ordering and the elimination argument silently becomes false while the code keeps running and returns a confident wrong answer."
+        }
+      ]
+    },
+    {
+      "id": "h-10",
+      "type": "heading",
+      "level": 2,
+      "text": "The template"
+    },
+    {
+      "id": "p-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Converging problems all compile down to this. Click a box to read what it is for, or play the trace to watch it run on a real array."
+        }
+      ]
+    },
+    {
+      "id": "w-12",
+      "type": "interactive",
+      "widget": "flowchart",
+      "data": {
+        "preset": "two-pointer-template"
+      }
+    },
+    {
+      "id": "code-13",
+      "type": "code",
+      "language": "javascript",
+      "code": "// The converging template. Everything in this section is a variation\n// on the three branches in the middle.\nfunction twoSumSorted(a, target) {\n  const pairs = [];\n  let lo = 0, hi = a.length - 1;\n\n  while (lo < hi) {\n    const sum = a[lo] + a[hi];\n\n    if (sum === target) {\n      pairs.push([a[lo], a[hi]]);\n      lo++; hi--;\n      // Step past duplicates so the same pair is not reported twice.\n      while (lo < hi && a[lo] === a[lo - 1]) lo++;\n      while (lo < hi && a[hi] === a[hi + 1]) hi--;\n    } else if (sum < target) {\n      lo++;   // a[lo] can never reach the target: a[hi] was its best partner.\n    } else {\n      hi--;   // a[hi] is too big for every partner still in play.\n    }\n  }\n  return pairs;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# The converging template. Everything in this section is a variation\n# on the three branches in the middle.\ndef two_sum_sorted(a, target):\n    pairs = []\n    lo, hi = 0, len(a) - 1\n\n    while lo < hi:\n        total = a[lo] + a[hi]\n\n        if total == target:\n            pairs.append((a[lo], a[hi]))\n            lo += 1\n            hi -= 1\n            # Step past duplicates so the same pair is not reported twice.\n            while lo < hi and a[lo] == a[lo - 1]:\n                lo += 1\n            while lo < hi and a[hi] == a[hi + 1]:\n                hi -= 1\n        elif total < target:\n            lo += 1   # a[lo] can never reach the target from here.\n        else:\n            hi -= 1   # a[hi] is too big for every remaining partner.\n    return pairs"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n#include <utility>\n\n// The converging template. Everything in this section is a variation\n// on the three branches in the middle.\nstd::vector<std::pair<int, int>> twoSumSorted(const std::vector<int>& a, int target) {\n    std::vector<std::pair<int, int>> pairs;\n    int lo = 0, hi = (int)a.size() - 1;\n\n    while (lo < hi) {\n        int sum = a[lo] + a[hi];\n\n        if (sum == target) {\n            pairs.push_back({a[lo], a[hi]});\n            lo++; hi--;\n            // Step past duplicates so the same pair is not reported twice.\n            while (lo < hi && a[lo] == a[lo - 1]) lo++;\n            while (lo < hi && a[hi] == a[hi + 1]) hi--;\n        } else if (sum < target) {\n            lo++;\n        } else {\n            hi--;\n        }\n    }\n    return pairs;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-14",
+      "type": "heading",
+      "level": 2,
+      "text": "Three shapes, and how to tell them apart"
+    },
+    {
+      "id": "p-15",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every problem in this section is one of three arrangements. Recognising which one you are in is most of the work, because the shape decides what the pointers mean and what moving them costs."
+        }
+      ]
+    },
+    {
+      "id": "h-16",
+      "type": "heading",
+      "level": 3,
+      "text": "1. Converging: one pointer at each end"
+    },
+    {
+      "id": "p-17",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The pointers start apart and walk towards each other, and the loop ends when they meet. Reach for it when a pair is measured by something that grows as you move one way and shrinks as you move the other: a sum over sorted values, an area bounded by two walls, characters compared across a midpoint."
+        }
+      ]
+    },
+    {
+      "id": "p-18",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Total pointer movement is exactly n, so the pass is O(n). That is "
+        },
+        {
+          "text": "the next page",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-converging"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-19",
+      "type": "heading",
+      "level": 3,
+      "text": "2. Same direction: a fast pointer and a slow one"
+    },
+    {
+      "id": "p-20",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both start at the front. The fast one scans while the slow one trails behind marking something: the end of the region already written, or the left edge of a window. The loop looks nested, because the slow pointer often moves several times inside one iteration of the fast one, but both only ever move "
+        },
+        {
+          "text": "forward",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ", so between them they make at most 2n moves. That is where sliding windows and in-place rewrites come from, and it is "
+        },
+        {
+          "text": "the third page",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-same-direction"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "h-21",
+      "type": "heading",
+      "level": 3,
+      "text": "3. One pointer per sequence"
+    },
+    {
+      "id": "p-22",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two or three sorted arrays, one pointer in each, and a rule for which one advances. Merging is the familiar case; finding the values common to three arrays, matching officers to thieves, and even the celebrity problem are the same idea wearing different clothes. That is "
+        },
+        {
+          "text": "the last page",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-two-sequences"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "t-23",
+      "type": "table",
+      "headers": [
+        "Shape",
+        "Pointers start",
+        "Loop ends when",
+        "Typical cost"
+      ],
+      "rows": [
+        [
+          "Converging",
+          "opposite ends",
+          "the pointers meet",
+          "O(n) after a sort"
+        ],
+        [
+          "Same direction",
+          "both at the front",
+          "the fast pointer runs out",
+          "O(n), both pointers forward-only"
+        ],
+        [
+          "Fixed prefix plus a pair",
+          "i fixed, pair to its right",
+          "every i has been tried",
+          "O(n²) for triplets, O(n³) for quadruplets"
+        ],
+        [
+          "One per sequence",
+          "front of each array",
+          "any array runs out",
+          "O(n + m)"
+        ]
+      ],
+      "caption": "The four arrangements used in this section. The third is the first two stacked: fix an element, then run a converging pass over what is left."
+    },
+    {
+      "id": "h-24",
+      "type": "heading",
+      "level": 2,
+      "text": "What the technique buys, and what it costs"
+    },
+    {
+      "id": "p-25",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The gain is not only asymptotic. A two-pointer pass reads memory in order, allocates nothing, and holds two integers of state, so it often beats a hash-map solution of the same complexity on real inputs even where the theory says they tie."
+        }
+      ]
+    },
+    {
+      "id": "p-26",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The cost is a specific kind of fragility. A hash-map Two Sum works on any array. The two-pointer version returns confident nonsense on an unsorted one, because the elimination argument it rests on is simply not true there. Whenever you reach for this technique, be able to say out loud which ordering makes your comparison monotone. If you cannot, it does not apply yet."
+        }
+      ]
+    },
+    {
+      "id": "c-27",
+      "type": "callout",
+      "tone": "tip",
+      "title": "The question to ask at every step",
+      "content": [
+        {
+          "text": "What does this comparison rule out? If the answer is this one pair, you are still writing nested loops with extra steps. If it is this value, against everything left, you have a two-pointer solution."
+        }
+      ]
+    },
+    {
+      "id": "h-28",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-29",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "On a sorted array, a[lo] + a[hi] is less than the target. What does that rule out?",
+            "options": [
+              {
+                "label": "a[lo] paired with every remaining value, because a[hi] was its largest possible partner",
+                "correct": true
+              },
+              {
+                "label": "Only the pair (a[lo], a[hi]); every other pair is still worth testing",
+                "correct": false
+              },
+              {
+                "label": "a[hi] paired with every remaining value",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why does sorting first not ruin the running time?",
+            "options": [
+              {
+                "label": "The sort is O(n log n) and the pass is O(n), so the sort dominates and still beats the O(n²) of nested loops",
+                "correct": true
+              },
+              {
+                "label": "Sorting is free because the pass has to read the array anyway",
+                "correct": false
+              },
+              {
+                "label": "It does ruin it, which is why two-pointer solutions only apply to pre-sorted input",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "A sliding window can move its left pointer several times inside one iteration of the right one. Why is the total still O(n)?",
+            "options": [
+              {
+                "label": "Both pointers only move forward, so between them they make at most 2n moves for the whole run",
+                "correct": true
+              },
+              {
+                "label": "Because the inner loop runs a constant number of times per outer iteration",
+                "correct": false
+              },
+              {
+                "label": "Because the window never grows past a fixed size",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Which precondition does the smallest-subarray window need that Two Sum does not?",
+            "options": [
+              {
+                "label": "All values positive, so that extending the window can only increase the sum",
+                "correct": true
+              },
+              {
+                "label": "A sorted array",
+                "correct": false
+              },
+              {
+                "label": "Distinct values",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d-30",
+      "type": "divider"
+    },
+    {
+      "id": "p-31",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Next: "
+        },
+        {
+          "text": "walking in from both ends",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-converging"
+            }
+          ]
+        },
+        {
+          "text": ", where the converging shape handles pair sums, palindromes and the container problem."
+        }
+      ]
+    }
+  ]
+}

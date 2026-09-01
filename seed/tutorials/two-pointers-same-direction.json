@@ -1,0 +1,566 @@
+{
+  "slug": "two-pointers-same-direction",
+  "title": "Read Pointer, Write Pointer",
+  "excerpt": "Both pointers start at the front: in-place duplicate removal, the smallest subarray with a given sum, and reversing the words of a sentence without allocating a second string.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-09-01T09:20:00Z",
+  "tags": [
+    "two-pointers",
+    "sliding-window",
+    "arrays",
+    "strings",
+    "dsa"
+  ],
+  "sectionSlug": "two-pointers",
+  "position": 30,
+  "seoTitle": "Sliding Window and In-Place Rewrites With Two Pointers",
+  "seoDescription": "Same-direction two-pointer problems: removing duplicates in place, the smallest subarray with sum at least a target, and reversing words in place, with the O(n) argument for each.",
+  "keywords": [
+    "sliding window algorithm",
+    "remove duplicates from sorted array",
+    "smallest subarray with given sum",
+    "reverse words in a string in place",
+    "read write pointer"
+  ],
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The pointers do not have to start apart. Put both at the front and let one run ahead, and the same technique solves a different family of problems: rewriting an array in place, finding the shortest window that satisfies a condition, and reversing text without allocating a second copy."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The bookkeeping changes in one important way. In the converging shape, exactly one pointer moves per iteration and the loop ends when they meet. Here the fast pointer drives the loop and the slow one moves only when something is true, sometimes several times in a row. The code looks nested. It is not: both pointers only ever move forward, so between them they take at most 2n steps for the whole run."
+        }
+      ]
+    },
+    {
+      "id": "h-3",
+      "type": "heading",
+      "level": 2,
+      "text": "Unique elements, in place"
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Given a sorted array, remove the duplicates without allocating a second array, and return how many distinct values are left. Sorted is what makes it easy: duplicates are adjacent, so a value only ever has to be compared against the last one kept."
+        }
+      ]
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two pointers, and it is worth naming them for what they do rather than where they are. "
+        },
+        {
+          "text": "read",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " visits every position and never stops. "
+        },
+        {
+          "text": "write",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " marks the end of the answer being built at the front of the array. Everything before "
+        },
+        {
+          "text": "write",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the result; everything from "
+        },
+        {
+          "text": "write",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " onward is scratch the caller is told to ignore."
+        }
+      ]
+    },
+    {
+      "id": "w-6",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "unique",
+        "values": [
+          1,
+          1,
+          2,
+          3,
+          3,
+          3,
+          5,
+          7,
+          7
+        ]
+      }
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The comparison is against "
+        },
+        {
+          "text": "a[write - 1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", the last value kept, and "
+        },
+        {
+          "text": "not",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " against "
+        },
+        {
+          "text": "a[read - 1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", the previous value read. On this input the two happen to agree, which is exactly why the bug survives testing: they come apart the moment a run of three or more duplicates appears, and comparing against the previous read starts letting the second copy of a triple through."
+        }
+      ]
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "code": "// Sorted input. Returns the count of unique values; a[0..count) holds them.\nfunction removeDuplicates(a) {\n  if (a.length === 0) return 0;\n\n  let write = 1;\n  for (let read = 1; read < a.length; read++) {\n    // Against the last value KEPT, not the last value read.\n    if (a[read] !== a[write - 1]) {\n      a[write] = a[read];\n      write++;\n    }\n  }\n  return write;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# Sorted input. Returns the count of unique values; a[:count] holds them.\ndef remove_duplicates(a):\n    if not a:\n        return 0\n\n    write = 1\n    for read in range(1, len(a)):\n        # Against the last value KEPT, not the last value read.\n        if a[read] != a[write - 1]:\n            a[write] = a[read]\n            write += 1\n    return write"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <vector>\n\n// Sorted input. Returns the count of unique values; a[0..count) holds them.\nint removeDuplicates(std::vector<int>& a) {\n    if (a.empty()) return 0;\n\n    int write = 1;\n    for (int read = 1; read < (int)a.size(); read++) {\n        // Against the last value KEPT, not the last value read.\n        if (a[read] != a[write - 1]) {\n            a[write++] = a[read];\n        }\n    }\n    return write;\n}"
+        }
+      ]
+    },
+    {
+      "id": "c-9",
+      "type": "callout",
+      "tone": "note",
+      "title": "The same shape, everywhere",
+      "content": [
+        {
+          "text": "Read pointer plus write pointer is the in-place rewrite pattern: removing an element by value, moving zeroes to the end, compacting a list, filtering. The condition in the middle changes; the two pointers never do. The "
+        },
+        {
+          "text": "partition problems",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/sorting-partition-problems"
+            }
+          ]
+        },
+        {
+          "text": " page uses the same pair for a different job."
+        }
+      ]
+    },
+    {
+      "id": "h-10",
+      "type": "heading",
+      "level": 2,
+      "text": "Smallest subarray with a sum of at least the target"
+    },
+    {
+      "id": "p-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now a window rather than a write cursor. Given an array of "
+        },
+        {
+          "text": "positive",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " values and a target, find the shortest contiguous run whose sum reaches the target."
+        }
+      ]
+    },
+    {
+      "id": "p-12",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both pointers mark the ends of a window. Extend it on the right until the sum reaches the target; once it does, record the length, then pull the left edge in for as long as the sum still qualifies. When it drops below, go back to extending on the right."
+        }
+      ]
+    },
+    {
+      "id": "w-13",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "window",
+        "values": [
+          2,
+          1,
+          5,
+          2,
+          3,
+          2
+        ],
+        "target": 7
+      }
+    },
+    {
+      "id": "p-14",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The complexity is the part worth being able to defend in an interview. There is a "
+        },
+        {
+          "text": "while",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " inside a "
+        },
+        {
+          "text": "for",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", which looks like O(n²), but "
+        },
+        {
+          "text": "start",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " never decreases and never passes "
+        },
+        {
+          "text": "end",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", so across the whole run it advances at most n times in total. Every element enters the window exactly once and leaves at most once, giving O(n)."
+        }
+      ]
+    },
+    {
+      "id": "c-15",
+      "type": "callout",
+      "tone": "warning",
+      "title": "Positive values are load-bearing",
+      "content": [
+        {
+          "text": "The shrink step assumes that dropping the leftmost element can only lower the sum. With a negative value in the array that is false - removing it would raise the sum - so the window logic collapses and the answer is quietly wrong. Mixed-sign versions of this problem need prefix sums and a different technique, not a patched-up window."
+        }
+      ]
+    },
+    {
+      "id": "code-16",
+      "type": "code",
+      "language": "javascript",
+      "code": "// Positive values only. Returns 0 when no window reaches the target.\nfunction smallestSubarray(a, target) {\n  let best = Infinity;\n  let start = 0, sum = 0;\n\n  for (let end = 0; end < a.length; end++) {\n    sum += a[end];\n\n    // Shrink while the window still qualifies: a shorter one may too.\n    while (sum >= target) {\n      best = Math.min(best, end - start + 1);\n      sum -= a[start];\n      start++;\n    }\n  }\n  return best === Infinity ? 0 : best;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# Positive values only. Returns 0 when no window reaches the target.\ndef smallest_subarray(a, target):\n    best = float(\"inf\")\n    start = total = 0\n\n    for end, value in enumerate(a):\n        total += value\n\n        # Shrink while the window still qualifies: a shorter one may too.\n        while total >= target:\n            best = min(best, end - start + 1)\n            total -= a[start]\n            start += 1\n\n    return 0 if best == float(\"inf\") else best"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <climits>\n#include <vector>\n\n// Positive values only. Returns 0 when no window reaches the target.\nint smallestSubarray(const std::vector<int>& a, int target) {\n    int best = INT_MAX, start = 0, sum = 0;\n\n    for (int end = 0; end < (int)a.size(); end++) {\n        sum += a[end];\n\n        // Shrink while the window still qualifies.\n        while (sum >= target) {\n            best = std::min(best, end - start + 1);\n            sum -= a[start];\n            start++;\n        }\n    }\n    return best == INT_MAX ? 0 : best;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-17",
+      "type": "heading",
+      "level": 2,
+      "text": "Reverse the words of a sentence"
+    },
+    {
+      "id": "p-18",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Turn \"the sky is blue\" into \"blue is sky the\", in place. The one-line solution - split, reverse, join - allocates a list of words and a new string. The in-place solution is two passes of the converging swap loop from the previous page, which is what earns this problem its place here."
+        }
+      ]
+    },
+    {
+      "id": "p-19",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reverse the entire string first. That puts the words in the right order and spells every one of them backwards. Then walk the result, find each word by its boundaries, and reverse it back."
+        }
+      ]
+    },
+    {
+      "id": "w-20",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "reverse-words",
+        "text": "the sky is blue"
+      }
+    },
+    {
+      "id": "p-21",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Both phases are the identical loop: a pointer at each end of a range, swap, step inward, stop when they meet. Phase one runs it once over the whole string; phase two runs it once per word. Total work is O(n), because each character is swapped at most twice."
+        }
+      ]
+    },
+    {
+      "id": "code-22",
+      "type": "code",
+      "language": "javascript",
+      "code": "function reverseRange(chars, lo, hi) {\n  while (lo < hi) {\n    [chars[lo], chars[hi]] = [chars[hi], chars[lo]];\n    lo++; hi--;\n  }\n}\n\nfunction reverseWords(s) {\n  const chars = [...s];\n\n  // Phase 1: right word order, every word spelled backwards.\n  reverseRange(chars, 0, chars.length - 1);\n\n  // Phase 2: put each word the right way round again.\n  let i = 0;\n  while (i < chars.length) {\n    if (chars[i] === \" \") { i++; continue; }\n    let j = i;\n    while (j + 1 < chars.length && chars[j + 1] !== \" \") j++;\n    reverseRange(chars, i, j);\n    i = j + 1;\n  }\n  return chars.join(\"\");\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def reverse_range(chars, lo, hi):\n    while lo < hi:\n        chars[lo], chars[hi] = chars[hi], chars[lo]\n        lo += 1\n        hi -= 1\n\n\ndef reverse_words(s):\n    chars = list(s)\n\n    # Phase 1: right word order, every word spelled backwards.\n    reverse_range(chars, 0, len(chars) - 1)\n\n    # Phase 2: put each word the right way round again.\n    i = 0\n    while i < len(chars):\n        if chars[i] == \" \":\n            i += 1\n            continue\n        j = i\n        while j + 1 < len(chars) and chars[j + 1] != \" \":\n            j += 1\n        reverse_range(chars, i, j)\n        i = j + 1\n\n    return \"\".join(chars)"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <string>\n\nvoid reverseRange(std::string& s, int lo, int hi) {\n    while (lo < hi) std::swap(s[lo++], s[hi--]);\n}\n\nstd::string reverseWords(std::string s) {\n    // Phase 1: right word order, every word spelled backwards.\n    reverseRange(s, 0, (int)s.size() - 1);\n\n    // Phase 2: put each word the right way round again.\n    int i = 0;\n    while (i < (int)s.size()) {\n        if (s[i] == ' ') { i++; continue; }\n        int j = i;\n        while (j + 1 < (int)s.size() && s[j + 1] != ' ') j++;\n        reverseRange(s, i, j);\n        i = j + 1;\n    }\n    return s;\n}"
+        }
+      ]
+    },
+    {
+      "id": "c-23",
+      "type": "callout",
+      "tone": "tip",
+      "title": "Interview follow-up",
+      "content": [
+        {
+          "text": "The usual follow-up is to also collapse repeated spaces and trim the ends. That is a read/write pass - the first problem on this page - run before or after the two reversals. Two pointers twice, in two different shapes, in one function."
+        }
+      ]
+    },
+    {
+      "id": "h-24",
+      "type": "heading",
+      "level": 2,
+      "text": "Telling the two shapes apart"
+    },
+    {
+      "id": "t-25",
+      "type": "table",
+      "headers": [
+        "",
+        "Converging",
+        "Same direction"
+      ],
+      "rows": [
+        [
+          "Pointers start",
+          "opposite ends",
+          "both at the front"
+        ],
+        [
+          "Loop ends when",
+          "the pointers meet",
+          "the fast pointer runs off the end"
+        ],
+        [
+          "Per iteration",
+          "exactly one pointer moves",
+          "the fast one moves; the slow one moves only on a condition"
+        ],
+        [
+          "Needs",
+          "sorted, or a symmetric comparison",
+          "a condition that is monotone as the window grows"
+        ],
+        [
+          "Total moves",
+          "n",
+          "at most 2n"
+        ]
+      ],
+      "caption": "Both are O(n). What differs is where they start and what makes the trailing pointer move."
+    },
+    {
+      "id": "h-26",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-27",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "In the in-place duplicate removal, why compare against a[write - 1] rather than a[read - 1]?",
+            "options": [
+              {
+                "label": "a[write - 1] is the last value actually kept; on a run of three or more duplicates the two differ and comparing against the previous read lets a duplicate through",
+                "correct": true
+              },
+              {
+                "label": "They are always equal, so it makes no difference",
+                "correct": false
+              },
+              {
+                "label": "Because a[read - 1] can be out of bounds",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "The sliding window has a while loop inside a for loop. Why is it still O(n)?",
+            "options": [
+              {
+                "label": "The left pointer only moves forward and never passes the right one, so it advances at most n times over the entire run",
+                "correct": true
+              },
+              {
+                "label": "Because the inner loop runs at most twice per outer iteration",
+                "correct": false
+              },
+              {
+                "label": "It is not; it is O(n²) in the worst case",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why does the smallest-subarray window need all-positive values?",
+            "options": [
+              {
+                "label": "Shrinking from the left must be guaranteed to lower the sum, which fails if a negative value can be removed",
+                "correct": true
+              },
+              {
+                "label": "Because negative numbers cannot be compared to a target",
+                "correct": false
+              },
+              {
+                "label": "Because the array has to be sorted first",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Reversing the words in place: why reverse the whole string before reversing each word?",
+            "options": [
+              {
+                "label": "The full reversal puts the words in the right order; the per-word pass only fixes the spelling",
+                "correct": true
+              },
+              {
+                "label": "It is arbitrary - doing each word first then the whole string gives the same result",
+                "correct": false
+              },
+              {
+                "label": "Because the word boundaries are only findable after the string is reversed",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d-28",
+      "type": "divider"
+    },
+    {
+      "id": "p-29",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Next: "
+        },
+        {
+          "text": "triplets and quadruplets",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-triplets"
+            }
+          ]
+        },
+        {
+          "text": ", where a fixed prefix plus a converging pair takes 3 Sum from O(n³) to O(n²)."
+        }
+      ]
+    }
+  ]
+}

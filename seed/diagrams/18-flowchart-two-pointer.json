@@ -1,0 +1,225 @@
+{
+  "slug": "two-pointer-template",
+  "kind": "flowchart",
+  "title": "The converging two-pointer template",
+  "group": "Two pointers",
+  "position": 0,
+  "spec": {
+    "title": "The converging two-pointer template",
+    "direction": "LR",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start",
+        "text": "solve(a, target)\nlo = 0\nhi = a.length - 1",
+        "note": "The array has to be sorted, or ordered by whatever quantity the comparison below is about. Sorting is what makes the two eliminations valid."
+      },
+      {
+        "id": "loop",
+        "type": "decision",
+        "text": "lo < hi ?",
+        "note": "The loop runs while the pointers have not met. Each iteration moves exactly one of them, so at most n iterations happen in total."
+      },
+      {
+        "id": "measure",
+        "type": "process",
+        "text": "s = a[lo] + a[hi]",
+        "note": "Whatever the problem measures about the current pair: a sum, an area, a distance."
+      },
+      {
+        "id": "cmp",
+        "type": "decision",
+        "text": "compare s\nto target",
+        "badge": "1",
+        "accent": "amber",
+        "note": "The only place a decision is made. Everything else in the template is bookkeeping."
+      },
+      {
+        "id": "hit",
+        "type": "process",
+        "text": "record the pair\nlo += 1, hi -= 1",
+        "accent": "green",
+        "note": "A match. Both pointers move, because keeping either one fixed can only re-find the same pair."
+      },
+      {
+        "id": "low",
+        "type": "process",
+        "text": "lo += 1",
+        "accent": "blue",
+        "badge": "2",
+        "note": "Too small. a[hi] is already the largest value left, so no partner can rescue a[lo]: it is eliminated against every remaining candidate at once, not just against a[hi]."
+      },
+      {
+        "id": "high",
+        "type": "process",
+        "text": "hi -= 1",
+        "accent": "coral",
+        "badge": "3",
+        "note": "Too big. a[lo] is already the smallest value left, so a[hi] is too large for every remaining partner."
+      },
+      {
+        "id": "done",
+        "type": "end",
+        "text": "return the answer\n(pointers met)",
+        "note": "Every index was visited at most once by each pointer, so the pass is O(n)."
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "from": "start",
+        "to": "loop"
+      },
+      {
+        "id": "e2",
+        "from": "loop",
+        "to": "measure",
+        "label": "yes"
+      },
+      {
+        "id": "e3",
+        "from": "loop",
+        "to": "done",
+        "label": "no"
+      },
+      {
+        "id": "e4",
+        "from": "measure",
+        "to": "cmp"
+      },
+      {
+        "id": "e5",
+        "from": "cmp",
+        "to": "hit",
+        "label": "equal"
+      },
+      {
+        "id": "e6",
+        "from": "cmp",
+        "to": "low",
+        "label": "too small"
+      },
+      {
+        "id": "e7",
+        "from": "cmp",
+        "to": "high",
+        "label": "too big"
+      },
+      {
+        "id": "e8",
+        "from": "hit",
+        "to": "loop"
+      },
+      {
+        "id": "e9",
+        "from": "low",
+        "to": "loop"
+      },
+      {
+        "id": "e10",
+        "from": "high",
+        "to": "loop"
+      }
+    ],
+    "legend": [
+      {
+        "label": "the one decision",
+        "shape": "decision",
+        "accent": "amber"
+      },
+      {
+        "label": "pair found",
+        "shape": "process",
+        "accent": "green"
+      },
+      {
+        "label": "left value eliminated",
+        "shape": "process",
+        "accent": "blue"
+      },
+      {
+        "label": "right value eliminated",
+        "shape": "process",
+        "accent": "coral"
+      }
+    ],
+    "walkthrough": [
+      {
+        "node": "start",
+        "caption": "Running on [-3, 1, 2, 4, 6, 8, 11, 15] with target 12. lo = 0, hi = 7."
+      },
+      {
+        "node": "loop",
+        "caption": "lo (0) < hi (7) ? Yes."
+      },
+      {
+        "node": "measure",
+        "caption": "-3 + 15 = 12."
+      },
+      {
+        "node": "cmp",
+        "caption": "Equal to the target."
+      },
+      {
+        "node": "hit",
+        "caption": "Record (-3, 15). Both pointers move inward: lo = 1, hi = 6."
+      },
+      {
+        "node": "loop",
+        "caption": "lo (1) < hi (6) ? Yes."
+      },
+      {
+        "node": "measure",
+        "caption": "1 + 11 = 12."
+      },
+      {
+        "node": "cmp",
+        "caption": "Equal again."
+      },
+      {
+        "node": "hit",
+        "caption": "Record (1, 11). lo = 2, hi = 5."
+      },
+      {
+        "node": "loop",
+        "caption": "lo (2) < hi (5) ? Yes."
+      },
+      {
+        "node": "measure",
+        "caption": "2 + 8 = 10."
+      },
+      {
+        "node": "cmp",
+        "caption": "Under 12."
+      },
+      {
+        "node": "low",
+        "caption": "8 is the largest value left, so nothing can pair with 2 to reach 12. Drop the 2: lo = 3."
+      },
+      {
+        "node": "loop",
+        "caption": "lo (3) < hi (5) ? Yes."
+      },
+      {
+        "node": "measure",
+        "caption": "4 + 8 = 12."
+      },
+      {
+        "node": "cmp",
+        "caption": "Equal."
+      },
+      {
+        "node": "hit",
+        "caption": "Record (4, 8). lo = 4, hi = 4."
+      },
+      {
+        "node": "loop",
+        "caption": "lo (4) < hi (4) ? No, the pointers have met."
+      },
+      {
+        "node": "done",
+        "caption": "Three pairs, found in a single pass over eight values."
+      }
+    ]
+  }
+}

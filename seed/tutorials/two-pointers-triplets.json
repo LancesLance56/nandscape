@@ -1,0 +1,766 @@
+{
+  "slug": "two-pointers-triplets",
+  "title": "Triplets, and Everything Above Them",
+  "excerpt": "3 Sum, counting triplets under a target, the closest triplet and 4 Sum: fix a prefix, run the converging pair on what is left, and drop an exponent from every one of them.",
+  "authorName": "Lance Dy Chua",
+  "status": "published",
+  "publishedAt": "2026-09-01T09:30:00Z",
+  "tags": [
+    "two-pointers",
+    "k-sum",
+    "arrays",
+    "sorting",
+    "dsa"
+  ],
+  "sectionSlug": "two-pointers",
+  "position": 40,
+  "seoTitle": "3 Sum, 4 Sum and Triplet Counting With Two Pointers",
+  "seoDescription": "How fixing a prefix and running a converging pair solves 3 Sum, counting triplets under a target, the closest triplet and 4 Sum, with duplicate handling and the k-Sum generalisation.",
+  "keywords": [
+    "3 sum two pointers",
+    "4 sum algorithm",
+    "count triplets with sum less than target",
+    "3 sum closest",
+    "k sum pattern"
+  ],
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two Sum on a sorted array is O(n). Three Sum looks like a different problem, and it is not: fix the first element, and what is left is Two Sum on the rest of the array with a smaller target. One loop wrapped around the pass from two pages ago takes the obvious O(n³) down to O(n²)."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "That is the whole idea of this page, and it keeps going. Four Sum fixes two elements and runs the same pair pass, giving O(n³) instead of O(n⁴). k-Sum is k-2 nested loops with the converging pair at the bottom. What changes between the variants is not the structure but the single line at the comparison - and that line is where the interesting problems live."
+        }
+      ]
+    },
+    {
+      "id": "h-3",
+      "type": "heading",
+      "level": 2,
+      "text": "3 Sum"
+    },
+    {
+      "id": "p-4",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Find every distinct triplet summing to zero. Sort first, then for each index "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", run a converging pair over everything to its right looking for "
+        },
+        {
+          "text": "-a[i]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "p-5",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Sorting does two jobs here. It makes the pair pass valid, and it puts duplicates next to each other so they can be skipped, which is what stops the same triplet being reported three times over."
+        }
+      ]
+    },
+    {
+      "id": "w-6",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "three-sum",
+        "values": [
+          -4,
+          -1,
+          -1,
+          0,
+          1,
+          2
+        ],
+        "target": 0
+      }
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There are two separate duplicate skips, and both are needed. The one on the outer loop stops the same value of "
+        },
+        {
+          "text": "a[i]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " starting the same search twice. The two inside the pair loop, after a hit, stop the same pair being re-reported. Miss either and the output fills with repeats; the usual patch is to dedupe the results afterwards, which works and is slower and hides the fact that the sort already solved it."
+        }
+      ]
+    },
+    {
+      "id": "p-8",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A useful early exit falls out of the sort as well. Once "
+        },
+        {
+          "text": "a[i]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is greater than zero, every value to its right is too, so no triplet from there on can sum to zero, and the loop can stop rather than continue."
+        }
+      ]
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "javascript",
+      "code": "function threeSum(nums) {\n  const a = [...nums].sort((x, y) => x - y);\n  const out = [];\n\n  for (let i = 0; i < a.length - 2; i++) {\n    if (a[i] > 0) break;                       // everything to the right is bigger\n    if (i > 0 && a[i] === a[i - 1]) continue;  // same i value, same search\n\n    let lo = i + 1, hi = a.length - 1;\n    while (lo < hi) {\n      const sum = a[i] + a[lo] + a[hi];\n      if (sum === 0) {\n        out.push([a[i], a[lo], a[hi]]);\n        lo++; hi--;\n        while (lo < hi && a[lo] === a[lo - 1]) lo++;\n        while (lo < hi && a[hi] === a[hi + 1]) hi--;\n      } else if (sum < 0) {\n        lo++;\n      } else {\n        hi--;\n      }\n    }\n  }\n  return out;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def three_sum(nums):\n    a = sorted(nums)\n    out = []\n\n    for i in range(len(a) - 2):\n        if a[i] > 0:                      # everything to the right is bigger\n            break\n        if i > 0 and a[i] == a[i - 1]:    # same i value, same search\n            continue\n\n        lo, hi = i + 1, len(a) - 1\n        while lo < hi:\n            total = a[i] + a[lo] + a[hi]\n            if total == 0:\n                out.append((a[i], a[lo], a[hi]))\n                lo += 1\n                hi -= 1\n                while lo < hi and a[lo] == a[lo - 1]:\n                    lo += 1\n                while lo < hi and a[hi] == a[hi + 1]:\n                    hi -= 1\n            elif total < 0:\n                lo += 1\n            else:\n                hi -= 1\n    return out"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <array>\n#include <vector>\n\nstd::vector<std::array<int, 3>> threeSum(std::vector<int> a) {\n    std::sort(a.begin(), a.end());\n    std::vector<std::array<int, 3>> out;\n\n    for (int i = 0; i + 2 < (int)a.size(); i++) {\n        if (a[i] > 0) break;                      // everything to the right is bigger\n        if (i > 0 && a[i] == a[i - 1]) continue;  // same i value, same search\n\n        int lo = i + 1, hi = (int)a.size() - 1;\n        while (lo < hi) {\n            int sum = a[i] + a[lo] + a[hi];\n            if (sum == 0) {\n                out.push_back({a[i], a[lo], a[hi]});\n                lo++; hi--;\n                while (lo < hi && a[lo] == a[lo - 1]) lo++;\n                while (lo < hi && a[hi] == a[hi + 1]) hi--;\n            } else if (sum < 0) {\n                lo++;\n            } else {\n                hi--;\n            }\n        }\n    }\n    return out;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-10",
+      "type": "heading",
+      "level": 2,
+      "text": "Counting triplets under a target"
+    },
+    {
+      "id": "p-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "How many triplets sum to less than a target? Enumerating them and counting is O(n²) work per fixed "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " in the worst case, which puts the whole thing back at O(n³). The counting version avoids that with the observation this problem is really about."
+        }
+      ]
+    },
+    {
+      "id": "p-12",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Suppose "
+        },
+        {
+          "text": "a[i] + a[lo] + a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " comes out under the target. Every value between "
+        },
+        {
+          "text": "lo",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "hi",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is at most "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", so swapping "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for any of them keeps the sum under the target too. That is "
+        },
+        {
+          "text": "hi - lo",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " triplets, all valid, "
+        },
+        {
+          "text": "counted in one step",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " without looking at any of them. Then "
+        },
+        {
+          "text": "lo",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " moves up."
+        }
+      ]
+    },
+    {
+      "id": "p-13",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "If the sum is not under the target, "
+        },
+        {
+          "text": "a[hi]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is too big for the current "
+        },
+        {
+          "text": "lo",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and for every "
+        },
+        {
+          "text": "lo",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " after it, so "
+        },
+        {
+          "text": "hi",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " comes down. Same two-branch structure, but one branch now credits a whole block."
+        }
+      ]
+    },
+    {
+      "id": "w-14",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "count-triplets",
+        "values": [
+          -2,
+          0,
+          1,
+          3,
+          5
+        ],
+        "target": 4
+      }
+    },
+    {
+      "id": "c-15",
+      "type": "callout",
+      "tone": "important",
+      "title": "The off-by-one that matters",
+      "content": [
+        {
+          "text": "The count added is hi - lo, not hi - lo + 1. The partner at hi is already counted as part of the current triplet; the block being credited is the choices strictly between lo and hi, plus hi itself. Write it out on a three-element example once and it stops being something to memorise."
+        }
+      ]
+    },
+    {
+      "id": "code-16",
+      "type": "code",
+      "language": "javascript",
+      "code": "// Number of triplets i < j < k with a[i] + a[j] + a[k] < target.\nfunction countTripletsUnder(nums, target) {\n  const a = [...nums].sort((x, y) => x - y);\n  let count = 0;\n\n  for (let i = 0; i < a.length - 2; i++) {\n    let lo = i + 1, hi = a.length - 1;\n    while (lo < hi) {\n      if (a[i] + a[lo] + a[hi] < target) {\n        // Every partner from lo+1 up to hi also works: one step, hi - lo triplets.\n        count += hi - lo;\n        lo++;\n      } else {\n        hi--;\n      }\n    }\n  }\n  return count;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "# Number of triplets i < j < k with a[i] + a[j] + a[k] < target.\ndef count_triplets_under(nums, target):\n    a = sorted(nums)\n    count = 0\n\n    for i in range(len(a) - 2):\n        lo, hi = i + 1, len(a) - 1\n        while lo < hi:\n            if a[i] + a[lo] + a[hi] < target:\n                # Every partner from lo+1 up to hi also works.\n                count += hi - lo\n                lo += 1\n            else:\n                hi -= 1\n    return count"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <vector>\n\n// Number of triplets i < j < k with a[i] + a[j] + a[k] < target.\nlong long countTripletsUnder(std::vector<int> a, int target) {\n    std::sort(a.begin(), a.end());\n    long long count = 0;\n\n    for (int i = 0; i + 2 < (int)a.size(); i++) {\n        int lo = i + 1, hi = (int)a.size() - 1;\n        while (lo < hi) {\n            if (a[i] + a[lo] + a[hi] < target) {\n                count += hi - lo;   // a whole block at once\n                lo++;\n            } else {\n                hi--;\n            }\n        }\n    }\n    return count;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-17",
+      "type": "heading",
+      "level": 2,
+      "text": "The closest triplet"
+    },
+    {
+      "id": "p-18",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Now the target does not have to be hit, only approached: find the triplet whose sum is nearest to it. The pass is unchanged, and only the comparison changes - instead of testing for equality, keep the best distance seen so far and move the pointer that pushes the sum in the right direction."
+        }
+      ]
+    },
+    {
+      "id": "p-19",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is one shortcut worth taking. A distance of zero cannot be beaten, so an exact hit can return immediately rather than finishing the scan."
+        }
+      ]
+    },
+    {
+      "id": "w-20",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "closest-triplet",
+        "values": [
+          -1,
+          2,
+          1,
+          -4,
+          5
+        ],
+        "target": 1
+      }
+    },
+    {
+      "id": "p-21",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "This variant is the clearest illustration of why the technique is more than a trick for exact matches. A hash map answers \"does this exact sum exist\" and is useless here; the ordered scan answers \"how close can we get\", because the sort gives every step a direction to move in."
+        }
+      ]
+    },
+    {
+      "id": "code-22",
+      "type": "code",
+      "language": "javascript",
+      "code": "function closestTriplet(nums, target) {\n  const a = [...nums].sort((x, y) => x - y);\n  let best = Infinity;\n\n  for (let i = 0; i < a.length - 2; i++) {\n    let lo = i + 1, hi = a.length - 1;\n    while (lo < hi) {\n      const sum = a[i] + a[lo] + a[hi];\n      if (Math.abs(sum - target) < Math.abs(best - target)) best = sum;\n\n      if (sum === target) return sum;   // nothing beats a distance of zero\n      if (sum < target) lo++;\n      else hi--;\n    }\n  }\n  return best;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def closest_triplet(nums, target):\n    a = sorted(nums)\n    best = None\n\n    for i in range(len(a) - 2):\n        lo, hi = i + 1, len(a) - 1\n        while lo < hi:\n            total = a[i] + a[lo] + a[hi]\n            if best is None or abs(total - target) < abs(best - target):\n                best = total\n\n            if total == target:\n                return total          # nothing beats a distance of zero\n            if total < target:\n                lo += 1\n            else:\n                hi -= 1\n    return best"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <cstdlib>\n#include <vector>\n\nint closestTriplet(std::vector<int> a, int target) {\n    std::sort(a.begin(), a.end());\n    int best = a[0] + a[1] + a[2];\n\n    for (int i = 0; i + 2 < (int)a.size(); i++) {\n        int lo = i + 1, hi = (int)a.size() - 1;\n        while (lo < hi) {\n            int sum = a[i] + a[lo] + a[hi];\n            if (std::abs(sum - target) < std::abs(best - target)) best = sum;\n\n            if (sum == target) return sum;   // nothing beats a distance of zero\n            if (sum < target) lo++;\n            else hi--;\n        }\n    }\n    return best;\n}"
+        }
+      ]
+    },
+    {
+      "id": "h-23",
+      "type": "heading",
+      "level": 2,
+      "text": "4 Sum, and the general pattern"
+    },
+    {
+      "id": "p-24",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two fixed indices instead of one, then the same pair. The duplicate skipping now has to happen on both outer loops, with the second one guarded by "
+        },
+        {
+          "text": "j > i + 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " rather than "
+        },
+        {
+          "text": "j > 0",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", because the first "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " of each new "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is allowed to repeat a value that a previous "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " already used."
+        }
+      ]
+    },
+    {
+      "id": "w-25",
+      "type": "interactive",
+      "widget": "two-pointer-explorer",
+      "data": {
+        "mode": "four-sum",
+        "values": [
+          -2,
+          -1,
+          0,
+          0,
+          1,
+          2
+        ],
+        "target": 0
+      }
+    },
+    {
+      "id": "p-26",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch the frame counter: even on six values the run is noticeably longer than 3 Sum on the same array, which is the O(n³) showing up. There is real pruning available - if the smallest four values from "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " already overshoot the target, no later "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " can help - and it is worth adding when n gets large, but it does not change the exponent."
+        }
+      ]
+    },
+    {
+      "id": "code-27",
+      "type": "code",
+      "language": "javascript",
+      "code": "function fourSum(nums, target) {\n  const a = [...nums].sort((x, y) => x - y);\n  const out = [];\n  const n = a.length;\n\n  for (let i = 0; i < n - 3; i++) {\n    if (i > 0 && a[i] === a[i - 1]) continue;\n    for (let j = i + 1; j < n - 2; j++) {\n      // j > i + 1, not j > 0: the first j of a new i may repeat a value.\n      if (j > i + 1 && a[j] === a[j - 1]) continue;\n\n      let lo = j + 1, hi = n - 1;\n      while (lo < hi) {\n        const sum = a[i] + a[j] + a[lo] + a[hi];\n        if (sum === target) {\n          out.push([a[i], a[j], a[lo], a[hi]]);\n          lo++; hi--;\n          while (lo < hi && a[lo] === a[lo - 1]) lo++;\n          while (lo < hi && a[hi] === a[hi + 1]) hi--;\n        } else if (sum < target) {\n          lo++;\n        } else {\n          hi--;\n        }\n      }\n    }\n  }\n  return out;\n}",
+      "variants": [
+        {
+          "language": "python",
+          "code": "def four_sum(nums, target):\n    a = sorted(nums)\n    out = []\n    n = len(a)\n\n    for i in range(n - 3):\n        if i > 0 and a[i] == a[i - 1]:\n            continue\n        for j in range(i + 1, n - 2):\n            # j > i + 1, not j > 0: the first j of a new i may repeat a value.\n            if j > i + 1 and a[j] == a[j - 1]:\n                continue\n\n            lo, hi = j + 1, n - 1\n            while lo < hi:\n                total = a[i] + a[j] + a[lo] + a[hi]\n                if total == target:\n                    out.append((a[i], a[j], a[lo], a[hi]))\n                    lo += 1\n                    hi -= 1\n                    while lo < hi and a[lo] == a[lo - 1]:\n                        lo += 1\n                    while lo < hi and a[hi] == a[hi + 1]:\n                        hi -= 1\n                elif total < target:\n                    lo += 1\n                else:\n                    hi -= 1\n    return out"
+        },
+        {
+          "language": "cpp",
+          "code": "#include <algorithm>\n#include <array>\n#include <vector>\n\nstd::vector<std::array<long long, 4>> fourSum(std::vector<int> a, long long target) {\n    std::sort(a.begin(), a.end());\n    std::vector<std::array<long long, 4>> out;\n    int n = (int)a.size();\n\n    for (int i = 0; i + 3 < n; i++) {\n        if (i > 0 && a[i] == a[i - 1]) continue;\n        for (int j = i + 1; j + 2 < n; j++) {\n            // j > i + 1, not j > 0.\n            if (j > i + 1 && a[j] == a[j - 1]) continue;\n\n            int lo = j + 1, hi = n - 1;\n            while (lo < hi) {\n                long long sum = (long long)a[i] + a[j] + a[lo] + a[hi];\n                if (sum == target) {\n                    out.push_back({a[i], a[j], a[lo], a[hi]});\n                    lo++; hi--;\n                    while (lo < hi && a[lo] == a[lo - 1]) lo++;\n                    while (lo < hi && a[hi] == a[hi + 1]) hi--;\n                } else if (sum < target) {\n                    lo++;\n                } else {\n                    hi--;\n                }\n            }\n        }\n    }\n    return out;\n}"
+        }
+      ]
+    },
+    {
+      "id": "c-28",
+      "type": "callout",
+      "tone": "warning",
+      "title": "Overflow",
+      "content": [
+        {
+          "text": "Four values near the 32-bit limit overflow a 32-bit sum, and the comparison then sends the pointers the wrong way. The C++ version above accumulates in a 64-bit type for that reason. It is a favourite way for an otherwise correct k-Sum solution to fail on the last hidden test case."
+        }
+      ]
+    },
+    {
+      "id": "h-29",
+      "type": "heading",
+      "level": 2,
+      "text": "What each variant costs"
+    },
+    {
+      "id": "t-30",
+      "type": "table",
+      "headers": [
+        "Problem",
+        "Brute force",
+        "Two pointers",
+        "What changes at the comparison"
+      ],
+      "rows": [
+        [
+          "2 Sum, sorted",
+          "O(n²)",
+          "O(n)",
+          "equal, under, over"
+        ],
+        [
+          "3 Sum",
+          "O(n³)",
+          "O(n²)",
+          "same three branches, one index fixed"
+        ],
+        [
+          "Count triplets under a target",
+          "O(n³)",
+          "O(n²)",
+          "a hit credits hi - lo triplets at once"
+        ],
+        [
+          "Closest triplet",
+          "O(n³)",
+          "O(n²)",
+          "track the best distance instead of equality"
+        ],
+        [
+          "4 Sum",
+          "O(n⁴)",
+          "O(n³)",
+          "two indices fixed"
+        ],
+        [
+          "k Sum",
+          "O(n^k)",
+          "O(n^(k-1))",
+          "k-2 fixed indices, then the pair"
+        ]
+      ],
+      "caption": "Sorting costs O(n log n) and is dominated by the pass in every row from 3 Sum down."
+    },
+    {
+      "id": "p-31",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The pattern has a floor worth knowing. k-Sum by this method is O(n^(k-1)), and for 4 Sum there is a hash-based approach that reaches O(n²) by storing every pair sum, at the cost of O(n²) memory and considerably more care around duplicates. Below that, no method is known to do better, and the problem is one of the standard hard cases in fine-grained complexity."
+        }
+      ]
+    },
+    {
+      "id": "h-32",
+      "type": "heading",
+      "level": 2,
+      "text": "Check yourself"
+    },
+    {
+      "id": "w-33",
+      "type": "interactive",
+      "widget": "quiz",
+      "data": {
+        "questions": [
+          {
+            "prompt": "In 3 Sum, what are the two distinct duplicate skips for?",
+            "options": [
+              {
+                "label": "The outer one stops the same a[i] starting an identical search; the inner ones stop the same pair being reported twice",
+                "correct": true
+              },
+              {
+                "label": "They are the same check written twice, and one can be removed",
+                "correct": false
+              },
+              {
+                "label": "Both exist to keep the array sorted after a swap",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Counting triplets under a target: the sum at (i, lo, hi) is under the target. Why can hi - lo be added at once?",
+            "options": [
+              {
+                "label": "Every partner between lo and hi is at most a[hi], so every one of those triplets is also under the target",
+                "correct": true
+              },
+              {
+                "label": "Because the array is sorted, so all remaining triplets qualify",
+                "correct": false
+              },
+              {
+                "label": "Because hi - lo counts the elements still to be examined",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Why does 4 Sum guard its inner duplicate skip with j > i + 1 instead of j > 0?",
+            "options": [
+              {
+                "label": "The first j of a new i is allowed to repeat a value used by an earlier i, and j > 0 would wrongly skip it",
+                "correct": true
+              },
+              {
+                "label": "To avoid reading a[j - 1] out of bounds",
+                "correct": false
+              },
+              {
+                "label": "Because j starts at i + 1, so the two conditions are equivalent",
+                "correct": false
+              }
+            ]
+          },
+          {
+            "prompt": "Which problem on this page cannot be solved with a hash map at all?",
+            "options": [
+              {
+                "label": "The closest triplet, since a hash map answers exact membership and has no notion of nearest",
+                "correct": true
+              },
+              {
+                "label": "3 Sum, because it needs sorted input",
+                "correct": false
+              },
+              {
+                "label": "Counting triplets under a target, because counting needs an ordered structure",
+                "correct": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d-34",
+      "type": "divider"
+    },
+    {
+      "id": "p-35",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Next: "
+        },
+        {
+          "text": "two sequences, one pass each",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/tutorials/dsa/two-pointers-two-sequences"
+            }
+          ]
+        },
+        {
+          "text": ", where the pointers live in different arrays."
+        }
+      ]
+    }
+  ]
+}
