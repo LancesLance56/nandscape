@@ -649,6 +649,15 @@
       ]
     },
     {
+      "id": "elem-18-howto",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Pick any two and compare the frame counts."
+        }
+      ]
+    },
+    {
       "id": "elem-18",
       "data": {
         "size": 14,
@@ -657,7 +666,8 @@
           "bubble",
           "selection",
           "insertion"
-        ]
+        ],
+        "layout": "race"
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

@@ -146,7 +146,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Watch the pointers do exactly that below, live, on this same array:"
+          "text": "Watch the pointers do exactly that below, live, on this same array."
+        }
+      ]
+    },
+    {
+      "id": "w-vis-howto",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Step it and follow the highlighted pseudocode line."
         }
       ]
     },
@@ -156,7 +165,8 @@
         "size": 7,
         "preset": "random",
         "algorithm": "quick",
-        "showComparison": false
+        "showComparison": false,
+        "layout": "compact"
       },
       "type": "interactive",
       "widget": "sorting-visualizer"
@@ -389,7 +399,16 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Set the input to \"already sorted\" below and compare quick sort's comparison count against merge sort's:"
+          "text": "Set the input to \"already sorted\" below and compare quick sort's comparison count against merge sort's."
+        }
+      ]
+    },
+    {
+      "id": "w-compare-howto",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch A's comparison count blow past B's."
         }
       ]
     },
@@ -402,7 +421,8 @@
           "quick",
           "merge",
           "heap"
-        ]
+        ],
+        "layout": "race"
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

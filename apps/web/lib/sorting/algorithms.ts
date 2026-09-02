@@ -23,14 +23,14 @@ export function bubbleSortSteps(input: number[]): SortRun {
   const n = a.length;
   const sorted: number[] = [];
 
-  rec.push(a, "Bubble sort: repeatedly walk the array, swapping any pair that is out of order.");
+  rec.push(a, "Bubble sort: repeatedly walk the array, swapping any pair that is out of order.", { line: 0 });
 
   for (let pass = 0; pass < n - 1; pass++) {
     let swappedThisPass = false;
 
     for (let i = 0; i < n - 1 - pass; i++) {
       rec.countCompare();
-      if (!rec.push(a, `Compare ${a[i]} and ${a[i + 1]}.`, { comparing: [i, i + 1], sorted: [...sorted] })) {
+      if (!rec.push(a, `Compare ${a[i]} and ${a[i + 1]}.`, { comparing: [i, i + 1], sorted: [...sorted], line: 3 })) {
         return rec.finish();
       }
 
@@ -38,7 +38,7 @@ export function bubbleSortSteps(input: number[]): SortRun {
         [a[i], a[i + 1]] = [a[i + 1], a[i]];
         rec.countWrite(2);
         swappedThisPass = true;
-        if (!rec.push(a, `${a[i + 1]} was larger, so swap them.`, { writing: [i, i + 1], sorted: [...sorted] })) {
+        if (!rec.push(a, `${a[i + 1]} was larger, so swap them.`, { writing: [i, i + 1], sorted: [...sorted], line: 4 })) {
           return rec.finish();
         }
       }
@@ -51,7 +51,7 @@ export function bubbleSortSteps(input: number[]): SortRun {
       // No swaps in a whole pass means the array is already ordered. This
       // early exit is what makes bubble sort O(n) on sorted input.
       for (let k = 0; k < n - 1 - pass; k++) sorted.unshift(k);
-      rec.push(a, "A full pass with no swaps, so the array is sorted. Stop early.", { sorted: [...sorted] });
+      rec.push(a, "A full pass with no swaps, so the array is sorted. Stop early.", { sorted: [...sorted], line: 5 });
       return rec.finish();
     }
   }
@@ -66,7 +66,7 @@ export function selectionSortSteps(input: number[]): SortRun {
   const n = a.length;
   const sorted: number[] = [];
 
-  rec.push(a, "Selection sort: find the smallest remaining value and put it in place.");
+  rec.push(a, "Selection sort: find the smallest remaining value and put it in place.", { line: 0 });
 
   for (let i = 0; i < n - 1; i++) {
     let minIndex = i;
@@ -78,6 +78,7 @@ export function selectionSortSteps(input: number[]): SortRun {
           comparing: [j, minIndex],
           pointers: { start: i, min: minIndex },
           sorted: [...sorted],
+          line: 3,
         })
       ) {
         return rec.finish();
@@ -94,6 +95,7 @@ export function selectionSortSteps(input: number[]): SortRun {
       !rec.push(a, `${a[i]} is the smallest of what was left, so it belongs at position ${i}.`, {
         writing: minIndex !== i ? [i, minIndex] : [],
         sorted: [...sorted],
+        line: 4,
       })
     ) {
       return rec.finish();
@@ -111,7 +113,7 @@ export function insertionSortSteps(input: number[]): SortRun {
   const rec = createSortRecorder(a);
   const n = a.length;
 
-  rec.push(a, "Insertion sort: grow a sorted prefix by inserting each new value into it.", { sorted: [0] });
+  rec.push(a, "Insertion sort: grow a sorted prefix by inserting each new value into it.", { sorted: [0], line: 0 });
 
   for (let i = 1; i < n; i++) {
     const value = a[i];
@@ -128,6 +130,7 @@ export function insertionSortSteps(input: number[]): SortRun {
       pointers: { current: i },
       sorted: prefix(),
       aux: holding,
+      line: 1,
     })) {
       return rec.finish();
     }
@@ -144,6 +147,7 @@ export function insertionSortSteps(input: number[]): SortRun {
           pointers: { current: j },
           sorted: prefix(),
           aux: holding,
+          line: 4,
         })
       ) {
         return rec.finish();
@@ -157,6 +161,7 @@ export function insertionSortSteps(input: number[]): SortRun {
       !rec.push(a, `${value} settles at position ${j + 1}.`, {
         writing: [j + 1],
         sorted: Array.from({ length: i + 1 }, (_, k) => k),
+        line: 5,
       })
     ) {
       return rec.finish();
@@ -176,7 +181,7 @@ export function mergeSortSteps(input: number[]): SortRun {
   const rec = createSortRecorder(a);
   const n = a.length;
 
-  rec.push(a, "Merge sort: split until the pieces are trivially sorted, then merge them back together.");
+  rec.push(a, "Merge sort: split until the pieces are trivially sorted, then merge them back together.", { line: 0 });
 
   const sortRange = (start: number, end: number): void => {
     if (start >= end || rec.stopped) return;
@@ -185,6 +190,7 @@ export function mergeSortSteps(input: number[]): SortRun {
     rec.push(a, `Split [${start}..${end}] into [${start}..${mid}] and [${mid + 1}..${end}].`, {
       range: { start, end },
       pointers: { mid },
+      line: 2,
     });
 
     sortRange(start, mid);
@@ -215,6 +221,7 @@ export function mergeSortSteps(input: number[]): SortRun {
           range: { start, end },
           comparing: [start + i, mid + 1 + j],
           aux: { label: "merge buffer", values: [...buffer], highlight: [k] },
+          line: 6,
         })
       ) {
         return;
@@ -230,6 +237,7 @@ export function mergeSortSteps(input: number[]): SortRun {
       if (!rec.push(a, `Right half is empty, so copy the rest of the left half.`, {
         range: { start, end },
         aux: { label: "merge buffer", values: [...buffer], highlight: [k] },
+        line: 7,
       })) {
         return;
       }
@@ -241,6 +249,7 @@ export function mergeSortSteps(input: number[]): SortRun {
       if (!rec.push(a, `Left half is empty, so copy the rest of the right half.`, {
         range: { start, end },
         aux: { label: "merge buffer", values: [...buffer], highlight: [k] },
+        line: 7,
       })) {
         return;
       }
@@ -256,6 +265,7 @@ export function mergeSortSteps(input: number[]): SortRun {
     rec.push(a, `Copy the merged run back into [${start}..${end}].`, {
       range: { start, end },
       writing: Array.from({ length: buffer.length }, (_, t) => start + t),
+      line: 7,
     });
   };
 
@@ -278,7 +288,7 @@ export function quickSortSteps(input: number[]): SortRun {
   const n = a.length;
   const settled: number[] = [];
 
-  rec.push(a, "Quick sort: pick a pivot, move everything smaller to its left, then recurse on each side.");
+  rec.push(a, "Quick sort: pick a pivot, move everything smaller to its left, then recurse on each side.", { line: 0 });
 
   const partition = (low: number, high: number): number => {
     const pivot = a[high];
@@ -288,6 +298,7 @@ export function quickSortSteps(input: number[]): SortRun {
       range: { start: low, end: high },
       pointers: { pivot: high },
       sorted: [...settled],
+      line: 5,
     });
 
     for (let j = low; j < high; j++) {
@@ -298,6 +309,7 @@ export function quickSortSteps(input: number[]): SortRun {
           comparing: [j, high],
           pointers: { i: Math.max(i, low), j, pivot: high },
           sorted: [...settled],
+          line: 6,
         })
       ) {
         return i + 1;
@@ -314,6 +326,7 @@ export function quickSortSteps(input: number[]): SortRun {
               writing: [i, j],
               pointers: { i, j, pivot: high },
               sorted: [...settled],
+              line: 7,
             })
           ) {
             return i + 1;
@@ -329,6 +342,7 @@ export function quickSortSteps(input: number[]): SortRun {
       range: { start: low, end: high },
       writing: [i + 1, high],
       sorted: [...settled],
+      line: 8,
     });
     return i + 1;
   };
@@ -364,7 +378,7 @@ export function heapSortSteps(input: number[]): SortRun {
   const n = a.length;
   const sorted: number[] = [];
 
-  rec.push(a, "Heap sort: turn the array into a max-heap, then repeatedly move the root to the end.");
+  rec.push(a, "Heap sort: turn the array into a max-heap, then repeatedly move the root to the end.", { line: 0 });
 
   const siftDown = (start: number, end: number): void => {
     let root = start;
@@ -390,6 +404,7 @@ export function heapSortSteps(input: number[]): SortRun {
           comparing: [root, largest],
           pointers: { root, child: largest },
           sorted: [...sorted],
+          line: 7,
         })
       ) {
         return;
@@ -405,12 +420,12 @@ export function heapSortSteps(input: number[]): SortRun {
   // Build the heap bottom-up. Leaves are already valid heaps, so start at
   // the last internal node; this is the O(n) build, not n inserts.
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    rec.push(a, `Sift node ${i} down to restore the heap property below it.`, { pointers: { root: i } });
+    rec.push(a, `Sift node ${i} down to restore the heap property below it.`, { pointers: { root: i }, line: 1 });
     siftDown(i, n - 1);
     if (rec.stopped) return rec.finish();
   }
 
-  rec.push(a, "The array is now a max-heap: every parent is at least as large as its children.");
+  rec.push(a, "The array is now a max-heap: every parent is at least as large as its children.", { line: 2 });
 
   for (let end = n - 1; end > 0; end--) {
     [a[0], a[end]] = [a[end], a[0]];
@@ -420,6 +435,7 @@ export function heapSortSteps(input: number[]): SortRun {
       !rec.push(a, `The root ${a[end]} is the largest remaining value, so move it to position ${end}.`, {
         writing: [0, end],
         sorted: [...sorted],
+        line: 3,
       })
     ) {
       return rec.finish();
@@ -454,6 +470,7 @@ export function countingSortSteps(input: number[]): SortRun {
 
   rec.push(a, `Counting sort: no comparisons at all. One bucket per distinct value, then read the buckets out in order.`, {
     aux: { label: "counts", values: [...counts] },
+    line: 1,
   });
 
   for (let i = 0; i < n; i++) {
@@ -462,6 +479,7 @@ export function countingSortSteps(input: number[]): SortRun {
       !rec.push(a, `${a[i]} goes in bucket ${a[i]}.`, {
         comparing: [i],
         aux: { label: "counts", values: [...counts], highlight: [a[i]] },
+        line: 3,
       })
     ) {
       return rec.finish();
@@ -487,6 +505,7 @@ export function countingSortSteps(input: number[]): SortRun {
           writing: [write],
           sorted: Array.from({ length: write }, (_, i) => i),
           aux: { label: "counts", values: [...counts], highlight: [bucket] },
+          line: 5,
         })
       ) {
         return rec.finish();

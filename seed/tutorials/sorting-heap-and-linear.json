@@ -118,12 +118,22 @@
       ]
     },
     {
+      "id": "w-counting-howto",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Watch the buckets fill, then empty in order."
+        }
+      ]
+    },
+    {
       "id": "w-counting",
       "data": {
         "size": 14,
         "preset": "random",
         "algorithm": "counting",
-        "showComparison": false
+        "showComparison": false,
+        "layout": "compact"
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

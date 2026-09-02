@@ -29,6 +29,12 @@ export interface SortStep {
   pointers?: Record<string, number>;
   /** A merge buffer, a heap view, or counting buckets. */
   aux?: AuxView;
+  /**
+   * Index into the algorithm's `pseudocode`, for the layouts that show the
+   * source beside the bars. Optional: a frame that narrates a phase rather
+   * than a statement ("the array is now a max-heap") has no single line.
+   */
+  line?: number;
   caption: string;
   comparisons: number;
   writes: number;
@@ -66,6 +72,19 @@ export interface AlgorithmMeta {
   inPlace: boolean;
   /** One line on when you would actually reach for it. */
   note: string;
+  /** The family it belongs to, shown next to the name. */
+  tagline: string;
+  /** Reasons to reach for it, one clause each. */
+  goodFor: string[];
+  /** Reasons not to, same shape. */
+  watchOut: string[];
+  /**
+   * The algorithm as source, one entry per line. `SortStep.line` indexes into
+   * this, so the two have to be edited together: renumbering a line here
+   * without updating the recorder calls in `algorithms.ts` silently
+   * highlights the wrong statement.
+   */
+  pseudocode: string[];
 }
 
 export const ALGORITHMS: AlgorithmMeta[] = [
@@ -77,6 +96,23 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: true,
     inPlace: true,
     note: "Only worth knowing as a starting point. The early-exit version is O(n) on already-sorted input.",
+    tagline: "exchange sort",
+    goodFor: [
+      "Showing what a loop invariant buys you, on the smallest possible example",
+      "Noticing an already-sorted array in a single pass",
+    ],
+    watchOut: [
+      "About n²/2 comparisons on anything genuinely shuffled",
+      "Moves data far more than selection sort does for the same result",
+    ],
+    pseudocode: [
+      "for pass in 0 .. n-2:",
+      "  swapped = false",
+      "  for i in 0 .. n-2-pass:",
+      "    if a[i] > a[i+1]:",
+      "      swap a[i], a[i+1];  swapped = true",
+      "  if not swapped: stop",
+    ],
   },
   {
     id: "selection",
@@ -86,6 +122,22 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: false,
     inPlace: true,
     note: "Does the fewest writes of any simple sort: exactly n-1 swaps, which matters if writing is expensive.",
+    tagline: "selection",
+    goodFor: [
+      "Exactly n-1 swaps, whatever the input looks like",
+      "Sorting where a write costs far more than a read",
+    ],
+    watchOut: [
+      "Always n²/2 comparisons, even on sorted input",
+      "Not stable: the long swap jumps equal keys past each other",
+    ],
+    pseudocode: [
+      "for i in 0 .. n-2:",
+      "  min = i",
+      "  for j in i+1 .. n-1:",
+      "    if a[j] < a[min]: min = j",
+      "  swap a[i], a[min]",
+    ],
   },
   {
     id: "insertion",
@@ -95,6 +147,23 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: true,
     inPlace: true,
     note: "Genuinely useful. Fast on small or nearly-sorted arrays, which is why real sorts fall back to it.",
+    tagline: "incremental",
+    goodFor: [
+      "Small arrays, which is why real sorts fall back to it",
+      "Nearly sorted input: linear in the number of inversions",
+    ],
+    watchOut: [
+      "Quadratic the moment the input is properly shuffled",
+      "Every insert shifts a whole run one slot right",
+    ],
+    pseudocode: [
+      "for i in 1 .. n-1:",
+      "  value = a[i]",
+      "  j = i - 1",
+      "  while j >= 0 and a[j] > value:",
+      "    a[j+1] = a[j];  j -= 1",
+      "  a[j+1] = value",
+    ],
   },
   {
     id: "merge",
@@ -104,6 +173,25 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: true,
     inPlace: false,
     note: "Predictable and stable, at the cost of a scratch array. The basis of external and parallel sorting.",
+    tagline: "divide and conquer",
+    goodFor: [
+      "A guaranteed O(n log n): the input shape changes nothing",
+      "Stability, and the basis of external and parallel sorting",
+    ],
+    watchOut: [
+      "Needs an O(n) scratch buffer the other sorts do without",
+      "Loses to quick sort in cache-bound benchmarks",
+    ],
+    pseudocode: [
+      "sort(lo, hi):",
+      "  if lo >= hi: return",
+      "  mid = (lo + hi) / 2",
+      "  sort(lo, mid);  sort(mid+1, hi)",
+      "  merge(lo, mid, hi):",
+      "    while both halves have values:",
+      "      take the smaller into buf",
+      "    copy leftovers, then buf back",
+    ],
   },
   {
     id: "quick",
@@ -113,6 +201,26 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: false,
     inPlace: true,
     note: "Usually the fastest in practice thanks to cache behaviour, but the worst case is real without a good pivot.",
+    tagline: "divide and conquer",
+    goodFor: [
+      "Usually fastest in practice: sequential access, no scratch array",
+      "Each pass settles one pivot permanently",
+    ],
+    watchOut: [
+      "O(n²) when the pivot keeps splitting one-against-the-rest",
+      "Sorted input is that worst case, for a last-element pivot",
+    ],
+    pseudocode: [
+      "sort(lo, hi):",
+      "  if lo >= hi: return",
+      "  p = partition(lo, hi)",
+      "  sort(lo, p-1);  sort(p+1, hi)",
+      "partition(lo, hi):",
+      "  pivot = a[hi];  i = lo - 1",
+      "  for j in lo .. hi-1:",
+      "    if a[j] < pivot: i += 1; swap a[i], a[j]",
+      "  swap a[i+1], a[hi];  return i+1",
+    ],
   },
   {
     id: "heap",
@@ -122,6 +230,25 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: false,
     inPlace: true,
     note: "The only common sort that is both O(n log n) worst case and in place. Poor cache locality keeps it off the podium.",
+    tagline: "selection, with a heap",
+    goodFor: [
+      "O(n log n) worst case and O(1) extra space at once",
+      "The safety net quick sort falls back to, which is introsort",
+    ],
+    watchOut: [
+      "Sift-down jumps around memory, so cache misses dominate",
+      "Not stable",
+    ],
+    pseudocode: [
+      "for i = n/2 - 1 down to 0:",
+      "  siftDown(i, n-1)",
+      "for end = n-1 down to 1:",
+      "  swap a[0], a[end]",
+      "  siftDown(0, end-1)",
+      "siftDown(root, end):",
+      "  largest = bigger of root and its children",
+      "  if largest != root: swap, continue down",
+    ],
   },
   {
     id: "counting",
@@ -131,6 +258,23 @@ export const ALGORITHMS: AlgorithmMeta[] = [
     stable: true,
     inPlace: false,
     note: "Not a comparison sort, so the n log n bound does not apply. Needs a small integer range k.",
+    tagline: "not a comparison sort",
+    goodFor: [
+      "Linear time when the value range k is small",
+      "Stable, and the inner loop of radix sort",
+    ],
+    watchOut: [
+      "Needs k buckets, so a wide value range is fatal",
+      "Only works on integer-like keys",
+    ],
+    pseudocode: [
+      "k = max(a) + 1",
+      "counts = k zeros",
+      "for v in a:",
+      "  counts[v] += 1",
+      "for value in 0 .. k-1:",
+      "  write value, counts[value] times",
+    ],
   },
 ];
 
@@ -168,6 +312,7 @@ export function createSortRecorder(initial: number[], maxSteps = MAX_SORT_STEPS)
       range: extra.range,
       pointers: extra.pointers,
       aux: extra.aux,
+      line: extra.line,
       caption,
       comparisons,
       writes,

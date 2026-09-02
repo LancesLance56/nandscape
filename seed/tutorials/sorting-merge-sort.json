@@ -189,12 +189,22 @@
       ]
     },
     {
+      "id": "w-vis-howto",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Click a line in the log to jump back."
+        }
+      ]
+    },
+    {
       "id": "w-vis",
       "data": {
         "size": 8,
         "preset": "random",
         "algorithm": "merge",
-        "showComparison": false
+        "showComparison": false,
+        "layout": "log"
       },
       "type": "interactive",
       "widget": "sorting-visualizer"
