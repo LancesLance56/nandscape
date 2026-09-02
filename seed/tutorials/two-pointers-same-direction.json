@@ -44,9 +44,9 @@
     },
     {
       "id": "h-3",
+      "text": "Unique elements, in place",
       "type": "heading",
-      "level": 2,
-      "text": "Unique elements, in place"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -112,8 +112,6 @@
     },
     {
       "id": "w-6",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "unique",
         "values": [
@@ -127,7 +125,9 @@
           7,
           7
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-7",
@@ -173,24 +173,24 @@
     },
     {
       "id": "code-8",
+      "code": "// Sorted input. Returns the count of unique values; a[0..count) holds them.\nfunction removeDuplicates(a) {\n  if (a.length === 0) return 0;\n\n  let write = 1;\n  for (let read = 1; read < a.length; read++) {\n    // Against the last value KEPT, not the last value read.\n    if (a[read] !== a[write - 1]) {\n      a[write] = a[read];\n      write++;\n    }\n  }\n  return write;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// Sorted input. Returns the count of unique values; a[0..count) holds them.\nfunction removeDuplicates(a) {\n  if (a.length === 0) return 0;\n\n  let write = 1;\n  for (let read = 1; read < a.length; read++) {\n    // Against the last value KEPT, not the last value read.\n    if (a[read] !== a[write - 1]) {\n      a[write] = a[read];\n      write++;\n    }\n  }\n  return write;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# Sorted input. Returns the count of unique values; a[:count] holds them.\ndef remove_duplicates(a):\n    if not a:\n        return 0\n\n    write = 1\n    for read in range(1, len(a)):\n        # Against the last value KEPT, not the last value read.\n        if a[read] != a[write - 1]:\n            a[write] = a[read]\n            write += 1\n    return write"
+          "code": "# Sorted input. Returns the count of unique values; a[:count] holds them.\ndef remove_duplicates(a):\n    if not a:\n        return 0\n\n    write = 1\n    for read in range(1, len(a)):\n        # Against the last value KEPT, not the last value read.\n        if a[read] != a[write - 1]:\n            a[write] = a[read]\n            write += 1\n    return write",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n\n// Sorted input. Returns the count of unique values; a[0..count) holds them.\nint removeDuplicates(std::vector<int>& a) {\n    if (a.empty()) return 0;\n\n    int write = 1;\n    for (int read = 1; read < (int)a.size(); read++) {\n        // Against the last value KEPT, not the last value read.\n        if (a[read] != a[write - 1]) {\n            a[write++] = a[read];\n        }\n    }\n    return write;\n}"
+          "code": "#include <vector>\n\n// Sorted input. Returns the count of unique values; a[0..count) holds them.\nint removeDuplicates(std::vector<int>& a) {\n    if (a.empty()) return 0;\n\n    int write = 1;\n    for (int read = 1; read < (int)a.size(); read++) {\n        // Against the last value KEPT, not the last value read.\n        if (a[read] != a[write - 1]) {\n            a[write++] = a[read];\n        }\n    }\n    return write;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "c-9",
-      "type": "callout",
       "tone": "note",
+      "type": "callout",
       "title": "The same shape, everywhere",
       "content": [
         {
@@ -200,8 +200,8 @@
           "text": "partition problems",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/sorting-partition-problems"
+              "href": "/tutorials/dsa/sorting-partition-problems",
+              "kind": "link"
             }
           ]
         },
@@ -212,9 +212,9 @@
     },
     {
       "id": "h-10",
+      "text": "Smallest subarray with a sum of at least the target",
       "type": "heading",
-      "level": 2,
-      "text": "Smallest subarray with a sum of at least the target"
+      "level": 2
     },
     {
       "id": "p-11",
@@ -247,10 +247,9 @@
     },
     {
       "id": "w-13",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "window",
+        "target": 7,
         "values": [
           2,
           1,
@@ -258,9 +257,10 @@
           2,
           3,
           2
-        ],
-        "target": 7
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-14",
@@ -317,8 +317,8 @@
     },
     {
       "id": "c-15",
-      "type": "callout",
       "tone": "warning",
+      "type": "callout",
       "title": "Positive values are load-bearing",
       "content": [
         {
@@ -328,25 +328,25 @@
     },
     {
       "id": "code-16",
+      "code": "// Positive values only. Returns 0 when no window reaches the target.\nfunction smallestSubarray(a, target) {\n  let best = Infinity;\n  let start = 0, sum = 0;\n\n  for (let end = 0; end < a.length; end++) {\n    sum += a[end];\n\n    // Shrink while the window still qualifies: a shorter one may too.\n    while (sum >= target) {\n      best = Math.min(best, end - start + 1);\n      sum -= a[start];\n      start++;\n    }\n  }\n  return best === Infinity ? 0 : best;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// Positive values only. Returns 0 when no window reaches the target.\nfunction smallestSubarray(a, target) {\n  let best = Infinity;\n  let start = 0, sum = 0;\n\n  for (let end = 0; end < a.length; end++) {\n    sum += a[end];\n\n    // Shrink while the window still qualifies: a shorter one may too.\n    while (sum >= target) {\n      best = Math.min(best, end - start + 1);\n      sum -= a[start];\n      start++;\n    }\n  }\n  return best === Infinity ? 0 : best;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# Positive values only. Returns 0 when no window reaches the target.\ndef smallest_subarray(a, target):\n    best = float(\"inf\")\n    start = total = 0\n\n    for end, value in enumerate(a):\n        total += value\n\n        # Shrink while the window still qualifies: a shorter one may too.\n        while total >= target:\n            best = min(best, end - start + 1)\n            total -= a[start]\n            start += 1\n\n    return 0 if best == float(\"inf\") else best"
+          "code": "# Positive values only. Returns 0 when no window reaches the target.\ndef smallest_subarray(a, target):\n    best = float(\"inf\")\n    start = total = 0\n\n    for end, value in enumerate(a):\n        total += value\n\n        # Shrink while the window still qualifies: a shorter one may too.\n        while total >= target:\n            best = min(best, end - start + 1)\n            total -= a[start]\n            start += 1\n\n    return 0 if best == float(\"inf\") else best",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <climits>\n#include <vector>\n\n// Positive values only. Returns 0 when no window reaches the target.\nint smallestSubarray(const std::vector<int>& a, int target) {\n    int best = INT_MAX, start = 0, sum = 0;\n\n    for (int end = 0; end < (int)a.size(); end++) {\n        sum += a[end];\n\n        // Shrink while the window still qualifies.\n        while (sum >= target) {\n            best = std::min(best, end - start + 1);\n            sum -= a[start];\n            start++;\n        }\n    }\n    return best == INT_MAX ? 0 : best;\n}"
+          "code": "#include <algorithm>\n#include <climits>\n#include <vector>\n\n// Positive values only. Returns 0 when no window reaches the target.\nint smallestSubarray(const std::vector<int>& a, int target) {\n    int best = INT_MAX, start = 0, sum = 0;\n\n    for (int end = 0; end < (int)a.size(); end++) {\n        sum += a[end];\n\n        // Shrink while the window still qualifies.\n        while (sum >= target) {\n            best = std::min(best, end - start + 1);\n            sum -= a[start];\n            start++;\n        }\n    }\n    return best == INT_MAX ? 0 : best;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-17",
+      "text": "Reverse the words of a sentence",
       "type": "heading",
-      "level": 2,
-      "text": "Reverse the words of a sentence"
+      "level": 2
     },
     {
       "id": "p-18",
@@ -368,12 +368,12 @@
     },
     {
       "id": "w-20",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "reverse-words",
         "text": "the sky is blue"
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-21",
@@ -386,24 +386,24 @@
     },
     {
       "id": "code-22",
+      "code": "function reverseRange(chars, lo, hi) {\n  while (lo < hi) {\n    [chars[lo], chars[hi]] = [chars[hi], chars[lo]];\n    lo++; hi--;\n  }\n}\n\nfunction reverseWords(s) {\n  const chars = [...s];\n\n  // Phase 1: right word order, every word spelled backwards.\n  reverseRange(chars, 0, chars.length - 1);\n\n  // Phase 2: put each word the right way round again.\n  let i = 0;\n  while (i < chars.length) {\n    if (chars[i] === \" \") { i++; continue; }\n    let j = i;\n    while (j + 1 < chars.length && chars[j + 1] !== \" \") j++;\n    reverseRange(chars, i, j);\n    i = j + 1;\n  }\n  return chars.join(\"\");\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function reverseRange(chars, lo, hi) {\n  while (lo < hi) {\n    [chars[lo], chars[hi]] = [chars[hi], chars[lo]];\n    lo++; hi--;\n  }\n}\n\nfunction reverseWords(s) {\n  const chars = [...s];\n\n  // Phase 1: right word order, every word spelled backwards.\n  reverseRange(chars, 0, chars.length - 1);\n\n  // Phase 2: put each word the right way round again.\n  let i = 0;\n  while (i < chars.length) {\n    if (chars[i] === \" \") { i++; continue; }\n    let j = i;\n    while (j + 1 < chars.length && chars[j + 1] !== \" \") j++;\n    reverseRange(chars, i, j);\n    i = j + 1;\n  }\n  return chars.join(\"\");\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def reverse_range(chars, lo, hi):\n    while lo < hi:\n        chars[lo], chars[hi] = chars[hi], chars[lo]\n        lo += 1\n        hi -= 1\n\n\ndef reverse_words(s):\n    chars = list(s)\n\n    # Phase 1: right word order, every word spelled backwards.\n    reverse_range(chars, 0, len(chars) - 1)\n\n    # Phase 2: put each word the right way round again.\n    i = 0\n    while i < len(chars):\n        if chars[i] == \" \":\n            i += 1\n            continue\n        j = i\n        while j + 1 < len(chars) and chars[j + 1] != \" \":\n            j += 1\n        reverse_range(chars, i, j)\n        i = j + 1\n\n    return \"\".join(chars)"
+          "code": "def reverse_range(chars, lo, hi):\n    while lo < hi:\n        chars[lo], chars[hi] = chars[hi], chars[lo]\n        lo += 1\n        hi -= 1\n\n\ndef reverse_words(s):\n    chars = list(s)\n\n    # Phase 1: right word order, every word spelled backwards.\n    reverse_range(chars, 0, len(chars) - 1)\n\n    # Phase 2: put each word the right way round again.\n    i = 0\n    while i < len(chars):\n        if chars[i] == \" \":\n            i += 1\n            continue\n        j = i\n        while j + 1 < len(chars) and chars[j + 1] != \" \":\n            j += 1\n        reverse_range(chars, i, j)\n        i = j + 1\n\n    return \"\".join(chars)",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <string>\n\nvoid reverseRange(std::string& s, int lo, int hi) {\n    while (lo < hi) std::swap(s[lo++], s[hi--]);\n}\n\nstd::string reverseWords(std::string s) {\n    // Phase 1: right word order, every word spelled backwards.\n    reverseRange(s, 0, (int)s.size() - 1);\n\n    // Phase 2: put each word the right way round again.\n    int i = 0;\n    while (i < (int)s.size()) {\n        if (s[i] == ' ') { i++; continue; }\n        int j = i;\n        while (j + 1 < (int)s.size() && s[j + 1] != ' ') j++;\n        reverseRange(s, i, j);\n        i = j + 1;\n    }\n    return s;\n}"
+          "code": "#include <algorithm>\n#include <string>\n\nvoid reverseRange(std::string& s, int lo, int hi) {\n    while (lo < hi) std::swap(s[lo++], s[hi--]);\n}\n\nstd::string reverseWords(std::string s) {\n    // Phase 1: right word order, every word spelled backwards.\n    reverseRange(s, 0, (int)s.size() - 1);\n\n    // Phase 2: put each word the right way round again.\n    int i = 0;\n    while (i < (int)s.size()) {\n        if (s[i] == ' ') { i++; continue; }\n        int j = i;\n        while (j + 1 < (int)s.size() && s[j + 1] != ' ') j++;\n        reverseRange(s, i, j);\n        i = j + 1;\n    }\n    return s;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "c-23",
-      "type": "callout",
       "tone": "tip",
+      "type": "callout",
       "title": "Interview follow-up",
       "content": [
         {
@@ -413,18 +413,12 @@
     },
     {
       "id": "h-24",
+      "text": "Telling the two shapes apart",
       "type": "heading",
-      "level": 2,
-      "text": "Telling the two shapes apart"
+      "level": 2
     },
     {
       "id": "t-25",
-      "type": "table",
-      "headers": [
-        "",
-        "Converging",
-        "Same direction"
-      ],
       "rows": [
         [
           "Pointers start",
@@ -452,18 +446,22 @@
           "at most 2n"
         ]
       ],
-      "caption": "Both are O(n). What differs is where they start and what makes the trailing pointer move."
+      "type": "table",
+      "caption": "Both are O(n). What differs is where they start and what makes the trailing pointer move.",
+      "headers": [
+        "",
+        "Converging",
+        "Same direction"
+      ]
     },
     {
       "id": "h-26",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-27",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -535,7 +533,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d-28",
@@ -552,8 +552,8 @@
           "text": "triplets and quadruplets",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/two-pointers-triplets"
+              "href": "/tutorials/dsa/two-pointers-triplets",
+              "kind": "link"
             }
           ]
         },

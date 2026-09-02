@@ -43,9 +43,9 @@
     },
     {
       "id": "h-3",
+      "text": "2 Sum in a sorted array",
       "type": "heading",
-      "level": 2,
-      "text": "2 Sum in a sorted array"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -108,10 +108,9 @@
     },
     {
       "id": "w-6",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "two-sum",
+        "target": 12,
         "values": [
           -3,
           1,
@@ -121,9 +120,10 @@
           8,
           11,
           15
-        ],
-        "target": 12
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-7",
@@ -169,24 +169,24 @@
     },
     {
       "id": "code-8",
+      "code": "function twoSumSorted(a, target) {\n  const pairs = [];\n  let lo = 0, hi = a.length - 1;\n\n  while (lo < hi) {\n    const sum = a[lo] + a[hi];\n    if (sum === target) {\n      pairs.push([a[lo], a[hi]]);\n      lo++; hi--;\n      while (lo < hi && a[lo] === a[lo - 1]) lo++;   // skip duplicate lefts\n      while (lo < hi && a[hi] === a[hi + 1]) hi--;   // skip duplicate rights\n    } else if (sum < target) {\n      lo++;\n    } else {\n      hi--;\n    }\n  }\n  return pairs;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function twoSumSorted(a, target) {\n  const pairs = [];\n  let lo = 0, hi = a.length - 1;\n\n  while (lo < hi) {\n    const sum = a[lo] + a[hi];\n    if (sum === target) {\n      pairs.push([a[lo], a[hi]]);\n      lo++; hi--;\n      while (lo < hi && a[lo] === a[lo - 1]) lo++;   // skip duplicate lefts\n      while (lo < hi && a[hi] === a[hi + 1]) hi--;   // skip duplicate rights\n    } else if (sum < target) {\n      lo++;\n    } else {\n      hi--;\n    }\n  }\n  return pairs;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def two_sum_sorted(a, target):\n    pairs = []\n    lo, hi = 0, len(a) - 1\n\n    while lo < hi:\n        total = a[lo] + a[hi]\n        if total == target:\n            pairs.append((a[lo], a[hi]))\n            lo += 1\n            hi -= 1\n            while lo < hi and a[lo] == a[lo - 1]:   # skip duplicate lefts\n                lo += 1\n            while lo < hi and a[hi] == a[hi + 1]:   # skip duplicate rights\n                hi -= 1\n        elif total < target:\n            lo += 1\n        else:\n            hi -= 1\n    return pairs"
+          "code": "def two_sum_sorted(a, target):\n    pairs = []\n    lo, hi = 0, len(a) - 1\n\n    while lo < hi:\n        total = a[lo] + a[hi]\n        if total == target:\n            pairs.append((a[lo], a[hi]))\n            lo += 1\n            hi -= 1\n            while lo < hi and a[lo] == a[lo - 1]:   # skip duplicate lefts\n                lo += 1\n            while lo < hi and a[hi] == a[hi + 1]:   # skip duplicate rights\n                hi -= 1\n        elif total < target:\n            lo += 1\n        else:\n            hi -= 1\n    return pairs",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <utility>\n\nstd::vector<std::pair<int, int>> twoSumSorted(const std::vector<int>& a, int target) {\n    std::vector<std::pair<int, int>> pairs;\n    int lo = 0, hi = (int)a.size() - 1;\n\n    while (lo < hi) {\n        int sum = a[lo] + a[hi];\n        if (sum == target) {\n            pairs.push_back({a[lo], a[hi]});\n            lo++; hi--;\n            while (lo < hi && a[lo] == a[lo - 1]) lo++;   // skip duplicate lefts\n            while (lo < hi && a[hi] == a[hi + 1]) hi--;   // skip duplicate rights\n        } else if (sum < target) {\n            lo++;\n        } else {\n            hi--;\n        }\n    }\n    return pairs;\n}"
+          "code": "#include <vector>\n#include <utility>\n\nstd::vector<std::pair<int, int>> twoSumSorted(const std::vector<int>& a, int target) {\n    std::vector<std::pair<int, int>> pairs;\n    int lo = 0, hi = (int)a.size() - 1;\n\n    while (lo < hi) {\n        int sum = a[lo] + a[hi];\n        if (sum == target) {\n            pairs.push_back({a[lo], a[hi]});\n            lo++; hi--;\n            while (lo < hi && a[lo] == a[lo - 1]) lo++;   // skip duplicate lefts\n            while (lo < hi && a[hi] == a[hi + 1]) hi--;   // skip duplicate rights\n        } else if (sum < target) {\n            lo++;\n        } else {\n            hi--;\n        }\n    }\n    return pairs;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "c-9",
-      "type": "callout",
       "tone": "note",
+      "type": "callout",
       "title": "When the array is not sorted",
       "content": [
         {
@@ -196,9 +196,9 @@
     },
     {
       "id": "h-10",
+      "text": "Sentence palindrome",
       "type": "heading",
-      "level": 2,
-      "text": "Sentence palindrome"
+      "level": 2
     },
     {
       "id": "p-11",
@@ -231,12 +231,12 @@
     },
     {
       "id": "w-13",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "palindrome",
         "text": "A man, a plan, a canal: Panama"
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-14",
@@ -249,17 +249,17 @@
     },
     {
       "id": "code-15",
+      "code": "const isAlnum = (c) => /[a-z0-9]/i.test(c);\n\nfunction isPalindromeSentence(s) {\n  let lo = 0, hi = s.length - 1;\n\n  while (lo < hi) {\n    // Each pointer skips on its own. Combining these two loops into one\n    // is the classic bug: the pointers fall out of step.\n    if (!isAlnum(s[lo])) { lo++; continue; }\n    if (!isAlnum(s[hi])) { hi--; continue; }\n\n    if (s[lo].toLowerCase() !== s[hi].toLowerCase()) return false;\n    lo++; hi--;\n  }\n  return true;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "const isAlnum = (c) => /[a-z0-9]/i.test(c);\n\nfunction isPalindromeSentence(s) {\n  let lo = 0, hi = s.length - 1;\n\n  while (lo < hi) {\n    // Each pointer skips on its own. Combining these two loops into one\n    // is the classic bug: the pointers fall out of step.\n    if (!isAlnum(s[lo])) { lo++; continue; }\n    if (!isAlnum(s[hi])) { hi--; continue; }\n\n    if (s[lo].toLowerCase() !== s[hi].toLowerCase()) return false;\n    lo++; hi--;\n  }\n  return true;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def is_palindrome_sentence(s):\n    lo, hi = 0, len(s) - 1\n\n    while lo < hi:\n        # Each pointer skips on its own. Combining these two guards into\n        # one is the classic bug: the pointers fall out of step.\n        if not s[lo].isalnum():\n            lo += 1\n            continue\n        if not s[hi].isalnum():\n            hi -= 1\n            continue\n\n        if s[lo].lower() != s[hi].lower():\n            return False\n        lo += 1\n        hi -= 1\n    return True"
+          "code": "def is_palindrome_sentence(s):\n    lo, hi = 0, len(s) - 1\n\n    while lo < hi:\n        # Each pointer skips on its own. Combining these two guards into\n        # one is the classic bug: the pointers fall out of step.\n        if not s[lo].isalnum():\n            lo += 1\n            continue\n        if not s[hi].isalnum():\n            hi -= 1\n            continue\n\n        if s[lo].lower() != s[hi].lower():\n            return False\n        lo += 1\n        hi -= 1\n    return True",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <cctype>\n#include <string>\n\nbool isPalindromeSentence(const std::string& s) {\n    int lo = 0, hi = (int)s.size() - 1;\n\n    while (lo < hi) {\n        // Each pointer skips on its own.\n        if (!std::isalnum((unsigned char)s[lo])) { lo++; continue; }\n        if (!std::isalnum((unsigned char)s[hi])) { hi--; continue; }\n\n        if (std::tolower((unsigned char)s[lo]) != std::tolower((unsigned char)s[hi])) return false;\n        lo++; hi--;\n    }\n    return true;\n}"
+          "code": "#include <cctype>\n#include <string>\n\nbool isPalindromeSentence(const std::string& s) {\n    int lo = 0, hi = (int)s.size() - 1;\n\n    while (lo < hi) {\n        // Each pointer skips on its own.\n        if (!std::isalnum((unsigned char)s[lo])) { lo++; continue; }\n        if (!std::isalnum((unsigned char)s[hi])) { hi--; continue; }\n\n        if (std::tolower((unsigned char)s[lo]) != std::tolower((unsigned char)s[hi])) return false;\n        lo++; hi--;\n    }\n    return true;\n}",
+          "language": "cpp"
         }
       ]
     },
@@ -274,9 +274,9 @@
     },
     {
       "id": "h-17",
+      "text": "Container with most water",
       "type": "heading",
-      "level": 2,
-      "text": "Container with most water"
+      "level": 2
     },
     {
       "id": "p-18",
@@ -329,8 +329,6 @@
     },
     {
       "id": "w-21",
-      "type": "interactive",
-      "widget": "water-container",
       "data": {
         "values": [
           1,
@@ -343,12 +341,14 @@
           3,
           7
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "water-container"
     },
     {
       "id": "c-22",
-      "type": "callout",
       "tone": "tip",
+      "type": "callout",
       "title": "Ties",
       "content": [
         {
@@ -358,34 +358,28 @@
     },
     {
       "id": "code-23",
+      "code": "function maxArea(height) {\n  let lo = 0, hi = height.length - 1;\n  let best = 0;\n\n  while (lo < hi) {\n    best = Math.max(best, Math.min(height[lo], height[hi]) * (hi - lo));\n\n    // Only the shorter wall is worth moving: moving the taller one\n    // loses width and cannot raise the water level.\n    if (height[lo] <= height[hi]) lo++;\n    else hi--;\n  }\n  return best;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function maxArea(height) {\n  let lo = 0, hi = height.length - 1;\n  let best = 0;\n\n  while (lo < hi) {\n    best = Math.max(best, Math.min(height[lo], height[hi]) * (hi - lo));\n\n    // Only the shorter wall is worth moving: moving the taller one\n    // loses width and cannot raise the water level.\n    if (height[lo] <= height[hi]) lo++;\n    else hi--;\n  }\n  return best;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def max_area(height):\n    lo, hi = 0, len(height) - 1\n    best = 0\n\n    while lo < hi:\n        best = max(best, min(height[lo], height[hi]) * (hi - lo))\n\n        # Only the shorter wall is worth moving: moving the taller one\n        # loses width and cannot raise the water level.\n        if height[lo] <= height[hi]:\n            lo += 1\n        else:\n            hi -= 1\n    return best"
+          "code": "def max_area(height):\n    lo, hi = 0, len(height) - 1\n    best = 0\n\n    while lo < hi:\n        best = max(best, min(height[lo], height[hi]) * (hi - lo))\n\n        # Only the shorter wall is worth moving: moving the taller one\n        # loses width and cannot raise the water level.\n        if height[lo] <= height[hi]:\n            lo += 1\n        else:\n            hi -= 1\n    return best",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <vector>\n\nint maxArea(const std::vector<int>& height) {\n    int lo = 0, hi = (int)height.size() - 1;\n    int best = 0;\n\n    while (lo < hi) {\n        best = std::max(best, std::min(height[lo], height[hi]) * (hi - lo));\n\n        // Only the shorter wall is worth moving.\n        if (height[lo] <= height[hi]) lo++;\n        else hi--;\n    }\n    return best;\n}"
+          "code": "#include <algorithm>\n#include <vector>\n\nint maxArea(const std::vector<int>& height) {\n    int lo = 0, hi = (int)height.size() - 1;\n    int best = 0;\n\n    while (lo < hi) {\n        best = std::max(best, std::min(height[lo], height[hi]) * (hi - lo));\n\n        // Only the shorter wall is worth moving.\n        if (height[lo] <= height[hi]) lo++;\n        else hi--;\n    }\n    return best;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-24",
+      "text": "The three side by side",
       "type": "heading",
-      "level": 2,
-      "text": "The three side by side"
+      "level": 2
     },
     {
       "id": "t-25",
-      "type": "table",
-      "headers": [
-        "Problem",
-        "What the comparison asks",
-        "What moving a pointer gives up"
-      ],
       "rows": [
         [
           "2 Sum, sorted",
@@ -403,7 +397,13 @@
           "the shorter wall, whose height caps every container it is in"
         ]
       ],
-      "caption": "One loop, three questions. Only the middle line changes."
+      "type": "table",
+      "caption": "One loop, three questions. Only the middle line changes.",
+      "headers": [
+        "Problem",
+        "What the comparison asks",
+        "What moving a pointer gives up"
+      ]
     },
     {
       "id": "p-26",
@@ -416,14 +416,12 @@
     },
     {
       "id": "h-27",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-28",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -495,7 +493,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d-29",
@@ -512,8 +512,8 @@
           "text": "the same trick with both pointers moving forward",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/two-pointers-same-direction"
+              "href": "/tutorials/dsa/two-pointers-same-direction",
+              "kind": "link"
             }
           ]
         },

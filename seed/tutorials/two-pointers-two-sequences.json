@@ -43,8 +43,8 @@
           "text": "merge step",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/sorting-merge-problems"
+              "href": "/tutorials/dsa/sorting-merge-problems",
+              "kind": "link"
             }
           ]
         },
@@ -55,9 +55,9 @@
     },
     {
       "id": "h-3",
+      "text": "Closest pair from two arrays",
       "type": "heading",
-      "level": 2,
-      "text": "Closest pair from two arrays"
+      "level": 2
     },
     {
       "id": "p-4",
@@ -101,16 +101,14 @@
     },
     {
       "id": "w-6",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
-        "mode": "closest-pair",
         "left": [
           1,
           4,
           5,
           7
         ],
+        "mode": "closest-pair",
         "right": [
           10,
           20,
@@ -118,7 +116,9 @@
           40
         ],
         "target": 32
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-7",
@@ -131,25 +131,25 @@
     },
     {
       "id": "code-8",
+      "code": "// a ascending from the left, b descending from the right.\nfunction closestPair(a, b, target) {\n  let i = 0, j = b.length - 1;\n  let best = Infinity, bestPair = null;\n\n  while (i < a.length && j >= 0) {\n    const sum = a[i] + b[j];\n    if (Math.abs(sum - target) < best) {\n      best = Math.abs(sum - target);\n      bestPair = [a[i], b[j]];\n    }\n\n    if (sum === target) break;    // cannot do better than exact\n    if (sum < target) i++;        // need a bigger value from a\n    else j--;                     // need a smaller value from b\n  }\n  return bestPair;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// a ascending from the left, b descending from the right.\nfunction closestPair(a, b, target) {\n  let i = 0, j = b.length - 1;\n  let best = Infinity, bestPair = null;\n\n  while (i < a.length && j >= 0) {\n    const sum = a[i] + b[j];\n    if (Math.abs(sum - target) < best) {\n      best = Math.abs(sum - target);\n      bestPair = [a[i], b[j]];\n    }\n\n    if (sum === target) break;    // cannot do better than exact\n    if (sum < target) i++;        // need a bigger value from a\n    else j--;                     // need a smaller value from b\n  }\n  return bestPair;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# a ascending from the left, b descending from the right.\ndef closest_pair(a, b, target):\n    i, j = 0, len(b) - 1\n    best, best_pair = float(\"inf\"), None\n\n    while i < len(a) and j >= 0:\n        total = a[i] + b[j]\n        if abs(total - target) < best:\n            best, best_pair = abs(total - target), (a[i], b[j])\n\n        if total == target:\n            break            # cannot do better than exact\n        if total < target:\n            i += 1           # need a bigger value from a\n        else:\n            j -= 1           # need a smaller value from b\n    return best_pair"
+          "code": "# a ascending from the left, b descending from the right.\ndef closest_pair(a, b, target):\n    i, j = 0, len(b) - 1\n    best, best_pair = float(\"inf\"), None\n\n    while i < len(a) and j >= 0:\n        total = a[i] + b[j]\n        if abs(total - target) < best:\n            best, best_pair = abs(total - target), (a[i], b[j])\n\n        if total == target:\n            break            # cannot do better than exact\n        if total < target:\n            i += 1           # need a bigger value from a\n        else:\n            j -= 1           # need a smaller value from b\n    return best_pair",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <cstdlib>\n#include <climits>\n#include <utility>\n#include <vector>\n\nstd::pair<int, int> closestPair(const std::vector<int>& a, const std::vector<int>& b, int target) {\n    int i = 0, j = (int)b.size() - 1;\n    int best = INT_MAX;\n    std::pair<int, int> bestPair{0, 0};\n\n    while (i < (int)a.size() && j >= 0) {\n        int sum = a[i] + b[j];\n        if (std::abs(sum - target) < best) {\n            best = std::abs(sum - target);\n            bestPair = {a[i], b[j]};\n        }\n\n        if (sum == target) break;\n        if (sum < target) i++;\n        else j--;\n    }\n    return bestPair;\n}"
+          "code": "#include <cstdlib>\n#include <climits>\n#include <utility>\n#include <vector>\n\nstd::pair<int, int> closestPair(const std::vector<int>& a, const std::vector<int>& b, int target) {\n    int i = 0, j = (int)b.size() - 1;\n    int best = INT_MAX;\n    std::pair<int, int> bestPair{0, 0};\n\n    while (i < (int)a.size() && j >= 0) {\n        int sum = a[i] + b[j];\n        if (std::abs(sum - target) < best) {\n            best = std::abs(sum - target);\n            bestPair = {a[i], b[j]};\n        }\n\n        if (sum == target) break;\n        if (sum < target) i++;\n        else j--;\n    }\n    return bestPair;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-9",
+      "text": "Values common to three arrays",
       "type": "heading",
-      "level": 2,
-      "text": "Values common to three arrays"
+      "level": 2
     },
     {
       "id": "p-10",
@@ -182,8 +182,6 @@
     },
     {
       "id": "w-12",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "common-three",
         "first": [
@@ -194,13 +192,6 @@
           40,
           80
         ],
-        "second": [
-          6,
-          7,
-          20,
-          80,
-          100
-        ],
         "third": [
           3,
           4,
@@ -210,8 +201,17 @@
           70,
           80,
           120
+        ],
+        "second": [
+          6,
+          7,
+          20,
+          80,
+          100
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "p-13",
@@ -235,24 +235,24 @@
     },
     {
       "id": "code-14",
+      "code": "function commonInThree(a, b, c) {\n  const out = [];\n  let i = 0, j = 0, k = 0;\n\n  while (i < a.length && j < b.length && k < c.length) {\n    if (a[i] === b[j] && b[j] === c[k]) {\n      out.push(a[i]);\n      const v = a[i];\n      // Past the value, not just by one, so repeats are not re-reported.\n      while (i < a.length && a[i] === v) i++;\n      while (j < b.length && b[j] === v) j++;\n      while (k < c.length && c[k] === v) k++;\n      continue;\n    }\n\n    // The smallest cannot appear later in the other two arrays.\n    const min = Math.min(a[i], b[j], c[k]);\n    if (a[i] === min) i++;\n    else if (b[j] === min) j++;\n    else k++;\n  }\n  return out;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "function commonInThree(a, b, c) {\n  const out = [];\n  let i = 0, j = 0, k = 0;\n\n  while (i < a.length && j < b.length && k < c.length) {\n    if (a[i] === b[j] && b[j] === c[k]) {\n      out.push(a[i]);\n      const v = a[i];\n      // Past the value, not just by one, so repeats are not re-reported.\n      while (i < a.length && a[i] === v) i++;\n      while (j < b.length && b[j] === v) j++;\n      while (k < c.length && c[k] === v) k++;\n      continue;\n    }\n\n    // The smallest cannot appear later in the other two arrays.\n    const min = Math.min(a[i], b[j], c[k]);\n    if (a[i] === min) i++;\n    else if (b[j] === min) j++;\n    else k++;\n  }\n  return out;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "def common_in_three(a, b, c):\n    out = []\n    i = j = k = 0\n\n    while i < len(a) and j < len(b) and k < len(c):\n        if a[i] == b[j] == c[k]:\n            out.append(a[i])\n            v = a[i]\n            # Past the value, not just by one, so repeats are not re-reported.\n            while i < len(a) and a[i] == v:\n                i += 1\n            while j < len(b) and b[j] == v:\n                j += 1\n            while k < len(c) and c[k] == v:\n                k += 1\n            continue\n\n        # The smallest cannot appear later in the other two arrays.\n        smallest = min(a[i], b[j], c[k])\n        if a[i] == smallest:\n            i += 1\n        elif b[j] == smallest:\n            j += 1\n        else:\n            k += 1\n    return out"
+          "code": "def common_in_three(a, b, c):\n    out = []\n    i = j = k = 0\n\n    while i < len(a) and j < len(b) and k < len(c):\n        if a[i] == b[j] == c[k]:\n            out.append(a[i])\n            v = a[i]\n            # Past the value, not just by one, so repeats are not re-reported.\n            while i < len(a) and a[i] == v:\n                i += 1\n            while j < len(b) and b[j] == v:\n                j += 1\n            while k < len(c) and c[k] == v:\n                k += 1\n            continue\n\n        # The smallest cannot appear later in the other two arrays.\n        smallest = min(a[i], b[j], c[k])\n        if a[i] == smallest:\n            i += 1\n        elif b[j] == smallest:\n            j += 1\n        else:\n            k += 1\n    return out",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <algorithm>\n#include <vector>\n\nstd::vector<int> commonInThree(const std::vector<int>& a, const std::vector<int>& b,\n                               const std::vector<int>& c) {\n    std::vector<int> out;\n    size_t i = 0, j = 0, k = 0;\n\n    while (i < a.size() && j < b.size() && k < c.size()) {\n        if (a[i] == b[j] && b[j] == c[k]) {\n            out.push_back(a[i]);\n            int v = a[i];\n            while (i < a.size() && a[i] == v) i++;\n            while (j < b.size() && b[j] == v) j++;\n            while (k < c.size() && c[k] == v) k++;\n            continue;\n        }\n\n        int smallest = std::min({a[i], b[j], c[k]});\n        if (a[i] == smallest) i++;\n        else if (b[j] == smallest) j++;\n        else k++;\n    }\n    return out;\n}"
+          "code": "#include <algorithm>\n#include <vector>\n\nstd::vector<int> commonInThree(const std::vector<int>& a, const std::vector<int>& b,\n                               const std::vector<int>& c) {\n    std::vector<int> out;\n    size_t i = 0, j = 0, k = 0;\n\n    while (i < a.size() && j < b.size() && k < c.size()) {\n        if (a[i] == b[j] && b[j] == c[k]) {\n            out.push_back(a[i]);\n            int v = a[i];\n            while (i < a.size() && a[i] == v) i++;\n            while (j < b.size() && b[j] == v) j++;\n            while (k < c.size() && c[k] == v) k++;\n            continue;\n        }\n\n        int smallest = std::min({a[i], b[j], c[k]});\n        if (a[i] == smallest) i++;\n        else if (b[j] == smallest) j++;\n        else k++;\n    }\n    return out;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "c-15",
-      "type": "callout",
       "tone": "note",
+      "type": "callout",
       "title": "Why not a hash set",
       "content": [
         {
@@ -262,9 +262,9 @@
     },
     {
       "id": "h-16",
+      "text": "Policemen catch thieves",
       "type": "heading",
-      "level": 2,
-      "text": "Policemen catch thieves"
+      "level": 2
     },
     {
       "id": "p-17",
@@ -328,8 +328,8 @@
           "text": "greedy pairing",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/sorting-pairing-problems"
+              "href": "/tutorials/dsa/sorting-pairing-problems",
+              "kind": "link"
             }
           ]
         },
@@ -340,9 +340,8 @@
     },
     {
       "id": "w-20",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
+        "k": 2,
         "mode": "police-thieves",
         "cells": [
           "P",
@@ -353,31 +352,32 @@
           ".",
           "T",
           "P"
-        ],
-        "k": 2
-      }
+        ]
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "code-21",
+      "code": "// cells: \"P\" police, \"T\" thief, \".\" empty. k = arrest range.\nfunction catchThieves(cells, k) {\n  const police = [], thieves = [];\n  cells.forEach((c, i) => {\n    if (c === \"P\") police.push(i);\n    else if (c === \"T\") thieves.push(i);\n  });\n\n  let p = 0, t = 0, arrests = 0;\n  while (p < police.length && t < thieves.length) {\n    if (Math.abs(police[p] - thieves[t]) <= k) {\n      arrests++; p++; t++;                   // nearest pair, always safe\n    } else if (police[p] < thieves[t]) {\n      p++;                                   // this officer reaches nobody\n    } else {\n      t++;                                   // this thief escapes everybody\n    }\n  }\n  return arrests;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// cells: \"P\" police, \"T\" thief, \".\" empty. k = arrest range.\nfunction catchThieves(cells, k) {\n  const police = [], thieves = [];\n  cells.forEach((c, i) => {\n    if (c === \"P\") police.push(i);\n    else if (c === \"T\") thieves.push(i);\n  });\n\n  let p = 0, t = 0, arrests = 0;\n  while (p < police.length && t < thieves.length) {\n    if (Math.abs(police[p] - thieves[t]) <= k) {\n      arrests++; p++; t++;                   // nearest pair, always safe\n    } else if (police[p] < thieves[t]) {\n      p++;                                   // this officer reaches nobody\n    } else {\n      t++;                                   // this thief escapes everybody\n    }\n  }\n  return arrests;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# cells: \"P\" police, \"T\" thief, \".\" empty. k = arrest range.\ndef catch_thieves(cells, k):\n    police = [i for i, c in enumerate(cells) if c == \"P\"]\n    thieves = [i for i, c in enumerate(cells) if c == \"T\"]\n\n    p = t = arrests = 0\n    while p < len(police) and t < len(thieves):\n        if abs(police[p] - thieves[t]) <= k:\n            arrests += 1                      # nearest pair, always safe\n            p += 1\n            t += 1\n        elif police[p] < thieves[t]:\n            p += 1                            # this officer reaches nobody\n        else:\n            t += 1                            # this thief escapes everybody\n    return arrests"
+          "code": "# cells: \"P\" police, \"T\" thief, \".\" empty. k = arrest range.\ndef catch_thieves(cells, k):\n    police = [i for i, c in enumerate(cells) if c == \"P\"]\n    thieves = [i for i, c in enumerate(cells) if c == \"T\"]\n\n    p = t = arrests = 0\n    while p < len(police) and t < len(thieves):\n        if abs(police[p] - thieves[t]) <= k:\n            arrests += 1                      # nearest pair, always safe\n            p += 1\n            t += 1\n        elif police[p] < thieves[t]:\n            p += 1                            # this officer reaches nobody\n        else:\n            t += 1                            # this thief escapes everybody\n    return arrests",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <cstdlib>\n#include <string>\n#include <vector>\n\n// cells: 'P' police, 'T' thief, '.' empty. k = arrest range.\nint catchThieves(const std::string& cells, int k) {\n    std::vector<int> police, thieves;\n    for (int i = 0; i < (int)cells.size(); i++) {\n        if (cells[i] == 'P') police.push_back(i);\n        else if (cells[i] == 'T') thieves.push_back(i);\n    }\n\n    size_t p = 0, t = 0;\n    int arrests = 0;\n    while (p < police.size() && t < thieves.size()) {\n        if (std::abs(police[p] - thieves[t]) <= k) {\n            arrests++; p++; t++;\n        } else if (police[p] < thieves[t]) {\n            p++;\n        } else {\n            t++;\n        }\n    }\n    return arrests;\n}"
+          "code": "#include <cstdlib>\n#include <string>\n#include <vector>\n\n// cells: 'P' police, 'T' thief, '.' empty. k = arrest range.\nint catchThieves(const std::string& cells, int k) {\n    std::vector<int> police, thieves;\n    for (int i = 0; i < (int)cells.size(); i++) {\n        if (cells[i] == 'P') police.push_back(i);\n        else if (cells[i] == 'T') thieves.push_back(i);\n    }\n\n    size_t p = 0, t = 0;\n    int arrests = 0;\n    while (p < police.size() && t < thieves.size()) {\n        if (std::abs(police[p] - thieves[t]) <= k) {\n            arrests++; p++; t++;\n        } else if (police[p] < thieves[t]) {\n            p++;\n        } else {\n            t++;\n        }\n    }\n    return arrests;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-22",
+      "text": "The celebrity problem",
       "type": "heading",
-      "level": 2,
-      "text": "The celebrity problem"
+      "level": 2
     },
     {
       "id": "p-23",
@@ -422,7 +422,6 @@
     {
       "id": "l-25",
       "type": "list",
-      "ordered": false,
       "items": [
         [
           {
@@ -450,7 +449,8 @@
             "text": ", then B is not known by everybody. B is out."
           }
         ]
-      ]
+      ],
+      "ordered": false
     },
     {
       "id": "p-26",
@@ -463,16 +463,16 @@
     },
     {
       "id": "w-27",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "celebrity"
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "c-28",
-      "type": "callout",
       "tone": "important",
+      "type": "callout",
       "title": "Elimination is not proof",
       "content": [
         {
@@ -482,17 +482,17 @@
     },
     {
       "id": "code-29",
+      "code": "// knows(a, b) is the one allowed question.\nfunction findCelebrity(n, knows) {\n  // Elimination: n - 1 questions leave one candidate.\n  let lo = 0, hi = n - 1;\n  while (lo < hi) {\n    if (knows(lo, hi)) lo++;   // lo knows somebody, so lo is not it\n    else hi--;                 // hi is not known by lo, so hi is not it\n  }\n  const candidate = lo;\n\n  // Verification: the pass above proves who it cannot be, not who it is.\n  for (let other = 0; other < n; other++) {\n    if (other === candidate) continue;\n    if (knows(candidate, other) || !knows(other, candidate)) return -1;\n  }\n  return candidate;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// knows(a, b) is the one allowed question.\nfunction findCelebrity(n, knows) {\n  // Elimination: n - 1 questions leave one candidate.\n  let lo = 0, hi = n - 1;\n  while (lo < hi) {\n    if (knows(lo, hi)) lo++;   // lo knows somebody, so lo is not it\n    else hi--;                 // hi is not known by lo, so hi is not it\n  }\n  const candidate = lo;\n\n  // Verification: the pass above proves who it cannot be, not who it is.\n  for (let other = 0; other < n; other++) {\n    if (other === candidate) continue;\n    if (knows(candidate, other) || !knows(other, candidate)) return -1;\n  }\n  return candidate;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# knows(a, b) is the one allowed question.\ndef find_celebrity(n, knows):\n    # Elimination: n - 1 questions leave one candidate.\n    lo, hi = 0, n - 1\n    while lo < hi:\n        if knows(lo, hi):\n            lo += 1      # lo knows somebody, so lo is not it\n        else:\n            hi -= 1      # hi is not known by lo, so hi is not it\n    candidate = lo\n\n    # Verification: the pass above proves who it cannot be, not who it is.\n    for other in range(n):\n        if other == candidate:\n            continue\n        if knows(candidate, other) or not knows(other, candidate):\n            return -1\n    return candidate"
+          "code": "# knows(a, b) is the one allowed question.\ndef find_celebrity(n, knows):\n    # Elimination: n - 1 questions leave one candidate.\n    lo, hi = 0, n - 1\n    while lo < hi:\n        if knows(lo, hi):\n            lo += 1      # lo knows somebody, so lo is not it\n        else:\n            hi -= 1      # hi is not known by lo, so hi is not it\n    candidate = lo\n\n    # Verification: the pass above proves who it cannot be, not who it is.\n    for other in range(n):\n        if other == candidate:\n            continue\n        if knows(candidate, other) or not knows(other, candidate):\n            return -1\n    return candidate",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <functional>\n\n// knows(a, b) is the one allowed question.\nint findCelebrity(int n, const std::function<bool(int, int)>& knows) {\n    // Elimination: n - 1 questions leave one candidate.\n    int lo = 0, hi = n - 1;\n    while (lo < hi) {\n        if (knows(lo, hi)) lo++;   // lo knows somebody, so lo is not it\n        else hi--;                 // hi is not known by lo, so hi is not it\n    }\n    int candidate = lo;\n\n    // Verification: the pass above proves who it cannot be, not who it is.\n    for (int other = 0; other < n; other++) {\n        if (other == candidate) continue;\n        if (knows(candidate, other) || !knows(other, candidate)) return -1;\n    }\n    return candidate;\n}"
+          "code": "#include <functional>\n\n// knows(a, b) is the one allowed question.\nint findCelebrity(int n, const std::function<bool(int, int)>& knows) {\n    // Elimination: n - 1 questions leave one candidate.\n    int lo = 0, hi = n - 1;\n    while (lo < hi) {\n        if (knows(lo, hi)) lo++;   // lo knows somebody, so lo is not it\n        else hi--;                 // hi is not known by lo, so hi is not it\n    }\n    int candidate = lo;\n\n    // Verification: the pass above proves who it cannot be, not who it is.\n    for (int other = 0; other < n; other++) {\n        if (other == candidate) continue;\n        if (knows(candidate, other) || !knows(other, candidate)) return -1;\n    }\n    return candidate;\n}",
+          "language": "cpp"
         }
       ]
     },
@@ -507,19 +507,12 @@
     },
     {
       "id": "h-31",
+      "text": "The section in one table",
       "type": "heading",
-      "level": 2,
-      "text": "The section in one table"
+      "level": 2
     },
     {
       "id": "t-32",
-      "type": "table",
-      "headers": [
-        "Problem",
-        "Pointers",
-        "Rule for which one moves",
-        "Cost"
-      ],
       "rows": [
         [
           "Closest pair from two arrays",
@@ -546,18 +539,23 @@
           "O(n) questions"
         ]
       ],
-      "caption": "Different data, same discipline: every step must retire a candidate for good."
+      "type": "table",
+      "caption": "Different data, same discipline: every step must retire a candidate for good.",
+      "headers": [
+        "Problem",
+        "Pointers",
+        "Rule for which one moves",
+        "Cost"
+      ]
     },
     {
       "id": "h-33",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-34",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -629,7 +627,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d-35",
@@ -646,8 +646,8 @@
           "text": "merge-based problems",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/sorting-merge-problems"
+              "href": "/tutorials/dsa/sorting-merge-problems",
+              "kind": "link"
             }
           ]
         },
@@ -658,8 +658,8 @@
           "text": "partition problems",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/sorting-partition-problems"
+              "href": "/tutorials/dsa/sorting-partition-problems",
+              "kind": "link"
             }
           ]
         },

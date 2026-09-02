@@ -43,8 +43,6 @@
     },
     {
       "id": "w-3",
-      "type": "interactive",
-      "widget": "two-pointer-explorer",
       "data": {
         "mode": "two-sum",
         "modes": [
@@ -52,13 +50,15 @@
           "window",
           "common-three"
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "two-pointer-explorer"
     },
     {
       "id": "h-4",
+      "text": "The argument that makes it legal",
       "type": "heading",
-      "level": 2,
-      "text": "The argument that makes it legal"
+      "level": 2
     },
     {
       "id": "p-5",
@@ -208,8 +208,8 @@
     },
     {
       "id": "c-9",
-      "type": "callout",
       "tone": "important",
+      "type": "callout",
       "title": "The precondition is order, not sortedness",
       "content": [
         {
@@ -219,9 +219,9 @@
     },
     {
       "id": "h-10",
+      "text": "The template",
       "type": "heading",
-      "level": 2,
-      "text": "The template"
+      "level": 2
     },
     {
       "id": "p-11",
@@ -234,33 +234,33 @@
     },
     {
       "id": "w-12",
-      "type": "interactive",
-      "widget": "flowchart",
       "data": {
         "preset": "two-pointer-template"
-      }
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "code-13",
+      "code": "// The converging template. Everything in this section is a variation\n// on the three branches in the middle.\nfunction twoSumSorted(a, target) {\n  const pairs = [];\n  let lo = 0, hi = a.length - 1;\n\n  while (lo < hi) {\n    const sum = a[lo] + a[hi];\n\n    if (sum === target) {\n      pairs.push([a[lo], a[hi]]);\n      lo++; hi--;\n      // Step past duplicates so the same pair is not reported twice.\n      while (lo < hi && a[lo] === a[lo - 1]) lo++;\n      while (lo < hi && a[hi] === a[hi + 1]) hi--;\n    } else if (sum < target) {\n      lo++;   // a[lo] can never reach the target: a[hi] was its best partner.\n    } else {\n      hi--;   // a[hi] is too big for every partner still in play.\n    }\n  }\n  return pairs;\n}",
       "type": "code",
       "language": "javascript",
-      "code": "// The converging template. Everything in this section is a variation\n// on the three branches in the middle.\nfunction twoSumSorted(a, target) {\n  const pairs = [];\n  let lo = 0, hi = a.length - 1;\n\n  while (lo < hi) {\n    const sum = a[lo] + a[hi];\n\n    if (sum === target) {\n      pairs.push([a[lo], a[hi]]);\n      lo++; hi--;\n      // Step past duplicates so the same pair is not reported twice.\n      while (lo < hi && a[lo] === a[lo - 1]) lo++;\n      while (lo < hi && a[hi] === a[hi + 1]) hi--;\n    } else if (sum < target) {\n      lo++;   // a[lo] can never reach the target: a[hi] was its best partner.\n    } else {\n      hi--;   // a[hi] is too big for every partner still in play.\n    }\n  }\n  return pairs;\n}",
       "variants": [
         {
-          "language": "python",
-          "code": "# The converging template. Everything in this section is a variation\n# on the three branches in the middle.\ndef two_sum_sorted(a, target):\n    pairs = []\n    lo, hi = 0, len(a) - 1\n\n    while lo < hi:\n        total = a[lo] + a[hi]\n\n        if total == target:\n            pairs.append((a[lo], a[hi]))\n            lo += 1\n            hi -= 1\n            # Step past duplicates so the same pair is not reported twice.\n            while lo < hi and a[lo] == a[lo - 1]:\n                lo += 1\n            while lo < hi and a[hi] == a[hi + 1]:\n                hi -= 1\n        elif total < target:\n            lo += 1   # a[lo] can never reach the target from here.\n        else:\n            hi -= 1   # a[hi] is too big for every remaining partner.\n    return pairs"
+          "code": "# The converging template. Everything in this section is a variation\n# on the three branches in the middle.\ndef two_sum_sorted(a, target):\n    pairs = []\n    lo, hi = 0, len(a) - 1\n\n    while lo < hi:\n        total = a[lo] + a[hi]\n\n        if total == target:\n            pairs.append((a[lo], a[hi]))\n            lo += 1\n            hi -= 1\n            # Step past duplicates so the same pair is not reported twice.\n            while lo < hi and a[lo] == a[lo - 1]:\n                lo += 1\n            while lo < hi and a[hi] == a[hi + 1]:\n                hi -= 1\n        elif total < target:\n            lo += 1   # a[lo] can never reach the target from here.\n        else:\n            hi -= 1   # a[hi] is too big for every remaining partner.\n    return pairs",
+          "language": "python"
         },
         {
-          "language": "cpp",
-          "code": "#include <vector>\n#include <utility>\n\n// The converging template. Everything in this section is a variation\n// on the three branches in the middle.\nstd::vector<std::pair<int, int>> twoSumSorted(const std::vector<int>& a, int target) {\n    std::vector<std::pair<int, int>> pairs;\n    int lo = 0, hi = (int)a.size() - 1;\n\n    while (lo < hi) {\n        int sum = a[lo] + a[hi];\n\n        if (sum == target) {\n            pairs.push_back({a[lo], a[hi]});\n            lo++; hi--;\n            // Step past duplicates so the same pair is not reported twice.\n            while (lo < hi && a[lo] == a[lo - 1]) lo++;\n            while (lo < hi && a[hi] == a[hi + 1]) hi--;\n        } else if (sum < target) {\n            lo++;\n        } else {\n            hi--;\n        }\n    }\n    return pairs;\n}"
+          "code": "#include <vector>\n#include <utility>\n\n// The converging template. Everything in this section is a variation\n// on the three branches in the middle.\nstd::vector<std::pair<int, int>> twoSumSorted(const std::vector<int>& a, int target) {\n    std::vector<std::pair<int, int>> pairs;\n    int lo = 0, hi = (int)a.size() - 1;\n\n    while (lo < hi) {\n        int sum = a[lo] + a[hi];\n\n        if (sum == target) {\n            pairs.push_back({a[lo], a[hi]});\n            lo++; hi--;\n            // Step past duplicates so the same pair is not reported twice.\n            while (lo < hi && a[lo] == a[lo - 1]) lo++;\n            while (lo < hi && a[hi] == a[hi + 1]) hi--;\n        } else if (sum < target) {\n            lo++;\n        } else {\n            hi--;\n        }\n    }\n    return pairs;\n}",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-14",
+      "text": "Three shapes, and how to tell them apart",
       "type": "heading",
-      "level": 2,
-      "text": "Three shapes, and how to tell them apart"
+      "level": 2
     },
     {
       "id": "p-15",
@@ -273,9 +273,9 @@
     },
     {
       "id": "h-16",
+      "text": "1. Converging: one pointer at each end",
       "type": "heading",
-      "level": 3,
-      "text": "1. Converging: one pointer at each end"
+      "level": 3
     },
     {
       "id": "p-17",
@@ -297,8 +297,8 @@
           "text": "the next page",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/two-pointers-converging"
+              "href": "/tutorials/dsa/two-pointers-converging",
+              "kind": "link"
             }
           ]
         },
@@ -309,9 +309,9 @@
     },
     {
       "id": "h-19",
+      "text": "2. Same direction: a fast pointer and a slow one",
       "type": "heading",
-      "level": 3,
-      "text": "2. Same direction: a fast pointer and a slow one"
+      "level": 3
     },
     {
       "id": "p-20",
@@ -335,8 +335,8 @@
           "text": "the third page",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/two-pointers-same-direction"
+              "href": "/tutorials/dsa/two-pointers-same-direction",
+              "kind": "link"
             }
           ]
         },
@@ -347,9 +347,9 @@
     },
     {
       "id": "h-21",
+      "text": "3. One pointer per sequence",
       "type": "heading",
-      "level": 3,
-      "text": "3. One pointer per sequence"
+      "level": 3
     },
     {
       "id": "p-22",
@@ -362,8 +362,8 @@
           "text": "the last page",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/two-pointers-two-sequences"
+              "href": "/tutorials/dsa/two-pointers-two-sequences",
+              "kind": "link"
             }
           ]
         },
@@ -374,13 +374,6 @@
     },
     {
       "id": "t-23",
-      "type": "table",
-      "headers": [
-        "Shape",
-        "Pointers start",
-        "Loop ends when",
-        "Typical cost"
-      ],
       "rows": [
         [
           "Converging",
@@ -407,13 +400,20 @@
           "O(n + m)"
         ]
       ],
-      "caption": "The four arrangements used in this section. The third is the first two stacked: fix an element, then run a converging pass over what is left."
+      "type": "table",
+      "caption": "The four arrangements used in this section. The third is the first two stacked: fix an element, then run a converging pass over what is left.",
+      "headers": [
+        "Shape",
+        "Pointers start",
+        "Loop ends when",
+        "Typical cost"
+      ]
     },
     {
       "id": "h-24",
+      "text": "What the technique buys, and what it costs",
       "type": "heading",
-      "level": 2,
-      "text": "What the technique buys, and what it costs"
+      "level": 2
     },
     {
       "id": "p-25",
@@ -435,8 +435,8 @@
     },
     {
       "id": "c-27",
-      "type": "callout",
       "tone": "tip",
+      "type": "callout",
       "title": "The question to ask at every step",
       "content": [
         {
@@ -446,14 +446,12 @@
     },
     {
       "id": "h-28",
+      "text": "Check yourself",
       "type": "heading",
-      "level": 2,
-      "text": "Check yourself"
+      "level": 2
     },
     {
       "id": "w-29",
-      "type": "interactive",
-      "widget": "quiz",
       "data": {
         "questions": [
           {
@@ -525,7 +523,9 @@
             ]
           }
         ]
-      }
+      },
+      "type": "interactive",
+      "widget": "quiz"
     },
     {
       "id": "d-30",
@@ -542,8 +542,8 @@
           "text": "walking in from both ends",
           "marks": [
             {
-              "kind": "link",
-              "href": "/tutorials/dsa/two-pointers-converging"
+              "href": "/tutorials/dsa/two-pointers-converging",
+              "kind": "link"
             }
           ]
         },
