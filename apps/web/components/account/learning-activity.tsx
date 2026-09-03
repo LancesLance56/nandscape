@@ -22,9 +22,9 @@ import "react-activity-calendar/tooltips.css";
 
 const DAYS = 365;
 
-/** Empty through busiest, in the site's copper. */
-const LIGHT = ["#edf2e8", "#f0d3bf", "#e0a582", "#cf7a4d", "#9c4720"];
-const DARK = ["#242424", "#4a2c1c", "#7a3f22", "#a85428", "#e0834f"];
+/** Empty through busiest, as a green wash deepening on paper. */
+const LIGHT = ["#ececec", "#d2e7d5", "#9fc9a6", "#5ba06c", "#1f6b33"];
+const DARK = ["#282828", "#20351f", "#2f5a3a", "#3f8a53", "#52b869"];
 
 function levelFor(count: number): number {
   if (count <= 0) return 0;

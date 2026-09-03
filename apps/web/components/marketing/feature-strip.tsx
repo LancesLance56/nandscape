@@ -2,11 +2,9 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { Card } from "@/components/ui/card";
 import { hexToRgba } from "@/lib/editor/block-colors";
 
-// Same warm on-brand family as tutorials-showcase's PATH_COLORS and
-// puzzles-showcase's tagColor - curated rather than hashed since this is a
-// small, fixed set of 3 features where a deliberate pairing reads better
-// than whatever a hash happens to land on.
-const FEATURE_COLORS = ["#C15A2A", "#4CAF7D", "#E0A339"] as const;
+// The green accent, then two ink-wash tonal steps beside it - a deliberate
+// trio rather than three hues competing.
+const FEATURE_COLORS = ["#2B8341", "#6F8F76", "#9E9E9E"] as const;
 
 function BlocksIcon({ className }: { className?: string }) {
   return (

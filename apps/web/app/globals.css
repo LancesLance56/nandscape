@@ -17,10 +17,10 @@
 :root {
   color-scheme: light;
 
-  --surface: #f6f8f3;
-  --surface-2: #edf2e8;
-  --surface-3: #e2e9db;
-  --surface-4: #d8e1cd;
+  --surface: #f4f4f4;
+  --surface-2: #ececec;
+  --surface-3: #e2e2e2;
+  --surface-4: #d6d6d6;
   --surface-card: #ffffff;
 
   /* A sheet of paper laid *on* a surface. Paper is white in both themes - a
@@ -29,36 +29,39 @@
      and accent rather than borrowing the ones that flip. Anything drawn on a
      sheet must use these; anything drawn on a surface must not. */
   --paper: #ffffff;
-  --paper-ink: #151b18;
-  --paper-ink-soft: #4e594f;
-  --paper-muted: #8b9187;
-  --paper-line: #dce3d6;
-  --paper-accent: #9c4720;
+  --paper-ink: #252525;
+  --paper-ink-soft: #545454;
+  --paper-muted: #7d7d7d;
+  --paper-line: #cfcfcf;
+  --paper-accent: #1f6b33;
 
-  /* Tints for the tutorials drawer. Four hues rather than a grey ramp, given
-     enough chroma to read as coloured folder stock while staying quiet enough
-     for the page: sage, manila, clay, mist. */
+  /* Coloured folder stock for the homepage folder stack (folder-stack.tsx).
+     Four low-chroma pastels rather than a grey ramp so the drawer reads as
+     real folders: sage, manila, clay, mist. */
   --folder-1: #d7e4c2;
   --folder-2: #f0dfb7;
   --folder-3: #eed4c3;
   --folder-4: #d2e0ec;
 
-  --ink: #151b18;
-  --ink-soft: #4e594f;
-  --slate: #8b9187;
+  --ink: #252525;
+  --ink-soft: #545454;
+  --slate: #7d7d7d;
 
-  --border: #dce3d6;
-  --border-strong: #c7d0bf;
+  --border: #dcdcdc;
+  --border-strong: #cfcfcf;
 
-  --copper: #c15a2a;
-  --copper-dark: #9c4720;
-  --copper-bg: #f5dfce;
+  /* The primary accent. Still named --copper* so every `text-copper`,
+     `bg-copper-bg`, `ring-copper` on the site keeps working; the one hue on an
+     otherwise ink-wash page - a bright GeeksforGeeks-style leaf green,
+     deepened just enough to clear AA both ways (~4.75:1 on white, and white on
+     it). */
+  --copper: #2b8341;
+  --copper-dark: #1f6b33;
+  --copper-bg: #e0efe2;
   --copper-ink: #ffffff;
-  /* Display-size accent, separate from the copper ramp on purpose. The ramp is
-     tuned for small text and chrome; scaled up to a 60px headline its dark-mode
-     value (#f0966a, hsl 19 79% 68%) is light and low-chroma enough to read as
-     peach rather than orange. This one keeps its chroma at size. */
-  --accent-display: #c2500f;
+  /* Display-size accent - the truer, brighter green, which only ever runs at
+     headline size. */
+  --accent-display: #2f8d46;
 
   --signal-green: #1ca463;
   --signal-green-strong: #0f7e4a;
@@ -76,37 +79,42 @@
      missing, scoped to diagrams by convention rather than used as UI colour. */
   --diagram-blue: #2f6fd0;
   --diagram-blue-bg: #e2ecfb;
-  --diagram-violet: #7a4fd0;
-  --diagram-violet-bg: #ece3fb;
+  /* Kept the --diagram-violet name (flowchart-nodes.tsx reads it); the value is
+     now a rose so the palette carries no purple. */
+  --diagram-violet: #c24a7c;
+  --diagram-violet-bg: #f7e2ec;
   --diagram-amber: #b8860b;
   --diagram-amber-bg: #faf0d4;
 }
 
 .dark {
   color-scheme: dark;
-  --surface: #141414;
-  --surface-card: #1c1c1c;
-  --surface-2: #242424;
-  --surface-3: #2e2e2e;
-  --surface-4: #383838;
+  /* Ink wash inverted: pale strokes on a near-black ground. */
+  --surface: #1a1a1a;
+  --surface-card: #222222;
+  --surface-2: #282828;
+  --surface-3: #323232;
+  --surface-4: #3d3d3d;
 
   --folder-1: #2d3826;
   --folder-2: #3b331f;
   --folder-3: #3d2f26;
   --folder-4: #263240;
 
-  --border: #2a2a2a;
-  --border-strong: #3a3a3a;
+  --border: #303030;
+  --border-strong: #424242;
 
-  --ink: #e8ecef;
-  --ink-soft: #a9b1b9;
-  --slate: #82898f;
+  --ink: #cfcfcf;
+  --ink-soft: #9a9a9a;
+  --slate: #7d7d7d;
 
-  --copper: #e07a46;
-  --copper-dark: #f0966a;
-  --copper-bg: #3a2317;
-  --copper-ink: #1a0f08;
-  --accent-display: #ff7a29;
+  /* Green lifted for the dark ground. As in light mode the -dark step is the
+     *higher-contrast* one (here lighter, not darker). */
+  --copper: #52b869;
+  --copper-dark: #78d38c;
+  --copper-bg: #163020;
+  --copper-ink: #071a0d;
+  --accent-display: #5cc574;
 
   --signal-green: #2ece86;
   --signal-green-strong: #6ee7b0;
@@ -120,8 +128,8 @@
 
   --diagram-blue: #5b9bf5;
   --diagram-blue-bg: #16233a;
-  --diagram-violet: #a684f0;
-  --diagram-violet-bg: #241a3a;
+  --diagram-violet: #e77ba6;
+  --diagram-violet-bg: #3a1f2b;
   --diagram-amber: #e0b341;
   --diagram-amber-bg: #332a12;
 }

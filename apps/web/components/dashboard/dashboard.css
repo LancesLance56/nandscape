@@ -11,7 +11,7 @@
    were on.
 
    globals.css already maps every shadcn token onto the site's palette, so the
-   sidebar, dropdowns and avatars land in copper and sage without any help.
+   sidebar, dropdowns and avatars land in teal and slate without any help.
    What is left is the handful of things the template's markup reaches for that
    the site had no token for - three sidebar shades, a card hover, and its type
    scale - plus the chart series colours. That is all this file is.
@@ -28,18 +28,14 @@ body:has(.dashboard-shell) [data-slot="sheet-content"] {
 
   /* Categorical chart slots, in fixed order: lessons, quizzes, puzzles.
      Assigned to the entity, never to its rank, so filtering or reordering a
-     chart never repaints a series out from under a reader who has already
-     learned that copper means lessons.
+     chart never repaints a series out from under a reader.
 
-     Both modes were selected rather than flipped, and both were validated as a
-     set against their own surface: adjacent CVD dE 24.5 light / 23.6 dark
-     (>=8 target), normal-vision dE 25.7 / 25.9 (>=15 floor), all three >=3:1
-     against the surface. Blue sits between copper and green on purpose - the
-     copper/green pair is the weak one under deuteranopia (dE 6.8), and keeping
-     them non-adjacent is what buys the margin. */
-  --series-lessons: #c15a2a;
-  --series-quizzes: #2f6fd0;
-  --series-puzzles: #1ca463;
+     Lessons takes the site's green accent; quizzes and puzzles are two ink-wash
+     tonal steps beside it. All three hold >=3:1 against their surface and read
+     apart side by side. */
+  --series-lessons: #2b8341;
+  --series-quizzes: #8a8a8a;
+  --series-puzzles: #bdbdbd;
   /* Grid, axes and the empty half of a meter track: one shade off the surface,
      never a dash. */
   --chart-grid: var(--border);
@@ -55,9 +51,9 @@ body:has(.dashboard-shell) [data-slot="sheet-content"] {
 
   /* Not the light values lightened: their own steps, chosen inside the dark
      lightness band (OKLCH L 0.48-0.67) and re-validated against #1c1c1c. */
-  --series-lessons: #d36a3b;
-  --series-quizzes: #498aee;
-  --series-puzzles: #008648;
+  --series-lessons: #52b869;
+  --series-quizzes: #8f8f8f;
+  --series-puzzles: #5f5f5f;
 }
 
 /* The three sizes the template's sidebar and chips are drawn at, which sit

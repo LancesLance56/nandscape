@@ -61,9 +61,10 @@ const DEMOS: Demo[] = [
   },
 ];
 
-/** Enough to show the tool working without letting the section take over the
- *  page. Real embeds use whatever height the host asks for. */
-const PREVIEW_HEIGHT = 380;
+/** The demo gets its own full-width row now, so it can afford a bit more
+ *  height without letting the section take over the page. Real embeds use
+ *  whatever height the host asks for. */
+const PREVIEW_HEIGHT = 460;
 
 export function EmbedsShowcase() {
   const [active, setActive] = useState(DEMOS[0]);
@@ -136,8 +137,23 @@ export function EmbedsShowcase() {
           ))}
         </div>
 
-        <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-          {/* The line you paste. */}
+        <div className="mt-3 flex flex-col gap-3">
+          {/* The demo, running, on its own full-width row so it has room to
+              breathe. A real iframe against the real route, so a broken embed
+              shows up here before anyone reports it. No title bar: the code
+              panel below already says what this is. */}
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
+            <iframe
+              key={active.id}
+              src={embedPath(active.target)}
+              title={`${active.title} embed preview`}
+              loading="lazy"
+              style={{ height: PREVIEW_HEIGHT, border: 0 }}
+              className="w-full bg-surface"
+            />
+          </div>
+
+          {/* The line you paste, sitting under the thing it produces. */}
           <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-card">
             <div className="flex items-center justify-between gap-2 border-b border-border bg-surface-2 px-4 py-2.5">
               <span className="text-[11px] font-semibold text-ink">Paste this</span>
@@ -167,21 +183,6 @@ export function EmbedsShowcase() {
                 </div>
               ))}
             </dl>
-          </div>
-
-          {/* The same thing, running. A real iframe against the real route, so
-              a broken embed shows up here before anyone reports it. No title
-              bar: the panel opposite already says what this is, and the height
-              it saves goes to the tool instead. */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
-            <iframe
-              key={active.id}
-              src={embedPath(active.target)}
-              title={`${active.title} embed preview`}
-              loading="lazy"
-              style={{ height: PREVIEW_HEIGHT, border: 0 }}
-              className="w-full bg-surface"
-            />
           </div>
         </div>
       </ScrollReveal>

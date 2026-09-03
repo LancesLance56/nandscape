@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { algorithmMeta, type AlgorithmMeta, type SortAlgorithmId, type SortStep } from "@/lib/sorting/types";
@@ -49,7 +49,9 @@ export function CounterPills({
           className="inline-flex items-center gap-1.5 rounded-full border border-border-strong px-2.5 py-1 text-[11px] text-slate"
         >
           {it.label}
-          <span className="font-semibold tabular-nums text-ink">{it.value}</span>
+          {/* Reserve a few digits and right-align, so a pill does not widen
+              and shove its neighbours as the count climbs mid-run. */}
+          <span className="inline-block min-w-[3ch] text-right font-semibold tabular-nums text-ink">{it.value}</span>
         </span>
       ))}
     </div>
@@ -420,48 +422,68 @@ export interface CostRow {
  * array, so this table is shared rather than reimplemented by the layouts that
  * want it: the console shows it under the fold, the race shows it under the
  * two stages.
+ *
+ * Collapsed by default - it is a supporting readout, not the demo - and opens
+ * on a click of its header. Pass `defaultOpen` where the table is the point.
  */
 export function TradeoffTable({
   rows,
   highlight,
   footnote,
+  defaultOpen = false,
 }: {
   rows: CostRow[];
   /** Algorithms currently on screen, drawn with a tinted row. */
   highlight: readonly SortAlgorithmId[];
   footnote?: string;
+  defaultOpen?: boolean;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="w-full border-collapse text-xs">
-        <thead>
-          <tr className="bg-surface-2 text-slate">
-            <th className="px-3 py-2 text-left font-semibold">On this exact input</th>
-            <th className="px-3 py-2 text-right font-semibold">Comparisons</th>
-            <th className="px-3 py-2 text-right font-semibold">Writes</th>
-            <th className="px-3 py-2 text-right font-semibold">Worst case</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.id}
-              className={cn(
-                "border-t border-border transition-colors duration-150",
-                highlight.includes(row.id) && "bg-copper-bg/40 font-semibold",
-              )}
-            >
-              <td className="px-3 py-1.5 text-ink">{row.meta.label}</td>
-              <td className="px-3 py-1.5 text-right tabular-nums text-ink-soft">{row.comparisons}</td>
-              <td className="px-3 py-1.5 text-right tabular-nums text-ink-soft">{row.writes}</td>
-              <td className="px-3 py-1.5 text-right font-mono text-slate">{row.meta.time[2]}</td>
+    <details
+      className="group rounded-lg border border-border"
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-slate select-none [&::-webkit-details-marker]:hidden group-open:rounded-b-none">
+        <span>On this exact input</span>
+        <ChevronDown
+          className="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-180"
+          aria-hidden
+        />
+      </summary>
+      <div className="overflow-x-auto border-t border-border">
+        <table className="w-full border-collapse text-xs">
+          <thead>
+            <tr className="bg-surface-2 text-slate">
+              <th className="px-3 py-2 text-left font-semibold">Algorithm</th>
+              <th className="px-3 py-2 text-right font-semibold">Comparisons</th>
+              <th className="px-3 py-2 text-right font-semibold">Writes</th>
+              <th className="px-3 py-2 text-right font-semibold">Worst case</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {footnote && (
-        <p className="border-t border-border bg-surface-2/40 px-3 py-2 text-[11px] text-slate">{footnote}</p>
-      )}
-    </div>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr
+                key={row.id}
+                className={cn(
+                  "border-t border-border transition-colors duration-150",
+                  highlight.includes(row.id) && "bg-copper-bg/40 font-semibold",
+                )}
+              >
+                <td className="px-3 py-1.5 text-ink">{row.meta.label}</td>
+                <td className="px-3 py-1.5 text-right tabular-nums text-ink-soft">{row.comparisons}</td>
+                <td className="px-3 py-1.5 text-right tabular-nums text-ink-soft">{row.writes}</td>
+                <td className="px-3 py-1.5 text-right font-mono text-slate">{row.meta.time[2]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {footnote && (
+          <p className="border-t border-border bg-surface-2/40 px-3 py-2 text-[11px] text-slate">{footnote}</p>
+        )}
+      </div>
+    </details>
   );
 }

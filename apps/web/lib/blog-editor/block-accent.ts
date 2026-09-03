@@ -8,7 +8,7 @@ import { DEFAULT_BLOCK_COLORS, hexToRgba } from "@/lib/editor/block-colors";
  * assignment for no benefit. Each color below is picked for a reason:
  */
 export const BLOCK_ACCENT: Record<ContentBlock["type"], string | null> = {
-  heading: DEFAULT_BLOCK_COLORS[0], // copper - matches how headline emphasis already reads on the site
+  heading: DEFAULT_BLOCK_COLORS[0], // green - the site accent, matches how headline emphasis already reads
   image: DEFAULT_BLOCK_COLORS[1], // signal green - media
   video: DEFAULT_BLOCK_COLORS[2], // amber - media, distinct from image
   button: DEFAULT_BLOCK_COLORS[4], // rust - "action" without borrowing signal-coral's low/error meaning

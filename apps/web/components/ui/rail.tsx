@@ -222,7 +222,7 @@ export function AccentTile({
   return (
     <Link
       href={href}
-      style={{ "--tile": accent ?? "#c15a2a" } as CSSProperties}
+      style={{ "--tile": accent ?? "#2b8341" } as CSSProperties}
       className={cn(
         "group relative flex flex-col gap-1.5 overflow-hidden rounded-xl p-5 transition-all duration-200",
         "bg-[color-mix(in_oklab,var(--tile)_14%,transparent)]",

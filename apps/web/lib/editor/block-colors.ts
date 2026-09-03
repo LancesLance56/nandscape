@@ -14,7 +14,7 @@ export const GATE_COLORS: Partial<Record<GateType, string>> = {
 
 // block-colors.ts
 export const DEFAULT_BLOCK_COLORS: readonly string[] = [
-  "#C15A2A", // copper
+  "#2B8341", // green - the site accent
   "#4CAF7D", // signal green
   "#E0A339", // amber
   "#D9694F", // signal coral

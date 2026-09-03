@@ -263,10 +263,13 @@ function ConsoleBody({ view, showComparison }: { view: SortingView; showComparis
         />
 
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <SortingBars step={step} maxValue={view.maxValue} height={210} />
+          <SortingBars step={step} maxValue={view.maxValue} height={210} run={view.run} />
           <SortingLegend />
           <Narration index={index} total={total} text={step.caption} />
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          {/* Transport and counters each get their own line: sharing one
+              flex-wrap row meant the counters jumped below the buttons the
+              moment a count grew a digit. */}
+          <div className="flex flex-col gap-2.5">
             <StepTransport
               index={player.index}
               total={total}
@@ -321,7 +324,7 @@ function LogBody({ view }: { view: SortingView }) {
         options={view.available.map((id) => ({ id, label: algorithmMeta(id).label.replace(" sort", "") }))}
       />
 
-      <SortingBars step={step} maxValue={view.maxValue} height={240} />
+      <SortingBars step={step} maxValue={view.maxValue} height={240} run={view.run} />
       <SortingLegend />
 
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
@@ -388,7 +391,7 @@ function CompactBody({ view }: { view: SortingView }) {
 
       <div className="flex flex-col gap-3 @xl:flex-row @xl:gap-4">
         <div className="flex min-w-0 flex-[1.25] flex-col gap-2.5">
-          <SortingBars step={step} maxValue={view.maxValue} height={172} />
+          <SortingBars step={step} maxValue={view.maxValue} height={172} run={view.run} />
           <div className="flex flex-wrap items-center justify-between gap-2">
             <StepTransport
               index={player.index}

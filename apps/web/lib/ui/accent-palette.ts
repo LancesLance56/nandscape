@@ -1,18 +1,18 @@
 /**
- * The warm accent palette used to colour index tiles.
+ * The muted ramp used to tint index tiles.
  *
- * Deliberately narrow and all in the copper/amber family rather than a full
- * spectrum: a tile grid should read as one deliberate set, not as a bag of
- * random hues. There is no blue here for the same reason the tutorial badges
- * never had one, it pulls the eye out of the site's warm range.
+ * Ink-wash page with a single sage accent, so tiles stay in a narrow
+ * sage-through-grey range rather than reaching for a full spectrum. Rendered at
+ * 14-34% over transparent (see rail.tsx), so even neighbouring steps land as
+ * visibly different washes.
  */
 export const ACCENT_PALETTE: readonly string[] = [
-  "#c15a2a", // copper
-  "#e0a339", // amber
-  "#b25a3b", // rust
-  "#d9694f", // coral
-  "#8a8f5c", // olive
-  "#c97b3c", // ochre
+  "#2b8341", // green (the accent)
+  "#4f8a5c",
+  "#6f8f76",
+  "#7d7d7d", // neutral ink
+  "#8f8f8f",
+  "#a2a2a2",
 ];
 
 /**

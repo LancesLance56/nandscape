@@ -1,7 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { cn } from "@/lib/cn";
-import type { SortStep } from "@/lib/sorting/types";
+import type { SortRun, SortStep } from "@/lib/sorting/types";
 
 /**
  * The bar chart every sorting widget renders into.
@@ -18,17 +19,38 @@ export function SortingBars({
   height = 200,
   showValues = true,
   compact = false,
+  run,
 }: {
   step: SortStep;
   maxValue: number;
   height?: number;
   showValues?: boolean;
   compact?: boolean;
+  /**
+   * The whole run. When given, the pointer and aux rows below the bars are
+   * only reserved if some step in this run actually uses them - an algorithm
+   * like bubble sort has neither, and would otherwise leave a tall empty gap
+   * under the bars. Omit to keep both rows always reserved (the safe default
+   * for callers that do not have the run to hand).
+   */
+  run?: SortRun;
 }) {
   const comparing = new Set(step.comparing);
   const writing = new Set(step.writing);
   const sorted = new Set(step.sorted);
   const n = step.array.length;
+
+  const { reservePointers, reserveAux } = useMemo(() => {
+    if (!run) return { reservePointers: true, reserveAux: true };
+    let p = false;
+    let a = false;
+    for (const s of run.steps) {
+      if (!p && s.pointers && Object.keys(s.pointers).length > 0) p = true;
+      if (!a && s.aux) a = true;
+      if (p && a) break;
+    }
+    return { reservePointers: p, reserveAux: a };
+  }, [run]);
 
   const pointerAt = new Map<number, string[]>();
   for (const [name, idx] of Object.entries(step.pointers ?? {})) {
@@ -74,9 +96,11 @@ export function SortingBars({
         })}
       </div>
 
-      {/* Pointer markers. The row is always present (fixed height) so a step
-          that happens to use no pointers doesn't shrink the widget. */}
-      {!compact && (
+      {/* Pointer markers. Where this run uses pointers the row is always
+          present (fixed height) so a step that happens to use none doesn't
+          shrink the widget; where the run never uses them it is dropped
+          entirely rather than left as dead space. */}
+      {!compact && reservePointers && (
         <div className="flex min-h-[1.125rem] w-full gap-[2px] px-2">
           {step.array.map((_, i) => (
             <div key={i} className="flex min-w-0 flex-1 justify-center">
@@ -90,7 +114,7 @@ export function SortingBars({
         </div>
       )}
 
-      {!compact && <AuxRow aux={step.aux} />}
+      {!compact && reserveAux && <AuxRow aux={step.aux} />}
     </div>
   );
 }
