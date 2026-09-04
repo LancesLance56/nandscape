@@ -35,14 +35,12 @@ export default async function PracticesPage() {
   return (
     <>
       <PracticeNav />
-      {/* Full width rather than a centred container: the list is a table of
-          rows, and every pixel of horizontal space goes into the title and
-          tags instead of into margins. Padding only, no max-width.
-
-          `pt-16` clears the 3rem PracticeNav with a little breathing room -
-          the coding section keeps its own slim bar throughout rather than
-          switching chrome between the list and a problem. */}
-      <main className="px-5 pb-24 pt-16 sm:px-8">
+      {/* Same container as every other list page on the site (`max-w-330`),
+          so the coding catalogue lines up with the logic one rather than
+          running edge to edge beside it. Only the top padding differs: the
+          coding section keeps its own 3rem bar, where the rest of the site has
+          the 5rem navbar and needs `pt-32`. */}
+      <main className="mx-auto max-w-330 px-6 pb-24 pt-16 sm:px-10">
         <div className="mb-8 max-w-2xl">
           <div className="mb-3 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
