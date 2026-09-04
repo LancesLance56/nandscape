@@ -16,11 +16,22 @@ export interface LanguageDefinition {
   id: PracticeLanguage;
   /** Shown in the picker. */
   label: string;
-  /** Engine-side language id and pinned version. */
-  runtime: string;
-  version: string;
-  /** Filename handed to the engine; the extension is how it picks a toolchain. */
+  /**
+   * The official language image the submission runs in, pinned by tag.
+   *
+   * Official images are multi-arch, which is what lets the same engine run
+   * natively on an amd64 dev machine and an arm64 server.
+   */
+  image: string;
+  /** Filename the source is written to inside the container. */
   fileName: string;
+  /**
+   * The command that runs the program, and for a compiled language the one
+   * that builds it first. Fixed strings from this table - the runner
+   * interpolates them into its script, so they must never come from a request.
+   */
+  runCommand: string;
+  compileCommand?: string;
   /** Shiki id, so a submission can be rendered with the site's existing highlighter. */
   shikiLang: string;
   /**
@@ -72,9 +83,9 @@ function camelCase(snake: string): string {
 const python: LanguageDefinition = {
   id: "python",
   label: "Python",
-  runtime: "python",
-  version: "3.12.0",
+  image: "python:3.12-alpine",
   fileName: "solution.py",
+  runCommand: "python3 /work/solution.py",
   shikiLang: "python",
   compiled: false,
   functionName: (signature) => assertIdentifier(signature.name),
@@ -86,9 +97,9 @@ const python: LanguageDefinition = {
 const javascript: LanguageDefinition = {
   id: "javascript",
   label: "JavaScript",
-  runtime: "javascript",
-  version: "20.11.1",
+  image: "node:22-alpine",
   fileName: "solution.js",
+  runCommand: "node /work/solution.js",
   shikiLang: "javascript",
   compiled: false,
   functionName: (signature) => assertIdentifier(camelCase(signature.name)),
@@ -100,9 +111,10 @@ const javascript: LanguageDefinition = {
 const cpp: LanguageDefinition = {
   id: "cpp",
   label: "C++",
-  runtime: "c++",
-  version: "10.2.0",
+  image: "gcc:14",
   fileName: "solution.cpp",
+  compileCommand: "g++ -O2 -std=c++17 -o /work/program /work/solution.cpp",
+  runCommand: "/work/program",
   shikiLang: "cpp",
   // The only compiled language here, which is what makes COMPILE_ERROR and the
   // compile timeout reachable at all - both were built for this and until now
