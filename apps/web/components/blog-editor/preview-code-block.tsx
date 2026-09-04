@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CodeBlock } from "@/types/content-block";
+import { shikiOptions } from "@/lib/shiki-code";
 
 const HIGHLIGHT_DEBOUNCE_MS = 200;
 
@@ -36,24 +37,8 @@ export function PreviewCodeBlock({ block }: { block: CodeBlock }) {
     debounceRef.current = window.setTimeout(() => {
       import("shiki/bundle/web")
         .then(({ codeToHtml }) =>
-          codeToHtml(current.code, {
-            lang: current.language || "text",
-            // Same dual-theme output as the published CodeBlockView (see
-            // code-block.tsx); the `.shiki` rules in globals.css switch it.
-            themes: { light: "light-plus", dark: "dark-plus" },
-            defaultColor: false,
-            transformers: [
-              {
-                pre(node) {
-                  // Append, don't replace - Shiki's `shiki` class is what the
-                  // dual-theme CSS in globals.css hooks onto (see code-block.tsx).
-                  const existing = typeof node.properties.class === "string" ? node.properties.class : "";
-                  node.properties.class = `${existing} overflow-x-auto p-4`.trim();
-                  node.properties.style = "background: transparent; margin: 0;";
-                },
-              },
-            ],
-          }),
+          // Same contract as the published CodeBlockView - see lib/shiki-code.ts.
+          codeToHtml(current.code, shikiOptions(current.language)),
         )
         .then((result) => {
           if (!cancelled) setHtml(result);

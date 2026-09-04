@@ -52,7 +52,8 @@ the root `.env`:
 
 - `node seed/seed.mjs --base http://localhost:3000 [--force]` — POSTs the JSON
   files under `seed/*/` to the app's own API. Order matters (diagrams → posts →
-  projects → tracks → sections → pages → puzzles); the script documents why.
+  projects → tracks → sections → pages → puzzles → practices); the script
+  documents why.
 - `node seed/export.mjs --base <url>` — the reverse: pulls content edited
   through the live admin UI back into the `seed/` JSON files.
 
@@ -161,6 +162,98 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
 - DS&A visualization logic lives in `apps/web/lib/` (`backtracking/`, `dp/`,
   `graph/`, `sorting/`, `kmap/`, `flowchart/`, `tree-layout.ts`).
 
+### Coding practice (`/practices`)
+
+Reader-submitted code, run in a sandbox and graded. LeetCode-style: the user
+implements one function, never a whole program.
+
+- **Languages are Python, JavaScript and C++** — the three the seeded tutorials
+  teach in. Adding C++ was one new `LanguageDefinition` plus one entry in
+  `LANGUAGES` (`apps/web/lib/practice/languages.ts`), with no schema, API or UI
+  change: exactly what `CodingProblem.signature` recording parameter *types*
+  was reserved for, since a typed driver cannot work from the function name
+  alone.
+- The C++ driver (`lib/practice/harnesses/cpp.ts`) generates a typed `main()`
+  from the signature and carries its own ~100-line JSON parser rather than
+  vendoring one — a general library would be tens of thousands of header lines
+  recompiled on every submission. `int` maps to `long long`, not `int`:
+  constraints here routinely reach 1e9.
+- `#line 1 "solution.cpp"` is emitted above the submitted code, and the JSON
+  layer sits *below* it. Without that, every compile diagnostic cites a line a
+  few hundred down — useless in the one language where compile errors are
+  common.
+- Per-case stdout is captured at the **file-descriptor** level (`dup2` onto a
+  temp file), not by swapping `std::cout`'s streambuf, so `printf` debugging is
+  captured too.
+- **Execution never happens in the Next.js process.** Every run crosses into
+  the `piston` container over HTTP (`apps/web/lib/practice/piston.ts`). That
+  service publishes no port, runs with `PISTON_DISABLE_NETWORKING`, and its
+  address is parsed from env once at module load — never from a request, which
+  is what keeps the judge from becoming an SSRF proxy.
+- **Three containment layers**, none of which replaces the others: no published
+  port, a process-wide concurrency gate (`MAX_CONCURRENT_EXECUTIONS`), and
+  per-user rate limits. All the ceilings live in `lib/practice/limits.ts`, and
+  `buildLimits()` clamps a problem's requested limits rather than trusting them.
+- **One engine call per Run/Submit**, not one per test case: the driver reads
+  `{"cases":[{"args":[...]}]}` from stdin and emits one sentinel-prefixed
+  result line per case. `execute.ts` attributes a process death (timeout, OOM)
+  to the first case with no result line, and marks the rest "not run".
+- **Hidden tests and reference solutions are separate columns**, and
+  `PUBLIC_COLUMNS` in `lib/practice/practice-records.ts` simply does not name
+  them — leaking one takes writing a different query, not forgetting to strip a
+  field.
+- Run = visible cases, records nothing, works signed-out. Submit = every case,
+  writes a `CodingSubmission` row, requires an account. Solved status is a
+  `groupBy` over accepted rows, not a denormalized flag.
+- Indent width is a per-reader preference (`lib/practice/indent-preference.ts`),
+  default **4**, offered as 2/4/8 in the workspace header and shared by the
+  learner's editor and Problem Studio's code fields. Read via
+  `useSyncExternalStore` so the server can render the default while the client
+  renders the stored value — no hydration mismatch, no setState in an effect.
+  CodeMirror applies it through a `Compartment`, so changing it reconfigures
+  the running editor instead of rebuilding it and discarding undo history.
+- Editor is **CodeMirror 6**, not Monaco — ~50-100 kB and mobile-capable,
+  against Monaco's 2-5 MB and effectively unusable on touch.
+- Authored two ways, both hitting the same validated API: the seed pipeline
+  (`seed/practices/*.json`) and **Problem Studio**, the admin editor at
+  `/admin/practices/[slug]` (`/new` to create). The editor is full-screen and
+  sits outside the `(dashboard)` group, like the post and tutorial editors.
+- The authoring rules live in `lib/practice/validate.ts` and are the single
+  source for both the API's hard reject and the editor's live Checks rail — so
+  a green rail means the save will actually be accepted.
+- `GET /api/admin/practices/[slug]` is the only route that returns
+  `hiddenTests` and `solutions`. It is a separate path from the public
+  `/api/practices/[slug]` rather than a flag on it, so nothing but an ADMIN
+  check stands between the two shapes.
+- Problem Studio's *layout* comes from a Claude Design mock; its *look* is the
+  site's own. `components/practices/admin/problem-studio.css` aliases generic
+  names (`--color-text`, `--color-accent`, …) onto Nandscape's real tokens
+  (`--ink`, `--copper`, `--surface`, `--font-display`), which is what lets the
+  page follow the light/dark toggle without a single dark rule of its own —
+  those tokens already flip under `.dark`. Still scoped to `.studio`, because
+  the generic names would otherwise collide.
+- `CodingProblem.statement` is **Markdown**, not a ContentBlock array — a
+  problem statement is written by whoever wrote the problem, so its headings
+  and constraint layout are theirs to choose. Rendered server-side by
+  `components/practices/statement-markdown.tsx` (react-markdown + remark-gfm)
+  inside the site's existing `article-prose` wrapper.
+- One highlight contract for the whole site: `lib/shiki-code.ts` holds the
+  dual-theme options and the `pre` transformer. The published code block, the
+  blog editor's live preview, Problem Studio's code fields and Markdown fenced
+  blocks all go through it — previously three copies, with comments telling
+  each other to stay in step.
+- Content routes update with **PATCH**, not PUT — `seed.mjs --force` issues
+  PATCH, so a PUT-only route 405s on every re-seed.
+- `pnpm practice:verify-harness` runs the generated drivers against the local
+  `python`/`node`/`g++` and checks the whole protocol. Run it after touching
+  anything under `lib/practice/harnesses/`. The C++ section skips itself when
+  the local toolchain cannot produce a binary — that path only ever runs on
+  Linux inside the engine, where it is covered end to end.
+- First run of the container needs `pnpm piston:bootstrap` to install the
+  language runtimes — a fresh Piston ships with none. C++ arrives via the
+  `gcc` package (one install provides the `c`, `c++`, `d` and `fortran`
+  runtimes; the LanguageDefinition asks for `c++`).
+
 ## Gotchas
 
 - **Regenerate the Prisma client** (`pnpm --filter @repo/db generate`) after
@@ -175,4 +268,20 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
   application code (a single atomic UPDATE), not by DB constraints.
 - Native build deps (prisma, esbuild, sharp, …) are allow-listed under
   `allowBuilds` in `pnpm-workspace.yaml`.
+- The `piston` service needs `privileged: true` (its sandbox creates its own
+  namespaces/cgroups), so the isolation is *inside* an unprivileged-to-the-app
+  container rather than around it. Judge0 needs the same. Run it on a host you
+  control.
+- A fresh `piston` container has **no languages installed**. `pnpm
+  piston:bootstrap` adds them; without it every submission fails as
+  "unsupported language".
+- `PISTON_RUN_TIMEOUT` / `PISTON_RUN_CPU_TIME` in `docker-compose.yml` are
+  per-**request** ceilings, and one request carries the whole batch of test
+  cases. They must stay `>=` `MAX_BATCH_WALL_MS` in `lib/practice/limits.ts`,
+  or Piston rejects every multi-case submission with a 400 before running
+  anything ("run_timeout cannot exceed the configured limit").
+- Verified against the running engine, since it is not documented and not
+  guessable: an out-of-memory kill arrives as `code 137, signal null`, while a
+  timeout arrives as `code null, signal SIGKILL`. `classifyProcessFailure()`
+  relies on exactly that to tell MLE from TLE.
 - No Cursor/Copilot rule files and no README exist in this repo.

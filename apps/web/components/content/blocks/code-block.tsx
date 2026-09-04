@@ -1,55 +1,17 @@
 import { highlighter } from "@/lib/shiki";
 import type { CodeBlock } from "@/types/blog";
 import { cn } from "@/lib/cn";
+import { languageLabel, shikiOptions } from "@/lib/shiki-code";
 import { CodeTabs, type RenderedVariant } from "./code-tabs";
 
-/** Shiki lang ids are lowercase and terse; these are what a reader expects to see. */
-const LANGUAGE_LABELS: Record<string, string> = {
-  javascript: "JavaScript",
-  typescript: "TypeScript",
-  tsx: "TSX",
-  jsx: "JSX",
-  python: "Python",
-  cpp: "C++",
-  c: "C",
-  json: "JSON",
-  html: "HTML",
-  css: "CSS",
-  bash: "Bash",
-  verilog: "Verilog",
-  latex: "LaTeX",
-  text: "Text",
-};
-
-function label(language: string): string {
-  return LANGUAGE_LABELS[language] ?? language;
-}
-
-function highlight(code: string, language: string): string {
-  return highlighter.codeToHtml(code, {
-    lang: language || "text",
-    // Dual theme: every token carries both `--shiki-light` and `--shiki-dark`
-    // as CSS variables and no hard-coded `color` (defaultColor: false). The
-    // `.shiki` rules in globals.css pick which variable applies from the
-    // site's `.dark` class, so code follows the theme toggle. The container's
-    // own `bg-surface-2` supplies the surface in both modes.
-    themes: { light: "light-plus", dark: "dark-plus" },
-    defaultColor: false,
-    transformers: [
-      {
-        pre(node) {
-          // Keep Shiki's own `shiki` class - the dual-theme CSS variables on
-          // every token are only turned into a real `color` by the
-          // `.shiki`-scoped rules in globals.css. Overwriting the class
-          // (rather than appending) is what left highlighting rendering as
-          // plain unstyled text.
-          const existing = typeof node.properties.class === "string" ? node.properties.class : "";
-          node.properties.class = `${existing} overflow-x-auto p-4`.trim();
-          node.properties.style = "background: transparent; margin: 0;";
-        },
-      },
-    ],
-  });
+/**
+ * Highlight one snippet with the site's shared contract (lib/shiki-code.ts),
+ * through the server-only singleton. `codeToHtml` is synchronous once the
+ * highlighter exists, which is what lets the Markdown renderer call it from
+ * inside a React tree.
+ */
+export function highlight(code: string, language: string): string {
+  return highlighter.codeToHtml(code, shikiOptions(language));
 }
 
 export async function CodeBlockView({
@@ -76,7 +38,7 @@ export async function CodeBlockView({
 
   const rendered: RenderedVariant[] = [primary, ...extras].map((v) => ({
     language: v.language,
-    label: label(v.language),
+    label: languageLabel(v.language),
     html: highlight(v.code, v.language),
   }));
 

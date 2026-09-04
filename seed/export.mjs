@@ -98,6 +98,28 @@ function prune(obj) {
 }
 
 /**
+ * Reads back whatever is already on disk for a slug, or null if nothing is.
+ *
+ * Used to carry forward the parts of a resource the API deliberately never
+ * returns - a coding problem's hidden tests and reference solutions - so an
+ * export round trip preserves them instead of quietly deleting the half of
+ * the problem that makes grading work.
+ */
+async function readSeedFile(dir, slug) {
+  const existing = await readdir(dir).catch(() => []);
+  for (const f of existing) {
+    if (!f.endsWith(".json")) continue;
+    try {
+      const data = JSON.parse(await readFile(path.join(dir, f), "utf8"));
+      if (data.slug === slug) return data;
+    } catch {
+      // Not valid JSON, or no slug field - not a match either way.
+    }
+  }
+  return null;
+}
+
+/**
  * Writes `content` under `dir`, reusing whichever existing filename already
  * holds this slug (tutorials are numbered by hand for reading order, and a
  * fresh export should not renumber them) or, for a slug with no local file
@@ -240,6 +262,45 @@ async function exportPuzzles() {
   }
 }
 
+/**
+ * Coding problems.
+ *
+ * Note what cannot come back this way: the API's list endpoint deliberately
+ * omits hidden test cases and reference solutions, so an exported file has
+ * `hiddenTests` and `solutions` missing rather than empty. Re-seeding one of
+ * these over a problem that had hidden tests would therefore drop them, which
+ * is why the exported file keeps whatever the local copy already had - the
+ * secret half of a problem lives in the repo, not on the server.
+ */
+async function exportPractices() {
+  const { practices } = await get("/api/practices");
+  const dir = path.join(here, "practices");
+  for (const practice of practices) {
+    const existing = await readSeedFile(dir, practice.slug);
+    await writeSeedFile(
+      dir,
+      practice.slug,
+      prune({
+        slug: practice.slug,
+        title: practice.title,
+        summary: practice.summary,
+        difficulty: practice.difficulty,
+        tags: practice.tags,
+        languages: practice.languages,
+        compareMode: practice.compareMode,
+        timeLimitMs: practice.timeLimitMs,
+        memoryLimitMb: practice.memoryLimitMb,
+        signature: practice.signature,
+        statement: practice.statement,
+        starterCode: practice.starterCode,
+        visibleTests: (practice.visibleTests ?? []).map(({ index, ...rest }) => rest),
+        hiddenTests: existing?.hiddenTests,
+        solutions: existing?.solutions,
+      }),
+    );
+  }
+}
+
 async function main() {
   console.log(`Exporting from ${base}${only ? ` (only: ${only})` : ""}`);
   if (wantDrafts) await login();
@@ -263,6 +324,7 @@ async function main() {
   if (wants("tutorials")) await attempt("tutorials", () => exportTutorials(sectionIdToSlug));
   if (wants("posts")) await attempt("posts", exportPosts);
   if (wants("puzzles")) await attempt("puzzles", exportPuzzles);
+  if (wants("practices")) await attempt("practices", exportPractices);
 
   console.log("Done.");
 }

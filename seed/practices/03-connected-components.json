@@ -1,0 +1,280 @@
+{
+  "slug": "connected-components",
+  "title": "Connected Components",
+  "summary": "Group the nodes of an undirected graph into its connected components.",
+  "difficulty": "medium",
+  "tags": [
+    "graphs",
+    "traversal"
+  ],
+  "languages": [
+    "python",
+    "javascript",
+    "cpp"
+  ],
+  "compareMode": "unordered",
+  "timeLimitMs": 3000,
+  "memoryLimitMb": 256,
+  "signature": {
+    "name": "connected_components",
+    "params": [
+      {
+        "name": "n",
+        "type": "int"
+      },
+      {
+        "name": "edges",
+        "type": "int[][]"
+      }
+    ],
+    "returns": "int[][]"
+  },
+  "statement": "An undirected graph has `n` nodes numbered `0` to `n - 1`, and a list of `edges` where each entry [a, b] joins those two nodes. Return its connected components: one list of node numbers per component.\n\nThe nodes *within* each component must be in ascending order. The components themselves may come back in any order - the grader compares them as a set.\n\n### Constraints\n\n- 1 ≤ n ≤ 2,000\n- 0 ≤ edges.length ≤ 5,000\n- An isolated node is a component of size one\n- Edges may repeat, and the graph may be disconnected\n\n> **Build the adjacency list first**\n>\n> Scanning the edge list once per node is O(n × e) and too slow here. Turn the edges into an adjacency list first, then walk each unvisited node with a depth-first or breadth-first search - the traversal from the [Graph Theory](/tutorials) tutorial.\n",
+  "starterCode": {
+    "python": "def connected_components(n, edges):\n    # Nodes are 0..n-1. Return a list of components, each sorted ascending.\n    pass\n",
+    "javascript": "function connectedComponents(n, edges) {\n  // Nodes are 0..n-1. Return an array of components, each sorted ascending.\n}\n",
+    "cpp": "std::vector<std::vector<long long> > connectedComponents(long long n, std::vector<std::vector<long long> > edges) {\n    // Nodes are 0..n-1. Return a list of components, each sorted ascending.\n    return {};\n}\n"
+  },
+  "visibleTests": [
+    {
+      "args": [
+        5,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "explanation": "Two components: 0-1-2 joined together, and 3-4."
+    },
+    {
+      "args": [
+        4,
+        []
+      ],
+      "expected": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ],
+      "explanation": "With no edges, every node is its own component."
+    },
+    {
+      "args": [
+        3,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "explanation": "A cycle is still one component. Do not revisit nodes."
+    }
+  ],
+  "hiddenTests": [
+    {
+      "args": [
+        1,
+        []
+      ],
+      "expected": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "args": [
+        2,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "args": [
+        6,
+        [
+          [
+            5,
+            0
+          ],
+          [
+            3,
+            1
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ]
+      ]
+    },
+    {
+      "args": [
+        7,
+        [
+          [
+            0,
+            6
+          ],
+          [
+            6,
+            3
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            1,
+            4
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          0,
+          3,
+          6
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ]
+      ]
+    },
+    {
+      "args": [
+        8,
+        [
+          [
+            7,
+            6
+          ],
+          [
+            6,
+            5
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      ]
+    }
+  ],
+  "solutions": {
+    "python": "def connected_components(n, edges):\n    adjacency = [[] for _ in range(n)]\n    for a, b in edges:\n        adjacency[a].append(b)\n        adjacency[b].append(a)\n\n    seen = [False] * n\n    components = []\n    for start in range(n):\n        if seen[start]:\n            continue\n        seen[start] = True\n        stack = [start]\n        component = []\n        while stack:\n            node = stack.pop()\n            component.append(node)\n            for neighbour in adjacency[node]:\n                if not seen[neighbour]:\n                    seen[neighbour] = True\n                    stack.append(neighbour)\n        components.append(sorted(component))\n    return components\n",
+    "javascript": "function connectedComponents(n, edges) {\n  const adjacency = Array.from({ length: n }, () => []);\n  for (const [a, b] of edges) {\n    adjacency[a].push(b);\n    adjacency[b].push(a);\n  }\n\n  const seen = new Array(n).fill(false);\n  const components = [];\n  for (let start = 0; start < n; start += 1) {\n    if (seen[start]) continue;\n    seen[start] = true;\n    const stack = [start];\n    const component = [];\n    while (stack.length > 0) {\n      const node = stack.pop();\n      component.push(node);\n      for (const neighbour of adjacency[node]) {\n        if (!seen[neighbour]) {\n          seen[neighbour] = true;\n          stack.push(neighbour);\n        }\n      }\n    }\n    components.push(component.sort((x, y) => x - y));\n  }\n  return components;\n}\n",
+    "cpp": "std::vector<std::vector<long long> > connectedComponents(long long n, std::vector<std::vector<long long> > edges) {\n    std::vector<std::vector<long long> > adjacency((std::size_t)n);\n    for (std::size_t i = 0; i < edges.size(); ++i) {\n        long long a = edges[i][0];\n        long long b = edges[i][1];\n        adjacency[(std::size_t)a].push_back(b);\n        adjacency[(std::size_t)b].push_back(a);\n    }\n\n    std::vector<bool> seen((std::size_t)n, false);\n    std::vector<std::vector<long long> > components;\n    for (long long start = 0; start < n; ++start) {\n        if (seen[(std::size_t)start]) continue;\n        seen[(std::size_t)start] = true;\n        std::vector<long long> stack;\n        std::vector<long long> component;\n        stack.push_back(start);\n        while (!stack.empty()) {\n            long long node = stack.back();\n            stack.pop_back();\n            component.push_back(node);\n            const std::vector<long long>& neighbours = adjacency[(std::size_t)node];\n            for (std::size_t k = 0; k < neighbours.size(); ++k) {\n                long long next = neighbours[k];\n                if (!seen[(std::size_t)next]) {\n                    seen[(std::size_t)next] = true;\n                    stack.push_back(next);\n                }\n            }\n        }\n        std::sort(component.begin(), component.end());\n        components.push_back(component);\n    }\n    return components;\n}\n"
+  }
+}

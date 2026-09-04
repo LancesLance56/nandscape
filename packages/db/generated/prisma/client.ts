@@ -152,3 +152,38 @@ export type QuizAttempt = Prisma.QuizAttemptModel
  * "defaults", not "broken" - see lib/account/preferences.ts.
  */
 export type UserPreference = Prisma.UserPreferenceModel
+/**
+ * Model CodingProblem
+ * A coding practice problem: the user implements one function, and a
+ * per-language driver calls it with JSON-encoded arguments (see
+ * apps/web/lib/practice/languages.ts).
+ * 
+ * Shaped after Puzzle - slug-addressed, Json payloads, a nullable creator so
+ * seeded content needs no author - with one deliberate divergence: the
+ * hidden test cases and the reference solutions live in their own columns
+ * rather than sharing one `solution` blob. A stray `SELECT *` in a
+ * client-facing query then leaks nothing, because the secret columns are
+ * named and can be omitted structurally instead of relying on every caller
+ * remembering to strip them.
+ */
+export type CodingProblem = Prisma.CodingProblemModel
+/**
+ * Model CodingSubmission
+ * One row per Submit press. Append-only, unlike PuzzleAttempt's upserted
+ * counter: a coding problem is something you converge on over several tries,
+ * and the history of those tries is worth showing back to the user. Solved
+ * status for the list page is a groupBy over ACCEPTED rows rather than a
+ * denormalized flag that could drift.
+ */
+export type CodingSubmission = Prisma.CodingSubmissionModel
+/**
+ * Model CodingDraft
+ * Unsubmitted work in progress, mirroring PuzzleProgress's "last state per
+ * user" pattern - slug-addressed for the same reason, so re-seeding a
+ * problem (a delete plus an insert, and so a new id) does not throw away
+ * everyone's draft.
+ * 
+ * Keyed by language as well as problem: switching the picker to peek at the
+ * JavaScript stub must not destroy the half-written Python.
+ */
+export type CodingDraft = Prisma.CodingDraftModel

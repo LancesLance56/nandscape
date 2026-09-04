@@ -15,7 +15,14 @@ interface ToneStyle {
   label: string;
 }
 
-const TONES: Record<CalloutTone, ToneStyle> = {
+/**
+ * The callout frame and its tones, exported so the Markdown renderer can dress
+ * a `>` blockquote as the neutral (grey) callout rather than inventing a
+ * second quote style.
+ */
+export const CALLOUT_FRAME_CLASS = "not-prose flex gap-3 rounded-xl border-l-4 px-4 py-3.5";
+
+export const CALLOUT_TONES: Record<CalloutTone, ToneStyle> = {
   note: {
     wrapper: "border-border-strong bg-surface-2",
     icon: "text-slate",
@@ -47,14 +54,14 @@ const TONES: Record<CalloutTone, ToneStyle> = {
 };
 
 export function CalloutBlockView({ block }: { block: CalloutBlock & { className?: string } }) {
-  const tone = TONES[block.tone] ?? TONES.note;
+  const tone = CALLOUT_TONES[block.tone] ?? CALLOUT_TONES.note;
   const { Icon } = tone;
   const heading = block.title?.trim() || tone.label;
 
   return (
     <div
       className={cn(
-        "not-prose flex gap-3 rounded-xl border-l-4 px-4 py-3.5",
+        CALLOUT_FRAME_CLASS,
         tone.wrapper,
         block.className,
       )}

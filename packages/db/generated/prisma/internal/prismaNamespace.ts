@@ -413,7 +413,10 @@ export const ModelName = {
   Clap: 'Clap',
   TutorialProgress: 'TutorialProgress',
   QuizAttempt: 'QuizAttempt',
-  UserPreference: 'UserPreference'
+  UserPreference: 'UserPreference',
+  CodingProblem: 'CodingProblem',
+  CodingSubmission: 'CodingSubmission',
+  CodingDraft: 'CodingDraft'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "emailVerificationToken" | "session" | "blogPost" | "tutorialTrack" | "tutorialSection" | "tutorialPage" | "puzzle" | "puzzleAttempt" | "puzzleProgress" | "project" | "featuredCircuit" | "diagramPreset" | "clap" | "tutorialProgress" | "quizAttempt" | "userPreference"
+    modelProps: "user" | "emailVerificationToken" | "session" | "blogPost" | "tutorialTrack" | "tutorialSection" | "tutorialPage" | "puzzle" | "puzzleAttempt" | "puzzleProgress" | "project" | "featuredCircuit" | "diagramPreset" | "clap" | "tutorialProgress" | "quizAttempt" | "userPreference" | "codingProblem" | "codingSubmission" | "codingDraft"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1691,6 +1694,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CodingProblem: {
+      payload: Prisma.$CodingProblemPayload<ExtArgs>
+      fields: Prisma.CodingProblemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodingProblemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodingProblemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>
+        }
+        findFirst: {
+          args: Prisma.CodingProblemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodingProblemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>
+        }
+        findMany: {
+          args: Prisma.CodingProblemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>[]
+        }
+        create: {
+          args: Prisma.CodingProblemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>
+        }
+        createMany: {
+          args: Prisma.CodingProblemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodingProblemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>[]
+        }
+        delete: {
+          args: Prisma.CodingProblemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>
+        }
+        update: {
+          args: Prisma.CodingProblemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>
+        }
+        deleteMany: {
+          args: Prisma.CodingProblemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodingProblemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodingProblemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>[]
+        }
+        upsert: {
+          args: Prisma.CodingProblemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingProblemPayload>
+        }
+        aggregate: {
+          args: Prisma.CodingProblemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodingProblem>
+        }
+        groupBy: {
+          args: Prisma.CodingProblemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodingProblemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodingProblemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodingProblemCountAggregateOutputType> | number
+        }
+      }
+    }
+    CodingSubmission: {
+      payload: Prisma.$CodingSubmissionPayload<ExtArgs>
+      fields: Prisma.CodingSubmissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodingSubmissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodingSubmissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>
+        }
+        findFirst: {
+          args: Prisma.CodingSubmissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodingSubmissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>
+        }
+        findMany: {
+          args: Prisma.CodingSubmissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>[]
+        }
+        create: {
+          args: Prisma.CodingSubmissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>
+        }
+        createMany: {
+          args: Prisma.CodingSubmissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodingSubmissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>[]
+        }
+        delete: {
+          args: Prisma.CodingSubmissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>
+        }
+        update: {
+          args: Prisma.CodingSubmissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.CodingSubmissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodingSubmissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodingSubmissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.CodingSubmissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingSubmissionPayload>
+        }
+        aggregate: {
+          args: Prisma.CodingSubmissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodingSubmission>
+        }
+        groupBy: {
+          args: Prisma.CodingSubmissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodingSubmissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodingSubmissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodingSubmissionCountAggregateOutputType> | number
+        }
+      }
+    }
+    CodingDraft: {
+      payload: Prisma.$CodingDraftPayload<ExtArgs>
+      fields: Prisma.CodingDraftFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CodingDraftFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CodingDraftFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>
+        }
+        findFirst: {
+          args: Prisma.CodingDraftFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CodingDraftFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>
+        }
+        findMany: {
+          args: Prisma.CodingDraftFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>[]
+        }
+        create: {
+          args: Prisma.CodingDraftCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>
+        }
+        createMany: {
+          args: Prisma.CodingDraftCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CodingDraftCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>[]
+        }
+        delete: {
+          args: Prisma.CodingDraftDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>
+        }
+        update: {
+          args: Prisma.CodingDraftUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>
+        }
+        deleteMany: {
+          args: Prisma.CodingDraftDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CodingDraftUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CodingDraftUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>[]
+        }
+        upsert: {
+          args: Prisma.CodingDraftUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CodingDraftPayload>
+        }
+        aggregate: {
+          args: Prisma.CodingDraftAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCodingDraft>
+        }
+        groupBy: {
+          args: Prisma.CodingDraftGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodingDraftGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CodingDraftCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CodingDraftCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1976,6 +2201,63 @@ export const UserPreferenceScalarFieldEnum = {
 export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
 
 
+export const CodingProblemScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  summary: 'summary',
+  difficulty: 'difficulty',
+  tags: 'tags',
+  statement: 'statement',
+  kind: 'kind',
+  signature: 'signature',
+  languages: 'languages',
+  starterCode: 'starterCode',
+  visibleTests: 'visibleTests',
+  hiddenTests: 'hiddenTests',
+  compareMode: 'compareMode',
+  epsilon: 'epsilon',
+  timeLimitMs: 'timeLimitMs',
+  memoryLimitMb: 'memoryLimitMb',
+  solutions: 'solutions',
+  creatorId: 'creatorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodingProblemScalarFieldEnum = (typeof CodingProblemScalarFieldEnum)[keyof typeof CodingProblemScalarFieldEnum]
+
+
+export const CodingSubmissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  problemId: 'problemId',
+  language: 'language',
+  code: 'code',
+  verdict: 'verdict',
+  passedCount: 'passedCount',
+  totalCount: 'totalCount',
+  results: 'results',
+  runtimeMs: 'runtimeMs',
+  submittedAt: 'submittedAt'
+} as const
+
+export type CodingSubmissionScalarFieldEnum = (typeof CodingSubmissionScalarFieldEnum)[keyof typeof CodingSubmissionScalarFieldEnum]
+
+
+export const CodingDraftScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  problemSlug: 'problemSlug',
+  language: 'language',
+  code: 'code',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodingDraftScalarFieldEnum = (typeof CodingDraftScalarFieldEnum)[keyof typeof CodingDraftScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2168,6 +2450,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'SubmissionVerdict'
+ */
+export type EnumSubmissionVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubmissionVerdict'>
+    
+
+
+/**
+ * Reference to a field of type 'SubmissionVerdict[]'
+ */
+export type ListEnumSubmissionVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubmissionVerdict[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2336,6 +2632,9 @@ export type GlobalOmitConfig = {
   tutorialProgress?: Prisma.TutorialProgressOmit
   quizAttempt?: Prisma.QuizAttemptOmit
   userPreference?: Prisma.UserPreferenceOmit
+  codingProblem?: Prisma.CodingProblemOmit
+  codingSubmission?: Prisma.CodingSubmissionOmit
+  codingDraft?: Prisma.CodingDraftOmit
 }
 
 /* Types for Logging */

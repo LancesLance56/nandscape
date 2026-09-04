@@ -239,6 +239,9 @@ export type UserWhereInput = {
   tutorialProgress?: Prisma.TutorialProgressListRelationFilter
   quizAttempts?: Prisma.QuizAttemptListRelationFilter
   preference?: Prisma.XOR<Prisma.UserPreferenceNullableScalarRelationFilter, Prisma.UserPreferenceWhereInput> | null
+  codingProblems?: Prisma.CodingProblemListRelationFilter
+  codingSubmissions?: Prisma.CodingSubmissionListRelationFilter
+  codingDrafts?: Prisma.CodingDraftListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -262,6 +265,9 @@ export type UserOrderByWithRelationInput = {
   tutorialProgress?: Prisma.TutorialProgressOrderByRelationAggregateInput
   quizAttempts?: Prisma.QuizAttemptOrderByRelationAggregateInput
   preference?: Prisma.UserPreferenceOrderByWithRelationInput
+  codingProblems?: Prisma.CodingProblemOrderByRelationAggregateInput
+  codingSubmissions?: Prisma.CodingSubmissionOrderByRelationAggregateInput
+  codingDrafts?: Prisma.CodingDraftOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -288,6 +294,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tutorialProgress?: Prisma.TutorialProgressListRelationFilter
   quizAttempts?: Prisma.QuizAttemptListRelationFilter
   preference?: Prisma.XOR<Prisma.UserPreferenceNullableScalarRelationFilter, Prisma.UserPreferenceWhereInput> | null
+  codingProblems?: Prisma.CodingProblemListRelationFilter
+  codingSubmissions?: Prisma.CodingSubmissionListRelationFilter
+  codingDrafts?: Prisma.CodingDraftListRelationFilter
 }, "id" | "email" | "username" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
@@ -345,6 +354,9 @@ export type UserCreateInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -368,6 +380,9 @@ export type UserUncheckedCreateInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -391,6 +406,9 @@ export type UserUpdateInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -414,6 +432,9 @@ export type UserUncheckedUpdateInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -658,6 +679,50 @@ export type UserUpdateOneRequiredWithoutPreferenceNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPreferenceInput, Prisma.UserUpdateWithoutPreferenceInput>, Prisma.UserUncheckedUpdateWithoutPreferenceInput>
 }
 
+export type UserCreateNestedOneWithoutCodingProblemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodingProblemsInput, Prisma.UserUncheckedCreateWithoutCodingProblemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodingProblemsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCodingProblemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodingProblemsInput, Prisma.UserUncheckedCreateWithoutCodingProblemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodingProblemsInput
+  upsert?: Prisma.UserUpsertWithoutCodingProblemsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCodingProblemsInput, Prisma.UserUpdateWithoutCodingProblemsInput>, Prisma.UserUncheckedUpdateWithoutCodingProblemsInput>
+}
+
+export type UserCreateNestedOneWithoutCodingSubmissionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodingSubmissionsInput, Prisma.UserUncheckedCreateWithoutCodingSubmissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodingSubmissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCodingSubmissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodingSubmissionsInput, Prisma.UserUncheckedCreateWithoutCodingSubmissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodingSubmissionsInput
+  upsert?: Prisma.UserUpsertWithoutCodingSubmissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCodingSubmissionsInput, Prisma.UserUpdateWithoutCodingSubmissionsInput>, Prisma.UserUncheckedUpdateWithoutCodingSubmissionsInput>
+}
+
+export type UserCreateNestedOneWithoutCodingDraftsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodingDraftsInput, Prisma.UserUncheckedCreateWithoutCodingDraftsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodingDraftsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCodingDraftsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCodingDraftsInput, Prisma.UserUncheckedCreateWithoutCodingDraftsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCodingDraftsInput
+  upsert?: Prisma.UserUpsertWithoutCodingDraftsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCodingDraftsInput, Prisma.UserUpdateWithoutCodingDraftsInput>, Prisma.UserUncheckedUpdateWithoutCodingDraftsInput>
+}
+
 export type UserCreateWithoutEmailVerificationTokensInput = {
   id?: string
   email: string
@@ -678,6 +743,9 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
@@ -700,6 +768,9 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
@@ -738,6 +809,9 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
@@ -760,6 +834,9 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -782,6 +859,9 @@ export type UserCreateWithoutSessionsInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -804,6 +884,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -842,6 +925,9 @@ export type UserUpdateWithoutSessionsInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -864,6 +950,9 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPuzzlesInput = {
@@ -886,6 +975,9 @@ export type UserCreateWithoutPuzzlesInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPuzzlesInput = {
@@ -908,6 +1000,9 @@ export type UserUncheckedCreateWithoutPuzzlesInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPuzzlesInput = {
@@ -946,6 +1041,9 @@ export type UserUpdateWithoutPuzzlesInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzlesInput = {
@@ -968,6 +1066,9 @@ export type UserUncheckedUpdateWithoutPuzzlesInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPuzzleAttemptsInput = {
@@ -990,6 +1091,9 @@ export type UserCreateWithoutPuzzleAttemptsInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
@@ -1012,6 +1116,9 @@ export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPuzzleAttemptsInput = {
@@ -1050,6 +1157,9 @@ export type UserUpdateWithoutPuzzleAttemptsInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
@@ -1072,6 +1182,9 @@ export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPuzzleProgressInput = {
@@ -1094,6 +1207,9 @@ export type UserCreateWithoutPuzzleProgressInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPuzzleProgressInput = {
@@ -1116,6 +1232,9 @@ export type UserUncheckedCreateWithoutPuzzleProgressInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPuzzleProgressInput = {
@@ -1154,6 +1273,9 @@ export type UserUpdateWithoutPuzzleProgressInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
@@ -1176,6 +1298,9 @@ export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -1198,6 +1323,9 @@ export type UserCreateWithoutProjectsInput = {
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -1220,6 +1348,9 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -1258,6 +1389,9 @@ export type UserUpdateWithoutProjectsInput = {
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -1280,6 +1414,9 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTutorialProgressInput = {
@@ -1302,6 +1439,9 @@ export type UserCreateWithoutTutorialProgressInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTutorialProgressInput = {
@@ -1324,6 +1464,9 @@ export type UserUncheckedCreateWithoutTutorialProgressInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTutorialProgressInput = {
@@ -1362,6 +1505,9 @@ export type UserUpdateWithoutTutorialProgressInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTutorialProgressInput = {
@@ -1384,6 +1530,9 @@ export type UserUncheckedUpdateWithoutTutorialProgressInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutQuizAttemptsInput = {
@@ -1406,6 +1555,9 @@ export type UserCreateWithoutQuizAttemptsInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutQuizAttemptsInput = {
@@ -1428,6 +1580,9 @@ export type UserUncheckedCreateWithoutQuizAttemptsInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutQuizAttemptsInput = {
@@ -1466,6 +1621,9 @@ export type UserUpdateWithoutQuizAttemptsInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
@@ -1488,6 +1646,9 @@ export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPreferenceInput = {
@@ -1510,6 +1671,9 @@ export type UserCreateWithoutPreferenceInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
   tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceInput = {
@@ -1532,6 +1696,9 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
   quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceInput = {
@@ -1570,6 +1737,9 @@ export type UserUpdateWithoutPreferenceInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
   tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceInput = {
@@ -1592,6 +1762,357 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCodingProblemsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCodingProblemsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCodingProblemsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodingProblemsInput, Prisma.UserUncheckedCreateWithoutCodingProblemsInput>
+}
+
+export type UserUpsertWithoutCodingProblemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCodingProblemsInput, Prisma.UserUncheckedUpdateWithoutCodingProblemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodingProblemsInput, Prisma.UserUncheckedCreateWithoutCodingProblemsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCodingProblemsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCodingProblemsInput, Prisma.UserUncheckedUpdateWithoutCodingProblemsInput>
+}
+
+export type UserUpdateWithoutCodingProblemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCodingProblemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCodingSubmissionsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCodingSubmissionsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCodingSubmissionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodingSubmissionsInput, Prisma.UserUncheckedCreateWithoutCodingSubmissionsInput>
+}
+
+export type UserUpsertWithoutCodingSubmissionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCodingSubmissionsInput, Prisma.UserUncheckedUpdateWithoutCodingSubmissionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodingSubmissionsInput, Prisma.UserUncheckedCreateWithoutCodingSubmissionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCodingSubmissionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCodingSubmissionsInput, Prisma.UserUncheckedUpdateWithoutCodingSubmissionsInput>
+}
+
+export type UserUpdateWithoutCodingSubmissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCodingSubmissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCodingDraftsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCodingDraftsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCodingDraftsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodingDraftsInput, Prisma.UserUncheckedCreateWithoutCodingDraftsInput>
+}
+
+export type UserUpsertWithoutCodingDraftsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCodingDraftsInput, Prisma.UserUncheckedUpdateWithoutCodingDraftsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCodingDraftsInput, Prisma.UserUncheckedCreateWithoutCodingDraftsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCodingDraftsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCodingDraftsInput, Prisma.UserUncheckedUpdateWithoutCodingDraftsInput>
+}
+
+export type UserUpdateWithoutCodingDraftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCodingDraftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1608,6 +2129,9 @@ export type UserCountOutputType = {
   emailVerificationTokens: number
   tutorialProgress: number
   quizAttempts: number
+  codingProblems: number
+  codingSubmissions: number
+  codingDrafts: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1619,6 +2143,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
   tutorialProgress?: boolean | UserCountOutputTypeCountTutorialProgressArgs
   quizAttempts?: boolean | UserCountOutputTypeCountQuizAttemptsArgs
+  codingProblems?: boolean | UserCountOutputTypeCountCodingProblemsArgs
+  codingSubmissions?: boolean | UserCountOutputTypeCountCodingSubmissionsArgs
+  codingDrafts?: boolean | UserCountOutputTypeCountCodingDraftsArgs
 }
 
 /**
@@ -1687,6 +2214,27 @@ export type UserCountOutputTypeCountQuizAttemptsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.QuizAttemptWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCodingProblemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CodingProblemWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCodingSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CodingSubmissionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCodingDraftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CodingDraftWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1709,6 +2257,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tutorialProgress?: boolean | Prisma.User$tutorialProgressArgs<ExtArgs>
   quizAttempts?: boolean | Prisma.User$quizAttemptsArgs<ExtArgs>
   preference?: boolean | Prisma.User$preferenceArgs<ExtArgs>
+  codingProblems?: boolean | Prisma.User$codingProblemsArgs<ExtArgs>
+  codingSubmissions?: boolean | Prisma.User$codingSubmissionsArgs<ExtArgs>
+  codingDrafts?: boolean | Prisma.User$codingDraftsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1765,6 +2316,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tutorialProgress?: boolean | Prisma.User$tutorialProgressArgs<ExtArgs>
   quizAttempts?: boolean | Prisma.User$quizAttemptsArgs<ExtArgs>
   preference?: boolean | Prisma.User$preferenceArgs<ExtArgs>
+  codingProblems?: boolean | Prisma.User$codingProblemsArgs<ExtArgs>
+  codingSubmissions?: boolean | Prisma.User$codingSubmissionsArgs<ExtArgs>
+  codingDrafts?: boolean | Prisma.User$codingDraftsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1782,6 +2336,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tutorialProgress: Prisma.$TutorialProgressPayload<ExtArgs>[]
     quizAttempts: Prisma.$QuizAttemptPayload<ExtArgs>[]
     preference: Prisma.$UserPreferencePayload<ExtArgs> | null
+    codingProblems: Prisma.$CodingProblemPayload<ExtArgs>[]
+    codingSubmissions: Prisma.$CodingSubmissionPayload<ExtArgs>[]
+    codingDrafts: Prisma.$CodingDraftPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2204,6 +2761,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   tutorialProgress<T extends Prisma.User$tutorialProgressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tutorialProgressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TutorialProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   quizAttempts<T extends Prisma.User$quizAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$quizAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuizAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preference<T extends Prisma.User$preferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$preferenceArgs<ExtArgs>>): Prisma.Prisma__UserPreferenceClient<runtime.Types.Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  codingProblems<T extends Prisma.User$codingProblemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codingProblemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodingProblemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  codingSubmissions<T extends Prisma.User$codingSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codingSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodingSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  codingDrafts<T extends Prisma.User$codingDraftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codingDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodingDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2845,6 +3405,78 @@ export type User$preferenceArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.UserPreferenceInclude<ExtArgs> | null
   where?: Prisma.UserPreferenceWhereInput
+}
+
+/**
+ * User.codingProblems
+ */
+export type User$codingProblemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CodingProblem
+   */
+  select?: Prisma.CodingProblemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CodingProblem
+   */
+  omit?: Prisma.CodingProblemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CodingProblemInclude<ExtArgs> | null
+  where?: Prisma.CodingProblemWhereInput
+  orderBy?: Prisma.CodingProblemOrderByWithRelationInput | Prisma.CodingProblemOrderByWithRelationInput[]
+  cursor?: Prisma.CodingProblemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CodingProblemScalarFieldEnum | Prisma.CodingProblemScalarFieldEnum[]
+}
+
+/**
+ * User.codingSubmissions
+ */
+export type User$codingSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CodingSubmission
+   */
+  select?: Prisma.CodingSubmissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CodingSubmission
+   */
+  omit?: Prisma.CodingSubmissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CodingSubmissionInclude<ExtArgs> | null
+  where?: Prisma.CodingSubmissionWhereInput
+  orderBy?: Prisma.CodingSubmissionOrderByWithRelationInput | Prisma.CodingSubmissionOrderByWithRelationInput[]
+  cursor?: Prisma.CodingSubmissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CodingSubmissionScalarFieldEnum | Prisma.CodingSubmissionScalarFieldEnum[]
+}
+
+/**
+ * User.codingDrafts
+ */
+export type User$codingDraftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CodingDraft
+   */
+  select?: Prisma.CodingDraftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CodingDraft
+   */
+  omit?: Prisma.CodingDraftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CodingDraftInclude<ExtArgs> | null
+  where?: Prisma.CodingDraftWhereInput
+  orderBy?: Prisma.CodingDraftOrderByWithRelationInput | Prisma.CodingDraftOrderByWithRelationInput[]
+  cursor?: Prisma.CodingDraftWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CodingDraftScalarFieldEnum | Prisma.CodingDraftScalarFieldEnum[]
 }
 
 /**
