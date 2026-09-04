@@ -10,7 +10,7 @@ import { valuesMatch } from "./compare";
 import { getLanguage } from "./languages";
 import { buildLimits, MAX_CODE_BYTES, MAX_TEST_CASES } from "./limits";
 import { parseDriverOutput, type DriverCaseRecord } from "./harnesses/protocol";
-import { executeOnPiston, PistonUnavailableError } from "./piston";
+import { executeOnEngine, EngineUnavailableError } from "./engine";
 
 export interface GradeableCase extends PracticeTestCase {
   /** Whether this case's inputs and outputs may be shown to the user. */
@@ -76,17 +76,17 @@ export async function executeSubmission(options: ExecuteOptions): Promise<Execut
 
   let response;
   try {
-    response = await executeOnPiston({
-      runtime: language.runtime,
-      version: language.version,
+    response = await executeOnEngine({
+      image: language.image,
       fileName: language.fileName,
       source,
       stdin,
+      runCommand: language.runCommand,
+      compileCommand: language.compileCommand,
       limits,
-      compiled: language.compiled,
     });
   } catch (error) {
-    if (error instanceof PistonUnavailableError) {
+    if (error instanceof EngineUnavailableError) {
       return fatal("INTERNAL_ERROR", error.message, cases);
     }
     throw error;

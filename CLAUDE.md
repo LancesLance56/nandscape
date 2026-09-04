@@ -186,10 +186,22 @@ implements one function, never a whole program.
   temp file), not by swapping `std::cout`'s streambuf, so `printf` debugging is
   captured too.
 - **Execution never happens in the Next.js process.** Every run crosses into
-  the `piston` container over HTTP (`apps/web/lib/practice/piston.ts`). That
-  service publishes no port, runs with `PISTON_DISABLE_NETWORKING`, and its
+  the `runner` service over HTTP (`apps/web/lib/practice/engine.ts`), which
+  executes the submission in a throwaway container built from an official
+  language image (`--network none --read-only --cap-drop ALL --pids-limit`,
+  unprivileged user, tmpfs work dir). The service publishes no port and its
   address is parsed from env once at module load — never from a request, which
   is what keeps the judge from becoming an SSRF proxy.
+- **Why not Piston:** its image is published for `linux/amd64` only, so it
+  cannot run on an arm64 server. Official language images are multi-arch, so
+  the same engine is native on an amd64 dev machine and an arm64 host — and one
+  engine across both is what stops timing bugs hiding until production.
+- **`services/runner` holds the Docker socket, and nothing else does.** That is
+  root-equivalent on the host, which is exactly why it lives in a service that
+  does one thing and never sees outside traffic. Submitted source never reaches
+  a command line: it travels base64-encoded in an env var and is decoded inside
+  the container, so quoting in a submission cannot alter the command. On a
+  shared host, front it with a Docker socket proxy.
 - **Three containment layers**, none of which replaces the others: no published
   port, a process-wide concurrency gate (`MAX_CONCURRENT_EXECUTIONS`), and
   per-user rate limits. All the ceilings live in `lib/practice/limits.ts`, and
@@ -265,11 +277,9 @@ implements one function, never a whole program.
   anything under `lib/practice/harnesses/`. The C++ section skips itself when
   the local toolchain cannot produce a binary — that path only ever runs on
   Linux inside the engine, where it is covered end to end.
-- First run of the container needs `pnpm piston:bootstrap` to install the
-  language runtimes — a fresh Piston ships with none. It runs as a one-shot
-  `bootstrap`-profile service, so it works against the prod stack as well as
-  `dev`. C++ arrives via the `gcc` package (one install provides the `c`, `c++`, `d` and `fortran`
-  runtimes; the LanguageDefinition asks for `c++`).
+- The runner needs each language image present before anything can run:
+  `pnpm engine:prepare` pulls them. It is a one-shot `bootstrap`-profile
+  service, so it works against the prod stack as well as `dev`.
 
 ## Gotchas
 
@@ -285,20 +295,18 @@ implements one function, never a whole program.
   application code (a single atomic UPDATE), not by DB constraints.
 - Native build deps (prisma, esbuild, sharp, …) are allow-listed under
   `allowBuilds` in `pnpm-workspace.yaml`.
-- The `piston` service needs `privileged: true` (its sandbox creates its own
-  namespaces/cgroups), so the isolation is *inside* an unprivileged-to-the-app
-  container rather than around it. Judge0 needs the same. Run it on a host you
-  control.
-- A fresh `piston` container has **no languages installed**. `pnpm
-  piston:bootstrap` adds them; without it every submission fails as
-  "unsupported language".
-- `PISTON_RUN_TIMEOUT` / `PISTON_RUN_CPU_TIME` in `docker-compose.yml` are
-  per-**request** ceilings, and one request carries the whole batch of test
-  cases. They must stay `>=` `MAX_BATCH_WALL_MS` in `lib/practice/limits.ts`,
-  or Piston rejects every multi-case submission with a 400 before running
-  anything ("run_timeout cannot exceed the configured limit").
-- Verified against the running engine, since it is not documented and not
-  guessable: an out-of-memory kill arrives as `code 137, signal null`, while a
-  timeout arrives as `code null, signal SIGKILL`. `classifyProcessFailure()`
-  relies on exactly that to tell MLE from TLE.
+- Without `pnpm engine:prepare` every submission fails: the runner cannot pull
+  images itself (`--network none` applies to the submission container, but the
+  daemon still needs the image locally on first use).
+- `MAX_BATCH_WALL_MS` in `lib/practice/limits.ts` must stay under the runner's
+  own `HARD_LIMITS.wallMs`. The runner **clamps** rather than rejects, so a
+  larger app-side value is silently cut short instead of erroring.
+- The tmpfs the submission writes into needs `mode=1777`. It otherwise mounts
+  root-owned 0755 and the unprivileged container user cannot write its own
+  source file — which surfaces as "can't open file", not as a permission error.
+- How MLE is told from TLE: both end as exit 137, so the runner inspects
+  `State.OOMKilled` before removing the container and reports a memory kill as
+  `code 137, signal null` and a timeout as `code null, signal SIGKILL`.
+  `classifyProcessFailure()` keys off exactly that — it predates this engine
+  and was left unchanged, because Docker uses the same convention Piston did.
 - No Cursor/Copilot rule files and no README exist in this repo.
