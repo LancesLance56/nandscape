@@ -67,7 +67,10 @@ export const ModelName = {
   Clap: 'Clap',
   TutorialProgress: 'TutorialProgress',
   QuizAttempt: 'QuizAttempt',
-  UserPreference: 'UserPreference'
+  UserPreference: 'UserPreference',
+  CodingProblem: 'CodingProblem',
+  CodingSubmission: 'CodingSubmission',
+  CodingDraft: 'CodingDraft'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -330,6 +333,63 @@ export const UserPreferenceScalarFieldEnum = {
 } as const
 
 export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
+
+
+export const CodingProblemScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  summary: 'summary',
+  difficulty: 'difficulty',
+  tags: 'tags',
+  statement: 'statement',
+  kind: 'kind',
+  signature: 'signature',
+  languages: 'languages',
+  starterCode: 'starterCode',
+  visibleTests: 'visibleTests',
+  hiddenTests: 'hiddenTests',
+  compareMode: 'compareMode',
+  epsilon: 'epsilon',
+  timeLimitMs: 'timeLimitMs',
+  memoryLimitMb: 'memoryLimitMb',
+  solutions: 'solutions',
+  creatorId: 'creatorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodingProblemScalarFieldEnum = (typeof CodingProblemScalarFieldEnum)[keyof typeof CodingProblemScalarFieldEnum]
+
+
+export const CodingSubmissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  problemId: 'problemId',
+  language: 'language',
+  code: 'code',
+  verdict: 'verdict',
+  passedCount: 'passedCount',
+  totalCount: 'totalCount',
+  results: 'results',
+  runtimeMs: 'runtimeMs',
+  submittedAt: 'submittedAt'
+} as const
+
+export type CodingSubmissionScalarFieldEnum = (typeof CodingSubmissionScalarFieldEnum)[keyof typeof CodingSubmissionScalarFieldEnum]
+
+
+export const CodingDraftScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  problemSlug: 'problemSlug',
+  language: 'language',
+  code: 'code',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CodingDraftScalarFieldEnum = (typeof CodingDraftScalarFieldEnum)[keyof typeof CodingDraftScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -50,3 +50,16 @@ export const ContentKind = {
 } as const
 
 export type ContentKind = (typeof ContentKind)[keyof typeof ContentKind]
+
+
+export const SubmissionVerdict = {
+  ACCEPTED: 'ACCEPTED',
+  WRONG_ANSWER: 'WRONG_ANSWER',
+  COMPILE_ERROR: 'COMPILE_ERROR',
+  RUNTIME_ERROR: 'RUNTIME_ERROR',
+  TIME_LIMIT_EXCEEDED: 'TIME_LIMIT_EXCEEDED',
+  MEMORY_LIMIT_EXCEEDED: 'MEMORY_LIMIT_EXCEEDED',
+  INTERNAL_ERROR: 'INTERNAL_ERROR'
+} as const
+
+export type SubmissionVerdict = (typeof SubmissionVerdict)[keyof typeof SubmissionVerdict]

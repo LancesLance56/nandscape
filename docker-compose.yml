@@ -17,6 +17,91 @@ services:
       timeout: 5s
       retries: 5
 
+  # Sandboxed execution of reader-submitted code for /practices.
+  #
+  # Note what is missing: there is no `ports:` block. Unlike postgres above,
+  # this service is never published to the host, so the only thing that can
+  # reach it is another service on this compose network - which means the web
+  # app, and nothing else. That is deliberate and is the first of three
+  # containment layers; the other two are the concurrency gate and the
+  # per-user rate limit, both in apps/web/lib/practice/.
+  #
+  # `privileged: true` is required: Piston isolates each run with its own
+  # namespaces and cgroup, and creating those needs privileges the container
+  # would not otherwise have. The isolation is therefore *inside* an
+  # unconstrained container rather than around it - the same trade Judge0 and
+  # every other self-hosted judge makes. Run this on a host you control.
+  piston:
+    image: ghcr.io/engineer-man/piston:latest
+    container_name: nandscape-piston
+    restart: unless-stopped
+    privileged: true
+    # Per-run limits bound one submission; they say nothing about the container
+    # as a whole. MAX_CONCURRENT_EXECUTIONS caps how many run at once from one
+    # web process, which is not the same as capping what the container may take
+    # from the host - and `web` shares that host.
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1g
+    # User code has no legitimate reason to open a socket, and every
+    # illegitimate one - reaching postgres on this network, hitting a cloud
+    # metadata endpoint, exfiltrating a test case - runs through this switch.
+    # It is the control that actually contains a hostile submission, rather
+    # than merely making the engine hard to address.
+    environment:
+      PISTON_DISABLE_NETWORKING: "true"
+      PISTON_OUTPUT_MAX_SIZE: "65536"
+      PISTON_MAX_PROCESS_COUNT: "64"
+      PISTON_MAX_OPEN_FILES: "64"
+      # These two are the *whole-request* ceiling, not a per-test-case one:
+      # the app sends every test case in a single job, so one "run stage" is a
+      # complete batch. They must therefore be >= MAX_BATCH_WALL_MS in
+      # apps/web/lib/practice/limits.ts, or Piston rejects the request with
+      # "run_timeout cannot exceed the configured limit" before running
+      # anything. Keep the three numbers in step.
+      PISTON_RUN_TIMEOUT: "15000"
+      PISTON_RUN_CPU_TIME: "15000"
+      PISTON_COMPILE_TIMEOUT: "10000"
+    volumes:
+      - piston_packages:/piston/packages
+    healthcheck:
+      # node's http module, not curl and not fetch: the Piston image ships
+      # neither curl nor wget, and its node predates global fetch. A probe
+      # using any of the three can never pass, leaving the service permanently
+      # `unhealthy` - which matters because the web services below wait on
+      # `condition: service_healthy` and would never start at all.
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "require('http').get('http://localhost:2000/api/v2/runtimes',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      # Generous: the first boot installs language packages before the API
+      # answers, and a judge that is merely slow to warm up should not be
+      # reported as broken.
+      start_period: 120s
+
+  # One-shot runtime installer, usable against either stack:
+  #   docker compose --profile bootstrap run --rm piston-bootstrap
+  #
+  # A separate service rather than `exec` into a web container, because the
+  # `dev` and `prod` profiles start different services and the production image
+  # does not carry scripts/. This one only needs the piston network.
+  piston-bootstrap:
+    profiles: ["bootstrap"]
+    image: node:22-alpine
+    volumes:
+      - ./scripts:/scripts:ro
+    command: ["node", "/scripts/piston-bootstrap.mjs", "--base", "http://piston:2000"]
+    depends_on:
+      piston:
+        condition: service_healthy
+    restart: "no"
+
   web-dev:
     profiles: ["dev"]
     build:
@@ -37,8 +122,11 @@ services:
       ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
       CI: "true"
       WATCHPACK_POLLING: "1000"
+      PISTON_URL: "http://piston:2000"
     depends_on:
       postgres:
+        condition: service_healthy
+      piston:
         condition: service_healthy
     volumes:
       - .:/app
@@ -68,9 +156,15 @@ services:
       ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
       ADMIN_USERNAME: "${ADMIN_USERNAME:-}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+      PISTON_URL: "http://piston:2000"
     depends_on:
       postgres:
+        condition: service_healthy
+      piston:
         condition: service_healthy
 
 volumes:
   postgres_data:
+  # Language runtimes Piston installs on first boot. Persisted so a restart
+  # does not re-download them.
+  piston_packages:

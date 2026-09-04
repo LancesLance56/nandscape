@@ -25,8 +25,7 @@ import {
   TrendingUp,
   User as UserIcon,
   Users,
-  Workflow,
-} from "lucide-react";
+  Workflow, Code2} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -82,6 +81,7 @@ const ICONS = {
   analytics: BarChart3,
   back: ArrowLeft,
   circuits: CircuitBoard,
+  code: Code2,
   database: Database,
   diagrams: Workflow,
   featured: Star,

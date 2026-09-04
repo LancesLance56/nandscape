@@ -33,6 +33,9 @@ model User {
   tutorialProgress        TutorialProgress[]
   quizAttempts            QuizAttempt[]
   preference              UserPreference?
+  codingProblems          CodingProblem[]
+  codingSubmissions       CodingSubmission[]
+  codingDrafts            CodingDraft[]
 
   @@index([email])
 }
@@ -449,4 +452,166 @@ model UserPreference {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_preferences")
+}
+
+/// A coding practice problem: the user implements one function, and a
+/// per-language driver calls it with JSON-encoded arguments (see
+/// apps/web/lib/practice/languages.ts).
+///
+/// Shaped after Puzzle - slug-addressed, Json payloads, a nullable creator so
+/// seeded content needs no author - with one deliberate divergence: the
+/// hidden test cases and the reference solutions live in their own columns
+/// rather than sharing one `solution` blob. A stray `SELECT *` in a
+/// client-facing query then leaks nothing, because the secret columns are
+/// named and can be omitted structurally instead of relying on every caller
+/// remembering to strip them.
+model CodingProblem {
+  id         String     @id @default(cuid())
+  slug       String     @unique
+  title      String
+  /// One-line summary for the list page. The full statement is `body`.
+  summary    String?
+  difficulty Difficulty @default(MEDIUM)
+  tags       String[]   @default([])
+
+  /// The problem statement, as Markdown.
+  ///
+  /// Deliberately *not* the ContentBlock[] array BlogPost.body and
+  /// TutorialPage.body use. Those exist so a non-technical author can build a
+  /// page from typed widgets, but a problem statement is written by whoever
+  /// wrote the problem, and its shape is theirs to choose: which headings it
+  /// has, whether constraints are a list or a table, where the worked example
+  /// sits. A block array makes that a schema question; Markdown makes it a
+  /// writing one. Fenced code inside is highlighted by the same Shiki contract
+  /// as the rest of the site (lib/shiki-code.ts).
+  statement String @default("")
+
+  /// "function" today. Reserved so class-style design problems (a method-call
+  /// sequence against an object, LeetCode's LRU-cache shape) can be added as a
+  /// second driver mode rather than a migration.
+  kind String @default("function")
+
+  /// Language-neutral description of what the user implements:
+  /// `{ name, params: [{ name, type }], returns }`, where each type is drawn
+  /// from the ValueType vocabulary in apps/web/types/practice.ts.
+  ///
+  /// Python and JavaScript drivers ignore the types (both parse JSON into
+  /// native values), but they are recorded from day one because a statically
+  /// typed driver - C++ is the intended next language - has to generate a
+  /// typed `main()` from exactly this. Adding that language is then a new
+  /// LanguageDefinition, with no change to this table.
+  signature Json
+
+  /// Language ids this problem can be attempted in, and the stub each starts
+  /// from: `{ python: "def two_sum(nums, target):\n    pass" }`. A language
+  /// missing from `starterCode` is not offered, even if listed here.
+  languages   String[] @default([])
+  starterCode Json     @default("{}")
+
+  /// `[{ args: [...], expected: <json>, explanation?: string }]`.
+  ///
+  /// Visible cases are shown in the statement and are the only ones "Run"
+  /// executes. Hidden cases run on submit only, and their `args`/`expected`
+  /// never leave the server - the client sees an index and a pass/fail.
+  visibleTests Json @default("[]")
+  hiddenTests  Json @default("[]")
+
+  /// How a returned value is judged against `expected`: "exact",
+  /// "unordered" (same multiset, any order), or "float" (within epsilon).
+  compareMode String @default("exact")
+  /// Tolerance for compareMode "float". Ignored otherwise.
+  epsilon     Float  @default(0.000001)
+
+  /// Per-test-case ceilings handed to the execution engine. Clamped against
+  /// the hard maximums in apps/web/lib/practice/limits.ts, which are the real
+  /// guarantee - these only ever tighten them, never loosen.
+  timeLimitMs   Int @default(2000)
+  memoryLimitMb Int @default(256)
+
+  /// Reference implementations keyed by language, for the author's benefit
+  /// only. Never selected by any client-facing query - see
+  /// PUBLIC_COLUMNS in apps/web/lib/practice/practice-records.ts.
+  solutions Json @default("{}")
+
+  creatorId   String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  creator     User?              @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  submissions CodingSubmission[]
+
+  @@index([creatorId])
+  @@index([difficulty])
+}
+
+/// One row per Submit press. Append-only, unlike PuzzleAttempt's upserted
+/// counter: a coding problem is something you converge on over several tries,
+/// and the history of those tries is worth showing back to the user. Solved
+/// status for the list page is a groupBy over ACCEPTED rows rather than a
+/// denormalized flag that could drift.
+model CodingSubmission {
+  id        String @id @default(cuid())
+  userId    String
+  problemId String
+  language  String
+  code      String
+
+  verdict     SubmissionVerdict
+  passedCount Int               @default(0)
+  totalCount  Int               @default(0)
+
+  /// Per-case outcomes. Entries for hidden cases carry the index and status
+  /// but never the inputs or the expected value.
+  results Json @default("[]")
+
+  /// Slowest single test case, in wall-clock milliseconds. Null when the
+  /// submission never ran (a compile error, or the engine being unreachable).
+  /// There is deliberately no memory column: the engine reports no
+  /// trustworthy peak-RSS figure, and a fabricated number reads as real.
+  runtimeMs Int?
+
+  submittedAt DateTime      @default(now())
+  problem     CodingProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([problemId])
+  @@index([userId, problemId])
+}
+
+/// Unsubmitted work in progress, mirroring PuzzleProgress's "last state per
+/// user" pattern - slug-addressed for the same reason, so re-seeding a
+/// problem (a delete plus an insert, and so a new id) does not throw away
+/// everyone's draft.
+///
+/// Keyed by language as well as problem: switching the picker to peek at the
+/// JavaScript stub must not destroy the half-written Python.
+model CodingDraft {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String
+  problemSlug String   @map("problem_slug")
+  language    String
+  code        String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, problemSlug, language])
+  @@index([userId])
+  @@map("coding_drafts")
+}
+
+/// Why a submission ended. WRONG_ANSWER means the code ran to completion and
+/// returned something incorrect; every other non-ACCEPTED value means it never
+/// got that far. The UI presents the two groups differently because the next
+/// thing the user should do differs - reread the problem, versus fix a crash.
+enum SubmissionVerdict {
+  ACCEPTED
+  WRONG_ANSWER
+  COMPILE_ERROR
+  RUNTIME_ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  /// The execution engine was unreachable or returned something unusable.
+  /// Never the user's fault, and shown as such.
+  INTERNAL_ERROR
 }

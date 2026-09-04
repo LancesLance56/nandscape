@@ -70,11 +70,21 @@ async function login() {
 }
 
 async function get(pathname) {
-  const res = await fetch(`${base}${pathname}`, {
-    headers: sessionCookie ? { cookie: sessionCookie } : {},
-  });
+  const res = await fetch(`${base}${pathname}`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`GET ${pathname} -> ${res.status}`);
   return res.json();
+}
+
+/**
+ * Whatever credential this run has: a session cookie from --drafts, or the
+ * seed secret. The admin-only practice route accepts either (see
+ * apps/web/lib/auth/seed-secret.ts).
+ */
+function authHeaders() {
+  const headers = {};
+  if (sessionCookie) headers.cookie = sessionCookie;
+  if (process.env.SEED_SECRET) headers["x-seed-secret"] = process.env.SEED_SECRET;
+  return headers;
 }
 
 /**
@@ -95,6 +105,28 @@ function prune(obj) {
     out[k] = v;
   }
   return out;
+}
+
+/**
+ * Reads back whatever is already on disk for a slug, or null if nothing is.
+ *
+ * Used to carry forward the parts of a resource the API deliberately never
+ * returns - a coding problem's hidden tests and reference solutions - so an
+ * export round trip preserves them instead of quietly deleting the half of
+ * the problem that makes grading work.
+ */
+async function readSeedFile(dir, slug) {
+  const existing = await readdir(dir).catch(() => []);
+  for (const f of existing) {
+    if (!f.endsWith(".json")) continue;
+    try {
+      const data = JSON.parse(await readFile(path.join(dir, f), "utf8"));
+      if (data.slug === slug) return data;
+    } catch {
+      // Not valid JSON, or no slug field - not a match either way.
+    }
+  }
+  return null;
 }
 
 /**
@@ -240,6 +272,62 @@ async function exportPuzzles() {
   }
 }
 
+/**
+ * Coding problems.
+ *
+ * Read from the *admin* projection, one problem at a time, rather than the
+ * public list. The public list omits `hiddenTests`, `solutions` and `epsilon`
+ * by design, and an earlier version papered over that by re-injecting whatever
+ * the local file already held. That silently reverted any change Problem
+ * Studio had made to those fields on the next `seed.mjs --force`, and reset a
+ * non-default float tolerance to 1e-6 - an export that quietly discards the
+ * server's state is worse than no export at all.
+ *
+ * Requires SEED_SECRET (or an admin session). Without it this fails loudly
+ * instead of writing a half-record.
+ */
+async function exportPractices() {
+  const { practices } = await get("/api/practices");
+  const dir = path.join(here, "practices");
+
+  for (const summary of practices) {
+    const res = await fetch(`${base}/api/admin/practices/${summary.slug}`, {
+      headers: authHeaders(),
+    });
+    if (!res.ok) {
+      throw new Error(
+        `GET /api/admin/practices/${summary.slug} -> ${res.status}. ` +
+          "Practice export needs SEED_SECRET (or an admin session) to read " +
+          "hidden tests, reference solutions and epsilon.",
+      );
+    }
+    const { practice } = await res.json();
+
+    await writeSeedFile(
+      dir,
+      practice.slug,
+      prune({
+        slug: practice.slug,
+        title: practice.title,
+        summary: practice.summary,
+        difficulty: practice.difficulty,
+        tags: practice.tags,
+        languages: practice.languages,
+        compareMode: practice.compareMode,
+        epsilon: practice.epsilon,
+        timeLimitMs: practice.timeLimitMs,
+        memoryLimitMb: practice.memoryLimitMb,
+        signature: practice.signature,
+        statement: practice.statement,
+        starterCode: practice.starterCode,
+        visibleTests: practice.visibleTests,
+        hiddenTests: practice.hiddenTests,
+        solutions: practice.solutions,
+      }),
+    );
+  }
+}
+
 async function main() {
   console.log(`Exporting from ${base}${only ? ` (only: ${only})` : ""}`);
   if (wantDrafts) await login();
@@ -263,6 +351,7 @@ async function main() {
   if (wants("tutorials")) await attempt("tutorials", () => exportTutorials(sectionIdToSlug));
   if (wants("posts")) await attempt("posts", exportPosts);
   if (wants("puzzles")) await attempt("puzzles", exportPuzzles);
+  if (wants("practices")) await attempt("practices", exportPractices);
 
   console.log("Done.");
 }

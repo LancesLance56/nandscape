@@ -14,6 +14,9 @@ import { Menu, X } from "lucide-react";
 const links = [
   { label: "Tutorials", href: "/tutorials" },
   { label: "Practice", href: "/puzzles" },
+  // Distinct from "Practice" above, which is the gate-wiring puzzles. This is
+  // the write-a-function-and-run-it side.
+  { label: "Coding", href: "/practices" },
   { label: "Logic Editor", href: "/logic-editor" },
   { label: "Flowcharts", href: "/flowchart" },
   { label: "Tools", href: "/tools" },

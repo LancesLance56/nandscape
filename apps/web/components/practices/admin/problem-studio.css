@@ -1,0 +1,352 @@
+/*
+ * Problem Studio — the admin editor's own component layer.
+ *
+ * The page's *layout* comes from the Claude Design "Problem Studio" mock, but
+ * its look is Nandscape's: the same green accent, ink-wash surfaces, Inter/
+ * JetBrains type and rounded-lg shapes as the rest of the site.
+ *
+ * The mock was drawn in a serif, gold-on-cream system called "Classical", and
+ * this file used to port it wholesale. That made the admin editor look like a
+ * different product, so the token block below now aliases Nandscape's real
+ * variables instead. Everything downstream — including the inline styles in
+ * problem-studio.tsx, which reference `--color-text`, `--color-divider` and
+ * friends — picks up the site palette through those aliases rather than
+ * needing to be rewritten.
+ *
+ * Aliasing also buys dark mode for nothing: `--ink`, `--surface`, `--copper`
+ * and the rest are already redefined under `.dark` in globals.css, so this
+ * page follows the site's theme toggle without a single dark rule of its own.
+ *
+ * Still scoped under `.studio`. The names on the left are generic enough
+ * (`--color-text`, `--color-bg`) that letting them escape would collide with
+ * anything else using them.
+ */
+
+.studio {
+  /* ── aliases onto Nandscape's tokens ─────────────────────────────────── */
+  --color-bg: var(--surface);
+  --color-surface: var(--surface-2);
+  --color-text: var(--ink);
+  --color-text-soft: var(--ink-soft);
+  --color-accent: var(--copper);
+  --color-accent-strong: var(--copper-dark);
+  --color-divider: var(--border);
+
+  --color-accent-100: var(--copper-bg);
+  --color-accent-700: var(--copper-dark);
+  --color-accent-800: var(--copper-dark);
+  --color-neutral-100: var(--surface-3);
+  --color-neutral-800: var(--ink-soft);
+
+  --color-danger: var(--signal-coral-strong);
+  --color-danger-bg: var(--signal-coral-bg);
+  --color-ok: var(--signal-green-strong);
+  --color-ok-bg: var(--signal-green-bg);
+
+  --font-heading: var(--font-display);
+  --font-body: var(--font-sans);
+  --font-code: var(--font-mono);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 18px;
+
+  /* Nandscape rounds at 0.5rem (`rounded-lg`) rather than the mock's 4px. */
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.studio *,
+.studio *::before,
+.studio *::after {
+  box-sizing: border-box;
+}
+
+.studio h1,
+.studio h2,
+.studio h3,
+.studio h4,
+.studio h5,
+.studio h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text);
+}
+.studio h3 { font-size: 19px; }
+.studio h6 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.studio p { margin: 0 0 var(--space-3); }
+.studio a { color: var(--color-accent); text-underline-offset: 3px; }
+.studio a:hover { color: var(--color-accent-strong); }
+.studio :focus { outline: none; }
+.studio :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.studio ::selection { background: color-mix(in srgb, var(--color-accent) 28%, transparent); }
+
+.studio .mono { font-family: var(--font-code); }
+.studio .text-muted { color: var(--color-text-soft); }
+
+.studio .hr {
+  height: 1px;
+  border: 0;
+  margin: var(--space-4) 0;
+  background: var(--color-divider);
+}
+
+/* — buttons: Nandscape fills its primary rather than outlining it — */
+.studio .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.studio .btn svg { display: block; }
+.studio .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.studio .btn-primary {
+  color: var(--copper-ink);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.studio .btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+}
+
+.studio .btn-secondary {
+  border-color: var(--color-divider);
+  background: var(--surface-card);
+}
+.studio .btn-secondary:hover:not(:disabled) { background: var(--surface-3); }
+
+.studio .btn-ghost { color: var(--color-accent); padding-inline: 8px; }
+.studio .btn-ghost:hover:not(:disabled) { background: var(--copper-bg); }
+
+/* — forms — */
+.studio .field > label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--color-text-soft);
+}
+.studio .input {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  background: var(--surface-2);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s;
+}
+.studio .input:hover { border-color: var(--border-strong); }
+.studio .input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+.studio .input:disabled { opacity: 0.5; cursor: not-allowed; }
+.studio textarea.input { min-height: 90px; resize: vertical; }
+.studio select.input { cursor: pointer; }
+
+.studio .radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.studio .radio input,
+.studio .seg-opt input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.studio .radio .dot {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.studio .radio:hover .dot { border-color: var(--color-accent); }
+.studio .radio input:checked + .dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-bg);
+}
+.studio .radio input:disabled + .dot { opacity: 0.45; }
+.studio .radio input:focus-visible + .dot { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* Segmented control, matching the site's toggle-group feel: a filled active
+   pill on an inset track rather than the mock's inset accent hairline. */
+.studio .seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+.studio .seg-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-soft);
+  border-radius: calc(var(--radius-md) - 3px);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+.studio .seg-opt:has(input:checked) {
+  background: var(--surface-card);
+  color: var(--color-accent);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+}
+.studio .seg-opt:not(:has(input:checked)):hover { color: var(--color-text); }
+.studio .seg-opt:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+.studio .seg-opt:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+
+/* — tags: pill-shaped, as everywhere else on the site — */
+.studio .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 9px;
+  border-radius: 9999px;
+}
+.studio .tag-accent { background: var(--copper-bg); color: var(--color-accent-strong); }
+.studio .tag-neutral { background: var(--surface-3); color: var(--color-text-soft); }
+.studio .tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+/* — header bar — */
+.studio .nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--surface-card);
+}
+.studio .nav-brand {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  margin-right: auto;
+}
+.studio .nav a { color: inherit; text-decoration: none; font-size: 13px; }
+.studio .nav a:hover { color: var(--color-accent); }
+
+/* Tables use the site's shared frame (components/ui/table-frame.tsx) rather
+   than a look of their own - the scoped `.table` rules that used to live here
+   were a second table style for one page. Only the cell padding for the
+   controls the studio puts inside cells is local. */
+.studio td .input { min-height: 30px; font-size: 12.5px; }
+
+/* — the page's own layout — */
+.studio-shell { min-height: 100vh; min-width: 1180px; }
+.studio-grid {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr) 296px;
+  align-items: start;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+.studio-contents a {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--color-text);
+}
+.studio-contents a:hover { color: var(--color-accent); }
+.studio-contents a .num {
+  font-size: 11px;
+  color: var(--color-text-soft);
+  padding-top: 2px;
+}
+
+/* Bordered card on a card surface — the shape the rest of the site uses for
+   any grouped block. */
+.studio-panel {
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-card);
+}
+.studio-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--surface-2);
+  font-size: 12px;
+  color: var(--color-text-soft);
+}
+.studio-code {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 14px 16px;
+  border: 0;
+  font-family: var(--font-code);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--color-text);
+  background: transparent;
+  resize: vertical;
+}
+.studio-code:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--color-accent); }
+
+/* The highlighted layer under CodeField's textarea. Shiki emits its own
+   <pre><code>, and every metric that moves a glyph has to be inherited from
+   the wrapper rather than set by those elements - otherwise the painted text
+   drifts a fraction of a line away from the caret sitting above it. */
+.studio .studio-code-highlight pre,
+.studio .studio-code-highlight code {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  tab-size: inherit;
+  white-space: inherit;
+  overflow-wrap: inherit;
+  word-break: inherit;
+}

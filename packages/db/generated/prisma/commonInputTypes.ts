@@ -409,6 +409,50 @@ export type EnumDifficultyNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumDifficultyNullableFilter<$PrismaModel>
 }
 
+export type FloatFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumSubmissionVerdictFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionVerdict | Prisma.EnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionVerdictFilter<$PrismaModel> | $Enums.SubmissionVerdict
+}
+
+export type EnumSubmissionVerdictWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionVerdict | Prisma.EnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionVerdictWithAggregatesFilter<$PrismaModel> | $Enums.SubmissionVerdict
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSubmissionVerdictFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSubmissionVerdictFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -784,6 +828,39 @@ export type NestedEnumDifficultyNullableWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDifficultyNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDifficultyNullableFilter<$PrismaModel>
+}
+
+export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumSubmissionVerdictFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionVerdict | Prisma.EnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionVerdictFilter<$PrismaModel> | $Enums.SubmissionVerdict
+}
+
+export type NestedEnumSubmissionVerdictWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionVerdict | Prisma.EnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionVerdict[] | Prisma.ListEnumSubmissionVerdictFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionVerdictWithAggregatesFilter<$PrismaModel> | $Enums.SubmissionVerdict
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSubmissionVerdictFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSubmissionVerdictFilter<$PrismaModel>
 }
 
 

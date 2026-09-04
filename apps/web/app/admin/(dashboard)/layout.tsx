@@ -35,6 +35,7 @@ const NAV: SidebarNavGroup[] = [
       { label: "Posts", href: "/admin/blog", icon: "posts" },
       { label: "Tutorial pages", href: "/admin/tutorials", icon: "tutorials" },
       { label: "Diagrams", href: "/admin/diagrams", icon: "diagrams" },
+      { label: "Coding problems", href: "/admin/practices", icon: "code" },
       { label: "Featured circuits", href: "/admin/featured-circuits", icon: "featured" },
     ],
   },

@@ -126,8 +126,12 @@ async function main() {
   await seedResource("tutorial-sections", path.join(here, "tutorial-sections"), "/api/tutorial-sections", seedHeaders());
   await seedResource("tutorials", path.join(here, "tutorials"), "/api/tutorials", seedHeaders());
   await seedResource("puzzles", path.join(here, "puzzles"), "/api/puzzles", seedHeaders());
+  // Coding problems have no cross-resource dependencies - a problem statement
+  // is self-contained - so they go last, where a failure cannot leave anything
+  // else half-seeded.
+  await seedResource("practices", path.join(here, "practices"), "/api/practices", seedHeaders());
 
-  console.log(`\nDone. Visit ${base}/blog, ${base}/tutorials, and ${base}/puzzles`);
+  console.log(`\nDone. Visit ${base}/blog, ${base}/tutorials, ${base}/puzzles, and ${base}/practices`);
 }
 
 main().catch((err) => {

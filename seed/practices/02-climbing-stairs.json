@@ -1,0 +1,101 @@
+{
+  "slug": "climbing-stairs",
+  "title": "Climbing Stairs",
+  "summary": "Count the distinct ways to climb n steps taking one or two at a time.",
+  "difficulty": "easy",
+  "tags": [
+    "dynamic programming",
+    "recursion"
+  ],
+  "languages": [
+    "python",
+    "javascript",
+    "cpp"
+  ],
+  "compareMode": "exact",
+  "epsilon": 0.000001,
+  "timeLimitMs": 2000,
+  "memoryLimitMb": 256,
+  "signature": {
+    "name": "climb_stairs",
+    "params": [
+      {
+        "name": "n",
+        "type": "int"
+      }
+    ],
+    "returns": "int"
+  },
+  "statement": "You are climbing a staircase with `n` steps. Each move takes you up either one step or two. Return how many distinct sequences of moves reach the top.\n\n### Constraints\n\n- 1 ≤ n ≤ 45\n\n> **Where the recursion comes from**\n>\n> The last move was either one step or two, so the ways to reach step n are the ways to reach n-1 plus the ways to reach n-2. Written as plain recursion that recomputes the same subproblems exponentially and will time out around n = 40; the fix is to remember each answer as you go, which is the whole idea behind the [Dynamic Programming](/tutorials) tutorial.\n",
+  "starterCode": {
+    "cpp": "long long climbStairs(long long n) {\n    // Return the number of distinct ways to climb n steps.\n    return 0;\n}\n",
+    "python": "def climb_stairs(n):\n    # Return the number of distinct ways to climb n steps.\n    pass\n",
+    "javascript": "function climbStairs(n) {\n  // Return the number of distinct ways to climb n steps.\n}\n"
+  },
+  "visibleTests": [
+    {
+      "args": [
+        2
+      ],
+      "expected": 2,
+      "explanation": "Either 1 + 1 or a single 2."
+    },
+    {
+      "args": [
+        3
+      ],
+      "expected": 3,
+      "explanation": "1+1+1, 1+2, or 2+1. Order matters, so 1+2 and 2+1 are different."
+    },
+    {
+      "args": [
+        5
+      ],
+      "expected": 8,
+      "explanation": "The counts follow the Fibonacci numbers."
+    }
+  ],
+  "hiddenTests": [
+    {
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "args": [
+        4
+      ],
+      "expected": 5
+    },
+    {
+      "args": [
+        10
+      ],
+      "expected": 89
+    },
+    {
+      "args": [
+        25
+      ],
+      "expected": 121393
+    },
+    {
+      "args": [
+        40
+      ],
+      "expected": 165580141
+    },
+    {
+      "args": [
+        45
+      ],
+      "expected": 1836311903
+    }
+  ],
+  "solutions": {
+    "cpp": "long long climbStairs(long long n) {\n    long long previous = 1;\n    long long current = 1;\n    for (long long i = 0; i < n - 1; ++i) {\n        long long next = previous + current;\n        previous = current;\n        current = next;\n    }\n    return current;\n}\n",
+    "python": "def climb_stairs(n):\n    previous, current = 1, 1\n    for _ in range(n - 1):\n        previous, current = current, previous + current\n    return current\n",
+    "javascript": "function climbStairs(n) {\n  let previous = 1;\n  let current = 1;\n  for (let i = 0; i < n - 1; i += 1) {\n    const next = previous + current;\n    previous = current;\n    current = next;\n  }\n  return current;\n}\n"
+  }
+}
