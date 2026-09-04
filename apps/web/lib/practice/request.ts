@@ -4,6 +4,7 @@ import type { PracticeLanguage } from "@/types/practice";
 import { isSupportedLanguage } from "./languages";
 import { MAX_CODE_BYTES } from "./limits";
 import { consume } from "./rate-limit";
+import { RATE_LIMIT_ANON_TOTAL_PER_MIN } from "./limits";
 
 /** Shared request handling for the two routes that reach the execution engine. */
 
@@ -81,8 +82,19 @@ export function rateLimitKey(request: Request, userId: string | null, scope: str
   return `${scope}:anon:${digest}`;
 }
 
+/** The one bucket every anonymous caller shares, whatever address they claim. */
+const ANONYMOUS_TOTAL_KEY = "anon:all";
+
 export function enforceRateLimit(key: string, limit: number): NextResponse | null {
-  const result = consume(key, limit);
+  let result = consume(key, limit);
+
+  // Charged after the per-key check so a caller already over their own limit
+  // does not also burn the shared budget. `rateLimitKey` marks anonymous keys
+  // with an ":anon:" segment; a signed-in key never reaches this.
+  if (result.allowed && key.includes(":anon:")) {
+    result = consume(ANONYMOUS_TOTAL_KEY, RATE_LIMIT_ANON_TOTAL_PER_MIN);
+  }
+
   if (result.allowed) return null;
 
   return NextResponse.json(

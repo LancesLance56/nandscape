@@ -133,6 +133,22 @@ export async function listPracticeRecords(): Promise<PracticeSpec[]> {
   return rows.map(toSpec);
 }
 
+/**
+ * Whether a problem exists, without loading it.
+ *
+ * `coding_drafts` has no foreign key to CodingProblem - it is keyed by slug so
+ * a re-seed (a delete plus an insert) does not discard everyone's work - which
+ * means nothing in the database stops a draft being written against a slug
+ * that was never a problem. This is the check that does.
+ */
+export async function practiceExists(slug: string): Promise<boolean> {
+  const rows = await query<{ one: number }>(
+    `SELECT 1 AS one FROM "CodingProblem" WHERE slug = $1 LIMIT 1`,
+    [slug],
+  );
+  return rows.length > 0;
+}
+
 export async function getPracticeBySlug(slug: string): Promise<PracticeSpec | null> {
   const rows = await query<PublicRow>(
     `SELECT ${PUBLIC_COLUMNS} FROM "CodingProblem" WHERE slug = $1 LIMIT 1`,
@@ -295,6 +311,20 @@ export async function updatePracticeRecord(
   slug: string,
   input: PracticeSeedInput,
 ): Promise<PracticeSpec | null> {
+  // The UPDATE below addresses the row by slug and never sets it, so a changed
+  // slug would report success over an unchanged database - the editor would
+  // show the new value and the catalogue would keep the old one.
+  //
+  // Rejecting rather than renaming: a slug here is the public URL, and
+  // coding_drafts is keyed by problem_slug, so a rename would break every
+  // existing link and orphan every saved draft. Neither is worth doing
+  // implicitly as a side effect of editing a text field.
+  if (input.slug && input.slug !== slug) {
+    throw new PracticeValidationError(
+      `Slug cannot be changed after creation (tried "${slug}" -> "${input.slug}")`,
+    );
+  }
+
   const problem = validate(input);
   if (problem) throw new PracticeValidationError(problem);
 

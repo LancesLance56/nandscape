@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/current-user";
+import { isAuthorizedAdminRequest } from "@/lib/auth/seed-secret";
 import { getAuthoringRecord } from "@/lib/practice/practice-records";
 
 interface RouteParams {
@@ -20,9 +20,11 @@ interface RouteParams {
  * which already accepts an admin session and runs the same validation the seed
  * pipeline does.
  */
-export async function GET(_request: NextRequest, { params }: RouteParams) {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "ADMIN") {
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  // Same credential as the authoring write routes: an ADMIN session or the
+  // SEED_SECRET header. seed/export.mjs needs this record to round-trip a
+  // problem, and it has no login.
+  if (!(await isAuthorizedAdminRequest(request))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

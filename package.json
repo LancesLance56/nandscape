@@ -13,7 +13,7 @@
     "docker:dev": "docker compose --profile dev up --build",
     "docker:start": "docker compose --profile prod up --build",
     "practice:verify-harness": "pnpm --filter web exec tsx lib/practice/harnesses/verify-harness.mts",
-    "piston:bootstrap": "docker compose exec -T web-dev node scripts/piston-bootstrap.mjs --base http://piston:2000"
+    "piston:bootstrap": "docker compose --profile bootstrap run --rm piston-bootstrap"
   },
   "keywords": [],
   "author": "",

@@ -13,6 +13,7 @@
     "cpp"
   ],
   "compareMode": "exact",
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -27,9 +28,9 @@
   },
   "statement": "You are climbing a staircase with `n` steps. Each move takes you up either one step or two. Return how many distinct sequences of moves reach the top.\n\n### Constraints\n\n- 1 ≤ n ≤ 45\n\n> **Where the recursion comes from**\n>\n> The last move was either one step or two, so the ways to reach step n are the ways to reach n-1 plus the ways to reach n-2. Written as plain recursion that recomputes the same subproblems exponentially and will time out around n = 40; the fix is to remember each answer as you go, which is the whole idea behind the [Dynamic Programming](/tutorials) tutorial.\n",
   "starterCode": {
+    "cpp": "long long climbStairs(long long n) {\n    // Return the number of distinct ways to climb n steps.\n    return 0;\n}\n",
     "python": "def climb_stairs(n):\n    # Return the number of distinct ways to climb n steps.\n    pass\n",
-    "javascript": "function climbStairs(n) {\n  // Return the number of distinct ways to climb n steps.\n}\n",
-    "cpp": "long long climbStairs(long long n) {\n    // Return the number of distinct ways to climb n steps.\n    return 0;\n}\n"
+    "javascript": "function climbStairs(n) {\n  // Return the number of distinct ways to climb n steps.\n}\n"
   },
   "visibleTests": [
     {
@@ -93,8 +94,8 @@
     }
   ],
   "solutions": {
+    "cpp": "long long climbStairs(long long n) {\n    long long previous = 1;\n    long long current = 1;\n    for (long long i = 0; i < n - 1; ++i) {\n        long long next = previous + current;\n        previous = current;\n        current = next;\n    }\n    return current;\n}\n",
     "python": "def climb_stairs(n):\n    previous, current = 1, 1\n    for _ in range(n - 1):\n        previous, current = current, previous + current\n    return current\n",
-    "javascript": "function climbStairs(n) {\n  let previous = 1;\n  let current = 1;\n  for (let i = 0; i < n - 1; i += 1) {\n    const next = previous + current;\n    previous = current;\n    current = next;\n  }\n  return current;\n}\n",
-    "cpp": "long long climbStairs(long long n) {\n    long long previous = 1;\n    long long current = 1;\n    for (long long i = 0; i < n - 1; ++i) {\n        long long next = previous + current;\n        previous = current;\n        current = next;\n    }\n    return current;\n}\n"
+    "javascript": "function climbStairs(n) {\n  let previous = 1;\n  let current = 1;\n  for (let i = 0; i < n - 1; i += 1) {\n    const next = previous + current;\n    previous = current;\n    current = next;\n  }\n  return current;\n}\n"
   }
 }

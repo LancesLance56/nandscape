@@ -45,6 +45,23 @@ export function consume(key: string, limit: number): RateLimitResult {
 
   const existing = buckets.get(key);
   if (!existing || existing.resetAt <= now) {
+    // sweep() only removes expired windows. With every bucket live it frees
+    // nothing, and an unconditional insert grows the map past its cap - after
+    // which every later request pays a full scan of it.
+    if (!buckets.has(key) && buckets.size >= MAX_BUCKETS) {
+      // Evict the window closest to expiring. Refusing the insert instead
+      // would deny a legitimate new visitor; this only costs the evicted key
+      // an early reset of a window that was nearly over anyway.
+      let victim: string | null = null;
+      let soonest = Number.POSITIVE_INFINITY;
+      for (const [candidate, window] of buckets) {
+        if (window.resetAt < soonest) {
+          soonest = window.resetAt;
+          victim = candidate;
+        }
+      }
+      if (victim !== null) buckets.delete(victim);
+    }
     buckets.set(key, { count: 1, resetAt: now + WINDOW_MS });
     return { allowed: true, retryAfter: 0, remaining: limit - 1 };
   }

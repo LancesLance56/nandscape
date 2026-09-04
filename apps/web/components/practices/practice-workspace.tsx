@@ -119,6 +119,8 @@ function LanguagePane({
   const [notice, setNotice] = useState<string | null>(null);
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** The edit not yet written back, or null once a save has gone out. */
+  const pending = useRef<{ code: string; language: PracticeLanguage } | null>(null);
   // Keeps the autosave from firing for code the user never typed - the draft
   // that was just loaded, or the starter stub this pane mounted with.
   const dirty = useRef(false);
@@ -154,28 +156,61 @@ function LanguagePane({
     };
   }, [language, practice.slug, signedIn, onSolved]);
 
-  /** Debounced autosave. */
-  useEffect(() => {
-    if (!signedIn || !dirty.current) return;
-
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
+  /**
+   * Send whatever is unsaved, and forget it.
+   *
+   * `pending` doubles as the "is there unsaved work" flag, so the unmount
+   * flush below cannot fire a second, redundant PUT for an edit the debounce
+   * already wrote.
+   */
+  const persistDraft = useCallback(
+    (keepalive: boolean) => {
+      const payload = pending.current;
+      if (!signedIn || payload === null) return;
+      pending.current = null;
       fetch(`/api/practices/${practice.slug}/draft`, {
         method: "PUT",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language, code }),
+        body: JSON.stringify(payload),
+        // Lets the request outlive the page when the reader navigates away
+        // mid-debounce, which is otherwise the second way edits are lost.
+        keepalive,
       }).catch(() => {});
-    }, AUTOSAVE_DELAY_MS);
+    },
+    [signedIn, practice.slug],
+  );
+
+  /** Debounced autosave. */
+  useEffect(() => {
+    if (!signedIn || pending.current === null) return;
+
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => persistDraft(false), AUTOSAVE_DELAY_MS);
 
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [code, language, practice.slug, signedIn]);
+  }, [code, signedIn, persistDraft]);
 
-  const handleChange = useCallback((next: string) => {
-    dirty.current = true;
-    setCode(next);
-  }, []);
+  /**
+   * Unmount-only flush.
+   *
+   * This pane is keyed by language, so switching the picker unmounts it and
+   * takes both the queued PUT and the `code` state holding those edits with
+   * it. The flush cannot live in the debounce effect's cleanup: that effect
+   * re-runs on every keystroke, so it would send a request per character and
+   * defeat the debounce entirely.
+   */
+  useEffect(() => () => persistDraft(true), [persistDraft]);
+
+  const handleChange = useCallback(
+    (next: string) => {
+      dirty.current = true;
+      pending.current = { code: next, language };
+      setCode(next);
+    },
+    [language],
+  );
 
   const execute = useCallback(
     async (kind: "run" | "submit") => {

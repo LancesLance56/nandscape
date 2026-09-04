@@ -33,7 +33,7 @@ function UserIcon() {
  * that inside the hamburger dropdown too would just be the same two
  * actions in two places.
  */
-export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "menu" } = {}) {
+export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "menu" | "inline" } = {}) {
   const router = useRouter();
   const [user, setUser] = useState<CurrentUser | null | undefined>(undefined);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -113,8 +113,18 @@ export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "men
       );
     }
 
+    // "inline" shows at every breakpoint. "compact" hides below md because
+    // navbar.tsx moves these into its mobile dropdown instead; a bar with no
+    // dropdown (PracticeNav) has nowhere for them to go, which left logged-out
+    // mobile readers unable to sign in from the coding pages at all.
     return (
-      <div className="hidden items-center gap-5 md:flex">
+      <div
+        className={
+          variant === "inline"
+            ? "flex items-center gap-3"
+            : "hidden items-center gap-5 md:flex"
+        }
+      >
         <Link
           href="/login"
           className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -122,7 +132,7 @@ export function AuthStatus({ variant = "compact" }: { variant?: "compact" | "men
           Log in
         </Link>
         <Button variant="default" size="app" onClick={() => router.push("/signup")}>
-          Start solving
+          {variant === "inline" ? "Sign up" : "Start solving"}
         </Button>
       </div>
     );

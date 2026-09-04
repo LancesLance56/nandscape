@@ -248,7 +248,7 @@ export function ProblemStudio({ initial, exists, runnableLanguages }: ProblemStu
             minWidth: 0,
           }}
         >
-          <IdentitySection draft={draft} patch={patch} />
+          <IdentitySection draft={draft} patch={patch} exists={exists} />
           <SignatureSection draft={draft} patch={patch} />
           <StatementSection
             statement={draft.statement}
@@ -603,9 +603,11 @@ function SectionHead({
 function IdentitySection({
   draft,
   patch,
+  exists,
 }: {
   draft: StudioDraft;
   patch: (next: Partial<StudioDraft>) => void;
+  exists: boolean;
 }) {
   const [tagDraft, setTagDraft] = useState("");
 
@@ -637,11 +639,15 @@ function IdentitySection({
         </div>
         <div className="field">
           <label htmlFor="f-slug">Slug</label>
+          {/* Fixed once the problem exists: the API rejects a change, because
+              the slug is the public URL and coding_drafts is keyed by it. */}
           <input
             id="f-slug"
             className="input mono"
             type="text"
             value={draft.slug}
+            disabled={exists}
+            title={exists ? "The slug is fixed once the problem exists" : undefined}
             onChange={(event) => patch({ slug: event.target.value })}
           />
         </div>

@@ -55,7 +55,7 @@ export function PracticeNav({ problemTitle }: { problemTitle?: string }) {
 
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <ThemeToggle />
-          <AuthStatus />
+          <AuthStatus variant="inline" />
         </div>
       </nav>
     </header>

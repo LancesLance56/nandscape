@@ -17,7 +17,9 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const { slug } = await params;
-  const practice = await getPracticeBySlug(slug).catch(() => null);
+  // No catch: a rejected lookup is a database failure, not an absent problem.
+  // Swallowing it here rendered "Problem not found" during an outage.
+  const practice = await getPracticeBySlug(slug);
   if (!practice) return { title: "Problem not found" };
 
   return {
@@ -28,7 +30,10 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
 export default async function PracticePage({ params }: PageParams) {
   const { slug } = await params;
-  const practice = await getPracticeBySlug(slug).catch(() => null);
+  // Deliberately uncaught: `notFound()` is for the null this returns when the
+  // slug does not exist. A thrown lookup means the database is unreachable and
+  // belongs in the error boundary, not behind a 404 on a valid URL.
+  const practice = await getPracticeBySlug(slug);
   if (!practice) notFound();
 
   const user = await getCurrentUser();

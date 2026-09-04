@@ -76,14 +76,24 @@ async function acquireSlot(): Promise<void> {
     active += 1;
     return;
   }
+  // No increment on resume: releaseSlot hands its slot over without
+  // decrementing, so the count already accounts for this caller.
   await new Promise<void>((resolve) => waiting.push(resolve));
-  active += 1;
 }
 
 function releaseSlot(): void {
-  active -= 1;
   const next = waiting.shift();
-  if (next) next();
+  if (next) {
+    // Transfer the slot rather than free it. Resolving a promise does not run
+    // the waiter's continuation synchronously - that happens a microtask
+    // later - so decrementing here would open a window in which a fresh
+    // caller takes the fast path on capacity that is already spoken for, and
+    // `active` settles one above the cap. Under load that repeats per release
+    // and the gate stops bounding anything.
+    next();
+    return;
+  }
+  active -= 1;
 }
 
 export interface ExecuteRequest {

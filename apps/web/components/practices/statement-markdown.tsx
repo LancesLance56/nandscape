@@ -121,12 +121,32 @@ export function StatementMarkdown({ source }: { source: string }) {
             }
 
             const code = String(children).replace(/\n$/, "");
-            return (
-              <span
-                className="not-prose block overflow-hidden rounded-xl border border-border bg-surface-2 font-mono text-sm"
-                dangerouslySetInnerHTML={{ __html: highlight(code, language) }}
-              />
-            );
+            const frame =
+              "not-prose block overflow-hidden rounded-xl border border-border bg-surface-2 font-mono text-sm";
+
+            // The singleton registers a fixed language list (lib/shiki.ts), so
+            // a fence in anything outside it - ```rust, ```go - makes
+            // codeToHtml throw. This runs during the server render, so an
+            // unguarded throw fails the entire problem page rather than one
+            // code block.
+            let highlighted: string | null = null;
+            try {
+              highlighted = highlight(code, language);
+            } catch {
+              highlighted = null;
+            }
+
+            if (highlighted === null) {
+              // Plain text through React, which escapes it. Never through
+              // dangerouslySetInnerHTML on a value we did not just build.
+              return (
+                <span className={frame}>
+                  <code className="block overflow-x-auto p-4 text-ink">{code}</code>
+                </span>
+              );
+            }
+
+            return <span className={frame} dangerouslySetInnerHTML={{ __html: highlighted }} />;
           },
 
           // A fenced block arrives as <pre><code/>. The replacement above is

@@ -23,7 +23,7 @@ export function valuesMatch(actual: unknown, expected: unknown, options: Compare
     case "float":
       return floatEqual(actual, expected, epsilon);
     case "unordered":
-      return unorderedEqual(actual, expected, epsilon);
+      return unorderedEqual(actual, expected);
     case "exact":
     default:
       return exactEqual(actual, expected);
@@ -87,15 +87,19 @@ function floatEqual(a: unknown, b: unknown, epsilon: number): boolean {
  * may be arrays or objects, which have no meaningful sort order. Quadratic,
  * which is irrelevant at the sizes a test case holds.
  */
-function unorderedEqual(a: unknown, b: unknown, epsilon: number): boolean {
-  if (!Array.isArray(a) || !Array.isArray(b)) return floatEqual(a, b, epsilon);
+function unorderedEqual(a: unknown, b: unknown): boolean {
+  // Exact, not float. This mode means "the same items, in any order";
+  // tolerance is what `float` is for, and the editor disables the epsilon
+  // input outside float mode - so applying epsilon here contradicts both the
+  // label the author reads and the control they are given.
+  if (!Array.isArray(a) || !Array.isArray(b)) return exactEqual(a, b);
   if (a.length !== b.length) return false;
 
   const claimed = new Array<boolean>(b.length).fill(false);
 
   return a.every((item) => {
     const matchIndex = b.findIndex(
-      (candidate, index) => !claimed[index] && floatEqual(item, candidate, epsilon),
+      (candidate, index) => !claimed[index] && exactEqual(item, candidate),
     );
     if (matchIndex === -1) return false;
     claimed[matchIndex] = true;

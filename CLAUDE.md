@@ -242,6 +242,22 @@ implements one function, never a whole program.
   blog editor's live preview, Problem Studio's code fields and Markdown fenced
   blocks all go through it — previously three copies, with comments telling
   each other to stay in step.
+- **Deployment requirement:** the reverse proxy must *overwrite*
+  `x-forwarded-for` (nginx: `proxy_set_header X-Forwarded-For $remote_addr`),
+  not append to it. Anonymous Run requests are rate-limited on a hash of that
+  header; if a caller can set it, they mint a fresh bucket per request.
+  `RATE_LIMIT_ANON_TOTAL_PER_MIN` is a shared ceiling across all anonymous
+  callers that bounds the damage either way — and bounds aggregate anonymous
+  load regardless of spoofing. Behind Cloudflare, key off `CF-Connecting-IP`
+  instead.
+- A problem's **slug is fixed after creation**. The UPDATE addresses the row by
+  slug and never sets it, `coding_drafts` is keyed by `problem_slug`, and the
+  slug is the public URL — so `updatePracticeRecord` rejects a change rather
+  than silently no-op'ing, and the editor disables the field.
+- `seed/export.mjs` reads practices from `/api/admin/practices/[slug]`, not the
+  public list, because only that carries `hiddenTests`, `solutions` and
+  `epsilon`. It needs `SEED_SECRET` and fails loudly without it — an export
+  that silently drops the secret half is worse than none.
 - Content routes update with **PATCH**, not PUT — `seed.mjs --force` issues
   PATCH, so a PUT-only route 405s on every re-seed.
 - `pnpm practice:verify-harness` runs the generated drivers against the local
@@ -250,8 +266,9 @@ implements one function, never a whole program.
   the local toolchain cannot produce a binary — that path only ever runs on
   Linux inside the engine, where it is covered end to end.
 - First run of the container needs `pnpm piston:bootstrap` to install the
-  language runtimes — a fresh Piston ships with none. C++ arrives via the
-  `gcc` package (one install provides the `c`, `c++`, `d` and `fortran`
+  language runtimes — a fresh Piston ships with none. It runs as a one-shot
+  `bootstrap`-profile service, so it works against the prod stack as well as
+  `dev`. C++ arrives via the `gcc` package (one install provides the `c`, `c++`, `d` and `fortran`
   runtimes; the LanguageDefinition asks for `c++`).
 
 ## Gotchas

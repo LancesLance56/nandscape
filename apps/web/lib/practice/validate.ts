@@ -1,5 +1,6 @@
 import type { PracticeLanguage, PracticeSignature, PracticeTestCase } from "@/types/practice";
 import { SUPPORTED_LANGUAGES } from "./languages";
+import { MAX_TEST_CASES } from "./limits";
 
 /**
  * The rules a coding problem has to satisfy, in one place.
@@ -33,6 +34,7 @@ export interface CheckableProblem {
   visibleTests?: PracticeTestCase[];
   hiddenTests?: PracticeTestCase[];
   compareMode?: string;
+  epsilon?: number;
 }
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -95,6 +97,19 @@ export function checkProblem(problem: CheckableProblem): ProblemCheck[] {
   const visible = problem.visibleTests ?? [];
   const hidden = problem.hiddenTests ?? [];
   const arity = signature.params.length;
+
+  // executeSubmission slices the batch to MAX_TEST_CASES. Without this check
+  // the extra cases are dropped in silence and a solution that fails one of
+  // them is still recorded ACCEPTED - a wrong verdict, not a missing check.
+  const total = visible.length + hidden.length;
+  if (total > MAX_TEST_CASES) {
+    add(
+      "error",
+      "too-many-cases",
+      `${total} test cases is over the limit of ${MAX_TEST_CASES} - grading would ignore the rest`,
+      "tests",
+    );
+  }
 
   if (visible.length === 0) {
     add("error", "no-visible", "At least one example case is required", "tests");
@@ -163,6 +178,23 @@ export function checkProblem(problem: CheckableProblem): ProblemCheck[] {
 
   if (problem.compareMode && !["exact", "unordered", "float"].includes(problem.compareMode)) {
     add("error", "compare", `Unknown compare mode "${problem.compareMode}"`, "judge");
+  }
+
+  // A negative or non-finite epsilon makes floatEqual reject even identical
+  // numbers - `Math.abs(a - b) <= epsilon * scale` is false for every pair when
+  // epsilon is below zero - so a correct solution fails every case. Reachable
+  // from the editor, whose number input yields NaN when cleared.
+  //
+  // Checked whenever a value is present rather than only in float mode: a bad
+  // one would otherwise sit dormant and go live the moment the mode changes.
+  if (
+    problem.epsilon !== undefined &&
+    (!Number.isFinite(problem.epsilon) || problem.epsilon < 0)
+  ) {
+    add("error", "epsilon", "Epsilon must be a finite, non-negative number", "judge");
+  }
+  if (problem.compareMode === "float" && problem.epsilon === undefined) {
+    add("error", "epsilon-missing", "Float comparison needs an epsilon", "judge");
   }
 
   return checks;

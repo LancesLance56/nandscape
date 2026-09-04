@@ -70,11 +70,21 @@ async function login() {
 }
 
 async function get(pathname) {
-  const res = await fetch(`${base}${pathname}`, {
-    headers: sessionCookie ? { cookie: sessionCookie } : {},
-  });
+  const res = await fetch(`${base}${pathname}`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`GET ${pathname} -> ${res.status}`);
   return res.json();
+}
+
+/**
+ * Whatever credential this run has: a session cookie from --drafts, or the
+ * seed secret. The admin-only practice route accepts either (see
+ * apps/web/lib/auth/seed-secret.ts).
+ */
+function authHeaders() {
+  const headers = {};
+  if (sessionCookie) headers.cookie = sessionCookie;
+  if (process.env.SEED_SECRET) headers["x-seed-secret"] = process.env.SEED_SECRET;
+  return headers;
 }
 
 /**
@@ -265,18 +275,34 @@ async function exportPuzzles() {
 /**
  * Coding problems.
  *
- * Note what cannot come back this way: the API's list endpoint deliberately
- * omits hidden test cases and reference solutions, so an exported file has
- * `hiddenTests` and `solutions` missing rather than empty. Re-seeding one of
- * these over a problem that had hidden tests would therefore drop them, which
- * is why the exported file keeps whatever the local copy already had - the
- * secret half of a problem lives in the repo, not on the server.
+ * Read from the *admin* projection, one problem at a time, rather than the
+ * public list. The public list omits `hiddenTests`, `solutions` and `epsilon`
+ * by design, and an earlier version papered over that by re-injecting whatever
+ * the local file already held. That silently reverted any change Problem
+ * Studio had made to those fields on the next `seed.mjs --force`, and reset a
+ * non-default float tolerance to 1e-6 - an export that quietly discards the
+ * server's state is worse than no export at all.
+ *
+ * Requires SEED_SECRET (or an admin session). Without it this fails loudly
+ * instead of writing a half-record.
  */
 async function exportPractices() {
   const { practices } = await get("/api/practices");
   const dir = path.join(here, "practices");
-  for (const practice of practices) {
-    const existing = await readSeedFile(dir, practice.slug);
+
+  for (const summary of practices) {
+    const res = await fetch(`${base}/api/admin/practices/${summary.slug}`, {
+      headers: authHeaders(),
+    });
+    if (!res.ok) {
+      throw new Error(
+        `GET /api/admin/practices/${summary.slug} -> ${res.status}. ` +
+          "Practice export needs SEED_SECRET (or an admin session) to read " +
+          "hidden tests, reference solutions and epsilon.",
+      );
+    }
+    const { practice } = await res.json();
+
     await writeSeedFile(
       dir,
       practice.slug,
@@ -288,14 +314,15 @@ async function exportPractices() {
         tags: practice.tags,
         languages: practice.languages,
         compareMode: practice.compareMode,
+        epsilon: practice.epsilon,
         timeLimitMs: practice.timeLimitMs,
         memoryLimitMb: practice.memoryLimitMb,
         signature: practice.signature,
         statement: practice.statement,
         starterCode: practice.starterCode,
-        visibleTests: (practice.visibleTests ?? []).map(({ index, ...rest }) => rest),
-        hiddenTests: existing?.hiddenTests,
-        solutions: existing?.solutions,
+        visibleTests: practice.visibleTests,
+        hiddenTests: practice.hiddenTests,
+        solutions: practice.solutions,
       }),
     );
   }

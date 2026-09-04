@@ -36,6 +36,15 @@ services:
     container_name: nandscape-piston
     restart: unless-stopped
     privileged: true
+    # Per-run limits bound one submission; they say nothing about the container
+    # as a whole. MAX_CONCURRENT_EXECUTIONS caps how many run at once from one
+    # web process, which is not the same as capping what the container may take
+    # from the host - and `web` shares that host.
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1g
     # User code has no legitimate reason to open a socket, and every
     # illegitimate one - reaching postgres on this network, hitting a cloud
     # metadata endpoint, exfiltrating a test case - runs through this switch.
@@ -75,6 +84,23 @@ services:
       # answers, and a judge that is merely slow to warm up should not be
       # reported as broken.
       start_period: 120s
+
+  # One-shot runtime installer, usable against either stack:
+  #   docker compose --profile bootstrap run --rm piston-bootstrap
+  #
+  # A separate service rather than `exec` into a web container, because the
+  # `dev` and `prod` profiles start different services and the production image
+  # does not carry scripts/. This one only needs the piston network.
+  piston-bootstrap:
+    profiles: ["bootstrap"]
+    image: node:22-alpine
+    volumes:
+      - ./scripts:/scripts:ro
+    command: ["node", "/scripts/piston-bootstrap.mjs", "--base", "http://piston:2000"]
+    depends_on:
+      piston:
+        condition: service_healthy
+    restart: "no"
 
   web-dev:
     profiles: ["dev"]

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getDraft, saveDraft } from "@/lib/practice/drafts";
+import { practiceExists } from "@/lib/practice/practice-records";
 import { isSupportedLanguage } from "@/lib/practice/languages";
 import { listSubmissions } from "@/lib/practice/submissions";
 
@@ -58,6 +59,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
   if (typeof code !== "string") {
     return NextResponse.json({ error: "`code` must be a string" }, { status: 422 });
+  }
+
+  // Without this an authenticated caller can write a draft row for any slug it
+  // invents, unbounded, because coding_drafts carries no foreign key.
+  if (!(await practiceExists(slug))) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
   const draft = await saveDraft(user.id, slug, language, code);

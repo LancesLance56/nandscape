@@ -13,6 +13,7 @@
     "cpp"
   ],
   "compareMode": "exact",
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -31,9 +32,9 @@
   },
   "statement": "You are given an array `numbers` sorted in ascending order, and an integer `target`. Return the indices of the two values that add up to the target, smallest index first.\n\n#### Constraints\n- 2 ≤ numbers.length ≤ 10,000\n- -10⁹ ≤ numbers[i] ≤ 10⁹\n- numbers is sorted in ascending order\n- assume exactly one pair works\n",
   "starterCode": {
+    "cpp": "std::vector<long long> twoSum(std::vector<long long> numbers, long long target) {\n    // numbers is sorted ascending. Return {i, j} with i < j.\n    return {};\n}\n",
     "python": "def two_sum(numbers, target):\n    # numbers is sorted ascending. Return [i, j] with i < j.\n    pass\n",
-    "javascript": "function twoSum(numbers, target) {\n  // numbers is sorted ascending. Return [i, j] with i < j.\n}\n",
-    "cpp": "std::vector<long long> twoSum(std::vector<long long> numbers, long long target) {\n    // numbers is sorted ascending. Return {i, j} with i < j.\n    return {};\n}\n"
+    "javascript": "function twoSum(numbers, target) {\n  // numbers is sorted ascending. Return [i, j] with i < j.\n}\n"
   },
   "visibleTests": [
     {
@@ -196,8 +197,8 @@
     }
   ],
   "solutions": {
+    "cpp": "std::vector<long long> twoSum(std::vector<long long> numbers, long long target) {\n    long long left = 0;\n    long long right = (long long)numbers.size() - 1;\n    while (left < right) {\n        long long total = numbers[left] + numbers[right];\n        if (total == target) return {left, right};\n        if (total < target) ++left;\n        else --right;\n    }\n    return {};\n}\n",
     "python": "def two_sum(numbers, target):\n    left, right = 0, len(numbers) - 1\n    while left < right:\n        total = numbers[left] + numbers[right]\n        if total == target:\n            return [left, right]\n        if total < target:\n            left += 1\n        else:\n            right -= 1\n    return []\n",
-    "javascript": "function twoSum(numbers, target) {\n  let left = 0;\n  let right = numbers.length - 1;\n  while (left < right) {\n    const total = numbers[left] + numbers[right];\n    if (total === target) return [left, right];\n    if (total < target) left += 1;\n    else right -= 1;\n  }\n  return [];\n}\n",
-    "cpp": "std::vector<long long> twoSum(std::vector<long long> numbers, long long target) {\n    long long left = 0;\n    long long right = (long long)numbers.size() - 1;\n    while (left < right) {\n        long long total = numbers[left] + numbers[right];\n        if (total == target) return {left, right};\n        if (total < target) ++left;\n        else --right;\n    }\n    return {};\n}\n"
+    "javascript": "function twoSum(numbers, target) {\n  let left = 0;\n  let right = numbers.length - 1;\n  while (left < right) {\n    const total = numbers[left] + numbers[right];\n    if (total === target) return [left, right];\n    if (total < target) left += 1;\n    else right -= 1;\n  }\n  return [];\n}\n"
   }
 }

@@ -50,6 +50,22 @@ export const MAX_CONCURRENT_EXECUTIONS = 4;
 
 /** Requests per user per minute, per route. */
 export const RATE_LIMIT_RUN_PER_MIN = 20;
+/**
+ * An aggregate ceiling across every anonymous caller, on top of the per-key
+ * limit above.
+ *
+ * Two things need it. Per-key limiting is keyed on a hash of the forwarded
+ * client address, and if the ingress appends to `x-forwarded-for` rather than
+ * overwriting it, a caller can present a new value per request and mint a
+ * fresh bucket each time. And even with a trustworthy header, per-key limits
+ * bound one visitor, not the crowd: fifty anonymous readers at 20/min each is
+ * a thousand executions a minute queueing for MAX_CONCURRENT_EXECUTIONS slots.
+ *
+ * Deliberately anonymous-only. Signed-in users are keyed by id and never draw
+ * on this, so under abuse the practice pages keep working for them and signing
+ * in is the way out.
+ */
+export const RATE_LIMIT_ANON_TOTAL_PER_MIN = 90;
 export const RATE_LIMIT_SUBMIT_PER_MIN = 10;
 
 export interface ResolvedLimits {
