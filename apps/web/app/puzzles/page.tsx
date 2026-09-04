@@ -35,7 +35,7 @@ export default async function PuzzlesPage() {
         <div className="mb-8 max-w-2xl">
           <div className="mb-3 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Nandscape practice
+            Logic problems
           </div>
           <h1 className="font-display text-4xl font-semibold leading-tight text-ink">Logic Problems</h1>
           <p className="mt-2 text-sm text-ink-soft">

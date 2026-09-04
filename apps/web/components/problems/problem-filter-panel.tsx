@@ -1,38 +1,32 @@
 "use client";
 
 import { ChevronDown, X } from "lucide-react";
-import type { PuzzleDifficulty, PuzzleSpec } from "@/types/puzzle";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/cn";
 import {
-  BUDGET_LABELS,
   DIFFICULTY_ORDER,
-  RESTRICTION_LABELS,
   SOLVED_LABELS,
-  SORT_OPTIONS,
-  countFor,
-  type BudgetKind,
-  type PuzzleFilterState,
-  type PuzzleSortKey,
-  type RestrictionKind,
-  type SolvedKind,
-} from "@/lib/puzzles/puzzle-filters";
+  toggleValue,
+  type FacetDef,
+  type ProblemFilterState,
+  type ProblemItem,
+  type ProgressKind,
+  type SortDef,
+} from "@/lib/problems/problem-filters";
 
 /**
- * The filter sidebar.
+ * The filter sidebar, shared by every problem list.
  *
  * Every dimension is a labelled group rather than a loose row of pills, the
  * trigger says how many options in that group are on, and each option carries
- * the number of puzzles it would leave. The old version showed one flat wall
- * of every tag in the database with no indication of what was selected.
+ * how many problems it would leave.
+ *
+ * Difficulty, topic and progress are built in because every problem list has
+ * them; anything else arrives as a `FacetDef`, which is how one panel serves
+ * both gate constraints and languages without knowing what either is.
  */
 
-interface Option<T extends string> {
-  value: T;
-  label: string;
-}
-
-function FilterGroup<T extends string>({
+function FilterGroup({
   label,
   options,
   selected,
@@ -40,11 +34,10 @@ function FilterGroup<T extends string>({
   count,
 }: {
   label: string;
-  options: Option<T>[];
-  selected: T[];
-  onToggle: (value: T) => void;
-  /** Problems left if this option were the only one on in its group. */
-  count: (value: T) => number;
+  options: { value: string; label: string }[];
+  selected: string[];
+  onToggle: (value: string) => void;
+  count: (value: string) => number;
 }) {
   const on = selected.length;
 
@@ -95,83 +88,70 @@ function FilterGroup<T extends string>({
   );
 }
 
-export function PuzzleFilterPanel({
-  puzzles,
+export function ProblemFilterPanel<T extends ProblemItem>({
   filters,
   setFilters,
-  isSolved,
+  facets,
+  sorts,
   tagOptions,
+  countFor,
   signedOut,
   onReset,
   activeCount,
+  sortName,
 }: {
-  puzzles: PuzzleSpec[];
-  filters: PuzzleFilterState;
-  setFilters: (next: PuzzleFilterState) => void;
-  isSolved: (slug: string) => boolean;
-  /** Tags in descending frequency, so the common ones are reachable first. */
+  filters: ProblemFilterState;
+  setFilters: (next: ProblemFilterState) => void;
+  facets: FacetDef<T>[];
+  sorts: SortDef<T>[];
   tagOptions: string[];
+  countFor: (group: string, value: string) => number;
   signedOut: boolean;
   onReset: () => void;
   activeCount: number;
+  /** Radio group name, so two lists on one page would not share state. */
+  sortName: string;
 }) {
-  const toggle = <K extends keyof PuzzleFilterState>(group: K, value: string) => {
-    const current = filters[group] as unknown as string[];
-    const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-    setFilters({ ...filters, [group]: next });
-  };
-
-  const count = <K extends keyof PuzzleFilterState>(group: K) => (value: string) =>
-    countFor(puzzles, filters, isSolved, group, value as never);
+  const toggle = (group: string, value: string) => setFilters(toggleValue(filters, group, value));
 
   return (
     <aside className="flex flex-col gap-3">
-      <FilterGroup<PuzzleDifficulty>
+      <FilterGroup
         label="All difficulties"
         options={DIFFICULTY_ORDER.map((d) => ({ value: d, label: d[0].toUpperCase() + d.slice(1) }))}
         selected={filters.difficulties}
         onToggle={(v) => toggle("difficulties", v)}
-        count={count("difficulties")}
+        count={(v) => countFor("difficulties", v)}
       />
 
-      <FilterGroup<string>
+      <FilterGroup
         label="All topics"
         options={tagOptions.map((t) => ({ value: t, label: t }))}
         selected={filters.tags}
         onToggle={(v) => toggle("tags", v)}
-        count={count("tags")}
+        count={(v) => countFor("tags", v)}
       />
 
-      <FilterGroup<RestrictionKind>
-        label="All constraints"
-        options={(Object.keys(RESTRICTION_LABELS) as RestrictionKind[]).map((k) => ({
-          value: k,
-          label: RESTRICTION_LABELS[k],
-        }))}
-        selected={filters.restrictions}
-        onToggle={(v) => toggle("restrictions", v)}
-        count={count("restrictions")}
-      />
+      {facets.map((facet) => (
+        <FilterGroup
+          key={facet.id}
+          label={facet.label}
+          options={facet.options}
+          selected={filters.facets[facet.id] ?? []}
+          onToggle={(v) => toggle(facet.id, v)}
+          count={(v) => countFor(facet.id, v)}
+        />
+      ))}
 
-      <FilterGroup<BudgetKind>
-        label="All budgets"
-        options={(Object.keys(BUDGET_LABELS) as BudgetKind[]).map((k) => ({
-          value: k,
-          label: BUDGET_LABELS[k],
-        }))}
-        selected={filters.budgets}
-        onToggle={(v) => toggle("budgets", v)}
-        count={count("budgets")}
-      />
-
-      {/* Progress filters are meaningless when there is no account to have
-          progress in, so they are hidden rather than shown always returning
-          everything. */}
+      {/* Progress filters are meaningless with no account to have progress in,
+          so they are hidden rather than shown always returning everything. */}
       {!signedOut && (
         <div className="rounded-xl border border-border bg-surface-card p-3.5">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate">Your progress</p>
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate">
+            Your progress
+          </p>
           <div className="flex flex-col gap-0.5">
-            {(Object.keys(SOLVED_LABELS) as SolvedKind[]).map((k) => (
+            {(Object.keys(SOLVED_LABELS) as ProgressKind[]).map((k) => (
               <label
                 key={k}
                 className="flex cursor-pointer items-center gap-2.5 rounded-lg px-1 py-1.5 text-sm text-ink transition-colors hover:bg-surface-2"
@@ -192,16 +172,16 @@ export function PuzzleFilterPanel({
       <div className="rounded-xl border border-border bg-surface-card p-3.5">
         <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate">Sort by</p>
         <div className="flex flex-col gap-0.5">
-          {SORT_OPTIONS.map((opt) => (
+          {sorts.map((opt) => (
             <label
               key={opt.key}
               className="flex cursor-pointer items-center gap-2.5 rounded-lg px-1 py-1.5 text-sm text-ink transition-colors hover:bg-surface-2"
             >
               <input
                 type="radio"
-                name="puzzle-sort"
+                name={sortName}
                 checked={filters.sort === opt.key}
-                onChange={() => setFilters({ ...filters, sort: opt.key as PuzzleSortKey })}
+                onChange={() => setFilters({ ...filters, sort: opt.key })}
                 className="h-3.5 w-3.5 accent-copper"
               />
               {opt.label}

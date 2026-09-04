@@ -15,7 +15,8 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
       { label: "Tutorials", href: "/tutorials" },
       { label: "Digital Logic", href: "/tutorials/digital-logic" },
       { label: "Data Structures & Algorithms", href: "/tutorials/dsa" },
-      { label: "Practice", href: "/puzzles" },
+      { label: "Logic Problems", href: "/puzzles" },
+      { label: "Coding Problems", href: "/practices" },
     ],
   },
   {

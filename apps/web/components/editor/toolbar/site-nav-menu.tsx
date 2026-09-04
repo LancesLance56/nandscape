@@ -9,7 +9,8 @@ import { Menu } from "lucide-react";
 
 const LINKS = [
   { label: "Home", href: "/" },
-  { label: "Practice", href: "/puzzles" },
+  { label: "Logic Problems", href: "/puzzles" },
+  { label: "Coding Problems", href: "/practices" },
   { label: "Logic Editor", href: "/logic-editor" },
   { label: "Blog", href: "/blog" },
 ];

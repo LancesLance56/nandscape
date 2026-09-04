@@ -162,6 +162,17 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
 - DS&A visualization logic lives in `apps/web/lib/` (`backtracking/`, `dp/`,
   `graph/`, `sorting/`, `kmap/`, `flowchart/`, `tree-layout.ts`).
 
+### The problem browser (`/puzzles` and `/practices`)
+
+Both problem lists are one component. `components/problems/problem-browser.tsx`
+owns the search, active-filter chips, pagination, table and sidebar;
+`lib/problems/problem-filters.ts` owns matching, sorting, chips and the
+per-option counts. A list supplies only what differs: how its items read as a
+generic `ProblemItem`, any extra filter groups as `FacetDef`s (gate constraints
+on one, languages on the other), extra columns, and where a row links.
+`puzzle-list.tsx` and `practice-list.tsx` are thin adapters — if you are about
+to add UI to one of them, it probably belongs in the shared browser instead.
+
 ### Coding practice (`/practices`)
 
 Reader-submitted code, run in a sandbox and graded. LeetCode-style: the user

@@ -13,10 +13,10 @@ import { Menu, X } from "lucide-react";
 // separate text link would just duplicate it and eat width.
 const links = [
   { label: "Tutorials", href: "/tutorials" },
-  { label: "Practice", href: "/puzzles" },
-  // Distinct from "Practice" above, which is the gate-wiring puzzles. This is
-  // the write-a-function-and-run-it side.
-  { label: "Coding", href: "/practices" },
+  // Two problem sections, named for what you build in each: gates on one,
+  // functions on the other. Both use the same browser (components/problems).
+  { label: "Logic Problems", href: "/puzzles" },
+  { label: "Coding Problems", href: "/practices" },
   { label: "Logic Editor", href: "/logic-editor" },
   { label: "Flowcharts", href: "/flowchart" },
   { label: "Tools", href: "/tools" },

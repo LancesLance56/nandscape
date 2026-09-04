@@ -3,11 +3,7 @@ import { PracticeNav } from "@/components/practices/practice-nav";
 import { Footer } from "@/components/footer";
 import { PracticeList } from "@/components/practices/practice-list";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import {
-  listAttemptedSlugs,
-  listPracticeRecords,
-  listSolvedSlugs,
-} from "@/lib/practice/practice-records";
+import { listPracticeRecords, listSolvedSlugs } from "@/lib/practice/practice-records";
 import type { PracticeSpec } from "@/types/practice";
 
 export const metadata: Metadata = {
@@ -34,12 +30,7 @@ export default async function PracticesPage() {
   }
 
   const user = await getCurrentUser();
-  const [solvedSlugs, attemptedSlugs] = user
-    ? await Promise.all([listSolvedSlugs(user.id), listAttemptedSlugs(user.id)]).catch(() => [
-        [] as string[],
-        [] as string[],
-      ])
-    : [[], []];
+  const solvedSlugs = user ? await listSolvedSlugs(user.id).catch(() => []) : [];
 
   return (
     <>
@@ -55,7 +46,7 @@ export default async function PracticesPage() {
         <div className="mb-8 max-w-2xl">
           <div className="mb-3 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Nandscape practice
+            Coding problems
           </div>
           <h1 className="font-display text-4xl font-semibold leading-tight text-ink">
             Coding Problems
@@ -70,7 +61,7 @@ export default async function PracticesPage() {
         <PracticeList
           practices={practices}
           solvedSlugs={solvedSlugs}
-          attemptedSlugs={attemptedSlugs}
+          signedOut={!user}
         />
       </main>
       <Footer />
