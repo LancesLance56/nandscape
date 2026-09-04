@@ -1,0 +1,793 @@
+{
+  "slug": "median-two-sorted-arrays-solution",
+  "title": "Median of Two Sorted Arrays in O(log(min(n, m)))",
+  "excerpt": "Binary searching a partition instead of a value: how to find the median of two sorted arrays without merging them, and why the sentinels remove every edge case.",
+  "authorName": "Nandscape",
+  "status": "published",
+  "publishedAt": "2026-09-04T00:00:00.000Z",
+  "tags": [
+    "binary search",
+    "arrays",
+    "solutions"
+  ],
+  "sectionSlug": "problems-and-solutions",
+  "position": 94,
+  "seoTitle": "Median of Two Sorted Arrays — O(log(min(n,m))) Explained",
+  "seoDescription": "A walkthrough of the logarithmic median-of-two-sorted-arrays algorithm: partitioning instead of merging, why only one cut is free to move, and why infinities beat special cases.",
+  "keywords": [
+    "median of two sorted arrays",
+    "binary search partition",
+    "logarithmic median",
+    "hard binary search"
+  ],
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Two sorted arrays, one median. Merging them and indexing the middle is O(n + m) and takes about four lines. This page is about the O(log(min(n, m))) solution, which is the reason the problem is rated the way it is."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The interesting part is not the binary search itself. It is what you binary search "
+        },
+        {
+          "text": "over",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": ": not a value, but a place to cut."
+        }
+      ]
+    },
+    {
+      "id": "c-3",
+      "type": "callout",
+      "tone": "note",
+      "title": "Key takeaways",
+      "content": [
+        {
+          "text": "Cut both arrays so the two left parts together hold exactly half the elements and every left value is <= every right value. Choosing the cut in one array forces the cut in the other, so there is only one unknown and it can be binary searched. Search the shorter array so the forced cut always lands in range, and treat the positions past each end as ∓∞ so empty arrays and one-sided cuts need no special handling."
+        }
+      ]
+    },
+    {
+      "id": "h-5",
+      "type": "heading",
+      "level": 2,
+      "text": "What the median actually requires"
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Forget merging. A median is defined by a property: it sits at the point where half the combined elements are below and half above. So instead of producing the merged array, produce the "
+        },
+        {
+          "text": "boundary",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " it would have."
+        }
+      ]
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Cut array "
+        },
+        {
+          "text": "a",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " somewhere, putting "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " elements on the left. Cut array "
+        },
+        {
+          "text": "b",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " somewhere, putting "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " on the left. The cut is the one we want when both hold:"
+        }
+      ]
+    },
+    {
+      "id": "l-8",
+      "type": "list",
+      "ordered": true,
+      "items": [
+        [
+          {
+            "text": "The left parts together hold half the elements: i + j = (n + m + 1) / 2."
+          }
+        ],
+        [
+          {
+            "text": "Nothing on the left exceeds anything on the right: a[i-1] <= b[j] and b[j-1] <= a[i]."
+          }
+        ]
+      ]
+    },
+    {
+      "id": "p-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The first condition is the crucial one for efficiency. It means "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is not a free choice — it is "
+        },
+        {
+          "text": "(n + m + 1) / 2 - i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". There is only "
+        },
+        {
+          "text": "one",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " number to search for, and that is what makes a binary search possible at all."
+        }
+      ]
+    },
+    {
+      "id": "c-12",
+      "type": "callout",
+      "tone": "important",
+      "title": "Why (n + m + 1) / 2 and not (n + m) / 2",
+      "content": [
+        {
+          "text": "The "
+        },
+        {
+          "text": "+ 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " puts the extra element on the left when the total is odd. That choice lets a single formula serve both parities: for an odd total the median is the largest left-hand value, and for an even total it is that averaged with the smallest right-hand value. Using "
+        },
+        {
+          "text": "(n + m) / 2",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " forces two different formulas and an easy mistake."
+        }
+      ]
+    },
+    {
+      "id": "h-14",
+      "type": "heading",
+      "level": 2,
+      "text": "Searching the cut"
+    },
+    {
+      "id": "p-15",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Binary search "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " over "
+        },
+        {
+          "text": "[0, n]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " — note the range includes both ends, since cutting before everything or after everything are legitimate. For each candidate, derive "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and check the two cross conditions:"
+        }
+      ]
+    },
+    {
+      "id": "l-16",
+      "type": "list",
+      "ordered": false,
+      "items": [
+        [
+          {
+            "text": "If a[i-1] > b[j], too many elements of a are on the left. Move the cut left: high = i - 1."
+          }
+        ],
+        [
+          {
+            "text": "If b[j-1] > a[i], too few. Move the cut right: low = i + 1."
+          }
+        ],
+        [
+          {
+            "text": "Otherwise the cut is valid and the answer reads straight off it."
+          }
+        ]
+      ]
+    },
+    {
+      "id": "p-20",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Search the shorter array. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "If "
+        },
+        {
+          "text": "a",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is the longer one, a valid "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " can force "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " outside the bounds of "
+        },
+        {
+          "text": "b",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " — negative, or past its end. Swapping so "
+        },
+        {
+          "text": "a",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is never longer guarantees "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " stays in range, and as a bonus makes the complexity depend on the smaller length."
+        }
+      ]
+    },
+    {
+      "id": "h-21",
+      "type": "heading",
+      "level": 2,
+      "text": "The sentinels are the whole trick"
+    },
+    {
+      "id": "p-22",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "At "
+        },
+        {
+          "text": "i = 0",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " there is no "
+        },
+        {
+          "text": "a[i-1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". At "
+        },
+        {
+          "text": "i = n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " there is no "
+        },
+        {
+          "text": "a[i]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". The same holds for "
+        },
+        {
+          "text": "b",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Written as special cases, that is four branches multiplied by the two parity cases, and it is where most implementations go wrong."
+        }
+      ]
+    },
+    {
+      "id": "p-23",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Instead, define the missing neighbours as infinities:"
+        }
+      ]
+    },
+    {
+      "id": "t-24",
+      "type": "table",
+      "headers": [
+        "Position",
+        "Stands in for",
+        "Why it is correct"
+      ],
+      "rows": [
+        [
+          "a[i-1] when i = 0",
+          "−∞",
+          "Nothing on a's left, so it can never violate 'left ≤ right'"
+        ],
+        [
+          "a[i] when i = n",
+          "+∞",
+          "Nothing on a's right, so it can never be exceeded"
+        ],
+        [
+          "b[j-1] when j = 0",
+          "−∞",
+          "Same reasoning on the other array"
+        ],
+        [
+          "b[j] when j = m",
+          "+∞",
+          "Same reasoning on the other array"
+        ]
+      ],
+      "caption": "With these, an empty array is just an array whose cut is trivially at both ends."
+    },
+    {
+      "id": "p-25",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "An empty "
+        },
+        {
+          "text": "a",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " now needs no code of its own: "
+        },
+        {
+          "text": "n = 0",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", the search range is "
+        },
+        {
+          "text": "[0, 0]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", "
+        },
+        {
+          "text": "i = 0",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", both of a's neighbours are infinities, and the answer falls out of "
+        },
+        {
+          "text": "b",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " alone."
+        }
+      ]
+    },
+    {
+      "id": "h-26",
+      "type": "heading",
+      "level": 2,
+      "text": "Walking through an example"
+    },
+    {
+      "id": "p-27",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "a = [1, 3, 8]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", "
+        },
+        {
+          "text": "b = [7, 9, 10, 11]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Total 7, so half = 4 and the median is the largest left-hand value."
+        }
+      ]
+    },
+    {
+      "id": "t-28",
+      "type": "table",
+      "headers": [
+        "i",
+        "j = 4 − i",
+        "left of a / b",
+        "right of a / b",
+        "verdict"
+      ],
+      "rows": [
+        [
+          "1",
+          "3",
+          "1 / 10",
+          "3 / 11",
+          "b[j-1]=10 > a[i]=3 → too far left"
+        ],
+        [
+          "2",
+          "2",
+          "3 / 9",
+          "8 / 10",
+          "b[j-1]=9 > a[i]=8 → still too far left"
+        ],
+        [
+          "3",
+          "1",
+          "8 / 7",
+          "+∞ / 9",
+          "8 ≤ 9 and 7 ≤ +∞ → valid"
+        ]
+      ],
+      "caption": "Odd total, so the answer is max(8, 7) = 8."
+    },
+    {
+      "id": "h-29",
+      "type": "heading",
+      "level": 2,
+      "text": "The code"
+    },
+    {
+      "id": "code-30",
+      "type": "code",
+      "language": "python",
+      "code": "def find_median(a, b):\n    # Search the shorter array so the forced cut j always lands inside b.\n    if len(a) > len(b):\n        a, b = b, a\n\n    n, m = len(a), len(b)\n    half = (n + m + 1) // 2      # +1 leaves the odd extra on the left\n    low, high = 0, n             # inclusive: cutting at either end is legal\n\n    while low <= high:\n        i = (low + high) // 2    # a[:i] goes left\n        j = half - i             # forced by the half-size rule\n\n        # Sentinels remove every empty-array and end-of-array special case.\n        a_left = a[i - 1] if i > 0 else float('-inf')\n        a_right = a[i] if i < n else float('inf')\n        b_left = b[j - 1] if j > 0 else float('-inf')\n        b_right = b[j] if j < m else float('inf')\n\n        if a_left <= b_right and b_left <= a_right:\n            if (n + m) % 2 == 1:\n                return float(max(a_left, b_left))\n            return (max(a_left, b_left) + min(a_right, b_right)) / 2.0\n\n        if a_left > b_right:\n            high = i - 1         # too many of a on the left\n        else:\n            low = i + 1\n\n    return 0.0                   # unreachable for valid input\n",
+      "variants": [
+        {
+          "language": "javascript",
+          "code": "function findMedian(a, b) {\n  // Search the shorter array so the forced cut j always lands inside b.\n  if (a.length > b.length) [a, b] = [b, a];\n\n  const n = a.length;\n  const m = b.length;\n  const half = Math.floor((n + m + 1) / 2);\n  let low = 0;\n  let high = n;\n\n  while (low <= high) {\n    const i = Math.floor((low + high) / 2);\n    const j = half - i;\n\n    const aLeft = i > 0 ? a[i - 1] : -Infinity;\n    const aRight = i < n ? a[i] : Infinity;\n    const bLeft = j > 0 ? b[j - 1] : -Infinity;\n    const bRight = j < m ? b[j] : Infinity;\n\n    if (aLeft <= bRight && bLeft <= aRight) {\n      if ((n + m) % 2 === 1) return Math.max(aLeft, bLeft);\n      return (Math.max(aLeft, bLeft) + Math.min(aRight, bRight)) / 2;\n    }\n\n    if (aLeft > bRight) high = i - 1;\n    else low = i + 1;\n  }\n\n  return 0;\n}\n"
+        },
+        {
+          "language": "cpp",
+          "code": "double findMedian(std::vector<long long> a, std::vector<long long> b) {\n    if (a.size() > b.size()) std::swap(a, b);\n\n    const long long n = (long long)a.size();\n    const long long m = (long long)b.size();\n    const long long half = (n + m + 1) / 2;\n\n    // Integer sentinels rather than floating infinities, so no value in range\n    // can ever compare equal to one of them.\n    const long long NEG = std::numeric_limits<long long>::min();\n    const long long POS = std::numeric_limits<long long>::max();\n\n    long long low = 0, high = n;\n    while (low <= high) {\n        long long i = (low + high) / 2;\n        long long j = half - i;\n\n        long long aLeft  = (i > 0) ? a[(std::size_t)(i - 1)] : NEG;\n        long long aRight = (i < n) ? a[(std::size_t)i]       : POS;\n        long long bLeft  = (j > 0) ? b[(std::size_t)(j - 1)] : NEG;\n        long long bRight = (j < m) ? b[(std::size_t)j]       : POS;\n\n        if (aLeft <= bRight && bLeft <= aRight) {\n            if ((n + m) % 2 == 1) return (double)std::max(aLeft, bLeft);\n            return ((double)std::max(aLeft, bLeft) +\n                    (double)std::min(aRight, bRight)) / 2.0;\n        }\n\n        if (aLeft > bRight) high = i - 1;\n        else low = i + 1;\n    }\n\n    return 0.0;\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "h-31",
+      "type": "heading",
+      "level": 2,
+      "text": "Complexity"
+    },
+    {
+      "id": "t-32",
+      "type": "table",
+      "headers": [
+        "Approach",
+        "Time",
+        "Space"
+      ],
+      "rows": [
+        [
+          "Concatenate and sort",
+          "O((n+m) log(n+m))",
+          "O(n+m)"
+        ],
+        [
+          "Merge until the middle",
+          "O(n+m)",
+          "O(1)"
+        ],
+        [
+          "Binary search the partition",
+          "O(log(min(n, m)))",
+          "O(1)"
+        ]
+      ]
+    },
+    {
+      "id": "p-33",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The loop halves the candidate range for "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " each iteration and "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " ranges over the shorter array, so it runs "
+        },
+        {
+          "text": "log(min(n, m))",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " times with constant work inside. Nothing is copied, so the extra space is a handful of variables."
+        }
+      ]
+    },
+    {
+      "id": "h-34",
+      "type": "heading",
+      "level": 2,
+      "text": "The mistakes that actually happen"
+    },
+    {
+      "id": "l-35",
+      "type": "list",
+      "ordered": false,
+      "items": [
+        [
+          {
+            "text": "Not swapping so the shorter array is searched. j then goes out of bounds, usually on lopsided inputs like a length-1 array against a length-10 one."
+          }
+        ],
+        [
+          {
+            "text": "Using < instead of <= in the cross conditions. With many equal values several cuts are valid; a strict comparison rejects them all and the search runs off the end."
+          }
+        ],
+        [
+          {
+            "text": "Searching over [0, n-1] instead of [0, n]. Cutting after every element of a is a legal partition and is exactly what an empty or entirely-smaller a requires."
+          }
+        ],
+        [
+          {
+            "text": "Special-casing empty arrays by hand instead of using sentinels. It works, but it is four branches that the infinities give you for free."
+          }
+        ],
+        [
+          {
+            "text": "Returning an integer. With an even total the median can be a half-integer, so the return type has to be floating point."
+          }
+        ]
+      ]
+    },
+    {
+      "id": "c-41",
+      "type": "callout",
+      "tone": "tip",
+      "title": "Try it first",
+      "content": [
+        {
+          "text": "These pages give the whole solution away, so they are worth reading after an attempt rather than before. The problem is at "
+        },
+        {
+          "text": "/practices/median-two-sorted-arrays",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/practices/median-two-sorted-arrays"
+            }
+          ]
+        },
+        {
+          "text": " — "
+        },
+        {
+          "text": "the hidden cases include both one-sided arrays, all-equal values, and disjoint ranges — the shapes that break a partially correct partition."
+        }
+      ]
+    }
+  ]
+}

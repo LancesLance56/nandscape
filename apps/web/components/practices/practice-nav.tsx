@@ -5,13 +5,17 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthStatus } from "@/components/auth-status";
 
 /**
- * The slim bar the coding section uses in place of the site navbar.
+ * The slim bar the coding *workspace* uses in place of the site navbar.
  *
  * Two reasons it exists rather than reusing <Navbar />. Height: the main bar is
  * 5rem and carries eight section links, which is right for browsing the site
  * and wrong above a workspace where every vertical pixel belongs to the editor.
  * And focus: someone mid-problem needs a way back and nothing else, so offering
  * them Flowcharts and Embeds is just an invitation to lose their work.
+ *
+ * Only /practices/[slug] uses it. The catalogue at /practices is an ordinary
+ * site page and carries the ordinary navbar, because browsing is not the thing
+ * that needs the vertical space back.
  *
  * 3rem tall, full-bleed, and a server component - it holds no state of its own,
  * unlike the main navbar with its mobile dropdown.

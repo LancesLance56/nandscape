@@ -13,8 +13,8 @@
     "cpp"
   ],
   "compareMode": "float",
-  "epsilon": 1e-9,
-  "timeLimitMs": 2000,
+  "epsilon": 1e-09,
+  "timeLimitMs": 1000,
   "memoryLimitMb": 256,
   "signature": {
     "name": "find_median",
@@ -30,7 +30,7 @@
     ],
     "returns": "float"
   },
-  "statement": "Two arrays `a` and `b` are each sorted ascending. Return the median of the two combined.\n\nWith an even total length the median is the mean of the two middle values, so the answer can be a half-integer — the return type is a float and the grader compares with a tolerance.\n\nAt least one of the arrays is non-empty.\n\n### Constraints\n\n- 0 ≤ a.length, b.length ≤ 100,000\n- 1 ≤ a.length + b.length\n- -10⁹ ≤ values ≤ 10⁹\n\n> **If you're a true master, try it in `O(log(m + n))` time**",
+  "statement": "Two arrays `a` and `b` are each sorted ascending. Return the median of the two combined.\n\nWith an even total length the median is the mean of the two middle values, so the answer can be a half-integer — the return type is a float and the grader compares with a tolerance.\n\nAt least one of the arrays is non-empty.\n\n### Constraints\n\n- 0 ≤ a.length, b.length ≤ 100,000\n- 1 ≤ a.length + b.length\n- -10⁹ ≤ values ≤ 10⁹\n- **Required: O(log(n + m)) time.** Merging and sorting is O((n + m) log(n + m)) and does not meet the bound.\n\n### Example\n\n```\na = [1, 3], b = [2]      -> 2.0\na = [1, 2], b = [3, 4]   -> 2.5\n```\n\n## The idea\n\nDo not build the merged array. Instead, cut both arrays into a left part and a right part so that:\n\n- the two left parts together hold exactly half the elements, and\n- every value on the left is `<=` every value on the right.\n\nOnce such a cut exists, the median is read straight off the four values touching it — no merging needed.\n\nChoosing `i`, the cut in `a`, forces `j = (n + m + 1) / 2 - i`, the cut in `b`. So there is only one number to search for, and `i` can be found by binary search on the shorter array. That is where the `log` comes from: **binary search over a cut position, not over values**.\n\nThe cut is correct when `a[i-1] <= b[j]` and `b[j-1] <= a[i]`. If `a[i-1] > b[j]` the cut in `a` is too far right; otherwise it is too far left.\n\n### Details that decide correctness\n\n- **Search the shorter array.** If `a` is longer, swap them first, or `j` can fall outside `b`.\n- **Treat the ends as infinities.** With `i = 0` there is no `a[i-1]`, so use `-∞`; with `i = n` use `+∞` for `a[i]`. This is what makes an empty array and a fully one-sided cut work without special cases.\n- **Odd total:** the answer is `max(a[i-1], b[j-1])` — the largest value on the left. **Even total:** average that with `min(a[i], b[j])`.\n- Use `(n + m + 1) / 2` for the half, so the odd case leaves the extra element on the left and both cases share one formula.\n\n> **Duplicates are the usual bug**\n>\n> With many equal values the two conditions can both hold at several cut positions, and any of them is correct. An implementation that uses `<` where it needs `<=` will loop past the valid cut and fall out of the search.\n",
   "starterCode": {
     "cpp": "double findMedian(std::vector<long long> a, std::vector<long long> b) {\n    // Median of the two sorted arrays combined.\n    return 0.0;\n}\n",
     "python": "def find_median(a, b):\n    # Median of the two sorted arrays combined.\n    pass\n",
@@ -47,7 +47,7 @@
           2
         ]
       ],
-      "expected": 2,
+      "expected": 2.0,
       "explanation": "Odd total, so the middle value itself."
     },
     {
@@ -71,7 +71,7 @@
           1
         ]
       ],
-      "expected": 1,
+      "expected": 1.0,
       "explanation": "One array may be empty."
     }
   ],
@@ -83,7 +83,7 @@
         ],
         []
       ],
-      "expected": 2
+      "expected": 2.0
     },
     {
       "args": [
@@ -96,7 +96,7 @@
         ],
         []
       ],
-      "expected": 3
+      "expected": 3.0
     },
     {
       "args": [
@@ -114,28 +114,118 @@
       "args": [
         [
           1,
+          1,
+          1,
           1
         ],
         [
           1,
+          1,
           1
         ]
       ],
-      "expected": 1
+      "expected": 1.0
+    },
+    {
+      "args": [
+        [
+          -1000000000
+        ],
+        [
+          1000000000
+        ]
+      ],
+      "expected": 0.0
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        [
+          10
+        ]
+      ],
+      "expected": 5.5
+    },
+    {
+      "args": [
+        [
+          10
+        ],
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      ],
+      "expected": 5.5
+    },
+    {
+      "args": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      ],
+      "expected": 6.5
+    },
+    {
+      "args": [
+        [
+          5,
+          5,
+          5
+        ],
+        [
+          5,
+          5,
+          5,
+          5,
+          5
+        ]
+      ],
+      "expected": 5.0
     },
     {
       "args": [
         [
           -5,
-          -3,
-          -1
+          -4,
+          -3
         ],
         [
-          -4,
-          -2
+          -2,
+          -1
         ]
       ],
-      "expected": -3
+      "expected": -3.0
     },
     {
       "args": [
@@ -144,7 +234,8 @@
           3,
           5,
           7,
-          9
+          9,
+          11
         ],
         [
           2,
@@ -154,40 +245,25 @@
           10
         ]
       ],
-      "expected": 5.5
+      "expected": 6.0
     },
     {
       "args": [
         [
-          100000
+          0,
+          0
         ],
         [
-          -100000
+          0,
+          0
         ]
       ],
-      "expected": 0
-    },
-    {
-      "args": [
-        [
-          1,
-          2,
-          3
-        ],
-        [
-          4,
-          5,
-          6,
-          7,
-          8
-        ]
-      ],
-      "expected": 4.5
+      "expected": 0.0
     }
   ],
   "solutions": {
-    "cpp": "double findMedian(std::vector<long long> a, std::vector<long long> b) {\n    std::vector<long long> merged;\n    merged.reserve(a.size() + b.size());\n    merged.insert(merged.end(), a.begin(), a.end());\n    merged.insert(merged.end(), b.begin(), b.end());\n    std::sort(merged.begin(), merged.end());\n    std::size_t n = merged.size();\n    std::size_t mid = n / 2;\n    if (n % 2 == 1) return (double)merged[mid];\n    return ((double)merged[mid - 1] + (double)merged[mid]) / 2.0;\n}\n",
-    "python": "def find_median(a, b):\n    merged = sorted(a + b)\n    n = len(merged)\n    mid = n // 2\n    if n % 2 == 1:\n        return float(merged[mid])\n    return (merged[mid - 1] + merged[mid]) / 2.0\n",
-    "javascript": "function findMedian(a, b) {\n  const merged = [...a, ...b].sort((x, y) => x - y);\n  const n = merged.length;\n  const mid = Math.floor(n / 2);\n  return n % 2 === 1 ? merged[mid] : (merged[mid - 1] + merged[mid]) / 2;\n}\n"
+    "python": "def find_median(a, b):\n    # Binary search the cut position in the shorter array, so the loop runs\n    # log(min(n, m)) times regardless of how long the other array is.\n    if len(a) > len(b):\n        a, b = b, a\n\n    n, m = len(a), len(b)\n    half = (n + m + 1) // 2\n    low, high = 0, n\n\n    while low <= high:\n        i = (low + high) // 2      # values a[:i] go left\n        j = half - i               # forced: the two left parts must total `half`\n\n        # Missing neighbours become infinities, which removes every\n        # empty-array and one-sided-cut special case.\n        a_left = a[i - 1] if i > 0 else float('-inf')\n        a_right = a[i] if i < n else float('inf')\n        b_left = b[j - 1] if j > 0 else float('-inf')\n        b_right = b[j] if j < m else float('inf')\n\n        if a_left <= b_right and b_left <= a_right:\n            if (n + m) % 2 == 1:\n                return float(max(a_left, b_left))\n            return (max(a_left, b_left) + min(a_right, b_right)) / 2.0\n\n        if a_left > b_right:\n            high = i - 1           # cut in `a` is too far right\n        else:\n            low = i + 1\n\n    return 0.0\n",
+    "javascript": "function findMedian(a, b) {\n  // Binary search the cut position in the shorter array, so the loop runs\n  // log(min(n, m)) times regardless of how long the other array is.\n  if (a.length > b.length) [a, b] = [b, a];\n\n  const n = a.length;\n  const m = b.length;\n  const half = Math.floor((n + m + 1) / 2);\n  let low = 0;\n  let high = n;\n\n  while (low <= high) {\n    const i = Math.floor((low + high) / 2); // values a[:i] go left\n    const j = half - i;                     // forced by the half-size rule\n\n    // Missing neighbours become infinities, which removes every\n    // empty-array and one-sided-cut special case.\n    const aLeft = i > 0 ? a[i - 1] : -Infinity;\n    const aRight = i < n ? a[i] : Infinity;\n    const bLeft = j > 0 ? b[j - 1] : -Infinity;\n    const bRight = j < m ? b[j] : Infinity;\n\n    if (aLeft <= bRight && bLeft <= aRight) {\n      if ((n + m) % 2 === 1) return Math.max(aLeft, bLeft);\n      return (Math.max(aLeft, bLeft) + Math.min(aRight, bRight)) / 2;\n    }\n\n    if (aLeft > bRight) high = i - 1;       // cut in `a` is too far right\n    else low = i + 1;\n  }\n\n  return 0;\n}\n",
+    "cpp": "double findMedian(std::vector<long long> a, std::vector<long long> b) {\n    // Binary search the cut position in the shorter array, so the loop runs\n    // log(min(n, m)) times regardless of how long the other array is.\n    if (a.size() > b.size()) std::swap(a, b);\n\n    const long long n = (long long)a.size();\n    const long long m = (long long)b.size();\n    const long long half = (n + m + 1) / 2;\n\n    const long long NEG = std::numeric_limits<long long>::min();\n    const long long POS = std::numeric_limits<long long>::max();\n\n    long long low = 0, high = n;\n    while (low <= high) {\n        long long i = (low + high) / 2;   // values a[:i] go left\n        long long j = half - i;           // forced by the half-size rule\n\n        // Sentinels stand in for the missing neighbours at either end, which\n        // removes every empty-array and one-sided-cut special case.\n        long long aLeft  = (i > 0) ? a[(std::size_t)(i - 1)] : NEG;\n        long long aRight = (i < n) ? a[(std::size_t)i]       : POS;\n        long long bLeft  = (j > 0) ? b[(std::size_t)(j - 1)] : NEG;\n        long long bRight = (j < m) ? b[(std::size_t)j]       : POS;\n\n        if (aLeft <= bRight && bLeft <= aRight) {\n            if ((n + m) % 2 == 1) return (double)std::max(aLeft, bLeft);\n            return ((double)std::max(aLeft, bLeft) + (double)std::min(aRight, bRight)) / 2.0;\n        }\n\n        if (aLeft > bRight) high = i - 1;  // cut in `a` is too far right\n        else low = i + 1;\n    }\n\n    return 0.0;\n}\n"
   }
 }

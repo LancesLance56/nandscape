@@ -1,0 +1,602 @@
+{
+  "slug": "sliding-window-maximum-solution",
+  "title": "Sliding Window Maximum with a Monotonic Deque",
+  "excerpt": "Why a heap is not fast enough for sliding window maximum, how a decreasing deque answers every window in O(1) amortised, and the two removal rules that make it work.",
+  "authorName": "Nandscape",
+  "status": "published",
+  "publishedAt": "2026-09-04T00:00:00.000Z",
+  "tags": [
+    "arrays",
+    "deque",
+    "solutions"
+  ],
+  "sectionSlug": "problems-and-solutions",
+  "position": 92,
+  "seoTitle": "Sliding Window Maximum in O(n) — Monotonic Deque Explained",
+  "seoDescription": "A walkthrough of the O(n) sliding window maximum algorithm: why a decreasing deque of indices works, why it stores indices rather than values, and the amortised cost argument.",
+  "keywords": [
+    "sliding window maximum",
+    "monotonic deque",
+    "monotonic queue",
+    "sliding window",
+    "O(n) algorithm"
+  ],
+  "body": [
+    {
+      "id": "p-1",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A window of fixed width k slides across an array one position at a time. Report the maximum inside it at every position. For "
+        },
+        {
+          "text": "[1, 3, -1, -3, 5, 3, 6, 7]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " with "
+        },
+        {
+          "text": "k = 3",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " the answer is "
+        },
+        {
+          "text": "[3, 3, 5, 5, 6, 7]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "p-2",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Rescanning each window is O(n·k) and correct. A max-heap gets that to O(n log k). Neither is the best available: the problem has a genuine O(n) solution, and the structure behind it — a deque kept in decreasing order — is worth knowing because the same trick solves a family of window problems."
+        }
+      ]
+    },
+    {
+      "id": "c-3",
+      "type": "callout",
+      "tone": "note",
+      "title": "Key takeaways",
+      "content": [
+        {
+          "text": "Keep a deque of indices whose values are strictly decreasing. Before adding an index, discard every index at the back whose value is smaller, because none of them can ever be the maximum again while the new one is in the window. The front is then always the current maximum. Each index is pushed once and popped once, which is what makes the whole scan O(n) despite the inner loop."
+        }
+      ]
+    },
+    {
+      "id": "h-5",
+      "type": "heading",
+      "level": 2,
+      "text": "Why the obvious approaches fall short"
+    },
+    {
+      "id": "p-6",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Recomputing the maximum for each of the n − k + 1 windows costs O(k) each time, so O(n·k) overall. With n = 100,000 and k = 50,000 that is billions of comparisons, and it repeats almost all of its work: consecutive windows share k − 1 elements."
+        }
+      ]
+    },
+    {
+      "id": "p-7",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "A max-heap improves it. Push each element, and when the top of the heap has fallen out of the window, discard it. That is O(n log k). It is a reasonable answer and it will pass many judges. But it still pays a logarithmic price per element for information the array's own order already gives away."
+        }
+      ]
+    },
+    {
+      "id": "h-8",
+      "type": "heading",
+      "level": 2,
+      "text": "The observation that gives O(n)"
+    },
+    {
+      "id": "p-9",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Consider two positions "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " with "
+        },
+        {
+          "text": "i < j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and "
+        },
+        {
+          "text": "nums[i] <= nums[j]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "id": "p-10",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The element at i can never be the answer again. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Any window that still contains "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " also contains "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", because "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is further right and windows only move right. And "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is at least as large. So "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " is dominated permanently, and can be thrown away the moment "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " arrives."
+        }
+      ]
+    },
+    {
+      "id": "p-11",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Apply that rule relentlessly and what survives is a sequence of indices whose values strictly decrease from front to back. The front is the largest, so it is the window's maximum — and the rest are the candidates waiting to inherit the title once the front expires."
+        }
+      ]
+    },
+    {
+      "id": "h-12",
+      "type": "heading",
+      "level": 2,
+      "text": "The two removal rules"
+    },
+    {
+      "id": "p-13",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The deque needs exactly two kinds of removal, and confusing them is the usual source of bugs:"
+        }
+      ]
+    },
+    {
+      "id": "l-14",
+      "type": "list",
+      "ordered": true,
+      "items": [
+        [
+          {
+            "text": "From the back — dominance. Before pushing index i, pop while the value at the back is <= nums[i]. Those candidates are permanently beaten."
+          }
+        ],
+        [
+          {
+            "text": "From the front — expiry. If the front index has fallen outside the window, pop it. It is still the largest of what remains in the deque, but it is no longer inside the window."
+          }
+        ]
+      ]
+    },
+    {
+      "id": "c-17",
+      "type": "callout",
+      "tone": "important",
+      "title": "Store indices, not values",
+      "content": [
+        {
+          "text": "Expiry is a question about position, not magnitude: \"is this element still inside the window?\" With only values in the deque you cannot answer it. Storing indices lets you compare against "
+        },
+        {
+          "text": "i - k",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and read the value with "
+        },
+        {
+          "text": "nums[front]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " when you need it."
+        }
+      ]
+    },
+    {
+      "id": "h-19",
+      "type": "heading",
+      "level": 2,
+      "text": "Walking through an example"
+    },
+    {
+      "id": "p-20",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "nums = [1, 3, -1, -3, 5, 3, 6, 7]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", "
+        },
+        {
+          "text": "k = 3",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". The deque column shows values for readability; the code holds their indices."
+        }
+      ]
+    },
+    {
+      "id": "t-21",
+      "type": "table",
+      "headers": [
+        "i",
+        "value",
+        "deque after both rules",
+        "window output"
+      ],
+      "rows": [
+        [
+          "0",
+          "1",
+          "[1]",
+          "— (window not full)"
+        ],
+        [
+          "1",
+          "3",
+          "[3]",
+          "— (1 was dominated)"
+        ],
+        [
+          "2",
+          "-1",
+          "[3, -1]",
+          "3"
+        ],
+        [
+          "3",
+          "-3",
+          "[3, -1, -3]",
+          "3"
+        ],
+        [
+          "4",
+          "5",
+          "[5]",
+          "5 (5 dominates everything)"
+        ],
+        [
+          "5",
+          "3",
+          "[5, 3]",
+          "5"
+        ],
+        [
+          "6",
+          "6",
+          "[6]",
+          "6"
+        ],
+        [
+          "7",
+          "7",
+          "[7]",
+          "7"
+        ]
+      ],
+      "caption": "Output: [3, 3, 5, 5, 6, 7]."
+    },
+    {
+      "id": "h-22",
+      "type": "heading",
+      "level": 2,
+      "text": "The code"
+    },
+    {
+      "id": "code-23",
+      "type": "code",
+      "language": "python",
+      "code": "from collections import deque\n\n\ndef max_sliding_window(nums, k):\n    window = deque()   # indices, values strictly decreasing front to back\n    out = []\n\n    for i, n in enumerate(nums):\n        # Dominance: anything smaller at the back is finished.\n        while window and nums[window[-1]] <= n:\n            window.pop()\n        window.append(i)\n\n        # Expiry: the front may have slid out of range.\n        if window[0] <= i - k:\n            window.popleft()\n\n        # Only emit once the first full window exists.\n        if i >= k - 1:\n            out.append(nums[window[0]])\n\n    return out\n",
+      "variants": [
+        {
+          "language": "javascript",
+          "code": "function maxSlidingWindow(nums, k) {\n  const window = []; // indices, values strictly decreasing front to back\n  const out = [];\n\n  for (let i = 0; i < nums.length; i += 1) {\n    // Dominance: anything smaller at the back is finished.\n    while (window.length > 0 && nums[window[window.length - 1]] <= nums[i]) {\n      window.pop();\n    }\n    window.push(i);\n\n    // Expiry: the front may have slid out of range.\n    if (window[0] <= i - k) window.shift();\n\n    if (i >= k - 1) out.push(nums[window[0]]);\n  }\n\n  return out;\n}\n"
+        },
+        {
+          "language": "cpp",
+          "code": "std::vector<long long> maxSlidingWindow(std::vector<long long> nums, long long k) {\n    std::deque<std::size_t> window;  // indices, values decreasing front to back\n    std::vector<long long> out;\n\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        // Dominance: anything smaller at the back is finished.\n        while (!window.empty() && nums[window.back()] <= nums[i]) window.pop_back();\n        window.push_back(i);\n\n        // Expiry: the front may have slid out of range.\n        if ((long long)window.front() + k <= (long long)i) window.pop_front();\n\n        if ((long long)i >= k - 1) out.push_back(nums[window.front()]);\n    }\n\n    return out;\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "h-24",
+      "type": "heading",
+      "level": 2,
+      "text": "Why the inner loop does not make it quadratic"
+    },
+    {
+      "id": "p-25",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "There is a "
+        },
+        {
+          "text": "while",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " loop inside a "
+        },
+        {
+          "text": "for",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " loop, which looks like O(n·k). It is not, and the argument is worth internalising because it recurs across amortised analyses."
+        }
+      ]
+    },
+    {
+      "id": "p-26",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Count the pushes. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "Each index is pushed exactly once, during its own iteration — n pushes in total. Each pop removes an index that was already pushed, so there can be at most n pops across the entire run, no matter how they cluster. One iteration may pop many; it can only do so because earlier iterations pushed them and did not pop."
+        }
+      ]
+    },
+    {
+      "id": "p-27",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Total work is therefore bounded by 2n deque operations plus n comparisons: O(n) time, and O(k) space because the deque never holds more than one window's worth of indices."
+        }
+      ]
+    },
+    {
+      "id": "t-28",
+      "type": "table",
+      "headers": [
+        "Approach",
+        "Time",
+        "Space",
+        "Why it loses"
+      ],
+      "rows": [
+        [
+          "Rescan each window",
+          "O(n·k)",
+          "O(1)",
+          "Repeats work on the k−1 shared elements"
+        ],
+        [
+          "Max-heap",
+          "O(n log k)",
+          "O(k)",
+          "Pays log k for order the array already implies"
+        ],
+        [
+          "Monotonic deque",
+          "O(n)",
+          "O(k)",
+          "—"
+        ]
+      ]
+    },
+    {
+      "id": "h-29",
+      "type": "heading",
+      "level": 2,
+      "text": "The mistakes that actually happen"
+    },
+    {
+      "id": "l-30",
+      "type": "list",
+      "ordered": false,
+      "items": [
+        [
+          {
+            "text": "Popping the front before checking dominance. Expiry must be tested against the current index after the push, or a front that is still valid gets discarded."
+          }
+        ],
+        [
+          {
+            "text": "Using < rather than <= in the dominance test. With equal values the deque keeps duplicates; the answer is still correct but the deque grows larger than it needs to. Either is defensible, but be deliberate about it."
+          }
+        ],
+        [
+          {
+            "text": "Emitting before the first full window. Nothing should be output until i reaches k − 1."
+          }
+        ],
+        [
+          {
+            "text": "Storing values instead of indices, which makes expiry impossible to detect."
+          }
+        ],
+        [
+          {
+            "text": "In JavaScript, shift() on a plain array is O(n) in the worst case. It is fine at these sizes, but a real deque is the honest structure."
+          }
+        ]
+      ]
+    },
+    {
+      "id": "c-36",
+      "type": "callout",
+      "tone": "tip",
+      "title": "Try it first",
+      "content": [
+        {
+          "text": "These pages give the whole solution away, so they are worth reading after an attempt rather than before. The problem is at "
+        },
+        {
+          "text": "/practices/sliding-window-maximum",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/practices/sliding-window-maximum"
+            }
+          ]
+        },
+        {
+          "text": " — "
+        },
+        {
+          "text": "the hidden cases include a window covering nearly the whole array, which is where O(n·k) collapses."
+        }
+      ]
+    }
+  ]
+}

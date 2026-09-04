@@ -1,0 +1,613 @@
+{
+  "slug": "edit-distance-solution",
+  "title": "Edit Distance: the Levenshtein Table, Row by Row",
+  "excerpt": "How the edit distance recurrence is built, why the three neighbours correspond to delete, insert and replace, and how to collapse the table to two rows.",
+  "authorName": "Nandscape",
+  "status": "published",
+  "publishedAt": "2026-09-04T00:00:00.000Z",
+  "tags": [
+    "dynamic programming",
+    "strings",
+    "solutions"
+  ],
+  "sectionSlug": "problems-and-solutions",
+  "position": 93,
+  "seoTitle": "Edit Distance (Levenshtein) Explained — O(n·m) Dynamic Programming",
+  "seoDescription": "A walkthrough of the edit distance algorithm: the recurrence, what each of the three neighbouring cells means, the base cases, and the O(min(n,m)) space optimisation.",
+  "keywords": [
+    "edit distance",
+    "levenshtein distance",
+    "dynamic programming",
+    "string algorithms",
+    "edit distance explained"
+  ],
+  "body": [
+    {
+      "id": "p-38",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Edit distance asks the fewest single-character edits — insert, delete or replace — that turn one string into another. Turning "
+        },
+        {
+          "text": "\"horse\"",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " into "
+        },
+        {
+          "text": "\"ros\"",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " takes three."
+        }
+      ]
+    },
+    {
+      "id": "p-39",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "It is the archetypal two-dimensional dynamic program, and the reason it is worth working through carefully is that the recurrence is short but every term in it means something specific. Getting the meanings straight is most of the work; the code is eight lines."
+        }
+      ]
+    },
+    {
+      "id": "c-40",
+      "type": "callout",
+      "tone": "note",
+      "title": "Key takeaways",
+      "content": [
+        {
+          "text": "Define d[i][j] as the distance between the first i characters of the source and the first j of the target. When the current characters match, the cost is whatever d[i-1][j-1] was — a free diagonal step. When they differ, it is one plus the cheapest of three neighbours, and each neighbour corresponds to exactly one edit operation. Only the previous row is ever read, so the table collapses to two rows."
+        }
+      ]
+    },
+    {
+      "id": "h-42",
+      "type": "heading",
+      "level": 2,
+      "text": "Setting up the subproblem"
+    },
+    {
+      "id": "p-43",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Let "
+        },
+        {
+          "text": "d[i][j]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " be the edit distance between the first "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " characters of "
+        },
+        {
+          "text": "source",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and the first "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " characters of "
+        },
+        {
+          "text": "target",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". The answer is "
+        },
+        {
+          "text": "d[n][m]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " for the full lengths."
+        }
+      ]
+    },
+    {
+      "id": "p-44",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The base cases come free. Turning a prefix of length "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " into the empty string means deleting every character, so "
+        },
+        {
+          "text": "d[i][0] = i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Building a prefix of length "
+        },
+        {
+          "text": "j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " out of nothing means inserting every character, so "
+        },
+        {
+          "text": "d[0][j] = j",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". That fills the first row and the first column before any real work starts."
+        }
+      ]
+    },
+    {
+      "id": "h-45",
+      "type": "heading",
+      "level": 2,
+      "text": "The recurrence, one term at a time"
+    },
+    {
+      "id": "p-46",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "For every other cell there are two cases."
+        }
+      ]
+    },
+    {
+      "id": "p-47",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The characters match. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "If "
+        },
+        {
+          "text": "source[i-1] == target[j-1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " then that character needs no edit at all, and the cost is exactly the cost of aligning everything before it: "
+        },
+        {
+          "text": "d[i][j] = d[i-1][j-1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". No plus one — this step is free."
+        }
+      ]
+    },
+    {
+      "id": "p-48",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The characters differ. ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "One edit is unavoidable, and there are three ways to spend it. Take the cheapest:"
+        }
+      ]
+    },
+    {
+      "id": "t-49",
+      "type": "table",
+      "headers": [
+        "Neighbour",
+        "Operation",
+        "Reading"
+      ],
+      "rows": [
+        [
+          "d[i-1][j-1]",
+          "replace",
+          "Swap source[i-1] for target[j-1], then align the rest"
+        ],
+        [
+          "d[i-1][j]",
+          "delete",
+          "Drop source[i-1], then align a shorter source against the same target"
+        ],
+        [
+          "d[i][j-1]",
+          "insert",
+          "Add target[j-1], then align the same source against a shorter target"
+        ]
+      ],
+      "caption": "d[i][j] = 1 + min(replace, delete, insert)"
+    },
+    {
+      "id": "c-50",
+      "type": "callout",
+      "tone": "important",
+      "title": "Which neighbour is which",
+      "content": [
+        {
+          "text": "The naming trips people up because the direction feels inverted. "
+        },
+        {
+          "text": "d[i-1][j]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " moves up a row, meaning one fewer source character — that is a "
+        },
+        {
+          "text": "delete",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": " from the source. "
+        },
+        {
+          "text": "d[i][j-1]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " moves left a column, meaning one fewer target character, which you must have "
+        },
+        {
+          "text": "inserted",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": ". Get these backwards and the code still runs and still returns a plausible number; it is simply wrong on asymmetric inputs."
+        }
+      ]
+    },
+    {
+      "id": "h-52",
+      "type": "heading",
+      "level": 2,
+      "text": "Walking through an example"
+    },
+    {
+      "id": "p-53",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "The table for "
+        },
+        {
+          "text": "\"horse\"",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " → "
+        },
+        {
+          "text": "\"ros\"",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Row 0 and column 0 are the base cases."
+        }
+      ]
+    },
+    {
+      "id": "t-54",
+      "type": "table",
+      "headers": [
+        "",
+        "\"\"",
+        "r",
+        "o",
+        "s"
+      ],
+      "rows": [
+        [
+          "\"\"",
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        [
+          "h",
+          "1",
+          "1",
+          "2",
+          "3"
+        ],
+        [
+          "o",
+          "2",
+          "2",
+          "1",
+          "2"
+        ],
+        [
+          "r",
+          "3",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "s",
+          "4",
+          "3",
+          "3",
+          "2"
+        ],
+        [
+          "e",
+          "5",
+          "4",
+          "4",
+          "3"
+        ]
+      ],
+      "caption": "The answer is the bottom-right cell: 3."
+    },
+    {
+      "id": "p-55",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Reading a path backwards from that corner recovers the edits: replace h with r, delete r, delete e."
+        }
+      ]
+    },
+    {
+      "id": "h-56",
+      "type": "heading",
+      "level": 2,
+      "text": "The code"
+    },
+    {
+      "id": "p-57",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Written with two rows rather than the full table, because each cell reads only the row above and the cell to its left."
+        }
+      ]
+    },
+    {
+      "id": "code-58",
+      "type": "code",
+      "language": "python",
+      "code": "def edit_distance(source, target):\n    # previous[j] is the distance between \"\" (or a shorter source prefix)\n    # and the first j characters of target. The empty source costs j inserts.\n    previous = list(range(len(target) + 1))\n\n    for i, a in enumerate(source, 1):\n        # Deleting i characters is the cost of turning this prefix into \"\".\n        current = [i] + [0] * len(target)\n        for j, b in enumerate(target, 1):\n            if a == b:\n                current[j] = previous[j - 1]          # free diagonal step\n            else:\n                current[j] = 1 + min(\n                    previous[j - 1],                  # replace\n                    previous[j],                      # delete from source\n                    current[j - 1],                   # insert into source\n                )\n        previous = current\n\n    return previous[len(target)]\n",
+      "variants": [
+        {
+          "language": "javascript",
+          "code": "function editDistance(source, target) {\n  // previous[j] = distance from a shorter source prefix to target[0..j).\n  let previous = Array.from({ length: target.length + 1 }, (_, j) => j);\n\n  for (let i = 1; i <= source.length; i += 1) {\n    const current = new Array(target.length + 1).fill(0);\n    current[0] = i; // deleting i characters gets this prefix to \"\"\n    for (let j = 1; j <= target.length; j += 1) {\n      current[j] = source[i - 1] === target[j - 1]\n        ? previous[j - 1]                              // free diagonal step\n        : 1 + Math.min(\n            previous[j - 1],                           // replace\n            previous[j],                               // delete from source\n            current[j - 1],                            // insert into source\n          );\n    }\n    previous = current;\n  }\n\n  return previous[target.length];\n}\n"
+        },
+        {
+          "language": "cpp",
+          "code": "long long editDistance(std::string source, std::string target) {\n    const std::size_t m = target.size();\n    std::vector<long long> previous(m + 1), current(m + 1);\n\n    // Empty source: j inserts to build the first j characters of target.\n    for (std::size_t j = 0; j <= m; ++j) previous[j] = (long long)j;\n\n    for (std::size_t i = 1; i <= source.size(); ++i) {\n        current[0] = (long long)i;  // i deletes to reach \"\"\n        for (std::size_t j = 1; j <= m; ++j) {\n            if (source[i - 1] == target[j - 1]) {\n                current[j] = previous[j - 1];            // free diagonal step\n            } else {\n                current[j] = 1 + std::min(previous[j - 1],          // replace\n                                 std::min(previous[j],              // delete\n                                          current[j - 1]));         // insert\n            }\n        }\n        previous = current;\n    }\n\n    return previous[m];\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "h-59",
+      "type": "heading",
+      "level": 2,
+      "text": "Complexity, and why the space optimisation is safe"
+    },
+    {
+      "id": "p-60",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Every cell is computed once from three constant-time lookups, so the running time is O(n·m). That is optimal in the general case: under the strong exponential time hypothesis no algorithm computes exact edit distance in O((n·m)^(1−ε)) time, so the table is not a stepping stone to something asymptotically better."
+        }
+      ]
+    },
+    {
+      "id": "p-61",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Space is the part you can improve. The recurrence reads only row "
+        },
+        {
+          "text": "i-1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and the cell immediately left in row "
+        },
+        {
+          "text": "i",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Nothing else in the table is ever consulted again, so keeping two rows is sufficient and space drops from O(n·m) to O(m). Swapping the arguments so the shorter string drives the row length makes it O(min(n, m))."
+        }
+      ]
+    },
+    {
+      "id": "c-62",
+      "type": "callout",
+      "tone": "warning",
+      "title": "The one thing the two-row version costs you",
+      "content": [
+        {
+          "text": "Reconstructing the actual edit script needs the whole table, because you have to walk backwards from the corner. If you only want the number, two rows are strictly better; if you want the operations, keep the full table."
+        }
+      ]
+    },
+    {
+      "id": "h-64",
+      "type": "heading",
+      "level": 2,
+      "text": "The mistakes that actually happen"
+    },
+    {
+      "id": "l-65",
+      "type": "list",
+      "ordered": false,
+      "items": [
+        [
+          {
+            "text": "Forgetting the base row and column. A table of zeros yields 0 for every pair of strings, which looks like a subtle bug and is actually a missing initialisation."
+          }
+        ],
+        [
+          {
+            "text": "Adding one on a match. The diagonal step is free; adding one turns edit distance into something that counts aligned characters."
+          }
+        ],
+        [
+          {
+            "text": "Reading current[j] instead of previous[j] for the delete case. current[j] has not been written yet on this pass, so the value is stale from two rows ago."
+          }
+        ],
+        [
+          {
+            "text": "Off-by-one between string indices and table indices. The table is (n+1) x (m+1) and cell [i][j] refers to characters i-1 and j-1."
+          }
+        ]
+      ]
+    },
+    {
+      "id": "c-70",
+      "type": "callout",
+      "tone": "tip",
+      "title": "Try it first",
+      "content": [
+        {
+          "text": "These pages give the whole solution away, so they are worth reading after an attempt rather than before. The problem is at "
+        },
+        {
+          "text": "/practices/edit-distance",
+          "marks": [
+            {
+              "kind": "link",
+              "href": "/practices/edit-distance"
+            }
+          ]
+        },
+        {
+          "text": " — "
+        },
+        {
+          "text": "the hidden cases include both strings empty, one empty, and a pair differing only at the ends."
+        }
+      ]
+    }
+  ]
+}

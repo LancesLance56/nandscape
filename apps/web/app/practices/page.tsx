@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PracticeNav } from "@/components/practices/practice-nav";
+import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { PracticeList } from "@/components/practices/practice-list";
 import { getCurrentUser } from "@/lib/auth/current-user";
@@ -34,13 +34,12 @@ export default async function PracticesPage() {
 
   return (
     <>
-      <PracticeNav />
-      {/* Same container as every other list page on the site (`max-w-330`),
-          so the coding catalogue lines up with the logic one rather than
-          running edge to edge beside it. Only the top padding differs: the
-          coding section keeps its own 3rem bar, where the rest of the site has
-          the 5rem navbar and needs `pt-32`. */}
-      <main className="mx-auto max-w-330 px-6 pb-24 pt-16 sm:px-10">
+      <Navbar />
+      {/* Identical to /puzzles, deliberately: the catalogue is an ordinary site
+          page and carries the ordinary site chrome. The slim PracticeNav
+          belongs to the problem workspace, where every vertical pixel goes to
+          the editor - browsing has no such need. */}
+      <main className="mx-auto max-w-330 px-6 pb-24 pt-32 sm:px-10">
         <div className="mb-8 max-w-2xl">
           <div className="mb-3 flex items-center gap-2 text-sm font-medium text-copper-dark">
             <span className="h-1.75 w-1.75 rounded-full bg-copper" />
