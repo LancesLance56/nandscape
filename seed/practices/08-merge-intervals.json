@@ -13,7 +13,7 @@
     "cpp"
   ],
   "compareMode": "exact",
-  "epsilon": 1e-06,
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -26,11 +26,11 @@
     ],
     "returns": "int[][]"
   },
-  "statement": "Each entry of `intervals` is a pair `[start, end]` with `start <= end`. Merge every pair that overlaps or touches, and return the result sorted by start.\n\nTwo intervals touch when one ends exactly where the next begins: `[1, 4]` and `[4, 5]` merge into `[1, 5]`.\n\n### Constraints\n\n- 1 ≤ intervals.length ≤ 10,000\n- -10⁹ ≤ start ≤ end ≤ 10⁹\n- The input is **not** sorted\n\n### Example\n\n```\n[[1,3], [2,6], [8,10], [15,18]]  ->  [[1,6], [8,10], [15,18]]\n```\n\n> **Sort first**\n>\n> Once the intervals are in order of start, an interval can only ever overlap the one you are currently building — so a single pass finishes the job. Without sorting you are back to comparing every pair.",
+  "statement": "Each entry of `intervals` is a pair `[start, end]` with `start <= end`. Merge every pair that overlaps or touches, and return the result sorted by start.\n\nTwo intervals touch when one ends exactly where the next begins: `[1, 4]` and `[4, 5]` merge into `[1, 5]`.\n\n### Constraints\n\n- 1 ≤ intervals.length ≤ 10,000\n- -10⁹ ≤ start ≤ end ≤ 10⁹\n- The input is **not** sorted",
   "starterCode": {
+    "cpp": "std::vector<std::vector<long long> > mergeIntervals(std::vector<std::vector<long long> > intervals) {\n    // Return non-overlapping intervals, sorted by start.\n    return {};\n}\n",
     "python": "def merge_intervals(intervals):\n    # Return non-overlapping intervals, sorted by start.\n    pass\n",
-    "javascript": "function mergeIntervals(intervals) {\n  // Return non-overlapping intervals, sorted by start.\n}\n",
-    "cpp": "std::vector<std::vector<long long> > mergeIntervals(std::vector<std::vector<long long> > intervals) {\n    // Return non-overlapping intervals, sorted by start.\n    return {};\n}\n"
+    "javascript": "function mergeIntervals(intervals) {\n  // Return non-overlapping intervals, sorted by start.\n}\n"
   },
   "visibleTests": [
     {
@@ -292,8 +292,8 @@
     }
   ],
   "solutions": {
+    "cpp": "std::vector<std::vector<long long> > mergeIntervals(std::vector<std::vector<long long> > intervals) {\n    std::sort(intervals.begin(), intervals.end());\n    std::vector<std::vector<long long> > out;\n    for (std::size_t i = 0; i < intervals.size(); ++i) {\n        long long start = intervals[i][0], end = intervals[i][1];\n        if (!out.empty() && start <= out.back()[1]) {\n            out.back()[1] = std::max(out.back()[1], end);\n        } else {\n            std::vector<long long> pair;\n            pair.push_back(start);\n            pair.push_back(end);\n            out.push_back(pair);\n        }\n    }\n    return out;\n}\n",
     "python": "def merge_intervals(intervals):\n    out = []\n    for start, end in sorted(intervals):\n        if out and start <= out[-1][1]:\n            out[-1][1] = max(out[-1][1], end)\n        else:\n            out.append([start, end])\n    return out\n",
-    "javascript": "function mergeIntervals(intervals) {\n  const sorted = [...intervals].sort((a, b) => a[0] - b[0] || a[1] - b[1]);\n  const out = [];\n  for (const [start, end] of sorted) {\n    const last = out[out.length - 1];\n    if (last && start <= last[1]) last[1] = Math.max(last[1], end);\n    else out.push([start, end]);\n  }\n  return out;\n}\n",
-    "cpp": "std::vector<std::vector<long long> > mergeIntervals(std::vector<std::vector<long long> > intervals) {\n    std::sort(intervals.begin(), intervals.end());\n    std::vector<std::vector<long long> > out;\n    for (std::size_t i = 0; i < intervals.size(); ++i) {\n        long long start = intervals[i][0], end = intervals[i][1];\n        if (!out.empty() && start <= out.back()[1]) {\n            out.back()[1] = std::max(out.back()[1], end);\n        } else {\n            std::vector<long long> pair;\n            pair.push_back(start);\n            pair.push_back(end);\n            out.push_back(pair);\n        }\n    }\n    return out;\n}\n"
+    "javascript": "function mergeIntervals(intervals) {\n  const sorted = [...intervals].sort((a, b) => a[0] - b[0] || a[1] - b[1]);\n  const out = [];\n  for (const [start, end] of sorted) {\n    const last = out[out.length - 1];\n    if (last && start <= last[1]) last[1] = Math.max(last[1], end);\n    else out.push([start, end]);\n  }\n  return out;\n}\n"
   }
 }

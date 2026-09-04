@@ -130,10 +130,10 @@
       "id": "w-counting",
       "data": {
         "size": 14,
+        "layout": "compact",
         "preset": "random",
         "algorithm": "counting",
-        "showComparison": false,
-        "layout": "compact"
+        "showComparison": false
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

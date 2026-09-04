@@ -13,7 +13,7 @@
     "cpp"
   ],
   "compareMode": "exact",
-  "epsilon": 1e-06,
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -30,11 +30,11 @@
     ],
     "returns": "bool"
   },
-  "statement": "There are `n` courses numbered `0` to `n - 1`. Each entry `[a, b]` of `prerequisites` means course `b` must be taken before course `a`.\n\nReturn `true` if every course can be completed, and `false` otherwise.\n\n### Constraints\n\n- 1 ≤ n ≤ 5,000\n- 0 ≤ prerequisites.length ≤ 10,000\n- Duplicate pairs may appear\n\n### Example\n\n```\nn = 2, prerequisites = [[1, 0]]        -> true   (take 0, then 1)\nn = 2, prerequisites = [[1, 0], [0, 1]] -> false  (each needs the other)\n```\n\n> **What makes it impossible**\n>\n> Exactly one thing: a cycle in the prerequisite graph. So this is a cycle-detection question wearing a timetable costume. Either peel off courses with no remaining prerequisites until none are left (Kahn's algorithm), or depth-first search while tracking the nodes on the current path.\n>\n> A node already finished is not a cycle — only one still on the stack is.",
+  "statement": "There are `n` courses numbered `0` to `n - 1`. Each entry `[a, b]` of `prerequisites` means course `b` must be taken before course `a`.\n\nReturn `true` if every course can be completed, and `false` otherwise.\n\n### Constraints\n\n- 1 ≤ n ≤ 5,000\n- 0 ≤ prerequisites.length ≤ 10,000\n- Duplicate pairs may appear",
   "starterCode": {
+    "cpp": "bool canFinish(long long n, std::vector<std::vector<long long> > prerequisites) {\n    // True if every course can be completed.\n    return false;\n}\n",
     "python": "def can_finish(n, prerequisites):\n    # True if every course can be completed.\n    pass\n",
-    "javascript": "function canFinish(n, prerequisites) {\n  // True if every course can be completed.\n}\n",
-    "cpp": "bool canFinish(long long n, std::vector<std::vector<long long> > prerequisites) {\n    // True if every course can be completed.\n    return false;\n}\n"
+    "javascript": "function canFinish(n, prerequisites) {\n  // True if every course can be completed.\n}\n"
   },
   "visibleTests": [
     {
@@ -218,8 +218,8 @@
     }
   ],
   "solutions": {
+    "cpp": "bool canFinish(long long n, std::vector<std::vector<long long> > prerequisites) {\n    std::vector<std::vector<long long> > adjacency((std::size_t)n);\n    std::vector<long long> indegree((std::size_t)n, 0);\n    for (std::size_t i = 0; i < prerequisites.size(); ++i) {\n        long long after = prerequisites[i][0], before = prerequisites[i][1];\n        adjacency[(std::size_t)before].push_back(after);\n        indegree[(std::size_t)after] += 1;\n    }\n    std::vector<long long> queue;\n    for (long long i = 0; i < n; ++i) if (indegree[(std::size_t)i] == 0) queue.push_back(i);\n    long long seen = 0;\n    while (!queue.empty()) {\n        long long node = queue.back();\n        queue.pop_back();\n        ++seen;\n        const std::vector<long long>& next = adjacency[(std::size_t)node];\n        for (std::size_t k = 0; k < next.size(); ++k) {\n            if (--indegree[(std::size_t)next[k]] == 0) queue.push_back(next[k]);\n        }\n    }\n    return seen == n;\n}\n",
     "python": "def can_finish(n, prerequisites):\n    adjacency = [[] for _ in range(n)]\n    indegree = [0] * n\n    for after, before in prerequisites:\n        adjacency[before].append(after)\n        indegree[after] += 1\n\n    queue = [i for i in range(n) if indegree[i] == 0]\n    seen = 0\n    while queue:\n        node = queue.pop()\n        seen += 1\n        for nxt in adjacency[node]:\n            indegree[nxt] -= 1\n            if indegree[nxt] == 0:\n                queue.append(nxt)\n    return seen == n\n",
-    "javascript": "function canFinish(n, prerequisites) {\n  const adjacency = Array.from({ length: n }, () => []);\n  const indegree = new Array(n).fill(0);\n  for (const [after, before] of prerequisites) {\n    adjacency[before].push(after);\n    indegree[after] += 1;\n  }\n  const queue = [];\n  for (let i = 0; i < n; i += 1) if (indegree[i] === 0) queue.push(i);\n  let seen = 0;\n  while (queue.length > 0) {\n    const node = queue.pop();\n    seen += 1;\n    for (const next of adjacency[node]) {\n      indegree[next] -= 1;\n      if (indegree[next] === 0) queue.push(next);\n    }\n  }\n  return seen === n;\n}\n",
-    "cpp": "bool canFinish(long long n, std::vector<std::vector<long long> > prerequisites) {\n    std::vector<std::vector<long long> > adjacency((std::size_t)n);\n    std::vector<long long> indegree((std::size_t)n, 0);\n    for (std::size_t i = 0; i < prerequisites.size(); ++i) {\n        long long after = prerequisites[i][0], before = prerequisites[i][1];\n        adjacency[(std::size_t)before].push_back(after);\n        indegree[(std::size_t)after] += 1;\n    }\n    std::vector<long long> queue;\n    for (long long i = 0; i < n; ++i) if (indegree[(std::size_t)i] == 0) queue.push_back(i);\n    long long seen = 0;\n    while (!queue.empty()) {\n        long long node = queue.back();\n        queue.pop_back();\n        ++seen;\n        const std::vector<long long>& next = adjacency[(std::size_t)node];\n        for (std::size_t k = 0; k < next.size(); ++k) {\n            if (--indegree[(std::size_t)next[k]] == 0) queue.push_back(next[k]);\n        }\n    }\n    return seen == n;\n}\n"
+    "javascript": "function canFinish(n, prerequisites) {\n  const adjacency = Array.from({ length: n }, () => []);\n  const indegree = new Array(n).fill(0);\n  for (const [after, before] of prerequisites) {\n    adjacency[before].push(after);\n    indegree[after] += 1;\n  }\n  const queue = [];\n  for (let i = 0; i < n; i += 1) if (indegree[i] === 0) queue.push(i);\n  let seen = 0;\n  while (queue.length > 0) {\n    const node = queue.pop();\n    seen += 1;\n    for (const next of adjacency[node]) {\n      indegree[next] -= 1;\n      if (indegree[next] === 0) queue.push(next);\n    }\n  }\n  return seen === n;\n}\n"
   }
 }

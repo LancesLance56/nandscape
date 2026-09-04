@@ -12,7 +12,7 @@
     "cpp"
   ],
   "compareMode": "exact",
-  "epsilon": 1e-06,
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -25,11 +25,11 @@
     ],
     "returns": "int"
   },
-  "statement": "Return how many characters of `text` are vowels.\n\nThe vowels are `a`, `e`, `i`, `o` and `u`. Both cases count, so `A` and `a` are each a vowel. Every other character — consonants, digits, spaces, punctuation — is not.\n\n### Constraints\n\n- 0 ≤ text.length ≤ 100,000\n- `text` contains printable ASCII only\n\n> **Where this usually goes wrong**\n>\n> Uppercase. Lowercasing the character before the test is the shortest fix, and it costs nothing.",
+  "statement": "Return how many characters of `text` are vowels.\n\nThe vowels are `a`, `e`, `i`, `o` and `u`. Both cases count, so `A` and `a` are each a vowel. Every other character — consonants, digits, spaces, punctuation — is not.\n\n### Constraints\n\n- 0 ≤ text.length ≤ 100,000\n- `text` contains printable ASCII only",
   "starterCode": {
+    "cpp": "long long countVowels(std::string text) {\n    // Return the number of vowels in text.\n    return 0;\n}\n",
     "python": "def count_vowels(text):\n    # Return the number of vowels in text.\n    pass\n",
-    "javascript": "function countVowels(text) {\n  // Return the number of vowels in text.\n}\n",
-    "cpp": "long long countVowels(std::string text) {\n    // Return the number of vowels in text.\n    return 0;\n}\n"
+    "javascript": "function countVowels(text) {\n  // Return the number of vowels in text.\n}\n"
   },
   "visibleTests": [
     {
@@ -93,8 +93,8 @@
     }
   ],
   "solutions": {
+    "cpp": "long long countVowels(std::string text) {\n    long long total = 0;\n    for (std::size_t i = 0; i < text.size(); ++i) {\n        char c = (char)std::tolower((unsigned char)text[i]);\n        if (c=='a'||c=='e'||c=='i'||c=='o'||c=='u') ++total;\n    }\n    return total;\n}\n",
     "python": "def count_vowels(text):\n    return sum(1 for c in text.lower() if c in 'aeiou')\n",
-    "javascript": "function countVowels(text) {\n  let total = 0;\n  for (const c of text.toLowerCase()) {\n    if ('aeiou'.includes(c)) total += 1;\n  }\n  return total;\n}\n",
-    "cpp": "long long countVowels(std::string text) {\n    long long total = 0;\n    for (std::size_t i = 0; i < text.size(); ++i) {\n        char c = (char)std::tolower((unsigned char)text[i]);\n        if (c=='a'||c=='e'||c=='i'||c=='o'||c=='u') ++total;\n    }\n    return total;\n}\n"
+    "javascript": "function countVowels(text) {\n  let total = 0;\n  for (const c of text.toLowerCase()) {\n    if ('aeiou'.includes(c)) total += 1;\n  }\n  return total;\n}\n"
   }
 }

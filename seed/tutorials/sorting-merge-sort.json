@@ -201,10 +201,10 @@
       "id": "w-vis",
       "data": {
         "size": 8,
+        "layout": "log",
         "preset": "random",
         "algorithm": "merge",
-        "showComparison": false,
-        "layout": "log"
+        "showComparison": false
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

@@ -661,13 +661,13 @@
       "id": "elem-18",
       "data": {
         "size": 14,
+        "layout": "race",
         "preset": "nearly",
         "algorithms": [
           "bubble",
           "selection",
           "insertion"
-        ],
-        "layout": "race"
+        ]
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

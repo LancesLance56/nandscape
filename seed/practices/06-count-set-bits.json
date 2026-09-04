@@ -12,7 +12,7 @@
     "cpp"
   ],
   "compareMode": "exact",
-  "epsilon": 1e-06,
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -25,11 +25,11 @@
     ],
     "returns": "int[]"
   },
-  "statement": "For each value in `numbers`, count how many `1` bits its binary representation has, and return the counts in the same order.\n\nThis is the population count — the same thing a hardware adder tree computes, and the reason a 3-bit population counter shows up in the logic problems.\n\n### Constraints\n\n- 1 ≤ numbers.length ≤ 10,000\n- 0 ≤ numbers[i] ≤ 2⁵³\n\n### Example\n\n```\n9  -> 1001  -> 2 set bits\n7  -> 0111  -> 3 set bits\n```\n\n> **A useful identity**\n>\n> `n & (n - 1)` clears the lowest set bit. Looping until the value reaches zero therefore runs once per set bit, not once per bit position.",
+  "statement": "For each value in `numbers`, count how many `1` bits its binary representation has, and return the counts in the same order.\n\nThis is the population count — the same thing a hardware adder tree computes, and the reason a 3-bit population counter shows up in the logic problems.\n\n### Constraints\n\n- 1 ≤ numbers.length ≤ 10,000\n- 0 ≤ numbers[i] ≤ 2⁵³",
   "starterCode": {
+    "cpp": "std::vector<long long> countSetBits(std::vector<long long> numbers) {\n    // Return one count per input, in the same order.\n    return {};\n}\n",
     "python": "def count_set_bits(numbers):\n    # Return one count per input, in the same order.\n    pass\n",
-    "javascript": "function countSetBits(numbers) {\n  // Return one count per input, in the same order.\n}\n",
-    "cpp": "std::vector<long long> countSetBits(std::vector<long long> numbers) {\n    // Return one count per input, in the same order.\n    return {};\n}\n"
+    "javascript": "function countSetBits(numbers) {\n  // Return one count per input, in the same order.\n}\n"
   },
   "visibleTests": [
     {
@@ -153,8 +153,8 @@
     }
   ],
   "solutions": {
+    "cpp": "std::vector<long long> countSetBits(std::vector<long long> numbers) {\n    std::vector<long long> out;\n    for (std::size_t i = 0; i < numbers.size(); ++i) {\n        unsigned long long v = (unsigned long long)numbers[i];\n        long long count = 0;\n        while (v) { v &= v - 1ULL; ++count; }\n        out.push_back(count);\n    }\n    return out;\n}\n",
     "python": "def count_set_bits(numbers):\n    return [bin(n).count('1') for n in numbers]\n",
-    "javascript": "function countSetBits(numbers) {\n  return numbers.map((n) => {\n    let value = BigInt(n);\n    let count = 0;\n    while (value > 0n) { value &= value - 1n; count += 1; }\n    return count;\n  });\n}\n",
-    "cpp": "std::vector<long long> countSetBits(std::vector<long long> numbers) {\n    std::vector<long long> out;\n    for (std::size_t i = 0; i < numbers.size(); ++i) {\n        unsigned long long v = (unsigned long long)numbers[i];\n        long long count = 0;\n        while (v) { v &= v - 1ULL; ++count; }\n        out.push_back(count);\n    }\n    return out;\n}\n"
+    "javascript": "function countSetBits(numbers) {\n  return numbers.map((n) => {\n    let value = BigInt(n);\n    let count = 0;\n    while (value > 0n) { value &= value - 1n; count += 1; }\n    return count;\n  });\n}\n"
   }
 }

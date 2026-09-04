@@ -13,7 +13,7 @@
     "cpp"
   ],
   "compareMode": "exact",
-  "epsilon": 1e-06,
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -26,11 +26,11 @@
     ],
     "returns": "int"
   },
-  "statement": "Return the length of the longest **strictly increasing** subsequence of `nums`.\n\nA subsequence keeps the original order but may skip any number of elements — it does not have to be contiguous.\n\n### Constraints\n\n- 1 ≤ nums.length ≤ 100,000\n- -10⁹ ≤ nums[i] ≤ 10⁹\n\n### Example\n\n```\nnums = [10, 9, 2, 5, 3, 7, 101, 18]\n```\n\n`[2, 3, 7, 18]` has length `4`, and nothing longer exists.\n\n> **The O(n²) version will time out**\n>\n> Comparing each element against every earlier one is the obvious dynamic program and it is correct, but the largest hidden case has 100,000 elements.\n>\n> The faster route keeps a list of the smallest possible tail for a subsequence of each length. That list is always sorted, so each new value is placed by binary search — replacing the first tail that is not smaller than it, or extending the list. The list is not itself a valid subsequence, but its **length** is the answer.",
+  "statement": "Return the length of the longest **strictly increasing** subsequence of `nums`.\n\nA subsequence keeps the original order but may skip any number of elements — it does not have to be contiguous.\n\n### Constraints\n\n- 1 ≤ nums.length ≤ 100,000\n- -10⁹ ≤ nums[i] ≤ 10⁹\n\n> **O(n²) will time out!**",
   "starterCode": {
+    "cpp": "long long lengthOfLis(std::vector<long long> nums) {\n    // Length of the longest strictly increasing subsequence.\n    return 0;\n}\n",
     "python": "def length_of_lis(nums):\n    # Length of the longest strictly increasing subsequence.\n    pass\n",
-    "javascript": "function lengthOfLis(nums) {\n  // Length of the longest strictly increasing subsequence.\n}\n",
-    "cpp": "long long lengthOfLis(std::vector<long long> nums) {\n    // Length of the longest strictly increasing subsequence.\n    return 0;\n}\n"
+    "javascript": "function lengthOfLis(nums) {\n  // Length of the longest strictly increasing subsequence.\n}\n"
   },
   "visibleTests": [
     {
@@ -168,8 +168,8 @@
     }
   ],
   "solutions": {
+    "cpp": "long long lengthOfLis(std::vector<long long> nums) {\n    std::vector<long long> tails;\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        std::vector<long long>::iterator it =\n            std::lower_bound(tails.begin(), tails.end(), nums[i]);\n        if (it == tails.end()) tails.push_back(nums[i]);\n        else *it = nums[i];\n    }\n    return (long long)tails.size();\n}\n",
     "python": "import bisect\n\n\ndef length_of_lis(nums):\n    tails = []\n    for n in nums:\n        i = bisect.bisect_left(tails, n)\n        if i == len(tails):\n            tails.append(n)\n        else:\n            tails[i] = n\n    return len(tails)\n",
-    "javascript": "function lengthOfLis(nums) {\n  const tails = [];\n  for (const n of nums) {\n    let lo = 0;\n    let hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >> 1;\n      if (tails[mid] < n) lo = mid + 1; else hi = mid;\n    }\n    if (lo === tails.length) tails.push(n); else tails[lo] = n;\n  }\n  return tails.length;\n}\n",
-    "cpp": "long long lengthOfLis(std::vector<long long> nums) {\n    std::vector<long long> tails;\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        std::vector<long long>::iterator it =\n            std::lower_bound(tails.begin(), tails.end(), nums[i]);\n        if (it == tails.end()) tails.push_back(nums[i]);\n        else *it = nums[i];\n    }\n    return (long long)tails.size();\n}\n"
+    "javascript": "function lengthOfLis(nums) {\n  const tails = [];\n  for (const n of nums) {\n    let lo = 0;\n    let hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >> 1;\n      if (tails[mid] < n) lo = mid + 1; else hi = mid;\n    }\n    if (lo === tails.length) tails.push(n); else tails[lo] = n;\n  }\n  return tails.length;\n}\n"
   }
 }

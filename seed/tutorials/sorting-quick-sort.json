@@ -163,10 +163,10 @@
       "id": "w-vis",
       "data": {
         "size": 7,
+        "layout": "compact",
         "preset": "random",
         "algorithm": "quick",
-        "showComparison": false,
-        "layout": "compact"
+        "showComparison": false
       },
       "type": "interactive",
       "widget": "sorting-visualizer"
@@ -416,13 +416,13 @@
       "id": "w-compare",
       "data": {
         "size": 12,
+        "layout": "race",
         "preset": "sorted",
         "algorithms": [
           "quick",
           "merge",
           "heap"
-        ],
-        "layout": "race"
+        ]
       },
       "type": "interactive",
       "widget": "sorting-visualizer"

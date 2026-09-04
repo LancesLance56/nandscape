@@ -2,7 +2,7 @@
   "slug": "climbing-stairs",
   "title": "Climbing Stairs",
   "summary": "Count the distinct ways to climb n steps taking one or two at a time.",
-  "difficulty": "easy",
+  "difficulty": "medium",
   "tags": [
     "dynamic programming",
     "recursion"
@@ -26,7 +26,7 @@
     ],
     "returns": "int"
   },
-  "statement": "You are climbing a staircase with `n` steps. Each move takes you up either one step or two. Return how many distinct sequences of moves reach the top.\n\n### Constraints\n\n- 1 ≤ n ≤ 45\n\n> **Where the recursion comes from**\n>\n> The last move was either one step or two, so the ways to reach step n are the ways to reach n-1 plus the ways to reach n-2. Written as plain recursion that recomputes the same subproblems exponentially and will time out around n = 40; the fix is to remember each answer as you go, which is the whole idea behind the [Dynamic Programming](/tutorials) tutorial.\n",
+  "statement": "You are climbing a staircase with `n` steps. Each move takes you up either one step or two. Return how many distinct sequences of moves reach the top.\n\n### Constraints\n\n- 1 ≤ n ≤ 45\n\n> **Stuck?**\n>\n> Read the [Dynamic Programming](/tutorials) tutorial, it covers what you need to know.\n",
   "starterCode": {
     "cpp": "long long climbStairs(long long n) {\n    // Return the number of distinct ways to climb n steps.\n    return 0;\n}\n",
     "python": "def climb_stairs(n):\n    # Return the number of distinct ways to climb n steps.\n    pass\n",

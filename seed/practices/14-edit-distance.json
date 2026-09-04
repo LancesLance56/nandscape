@@ -13,7 +13,7 @@
     "cpp"
   ],
   "compareMode": "exact",
-  "epsilon": 1e-06,
+  "epsilon": 0.000001,
   "timeLimitMs": 2000,
   "memoryLimitMb": 256,
   "signature": {
@@ -30,11 +30,11 @@
     ],
     "returns": "int"
   },
-  "statement": "Return the minimum number of single-character edits needed to turn `source` into `target`.\n\nThe permitted edits are **insert**, **delete** and **replace**, each costing one.\n\n### Constraints\n\n- 0 ≤ source.length, target.length ≤ 500\n- Lowercase English letters only\n\n### Example\n\n```\nsource = \"horse\", target = \"ros\"   ->  3\n```\n\n`horse → rorse` (replace h), `rorse → rose` (delete r), `rose → ros` (delete e).\n\n> **Build it from the corners**\n>\n> Let `d[i][j]` be the distance between the first `i` characters of `source` and the first `j` of `target`. Turning something into the empty string costs one delete per character, which gives you the first row and column for free.\n>\n> After that each cell is either a free diagonal step, when the two characters match, or one plus the cheapest of its three neighbours.",
+  "statement": "Return the minimum number of single-character edits needed to turn `source` into `target`.\n\nThe permitted edits are **insert**, **delete** and **replace**, each costing one.\n\n### Constraints\n\n- 0 ≤ source.length, target.length ≤ 500\n- Lowercase English letters only",
   "starterCode": {
+    "cpp": "long long editDistance(std::string source, std::string target) {\n    // Fewest insert/delete/replace operations turning source into target.\n    return 0;\n}\n",
     "python": "def edit_distance(source, target):\n    # Fewest insert/delete/replace operations turning source into target.\n    pass\n",
-    "javascript": "function editDistance(source, target) {\n  // Fewest insert/delete/replace operations turning source into target.\n}\n",
-    "cpp": "long long editDistance(std::string source, std::string target) {\n    // Fewest insert/delete/replace operations turning source into target.\n    return 0;\n}\n"
+    "javascript": "function editDistance(source, target) {\n  // Fewest insert/delete/replace operations turning source into target.\n}\n"
   },
   "visibleTests": [
     {
@@ -119,8 +119,8 @@
     }
   ],
   "solutions": {
+    "cpp": "long long editDistance(std::string source, std::string target) {\n    std::size_t m = target.size();\n    std::vector<long long> previous(m + 1), current(m + 1);\n    for (std::size_t j = 0; j <= m; ++j) previous[j] = (long long)j;\n    for (std::size_t i = 1; i <= source.size(); ++i) {\n        current[0] = (long long)i;\n        for (std::size_t j = 1; j <= m; ++j) {\n            if (source[i - 1] == target[j - 1]) current[j] = previous[j - 1];\n            else current[j] = 1 + std::min(previous[j - 1], std::min(previous[j], current[j - 1]));\n        }\n        previous = current;\n    }\n    return previous[m];\n}\n",
     "python": "def edit_distance(source, target):\n    previous = list(range(len(target) + 1))\n    for i, a in enumerate(source, 1):\n        current = [i] + [0] * len(target)\n        for j, b in enumerate(target, 1):\n            if a == b:\n                current[j] = previous[j - 1]\n            else:\n                current[j] = 1 + min(previous[j - 1], previous[j], current[j - 1])\n        previous = current\n    return previous[len(target)]\n",
-    "javascript": "function editDistance(source, target) {\n  let previous = Array.from({ length: target.length + 1 }, (_, j) => j);\n  for (let i = 1; i <= source.length; i += 1) {\n    const current = new Array(target.length + 1).fill(0);\n    current[0] = i;\n    for (let j = 1; j <= target.length; j += 1) {\n      current[j] = source[i - 1] === target[j - 1]\n        ? previous[j - 1]\n        : 1 + Math.min(previous[j - 1], previous[j], current[j - 1]);\n    }\n    previous = current;\n  }\n  return previous[target.length];\n}\n",
-    "cpp": "long long editDistance(std::string source, std::string target) {\n    std::size_t m = target.size();\n    std::vector<long long> previous(m + 1), current(m + 1);\n    for (std::size_t j = 0; j <= m; ++j) previous[j] = (long long)j;\n    for (std::size_t i = 1; i <= source.size(); ++i) {\n        current[0] = (long long)i;\n        for (std::size_t j = 1; j <= m; ++j) {\n            if (source[i - 1] == target[j - 1]) current[j] = previous[j - 1];\n            else current[j] = 1 + std::min(previous[j - 1], std::min(previous[j], current[j - 1]));\n        }\n        previous = current;\n    }\n    return previous[m];\n}\n"
+    "javascript": "function editDistance(source, target) {\n  let previous = Array.from({ length: target.length + 1 }, (_, j) => j);\n  for (let i = 1; i <= source.length; i += 1) {\n    const current = new Array(target.length + 1).fill(0);\n    current[0] = i;\n    for (let j = 1; j <= target.length; j += 1) {\n      current[j] = source[i - 1] === target[j - 1]\n        ? previous[j - 1]\n        : 1 + Math.min(previous[j - 1], previous[j], current[j - 1]);\n    }\n    previous = current;\n  }\n  return previous[target.length];\n}\n"
   }
 }
