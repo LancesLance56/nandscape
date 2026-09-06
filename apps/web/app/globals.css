@@ -505,3 +505,89 @@ body {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Flowchart editor chrome.
+
+   A desktop-application palette, scoped to `.fe-root` so it cannot leak into
+   the site. Deliberately its own set rather than the site tokens: this is a
+   drawing tool whose chrome has to recede behind the artwork, and the site's
+   ink-wash surfaces are tuned for reading prose on a page, not for framing a
+   white canvas someone is working on for an hour.
+
+   Both themes are defined here, so the editor follows the site's toggle
+   without a single dark rule of its own anywhere else.
+   --------------------------------------------------------------------------- */
+
+.fe-root {
+  --fe-shell: #f1f3f6;
+  --fe-panel: #fbfcfd;
+  --fe-panel-2: #eef1f5;
+  --fe-canvas: #dfe3e9;
+  --fe-page: #ffffff;
+  --fe-line: #d3d9e2;
+  --fe-hover: #e6eaf1;
+  --fe-field: #ffffff;
+
+  --fe-ink: #1f2733;
+  --fe-muted: #6b7686;
+  --fe-disabled: #b3bcc9;
+  --fe-icon: #4a6180;
+  --fe-link: #2f6fd0;
+
+  --fe-accent: #e0a21a;
+  --fe-accent-soft: #fdf0cd;
+  --fe-dot: #e0a21a;
+  --fe-guide: #e1543b;
+
+  --fe-grid: #e7ebf1;
+  --fe-symbol: #3c516d;
+  --fe-symbol-fill: #ffffff;
+}
+
+.dark .fe-root {
+  --fe-shell: #1c1f24;
+  --fe-panel: #23272e;
+  --fe-panel-2: #2b3038;
+  --fe-canvas: #14161a;
+  --fe-page: #ffffff;
+  --fe-line: #3a4048;
+  --fe-hover: #333942;
+  --fe-field: #1a1d22;
+
+  --fe-ink: #dfe3ea;
+  --fe-muted: #8e98a6;
+  --fe-disabled: #565e6a;
+  --fe-icon: #9fb4d0;
+  --fe-link: #7ba9ee;
+
+  --fe-accent: #e8b93c;
+  --fe-accent-soft: #4a3c14;
+  --fe-dot: #e8b93c;
+  --fe-guide: #f0715a;
+
+  --fe-grid: #e9edf2;
+  --fe-symbol: #c3d0e2;
+  --fe-symbol-fill: transparent;
+}
+
+/* The page itself stays white in both themes - it is paper, and paper that
+   went dark would stop being paper. Only the chrome around it flips. */
+
+@theme inline {
+  --color-fe-shell: var(--fe-shell);
+  --color-fe-panel: var(--fe-panel);
+  --color-fe-panel-2: var(--fe-panel-2);
+  --color-fe-canvas: var(--fe-canvas);
+  --color-fe-page: var(--fe-page);
+  --color-fe-line: var(--fe-line);
+  --color-fe-hover: var(--fe-hover);
+  --color-fe-field: var(--fe-field);
+  --color-fe-ink: var(--fe-ink);
+  --color-fe-muted: var(--fe-muted);
+  --color-fe-disabled: var(--fe-disabled);
+  --color-fe-icon: var(--fe-icon);
+  --color-fe-link: var(--fe-link);
+  --color-fe-accent: var(--fe-accent);
+  --color-fe-accent-soft: var(--fe-accent-soft);
+}
