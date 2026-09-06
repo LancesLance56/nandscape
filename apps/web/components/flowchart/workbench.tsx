@@ -72,9 +72,12 @@ export interface FlowchartWorkbenchProps {
  * Three things drive the design, all of them reactions to the previous one:
  *
  *  - Boxes are placed by dragging them, and that has to actually work. See
- *    `onNodeMove` in FlowchartCanvas for why it did not.
- *  - Arrows are drawn by dragging between boxes, not chosen from two
- *    dropdowns listing every box in the chart by name.
+ *    `onNodeMove` in FlowchartCanvas for why the position has to round-trip
+ *    through the spec, and the `.fc-port` note in globals.css for what used to
+ *    swallow the mousedown before the drag could ever start.
+ *  - Arrows are drawn by clicking a box’s port and then clicking the box the
+ *    arrow points at - the logic-gate editor’s model - rather than chosen from
+ *    two dropdowns listing every box in the chart by name.
  *  - There is one properties panel, and it shows whatever is selected,
  *    rather than five tabs to hunt through.
  *
@@ -348,7 +351,7 @@ export function FlowchartWorkbench({
             </div>
             <p className="mt-auto hidden px-1 text-[10px] leading-relaxed text-slate xl:block">
               Adding a box while another is selected wires the two together, so a chain builds itself.
-              Drag between two boxes to connect them by hand.
+              To join two by hand, click a box’s dot and then click the box the arrow should point at.
             </p>
           </aside>
 

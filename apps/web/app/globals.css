@@ -440,61 +440,68 @@ body {
 /* ---------------------------------------------------------------------------
    Flowchart editor ports.
 
-   The connect ports and the whole-box drop target that let an arrow be pulled
-   from one box to another. Both are React Flow handles, and both need to sit
-   outside Tailwind: the library ships its own `.react-flow__handle` rules with
-   enough specificity that utility classes lose, and the drop target's
-   pointer-events have to be driven by an ancestor's state rather than by a
-   prop, so that it is inert except while a connection is actually in flight.
+   The four grab dots an arrow is drawn from. Deliberately *not* React Flow
+   handles: connections here are made by clicking rather than dragging, so the
+   library's connection machinery is switched off entirely, and a plain element
+   cannot lose a specificity fight with `.react-flow__handle` rules shipped in
+   the library's own stylesheet. The previous version did lose exactly that
+   fight - a whole-box drop handle ended up with `pointer-events: all`, and
+   since every handle also carries `nodrag`, it silently swallowed the
+   mousedown that would have dragged the box.
    --------------------------------------------------------------------------- */
 
-.react-flow__handle.fc-port {
+.fc-port {
+  position: absolute;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: crosshair;
+  opacity: 0;
+  /* Inert while hidden. A transparent button is still a button: left live, the
+     four of them would ring every box with places a drag cannot start. */
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.fc-port-dot {
   width: 9px;
   height: 9px;
-  min-width: 0;
-  min-height: 0;
   border-radius: 9999px;
   background: var(--copper);
   border: 2px solid var(--surface-card);
-  opacity: 0;
-  z-index: 20;
-  transition: opacity 120ms ease, transform 120ms ease;
+  transition: transform 120ms ease;
 }
 
 .react-flow__node:hover .fc-port,
 .react-flow__node.selected .fc-port,
-.fc-connecting .react-flow__handle.fc-port {
+.fc-connecting .fc-port {
   opacity: 1;
+  pointer-events: auto;
 }
 
-.react-flow__handle.fc-port:hover {
+.fc-port:hover .fc-port-dot {
   transform: scale(1.5);
 }
 
+/* A connection in flight: the pane is a place to aim, not to pan. */
+.fc-connecting,
+.fc-connecting .react-flow__pane,
+.fc-connecting .react-flow__node {
+  cursor: crosshair;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .react-flow__handle.fc-port {
+  .fc-port,
+  .fc-port-dot {
     transition: none;
   }
-  .react-flow__handle.fc-port:hover {
+  .fc-port:hover .fc-port-dot {
     transform: none;
   }
-}
-
-/* Inert by default so it never steals a click meant for the box underneath.
-   Only a drag in progress turns the whole face into somewhere to drop. */
-.react-flow__handle.fc-drop {
-  pointer-events: none;
-  opacity: 0;
-  z-index: 3;
-}
-
-.fc-connecting .react-flow__handle.fc-drop {
-  pointer-events: all;
-}
-
-.fc-connecting .react-flow__node:hover .fc-drop {
-  opacity: 1;
-  background: var(--copper-bg);
-  outline: 2px dashed var(--copper);
-  outline-offset: 1px;
 }

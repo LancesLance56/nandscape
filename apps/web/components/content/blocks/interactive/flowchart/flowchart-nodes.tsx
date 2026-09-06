@@ -45,8 +45,12 @@ export interface FlowNodeData extends Record<string, unknown> {
   /** Already passed on this walkthrough. */
   visited: boolean;
   clickable: boolean;
-  /** Draw the connect ports and make the whole box a drop target. */
+  /** Draw the four grab dots an arrow can be started from. */
   connectable?: boolean;
+  /** An arrow is being drawn and this box is what it would land on. */
+  connectTarget?: boolean;
+  /** Clicking one of this box's ports. The canvas owns what that means. */
+  onPortClick?: (nodeId: string, side: FlowSide) => void;
   /** This box's label is being renamed in place. */
   editing?: boolean;
   onTextChange?: (id: string, text: string) => void;
@@ -73,8 +77,14 @@ const POSITION_FOR: Record<FlowSide, Position> = {
  * Four source and four target handles per node, all invisible. The layout
  * picks which pair an edge uses, so every side has to exist even though a
  * given chart uses two of them.
+ *
+ * Every handle here is inert: `isConnectable={false}`, and the canvas turns
+ * React Flow's connection machinery off wholesale. Arrows are drawn by
+ * clicking a port and then clicking a box, which is how the logic-gate editor
+ * has always worked, and these exist only so React Flow has somewhere to
+ * anchor an edge it is asked to render.
  */
-function Handles({ slots, connectable = false }: { slots: HandleSlot[]; connectable?: boolean }) {
+function Handles({ slots }: { slots: HandleSlot[] }) {
   return (
     <>
       {SIDES.map(({ side, position }) => (
@@ -97,51 +107,6 @@ function Handles({ slots, connectable = false }: { slots: HandleSlot[]; connecta
           className="!h-px !w-px !min-h-0 !min-w-0 !border-0 !bg-transparent !opacity-0"
         />
       ))}
-
-      {/* The editor's connect ports: four grab dots, hidden until the box is
-          hovered or selected so an idle chart stays a chart. Separate ids
-          from the invisible anchor handles above, which the layout owns. */}
-      {connectable &&
-        SIDES.map(({ side, position }) => (
-          <Handle
-            key={`c-${side}`}
-            id={`c-${side}`}
-            type="source"
-            position={position}
-            isConnectable
-            className="fc-port"
-          />
-        ))}
-
-      {/* One drop target covering the whole box, because aiming at a 9px dot
-          to *finish* an arrow is a different and much harder task than
-          grabbing one to start it. React Flow resolves a drop with
-          elementFromPoint, so this has to be a real handle sitting on top -
-          which is why it only takes pointer events while a connection is
-          actually in flight (see .fc-connecting in globals.css). */}
-      {connectable && (
-        <Handle
-          id="c-in"
-          type="target"
-          position={Position.Left}
-          isConnectable
-          className="fc-drop"
-          style={{
-            left: 0,
-            top: 0,
-            right: "auto",
-            bottom: "auto",
-            width: "100%",
-            height: "100%",
-            minWidth: 0,
-            minHeight: 0,
-            transform: "none",
-            border: 0,
-            borderRadius: 10,
-            background: "transparent",
-          }}
-        />
-      )}
 
       {/* The per-edge attachment points, as real elements at their real
           coordinates. React Flow measures a node's handles out of the DOM
@@ -168,6 +133,57 @@ function Handles({ slots, connectable = false }: { slots: HandleSlot[]; connecta
             transform: "none",
           }}
         />
+      ))}
+    </>
+  );
+}
+
+/** Where each port sits on the box, as a fraction of its own frame. */
+const PORT_AT: Record<FlowSide, { left: string; top: string }> = {
+  top: { left: "50%", top: "0%" },
+  right: { left: "100%", top: "50%" },
+  bottom: { left: "50%", top: "100%" },
+  left: { left: "0%", top: "50%" },
+};
+
+/**
+ * The four grab dots an arrow is drawn from.
+ *
+ * Plain buttons rather than React Flow handles, because React Flow is not
+ * involved: a click starts a draft, a second click on another box finishes it.
+ * That is the logic-gate editor's model, and it is a better fit here than
+ * press-drag-release for the same reason it is there - a long arrow across a
+ * chart is a hard drag to hold, and an accidental release loses it.
+ *
+ * `nodrag` keeps a click on a port from also picking the box up; `nopan` keeps
+ * it from panning the canvas.
+ */
+function ConnectPorts({
+  id,
+  onPortClick,
+}: {
+  id: string;
+  onPortClick?: (nodeId: string, side: FlowSide) => void;
+}) {
+  return (
+    <>
+      {SIDES.map(({ side }) => (
+        <button
+          key={`port-${side}`}
+          type="button"
+          tabIndex={-1}
+          aria-label={`Draw an arrow from the ${side} of this box`}
+          title="Click, then click the box this arrow should point at"
+          className="fc-port nodrag nopan"
+          style={PORT_AT[side]}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPortClick?.(id, side);
+          }}
+        >
+          <span className="fc-port-dot" />
+        </button>
       ))}
     </>
   );
@@ -295,9 +311,17 @@ function Shell({
       style={style}
       title={data.spec.note && !data.editing ? data.spec.note : undefined}
     >
-      <Handles slots={data.slots} connectable={data.connectable} />
+      <Handles slots={data.slots} />
+      {data.connectable && <ConnectPorts id={data.spec.id} onPortClick={data.onPortClick} />}
       {data.spec.badge && <Badge text={data.spec.badge} color={accent.line} />}
       {children}
+      {data.connectTarget && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -inset-[5px] rounded-[10px] border-2 border-dashed"
+          style={{ borderColor: "var(--copper)", background: "var(--copper-bg)", opacity: 0.55 }}
+        />
+      )}
       {(selected || data.active) && (
         <span
           aria-hidden
@@ -450,7 +474,7 @@ export function GroupNode({ data, selected }: NodeProps<FlowchartNode>) {
         data.dimmed && "opacity-25",
       )}
     >
-      <Handles slots={data.slots} connectable={data.connectable} />
+      <Handles slots={data.slots} />
       {data.spec.badge && <Badge text={data.spec.badge} color={accent.line} />}
       <span
         className="absolute inset-0 rounded-xl border-2"

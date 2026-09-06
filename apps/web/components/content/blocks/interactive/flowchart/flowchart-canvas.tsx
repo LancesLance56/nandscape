@@ -5,16 +5,15 @@ import {
   Background,
   BackgroundVariant,
   BaseEdge,
-  ConnectionMode,
   MarkerType,
   MiniMap,
   Panel,
   Position,
   ReactFlow,
+  ViewportPortal,
   useReactFlow,
   useStore,
   useUpdateNodeInternals,
-  type Connection,
   type Edge,
   type EdgeProps,
   type EdgeTypes,
@@ -309,6 +308,142 @@ function handlesFor(node: PlacedNode): NodeHandle[] {
 }
 
 /* -------------------------------------------------------------------------
+ * Drawing an arrow
+ * ---------------------------------------------------------------------- */
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+/** A box in absolute canvas coordinates, with the parent chain already added. */
+interface AbsoluteBox extends Point {
+  width: number;
+  height: number;
+}
+
+/** An arrow half-drawn: started at a port, not yet landed on a box. */
+interface ConnectDraft {
+  from: string;
+  side: FlowSide;
+  origin: Point;
+}
+
+/**
+ * Absolute positions for every box.
+ *
+ * The layout stores a group's children relative to their parent, which is what
+ * React Flow wants, but a port has to be placed on the canvas itself.
+ */
+function absoluteBoxes(nodes: PlacedNode[]): Map<string, AbsoluteBox> {
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const out = new Map<string, AbsoluteBox>();
+
+  for (const n of nodes) {
+    let x = n.x;
+    let y = n.y;
+    let parent = n.parentId;
+    const guard = new Set<string>();
+    while (parent && !guard.has(parent)) {
+      guard.add(parent);
+      const box = byId.get(parent);
+      if (!box) break;
+      x += box.x;
+      y += box.y;
+      parent = box.parentId;
+    }
+    out.set(n.id, { x, y, width: n.width, height: n.height });
+  }
+
+  return out;
+}
+
+function portPoint(box: AbsoluteBox, side: FlowSide): Point {
+  switch (side) {
+    case "top":
+      return { x: box.x + box.width / 2, y: box.y };
+    case "bottom":
+      return { x: box.x + box.width / 2, y: box.y + box.height };
+    case "left":
+      return { x: box.x, y: box.y + box.height / 2 };
+    default:
+      return { x: box.x + box.width, y: box.y + box.height / 2 };
+  }
+}
+
+/** The side of `box` an arrow coming from `from` would most naturally land on. */
+function nearestPort(box: AbsoluteBox, from: Point): Point {
+  let best = portPoint(box, "top");
+  let bestDistance = Infinity;
+  for (const side of ["top", "right", "bottom", "left"] as FlowSide[]) {
+    const point = portPoint(box, side);
+    const distance = (point.x - from.x) ** 2 + (point.y - from.y) ** 2;
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = point;
+    }
+  }
+  return best;
+}
+
+/**
+ * The preview line: out of the port, then one turn to wherever the pointer is.
+ *
+ * A straight diagonal would be a lie about what gets drawn - every finished
+ * arrow in this chart is an orthogonal polyline - so the draft is one too.
+ */
+function draftPath(from: Point, side: FlowSide, to: Point): Point[] {
+  const stub = 18;
+  const vertical = side === "top" || side === "bottom";
+  const out: Point = vertical
+    ? { x: from.x, y: side === "top" ? from.y - stub : from.y + stub }
+    : { x: side === "left" ? from.x - stub : from.x + stub, y: from.y };
+  const corner: Point = vertical ? { x: to.x, y: out.y } : { x: out.x, y: to.y };
+  return [from, out, corner, to];
+}
+
+/**
+ * Draws the half-finished arrow, and follows the pointer while it does.
+ *
+ * A child of `<ReactFlow>` rather than part of the canvas component, because
+ * turning a screen position into a canvas one needs the flow's own transform,
+ * and `useReactFlow` is only available below the provider React Flow mounts.
+ */
+function ConnectDraftLine({ draft, snap }: { draft: ConnectDraft; snap: Point | null }) {
+  const { screenToFlowPosition } = useReactFlow();
+  const [cursor, setCursor] = useState<Point>(draft.origin);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) =>
+      setCursor(screenToFlowPosition({ x: e.clientX, y: e.clientY }));
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [screenToFlowPosition]);
+
+  const end = snap ?? cursor;
+
+  return (
+    <ViewportPortal>
+      <svg
+        style={{ position: "absolute", left: 0, top: 0, overflow: "visible", pointerEvents: "none" }}
+      >
+        <path
+          d={roundedPath(draftPath(draft.origin, draft.side, end))}
+          fill="none"
+          stroke="var(--copper)"
+          strokeWidth={2}
+          // Solid once it has something to land on, so "let go here and it
+          // connects" is legible without reading the highlight on the box.
+          strokeDasharray={snap ? undefined : "6 4"}
+        />
+        <circle cx={draft.origin.x} cy={draft.origin.y} r={4} fill="var(--copper)" />
+        {snap && <circle cx={snap.x} cy={snap.y} r={4} fill="var(--copper)" />}
+      </svg>
+    </ViewportPortal>
+  );
+}
+
+/* -------------------------------------------------------------------------
  * Canvas
  * ---------------------------------------------------------------------- */
 
@@ -336,7 +471,10 @@ export interface FlowchartCanvasProps {
    * makes that round trip look like a drag instead of a jump.
    */
   onNodeMove?: (id: string, position: { x: number; y: number }) => void;
-  /** Drag from a box's port to another box. Enables the connect ports. */
+  /**
+   * Join two boxes with an arrow. Supplying it turns the editor on: the boxes
+   * grow connect ports, and clicking one then clicking another box calls this.
+   */
   onConnectNodes?: (from: string, to: string) => void;
   /** Backspace/Delete on the current selection. */
   onDelete?: (nodeIds: string[], edgeIds: string[]) => void;
@@ -427,12 +565,58 @@ export function FlowchartCanvas({
   // therefore pans by dragging but never by scrolling.
   const ownsScroll = fill ? canMove : interactive.zoom && !fitsInView;
 
-  // While a connection is being dragged, every box has to become a drop
-  // target across its whole face. The rest of the time that same element
-  // would sit on top of the box and swallow clicks, so it is switched on
-  // through this class rather than mounted and unmounted.
-  const [connecting, setConnecting] = useState(false);
   const editable = Boolean(onConnectNodes);
+
+  // An arrow in the middle of being drawn, and the box it would land on.
+  // Local state rather than a shared store: a tutorial page can carry two of
+  // these, and an arrow started in one must not be finishable in the other.
+  const [draft, setDraft] = useState<ConnectDraft | null>(null);
+  const [snapTarget, setSnapTarget] = useState<string | null>(null);
+
+  const boxes = useMemo(() => absoluteBoxes(layout.nodes), [layout]);
+
+  const endDraft = useCallback(() => {
+    setDraft(null);
+    setSnapTarget(null);
+  }, []);
+
+  /**
+   * A port was clicked: either this is where an arrow starts, or it is where
+   * the one already in flight ends.
+   */
+  const handlePortClick = useCallback(
+    (nodeId: string, side: FlowSide) => {
+      if (!onConnectNodes) return;
+      if (draft && draft.from !== nodeId) {
+        onConnectNodes(draft.from, nodeId);
+        endDraft();
+        return;
+      }
+      const box = boxes.get(nodeId);
+      if (!box) return;
+      // Clicking a port of the box the draft started from restarts it there,
+      // which is the same recovery the logic-gate editor offers.
+      setSnapTarget(null);
+      setDraft({ from: nodeId, side, origin: portPoint(box, side) });
+    },
+    [onConnectNodes, draft, boxes, endDraft],
+  );
+
+  // Escape gets out of a half-drawn arrow before it gets out of anything else.
+  useEffect(() => {
+    if (!draft) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") endDraft();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [draft, endDraft]);
+
+  const snapPoint = useMemo(() => {
+    if (!draft || !snapTarget) return null;
+    const box = boxes.get(snapTarget);
+    return box ? nearestPort(box, draft.origin) : null;
+  }, [draft, snapTarget, boxes]);
 
   // Changes whenever any node's set of attachment points changes, which is
   // precisely when React Flow's measured handle bounds have gone stale.
@@ -462,6 +646,7 @@ export function FlowchartCanvas({
       // every size, so handing them over skips the measurement pass entirely.
       width: lane.width,
       height: lane.height,
+      measured: { width: lane.width, height: lane.height },
       draggable: false,
       selectable: false,
       focusable: false,
@@ -490,7 +675,11 @@ export function FlowchartCanvas({
         active: activeNodes.has(n.id),
         visited: visitedNodes.has(n.id),
         clickable: Boolean(onSelectNode) && !isGroup,
-        connectable: editable,
+        // Groups are containers, not steps: an arrow into one means nothing,
+        // so they get no ports and are never a landing place.
+        connectable: editable && !isGroup,
+        connectTarget: snapTarget === n.id,
+        onPortClick: handlePortClick,
         editing: editingNodeId === n.id,
         onTextChange: onEditingText,
         onTextDone: onEditingDone,
@@ -502,9 +691,17 @@ export function FlowchartCanvas({
         position: { x: n.x, y: n.y },
         width: n.width,
         height: n.height,
+        // `measured` is not derived from `width`/`height`: React Flow reads it
+        // straight off the node it is handed, and fills it in from a
+        // ResizeObserver only for nodes it owns. This array is rebuilt from the
+        // layout on every edit, so without this every box arrives unmeasured
+        // and a drag is computed against a zero-sized node.
+        measured: { width: n.width, height: n.height },
         handles: handlesFor(n),
         selected: selectedId === n.id,
-        draggable: interactive.draggable,
+        // A click has to mean "land the arrow here", so nothing may be picked
+        // up while one is in flight.
+        draggable: interactive.draggable && !draft,
         // A group must never intercept a click meant for a box inside it.
         selectable: !isGroup,
         ...(n.parentId ? { parentId: n.parentId, extent: "parent" as const } : {}),
@@ -523,6 +720,9 @@ export function FlowchartCanvas({
     interactive.draggable,
     onSelectNode,
     editable,
+    draft,
+    snapTarget,
+    handlePortClick,
     editingNodeId,
     onEditingText,
     onEditingDone,
@@ -590,15 +790,40 @@ export function FlowchartCanvas({
     [layout, activeEdges, dimmed, selectedEdgeId, onSelectEdge],
   );
 
+  /**
+   * Finishing an arrow beats selecting a box.
+   *
+   * Landing on the box rather than on one of its ports is deliberate: aiming
+   * at a 9px dot to *start* an arrow is easy, because it is sitting still
+   * under the cursor, and aiming at one to finish is not. Either works.
+   */
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: FlowchartNode) => {
       if (node.type === "lane") return;
+      if (draft) {
+        if (node.type !== "group" && node.id !== draft.from) {
+          onConnectNodes?.(draft.from, node.id);
+        }
+        endDraft();
+        return;
+      }
       onSelectEdge?.(null);
       if (!onSelectNode || node.type === "group") return;
       onSelectNode(node.id === selectedId ? null : node.id);
     },
-    [onSelectNode, onSelectEdge, selectedId],
+    [onSelectNode, onSelectEdge, selectedId, draft, onConnectNodes, endDraft],
   );
+
+  const handleNodeMouseEnter = useCallback(
+    (_: React.MouseEvent, node: FlowchartNode) => {
+      if (!draft || node.type === "lane" || node.type === "group") return;
+      if (node.id === draft.from) return;
+      setSnapTarget(node.id);
+    },
+    [draft],
+  );
+
+  const handleNodeMouseLeave = useCallback(() => setSnapTarget(null), []);
 
   /**
    * The one thing that makes dragging work at all.
@@ -633,14 +858,6 @@ export function FlowchartCanvas({
     [onNodeMove, layout.offset, topLevel],
   );
 
-  const handleConnect = useCallback(
-    (connection: Connection) => {
-      if (!connection.source || !connection.target || connection.source === connection.target) return;
-      onConnectNodes?.(connection.source, connection.target);
-    },
-    [onConnectNodes],
-  );
-
   /**
    * React Flow's combined delete callback rather than the per-kind pair.
    *
@@ -663,7 +880,7 @@ export function FlowchartCanvas({
         "relative overflow-hidden bg-surface-2/25",
         !fill && "rounded-xl border border-border",
         fill && "h-full w-full",
-        connecting && "fc-connecting",
+        draft && "fc-connecting",
         className,
       )}
       style={fill ? undefined : { height: boxHeight }}
@@ -675,29 +892,41 @@ export function FlowchartCanvas({
         edgeTypes={EDGE_TYPES}
         onNodesChange={handleNodesChange}
         onNodeClick={handleNodeClick}
+        onNodeMouseEnter={handleNodeMouseEnter}
+        onNodeMouseLeave={handleNodeMouseLeave}
         onNodeDoubleClick={(_, node) => {
           if (node.type !== "lane") onNodeDoubleClick?.(node.id);
         }}
         onEdgeClick={(_, edge) => {
+          if (draft) {
+            endDraft();
+            return;
+          }
           onSelectNode?.(null);
           onSelectEdge?.(edge.id === selectedEdgeId ? null : edge.id);
         }}
         onPaneClick={() => {
+          // Empty canvas is where an arrow is abandoned. Nothing else changes,
+          // so a mis-aimed click does not also throw the selection away.
+          if (draft) {
+            endDraft();
+            return;
+          }
           onSelectNode?.(null);
           onSelectEdge?.(null);
         }}
-        onConnect={handleConnect}
-        onConnectStart={() => setConnecting(true)}
-        onConnectEnd={() => setConnecting(false)}
+        onContextMenu={(e) => {
+          if (!draft) return;
+          e.preventDefault();
+          endDraft();
+        }}
         onDelete={handleDelete}
-        nodesDraggable={interactive.draggable}
-        nodesConnectable={editable}
-        // Loose: a port is whichever end the drag needs it to be, so an
-        // arrow can be pulled from any side of a box to any side of another
-        // without the author having to know which ports are sources.
-        connectionMode={ConnectionMode.Loose}
-        connectionRadius={26}
-        connectionLineStyle={{ stroke: "var(--copper)", strokeWidth: 2, strokeDasharray: "4 3" }}
+        nodesDraggable={interactive.draggable && !draft}
+        // Off entirely. Arrows are drawn by clicking a port and then clicking
+        // a box - see ConnectPorts in flowchart-nodes.tsx - so React Flow's
+        // own drag-to-connect would only be a second, conflicting way to do
+        // the same thing.
+        nodesConnectable={false}
         // React Flow already ignores these keys while a text field has focus,
         // so this does not fight the inspector.
         deleteKeyCode={onDelete ? ["Backspace", "Delete"] : null}
@@ -709,7 +938,7 @@ export function FlowchartCanvas({
         // Double-click means "rename this box" wherever editing is on, so it
         // cannot also mean "zoom in".
         zoomOnDoubleClick={!editable && canMove}
-        panOnDrag={canMove}
+        panOnDrag={canMove && !draft}
         selectionOnDrag={false}
         preventScrolling={ownsScroll}
         proOptions={{ hideAttribution: true }}
@@ -733,6 +962,7 @@ export function FlowchartCanvas({
           token={fitToken}
         />
         <SyncNodeInternals signature={handleSignature} />
+        {draft && <ConnectDraftLine draft={draft} snap={snapPoint} />}
 
         {showGrid && (
           <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="var(--border-strong)" />
