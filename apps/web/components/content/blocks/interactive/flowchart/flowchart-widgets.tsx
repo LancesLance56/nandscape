@@ -13,10 +13,9 @@
  *
  * A block may still carry a `FlowchartSpec`: the auto-laid-out shape diagrams
  * were stored in before the drawing tool existed. `toDoc` converts one on
- * read, so nothing has to be migrated before a page works. The database
- * migration (`seed/migrate-diagrams.mjs`) makes the conversion permanent; this
- * path is what keeps an un-migrated row from being a broken page in the
- * meantime.
+ * read, so nothing has to be migrated before a page works. `pnpm
+ * diagrams:migrate` makes the conversion permanent; this path is what keeps an
+ * un-migrated row from being a broken page in the meantime.
  */
 
 import { useMemo } from "react";
@@ -59,11 +58,10 @@ function readOptions(data: Record<string, unknown>) {
     walkthrough: bool(i.walkthrough, true),
     notes: bool(i.notes, true),
     focus: bool(i.focus, false),
-    draggable: bool(i.draggable, true),
     legend: bool(i.legend, true),
     download: bool(i.download, true),
     fullscreen: bool(i.fullscreen, true),
-    maxHeight: typeof data.height === "number" ? data.height : 520,
+    maxHeight: typeof data.height === "number" ? data.height : 730,
   };
 }
 

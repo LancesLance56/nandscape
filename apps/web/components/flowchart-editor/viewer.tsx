@@ -9,11 +9,18 @@
  * any of those in the move would have quietly cost every tutorial the thing
  * that made its diagrams teach rather than decorate.
  *
- * What is *not* here is a layout engine. The drawing is drawn exactly as it
- * was saved, cropped to its own ink and scaled to the column it sits in.
+ * What is *not* here is a layout engine, and not a single way to move
+ * anything. A published diagram is fixed: it is what its author drew, and a
+ * reader dragging a box around a tutorial changes what the prose beside it is
+ * pointing at. Editing happens in the editor.
+ *
+ * The one thing that does change is the ink. A drawing stores literal colours,
+ * which is right for the document and wrong for a dark page, so the reading
+ * surface re-inks a copy - see theme-ink.ts. An export runs from the original,
+ * because a downloaded diagram is a document rather than a view of one.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Download, Maximize2, X } from "lucide-react";
 
@@ -24,20 +31,34 @@ import {
   type Doc,
   type Element,
   type Page,
-  type Shape,
   type WalkStep,
 } from "@/lib/flowchart-editor/model";
 import { elementBounds, type Rect } from "@/lib/flowchart-editor/geometry";
 import { exportPng } from "@/lib/flowchart-editor/export";
 import { symbolFor } from "@/lib/flowchart-editor/symbols";
+import { darkPage } from "@/lib/flowchart-editor/theme-ink";
+import { useIsDark } from "@/lib/flowchart-editor/use-dark";
 import { LineView } from "./line-view";
 import { ShapeView, SymbolGlyph } from "./shape-view";
 import { StepCaption, StepControls, useStepPlayer } from "@/components/content/blocks/interactive/shared/step-player";
 
 const EMPTY: ReadonlySet<string> = new Set();
-const NO_MOVES: Readonly<Record<string, { x: number; y: number }>> = {};
 const NO_STEPS: readonly WalkStep[] = [];
 const PAD = 24;
+
+/**
+ * How much bigger than a pure width-fit a diagram is allowed to be drawn.
+ *
+ * A flowchart of an algorithm is intrinsically wide - eleven boxes in a chain
+ * is eleven box widths - so shrinking one until it fits an article column
+ * leaves it short, and its 12px labels somewhere near illegible. Drawing it a
+ * third larger and letting the reader scroll sideways is the better trade, and
+ * the direction they scroll is the direction the chart already flows.
+ *
+ * A chart that is tall rather than wide never reaches this: the height budget
+ * binds first, and nothing overflows.
+ */
+const ZOOM_BOOST = 1.3;
 
 export interface DiagramViewerProps {
   doc: Doc;
@@ -49,8 +70,6 @@ export interface DiagramViewerProps {
   notes?: boolean;
   /** Selecting an element fades everything not touching it. */
   focus?: boolean;
-  /** Let a reader nudge a box to see behind it. Nothing is saved. */
-  draggable?: boolean;
   legend?: boolean;
   download?: boolean;
   fullscreen?: boolean;
@@ -65,11 +84,13 @@ export function DiagramViewer({
   walkthrough = true,
   notes = true,
   focus = false,
-  draggable = true,
   legend = true,
   download = true,
   fullscreen = true,
-  maxHeight = 560,
+  // Diagrams are wider than they are tall, so height is what a flowchart runs
+  // out of first. Worth about a third more of it than a widget would normally
+  // take - a chart that fits is a chart somebody reads.
+  maxHeight = 730,
   className,
 }: DiagramViewerProps) {
   const page = doc.pages[Math.min(pageIndex, doc.pages.length - 1)];
@@ -77,26 +98,6 @@ export function DiagramViewer({
   const [expanded, setExpanded] = useState(false);
   const [tracing, setTracing] = useState(true);
   const [focusOn, setFocusOn] = useState(focus);
-
-  /**
-   * Boxes this reader has nudged.
-   *
-   * Kept here rather than written into the drawing: the drawing is what its
-   * author published, and a reader moving a box to see behind it is not an
-   * edit to it. Nothing is saved and a reload brings it back as drawn. Stored
-   * with the page it belongs to so swapping diagrams drops the offsets rather
-   * than applying one drawing's nudges to the next.
-   */
-  const [nudges, setNudges] = useState<{ page: Page; moves: Record<string, { x: number; y: number }> }>(
-    () => ({ page, moves: {} }),
-  );
-  // Stable identities: both feed memos below, and `?? {}` / `?? []` would
-  // hand them a fresh object every render and defeat the memo entirely.
-  const moves = useMemo(
-    () => (nudges.page === page ? nudges.moves : NO_MOVES),
-    [nudges, page],
-  );
-  const hasMoved = Object.keys(moves).length > 0;
 
   const steps = useMemo(() => page.walkthrough ?? NO_STEPS, [page.walkthrough]);
   const player = useStepPlayer(Math.max(steps.length, 1));
@@ -143,15 +144,11 @@ export function DiagramViewer({
 
   /* --- geometry -------------------------------------------------------- */
 
-  const shown = useMemo((): Page => {
-    if (!hasMoved) return page;
-    return {
-      ...page,
-      elements: page.elements.map((e) =>
-        isShape(e) && moves[e.id] ? { ...e, x: moves[e.id].x, y: moves[e.id].y } : e,
-      ),
-    };
-  }, [page, moves, hasMoved]);
+  // What gets drawn: the same drawing, re-inked for the current theme. The
+  // original is kept for export, which should hand back the document rather
+  // than this reader's view of it.
+  const dark = useIsDark();
+  const shown = useMemo(() => (dark ? darkPage(page) : page), [dark, page]);
 
   const bounds = useMemo(() => contentBounds(shown), [shown]);
 
@@ -170,101 +167,69 @@ export function DiagramViewer({
     if (!hostWidth || bounds.width <= 0) return 1;
     const byWidth = (hostWidth - PAD * 2) / bounds.width;
     const byHeight = ((expanded ? window.innerHeight * 0.72 : maxHeight) - PAD * 2) / bounds.height;
-    return Math.max(0.15, Math.min(1.1, byWidth, byHeight));
+    return Math.max(0.15, Math.min(1.4, byWidth * ZOOM_BOOST, byHeight));
   }, [hostWidth, bounds, maxHeight, expanded]);
+
+  const drawnWidth = bounds.width * scale + PAD * 2;
+  const drawnHeight = bounds.height * scale + PAD * 2;
 
   const selectedEl = selected ? page.elements.find((e) => e.id === selected) : undefined;
   const noteCount = page.elements.filter((e) => e.note).length;
-  const legendItems = useMemo(() => (legend ? deriveLegend(page) : []), [legend, page]);
-
-  /* --- reader drag ------------------------------------------------------ */
-
-  const dragRef = useRef<{ id: string; startX: number; startY: number; ox: number; oy: number } | null>(null);
-
-  const onShapePointerDown = useCallback(
-    (e: React.PointerEvent, shape: Shape) => {
-      if (!draggable) return;
-      dragRef.current = {
-        id: shape.id,
-        startX: e.clientX,
-        startY: e.clientY,
-        ox: moves[shape.id]?.x ?? shape.x,
-        oy: moves[shape.id]?.y ?? shape.y,
-      };
-    },
-    [draggable, moves],
-  );
-
-  useEffect(() => {
-    if (!draggable) return;
-    const onMove = (e: PointerEvent) => {
-      const d = dragRef.current;
-      if (!d) return;
-      setNudges((prev) => ({
-        page,
-        moves: {
-          ...(prev.page === page ? prev.moves : {}),
-          [d.id]: {
-            x: Math.round(d.ox + (e.clientX - d.startX) / scale),
-            y: Math.round(d.oy + (e.clientY - d.startY) / scale),
-          },
-        },
-      }));
-    };
-    const onUp = () => {
-      dragRef.current = null;
-    };
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-    };
-  }, [draggable, page, scale]);
+  const legendItems = useMemo(() => (legend ? deriveLegend(shown) : []), [legend, shown]);
 
   /* --- render ---------------------------------------------------------- */
 
   const surface = (
+    // Two boxes, not one. The outer is the frame the chrome is pinned to; the
+    // inner scrolls. Chips that scrolled away with the drawing would be a
+    // "Tracing" button you have to go looking for.
     <div
       ref={hostRef}
-      className="relative w-full overflow-hidden rounded-lg border border-border bg-paper"
-      style={{ height: Math.min(expanded ? window.innerHeight * 0.75 : maxHeight, bounds.height * scale + PAD * 2) }}
+      className="relative w-full overflow-hidden rounded-lg border border-border"
+      style={{ background: shown.background, height: Math.min(expanded ? window.innerHeight * 0.75 : maxHeight, drawnHeight) }}
       onPointerDown={(e) => {
         if ((e.target as HTMLElement).closest("[data-element-id]")) return;
         setSelected(null);
       }}
     >
-      <div
-        className="absolute origin-top-left"
-        style={{
-          transform: `translate(${PAD}px, ${PAD}px) scale(${scale})`,
-          width: bounds.width,
-          height: bounds.height,
-        }}
-      >
-        <div
-          className="absolute"
-          style={{ left: -bounds.x, top: -bounds.y, width: shown.width, height: shown.height }}
-        >
-          {shown.elements.map((el) =>
-            isShape(el) ? (
-              <div
-                key={el.id}
-                onPointerDown={(e) => onShapePointerDown(e, el)}
-                onClick={() => notes && setSelected(el.id === selected ? null : el.id)}
-                className={cn(
-                  "contents",
-                  notes && !isScenery(el) && "cursor-pointer",
-                )}
-              >
-                <ShapeView shape={el} selected={selected === el.id || active.has(el.id)} dim={dimmed.has(el.id)} />
-              </div>
-            ) : (
-              <div key={el.id} onClick={() => notes && setSelected(el.id === selected ? null : el.id)} className="contents">
-                <LineView line={el} page={shown} selected={selected === el.id || active.has(el.id)} dim={dimmed.has(el.id)} />
-              </div>
-            ),
-          )}
+      <div className="fe-scroll h-full w-full overflow-x-auto overflow-y-hidden">
+        {/* A real box of the drawn size, so the scroller has something to
+            scroll. The transformed layer inside it is absolute and takes up
+            no space of its own. */}
+        <div className="relative" style={{ width: drawnWidth, height: drawnHeight }}>
+          <div
+            className="absolute origin-top-left"
+            style={{
+              transform: `translate(${PAD}px, ${PAD}px) scale(${scale})`,
+              width: bounds.width,
+              height: bounds.height,
+            }}
+          >
+            <div
+              className="absolute"
+              style={{ left: -bounds.x, top: -bounds.y, width: shown.width, height: shown.height }}
+            >
+              {shown.elements.map((el) =>
+                isShape(el) ? (
+                  <div
+                    key={el.id}
+                    onClick={() => notes && setSelected(el.id === selected ? null : el.id)}
+                    className={cn("contents", notes && el.note && "cursor-pointer")}
+                  >
+                    <ShapeView shape={el} selected={selected === el.id || active.has(el.id)} dim={dimmed.has(el.id)} />
+                  </div>
+                ) : (
+                  <div
+                    key={el.id}
+                    onClick={() => notes && setSelected(el.id === selected ? null : el.id)}
+                    className="contents"
+                  >
+                    <LineView line={el} page={shown} selected={selected === el.id || active.has(el.id)} dim={dimmed.has(el.id)} />
+                  </div>
+                ),
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -279,10 +244,9 @@ export function DiagramViewer({
             Focus
           </Chip>
         )}
-        {hasMoved && <Chip onClick={() => setNudges({ page, moves: {} })}>Reset layout</Chip>}
         <span className="ml-auto flex gap-1.5">
           {download && (
-            <Chip onClick={() => exportPng(shown, doc.title)} title="Download a PNG">
+            <Chip onClick={() => exportPng(page, doc.title)} title="Download a PNG">
               <Download className="h-3 w-3" />
             </Chip>
           )}
@@ -300,9 +264,9 @@ export function DiagramViewer({
       </div>
 
       {legendItems.length > 0 && (
-        <div className="pointer-events-none absolute inset-x-2 bottom-2 flex flex-wrap gap-x-3 gap-y-1 rounded-md bg-paper/85 px-2 py-1 backdrop-blur-sm">
+        <div className="pointer-events-none absolute inset-x-2 bottom-2 flex flex-wrap gap-x-3 gap-y-1 rounded-md bg-surface-card/85 px-2 py-1 backdrop-blur-sm">
           {legendItems.map((item) => (
-            <span key={item.key} className="flex items-center gap-1.5 text-[11px] text-paper-muted">
+            <span key={item.key} className="flex items-center gap-1.5 text-[11px] text-slate">
               <SymbolGlyph
                 symbol={item.symbol}
                 width={16}
@@ -392,8 +356,8 @@ function Chip({
       className={cn(
         "pointer-events-auto flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold backdrop-blur-sm transition-colors",
         active
-          ? "border-paper-accent bg-paper-accent text-white"
-          : "border-paper-line bg-paper/85 text-paper-ink-soft hover:bg-paper-line/40",
+          ? "border-copper bg-copper text-copper-ink"
+          : "border-border bg-surface-card/85 text-ink-soft hover:bg-surface-2",
       )}
     >
       {children}

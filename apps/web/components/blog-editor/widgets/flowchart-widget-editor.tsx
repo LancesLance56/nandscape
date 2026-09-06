@@ -86,7 +86,7 @@ export function FlowchartWidgetEditor({ data, onChange }: WidgetEditorProps) {
           {error && <p className="text-[11px] text-signal-coral">{error}</p>}
 
           {stored ? (
-            <DiagramViewer doc={stored} draggable={false} />
+            <DiagramViewer doc={stored} />
           ) : (
             <p className="rounded-lg border border-dashed border-border-strong p-4 text-xs italic text-slate">
               {loading ? "Loading…" : "Pick a diagram to preview it here."}

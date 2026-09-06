@@ -578,3 +578,34 @@ body {
   --color-fe-accent-soft: var(--fe-accent-soft);
   --color-fe-accent-ink: var(--fe-accent-ink);
 }
+
+/* ---------------------------------------------------------------------------
+   The diagram scroller.
+
+   A flowchart of an algorithm is wider than an article column, so a published
+   one is drawn large enough to read and scrolls sideways. The bar wants to be
+   quiet about it: this is a diagram someone is reading, not a pane they are
+   navigating.
+   --------------------------------------------------------------------------- */
+
+.fe-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.fe-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.fe-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fe-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+}
+
+.fe-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--slate);
+}
