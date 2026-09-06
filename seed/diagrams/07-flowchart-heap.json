@@ -6,145 +6,811 @@
   "position": 7,
   "spec": {
     "title": "Heap sort",
-    "direction": "LR",
-    "lanes": [
+    "pages": [
       {
-        "id": "build",
-        "label": "Build the heap"
-      },
-      {
-        "id": "extract",
-        "label": "Extract, repeatedly"
-      }
-    ],
-    "nodes": [
-      {
-        "id": "start",
-        "type": "start",
-        "text": "Start",
-        "lane": "build"
-      },
-      {
-        "id": "buildinit",
-        "type": "process",
-        "text": "i = n/2 - 1",
-        "lane": "build",
-        "note": "The last internal node. Everything after it is a leaf, and a leaf is already a valid heap, so there is nothing to do to them."
-      },
-      {
-        "id": "buildloop",
-        "type": "decision",
-        "text": "i >= 0 ?",
-        "lane": "build"
-      },
-      {
-        "id": "sift1",
-        "type": "process",
-        "text": "siftDown(a, i, n-1)",
-        "accent": "blue",
-        "lane": "build"
-      },
-      {
-        "id": "dec-i",
-        "type": "process",
-        "text": "i = i - 1",
-        "lane": "build"
-      },
-      {
-        "id": "endinit",
-        "type": "process",
-        "text": "end = n - 1",
-        "lane": "extract",
-        "badge": "2",
-        "note": "The heap is built, and it took O(n), not O(n log n). Now repeatedly extract the maximum."
-      },
-      {
-        "id": "sortloop",
-        "type": "decision",
-        "text": "end > 0 ?",
-        "lane": "extract"
-      },
-      {
-        "id": "swap",
-        "type": "process",
-        "text": "swap a[0], a[end]",
-        "accent": "blue",
-        "lane": "extract",
-        "note": "a[0] is the largest remaining value, and a[end] is exactly where it belongs. One swap finalises one element."
-      },
-      {
-        "id": "sift2",
-        "type": "process",
-        "text": "siftDown(a, 0, end-1)",
-        "accent": "blue",
-        "lane": "extract",
-        "note": "Restore the heap over the shrunken range. The element just placed is outside it now, so it is never touched again."
-      },
-      {
-        "id": "dec-end",
-        "type": "process",
-        "text": "end = end - 1",
-        "lane": "extract"
-      },
-      {
-        "id": "end",
-        "type": "end",
-        "text": "Sorted",
-        "lane": "extract"
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "buildinit"
-      },
-      {
-        "from": "buildinit",
-        "to": "buildloop"
-      },
-      {
-        "from": "buildloop",
-        "to": "sift1",
-        "label": "yes"
-      },
-      {
-        "from": "buildloop",
-        "to": "endinit",
-        "label": "no"
-      },
-      {
-        "from": "sift1",
-        "to": "dec-i"
-      },
-      {
-        "from": "dec-i",
-        "to": "buildloop"
-      },
-      {
-        "from": "endinit",
-        "to": "sortloop"
-      },
-      {
-        "from": "sortloop",
-        "to": "swap",
-        "label": "yes"
-      },
-      {
-        "from": "sortloop",
-        "to": "end",
-        "label": "no"
-      },
-      {
-        "from": "swap",
-        "to": "sift2"
-      },
-      {
-        "from": "sift2",
-        "to": "dec-end"
-      },
-      {
-        "from": "dec-end",
-        "to": "sortloop"
+        "id": "pmtpkp5jq3x",
+        "name": "Page 1",
+        "width": 1661,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "smtpkp5jq3j",
+            "kind": "shape",
+            "symbol": "swimlane-v",
+            "x": 68,
+            "y": 68,
+            "width": 1545,
+            "height": 160,
+            "rotation": 0,
+            "text": "Build the heap",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 1
+          },
+          {
+            "id": "smtpkp5jq3k",
+            "kind": "shape",
+            "symbol": "swimlane-v",
+            "x": 68,
+            "y": 228,
+            "width": 1545,
+            "height": 160,
+            "rotation": 0,
+            "text": "Extract, repeatedly",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 108,
+            "y": 125,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "Start",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 3
+          },
+          {
+            "id": "buildinit",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 260,
+            "y": 125,
+            "width": 124,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = n/2 - 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4,
+            "note": "The last internal node. Everything after it is a leaf, and a leaf is already a valid heap, so there is nothing to do to them."
+          },
+          {
+            "id": "buildloop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 424,
+            "y": 116,
+            "width": 132,
+            "height": 64,
+            "rotation": 0,
+            "text": "i >= 0 ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5
+          },
+          {
+            "id": "sift1",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 596,
+            "y": 125,
+            "width": 185,
+            "height": 46,
+            "rotation": 0,
+            "text": "siftDown(a, i, n-1)",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6
+          },
+          {
+            "id": "endinit",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 627,
+            "y": 283,
+            "width": 124,
+            "height": 50,
+            "rotation": 0,
+            "text": "end = n - 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "The heap is built, and it took O(n), not O(n log n). Now repeatedly extract the maximum.",
+            "badge": "2"
+          },
+          {
+            "id": "dec-i",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 836,
+            "y": 125,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = i - 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8
+          },
+          {
+            "id": "sortloop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 821,
+            "y": 276,
+            "width": 142,
+            "height": 64,
+            "rotation": 0,
+            "text": "end > 0 ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 9
+          },
+          {
+            "id": "swap",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1003,
+            "y": 242,
+            "width": 170,
+            "height": 46,
+            "rotation": 0,
+            "text": "swap a[0], a[end]",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 10,
+            "note": "a[0] is the largest remaining value, and a[end] is exactly where it belongs. One swap finalises one element."
+          },
+          {
+            "id": "end",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 1032,
+            "y": 328,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "Sorted",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 11
+          },
+          {
+            "id": "sift2",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1213,
+            "y": 285,
+            "width": 201,
+            "height": 46,
+            "rotation": 0,
+            "text": "siftDown(a, 0, end-1)",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 12,
+            "note": "Restore the heap over the shrunken range. The element just placed is outside it now, so it is never touched again."
+          },
+          {
+            "id": "dec-end",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1454,
+            "y": 285,
+            "width": 139,
+            "height": 46,
+            "rotation": 0,
+            "text": "end = end - 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5jq3l",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "buildinit",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5jq3m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "buildinit",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "buildloop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5jq3n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "buildloop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "sift1",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5jq3o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "buildloop",
+              "port": 12
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "endinit",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 464,
+                "y": 308
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5jq3p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "sift1",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "dec-i",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 18
+          },
+          {
+            "id": "lmtpkp5jq3q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "dec-i",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "buildloop",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 874,
+                "y": 179
+              },
+              {
+                "x": 516,
+                "y": 179
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 19
+          },
+          {
+            "id": "lmtpkp5jq3r",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "endinit",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "sortloop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 20
+          },
+          {
+            "id": "lmtpkp5jq3s",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "sortloop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "swap",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 983,
+                "y": 308
+              },
+              {
+                "x": 983,
+                "y": 265
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 21
+          },
+          {
+            "id": "lmtpkp5jq3t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "sortloop",
+              "port": 12
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "end",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 864,
+                "y": 351
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 22
+          },
+          {
+            "id": "lmtpkp5jq3u",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "swap",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "sift2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1193,
+                "y": 265
+              },
+              {
+                "x": 1193,
+                "y": 308
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 23
+          },
+          {
+            "id": "lmtpkp5jq3v",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "sift2",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "dec-end",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 24
+          },
+          {
+            "id": "lmtpkp5jq3w",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "dec-end",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "sortloop",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 1508,
+                "y": 345
+              },
+              {
+                "x": 1508,
+                "y": 418
+              },
+              {
+                "x": 927,
+                "y": 418
+              },
+              {
+                "x": 927,
+                "y": 341
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 25
+          }
+        ]
       }
     ]
   }

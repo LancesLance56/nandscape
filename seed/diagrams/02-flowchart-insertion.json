@@ -6,104 +6,652 @@
   "position": 2,
   "spec": {
     "title": "Insertion sort",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "Start"
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "i = 1",
-        "note": "A single element is already a sorted prefix, so start at the second."
-      },
-      {
-        "id": "outer",
-        "type": "decision",
-        "text": "i < n ?"
-      },
-      {
-        "id": "take",
-        "type": "process",
-        "text": "value = a[i]\nj = i - 1",
-        "note": "value is held outside the array while the shifting happens, which is what frees the slot it used to occupy."
-      },
-      {
-        "id": "inner",
-        "type": "decision",
-        "text": "j >= 0 and\na[j] > value ?"
-      },
-      {
-        "id": "shift",
-        "type": "process",
-        "text": "a[j+1] = a[j]\nj = j - 1",
-        "accent": "blue",
-        "note": "Shifting, not swapping. Each step moves one element right by one, and a swap would cost three writes where this costs one."
-      },
-      {
-        "id": "place",
-        "type": "process",
-        "text": "a[j+1] = value",
-        "accent": "blue",
-        "note": "The gap left by shifting is exactly where value belongs."
-      },
-      {
-        "id": "inc-i",
-        "type": "process",
-        "text": "i = i + 1"
-      },
-      {
-        "id": "end",
-        "type": "end",
-        "text": "Sorted"
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "init"
-      },
-      {
-        "from": "init",
-        "to": "outer"
-      },
-      {
-        "from": "outer",
-        "to": "take",
-        "label": "yes"
-      },
-      {
-        "from": "outer",
-        "to": "end",
-        "label": "no"
-      },
-      {
-        "from": "take",
-        "to": "inner"
-      },
-      {
-        "from": "inner",
-        "to": "shift",
-        "label": "yes"
-      },
-      {
-        "from": "inner",
-        "to": "place",
-        "label": "no"
-      },
-      {
-        "from": "shift",
-        "to": "inner"
-      },
-      {
-        "from": "place",
-        "to": "inc-i"
-      },
-      {
-        "from": "inc-i",
-        "to": "outer"
+        "id": "pmtpkp5jb1r",
+        "name": "Page 1",
+        "width": 1304,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 119,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "Start",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 220,
+            "y": 119,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "A single element is already a sorted prefix, so start at the second."
+          },
+          {
+            "id": "outer",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 372,
+            "y": 110,
+            "width": 122,
+            "height": 64,
+            "rotation": 0,
+            "text": "i < n ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3
+          },
+          {
+            "id": "take",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 534,
+            "y": 68,
+            "width": 132,
+            "height": 62,
+            "rotation": 0,
+            "text": "value = a[i]\nj = i - 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4,
+            "note": "value is held outside the array while the shifting happens, which is what frees the slot it used to occupy."
+          },
+          {
+            "id": "end",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 544,
+            "y": 170,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "Sorted",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 5
+          },
+          {
+            "id": "inner",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 706,
+            "y": 102,
+            "width": 191,
+            "height": 80,
+            "rotation": 0,
+            "text": "j >= 0 and\na[j] > value ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6
+          },
+          {
+            "id": "shift",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 941,
+            "y": 68,
+            "width": 139,
+            "height": 62,
+            "rotation": 0,
+            "text": "a[j+1] = a[j]\nj = j - 1",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "Shifting, not swapping. Each step moves one element right by one, and a swap would cost three writes where this costs one."
+          },
+          {
+            "id": "place",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 937,
+            "y": 170,
+            "width": 147,
+            "height": 46,
+            "rotation": 0,
+            "text": "a[j+1] = value",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "The gap left by shifting is exactly where value belongs."
+          },
+          {
+            "id": "inc-i",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1124,
+            "y": 119,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = i + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5jb1h",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5jb1i",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "outer",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5jb1j",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "outer",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "take",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 514,
+                "y": 142
+              },
+              {
+                "x": 514,
+                "y": 99
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5jb1k",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "outer",
+              "port": 12
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "end",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 409,
+                "y": 193
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5jb1l",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "take",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "inner",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 686,
+                "y": 99
+              },
+              {
+                "x": 686,
+                "y": 142
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5jb1m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "inner",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "shift",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 919,
+                "y": 142
+              },
+              {
+                "x": 919,
+                "y": 99
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5jb1n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "inner",
+              "port": 12
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "place",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 763,
+                "y": 193
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5jb1o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "shift",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "inner",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 988,
+                "y": 163
+              },
+              {
+                "x": 840,
+                "y": 163
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5jb1p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "place",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "inc-i",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1104,
+                "y": 193
+              },
+              {
+                "x": 1104,
+                "y": 142
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 18
+          },
+          {
+            "id": "lmtpkp5jb1q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "inc-i",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "outer",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 1169,
+                "y": 179
+              },
+              {
+                "x": 1169,
+                "y": 260
+              },
+              {
+                "x": 464,
+                "y": 260
+              },
+              {
+                "x": 464,
+                "y": 175
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 19
+          }
+        ]
       }
     ]
   }

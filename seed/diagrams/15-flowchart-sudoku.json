@@ -6,193 +6,954 @@
   "position": 6,
   "spec": {
     "title": "Sudoku solver",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "solve()"
-      },
-      {
-        "id": "pick",
-        "type": "process",
-        "text": "cell = pick an\nempty cell",
-        "accent": "amber",
-        "badge": "!",
-        "note": "Which cell is picked here is the whole ballgame. Reading order works; fewest-candidates-first does a quarter of the work, because it fails fast on the cells most likely to fail at all."
-      },
-      {
-        "id": "none",
-        "type": "decision",
-        "text": "no empty cell ?",
-        "badge": "1"
-      },
-      {
-        "id": "ret1",
-        "type": "end",
-        "text": "return true\n(solved)"
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "v = 1"
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "v <= 9 ?"
-      },
-      {
-        "id": "ret2",
-        "type": "end",
-        "text": "return false\n(backtrack)",
-        "accent": "coral",
-        "note": "No digit fits, so a guess made earlier was wrong. If the chosen cell had zero candidates, this fires immediately, which is exactly the fast failure a good cell-picker is buying."
-      },
-      {
-        "id": "legal",
-        "type": "decision",
-        "text": "v legal in row,\ncolumn and box ?",
-        "badge": "2",
-        "accent": "amber",
-        "note": "The three sudoku constraints, all checked at once."
-      },
-      {
-        "id": "cycle",
-        "type": "group",
-        "text": "choose · explore · un-choose",
-        "groupLayout": "column"
-      },
-      {
-        "id": "choose",
-        "type": "process",
-        "text": "board[cell] = v",
-        "accent": "blue",
-        "parentId": "cycle"
-      },
-      {
-        "id": "explore",
-        "type": "decision",
-        "text": "solve()\nsucceeded ?",
-        "accent": "violet",
-        "parentId": "cycle"
-      },
-      {
-        "id": "undo",
-        "type": "process",
-        "text": "board[cell] = 0",
-        "accent": "coral",
-        "parentId": "cycle",
-        "note": "Erasing the guess is what lets the next value be tried on a clean board."
-      },
-      {
-        "id": "win",
-        "type": "end",
-        "text": "return true"
-      },
-      {
-        "id": "next",
-        "type": "process",
-        "text": "v = v + 1"
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "pick"
-      },
-      {
-        "from": "pick",
-        "to": "none"
-      },
-      {
-        "from": "none",
-        "to": "ret1",
-        "label": "yes"
-      },
-      {
-        "from": "none",
-        "to": "init",
-        "label": "no"
-      },
-      {
-        "from": "init",
-        "to": "loop"
-      },
-      {
-        "from": "loop",
-        "to": "legal",
-        "label": "yes"
-      },
-      {
-        "from": "loop",
-        "to": "ret2",
-        "label": "no"
-      },
-      {
-        "from": "legal",
-        "to": "next",
-        "label": "no (prune)"
-      },
-      {
-        "from": "legal",
-        "to": "choose",
-        "label": "yes"
-      },
-      {
-        "from": "choose",
-        "to": "explore"
-      },
-      {
-        "from": "explore",
-        "to": "win",
-        "label": "yes"
-      },
-      {
-        "from": "explore",
-        "to": "undo",
-        "label": "no"
-      },
-      {
-        "from": "undo",
-        "to": "next"
-      },
-      {
-        "from": "next",
-        "to": "loop"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "apply a choice",
-        "shape": "process",
-        "accent": "blue"
-      },
-      {
-        "label": "recurse",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "take it back",
-        "shape": "process",
-        "accent": "coral"
-      },
-      {
-        "label": "loop back",
-        "kind": "edge",
-        "shape": "decision",
-        "accent": "copper"
+        "id": "pmtpkp5km7f",
+        "name": "Page 1",
+        "width": 1694,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "cycle",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 1215,
+            "y": 110,
+            "width": 252,
+            "height": 241,
+            "rotation": 0,
+            "text": "choose · explore · un-choose",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 208,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "solve()",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "pick",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 220,
+            "y": 198,
+            "width": 147,
+            "height": 66,
+            "rotation": 0,
+            "text": "cell = pick an\nempty cell",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "Which cell is picked here is the whole ballgame. Reading order works; fewest-candidates-first does a quarter of the work, because it fails fast on the cells most likely to fail at all.",
+            "badge": "!"
+          },
+          {
+            "id": "none",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 407,
+            "y": 197,
+            "width": 191,
+            "height": 68,
+            "rotation": 0,
+            "text": "no empty cell ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3,
+            "badge": "1"
+          },
+          {
+            "id": "ret1",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 638,
+            "y": 157,
+            "width": 124,
+            "height": 62,
+            "rotation": 0,
+            "text": "return true\n(solved)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 31
+            },
+            "z": 4
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 644,
+            "y": 259,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "v = 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 802,
+            "y": 199,
+            "width": 132,
+            "height": 64,
+            "rotation": 0,
+            "text": "v <= 9 ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6
+          },
+          {
+            "id": "ret2",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 1009,
+            "y": 138,
+            "width": 132,
+            "height": 62,
+            "rotation": 0,
+            "text": "return false\n(backtrack)",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 31
+            },
+            "z": 7,
+            "note": "No digit fits, so a guess made earlier was wrong. If the chosen cell had zero candidates, this fires immediately, which is exactly the fast failure a good cell-picker is buying."
+          },
+          {
+            "id": "legal",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 974,
+            "y": 240,
+            "width": 201,
+            "height": 84,
+            "rotation": 0,
+            "text": "v legal in row,\ncolumn and box ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "The three sudoku constraints, all checked at once.",
+            "badge": "2"
+          },
+          {
+            "id": "win",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 1507,
+            "y": 165,
+            "width": 119,
+            "height": 46,
+            "rotation": 0,
+            "text": "return true",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 9
+          },
+          {
+            "id": "next",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1511,
+            "y": 251,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "v = v + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 10
+          },
+          {
+            "id": "choose",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1264,
+            "y": 148,
+            "width": 155,
+            "height": 46,
+            "rotation": 0,
+            "text": "board[cell] = v",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 11
+          },
+          {
+            "id": "explore",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 1261,
+            "y": 203,
+            "width": 161,
+            "height": 80,
+            "rotation": 0,
+            "text": "solve()\nsucceeded ?",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 12
+          },
+          {
+            "id": "undo",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1264,
+            "y": 292,
+            "width": 155,
+            "height": 46,
+            "rotation": 0,
+            "text": "board[cell] = 0",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 13,
+            "note": "Erasing the guess is what lets the next value be tried on a clean board."
+          },
+          {
+            "id": "lmtpkp5km71",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "pick",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5km72",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "pick",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "none",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5km73",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "none",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret1",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 618,
+                "y": 231
+              },
+              {
+                "x": 618,
+                "y": 188
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5km74",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "none",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 503,
+                "y": 282
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5km75",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 779,
+                "y": 282
+              },
+              {
+                "x": 779,
+                "y": 231
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 18
+          },
+          {
+            "id": "lmtpkp5km76",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "legal",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 954,
+                "y": 231
+              },
+              {
+                "x": 954,
+                "y": 282
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 19
+          },
+          {
+            "id": "lmtpkp5km77",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 868,
+                "y": 169
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 20
+          },
+          {
+            "id": "lmtpkp5km78",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "legal",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 1
+            },
+            "waypoints": [
+              {
+                "x": 1075,
+                "y": 207
+              },
+              {
+                "x": 1148,
+                "y": 207
+              },
+              {
+                "x": 1148,
+                "y": 86
+              },
+              {
+                "x": 1500,
+                "y": 86
+              },
+              {
+                "x": 1500,
+                "y": 239
+              },
+              {
+                "x": 1549,
+                "y": 239
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no (prune)",
+            "z": 21
+          },
+          {
+            "id": "lmtpkp5km79",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "legal",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1219,
+                "y": 282
+              },
+              {
+                "x": 1219,
+                "y": 171
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 22
+          },
+          {
+            "id": "lmtpkp5km7a",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 23
+          },
+          {
+            "id": "lmtpkp5km7b",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "win",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1464,
+                "y": 243
+              },
+              {
+                "x": 1464,
+                "y": 188
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 24
+          },
+          {
+            "id": "lmtpkp5km7c",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 25
+          },
+          {
+            "id": "lmtpkp5km7d",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1465,
+                "y": 315
+              },
+              {
+                "x": 1465,
+                "y": 274
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 26
+          },
+          {
+            "id": "lmtpkp5km7e",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 1549,
+                "y": 311
+              },
+              {
+                "x": 1549,
+                "y": 375
+              },
+              {
+                "x": 868,
+                "y": 375
+              },
+              {
+                "x": 868,
+                "y": 277
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 27
+          }
+        ]
       }
     ]
   }

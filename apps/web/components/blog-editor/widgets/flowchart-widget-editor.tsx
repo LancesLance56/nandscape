@@ -1,75 +1,41 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import { cn } from "@/lib/cn";
-import { STARTER_CHART } from "@/lib/flowchart/charts";
 import { useStoredFlowcharts } from "@/lib/diagrams/use-stored-flowcharts";
-import { isFlowchartSpec, type FlowchartSpec } from "@/lib/flowchart/types";
-import { FlowchartWorkbench } from "@/components/flowchart/workbench";
-import { useFlowchartDoc } from "@/components/flowchart/use-flowchart-doc";
-import { FlowchartView } from "@/components/content/blocks/interactive/flowchart/flowchart-widgets";
+import { emptyDoc, type Doc } from "@/lib/flowchart-editor/model";
+import { toDoc } from "@/lib/flowchart-editor/from-spec";
+import { FlowchartEditor } from "@/components/flowchart-editor/editor";
+import { DiagramViewer } from "@/components/flowchart-editor/viewer";
 import type { WidgetEditorProps } from "@/lib/blog-editor/widget-registry";
 
 /**
- * The chart editor, wired to a block's `onChange`.
+ * Putting a diagram in an article.
  *
- * The workbench owns its own document so that undo and the coalescing of a
- * drag into one history step work the same everywhere; this pushes each
- * settled version back into the block. The block is the source of truth for
- * what gets saved, the doc is the source of truth for what is being edited,
- * and the sync only runs one way because the other direction would fight
- * every keystroke.
- */
-function ChartEditor({
-  initial,
-  onChange,
-}: {
-  initial: FlowchartSpec;
-  onChange: (spec: FlowchartSpec) => void;
-}) {
-  const doc = useFlowchartDoc(initial);
-
-  useEffect(() => {
-    onChange(doc.spec);
-    // `onChange` is rebuilt on every render of the parent, so depending on it
-    // would publish the chart in a loop.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doc.spec]);
-
-  return <FlowchartWorkbench doc={doc} variant="embedded" />;
-}
-
-/**
- * Two ways to put a flowchart on a page, and the block records which one it is.
+ * Two ways, and the block records which one it is. A *stored* diagram points
+ * at a row in `diagram_presets`: right for anything reused, because a fix to
+ * it fixes every page showing it. A diagram stored *in the block* is right for
+ * one an article needs and nothing else does.
  *
- * A preset points at a chart defined in lib/flowchart, which is right for the
- * algorithm charts: they are reviewed like code, reused across pages, and a
- * fix to one fixes every page showing it. An inline chart is stored in the
- * block itself, which is right for a diagram only this article needs.
- *
- * Switching to custom seeds the editor with whichever preset was showing, so
- * "take the built-in one and change two boxes" is a two-click operation
- * rather than a rebuild from scratch.
+ * Both hold the same thing now - a drawing - so switching between them is a
+ * copy rather than a conversion, and a diagram that predates the drawing tool
+ * is converted on open by `toDoc`.
  */
 export function FlowchartWidgetEditor({ data, onChange }: WidgetEditorProps) {
   const presetName = typeof data.preset === "string" ? data.preset : null;
-  const inline = isFlowchartSpec(data.chart) ? (data.chart as FlowchartSpec) : null;
+  const inline = useMemo(() => toDoc(data.chart), [data.chart]);
   const mode: "preset" | "custom" = inline && !presetName ? "custom" : "preset";
 
   const { bySlug, groups, loading, error } = useStoredFlowcharts();
 
-  const preview = useMemo<FlowchartSpec>(() => {
-    const stored = presetName ? bySlug.get(presetName) : undefined;
-    return stored ?? STARTER_CHART;
-  }, [presetName, bySlug]);
+  const stored = presetName ? bySlug.get(presetName) ?? null : null;
 
   const switchTo = (next: "preset" | "custom") => {
     if (next === mode) return;
     if (next === "custom") {
-      // Seed from what is on screen right now rather than from a blank chart.
-      const seed: FlowchartSpec = inline ?? JSON.parse(JSON.stringify(preview));
-      onChange({ chart: seed });
+      // Seed from what is on screen right now rather than from a blank page.
+      onChange({ chart: inline ?? stored ?? emptyDoc() });
     } else {
       onChange({ preset: presetName ?? "bubble" });
     }
@@ -90,7 +56,7 @@ export function FlowchartWidgetEditor({ data, onChange }: WidgetEditorProps) {
                 : "border-border-strong text-ink-soft hover:bg-surface-2",
             )}
           >
-            {m === "preset" ? "Built-in chart" : "Custom chart"}
+            {m === "preset" ? "Stored diagram" : "This page only"}
           </button>
         ))}
       </div>
@@ -98,13 +64,13 @@ export function FlowchartWidgetEditor({ data, onChange }: WidgetEditorProps) {
       {mode === "preset" ? (
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1">
-            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate">Chart</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate">Diagram</span>
             <select
               value={presetName ?? ""}
               onChange={(e) => onChange({ preset: e.target.value })}
               className="w-full rounded-md border border-border-strong bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-copper"
             >
-              <option value="">{loading ? "loading charts…" : "pick a chart…"}</option>
+              <option value="">{loading ? "loading diagrams…" : "pick a diagram…"}</option>
               {groups.map((group) => (
                 <optgroup key={group.label} label={group.label}>
                   {group.charts.map((c) => (
@@ -119,37 +85,44 @@ export function FlowchartWidgetEditor({ data, onChange }: WidgetEditorProps) {
 
           {error && <p className="text-[11px] text-signal-coral">{error}</p>}
 
-          {presetName && bySlug.has(presetName) ? (
-            <FlowchartView spec={bySlug.get(presetName)!} />
+          {stored ? (
+            <DiagramViewer doc={stored} draggable={false} />
           ) : (
             <p className="rounded-lg border border-dashed border-border-strong p-4 text-xs italic text-slate">
-              {loading ? "Loading…" : "Pick a chart to preview it here."}
+              {loading ? "Loading…" : "Pick a diagram to preview it here."}
             </p>
           )}
         </div>
       ) : (
-        <ChartEditor initial={inline ?? STARTER_CHART} onChange={(spec) => onChange({ chart: spec })} />
+        <FlowchartEditor
+          initial={inline ?? emptyDoc()}
+          onChange={(doc: Doc) => onChange({ chart: doc })}
+          autosave={false}
+          variant="embedded"
+          height={560}
+        />
       )}
     </div>
   );
 }
 
 /**
- * Editor for the maker widget, which ships an editable chart to the reader.
+ * Editor for the maker widget, which ships an editable diagram to the reader.
  *
- * No preset mode here: the maker renders `data.chart` and ignores `preset`
- * entirely, so offering a preset picker would be a control that silently does
- * nothing. Templates are still available inside the editor itself.
+ * No stored mode here: the maker renders `data.chart` and ignores `preset`,
+ * because the point of it is that the reader takes the diagram apart, and
+ * handing them something shared across nine pages to take apart is the wrong
+ * offer.
  */
 export function FlowchartMakerWidgetEditor({ data, onChange }: WidgetEditorProps) {
-  const inline = isFlowchartSpec(data.chart) ? (data.chart as FlowchartSpec) : null;
-
+  const initial = useMemo(() => toDoc(data.chart) ?? emptyDoc(), [data.chart]);
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-[11px] italic text-slate">
-        This is the chart readers start from. They can edit it themselves; nothing they do is saved.
-      </p>
-      <ChartEditor initial={inline ?? STARTER_CHART} onChange={(spec) => onChange({ chart: spec })} />
-    </div>
+    <FlowchartEditor
+      initial={initial}
+      onChange={(doc: Doc) => onChange({ ...data, chart: doc })}
+      autosave={false}
+      variant="embedded"
+      height={560}
+    />
   );
 }

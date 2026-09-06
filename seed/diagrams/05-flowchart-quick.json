@@ -6,117 +6,467 @@
   "position": 5,
   "spec": {
     "title": "Quick sort (one call)",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "quickSort(a, low, high)"
-      },
-      {
-        "id": "base",
-        "type": "decision",
-        "text": "low >= high ?",
-        "badge": "1",
-        "note": "A range of zero or one element is already sorted."
-      },
-      {
-        "id": "ret",
-        "type": "end",
-        "text": "return"
-      },
-      {
-        "id": "part",
-        "type": "process",
-        "text": "p = partition(a, low, high)",
-        "accent": "blue",
-        "badge": "2",
-        "note": "All the work happens here, before the recursion rather than after it. Once this returns, a[p] is in its final position permanently and will never move again."
-      },
-      {
-        "id": "conquer",
-        "type": "group",
-        "text": "Conquer",
-        "accent": "violet",
-        "badge": "3",
-        "groupLayout": "column"
-      },
-      {
-        "id": "left",
-        "type": "process",
-        "text": "quickSort(a, low, p-1)",
-        "accent": "violet",
-        "parentId": "conquer",
-        "note": "Everything smaller than the pivot."
-      },
-      {
-        "id": "right",
-        "type": "process",
-        "text": "quickSort(a, p+1, high)",
-        "accent": "violet",
-        "parentId": "conquer",
-        "note": "Note that p itself is excluded from both calls. Including it would give a range that never shrinks, which is an infinite loop waiting to happen."
-      },
-      {
-        "id": "end",
-        "type": "end",
-        "text": "return",
-        "note": "There is no merge step. Once both sides return, the range is sorted."
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "base"
-      },
-      {
-        "from": "base",
-        "to": "ret",
-        "label": "yes"
-      },
-      {
-        "from": "base",
-        "to": "part",
-        "label": "no"
-      },
-      {
-        "from": "part",
-        "to": "left"
-      },
-      {
-        "from": "left",
-        "to": "right"
-      },
-      {
-        "from": "right",
-        "to": "end"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "process",
-        "shape": "process",
-        "accent": "neutral"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "calls itself",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "moves data",
-        "shape": "process",
-        "accent": "blue"
+        "id": "pmtpkp5jm2s",
+        "name": "Page 1",
+        "width": 1294,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "conquer",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 832,
+            "y": 68,
+            "width": 242,
+            "height": 152,
+            "rotation": 0,
+            "text": "Conquer",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0,
+            "badge": "3"
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 121,
+            "width": 216,
+            "height": 46,
+            "rotation": 0,
+            "text": "quickSort(a, low, high)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "base",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 324,
+            "y": 110,
+            "width": 181,
+            "height": 68,
+            "rotation": 0,
+            "text": "low >= high ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "A range of zero or one element is already sorted.",
+            "badge": "1"
+          },
+          {
+            "id": "ret",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 613,
+            "y": 76,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 3
+          },
+          {
+            "id": "part",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 545,
+            "y": 162,
+            "width": 247,
+            "height": 50,
+            "rotation": 0,
+            "text": "p = partition(a, low, high)",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4,
+            "note": "All the work happens here, before the recursion rather than after it. Once this returns, a[p] is in its final position permanently and will never move again.",
+            "badge": "2"
+          },
+          {
+            "id": "end",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 1114,
+            "y": 121,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 5,
+            "note": "There is no merge step. Once both sides return, the range is sorted."
+          },
+          {
+            "id": "left",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 849,
+            "y": 106,
+            "width": 208,
+            "height": 46,
+            "rotation": 0,
+            "text": "quickSort(a, low, p-1)",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6,
+            "note": "Everything smaller than the pivot."
+          },
+          {
+            "id": "right",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 845,
+            "y": 161,
+            "width": 216,
+            "height": 46,
+            "rotation": 0,
+            "text": "quickSort(a, p+1, high)",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "Note that p itself is excluded from both calls. Including it would give a range that never shrinks, which is an infinite loop waiting to happen."
+          },
+          {
+            "id": "lmtpkp5jm2m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "base",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 8
+          },
+          {
+            "id": "lmtpkp5jm2n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "base",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 415,
+                "y": 99
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5jm2o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "base",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "part",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 525,
+                "y": 144
+              },
+              {
+                "x": 525,
+                "y": 187
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5jm2p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "part",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "left",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 821,
+                "y": 187
+              },
+              {
+                "x": 821,
+                "y": 129
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5jm2q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "left",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "right",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5jm2r",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "right",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "end",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1088,
+                "y": 184
+              },
+              {
+                "x": 1088,
+                "y": 144
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 13
+          }
+        ]
       }
     ]
   }

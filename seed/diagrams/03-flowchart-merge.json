@@ -6,118 +6,468 @@
   "position": 3,
   "spec": {
     "title": "Merge sort (one call)",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "mergeSort(a)"
-      },
-      {
-        "id": "base",
-        "type": "decision",
-        "text": "length <= 1 ?",
-        "badge": "1",
-        "note": "The base case. A single element is already sorted, and this is what stops the recursion."
-      },
-      {
-        "id": "ret",
-        "type": "end",
-        "text": "return a",
-        "note": "Returning here is what lets the level above start merging."
-      },
-      {
-        "id": "split",
-        "type": "process",
-        "text": "mid = length / 2",
-        "note": "The split is positional and never looks at the values, which is why merge sort's cost is identical on sorted, reversed and random input."
-      },
-      {
-        "id": "divide",
-        "type": "group",
-        "text": "Divide",
-        "accent": "violet",
-        "badge": "2",
-        "groupLayout": "column"
-      },
-      {
-        "id": "left",
-        "type": "process",
-        "text": "left = mergeSort(a[0..mid])",
-        "accent": "violet",
-        "parentId": "divide",
-        "note": "This call runs to completion, all the way down and all the way back up, before the right half is touched at all."
-      },
-      {
-        "id": "right",
-        "type": "process",
-        "text": "right = mergeSort(a[mid..])",
-        "accent": "violet",
-        "parentId": "divide",
-        "note": "Only reached once the entire left subtree has finished and returned."
-      },
-      {
-        "id": "merge",
-        "type": "process",
-        "text": "return merge(left, right)",
-        "accent": "blue",
-        "badge": "3",
-        "note": "Both halves are sorted by now, so one linear pass combines them. All of merge sort's actual work happens here, on the way back up."
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "base"
-      },
-      {
-        "from": "base",
-        "to": "ret",
-        "label": "yes"
-      },
-      {
-        "from": "base",
-        "to": "split",
-        "label": "no"
-      },
-      {
-        "from": "split",
-        "to": "left"
-      },
-      {
-        "from": "left",
-        "to": "right"
-      },
-      {
-        "from": "right",
-        "to": "merge"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "process",
-        "shape": "process",
-        "accent": "neutral"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "calls itself",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "moves data",
-        "shape": "process",
-        "accent": "blue"
+        "id": "pmtpkp5jd1y",
+        "name": "Page 1",
+        "width": 1275,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "divide",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 663,
+            "y": 68,
+            "width": 273,
+            "height": 152,
+            "rotation": 0,
+            "text": "Divide",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0,
+            "badge": "2"
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 121,
+            "width": 132,
+            "height": 46,
+            "rotation": 0,
+            "text": "mergeSort(a)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "base",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 240,
+            "y": 110,
+            "width": 181,
+            "height": 68,
+            "rotation": 0,
+            "text": "length <= 1 ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "The base case. A single element is already sorted, and this is what stops the recursion.",
+            "badge": "1"
+          },
+          {
+            "id": "ret",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 486,
+            "y": 78,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return a",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 3,
+            "note": "Returning here is what lets the level above start merging."
+          },
+          {
+            "id": "split",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 461,
+            "y": 164,
+            "width": 162,
+            "height": 46,
+            "rotation": 0,
+            "text": "mid = length / 2",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4,
+            "note": "The split is positional and never looks at the values, which is why merge sort's cost is identical on sorted, reversed and random input."
+          },
+          {
+            "id": "merge",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 976,
+            "y": 119,
+            "width": 231,
+            "height": 50,
+            "rotation": 0,
+            "text": "return merge(left, right)",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5,
+            "note": "Both halves are sorted by now, so one linear pass combines them. All of merge sort's actual work happens here, on the way back up.",
+            "badge": "3"
+          },
+          {
+            "id": "left",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 676,
+            "y": 106,
+            "width": 247,
+            "height": 46,
+            "rotation": 0,
+            "text": "left = mergeSort(a[0..mid])",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6,
+            "note": "This call runs to completion, all the way down and all the way back up, before the right half is touched at all."
+          },
+          {
+            "id": "right",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 676,
+            "y": 161,
+            "width": 247,
+            "height": 46,
+            "rotation": 0,
+            "text": "right = mergeSort(a[mid..])",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "Only reached once the entire left subtree has finished and returned."
+          },
+          {
+            "id": "lmtpkp5jc1s",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "base",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 8
+          },
+          {
+            "id": "lmtpkp5jc1t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "base",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 454,
+                "y": 144
+              },
+              {
+                "x": 454,
+                "y": 101
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5jd1u",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "base",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "split",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 331,
+                "y": 187
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5jd1v",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "split",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "left",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 650,
+                "y": 187
+              },
+              {
+                "x": 650,
+                "y": 129
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5jd1w",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "left",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "right",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5jd1x",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "right",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "merge",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 950,
+                "y": 184
+              },
+              {
+                "x": 950,
+                "y": 144
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 13
+          }
+        ]
       }
     ]
   }

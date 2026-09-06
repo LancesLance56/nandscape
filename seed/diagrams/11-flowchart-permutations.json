@@ -6,179 +6,876 @@
   "position": 2,
   "spec": {
     "title": "Permutations (used array)",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "permute(current, used)"
-      },
-      {
-        "id": "full",
-        "type": "decision",
-        "text": "current.length\n== n ?",
-        "badge": "1",
-        "note": "Only a full-length arrangement is a permutation, so unlike subsets, only the leaves are answers."
-      },
-      {
-        "id": "record",
-        "type": "process",
-        "text": "record a copy"
-      },
-      {
-        "id": "ret1",
-        "type": "end",
-        "text": "return"
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "i = 0",
-        "note": "Every position scans all n characters, not a suffix, because any unused character may go next. This is the structural difference from subsets."
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "i < n ?"
-      },
-      {
-        "id": "ret2",
-        "type": "end",
-        "text": "return"
-      },
-      {
-        "id": "used",
-        "type": "decision",
-        "text": "used[i] ?",
-        "badge": "2",
-        "accent": "amber",
-        "note": "Already placed higher up this path, so it cannot be used again on this branch. The used array is what replaces the `start` index that subsets relies on."
-      },
-      {
-        "id": "cycle",
-        "type": "group",
-        "text": "choose · explore · un-choose",
-        "groupLayout": "column"
-      },
-      {
-        "id": "choose",
-        "type": "process",
-        "text": "used[i] = true\ncurrent.push(a[i])",
-        "accent": "blue",
-        "parentId": "cycle"
-      },
-      {
-        "id": "explore",
-        "type": "process",
-        "text": "permute(current, used)",
-        "accent": "violet",
-        "parentId": "cycle"
-      },
-      {
-        "id": "undo",
-        "type": "process",
-        "text": "current.pop()\nused[i] = false",
-        "accent": "coral",
-        "parentId": "cycle",
-        "note": "Both halves have to be undone. Popping without clearing used[i] loses that character for every later branch."
-      },
-      {
-        "id": "next",
-        "type": "process",
-        "text": "i = i + 1"
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "full"
-      },
-      {
-        "from": "full",
-        "to": "record",
-        "label": "yes"
-      },
-      {
-        "from": "full",
-        "to": "init",
-        "label": "no"
-      },
-      {
-        "from": "record",
-        "to": "ret1"
-      },
-      {
-        "from": "init",
-        "to": "loop"
-      },
-      {
-        "from": "loop",
-        "to": "used",
-        "label": "yes"
-      },
-      {
-        "from": "loop",
-        "to": "ret2",
-        "label": "no"
-      },
-      {
-        "from": "used",
-        "to": "next",
-        "label": "yes (skip)"
-      },
-      {
-        "from": "used",
-        "to": "choose",
-        "label": "no"
-      },
-      {
-        "from": "choose",
-        "to": "explore"
-      },
-      {
-        "from": "explore",
-        "to": "undo"
-      },
-      {
-        "from": "undo",
-        "to": "next"
-      },
-      {
-        "from": "next",
-        "to": "loop"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "apply a choice",
-        "shape": "process",
-        "accent": "blue"
-      },
-      {
-        "label": "recurse",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "take it back",
-        "shape": "process",
-        "accent": "coral"
-      },
-      {
-        "label": "loop back",
-        "kind": "edge",
-        "shape": "decision",
-        "accent": "copper"
+        "id": "pmtpkp5k35u",
+        "name": "Page 1",
+        "width": 1536,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "cycle",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 1064,
+            "y": 110,
+            "width": 252,
+            "height": 239,
+            "rotation": 0,
+            "text": "choose · explore · un-choose",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 207,
+            "width": 208,
+            "height": 46,
+            "rotation": 0,
+            "text": "permute(current, used)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "full",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 316,
+            "y": 188,
+            "width": 191,
+            "height": 84,
+            "rotation": 0,
+            "text": "current.length\n== n ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "Only a full-length arrangement is a permutation, so unlike subsets, only the leaves are answers.",
+            "badge": "1"
+          },
+          {
+            "id": "record",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 547,
+            "y": 164,
+            "width": 133,
+            "height": 46,
+            "rotation": 0,
+            "text": "record a copy",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 558,
+            "y": 250,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = 0",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4,
+            "note": "Every position scans all n characters, not a suffix, because any unused character may go next. This is the structural difference from subsets."
+          },
+          {
+            "id": "ret1",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 725,
+            "y": 155,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 5
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 720,
+            "y": 241,
+            "width": 122,
+            "height": 64,
+            "rotation": 0,
+            "text": "i < n ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6
+          },
+          {
+            "id": "ret2",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 897,
+            "y": 153,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 7
+          },
+          {
+            "id": "used",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 882,
+            "y": 239,
+            "width": 142,
+            "height": 68,
+            "rotation": 0,
+            "text": "used[i] ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "Already placed higher up this path, so it cannot be used again on this branch. The used array is what replaces the `start` index that subsets relies on.",
+            "badge": "2"
+          },
+          {
+            "id": "next",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1356,
+            "y": 207,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = i + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 9
+          },
+          {
+            "id": "choose",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1101,
+            "y": 148,
+            "width": 178,
+            "height": 62,
+            "rotation": 0,
+            "text": "used[i] = true\ncurrent.push(a[i])",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 10
+          },
+          {
+            "id": "explore",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1086,
+            "y": 219,
+            "width": 208,
+            "height": 46,
+            "rotation": 0,
+            "text": "permute(current, used)",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 11
+          },
+          {
+            "id": "undo",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1113,
+            "y": 274,
+            "width": 155,
+            "height": 62,
+            "rotation": 0,
+            "text": "current.pop()\nused[i] = false",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 12,
+            "note": "Both halves have to be undone. Popping without clearing used[i] loses that character for every later branch."
+          },
+          {
+            "id": "lmtpkp5k35h",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "full",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5k35i",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "full",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "record",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 527,
+                "y": 230
+              },
+              {
+                "x": 527,
+                "y": 187
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5k35j",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "full",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 412,
+                "y": 273
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5k35k",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "record",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret1",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 703,
+                "y": 187
+              },
+              {
+                "x": 703,
+                "y": 178
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5k35l",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5k35m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "used",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 18
+          },
+          {
+            "id": "lmtpkp5k35n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 781,
+                "y": 208
+              },
+              {
+                "x": 885,
+                "y": 208
+              },
+              {
+                "x": 885,
+                "y": 176
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 19
+          },
+          {
+            "id": "lmtpkp5k35o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "used",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 1
+            },
+            "waypoints": [
+              {
+                "x": 953,
+                "y": 206
+              },
+              {
+                "x": 1016,
+                "y": 206
+              },
+              {
+                "x": 1016,
+                "y": 86
+              },
+              {
+                "x": 1394,
+                "y": 86
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes (skip)",
+            "z": 20
+          },
+          {
+            "id": "lmtpkp5k35p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "used",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1063,
+                "y": 273
+              },
+              {
+                "x": 1063,
+                "y": 179
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 21
+          },
+          {
+            "id": "lmtpkp5k35q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 22
+          },
+          {
+            "id": "lmtpkp5k35r",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 23
+          },
+          {
+            "id": "lmtpkp5k35s",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1312,
+                "y": 305
+              },
+              {
+                "x": 1312,
+                "y": 230
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 24
+          },
+          {
+            "id": "lmtpkp5k35t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 1394,
+                "y": 267
+              },
+              {
+                "x": 1394,
+                "y": 373
+              },
+              {
+                "x": 781,
+                "y": 373
+              },
+              {
+                "x": 781,
+                "y": 319
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 25
+          }
+        ]
       }
     ]
   }

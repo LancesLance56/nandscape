@@ -6,196 +6,880 @@
   "position": 0,
   "spec": {
     "title": "The backtracking template",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "backtrack(state)"
-      },
-      {
-        "id": "issol",
-        "type": "decision",
-        "text": "is state a\nsolution ?",
-        "badge": "1",
-        "note": "The stopping condition. Without it the recursion never bottoms out, and with the wrong one you record partial answers."
-      },
-      {
-        "id": "record",
-        "type": "process",
-        "text": "record(state)",
-        "note": "Record a copy. Storing the shared state itself means every recorded answer ends up pointing at the same object, which is empty by the time the search finishes."
-      },
-      {
-        "id": "ret1",
-        "type": "end",
-        "text": "return"
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "i = 0",
-        "note": "Index into the choices available from this state."
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "i < choices ?"
-      },
-      {
-        "id": "ret2",
-        "type": "end",
-        "text": "return",
-        "note": "Out of choices at this level, so hand control back to the caller. This return is the backtrack."
-      },
-      {
-        "id": "valid",
-        "type": "decision",
-        "text": "choice[i] legal ?",
-        "badge": "2",
-        "accent": "amber",
-        "note": "The pruning test, and the only thing separating backtracking from brute force. Failing here means the entire subtree under this choice is never built."
-      },
-      {
-        "id": "cycle",
-        "type": "group",
-        "text": "choose · explore · un-choose",
-        "groupLayout": "column"
-      },
-      {
-        "id": "choose",
-        "type": "process",
-        "text": "apply choice",
-        "accent": "blue",
-        "parentId": "cycle",
-        "note": "Mutate the shared state so the deeper call sees this choice as already made."
-      },
-      {
-        "id": "explore",
-        "type": "process",
-        "text": "backtrack(state)",
-        "accent": "violet",
-        "parentId": "cycle",
-        "note": "One level deeper. This call runs all the way to completion before the next choice at this level is tried."
-      },
-      {
-        "id": "undo",
-        "type": "process",
-        "text": "undo choice",
-        "accent": "coral",
-        "parentId": "cycle",
-        "note": "The step people forget. State is shared across the whole search, so a choice left applied silently corrupts every branch explored after it."
-      },
-      {
-        "id": "next",
-        "type": "process",
-        "text": "i = i + 1"
-      }
-    ],
-    "edges": [
-      {
-        "id": "t1",
-        "from": "start",
-        "to": "issol"
-      },
-      {
-        "id": "t2",
-        "from": "issol",
-        "to": "record",
-        "label": "yes"
-      },
-      {
-        "id": "t3",
-        "from": "issol",
-        "to": "init",
-        "label": "no"
-      },
-      {
-        "id": "t4",
-        "from": "record",
-        "to": "ret1"
-      },
-      {
-        "id": "t5",
-        "from": "init",
-        "to": "loop"
-      },
-      {
-        "id": "t6",
-        "from": "loop",
-        "to": "valid",
-        "label": "yes"
-      },
-      {
-        "id": "t7",
-        "from": "loop",
-        "to": "ret2",
-        "label": "no"
-      },
-      {
-        "id": "t8",
-        "from": "valid",
-        "to": "choose",
-        "label": "yes"
-      },
-      {
-        "id": "t9",
-        "from": "valid",
-        "to": "next",
-        "label": "no (prune)"
-      },
-      {
-        "id": "t10",
-        "from": "choose",
-        "to": "explore"
-      },
-      {
-        "id": "t11",
-        "from": "explore",
-        "to": "undo"
-      },
-      {
-        "id": "t12",
-        "from": "undo",
-        "to": "next"
-      },
-      {
-        "id": "t13",
-        "from": "next",
-        "to": "loop"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "apply a choice",
-        "shape": "process",
-        "accent": "blue"
-      },
-      {
-        "label": "recurse",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "take it back",
-        "shape": "process",
-        "accent": "coral"
-      },
-      {
-        "label": "loop back",
-        "kind": "edge",
-        "shape": "decision",
-        "accent": "copper"
+        "id": "pmtpkp5jx4r",
+        "name": "Page 1",
+        "width": 1588,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "cycle",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 1116,
+            "y": 110,
+            "width": 252,
+            "height": 207,
+            "rotation": 0,
+            "text": "choose · explore · un-choose",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 191,
+            "width": 162,
+            "height": 46,
+            "rotation": 0,
+            "text": "backtrack(state)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "issol",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 270,
+            "y": 172,
+            "width": 145,
+            "height": 84,
+            "rotation": 0,
+            "text": "is state a\nsolution ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "The stopping condition. Without it the recursion never bottoms out, and with the wrong one you record partial answers.",
+            "badge": "1"
+          },
+          {
+            "id": "record",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 455,
+            "y": 148,
+            "width": 139,
+            "height": 46,
+            "rotation": 0,
+            "text": "record(state)",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3,
+            "note": "Record a copy. Storing the shared state itself means every recorded answer ends up pointing at the same object, which is empty by the time the search finishes."
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 469,
+            "y": 234,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = 0",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4,
+            "note": "Index into the choices available from this state."
+          },
+          {
+            "id": "ret1",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 669,
+            "y": 139,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 5
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 634,
+            "y": 225,
+            "width": 181,
+            "height": 64,
+            "rotation": 0,
+            "text": "i < choices ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6
+          },
+          {
+            "id": "ret2",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 910,
+            "y": 137,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 7,
+            "note": "Out of choices at this level, so hand control back to the caller. This return is the backtrack."
+          },
+          {
+            "id": "valid",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 855,
+            "y": 223,
+            "width": 221,
+            "height": 68,
+            "rotation": 0,
+            "text": "choice[i] legal ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "The pruning test, and the only thing separating backtracking from brute force. Failing here means the entire subtree under this choice is never built.",
+            "badge": "2"
+          },
+          {
+            "id": "next",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1408,
+            "y": 191,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = i + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 9
+          },
+          {
+            "id": "choose",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1179,
+            "y": 148,
+            "width": 126,
+            "height": 46,
+            "rotation": 0,
+            "text": "apply choice",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 10,
+            "note": "Mutate the shared state so the deeper call sees this choice as already made."
+          },
+          {
+            "id": "explore",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1161,
+            "y": 203,
+            "width": 162,
+            "height": 46,
+            "rotation": 0,
+            "text": "backtrack(state)",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 11,
+            "note": "One level deeper. This call runs all the way to completion before the next choice at this level is tried."
+          },
+          {
+            "id": "undo",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1183,
+            "y": 258,
+            "width": 119,
+            "height": 46,
+            "rotation": 0,
+            "text": "undo choice",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 12,
+            "note": "The step people forget. State is shared across the whole search, so a choice left applied silently corrupts every branch explored after it."
+          },
+          {
+            "id": "lmtpkp5jx4e",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "issol",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5jx4f",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "issol",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "record",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 435,
+                "y": 214
+              },
+              {
+                "x": 435,
+                "y": 171
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5jx4g",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "issol",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 343,
+                "y": 257
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5jx4h",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "record",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret1",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 631,
+                "y": 171
+              },
+              {
+                "x": 631,
+                "y": 162
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5jx4i",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5jx4j",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "valid",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 18
+          },
+          {
+            "id": "lmtpkp5jx4k",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 725,
+                "y": 192
+              },
+              {
+                "x": 898,
+                "y": 192
+              },
+              {
+                "x": 898,
+                "y": 160
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 19
+          },
+          {
+            "id": "lmtpkp5jx4l",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "valid",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1128,
+                "y": 257
+              },
+              {
+                "x": 1128,
+                "y": 171
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 20
+          },
+          {
+            "id": "lmtpkp5jx4m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "valid",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 1
+            },
+            "waypoints": [
+              {
+                "x": 966,
+                "y": 190
+              },
+              {
+                "x": 1029,
+                "y": 190
+              },
+              {
+                "x": 1029,
+                "y": 86
+              },
+              {
+                "x": 1446,
+                "y": 86
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no (prune)",
+            "z": 21
+          },
+          {
+            "id": "lmtpkp5jx4n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 22
+          },
+          {
+            "id": "lmtpkp5jx4o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 23
+          },
+          {
+            "id": "lmtpkp5jx4p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1355,
+                "y": 281
+              },
+              {
+                "x": 1355,
+                "y": 214
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 24
+          },
+          {
+            "id": "lmtpkp5jx4q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 1446,
+                "y": 251
+              },
+              {
+                "x": 1446,
+                "y": 341
+              },
+              {
+                "x": 725,
+                "y": 341
+              },
+              {
+                "x": 725,
+                "y": 303
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 25
+          }
+        ]
       }
     ]
   }

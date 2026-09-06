@@ -1,11 +1,12 @@
 "use client";
 
 /**
- * The chrome vocabulary: ribbon buttons, dropdowns, panel sections.
+ * The chrome vocabulary: menus, toolbar buttons, inspector blocks.
  *
- * Kept apart from the panels that use them so the ribbon and the SmartPanel
- * cannot drift into looking like two different applications, which is the
- * failure mode of every toolbar assembled button by button.
+ * Kept apart from the surfaces that use them so the dock, the contextual bar
+ * and the inspector cannot drift into looking like three different
+ * applications, which is the failure mode of every toolbar assembled button by
+ * button.
  */
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
@@ -100,24 +101,25 @@ export function MenuLabel({ children }: { children: ReactNode }) {
 }
 
 /* -------------------------------------------------------------------------
- * Ribbon
+ * Toolbar
  * ---------------------------------------------------------------------- */
 
 /**
- * One ribbon command: an icon over a label, optionally with a caret that opens
- * a menu. The caret is a separate hit area when the button also does something
- * on its own, and the whole button otherwise - the same split Office and
- * SmartDraw use, and the reason "Paste" can be both a button and a menu.
+ * One command in the contextual bar.
+ *
+ * Icon only, 28px, no label. That is the whole difference between this bar and
+ * a ribbon: a ribbon shows every command at all times and needs a caption
+ * under each to stay legible, whereas this shows only the commands that apply
+ * to what is selected, and a set of six or eight icons does not need captions.
  */
-export function RibbonButton({
+export function ToolbarButton({
   icon,
   label,
   onClick,
   menu,
   disabled,
   active,
-  title,
-  splitAction,
+  wide,
 }: {
   icon: ReactNode;
   label: string;
@@ -125,56 +127,76 @@ export function RibbonButton({
   menu?: (close: () => void) => ReactNode;
   disabled?: boolean;
   active?: boolean;
-  title?: string;
-  /** True when clicking the body does something distinct from opening the menu. */
-  splitAction?: boolean;
+  /** Let the content set the width, for a button showing a value. */
+  wide?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useDismiss(open, () => setOpen(false));
-  const hasMenu = Boolean(menu);
-
   return (
     <div ref={ref} className="relative">
       <button
         type="button"
-        title={title ?? label}
+        title={label}
+        aria-label={label}
+        aria-pressed={active}
         disabled={disabled}
-        onClick={() => {
-          if (hasMenu && !splitAction) setOpen((v) => !v);
-          else onClick?.();
-        }}
+        onClick={() => (menu ? setOpen((v) => !v) : onClick?.())}
         className={cn(
-          "flex h-14 min-w-[52px] flex-col items-center justify-center gap-1 rounded px-2 pb-1 pt-1.5 text-[10px] leading-none transition-colors",
+          "flex h-7 items-center justify-center gap-1 rounded-md text-[11px] transition-colors",
+          wide ? "px-1.5" : "w-7",
           disabled ? "cursor-default text-fe-disabled" : "text-fe-ink hover:bg-fe-hover",
-          active && "bg-fe-accent-soft",
-          open && "bg-fe-hover",
+          (active || open) && !disabled && "bg-fe-accent-soft text-fe-accent-strong",
         )}
       >
-        <span className={cn("flex h-5 items-center justify-center", disabled ? "text-fe-disabled" : "text-fe-icon")}>
-          {icon}
-        </span>
-        <span className="flex items-center gap-0.5 whitespace-nowrap">
-          {label}
-          {hasMenu && !splitAction && <ChevronDown className="h-2.5 w-2.5" strokeWidth={2.5} />}
-        </span>
+        {icon}
       </button>
-      {hasMenu && splitAction && (
-        <button
-          type="button"
-          aria-label={`${label} options`}
-          disabled={disabled}
-          onClick={() => setOpen((v) => !v)}
-          className="absolute bottom-0.5 right-0 rounded p-0.5 text-fe-muted hover:bg-fe-hover"
-        >
-          <ChevronDown className="h-2.5 w-2.5" strokeWidth={2.5} />
-        </button>
-      )}
       {open && menu && <Menu>{menu(() => setOpen(false))}</Menu>}
     </div>
   );
 }
 
-/** A compact square toggle, for the character-format row. */
+/** A colour button: the current value as a bar under a glyph. */
+export function Swatch({
+  color,
+  label,
+  glyph,
+  disabled,
+  children,
+}: {
+  color: string;
+  label: string;
+  glyph: ReactNode;
+  disabled?: boolean;
+  children: (close: () => void) => ReactNode;
+}) {
+  return (
+    <ToolbarButton
+      label={label}
+      disabled={disabled}
+      icon={
+        <span className="flex flex-col items-center leading-none">
+          <span className="text-fe-icon">{glyph}</span>
+          <span
+            className="mt-[3px] h-[3px] w-4 rounded-sm border border-fe-line"
+            style={{ background: color === "transparent" ? "repeating-linear-gradient(45deg,#bbb,#bbb 2px,#fff 2px,#fff 4px)" : color }}
+          />
+        </span>
+      }
+      menu={children}
+    />
+  );
+}
+
+export function ToolbarDivider() {
+  return <span className="mx-1 h-5 w-px shrink-0 bg-fe-line" />;
+}
+
+/** A labelled group in the bar, so the contextual clusters read as clusters. */
+export function ToolbarGroup({ children }: { children: ReactNode }) {
+  return <div className="flex shrink-0 items-center gap-0.5">{children}</div>;
+}
+
+/** A compact square toggle, for the character-format run. */
 export function MiniButton({
   children,
   onClick,
@@ -202,9 +224,9 @@ export function MiniButton({
         disabled={disabled}
         onClick={() => (menu ? setOpen((v) => !v) : onClick?.())}
         className={cn(
-          "flex h-6 w-6 items-center justify-center rounded text-[12px] transition-colors",
+          "flex h-7 w-7 items-center justify-center rounded-md text-[12px] transition-colors",
           disabled ? "text-fe-disabled" : "text-fe-ink hover:bg-fe-hover",
-          active && "bg-fe-accent-soft",
+          active && "bg-fe-accent-soft text-fe-accent-strong",
         )}
       >
         {children}
@@ -214,19 +236,11 @@ export function MiniButton({
   );
 }
 
-export function RibbonGroup({ children }: { children: ReactNode }) {
-  return <div className="flex items-stretch gap-0.5">{children}</div>;
-}
-
-export function RibbonDivider() {
-  return <div className="mx-1 my-2 w-px shrink-0 bg-fe-line" />;
-}
-
 /* -------------------------------------------------------------------------
  * Panel
  * ---------------------------------------------------------------------- */
 
-/** A collapsible strip in the left panel, matching SmartDraw's SmartPanel. */
+/** A collapsible block in the inspector. */
 export function PanelSection({
   title,
   children,

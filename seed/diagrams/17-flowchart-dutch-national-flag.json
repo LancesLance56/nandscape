@@ -6,92 +6,764 @@
   "position": 9,
   "spec": {
     "title": "Dutch national flag",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "sortColors(a)\nlow = 0, mid = 0\nhigh = a.length - 1"
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "mid <= high ?"
-      },
-      {
-        "id": "chk0",
-        "type": "decision",
-        "text": "a[mid] == 0 ?"
-      },
-      {
-        "id": "chk2",
-        "type": "decision",
-        "text": "a[mid] == 2 ?",
-        "note": "The three tests mirror the tutorial's code: first 0, then 2, and 1 is whatever is left. Order does not matter for correctness, only that every case is covered."
-      },
-      {
-        "id": "do0",
-        "type": "process",
-        "text": "swap a[low], a[mid]\nlow += 1\nmid += 1",
-        "accent": "green",
-        "note": "A 0 belongs in the left region. Send it there, then step both low and mid, because everything behind mid is already in place."
-      },
-      {
-        "id": "do1",
-        "type": "process",
-        "text": "mid += 1",
-        "note": "a[mid] is a 1. It already sits in the middle region, so only mid moves."
-      },
-      {
-        "id": "do2",
-        "type": "process",
-        "text": "swap a[mid], a[high]\nhigh -= 1",
-        "accent": "coral",
-        "badge": "!",
-        "note": "A 2 belongs on the right. Swap it past high and shrink high. mid does NOT move: the value that just arrived from high has never been examined."
-      },
-      {
-        "id": "done",
-        "type": "end",
-        "text": "return a\n[0, low) = 0s\n[low, mid) = 1s\n(high, end] = 2s"
+        "id": "pmtpkp5kr8g",
+        "name": "Page 1",
+        "width": 1221,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 128,
+            "width": 185,
+            "height": 78,
+            "rotation": 0,
+            "text": "sortColors(a)\nlow = 0, mid = 0\nhigh = a.length - 1",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 39
+            },
+            "z": 1
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 293,
+            "y": 135,
+            "width": 181,
+            "height": 64,
+            "rotation": 0,
+            "text": "mid <= high ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2
+          },
+          {
+            "id": "chk0",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 514,
+            "y": 68,
+            "width": 181,
+            "height": 64,
+            "rotation": 0,
+            "text": "a[mid] == 0 ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3
+          },
+          {
+            "id": "done",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 524,
+            "y": 172,
+            "width": 162,
+            "height": 94,
+            "rotation": 0,
+            "text": "return a\n[0, low) = 0s\n[low, mid) = 1s\n(high, end] = 2s",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 47
+            },
+            "z": 4
+          },
+          {
+            "id": "chk2",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 737,
+            "y": 76,
+            "width": 181,
+            "height": 64,
+            "rotation": 0,
+            "text": "a[mid] == 2 ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5,
+            "note": "The three tests mirror the tutorial's code: first 0, then 2, and 1 is whatever is left. Order does not matter for correctness, only that every case is covered."
+          },
+          {
+            "id": "do0",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 735,
+            "y": 180,
+            "width": 185,
+            "height": 78,
+            "rotation": 0,
+            "text": "swap a[low], a[mid]\nlow += 1\nmid += 1",
+            "style": {
+              "fill": "#dff3e7",
+              "stroke": "#1ca463",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#0f7e4a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6,
+            "note": "A 0 belongs in the left region. Send it there, then step both low and mid, because everything behind mid is already in place."
+          },
+          {
+            "id": "do1",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1001,
+            "y": 91,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "mid += 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "a[mid] is a 1. It already sits in the middle region, so only mid moves."
+          },
+          {
+            "id": "do2",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 960,
+            "y": 177,
+            "width": 193,
+            "height": 66,
+            "rotation": 0,
+            "text": "swap a[mid], a[high]\nhigh -= 1",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "A 2 belongs on the right. Swap it past high and shrink high. mid does NOT move: the value that just arrived from high has never been examined.",
+            "badge": "!"
+          },
+          {
+            "id": "lmtpkp5kr7m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5kr7n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "chk0",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 384,
+                "y": 100
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5kr7o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "done",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 499,
+                "y": 167
+              },
+              {
+                "x": 499,
+                "y": 219
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5kr7p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "chk0",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "do0",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 605,
+                "y": 165
+              },
+              {
+                "x": 723,
+                "y": 165
+              },
+              {
+                "x": 723,
+                "y": 219
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5kr7q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "chk0",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "chk2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 716,
+                "y": 100
+              },
+              {
+                "x": 716,
+                "y": 108
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5kr7r",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "chk2",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "do2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 828,
+                "y": 173
+              },
+              {
+                "x": 948,
+                "y": 173
+              },
+              {
+                "x": 948,
+                "y": 210
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5kr7s",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "chk2",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "do1",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 959,
+                "y": 108
+              },
+              {
+                "x": 959,
+                "y": 114
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5kr7t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "do0",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 12
+            },
+            "waypoints": [
+              {
+                "x": 798,
+                "y": 272
+              },
+              {
+                "x": 798,
+                "y": 290
+              },
+              {
+                "x": 347,
+                "y": 290
+              },
+              {
+                "x": 347,
+                "y": 200
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5kr7u",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "do1",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 1039,
+                "y": 170
+              },
+              {
+                "x": 953,
+                "y": 170
+              },
+              {
+                "x": 953,
+                "y": 310
+              },
+              {
+                "x": 384,
+                "y": 310
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5kr7v",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "do2",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 1040,
+                "y": 257
+              },
+              {
+                "x": 1040,
+                "y": 330
+              },
+              {
+                "x": 434,
+                "y": 330
+              },
+              {
+                "x": 434,
+                "y": 200
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 18
+          }
+        ],
+        "walkthrough": [
+          {
+            "id": "wmtpkp5kr7w",
+            "target": "start",
+            "caption": "Sorting [2, 0, 2, 1, 1, 0]. low and mid start at index 0, high at index 5."
+          },
+          {
+            "id": "wmtpkp5kr7x",
+            "target": "loop",
+            "caption": "mid (0) <= high (5) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr7y",
+            "target": "chk0",
+            "caption": "a[mid] = 2. Is it 0 ? No."
+          },
+          {
+            "id": "wmtpkp5kr7z",
+            "target": "chk2",
+            "caption": "Is a[mid] 2 ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr80",
+            "target": "do2",
+            "caption": "Swap index 0 with high at index 5, then drop high to 4. Array: [0, 0, 2, 1, 1, 2]. mid stays at 0."
+          },
+          {
+            "id": "wmtpkp5kr81",
+            "target": "loop",
+            "caption": "mid (0) <= high (4) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr82",
+            "target": "chk0",
+            "caption": "a[mid] = 0. Is it 0 ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr83",
+            "target": "do0",
+            "caption": "Swap a[low] and a[mid], both index 0, so nothing visibly moves. low and mid both advance to 1."
+          },
+          {
+            "id": "wmtpkp5kr84",
+            "target": "loop",
+            "caption": "mid (1) <= high (4) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr85",
+            "target": "chk0",
+            "caption": "a[mid] = 0 again. low and mid both advance to 2."
+          },
+          {
+            "id": "wmtpkp5kr86",
+            "target": "loop",
+            "caption": "mid (2) <= high (4) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr87",
+            "target": "chk0",
+            "caption": "a[mid] = 2. Is it 0 ? No."
+          },
+          {
+            "id": "wmtpkp5kr88",
+            "target": "chk2",
+            "caption": "Is it 2 ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr89",
+            "target": "do2",
+            "caption": "Swap index 2 with high at index 4, then drop high to 3. Array: [0, 0, 1, 1, 2, 2]. mid stays at 2."
+          },
+          {
+            "id": "wmtpkp5kr8a",
+            "target": "loop",
+            "caption": "mid (2) <= high (3) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kr8b",
+            "target": "chk0",
+            "caption": "a[mid] = 1. Is it 0 ? No."
+          },
+          {
+            "id": "wmtpkp5kr8c",
+            "target": "chk2",
+            "caption": "Is it 2 ? No, so it is a 1."
+          },
+          {
+            "id": "wmtpkp5kr8d",
+            "target": "do1",
+            "caption": "Step mid to 3. The next value is also a 1, so mid steps again to 4."
+          },
+          {
+            "id": "wmtpkp5kr8e",
+            "target": "loop",
+            "caption": "mid (4) <= high (3) ? No."
+          },
+          {
+            "id": "wmtpkp5kr8f",
+            "target": "done",
+            "caption": "mid has passed high, so the pass ends before reaching the end of the array. Result: [0, 0, 1, 1, 2, 2]."
+          }
+        ]
       }
-    ],
-    "edges": [
-      { "id": "e1", "from": "start", "to": "loop" },
-      { "id": "e2", "from": "loop", "to": "chk0", "label": "yes" },
-      { "id": "e3", "from": "loop", "to": "done", "label": "no" },
-      { "id": "e4", "from": "chk0", "to": "do0", "label": "yes" },
-      { "id": "e5", "from": "chk0", "to": "chk2", "label": "no" },
-      { "id": "e6", "from": "chk2", "to": "do2", "label": "yes" },
-      { "id": "e7", "from": "chk2", "to": "do1", "label": "no" },
-      { "id": "e8", "from": "do0", "to": "loop" },
-      { "id": "e9", "from": "do1", "to": "loop" },
-      { "id": "e10", "from": "do2", "to": "loop" }
-    ],
-    "walkthrough": [
-      { "node": "start", "caption": "Sorting [2, 0, 2, 1, 1, 0]. low and mid start at index 0, high at index 5." },
-      { "node": "loop", "caption": "mid (0) <= high (5) ? Yes." },
-      { "node": "chk0", "caption": "a[mid] = 2. Is it 0 ? No." },
-      { "node": "chk2", "caption": "Is a[mid] 2 ? Yes." },
-      { "node": "do2", "caption": "Swap index 0 with high at index 5, then drop high to 4. Array: [0, 0, 2, 1, 1, 2]. mid stays at 0." },
-      { "node": "loop", "caption": "mid (0) <= high (4) ? Yes." },
-      { "node": "chk0", "caption": "a[mid] = 0. Is it 0 ? Yes." },
-      { "node": "do0", "caption": "Swap a[low] and a[mid], both index 0, so nothing visibly moves. low and mid both advance to 1." },
-      { "node": "loop", "caption": "mid (1) <= high (4) ? Yes." },
-      { "node": "chk0", "caption": "a[mid] = 0 again. low and mid both advance to 2." },
-      { "node": "loop", "caption": "mid (2) <= high (4) ? Yes." },
-      { "node": "chk0", "caption": "a[mid] = 2. Is it 0 ? No." },
-      { "node": "chk2", "caption": "Is it 2 ? Yes." },
-      { "node": "do2", "caption": "Swap index 2 with high at index 4, then drop high to 3. Array: [0, 0, 1, 1, 2, 2]. mid stays at 2." },
-      { "node": "loop", "caption": "mid (2) <= high (3) ? Yes." },
-      { "node": "chk0", "caption": "a[mid] = 1. Is it 0 ? No." },
-      { "node": "chk2", "caption": "Is it 2 ? No, so it is a 1." },
-      { "node": "do1", "caption": "Step mid to 3. The next value is also a 1, so mid steps again to 4." },
-      { "node": "loop", "caption": "mid (4) <= high (3) ? No." },
-      { "node": "done", "caption": "mid has passed high, so the pass ends before reaching the end of the array. Result: [0, 0, 1, 1, 2, 2]." }
-    ],
-    "interactive": {
-      "walkthrough": true
-    }
+    ]
   }
 }

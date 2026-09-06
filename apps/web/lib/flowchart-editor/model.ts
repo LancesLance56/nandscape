@@ -66,6 +66,16 @@ export interface Shape {
   locked?: boolean;
   /** Id of the group this belongs to, when it has been grouped. */
   groupId?: string;
+  /**
+   * The "why" behind this step, shown on demand rather than in the box.
+   *
+   * A process box has room for "swap a[i], a[j]" and nothing else, so the
+   * reason it exists has to live somewhere. A panel that opens when a reader
+   * asks beats crowding every box with prose.
+   */
+  note?: string;
+  /** Small corner badge, e.g. a stage number. */
+  badge?: string;
 }
 
 /** How a connector's end is anchored. */
@@ -112,9 +122,24 @@ export interface Line {
   z: number;
   locked?: boolean;
   groupId?: string;
+  note?: string;
 }
 
 export type Element = Shape | Line;
+
+/**
+ * One frame of a replayable path through the drawing.
+ *
+ * A static diagram says what the pieces are; a walkthrough says what order
+ * they happen in, which for an algorithm is usually the hard part. Each step
+ * names one element and carries the sentence that goes with it.
+ */
+export interface WalkStep {
+  id: string;
+  /** Element highlighted at this step - a shape or a connector. */
+  target?: string;
+  caption: string;
+}
 
 export interface Page {
   id: string;
@@ -124,6 +149,8 @@ export interface Page {
   height: number;
   background: string;
   elements: Element[];
+  /** An ordered path through the page, for the reader-facing player. */
+  walkthrough?: WalkStep[];
 }
 
 export interface Doc {
@@ -139,13 +166,25 @@ export interface Doc {
 export const PAGE_WIDTH = 1056;
 export const PAGE_HEIGHT = 816;
 
+/**
+ * Paper colours, not chrome colours.
+ *
+ * A drawing is ink on a white sheet in both themes, so these are literals
+ * rather than the theme's CSS variables: the values travel in the saved JSON
+ * and into an exported SVG, where `var(--ink)` would resolve to nothing.
+ * They are the site's paper tokens by value - see --paper-ink in globals.css.
+ */
+export const PAPER_INK = "#252525";
+export const PAPER_LINE = "#cfcfcf";
+export const PAPER_ACCENT = "#1f6b33";
+
 export const DEFAULT_SHAPE_STYLE: ShapeStyle = {
   fill: "#ffffff",
-  stroke: "#2b3a55",
+  stroke: PAPER_INK,
   strokeWidth: 1.5,
   dash: "",
-  textColor: "#1b2434",
-  fontFamily: "Arial",
+  textColor: PAPER_INK,
+  fontFamily: "Inter",
   fontSize: 12,
   bold: false,
   italic: false,
@@ -158,17 +197,30 @@ export const DEFAULT_SHAPE_STYLE: ShapeStyle = {
 };
 
 export const DEFAULT_LINE_STYLE: LineStyle = {
-  stroke: "#2b3a55",
+  stroke: PAPER_INK,
   strokeWidth: 1.5,
   dash: "",
   startArrow: "none",
   endArrow: "arrow",
   opacity: 1,
   radius: 8,
-  fontFamily: "Arial",
+  fontFamily: "Inter",
   fontSize: 11,
-  textColor: "#1b2434",
+  textColor: PAPER_INK,
 };
+
+/**
+ * The font stack a stored family name is rendered through.
+ *
+ * The site's face is loaded by next/font under a generated family name, so a
+ * stored "Inter" cannot match it directly - it falls through to the variable
+ * instead, which is the real thing. Any other choice (Georgia, Courier) wins
+ * outright, and the stack still degrades sensibly in an exported SVG opened
+ * somewhere that has neither.
+ */
+export function fontStack(family: string): string {
+  return `${family}, var(--font-inter-sans), system-ui, sans-serif`;
+}
 
 let seq = 0;
 

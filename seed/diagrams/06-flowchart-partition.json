@@ -6,174 +6,670 @@
   "position": 6,
   "spec": {
     "title": "Lomuto partition",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "partition(a, low, high)"
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "pivot = a[high]\ni = low - 1\nj = low",
-        "note": "i marks the end of the 'smaller than pivot' region, which starts empty. That is why it starts one before the range rather than at it."
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "j < high ?"
-      },
-      {
-        "id": "cmp",
-        "type": "decision",
-        "text": "a[j] < pivot ?"
-      },
-      {
-        "id": "grow",
-        "type": "process",
-        "text": "i = i + 1\nswap a[i], a[j]",
-        "accent": "blue",
-        "note": "Grow the smaller region by one and move this element into it. The value displaced was known to be >= pivot, so it lands correctly on the other side."
-      },
-      {
-        "id": "inc",
-        "type": "process",
-        "text": "j = j + 1"
-      },
-      {
-        "id": "final",
-        "type": "process",
-        "text": "swap a[i+1], a[high]",
-        "accent": "blue",
-        "badge": "!",
-        "note": "Drop the pivot onto the boundary between the two regions. This is the step that makes a[i+1] permanent."
-      },
-      {
-        "id": "end",
-        "type": "end",
-        "text": "return i + 1"
+        "id": "pmtpkp5jn3i",
+        "name": "Page 1",
+        "width": 1318,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 164,
+            "width": 216,
+            "height": 46,
+            "rotation": 0,
+            "text": "partition(a, low, high)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 324,
+            "y": 148,
+            "width": 155,
+            "height": 78,
+            "rotation": 0,
+            "text": "pivot = a[high]\ni = low - 1\nj = low",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "i marks the end of the 'smaller than pivot' region, which starts empty. That is why it starts one before the range rather than at it."
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 519,
+            "y": 155,
+            "width": 151,
+            "height": 64,
+            "rotation": 0,
+            "text": "j < high ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3
+          },
+          {
+            "id": "cmp",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 711,
+            "y": 110,
+            "width": 191,
+            "height": 64,
+            "rotation": 0,
+            "text": "a[j] < pivot ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4
+          },
+          {
+            "id": "final",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 710,
+            "y": 214,
+            "width": 193,
+            "height": 50,
+            "rotation": 0,
+            "text": "swap a[i+1], a[high]",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5,
+            "note": "Drop the pivot onto the boundary between the two regions. This is the step that makes a[i+1] permanent.",
+            "badge": "!"
+          },
+          {
+            "id": "grow",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 943,
+            "y": 113,
+            "width": 155,
+            "height": 62,
+            "rotation": 0,
+            "text": "i = i + 1\nswap a[i], a[j]",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6,
+            "note": "Grow the smaller region by one and move this element into it. The value displaced was known to be >= pivot, so it lands correctly on the other side."
+          },
+          {
+            "id": "end",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 955,
+            "y": 215,
+            "width": 132,
+            "height": 46,
+            "rotation": 0,
+            "text": "return i + 1",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 7
+          },
+          {
+            "id": "inc",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1138,
+            "y": 164,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "j = j + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8
+          },
+          {
+            "id": "lmtpkp5jn2t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5jn2u",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5jn2v",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 691,
+                "y": 187
+              },
+              {
+                "x": 691,
+                "y": 142
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5jn2w",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 12
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "final",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 564,
+                "y": 239
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5jn2x",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "grow",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 923,
+                "y": 142
+              },
+              {
+                "x": 923,
+                "y": 144
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5jn2y",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "inc",
+              "port": 1
+            },
+            "waypoints": [
+              {
+                "x": 807,
+                "y": 96
+              },
+              {
+                "x": 807,
+                "y": 86
+              },
+              {
+                "x": 1176,
+                "y": 86
+              },
+              {
+                "x": 1176,
+                "y": 150
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5jn2z",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "grow",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "inc",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1118,
+                "y": 144
+              },
+              {
+                "x": 1118,
+                "y": 187
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5jn30",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "inc",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 1176,
+                "y": 224
+              },
+              {
+                "x": 1176,
+                "y": 288
+              },
+              {
+                "x": 625,
+                "y": 288
+              },
+              {
+                "x": 625,
+                "y": 220
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5jn31",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "final",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "end",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          }
+        ],
+        "walkthrough": [
+          {
+            "id": "wmtpkp5jn32",
+            "target": "start",
+            "caption": "Partitioning [7, 2, 4, 6] with low = 0 and high = 3."
+          },
+          {
+            "id": "wmtpkp5jn33",
+            "target": "init",
+            "caption": "pivot = a[3] = 6. i = -1 because the 'smaller' region is empty. j = 0."
+          },
+          {
+            "id": "wmtpkp5jn34",
+            "target": "loop",
+            "caption": "j < high, that is 0 < 3 ? Yes."
+          },
+          {
+            "id": "wmtpkp5jn35",
+            "target": "cmp",
+            "caption": "a[0] = 7. Is 7 < 6 ? No, so it belongs on the far side. Leave it."
+          },
+          {
+            "id": "wmtpkp5jn36",
+            "target": "inc",
+            "caption": "j = 1. Nothing moved."
+          },
+          {
+            "id": "wmtpkp5jn37",
+            "target": "loop",
+            "caption": "1 < 3 ? Yes."
+          },
+          {
+            "id": "wmtpkp5jn38",
+            "target": "cmp",
+            "caption": "a[1] = 2. Is 2 < 6 ? Yes, it belongs in the smaller region."
+          },
+          {
+            "id": "wmtpkp5jn39",
+            "target": "grow",
+            "caption": "i becomes 0, swap a[0] and a[1]. The array is now [2, 7, 4, 6]."
+          },
+          {
+            "id": "wmtpkp5jn3a",
+            "target": "inc",
+            "caption": "j = 2."
+          },
+          {
+            "id": "wmtpkp5jn3b",
+            "target": "loop",
+            "caption": "2 < 3 ? Yes."
+          },
+          {
+            "id": "wmtpkp5jn3c",
+            "target": "cmp",
+            "caption": "a[2] = 4. Is 4 < 6 ? Yes."
+          },
+          {
+            "id": "wmtpkp5jn3d",
+            "target": "grow",
+            "caption": "i becomes 1, swap a[1] and a[2]. The array is now [2, 4, 7, 6]."
+          },
+          {
+            "id": "wmtpkp5jn3e",
+            "target": "inc",
+            "caption": "j = 3."
+          },
+          {
+            "id": "wmtpkp5jn3f",
+            "target": "loop",
+            "caption": "3 < 3 ? No. The scan is finished, and i = 1 marks the end of the smaller region."
+          },
+          {
+            "id": "wmtpkp5jn3g",
+            "target": "final",
+            "caption": "Swap a[i+1] = a[2] with the pivot at a[3]. The array is [2, 4, 6, 7]."
+          },
+          {
+            "id": "wmtpkp5jn3h",
+            "target": "end",
+            "caption": "Return 2. a[2] = 6 is now permanently correct, with smaller left and larger right."
+          }
+        ]
       }
-    ],
-    "edges": [
-      {
-        "id": "p1",
-        "from": "start",
-        "to": "init"
-      },
-      {
-        "id": "p2",
-        "from": "init",
-        "to": "loop"
-      },
-      {
-        "id": "p3",
-        "from": "loop",
-        "to": "cmp",
-        "label": "yes"
-      },
-      {
-        "id": "p4",
-        "from": "loop",
-        "to": "final",
-        "label": "no"
-      },
-      {
-        "id": "p5",
-        "from": "cmp",
-        "to": "grow",
-        "label": "yes"
-      },
-      {
-        "id": "p6",
-        "from": "cmp",
-        "to": "inc",
-        "label": "no"
-      },
-      {
-        "id": "p7",
-        "from": "grow",
-        "to": "inc"
-      },
-      {
-        "id": "p8",
-        "from": "inc",
-        "to": "loop"
-      },
-      {
-        "id": "p9",
-        "from": "final",
-        "to": "end"
-      }
-    ],
-    "walkthrough": [
-      {
-        "node": "start",
-        "caption": "Partitioning [7, 2, 4, 6] with low = 0 and high = 3."
-      },
-      {
-        "node": "init",
-        "caption": "pivot = a[3] = 6. i = -1 because the 'smaller' region is empty. j = 0."
-      },
-      {
-        "node": "loop",
-        "caption": "j < high, that is 0 < 3 ? Yes."
-      },
-      {
-        "node": "cmp",
-        "caption": "a[0] = 7. Is 7 < 6 ? No, so it belongs on the far side. Leave it."
-      },
-      {
-        "node": "inc",
-        "caption": "j = 1. Nothing moved."
-      },
-      {
-        "node": "loop",
-        "caption": "1 < 3 ? Yes."
-      },
-      {
-        "node": "cmp",
-        "caption": "a[1] = 2. Is 2 < 6 ? Yes, it belongs in the smaller region."
-      },
-      {
-        "node": "grow",
-        "caption": "i becomes 0, swap a[0] and a[1]. The array is now [2, 7, 4, 6]."
-      },
-      {
-        "node": "inc",
-        "caption": "j = 2."
-      },
-      {
-        "node": "loop",
-        "caption": "2 < 3 ? Yes."
-      },
-      {
-        "node": "cmp",
-        "caption": "a[2] = 4. Is 4 < 6 ? Yes."
-      },
-      {
-        "node": "grow",
-        "caption": "i becomes 1, swap a[1] and a[2]. The array is now [2, 4, 7, 6]."
-      },
-      {
-        "node": "inc",
-        "caption": "j = 3."
-      },
-      {
-        "node": "loop",
-        "caption": "3 < 3 ? No. The scan is finished, and i = 1 marks the end of the smaller region."
-      },
-      {
-        "node": "final",
-        "caption": "Swap a[i+1] = a[2] with the pivot at a[3]. The array is [2, 4, 6, 7]."
-      },
-      {
-        "node": "end",
-        "caption": "Return 2. a[2] = 6 is now permanently correct, with smaller left and larger right."
-      }
-    ],
-    "interactive": {
-      "walkthrough": true
-    }
+    ]
   }
 }

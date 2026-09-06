@@ -1,27 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AlertTriangle, Check, Loader2, Trash2 } from "lucide-react";
-import { FlowchartWorkbench } from "@/components/flowchart/workbench";
-import { useFlowchartDoc } from "@/components/flowchart/use-flowchart-doc";
-import { STARTER_CHART } from "@/lib/flowchart/charts";
-import { isFlowchartSpec, type FlowchartSpec } from "@/lib/flowchart/types";
+import { FlowchartEditor } from "@/components/flowchart-editor/editor";
+import { toDoc } from "@/lib/flowchart-editor/from-spec";
+import { emptyDoc, type Doc } from "@/lib/flowchart-editor/model";
 import type { DiagramKind } from "@/lib/diagrams/diagram-records";
 import { cn } from "@/lib/cn";
 
 /**
- * Editing a stored diagram preset in place.
+ * Editing a stored diagram in place.
  *
- * The flowchart editor itself is not new - it is the same component the blog
- * editor already mounts for a *custom* chart. What was missing was a way to
- * point it at a shared preset: in the blog editor, "Built-in chart" only picks
- * and previews one, and switching to "Custom chart" copies the spec into that
- * one block and detaches it, which is the documented behaviour and the exact
- * opposite of fixing the shared diagram. So this screen reuses the editor and
- * changes only where the result is written - back to `diagram_presets`, where
- * every page reading that slug picks it up.
+ * The editor itself is not new - it is the same tool /flowchart runs. What was
+ * missing was a way to point it at a shared diagram: in the blog editor,
+ * "Stored diagram" only picks and previews one, and switching to "This page
+ * only" copies it into that block and detaches it, which is the documented
+ * behaviour and the exact opposite of fixing the shared diagram. So this
+ * screen reuses the editor and changes only where the result is written -
+ * back to `diagram_presets`, where every page reading that slug picks it up.
  *
  * Graph presets get a JSON field rather than a canvas. There is no graph
  * equivalent of the flowchart workbench, and the honest answer is a text area that
@@ -31,28 +29,16 @@ import { cn } from "@/lib/cn";
 /**
  * The canvas, wired to this form's state.
  *
- * The workbench owns the document so that undo and the coalescing of a drag
- * into a single history step behave the same here as in the studio; this
- * publishes each version back to the form, one way only, because syncing the
- * other direction would fight every keystroke.
+ * The editor owns the document so that undo and the coalescing of a drag into
+ * a single history step behave the same here as in the standalone tool; it
+ * publishes each settled version back to the form, one way only, because
+ * syncing the other direction would fight every keystroke.
+ *
+ * A preset still stored in the old auto-laid-out format is converted the
+ * moment it is opened, so saving this screen is also what migrates it.
  */
-function ChartField({
-  initial,
-  onChange,
-}: {
-  initial: FlowchartSpec;
-  onChange: (spec: FlowchartSpec) => void;
-}) {
-  const doc = useFlowchartDoc(initial);
-
-  useEffect(() => {
-    onChange(doc.spec);
-    // `onChange` is a fresh setter identity on each parent render, so
-    // depending on it would publish in a loop.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doc.spec]);
-
-  return <FlowchartWorkbench doc={doc} variant="embedded" />;
+function ChartField({ initial, onChange }: { initial: Doc; onChange: (doc: Doc) => void }) {
+  return <FlowchartEditor initial={initial} onChange={onChange} autosave={false} variant="embedded" height={600} />;
 }
 
 export interface DiagramPresetFormValues {
@@ -90,9 +76,9 @@ export function DiagramPresetEditor({ initial, usage }: DiagramPresetEditorProps
   const [group, setGroup] = useState(initial?.group ?? "");
   const [position, setPosition] = useState(initial?.position ?? 0);
 
-  const [chart, setChart] = useState<FlowchartSpec>(() =>
-    initial && isFlowchartSpec(initial.spec) ? (initial.spec as FlowchartSpec) : STARTER_CHART,
-  );
+  // `toDoc` reads either shape, so opening a preset written before the drawing
+  // tool existed converts it here and saving makes that permanent.
+  const [chart, setChart] = useState<Doc>(() => (initial ? toDoc(initial.spec) ?? emptyDoc() : emptyDoc()));
   const [json, setJson] = useState(() =>
     JSON.stringify(initial?.spec ?? { nodes: [], edges: [] }, null, 2),
   );

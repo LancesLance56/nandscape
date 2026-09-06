@@ -509,70 +509,55 @@ body {
 /* ---------------------------------------------------------------------------
    Flowchart editor chrome.
 
-   A desktop-application palette, scoped to `.fe-root` so it cannot leak into
-   the site. Deliberately its own set rather than the site tokens: this is a
-   drawing tool whose chrome has to recede behind the artwork, and the site's
-   ink-wash surfaces are tuned for reading prose on a page, not for framing a
-   white canvas someone is working on for an hour.
+   Every one of these is an alias onto the site palette above, never a new
+   colour - the same discipline the shadcn layer follows. The editor therefore
+   inherits the leaf green, the ink wash and the border ramp, and flips with
+   the site's theme toggle without owning a single dark rule.
 
-   Both themes are defined here, so the editor follows the site's toggle
-   without a single dark rule of its own anywhere else.
+   The two that are *not* aliases are the ones that must not flip: the page is
+   paper, and the guide is the one warning colour. Paper that went dark would
+   stop being paper.
    --------------------------------------------------------------------------- */
 
 .fe-root {
-  --fe-shell: #f1f3f6;
-  --fe-panel: #fbfcfd;
-  --fe-panel-2: #eef1f5;
-  --fe-canvas: #dfe3e9;
-  --fe-page: #ffffff;
-  --fe-line: #d3d9e2;
-  --fe-hover: #e6eaf1;
-  --fe-field: #ffffff;
+  --fe-shell: var(--surface);
+  --fe-panel: var(--surface-card);
+  --fe-panel-2: var(--surface-2);
+  --fe-canvas: var(--surface-3);
+  --fe-line: var(--border);
+  --fe-hover: var(--surface-2);
+  --fe-field: var(--surface);
 
-  --fe-ink: #1f2733;
-  --fe-muted: #6b7686;
-  --fe-disabled: #b3bcc9;
-  --fe-icon: #4a6180;
-  --fe-link: #2f6fd0;
+  --fe-ink: var(--ink);
+  --fe-muted: var(--slate);
+  --fe-disabled: var(--border-strong);
+  --fe-icon: var(--ink-soft);
+  --fe-link: var(--copper-dark);
 
-  --fe-accent: #e0a21a;
-  --fe-accent-soft: #fdf0cd;
-  --fe-dot: #e0a21a;
-  --fe-guide: #e1543b;
+  --fe-accent: var(--copper);
+  --fe-accent-strong: var(--copper-dark);
+  --fe-accent-soft: var(--copper-bg);
+  --fe-accent-ink: var(--copper-ink);
+  --fe-dot: var(--copper);
 
-  --fe-grid: #e7ebf1;
-  --fe-symbol: #3c516d;
-  --fe-symbol-fill: #ffffff;
+  /* Paper, and the ink on it. Fixed in both themes. */
+  --fe-page: var(--paper);
+  --fe-grid: #ebebeb;
+  --fe-guide: var(--signal-coral);
+
+  --fe-symbol: var(--ink-soft);
+  --fe-symbol-fill: transparent;
+
+  font-family: var(--font-inter-sans), system-ui, sans-serif;
 }
 
 .dark .fe-root {
-  --fe-shell: #1c1f24;
-  --fe-panel: #23272e;
-  --fe-panel-2: #2b3038;
-  --fe-canvas: #14161a;
-  --fe-page: #ffffff;
-  --fe-line: #3a4048;
-  --fe-hover: #333942;
-  --fe-field: #1a1d22;
-
-  --fe-ink: #dfe3ea;
-  --fe-muted: #8e98a6;
-  --fe-disabled: #565e6a;
-  --fe-icon: #9fb4d0;
-  --fe-link: #7ba9ee;
-
-  --fe-accent: #e8b93c;
-  --fe-accent-soft: #4a3c14;
-  --fe-dot: #e8b93c;
-  --fe-guide: #f0715a;
-
-  --fe-grid: #e9edf2;
-  --fe-symbol: #c3d0e2;
-  --fe-symbol-fill: transparent;
+  /* One deliberate departure from the aliases: the workspace around the page
+     goes darker than any site surface. A white sheet needs something to sit
+     against, and --surface-3 at 0x32 leaves the paper glowing. */
+  --fe-canvas: #101010;
+  --fe-grid: #ececec;
 }
-
-/* The page itself stays white in both themes - it is paper, and paper that
-   went dark would stop being paper. Only the chrome around it flips. */
 
 @theme inline {
   --color-fe-shell: var(--fe-shell);
@@ -589,5 +574,7 @@ body {
   --color-fe-icon: var(--fe-icon);
   --color-fe-link: var(--fe-link);
   --color-fe-accent: var(--fe-accent);
+  --color-fe-accent-strong: var(--fe-accent-strong);
   --color-fe-accent-soft: var(--fe-accent-soft);
+  --color-fe-accent-ink: var(--fe-accent-ink);
 }

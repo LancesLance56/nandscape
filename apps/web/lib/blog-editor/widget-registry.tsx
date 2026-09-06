@@ -59,7 +59,7 @@ import { TopologicalSortWidgetEditor } from "@/components/blog-editor/widgets/to
 import { GraphColoringWidgetEditor } from "@/components/blog-editor/widgets/graph-coloring-widget-editor";
 import { FlowchartWidgetEditor, FlowchartMakerWidgetEditor } from "@/components/blog-editor/widgets/flowchart-widget-editor";
 import { ALL_CHARTS } from "@/lib/flowchart/charts";
-import { isFlowchartSpec, validateFlowchart } from "@/lib/flowchart/types";
+import { toDoc } from "@/lib/flowchart-editor/from-spec";
 
 export interface WidgetEditorProps {
   data: Record<string, unknown>;
@@ -85,18 +85,23 @@ function validateCircuitEmbed(data: unknown): string[] {
 }
 
 /**
- * A flowchart block is either a preset name or an inline chart. Structural
- * problems inside an inline chart (a dangling edge, a one-exit decision) are
- * worth surfacing here, since the renderer draws them without complaint.
+ * A diagram block either names a stored diagram or carries one inline.
+ *
+ * There is no structural validation any more, and that is the right answer
+ * rather than a gap: the old format described a graph, so "this decision has
+ * one exit" was a statement about it. A drawing describes marks on paper, and
+ * an author who draws one arrow out of a diamond has drawn what they meant.
+ * All that is left to check is that the block points at *something*.
  */
 function validateFlowchartBlock(data: unknown): string[] {
   const d = data as Record<string, unknown>;
-  if (typeof d?.preset === "string") {
-    return ALL_CHARTS[d.preset] ? [] : [`Unknown chart preset "${d.preset}".`];
+  if (typeof d?.preset === "string" && d.preset.trim() !== "") {
+    // A stored diagram is resolved on the server; the built-in table is only
+    // consulted as a fallback for surfaces with no server pass.
+    return d.chart || ALL_CHARTS[d.preset] ? [] : [`Unknown diagram "${d.preset}".`];
   }
-  if (isFlowchartSpec(d?.chart)) return validateFlowchart(d.chart);
-  if (isFlowchartSpec(d)) return validateFlowchart(d);
-  return ["Pick a built-in chart or build a custom one."];
+  if (toDoc(d?.chart)) return [];
+  return ["Pick a stored diagram, or draw one for this page."];
 }
 
 const registryImpl: Record<string, WidgetDefinition> = {

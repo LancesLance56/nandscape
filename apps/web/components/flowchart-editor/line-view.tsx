@@ -12,7 +12,7 @@
 
 import { memo } from "react";
 
-import type { ArrowHead, Line, Page, Point } from "@/lib/flowchart-editor/model";
+import { fontStack, type ArrowHead, type Line, type Page, type Point } from "@/lib/flowchart-editor/model";
 import { linePath, lineLabelAnchor, linePoints } from "@/lib/flowchart-editor/geometry";
 
 function headPath(kind: ArrowHead, tip: Point, from: Point, size: number): { d: string; filled: boolean } | null {
@@ -107,7 +107,7 @@ export const LineView = memo(function LineView({
         <path
           d={d}
           fill="none"
-          stroke="var(--fe-accent)"
+          stroke="var(--fe-accent, #2b8341)"
           strokeWidth={s.strokeWidth + 4}
           strokeOpacity={0.28}
           strokeLinecap="round"
@@ -149,7 +149,7 @@ export const LineView = memo(function LineView({
             width={line.label.length * s.fontSize * 0.58 + 8}
             height={s.fontSize * 1.5 + 4}
             rx={3}
-            fill="var(--fe-page)"
+            fill={page.background || "var(--fe-page, #ffffff)"}
             stroke="none"
           />
           <text
@@ -158,7 +158,7 @@ export const LineView = memo(function LineView({
             textAnchor="middle"
             dominantBaseline="central"
             fill={s.textColor}
-            fontFamily={s.fontFamily}
+            fontFamily={fontStack(s.fontFamily)}
             fontSize={s.fontSize}
           >
             {line.label}

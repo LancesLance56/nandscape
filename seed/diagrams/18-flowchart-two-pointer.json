@@ -6,219 +6,748 @@
   "position": 0,
   "spec": {
     "title": "The converging two-pointer template",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "solve(a, target)\nlo = 0\nhi = a.length - 1",
-        "note": "The array has to be sorted, or ordered by whatever quantity the comparison below is about. Sorting is what makes the two eliminations valid."
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "lo < hi ?",
-        "note": "The loop runs while the pointers have not met. Each iteration moves exactly one of them, so at most n iterations happen in total."
-      },
-      {
-        "id": "measure",
-        "type": "process",
-        "text": "s = a[lo] + a[hi]",
-        "note": "Whatever the problem measures about the current pair: a sum, an area, a distance."
-      },
-      {
-        "id": "cmp",
-        "type": "decision",
-        "text": "compare s\nto target",
-        "badge": "1",
-        "accent": "amber",
-        "note": "The only place a decision is made. Everything else in the template is bookkeeping."
-      },
-      {
-        "id": "hit",
-        "type": "process",
-        "text": "record the pair\nlo += 1, hi -= 1",
-        "accent": "green",
-        "note": "A match. Both pointers move, because keeping either one fixed can only re-find the same pair."
-      },
-      {
-        "id": "low",
-        "type": "process",
-        "text": "lo += 1",
-        "accent": "blue",
-        "badge": "2",
-        "note": "Too small. a[hi] is already the largest value left, so no partner can rescue a[lo]: it is eliminated against every remaining candidate at once, not just against a[hi]."
-      },
-      {
-        "id": "high",
-        "type": "process",
-        "text": "hi -= 1",
-        "accent": "coral",
-        "badge": "3",
-        "note": "Too big. a[lo] is already the smallest value left, so a[hi] is too large for every remaining partner."
-      },
-      {
-        "id": "done",
-        "type": "end",
-        "text": "return the answer\n(pointers met)",
-        "note": "Every index was visited at most once by each pointer, so the pass is O(n)."
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1",
-        "from": "start",
-        "to": "loop"
-      },
-      {
-        "id": "e2",
-        "from": "loop",
-        "to": "measure",
-        "label": "yes"
-      },
-      {
-        "id": "e3",
-        "from": "loop",
-        "to": "done",
-        "label": "no"
-      },
-      {
-        "id": "e4",
-        "from": "measure",
-        "to": "cmp"
-      },
-      {
-        "id": "e5",
-        "from": "cmp",
-        "to": "hit",
-        "label": "equal"
-      },
-      {
-        "id": "e6",
-        "from": "cmp",
-        "to": "low",
-        "label": "too small"
-      },
-      {
-        "id": "e7",
-        "from": "cmp",
-        "to": "high",
-        "label": "too big"
-      },
-      {
-        "id": "e8",
-        "from": "hit",
-        "to": "loop"
-      },
-      {
-        "id": "e9",
-        "from": "low",
-        "to": "loop"
-      },
-      {
-        "id": "e10",
-        "from": "high",
-        "to": "loop"
-      }
-    ],
-    "legend": [
-      {
-        "label": "the one decision",
-        "shape": "decision",
-        "accent": "amber"
-      },
-      {
-        "label": "pair found",
-        "shape": "process",
-        "accent": "green"
-      },
-      {
-        "label": "left value eliminated",
-        "shape": "process",
-        "accent": "blue"
-      },
-      {
-        "label": "right value eliminated",
-        "shape": "process",
-        "accent": "coral"
-      }
-    ],
-    "walkthrough": [
-      {
-        "node": "start",
-        "caption": "Running on [-3, 1, 2, 4, 6, 8, 11, 15] with target 12. lo = 0, hi = 7."
-      },
-      {
-        "node": "loop",
-        "caption": "lo (0) < hi (7) ? Yes."
-      },
-      {
-        "node": "measure",
-        "caption": "-3 + 15 = 12."
-      },
-      {
-        "node": "cmp",
-        "caption": "Equal to the target."
-      },
-      {
-        "node": "hit",
-        "caption": "Record (-3, 15). Both pointers move inward: lo = 1, hi = 6."
-      },
-      {
-        "node": "loop",
-        "caption": "lo (1) < hi (6) ? Yes."
-      },
-      {
-        "node": "measure",
-        "caption": "1 + 11 = 12."
-      },
-      {
-        "node": "cmp",
-        "caption": "Equal again."
-      },
-      {
-        "node": "hit",
-        "caption": "Record (1, 11). lo = 2, hi = 5."
-      },
-      {
-        "node": "loop",
-        "caption": "lo (2) < hi (5) ? Yes."
-      },
-      {
-        "node": "measure",
-        "caption": "2 + 8 = 10."
-      },
-      {
-        "node": "cmp",
-        "caption": "Under 12."
-      },
-      {
-        "node": "low",
-        "caption": "8 is the largest value left, so nothing can pair with 2 to reach 12. Drop the 2: lo = 3."
-      },
-      {
-        "node": "loop",
-        "caption": "lo (3) < hi (5) ? Yes."
-      },
-      {
-        "node": "measure",
-        "caption": "4 + 8 = 12."
-      },
-      {
-        "node": "cmp",
-        "caption": "Equal."
-      },
-      {
-        "node": "hit",
-        "caption": "Record (4, 8). lo = 4, hi = 4."
-      },
-      {
-        "node": "loop",
-        "caption": "lo (4) < hi (4) ? No, the pointers have met."
-      },
-      {
-        "node": "done",
-        "caption": "Three pairs, found in a single pass over eight values."
+        "id": "pmtpkp5kv9a",
+        "name": "Page 1",
+        "width": 1076,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 150,
+            "width": 170,
+            "height": 78,
+            "rotation": 0,
+            "text": "solve(a, target)\nlo = 0\nhi = a.length - 1",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 39
+            },
+            "z": 1,
+            "note": "The array has to be sorted, or ordered by whatever quantity the comparison below is about. Sorting is what makes the two eliminations valid."
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 278,
+            "y": 157,
+            "width": 142,
+            "height": 64,
+            "rotation": 0,
+            "text": "lo < hi ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "The loop runs while the pointers have not met. Each iteration moves exactly one of them, so at most n iterations happen in total."
+          },
+          {
+            "id": "measure",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 460,
+            "y": 115,
+            "width": 170,
+            "height": 46,
+            "rotation": 0,
+            "text": "s = a[lo] + a[hi]",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3,
+            "note": "Whatever the problem measures about the current pair: a sum, an area, a distance."
+          },
+          {
+            "id": "done",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 460,
+            "y": 201,
+            "width": 170,
+            "height": 62,
+            "rotation": 0,
+            "text": "return the answer\n(pointers met)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 31
+            },
+            "z": 4,
+            "note": "Every index was visited at most once by each pointer, so the pass is O(n)."
+          },
+          {
+            "id": "cmp",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 670,
+            "y": 147,
+            "width": 136,
+            "height": 84,
+            "rotation": 0,
+            "text": "compare s\nto target",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5,
+            "note": "The only place a decision is made. Everything else in the template is bookkeeping.",
+            "badge": "1"
+          },
+          {
+            "id": "hit",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 846,
+            "y": 68,
+            "width": 162,
+            "height": 62,
+            "rotation": 0,
+            "text": "record the pair\nlo += 1, hi -= 1",
+            "style": {
+              "fill": "#dff3e7",
+              "stroke": "#1ca463",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#0f7e4a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6,
+            "note": "A match. Both pointers move, because keeping either one fixed can only re-find the same pair."
+          },
+          {
+            "id": "low",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 871,
+            "y": 170,
+            "width": 112,
+            "height": 50,
+            "rotation": 0,
+            "text": "lo += 1",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "Too small. a[hi] is already the largest value left, so no partner can rescue a[lo]: it is eliminated against every remaining candidate at once, not just against a[hi].",
+            "badge": "2"
+          },
+          {
+            "id": "high",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 871,
+            "y": 260,
+            "width": 112,
+            "height": 50,
+            "rotation": 0,
+            "text": "hi -= 1",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "Too big. a[lo] is already the smallest value left, so a[hi] is too large for every remaining partner.",
+            "badge": "3"
+          },
+          {
+            "id": "lmtpkp5ku8h",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5ku8i",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "measure",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 349,
+                "y": 138
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5ku8j",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "done",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 440,
+                "y": 189
+              },
+              {
+                "x": 440,
+                "y": 232
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5ku8k",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "measure",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 650,
+                "y": 138
+              },
+              {
+                "x": 650,
+                "y": 189
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5ku8l",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "hit",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 738,
+                "y": 99
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "equal",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5ku8m",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "low",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 839,
+                "y": 189
+              },
+              {
+                "x": 839,
+                "y": 195
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "too small",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5ku8n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "cmp",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "high",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 738,
+                "y": 285
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "too big",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5ku8o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "hit",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 12
+            },
+            "waypoints": [
+              {
+                "x": 901,
+                "y": 163
+              },
+              {
+                "x": 864,
+                "y": 163
+              },
+              {
+                "x": 864,
+                "y": 334
+              },
+              {
+                "x": 321,
+                "y": 334
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5ku8p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "low",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 909,
+                "y": 253
+              },
+              {
+                "x": 864,
+                "y": 253
+              },
+              {
+                "x": 864,
+                "y": 354
+              },
+              {
+                "x": 349,
+                "y": 354
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5ku8q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "high",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 8
+            },
+            "waypoints": [
+              {
+                "x": 923,
+                "y": 324
+              },
+              {
+                "x": 923,
+                "y": 374
+              },
+              {
+                "x": 391,
+                "y": 374
+              },
+              {
+                "x": 391,
+                "y": 222
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 18
+          }
+        ],
+        "walkthrough": [
+          {
+            "id": "wmtpkp5ku8r",
+            "target": "start",
+            "caption": "Running on [-3, 1, 2, 4, 6, 8, 11, 15] with target 12. lo = 0, hi = 7."
+          },
+          {
+            "id": "wmtpkp5ku8s",
+            "target": "loop",
+            "caption": "lo (0) < hi (7) ? Yes."
+          },
+          {
+            "id": "wmtpkp5ku8t",
+            "target": "measure",
+            "caption": "-3 + 15 = 12."
+          },
+          {
+            "id": "wmtpkp5ku8u",
+            "target": "cmp",
+            "caption": "Equal to the target."
+          },
+          {
+            "id": "wmtpkp5ku8v",
+            "target": "hit",
+            "caption": "Record (-3, 15). Both pointers move inward: lo = 1, hi = 6."
+          },
+          {
+            "id": "wmtpkp5ku8w",
+            "target": "loop",
+            "caption": "lo (1) < hi (6) ? Yes."
+          },
+          {
+            "id": "wmtpkp5ku8x",
+            "target": "measure",
+            "caption": "1 + 11 = 12."
+          },
+          {
+            "id": "wmtpkp5ku8y",
+            "target": "cmp",
+            "caption": "Equal again."
+          },
+          {
+            "id": "wmtpkp5ku8z",
+            "target": "hit",
+            "caption": "Record (1, 11). lo = 2, hi = 5."
+          },
+          {
+            "id": "wmtpkp5kv90",
+            "target": "loop",
+            "caption": "lo (2) < hi (5) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kv91",
+            "target": "measure",
+            "caption": "2 + 8 = 10."
+          },
+          {
+            "id": "wmtpkp5kv92",
+            "target": "cmp",
+            "caption": "Under 12."
+          },
+          {
+            "id": "wmtpkp5kv93",
+            "target": "low",
+            "caption": "8 is the largest value left, so nothing can pair with 2 to reach 12. Drop the 2: lo = 3."
+          },
+          {
+            "id": "wmtpkp5kv94",
+            "target": "loop",
+            "caption": "lo (3) < hi (5) ? Yes."
+          },
+          {
+            "id": "wmtpkp5kv95",
+            "target": "measure",
+            "caption": "4 + 8 = 12."
+          },
+          {
+            "id": "wmtpkp5kv96",
+            "target": "cmp",
+            "caption": "Equal."
+          },
+          {
+            "id": "wmtpkp5kv97",
+            "target": "hit",
+            "caption": "Record (4, 8). lo = 4, hi = 4."
+          },
+          {
+            "id": "wmtpkp5kv98",
+            "target": "loop",
+            "caption": "lo (4) < hi (4) ? No, the pointers have met."
+          },
+          {
+            "id": "wmtpkp5kv99",
+            "target": "done",
+            "caption": "Three pairs, found in a single pass over eight values."
+          }
+        ]
       }
     ]
   }

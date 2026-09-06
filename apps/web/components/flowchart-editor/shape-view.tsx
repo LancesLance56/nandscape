@@ -12,7 +12,7 @@
 import { memo } from "react";
 
 import { cn } from "@/lib/cn";
-import type { Shape } from "@/lib/flowchart-editor/model";
+import { fontStack, type Shape } from "@/lib/flowchart-editor/model";
 import { symbolFor } from "@/lib/flowchart-editor/symbols";
 
 export const SymbolGlyph = memo(function SymbolGlyph({
@@ -200,7 +200,7 @@ export const ShapeView = memo(function ShapeView({
           <span
             style={{
               color: s.textColor,
-              fontFamily: s.fontFamily,
+              fontFamily: fontStack(s.fontFamily),
               fontSize: s.fontSize,
               fontWeight: s.bold ? 700 : 400,
               fontStyle: s.italic ? "italic" : undefined,
@@ -217,11 +217,32 @@ export const ShapeView = memo(function ShapeView({
         </div>
       )}
 
+      {/* A stage number, when the drawing is numbered. Sits outside the
+          outline so it never eats into the label's room. */}
+      {shape.badge && (
+        <span
+          className="pointer-events-none absolute -left-2 -top-2 z-10 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold leading-none"
+          style={{ background: s.stroke, color: s.fill === "transparent" ? "#ffffff" : s.fill }}
+        >
+          {shape.badge}
+        </span>
+      )}
+
+      {/* There is a note behind this box. A dot is the whole affordance: it
+          says "there is more here" without spending any of the box on it. */}
+      {shape.note && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-1.5 top-1.5 h-[5px] w-[5px] rounded-full"
+          style={{ background: s.stroke }}
+        />
+      )}
+
       {selected && (
         <span
           aria-hidden
           className="pointer-events-none absolute -inset-px rounded-[2px]"
-          style={{ outline: "1px solid var(--fe-accent)", outlineOffset: 1 }}
+          style={{ outline: "1px solid var(--fe-accent, #2b8341)", outlineOffset: 1 }}
         />
       )}
     </div>

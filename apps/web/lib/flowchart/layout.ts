@@ -14,6 +14,15 @@
  *
  * Groups are laid out first and then treated as a single box by the main pass,
  * which keeps the layering logic unaware that nesting exists.
+ *
+ * **Deprecated - runs once per diagram, at conversion time.**
+ *
+ * This is the auto-layout the drawing tool exists to replace. It has exactly
+ * one caller left: `docFromSpec`, which runs it a final time to turn a legacy
+ * chart into coordinates somebody can then edit. Nothing on a reading path
+ * calls it, and nothing should: a diagram that re-derives its own layout is a
+ * diagram that rearranges itself behind its author's back.
+
  */
 
 import {

@@ -150,17 +150,48 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
 
 - `BlogPost.body` and `TutorialPage.body` are JSON **block arrays**, rendered by
   `apps/web/components/content/blocks/block-renderer.tsx`. Blocks include
-  interactive widgets: circuit embeds, flowcharts, graph and sorting
+  interactive widgets: circuit embeds, diagrams, graph and sorting
   visualizers.
 - Tutorial hierarchy: `TutorialTrack` → `TutorialSection` → `TutorialPage`
   (each layer resolves its parent by slug). `trackId` is nullable — untracked
   sections still render.
 - Authored either through the in-app Lexical editor
   (`apps/web/components/blog-editor/`) or the `seed/` JSON files.
-- `DiagramPreset` — named flowchart/graph specs looked up by slug, moved out of
-  the bundle so fixing a teaching diagram isn't a code deploy.
+- `DiagramPreset` — named diagrams looked up by slug, moved out of the bundle
+  so fixing a teaching diagram isn't a code deploy. A flowchart row now holds a
+  **drawing** (`lib/flowchart-editor/model.ts`), not the old auto-laid-out
+  `FlowchartSpec`; see "Diagrams" below.
 - DS&A visualization logic lives in `apps/web/lib/` (`backtracking/`, `dp/`,
-  `graph/`, `sorting/`, `kmap/`, `flowchart/`, `tree-layout.ts`).
+  `graph/`, `sorting/`, `kmap/`, `tree-layout.ts`).
+
+### Diagrams (`/flowchart`, and every diagram in the content)
+
+A diagram is a **drawing**: absolute coordinates for every shape, and for every
+connector the exact polyline someone drew. **There is no router.** Moving a
+shape slides an attached endpoint along its connection point and stretches the
+two segments touching it; every interior bend stays where it was put. Nothing
+in the codebase recomputes a path, which is what makes a diagram look the same
+next year as it does today.
+
+- `lib/flowchart-editor/` — the model, the symbol catalogue (29 flowchart
+  symbols to ANSI/ISO 5807, generated as SVG paths from a box), geometry and
+  hit-testing, the zustand store, SVG/PNG/JSON export.
+- `components/flowchart-editor/` — `editor.tsx` is the shell (dock left,
+  contextual bar top, inspector right, page/zoom strip below); `canvas.tsx`
+  holds the whole pointer state machine, deliberately in one file;
+  `viewer.tsx` is the read-only surface articles embed, with the walkthrough
+  player, notes, focus dimming and legend.
+- The editor is embeddable: `<FlowchartEditor variant="embedded" initial=… 
+  onChange=… autosave={false} />` is what the blog editor and
+  `/admin/diagrams/[slug]` mount.
+- **`lib/flowchart/` is deprecated and read-only.** It is the old
+  `FlowchartSpec` plus the auto-layout engine, kept for exactly one caller:
+  `lib/flowchart-editor/from-spec.ts`, which runs the layout a final time to
+  convert a legacy record into coordinates. Reading paths convert on the fly,
+  so an un-migrated row still renders. Do not add to it.
+- `pnpm diagrams:migrate` makes a conversion permanent across `seed/`, the
+  `diagram_presets` table and inline blocks in posts and tutorial pages. It is
+  idempotent; `--dry` reports, `--files` skips the database.
 
 ### The problem browser (`/puzzles` and `/practices`)
 

@@ -22,6 +22,7 @@ import {
   isShape,
   type Element,
   type Endpoint,
+  fontStack,
   type Line,
   type Point,
   type Shape,
@@ -906,7 +907,8 @@ export function Canvas() {
   return (
     <div
       ref={surfaceRef}
-      className="relative flex-1 overflow-hidden bg-fe-canvas"
+      data-fe-surface
+      className="relative min-h-0 flex-1 overflow-hidden bg-fe-canvas"
       style={{ cursor }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMoveSurface}
@@ -1091,7 +1093,7 @@ function TextEditor({ id }: { id: string }) {
           top: mid.y - 12,
           width: 100,
           zIndex: 20000,
-          fontFamily: el.style.fontFamily,
+          fontFamily: fontStack(el.style.fontFamily),
           fontSize: el.style.fontSize,
           color: el.style.textColor,
         }}
@@ -1126,7 +1128,7 @@ function TextEditor({ id }: { id: string }) {
         height: Math.max(20, shape.height - inset.top - inset.bottom),
         zIndex: 20000,
         transform: shape.rotation ? `rotate(${shape.rotation}deg)` : undefined,
-        fontFamily: s.fontFamily,
+        fontFamily: fontStack(s.fontFamily),
         fontSize: s.fontSize,
         fontWeight: s.bold ? 700 : 400,
         fontStyle: s.italic ? "italic" : undefined,

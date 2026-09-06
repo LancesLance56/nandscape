@@ -1,5 +1,12 @@
 /**
- * Flowchart model.
+ * Flowchart model. **Deprecated - reading only.**
+ *
+ * Nothing authors one of these any more. Diagrams are drawings now
+ * (`lib/flowchart-editor/model.ts`), and every stored diagram was converted by
+ * `scripts/migrate-diagrams.mts`. What is left here is the shape a *legacy*
+ * record has, so `lib/flowchart-editor/from-spec.ts` can read one and convert
+ * it - which is also what keeps an un-migrated row from being a broken page.
+ * Do not add to it; add to the drawing model instead.
  *
  * The renderer is React Flow, so this file describes *what* a chart contains
  * and leaves every question of pixels and routing to layout.ts and the canvas.

@@ -6,56 +6,341 @@
   "position": 0,
   "spec": {
     "title": "Untitled flowchart",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "Start"
-      },
-      {
-        "id": "step",
-        "type": "process",
-        "text": "Do something"
-      },
-      {
-        "id": "check",
-        "type": "decision",
-        "text": "Condition ?"
-      },
-      {
-        "id": "again",
-        "type": "process",
-        "text": "Try again"
-      },
-      {
-        "id": "end",
-        "type": "end",
-        "text": "End"
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "step"
-      },
-      {
-        "from": "step",
-        "to": "check"
-      },
-      {
-        "from": "check",
-        "to": "end",
-        "label": "yes"
-      },
-      {
-        "from": "check",
-        "to": "again",
-        "label": "no"
-      },
-      {
-        "from": "again",
-        "to": "step"
+        "id": "pmtpkp5ko7l",
+        "name": "Page 1",
+        "width": 1056,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 111,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "Start",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "step",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 220,
+            "y": 111,
+            "width": 126,
+            "height": 46,
+            "rotation": 0,
+            "text": "Do something",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2
+          },
+          {
+            "id": "check",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 386,
+            "y": 102,
+            "width": 154,
+            "height": 64,
+            "rotation": 0,
+            "text": "Condition ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3
+          },
+          {
+            "id": "again",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 580,
+            "y": 68,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "Try again",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4
+          },
+          {
+            "id": "end",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 580,
+            "y": 154,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "End",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 5
+          },
+          {
+            "id": "lmtpkp5ko7g",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "step",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 6
+          },
+          {
+            "id": "lmtpkp5ko7h",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "step",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "check",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 7
+          },
+          {
+            "id": "lmtpkp5ko7i",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "check",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "end",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 560,
+                "y": 134
+              },
+              {
+                "x": 560,
+                "y": 177
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 8
+          },
+          {
+            "id": "lmtpkp5ko7j",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "check",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "again",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 463,
+                "y": 91
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 9
+          },
+          {
+            "id": "lmtpkp5ko7k",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "again",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "step",
+              "port": 9
+            },
+            "waypoints": [
+              {
+                "x": 618,
+                "y": 147
+              },
+              {
+                "x": 573,
+                "y": 147
+              },
+              {
+                "x": 573,
+                "y": 224
+              },
+              {
+                "x": 303,
+                "y": 224
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 10
+          }
+        ]
       }
     ]
   }

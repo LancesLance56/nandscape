@@ -6,183 +6,895 @@
   "position": 5,
   "spec": {
     "title": "Graph m-coloring",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "color(i)"
-      },
-      {
-        "id": "done",
-        "type": "decision",
-        "text": "i == nodeCount ?",
-        "badge": "1",
-        "note": "Every node has a colour and no check ever failed, so the colouring is valid."
-      },
-      {
-        "id": "ret1",
-        "type": "end",
-        "text": "return true"
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "c = 0"
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "c < m ?"
-      },
-      {
-        "id": "ret2",
-        "type": "end",
-        "text": "return false\n(backtrack)",
-        "accent": "coral",
-        "note": "Every colour was rejected for this node, so an earlier node must be recoloured. This is the failure that propagates upward."
-      },
-      {
-        "id": "ok",
-        "type": "decision",
-        "text": "a neighbour\nalready has c ?",
-        "badge": "2",
-        "accent": "amber",
-        "note": "The prune, and the only constraint in the problem."
-      },
-      {
-        "id": "cycle",
-        "type": "group",
-        "text": "choose · explore · un-choose",
-        "groupLayout": "column"
-      },
-      {
-        "id": "choose",
-        "type": "process",
-        "text": "colors[node] = c",
-        "accent": "blue",
-        "parentId": "cycle"
-      },
-      {
-        "id": "explore",
-        "type": "decision",
-        "text": "color(i + 1)\nsucceeded ?",
-        "accent": "violet",
-        "parentId": "cycle",
-        "note": "Unlike the enumeration problems, this one stops at the first success, so the recursive call returns a boolean rather than nothing. That boolean is what lets success short-circuit all the way out."
-      },
-      {
-        "id": "undo",
-        "type": "process",
-        "text": "uncolor node",
-        "accent": "coral",
-        "parentId": "cycle",
-        "note": "Only reached when the deeper call failed. On success the colouring is kept and returned straight up."
-      },
-      {
-        "id": "win",
-        "type": "end",
-        "text": "return true"
-      },
-      {
-        "id": "next",
-        "type": "process",
-        "text": "c = c + 1"
-      }
-    ],
-    "edges": [
-      {
-        "from": "start",
-        "to": "done"
-      },
-      {
-        "from": "done",
-        "to": "ret1",
-        "label": "yes"
-      },
-      {
-        "from": "done",
-        "to": "init",
-        "label": "no"
-      },
-      {
-        "from": "init",
-        "to": "loop"
-      },
-      {
-        "from": "loop",
-        "to": "ok",
-        "label": "yes"
-      },
-      {
-        "from": "loop",
-        "to": "ret2",
-        "label": "no"
-      },
-      {
-        "from": "ok",
-        "to": "next",
-        "label": "yes (prune)"
-      },
-      {
-        "from": "ok",
-        "to": "choose",
-        "label": "no"
-      },
-      {
-        "from": "choose",
-        "to": "explore"
-      },
-      {
-        "from": "explore",
-        "to": "win",
-        "label": "yes"
-      },
-      {
-        "from": "explore",
-        "to": "undo",
-        "label": "no"
-      },
-      {
-        "from": "undo",
-        "to": "next"
-      },
-      {
-        "from": "next",
-        "to": "loop"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "apply a choice",
-        "shape": "process",
-        "accent": "blue"
-      },
-      {
-        "label": "recurse",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "take it back",
-        "shape": "process",
-        "accent": "coral"
-      },
-      {
-        "label": "loop back",
-        "kind": "edge",
-        "shape": "decision",
-        "accent": "copper"
+        "id": "pmtpkp5ki70",
+        "name": "Page 1",
+        "width": 1502,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "cycle",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 1023,
+            "y": 110,
+            "width": 252,
+            "height": 241,
+            "rotation": 0,
+            "text": "choose · explore · un-choose",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 208,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "color(i)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "done",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 220,
+            "y": 197,
+            "width": 211,
+            "height": 68,
+            "rotation": 0,
+            "text": "i == nodeCount ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "Every node has a colour and no check ever failed, so the colouring is valid.",
+            "badge": "1"
+          },
+          {
+            "id": "ret1",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 471,
+            "y": 165,
+            "width": 119,
+            "height": 46,
+            "rotation": 0,
+            "text": "return true",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 3
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 475,
+            "y": 251,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "c = 0",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 630,
+            "y": 199,
+            "width": 122,
+            "height": 64,
+            "rotation": 0,
+            "text": "c < m ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 5
+          },
+          {
+            "id": "ret2",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 822,
+            "y": 138,
+            "width": 132,
+            "height": 62,
+            "rotation": 0,
+            "text": "return false\n(backtrack)",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 31
+            },
+            "z": 6,
+            "note": "Every colour was rejected for this node, so an earlier node must be recoloured. This is the failure that propagates upward."
+          },
+          {
+            "id": "ok",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 792,
+            "y": 240,
+            "width": 191,
+            "height": 84,
+            "rotation": 0,
+            "text": "a neighbour\nalready has c ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7,
+            "note": "The prune, and the only constraint in the problem.",
+            "badge": "2"
+          },
+          {
+            "id": "win",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 1315,
+            "y": 165,
+            "width": 119,
+            "height": 46,
+            "rotation": 0,
+            "text": "return true",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 8
+          },
+          {
+            "id": "next",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1319,
+            "y": 251,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "c = c + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 9
+          },
+          {
+            "id": "choose",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1068,
+            "y": 148,
+            "width": 162,
+            "height": 46,
+            "rotation": 0,
+            "text": "colors[node] = c",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 10
+          },
+          {
+            "id": "explore",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 1064,
+            "y": 203,
+            "width": 171,
+            "height": 80,
+            "rotation": 0,
+            "text": "color(i + 1)\nsucceeded ?",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 11,
+            "note": "Unlike the enumeration problems, this one stops at the first success, so the recursive call returns a boolean rather than nothing. That boolean is what lets success short-circuit all the way out."
+          },
+          {
+            "id": "undo",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1086,
+            "y": 292,
+            "width": 126,
+            "height": 46,
+            "rotation": 0,
+            "text": "uncolor node",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 12,
+            "note": "Only reached when the deeper call failed. On success the colouring is kept and returned straight up."
+          },
+          {
+            "id": "lmtpkp5ki6n",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "done",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5ki6o",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "done",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret1",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 451,
+                "y": 231
+              },
+              {
+                "x": 451,
+                "y": 188
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5ki6p",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "done",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 326,
+                "y": 274
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5ki6q",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 608,
+                "y": 274
+              },
+              {
+                "x": 608,
+                "y": 231
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5ki6r",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ok",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 772,
+                "y": 231
+              },
+              {
+                "x": 772,
+                "y": 282
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5ki6s",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret2",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 691,
+                "y": 169
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 18
+          },
+          {
+            "id": "lmtpkp5ki6t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "ok",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 1
+            },
+            "waypoints": [
+              {
+                "x": 888,
+                "y": 207
+              },
+              {
+                "x": 961,
+                "y": 207
+              },
+              {
+                "x": 961,
+                "y": 86
+              },
+              {
+                "x": 1308,
+                "y": 86
+              },
+              {
+                "x": 1308,
+                "y": 239
+              },
+              {
+                "x": 1357,
+                "y": 239
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes (prune)",
+            "z": 19
+          },
+          {
+            "id": "lmtpkp5ki6u",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "ok",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1026,
+                "y": 282
+              },
+              {
+                "x": 1026,
+                "y": 171
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 20
+          },
+          {
+            "id": "lmtpkp5ki6v",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 21
+          },
+          {
+            "id": "lmtpkp5ki6w",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "win",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1275,
+                "y": 243
+              },
+              {
+                "x": 1275,
+                "y": 188
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 22
+          },
+          {
+            "id": "lmtpkp5ki6x",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 23
+          },
+          {
+            "id": "lmtpkp5ki6y",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1265,
+                "y": 315
+              },
+              {
+                "x": 1265,
+                "y": 274
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 24
+          },
+          {
+            "id": "lmtpkp5ki6z",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 1357,
+                "y": 311
+              },
+              {
+                "x": 1357,
+                "y": 375
+              },
+              {
+                "x": 691,
+                "y": 375
+              },
+              {
+                "x": 691,
+                "y": 277
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 25
+          }
+        ]
       }
     ]
   }

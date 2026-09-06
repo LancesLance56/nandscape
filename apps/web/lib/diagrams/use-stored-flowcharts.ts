@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { isFlowchartSpec, type FlowchartSpec } from "@/lib/flowchart/types";
+import { toDoc } from "@/lib/flowchart-editor/from-spec";
+import type { Doc } from "@/lib/flowchart-editor/model";
 
 export interface StoredFlowchart {
   slug: string;
   title: string;
   group: string | null;
   position: number;
-  spec: FlowchartSpec;
+  doc: Doc;
 }
 
 export interface StoredFlowchartGroup {
@@ -25,7 +26,7 @@ interface ApiDiagram {
 }
 
 /**
- * The stored flowcharts, for the admin editor's picker and preview.
+ * The stored diagrams, for the admin editor's picker and preview.
  *
  * The reading side of the site resolves these on the server, so it never
  * needs this. The editor does: it runs in the browser, and a preset the
@@ -34,7 +35,7 @@ interface ApiDiagram {
  * edited in the database.
  */
 export function useStoredFlowcharts(): {
-  bySlug: Map<string, FlowchartSpec>;
+  bySlug: Map<string, Doc>;
   groups: StoredFlowchartGroup[];
   loading: boolean;
   error: string | null;
@@ -51,15 +52,19 @@ export function useStoredFlowcharts(): {
         if (!res.ok) throw new Error(String(res.status));
         const body = (await res.json()) as { diagrams: ApiDiagram[] };
         if (cancelled) return;
+        // `toDoc` reads either shape, so a row still stored in the old
+        // auto-laid-out format previews correctly here without having been
+        // migrated first.
         setCharts(
           body.diagrams
-            .filter((d) => isFlowchartSpec(d.spec))
+            .map((d) => ({ ...d, doc: toDoc(d.spec) }))
+            .filter((d): d is ApiDiagram & { doc: Doc } => d.doc !== null)
             .map((d) => ({
               slug: d.slug,
               title: d.title,
               group: d.group,
               position: d.position,
-              spec: d.spec as FlowchartSpec,
+              doc: d.doc,
             })),
         );
         setError(null);
@@ -76,7 +81,7 @@ export function useStoredFlowcharts(): {
     };
   }, []);
 
-  const bySlug = new Map(charts.map((c) => [c.slug, c.spec]));
+  const bySlug = new Map(charts.map((c) => [c.slug, c.doc]));
 
   const byGroup = new Map<string, StoredFlowchart[]>();
   for (const c of charts) {

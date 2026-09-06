@@ -6,218 +6,689 @@
   "position": 1,
   "spec": {
     "title": "Subsets",
-    "direction": "LR",
-    "nodes": [
+    "pages": [
       {
-        "id": "start",
-        "type": "start",
-        "text": "subsets(start, current)"
-      },
-      {
-        "id": "record",
-        "type": "process",
-        "text": "record a copy\nof current",
-        "badge": "!",
-        "accent": "amber",
-        "note": "Every node is an answer here, so recording happens on entry rather than at a leaf. That is what makes this tree have 2^n nodes and 2^n answers, with no wasted work anywhere."
-      },
-      {
-        "id": "init",
-        "type": "process",
-        "text": "i = start",
-        "note": "Starting at `start` rather than 0 is what stops {a,b} and {b,a} both being generated."
-      },
-      {
-        "id": "loop",
-        "type": "decision",
-        "text": "i < n ?"
-      },
-      {
-        "id": "ret",
-        "type": "end",
-        "text": "return"
-      },
-      {
-        "id": "cycle",
-        "type": "group",
-        "text": "choose · explore · un-choose",
-        "groupLayout": "column"
-      },
-      {
-        "id": "choose",
-        "type": "process",
-        "text": "current.push(a[i])",
-        "accent": "blue",
-        "parentId": "cycle"
-      },
-      {
-        "id": "explore",
-        "type": "process",
-        "text": "subsets(i + 1, current)",
-        "accent": "violet",
-        "parentId": "cycle",
-        "note": "i + 1, not start + 1. Each level may only pick from what comes after its own choice."
-      },
-      {
-        "id": "undo",
-        "type": "process",
-        "text": "current.pop()",
-        "accent": "coral",
-        "parentId": "cycle",
-        "note": "Without this pop, the next iteration of the loop would build on top of a choice that was supposed to be finished."
-      },
-      {
-        "id": "next",
-        "type": "process",
-        "text": "i = i + 1"
+        "id": "pmtpkp5jz5g",
+        "name": "Page 1",
+        "width": 1283,
+        "height": 816,
+        "background": "#ffffff",
+        "elements": [
+          {
+            "id": "cycle",
+            "kind": "shape",
+            "symbol": "container-box",
+            "x": 811,
+            "y": 154,
+            "width": 252,
+            "height": 207,
+            "rotation": 0,
+            "text": "choose · explore · un-choose",
+            "style": {
+              "fill": "transparent",
+              "stroke": "#cfcfcf",
+              "strokeWidth": 1.5,
+              "dash": "5 4",
+              "textColor": "#7d7d7d",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "align": "left",
+              "valign": "top",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 0
+          },
+          {
+            "id": "start",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 68,
+            "y": 192,
+            "width": 216,
+            "height": 46,
+            "rotation": 0,
+            "text": "subsets(start, current)",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 1
+          },
+          {
+            "id": "record",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 324,
+            "y": 182,
+            "width": 133,
+            "height": 66,
+            "rotation": 0,
+            "text": "record a copy\nof current",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 2,
+            "note": "Every node is an answer here, so recording happens on entry rather than at a leaf. That is what makes this tree have 2^n nodes and 2^n answers, with no wasted work anywhere.",
+            "badge": "!"
+          },
+          {
+            "id": "init",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 497,
+            "y": 192,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = start",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 3,
+            "note": "Starting at `start` rather than 0 is what stops {a,b} and {b,a} both being generated."
+          },
+          {
+            "id": "loop",
+            "kind": "shape",
+            "symbol": "decision",
+            "x": 649,
+            "y": 183,
+            "width": 122,
+            "height": 64,
+            "rotation": 0,
+            "text": "i < n ?",
+            "style": {
+              "fill": "#faf0d4",
+              "stroke": "#b8860b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#7a5a07",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 4
+          },
+          {
+            "id": "ret",
+            "kind": "shape",
+            "symbol": "terminator",
+            "x": 881,
+            "y": 68,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "return",
+            "style": {
+              "fill": "#e0efe2",
+              "stroke": "#2b8341",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#1f6b33",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 23
+            },
+            "z": 5
+          },
+          {
+            "id": "next",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 1103,
+            "y": 192,
+            "width": 112,
+            "height": 46,
+            "rotation": 0,
+            "text": "i = i + 1",
+            "style": {
+              "fill": "#ffffff",
+              "stroke": "#252525",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#252525",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 6
+          },
+          {
+            "id": "choose",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 848,
+            "y": 192,
+            "width": 178,
+            "height": 46,
+            "rotation": 0,
+            "text": "current.push(a[i])",
+            "style": {
+              "fill": "#e2ecfb",
+              "stroke": "#2f6fd0",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#24559f",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 7
+          },
+          {
+            "id": "explore",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 829,
+            "y": 247,
+            "width": 216,
+            "height": 46,
+            "rotation": 0,
+            "text": "subsets(i + 1, current)",
+            "style": {
+              "fill": "#f7e2ec",
+              "stroke": "#c24a7c",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#98325c",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 8,
+            "note": "i + 1, not start + 1. Each level may only pick from what comes after its own choice."
+          },
+          {
+            "id": "undo",
+            "kind": "shape",
+            "symbol": "process",
+            "x": 868,
+            "y": 302,
+            "width": 139,
+            "height": 46,
+            "rotation": 0,
+            "text": "current.pop()",
+            "style": {
+              "fill": "#fbe3dd",
+              "stroke": "#e1543b",
+              "strokeWidth": 1.5,
+              "dash": "",
+              "textColor": "#b33f2a",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "align": "center",
+              "valign": "middle",
+              "opacity": 1,
+              "shadow": false,
+              "radius": 8
+            },
+            "z": 9,
+            "note": "Without this pop, the next iteration of the loop would build on top of a choice that was supposed to be finished."
+          },
+          {
+            "id": "lmtpkp5jz4s",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "start",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "record",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 10
+          },
+          {
+            "id": "lmtpkp5jz4t",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "record",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 11
+          },
+          {
+            "id": "lmtpkp5jz4u",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "init",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 12
+          },
+          {
+            "id": "lmtpkp5jz4v",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 14
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "yes",
+            "z": 13
+          },
+          {
+            "id": "lmtpkp5jz4w",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 2
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "ret",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 710,
+                "y": 91
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "no",
+            "z": 14
+          },
+          {
+            "id": "lmtpkp5jz4x",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "choose",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 15
+          },
+          {
+            "id": "lmtpkp5jz4y",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "explore",
+              "port": 10
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 2
+            },
+            "waypoints": [],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 16
+          },
+          {
+            "id": "lmtpkp5jz4z",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "undo",
+              "port": 6
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 14
+            },
+            "waypoints": [
+              {
+                "x": 1055,
+                "y": 325
+              },
+              {
+                "x": 1055,
+                "y": 215
+              }
+            ],
+            "style": {
+              "stroke": "#545454",
+              "strokeWidth": 1.4,
+              "dash": "",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 17
+          },
+          {
+            "id": "lmtpkp5jz50",
+            "kind": "line",
+            "lineKind": "rounded",
+            "from": {
+              "kind": "shape",
+              "shapeId": "next",
+              "port": 11
+            },
+            "to": {
+              "kind": "shape",
+              "shapeId": "loop",
+              "port": 10
+            },
+            "waypoints": [
+              {
+                "x": 1141,
+                "y": 252
+              },
+              {
+                "x": 1141,
+                "y": 385
+              },
+              {
+                "x": 710,
+                "y": 385
+              },
+              {
+                "x": 710,
+                "y": 261
+              }
+            ],
+            "style": {
+              "stroke": "#2b8341",
+              "strokeWidth": 1.6,
+              "dash": "5 4",
+              "startArrow": "none",
+              "endArrow": "arrow",
+              "opacity": 1,
+              "radius": 8,
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "textColor": "#545454"
+            },
+            "label": "",
+            "z": 18
+          }
+        ],
+        "walkthrough": [
+          {
+            "id": "wmtpkp5jz51",
+            "target": "start",
+            "caption": "Generating subsets of [a, b]. This is the outermost call: start = 0, current = []."
+          },
+          {
+            "id": "wmtpkp5jz52",
+            "target": "record",
+            "caption": "Record a copy of current, which is the empty set. Yes, that counts as a subset."
+          },
+          {
+            "id": "wmtpkp5jz53",
+            "target": "init",
+            "caption": "i = start = 0."
+          },
+          {
+            "id": "wmtpkp5jz54",
+            "target": "loop",
+            "caption": "i < n, that is 0 < 2 ? Yes."
+          },
+          {
+            "id": "wmtpkp5jz55",
+            "target": "choose",
+            "caption": "Push a[0] = a. current is now [a]."
+          },
+          {
+            "id": "wmtpkp5jz56",
+            "target": "explore",
+            "caption": "Recurse with start = 1. That call records [a], then goes on to record [a, b] before returning."
+          },
+          {
+            "id": "wmtpkp5jz57",
+            "target": "undo",
+            "caption": "Pop. current is back to [], exactly as it was before this choice was made."
+          },
+          {
+            "id": "wmtpkp5jz58",
+            "target": "next",
+            "caption": "i = 1."
+          },
+          {
+            "id": "wmtpkp5jz59",
+            "target": "loop",
+            "caption": "1 < 2 ? Yes, there is still a choice left at this level."
+          },
+          {
+            "id": "wmtpkp5jz5a",
+            "target": "choose",
+            "caption": "Push a[1] = b. current is now [b]."
+          },
+          {
+            "id": "wmtpkp5jz5b",
+            "target": "explore",
+            "caption": "Recurse with start = 2. That call records [b] and finds no further choices. Note it never produces [b, a]: start has moved past a."
+          },
+          {
+            "id": "wmtpkp5jz5c",
+            "target": "undo",
+            "caption": "Pop. current is [] again."
+          },
+          {
+            "id": "wmtpkp5jz5d",
+            "target": "next",
+            "caption": "i = 2."
+          },
+          {
+            "id": "wmtpkp5jz5e",
+            "target": "loop",
+            "caption": "2 < 2 ? No. Out of choices."
+          },
+          {
+            "id": "wmtpkp5jz5f",
+            "target": "ret",
+            "caption": "Return. Four subsets recorded: [], [a], [a, b], [b]. That is 2^2, as promised."
+          }
+        ]
       }
-    ],
-    "edges": [
-      {
-        "id": "s1",
-        "from": "start",
-        "to": "record"
-      },
-      {
-        "id": "s2",
-        "from": "record",
-        "to": "init"
-      },
-      {
-        "id": "s3",
-        "from": "init",
-        "to": "loop"
-      },
-      {
-        "id": "s4",
-        "from": "loop",
-        "to": "choose",
-        "label": "yes"
-      },
-      {
-        "id": "s5",
-        "from": "loop",
-        "to": "ret",
-        "label": "no"
-      },
-      {
-        "id": "s6",
-        "from": "choose",
-        "to": "explore"
-      },
-      {
-        "id": "s7",
-        "from": "explore",
-        "to": "undo"
-      },
-      {
-        "id": "s8",
-        "from": "undo",
-        "to": "next"
-      },
-      {
-        "id": "s9",
-        "from": "next",
-        "to": "loop"
-      }
-    ],
-    "legend": [
-      {
-        "label": "start / end",
-        "shape": "start",
-        "accent": "green"
-      },
-      {
-        "label": "decision",
-        "shape": "decision",
-        "accent": "copper"
-      },
-      {
-        "label": "apply a choice",
-        "shape": "process",
-        "accent": "blue"
-      },
-      {
-        "label": "recurse",
-        "shape": "process",
-        "accent": "violet"
-      },
-      {
-        "label": "take it back",
-        "shape": "process",
-        "accent": "coral"
-      },
-      {
-        "label": "loop back",
-        "kind": "edge",
-        "shape": "decision",
-        "accent": "copper"
-      }
-    ],
-    "walkthrough": [
-      {
-        "node": "start",
-        "caption": "Generating subsets of [a, b]. This is the outermost call: start = 0, current = []."
-      },
-      {
-        "node": "record",
-        "caption": "Record a copy of current, which is the empty set. Yes, that counts as a subset."
-      },
-      {
-        "node": "init",
-        "caption": "i = start = 0."
-      },
-      {
-        "node": "loop",
-        "caption": "i < n, that is 0 < 2 ? Yes."
-      },
-      {
-        "node": "choose",
-        "caption": "Push a[0] = a. current is now [a]."
-      },
-      {
-        "node": "explore",
-        "caption": "Recurse with start = 1. That call records [a], then goes on to record [a, b] before returning."
-      },
-      {
-        "node": "undo",
-        "caption": "Pop. current is back to [], exactly as it was before this choice was made."
-      },
-      {
-        "node": "next",
-        "caption": "i = 1."
-      },
-      {
-        "node": "loop",
-        "caption": "1 < 2 ? Yes, there is still a choice left at this level."
-      },
-      {
-        "node": "choose",
-        "caption": "Push a[1] = b. current is now [b]."
-      },
-      {
-        "node": "explore",
-        "caption": "Recurse with start = 2. That call records [b] and finds no further choices. Note it never produces [b, a]: start has moved past a."
-      },
-      {
-        "node": "undo",
-        "caption": "Pop. current is [] again."
-      },
-      {
-        "node": "next",
-        "caption": "i = 2."
-      },
-      {
-        "node": "loop",
-        "caption": "2 < 2 ? No. Out of choices."
-      },
-      {
-        "node": "ret",
-        "caption": "Return. Four subsets recorded: [], [a], [a, b], [b]. That is 2^2, as promised."
-      }
-    ],
-    "interactive": {
-      "walkthrough": true
-    }
+    ]
   }
 }
