@@ -7,6 +7,7 @@ import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import { PracticeWorkspace } from "@/components/practices/practice-workspace";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPracticeBySlug } from "@/lib/practice/practice-records";
+import { countDiscussion } from "@/lib/community/discussions";
 import { formatValue } from "@/lib/practice/compare";
 
 interface PageParams {
@@ -36,11 +37,14 @@ export default async function PracticePage({ params }: PageParams) {
   const practice = await getPracticeBySlug(slug);
   if (!practice) notFound();
 
-  const user = await getCurrentUser();
+  const [user, discussCount] = await Promise.all([
+    getCurrentUser(),
+    countDiscussion("PRACTICE", slug).catch(() => 0),
+  ]);
 
   return (
     <>
-      <PracticeNav problemTitle={practice.title} />
+      <PracticeNav problemTitle={practice.title} discussSlug={slug} discussCount={discussCount} />
       {/*
         A workspace, not an article: full-bleed, locked to the viewport, with
         each pane scrolling on its own and a draggable divider between them -

@@ -1,0 +1,24 @@
+{
+  "slug": "karnaugh-maps-past-four-variables",
+  "title": "Is there any point learning K-maps past 4 variables?",
+  "author": "off_by_one",
+  "createdAt": "2026-09-09T11:05:00.000Z",
+  "body": "Genuine question, not trying to start anything. Five and six variable maps exist but they're two or four stacked grids and you have to spot groupings *across* the layers. At that point I can't see the adjacency any more, which was the entire selling point.\n\nSo is the honest answer \"use K-maps up to 4, use Quine-McCluskey or a tool past that\"? Or is there a reason to push through?",
+  "replies": [
+    {
+      "author": "nandhole",
+      "createdAt": "2026-09-09T13:40:00.000Z",
+      "body": "honest answer: yes, 4 is the practical ceiling for doing it by eye, and that's fine.\n\nthe reason to learn K-maps at all isn't that you'll minimise real circuits with them, it's that they make *why* minimisation works visual. adjacent cells differ by one bit, so a group of 2^k adjacent cells means k variables don't matter and drop out. once that's in your head you understand what the algorithm is doing.\n\nQuine-McCluskey is the same idea made mechanical, and it's exponential in the worst case anyway. real tools use Espresso, which is heuristic and doesn't guarantee a minimum."
+    },
+    {
+      "author": "carry_the_one",
+      "createdAt": "2026-09-09T16:58:00.000Z",
+      "body": "Also nobody does two-level minimisation on real designs any more. You write behavioural HDL and the synthesiser does multi-level optimisation against an actual gate library with real timing and area costs. Minimum literal count isn't even the right objective.\n\nStill worth understanding. Just don't expect to use it."
+    },
+    {
+      "author": "heap_of_trouble",
+      "createdAt": "2026-09-10T08:20:00.000Z",
+      "body": "> don't-care conditions\n\nThe thing I'd add: the one place K-maps stay genuinely useful past coursework is reasoning about don't-cares. Being able to see that you can pick X = 1 here and get a much bigger group is a lot harder to feel from a truth table."
+    }
+  ]
+}

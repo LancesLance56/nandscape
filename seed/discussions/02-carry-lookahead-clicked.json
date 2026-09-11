@@ -1,0 +1,19 @@
+{
+  "slug": "carry-lookahead-finally-clicked-for-me",
+  "title": "Carry-lookahead finally clicked and I feel stupid for how long it took",
+  "author": "nandhole",
+  "createdAt": "2026-09-02T20:31:00.000Z",
+  "body": "Spent about three weeks on and off being confused about why generate/propagate is a thing, and I think the textbooks bury the lede.\n\nThe thing nobody said plainly: **a ripple-carry adder is slow because bit `i` cannot start until bit `i-1` finishes.** That's it. That's the whole problem. Everything else is just algebra to break that chain.\n\nOnce you accept that, G and P are obvious:\n\n```\ng[i] = a[i] AND b[i]     // this bit MAKES a carry, no matter what came in\np[i] = a[i] XOR b[i]     // this bit PASSES a carry through, if one arrives\n```\n\nAnd then `c[i+1] = g[i] OR (p[i] AND c[i])` which you can just... keep substituting into itself until `c[i]` is gone. Expand it for four bits and every carry is a function of the inputs only. No chain.\n\nThe cost is that the gates get wide fast. `c[4]` needs a 5-input OR and one of its AND terms has 5 inputs. That's why real designs do it in blocks of 4 and then lookahead across the blocks.\n\nAnyway. If you're stuck on this, the question to ask isn't \"what is generate\", it's \"what exactly is the dependency I'm trying to delete\".",
+  "replies": [
+    {
+      "author": "segfaulter",
+      "createdAt": "2026-09-02T22:48:00.000Z",
+      "body": "The block-of-4 detail is the part I wish I'd known earlier. You can treat a whole 4-bit block as having its own G and P and then run the exact same lookahead one level up. It's recursive and nobody tells you.\n\nGroup generate for a 4-block:\n\n```\nG = g3 | (p3 & g2) | (p3 & p2 & g1) | (p3 & p2 & p1 & g0)\nP = p3 & p2 & p1 & p0\n```\n\nSame shape as the single-bit version. That's the whole trick for 32 and 64 bit adders."
+    },
+    {
+      "author": "carry_the_one",
+      "createdAt": "2026-09-03T08:15:00.000Z",
+      "body": "fwiw the reason p is XOR and not OR: you also use p as the sum bit (`sum[i] = p[i] XOR c[i]`), so XOR saves you a gate. If you only cared about the carry logic, OR would work fine there since the case where both are 1 is already covered by g.\n\nTook me ages to notice that's an optimisation and not a requirement."
+    }
+  ]
+}

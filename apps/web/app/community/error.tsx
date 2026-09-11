@@ -9,7 +9,7 @@ export default function CommunityError({
 }) {
   return (
     <main className="mx-auto max-w-2xl px-6 pt-40 text-center">
-      <h1 className="font-display text-2xl font-bold text-ink">Couldn't load community circuits</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Couldn&apos;t load the community</h1>
       <p className="mt-2 text-sm text-ink-soft">{error.message}</p>
       <button
         onClick={reset}

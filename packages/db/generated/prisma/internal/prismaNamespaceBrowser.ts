@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  DiscussionPost: 'DiscussionPost',
+  DiscussionVote: 'DiscussionVote',
   EmailVerificationToken: 'EmailVerificationToken',
   Session: 'Session',
   BlogPost: 'BlogPost',
@@ -99,11 +101,37 @@ export const UserScalarFieldEnum = {
   name: 'name',
   avatarUrl: 'avatarUrl',
   role: 'role',
+  bio: 'bio',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const DiscussionPostScalarFieldEnum = {
+  id: 'id',
+  targetKind: 'targetKind',
+  targetSlug: 'targetSlug',
+  authorId: 'authorId',
+  title: 'title',
+  body: 'body',
+  code: 'code',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiscussionPostScalarFieldEnum = (typeof DiscussionPostScalarFieldEnum)[keyof typeof DiscussionPostScalarFieldEnum]
+
+
+export const DiscussionVoteScalarFieldEnum = {
+  postId: 'postId',
+  voterId: 'voterId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscussionVoteScalarFieldEnum = (typeof DiscussionVoteScalarFieldEnum)[keyof typeof DiscussionVoteScalarFieldEnum]
 
 
 export const EmailVerificationTokenScalarFieldEnum = {

@@ -1,0 +1,19 @@
+{
+  "slug": "when-bfs-is-enough-and-dijkstra-is-overkill",
+  "title": "PSA: if all your edge weights are 1, you do not need Dijkstra",
+  "author": "heap_of_trouble",
+  "createdAt": "2026-09-05T18:20:00.000Z",
+  "body": "Reviewed a bunch of solutions this week and this keeps coming up, so:\n\n**Unweighted graph, shortest path? BFS.** Plain, boring BFS with a deque. It is O(V + E) and it is correct, because BFS visits vertices in nondecreasing distance order by construction.\n\nDijkstra on the same graph is O((V + E) log V), needs a priority queue, and gives you the identical answer. You paid a log factor and a heap allocation for nothing.\n\nThe one in between that people miss: **weights of only 0 and 1 -> 0-1 BFS.** Use a deque, push-front on a 0 edge, push-back on a 1 edge. Still linear.\n\n```python\ndq = deque([start])\ndist[start] = 0\nwhile dq:\n    u = dq.popleft()\n    for v, w in adj[u]:\n        if dist[u] + w < dist[v]:\n            dist[v] = dist[u] + w\n            dq.appendleft(v) if w == 0 else dq.append(v)\n```\n\nRough rule I use: unweighted -> BFS. Weights in {0,1} -> 0-1 BFS. Small integer weights -> consider bucket queue. Arbitrary non-negative -> Dijkstra. Negative edges -> Bellman-Ford and go sit down and think about what you have done.",
+  "replies": [
+    {
+      "author": "tail_recursive",
+      "createdAt": "2026-09-05T21:02:00.000Z",
+      "body": "The negative-edge line is funny but it's worth spelling out *why* Dijkstra breaks, because \"it just doesn't work\" isn't an explanation.\n\nDijkstra finalises a vertex the moment it pops it, on the assumption that no shorter path can turn up later. That assumption is exactly \"adding an edge never decreases the total\". A negative edge violates it, so you can pop a vertex, mark it done, and then discover a shorter route to it that you'll now ignore."
+    },
+    {
+      "author": "off_by_one",
+      "createdAt": "2026-09-06T09:33:00.000Z",
+      "body": "small correction to the snippet: that conditional-expression-as-statement form works but linters hate it and it reads badly. plain if/else is clearer here.\n\nalso if you're doing 0-1 BFS you want the `dist[u] + w < dist[v]` check rather than a visited set, since a vertex can legitimately be improved after first being reached."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "slug": "memoization-vs-tabulation-when-does-it-matter",
+  "title": "When does memoization actually beat tabulation? (not a homework question)",
+  "author": "off_by_one",
+  "createdAt": "2026-08-30T14:12:00.000Z",
+  "body": "Every DP explanation I read says \"top-down is memoization, bottom-up is tabulation, pick whichever\" and then moves on, which is useless the moment you actually care.\n\nSo here's what I've actually hit:\n\n- **Memoization wins when the state space is sparse.** If your recurrence only ever touches a fraction of the table, tabulation fills the whole thing for nothing. Coin change with a huge amount and three coin values is the obvious one.\n- **Tabulation wins when you need the whole table anyway**, or when the recursion depth would blow the stack. I've hit `RecursionError` on a 10^5 chain in Python more than once.\n- Tabulation also lets you do the rolling-array trick and drop to O(n) space. You basically can't do that top-down because you don't control the order.\n\nWhat I'm less sure about: is there a case where memoization is *faster* on a dense state space? The hash lookups should lose to array indexing every time, but I keep seeing people claim otherwise.",
+  "replies": [
+    {
+      "author": "tail_recursive",
+      "createdAt": "2026-08-30T16:40:00.000Z",
+      "body": "> is there a case where memoization is faster on a dense state space\n\nYes, if the transition is expensive enough that the lookup cost disappears into the noise. I had one where each state needed a small matrix multiply, and the memo overhead was maybe 2% of total runtime. At that point you pick whichever one you can read.\n\nAlso worth saying: use an array for the memo, not a dict, if your states are small integers. `memo = [None] * n` beats `{}` by a lot and you keep the top-down shape."
+    },
+    {
+      "author": "midnight_compiler",
+      "createdAt": "2026-08-31T09:05:00.000Z",
+      "body": "The stack depth thing is the one that bites people in interviews. Python defaults to 1000 frames. `sys.setrecursionlimit` doesn't raise the actual C stack so you can still segfault, it just moves where you crash.\n\nIf you like the top-down shape but need the depth, write it as an explicit stack. Ugly but it doesn't fall over."
+    },
+    {
+      "author": "heap_of_trouble",
+      "createdAt": "2026-09-01T11:22:00.000Z",
+      "body": "Adding one: tabulation makes the dependency order explicit, which is how you find out your recurrence is wrong. Top-down will happily recurse into a cycle and you get infinite recursion instead of \"this isn't a DAG\". Caught a bad state definition that way last week."
+    }
+  ]
+}

@@ -20,7 +20,6 @@ const links = [
   { label: "Logic Editor", href: "/logic-editor" },
   { label: "Flowcharts", href: "/flowchart" },
   { label: "Tools", href: "/tools" },
-  { label: "Embeds", href: "/embeds" },
   { label: "Projects", href: "/projects" },
   { label: "Community", href: "/community" },
 ];

@@ -156,15 +156,24 @@ interface PublicSummaryRow extends SummaryRow {
 // unbounded list,  revisit with real pagination if it's ever hit in practice.
 const PUBLIC_LISTING_LIMIT = 200;
 
-export async function listPublicProjects(): Promise<PublicProjectSummary[]> {
+/**
+ * Every public circuit, or just one person's when `ownerUsername` is given -
+ * which is what a profile's Circuits tab renders. One filter rather than a
+ * second near-identical function, so the two listings cannot drift apart in
+ * which columns they select or how they order.
+ */
+export async function listPublicProjects(
+  options: { ownerUsername?: string } = {},
+): Promise<PublicProjectSummary[]> {
   const rows = await query<PublicSummaryRow>(
     `SELECT p.id, p.slug, p.name, p.description, p.visibility, p.updated_at, p.nodes, p.edges, p.blocks, p.scopes, p.tags, u.username AS owner_username
      FROM projects p
      JOIN "User" u ON u.id = p.owner_id
      WHERE p.visibility = 'PUBLIC'
+       AND ($2::text IS NULL OR lower(u.username) = lower($2))
      ORDER BY p.updated_at DESC
      LIMIT $1`,
-    [PUBLIC_LISTING_LIMIT],
+    [PUBLIC_LISTING_LIMIT, options.ownerUsername ?? null],
   );
   return rows.map((row) => ({
     ...toSummary(row),

@@ -1,0 +1,24 @@
+{
+  "slug": "big-o-hid-a-real-40x-slowdown-from-me",
+  "title": "Big-O hid a real 40x slowdown from me and I want to complain about it",
+  "author": "midnight_compiler",
+  "createdAt": "2026-09-07T14:50:00.000Z",
+  "body": "Two implementations of the same linear scan. Both O(n). One is 40x slower.\n\n```c\n// A: sum a 4096x4096 matrix row-major\nfor (int i = 0; i < N; i++)\n    for (int j = 0; j < N; j++)\n        total += m[i][j];\n\n// B: same thing, column-major\nfor (int j = 0; j < N; j++)\n    for (int i = 0; i < N; i++)\n        total += m[i][j];\n```\n\nIdentical operation count. Identical complexity class. B is catastrophically slower because every iteration touches a new cache line, and at 4096 ints per row you also blow the TLB.\n\nI'm not saying complexity analysis is useless, obviously it isn't. I'm saying it deliberately throws away the constant factor, and on modern hardware the constant factor is dominated by memory access patterns that the notation cannot see. \"O(n) with good locality\" and \"O(n) with bad locality\" are different algorithms in every way that matters to a user.\n\nThe thing I'd want taught alongside it: a cache miss to DRAM is on the order of 200-300 cycles. An L1 hit is about 4. You can do an enormous amount of arithmetic in the time it takes to be wrong about where your data is.",
+  "replies": [
+    {
+      "author": "segfaulter",
+      "createdAt": "2026-09-07T17:05:00.000Z",
+      "body": "This is also why the \"linked list vs array\" question has a boring answer in practice. Textbook says O(1) insertion for the list. Reality says you paid a cache miss to find the insertion point and another to follow the next pointer, and the array won by memmoving 200 bytes that were already in L1.\n\nBjarne has a talk where he benchmarks exactly this and the vector wins up to absurd sizes."
+    },
+    {
+      "author": "heap_of_trouble",
+      "createdAt": "2026-09-08T08:40:00.000Z",
+      "body": "Fair, but I'd push back slightly on the framing. Big-O isn't hiding anything, it's answering a different question: how does this scale as n grows without bound. Your 40x is a constant. Make N ten times bigger and both versions get 100x slower.\n\nIt's a real limitation but it's the documented one. The mistake is treating it as a performance model rather than a scaling model."
+    },
+    {
+      "author": "midnight_compiler",
+      "createdAt": "2026-09-08T10:15:00.000Z",
+      "body": "> The mistake is treating it as a performance model rather than a scaling model.\n\nOk that's a better way to put it than anything in my post. Stealing that."
+    }
+  ]
+}

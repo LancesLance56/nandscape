@@ -93,6 +93,10 @@ services:
       ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
       ADMIN_USERNAME: "${ADMIN_USERNAME:-}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+      # Without these the app still works: sendVerificationEmail falls back to
+      # logging the link to the container log instead of sending it.
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      EMAIL_FROM: "${EMAIL_FROM:-}"
       CI: "true"
       WATCHPACK_POLLING: "1000"
       RUNNER_URL: "http://runner:2000"
@@ -129,6 +133,8 @@ services:
       ADMIN_EMAIL: "${ADMIN_EMAIL:-}"
       ADMIN_USERNAME: "${ADMIN_USERNAME:-}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      EMAIL_FROM: "${EMAIL_FROM:-}"
       RUNNER_URL: "http://runner:2000"
     depends_on:
       postgres:

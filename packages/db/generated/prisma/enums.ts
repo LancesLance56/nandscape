@@ -46,7 +46,11 @@ export type Difficulty = (typeof Difficulty)[keyof typeof Difficulty]
 
 export const ContentKind = {
   BLOG: 'BLOG',
-  TUTORIAL: 'TUTORIAL'
+  TUTORIAL: 'TUTORIAL',
+  PRACTICE: 'PRACTICE',
+  PROJECT: 'PROJECT',
+  PUZZLE: 'PUZZLE',
+  GENERAL: 'GENERAL'
 } as const
 
 export type ContentKind = (typeof ContentKind)[keyof typeof ContentKind]

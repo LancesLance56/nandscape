@@ -29,20 +29,75 @@ export function Rail({ children, className }: { children: ReactNode; className?:
  * text, which is exactly what happened: the wire ran 46px past the last node.
  */
 
+/**
+ * The row geometry, shared by the linked and unlinked variants below.
+ *
+ * The wire runs the full height of the row, then is trimmed back to the node
+ * centre on the first and last rows so it starts and stops on a node. Both
+ * offsets are written out rather than interpolated: Tailwind generates
+ * utilities by scanning source text, so a class assembled from a variable is
+ * never emitted. Both values are that 1.25rem node centre.
+ */
+const RAIL_ROW = cn(
+  "group relative flex items-start gap-3 rounded-lg py-2 pr-2 transition-colors hover:bg-copper-bg/40",
+  "before:absolute before:left-1 before:top-0 before:bottom-0 before:w-0.5 before:bg-copper/30 before:content-['']",
+  "first:before:top-5 last:before:bottom-[calc(100%-1.25rem)]",
+);
+
+function RailNode({ filled }: { filled?: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "relative z-1 mt-[7px] h-2.5 w-2.5 shrink-0 rounded-full border-2 border-copper transition-transform group-hover:scale-125",
+        filled ? "bg-copper" : "bg-surface-card",
+      )}
+    />
+  );
+}
+
+/**
+ * A rail row that is not a link, for rows carrying their own controls.
+ *
+ * A follow button inside a `RailItem` would be a button inside an anchor,
+ * which is invalid and unusable by keyboard. Rows like that compose the
+ * geometry themselves and put the link on whichever part is actually
+ * navigable.
+ */
+export function RailRow({
+  children,
+  filled = false,
+  className,
+}: {
+  children: ReactNode;
+  filled?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={cn(RAIL_ROW, "items-center", className)}>
+      <RailNode filled={filled} />
+      {children}
+    </div>
+  );
+}
+
 export function RailItem({
   href,
   title,
   meta,
   detail,
+  leading,
   filled = false,
   className,
 }: {
   href: string;
-  title: string;
+  title: ReactNode;
   /** Right-aligned count or label. */
   meta?: ReactNode;
   /** Optional second line under the title. */
   detail?: ReactNode;
+  /** Optional element between the node and the text, such as an avatar. */
+  leading?: ReactNode;
   /**
    * Draws a solid node instead of a hollow one. Used for the entry point of a
    * track, so the eye lands on where to start rather than on the first row by
@@ -52,27 +107,9 @@ export function RailItem({
   className?: string;
 }) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "group relative flex items-start gap-3 rounded-lg py-2 pr-2 transition-colors hover:bg-copper-bg/40",
-        // The wire. Full height of the row, then trimmed back to the node
-        // centre on the first and last rows so it starts and stops on a node.
-        "before:absolute before:left-1 before:top-0 before:bottom-0 before:w-0.5 before:bg-copper/30 before:content-['']",
-        // Written out rather than interpolated: Tailwind generates utilities by
-        // scanning source text, so a class assembled from a variable is never
-        // emitted. Both values are that 1.25rem node centre.
-        "first:before:top-5 last:before:bottom-[calc(100%-1.25rem)]",
-        className,
-      )}
-    >
-      <span
-        aria-hidden
-        className={cn(
-          "relative z-1 mt-[7px] h-2.5 w-2.5 shrink-0 rounded-full border-2 border-copper transition-transform group-hover:scale-125",
-          filled ? "bg-copper" : "bg-surface-card",
-        )}
-      />
+    <Link href={href} className={cn(RAIL_ROW, leading && "items-center", className)}>
+      <RailNode filled={filled} />
+      {leading}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm text-ink transition-colors group-hover:text-copper-dark">{title}</span>
         {detail && <span className="mt-0.5 block truncate text-xs text-slate">{detail}</span>}

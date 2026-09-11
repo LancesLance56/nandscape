@@ -14,7 +14,8 @@
     "docker:start": "docker compose --profile prod up --build",
     "practice:verify-harness": "pnpm --filter web exec tsx lib/practice/harnesses/verify-harness.mts",
     "engine:prepare": "docker compose --profile bootstrap run --rm engine-prepare",
-    "diagrams:migrate": "pnpm --filter web exec tsx scripts/migrate-diagrams.mts"
+    "diagrams:migrate": "pnpm --filter web exec tsx scripts/migrate-diagrams.mts",
+    "community:seed": "pnpm --filter web exec tsx scripts/seed-community.mts"
   },
   "keywords": [],
   "author": "",

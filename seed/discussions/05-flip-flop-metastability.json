@@ -1,0 +1,19 @@
+{
+  "slug": "asked-about-metastability-in-an-interview-and-blanked",
+  "title": "Got asked about metastability in an interview and completely blanked",
+  "author": "carry_the_one",
+  "createdAt": "2026-09-06T16:45:00.000Z",
+  "body": "Writing this up partly so I remember it and partly because I could not find a straight answer at the time.\n\nThe question was roughly: \"you have a button on one clock domain feeding a counter on another, what goes wrong.\"\n\nWhat I should have said:\n\nA flip-flop needs its input to be stable for **setup time** before the clock edge and **hold time** after it. If the input changes inside that window, the output is not guaranteed to be 0 or 1. It can sit at an intermediate voltage for an unbounded time before it resolves. That's metastability. It is not a rare theoretical thing, it is the normal outcome of sampling an unrelated signal.\n\nThe fix is a **two-flop synchroniser**: chain two flip-flops on the destination clock. The first one may go metastable, and you give it a full clock period to settle before the second one samples it. You have not eliminated the failure, you have made its probability small enough to quote as a mean time between failures.\n\nWhat that does NOT fix, and this is the part I'd have failed anyway: it only works for a **single bit**. If you synchronise a multi-bit bus one bit at a time, different bits can resolve on different cycles and you'll read a value that never existed. For a bus you need a handshake, or a gray-coded counter where only one bit changes at a time, or a proper async FIFO.",
+  "replies": [
+    {
+      "author": "nandhole",
+      "createdAt": "2026-09-06T19:12:00.000Z",
+      "body": "the gray code bit is the good answer and it's why async FIFOs use gray-coded pointers. one bit changing per increment means the worst case is you read the old value or the new one, never a garbage value in between.\n\nalso worth knowing: MTBF goes up exponentially with the settling time you allow. adding a third flop is cheap and buys you a lot. people do it on slow domains."
+    },
+    {
+      "author": "segfaulter",
+      "createdAt": "2026-09-07T11:28:00.000Z",
+      "body": "> It is not a rare theoretical thing\n\nCan confirm. Had a design that worked on the bench for two weeks and failed in the field about once a day. Single flop on an external interrupt line. Two-flop synchroniser and it's been fine for a year."
+    }
+  ]
+}

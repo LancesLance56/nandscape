@@ -23,6 +23,34 @@ export * from './enums';
  */
 export type User = Prisma.UserModel
 /**
+ * Model DiscussionPost
+ * One post in a discussion.
+ * 
+ * A discussion is addressed by `targetKind` + `targetSlug` - the same
+ * addressing `Clap` already uses, which is why `ContentKind` grew rather than
+ * a second enum appearing. Most discussions hang off a piece of content: a
+ * problem, a lesson, a circuit or an article. `GENERAL` is the exception, and
+ * its slug is the thread's own, so a standalone discussion is the same row
+ * shape as an attached one rather than a second table.
+ * 
+ * `code` is separate from `body` rather than being fenced inside it, because
+ * the two are revealed differently: prose always shows, and code sits behind
+ * a click so a problem page cannot spoil itself for someone still working.
+ * Fencing would mean parsing Markdown to decide what to hide.
+ * 
+ * Replies are one level deep. `parentId` pointing at the same table allows
+ * arbitrary nesting, but the reader only ever renders children of a top-level
+ * post - unbounded nesting is a threading UI, not a comment section.
+ */
+export type DiscussionPost = Prisma.DiscussionPostModel
+/**
+ * Model DiscussionVote
+ * One upvote. The composite primary key *is* the "one vote per person per
+ * post" rule, so there is no separate unique constraint and no way to write a
+ * duplicate - unlike Clap, which counts repeat applause on purpose.
+ */
+export type DiscussionVote = Prisma.DiscussionVoteModel
+/**
  * Model EmailVerificationToken
  * 
  */

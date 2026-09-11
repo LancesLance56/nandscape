@@ -34,6 +34,7 @@ export type UserMinAggregateOutputType = {
   name: string | null
   avatarUrl: string | null
   role: $Enums.Role | null
+  bio: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +49,7 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   avatarUrl: string | null
   role: $Enums.Role | null
+  bio: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type UserCountAggregateOutputType = {
   name: number
   avatarUrl: number
   role: number
+  bio: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +81,7 @@ export type UserMinAggregateInputType = {
   name?: true
   avatarUrl?: true
   role?: true
+  bio?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +96,7 @@ export type UserMaxAggregateInputType = {
   name?: true
   avatarUrl?: true
   role?: true
+  bio?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +111,7 @@ export type UserCountAggregateInputType = {
   name?: true
   avatarUrl?: true
   role?: true
+  bio?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +199,7 @@ export type UserGroupByOutputType = {
   name: string | null
   avatarUrl: string | null
   role: $Enums.Role
+  bio: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -228,6 +235,7 @@ export type UserWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  bio?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   puzzles?: Prisma.PuzzleListRelationFilter
@@ -242,6 +250,8 @@ export type UserWhereInput = {
   codingProblems?: Prisma.CodingProblemListRelationFilter
   codingSubmissions?: Prisma.CodingSubmissionListRelationFilter
   codingDrafts?: Prisma.CodingDraftListRelationFilter
+  discussionPosts?: Prisma.DiscussionPostListRelationFilter
+  discussionVotes?: Prisma.DiscussionVoteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -254,6 +264,7 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  bio?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   puzzles?: Prisma.PuzzleOrderByRelationAggregateInput
@@ -268,6 +279,8 @@ export type UserOrderByWithRelationInput = {
   codingProblems?: Prisma.CodingProblemOrderByRelationAggregateInput
   codingSubmissions?: Prisma.CodingSubmissionOrderByRelationAggregateInput
   codingDrafts?: Prisma.CodingDraftOrderByRelationAggregateInput
+  discussionPosts?: Prisma.DiscussionPostOrderByRelationAggregateInput
+  discussionVotes?: Prisma.DiscussionVoteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -283,6 +296,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  bio?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   puzzles?: Prisma.PuzzleListRelationFilter
@@ -297,6 +311,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   codingProblems?: Prisma.CodingProblemListRelationFilter
   codingSubmissions?: Prisma.CodingSubmissionListRelationFilter
   codingDrafts?: Prisma.CodingDraftListRelationFilter
+  discussionPosts?: Prisma.DiscussionPostListRelationFilter
+  discussionVotes?: Prisma.DiscussionVoteListRelationFilter
 }, "id" | "email" | "username" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
@@ -309,6 +325,7 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  bio?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -329,6 +346,7 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+  bio?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -343,6 +361,7 @@ export type UserCreateInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -357,6 +376,8 @@ export type UserCreateInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -369,6 +390,7 @@ export type UserUncheckedCreateInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -383,6 +405,8 @@ export type UserUncheckedCreateInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserUpdateInput = {
@@ -395,6 +419,7 @@ export type UserUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -409,6 +434,8 @@ export type UserUpdateInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -421,6 +448,7 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -435,6 +463,8 @@ export type UserUncheckedUpdateInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -447,6 +477,7 @@ export type UserCreateManyInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -461,6 +492,7 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -475,6 +507,7 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -489,6 +522,7 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -503,6 +537,7 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -517,6 +552,7 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -549,6 +585,34 @@ export type EnumRoleFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutDiscussionPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionPostsInput, Prisma.UserUncheckedCreateWithoutDiscussionPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionPostsInput, Prisma.UserUncheckedCreateWithoutDiscussionPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionPostsInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionPostsInput, Prisma.UserUpdateWithoutDiscussionPostsInput>, Prisma.UserUncheckedUpdateWithoutDiscussionPostsInput>
+}
+
+export type UserCreateNestedOneWithoutDiscussionVotesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionVotesInput, Prisma.UserUncheckedCreateWithoutDiscussionVotesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionVotesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionVotesInput, Prisma.UserUncheckedCreateWithoutDiscussionVotesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionVotesInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionVotesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionVotesInput, Prisma.UserUpdateWithoutDiscussionVotesInput>, Prisma.UserUncheckedUpdateWithoutDiscussionVotesInput>
 }
 
 export type UserCreateNestedOneWithoutEmailVerificationTokensInput = {
@@ -723,6 +787,262 @@ export type UserUpdateOneRequiredWithoutCodingDraftsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCodingDraftsInput, Prisma.UserUpdateWithoutCodingDraftsInput>, Prisma.UserUncheckedUpdateWithoutCodingDraftsInput>
 }
 
+export type UserCreateWithoutDiscussionPostsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  bio?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionPostsInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  bio?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionPostsInput, Prisma.UserUncheckedCreateWithoutDiscussionPostsInput>
+}
+
+export type UserUpsertWithoutDiscussionPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionPostsInput, Prisma.UserUncheckedUpdateWithoutDiscussionPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionPostsInput, Prisma.UserUncheckedCreateWithoutDiscussionPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionPostsInput, Prisma.UserUncheckedUpdateWithoutDiscussionPostsInput>
+}
+
+export type UserUpdateWithoutDiscussionPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
+}
+
+export type UserCreateWithoutDiscussionVotesInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  bio?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionVotesInput = {
+  id?: string
+  email: string
+  username: string
+  passwordHash?: string | null
+  googleId?: string | null
+  emailVerifiedAt?: Date | string | null
+  name?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  bio?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionVotesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionVotesInput, Prisma.UserUncheckedCreateWithoutDiscussionVotesInput>
+}
+
+export type UserUpsertWithoutDiscussionVotesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionVotesInput, Prisma.UserUncheckedUpdateWithoutDiscussionVotesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionVotesInput, Prisma.UserUncheckedCreateWithoutDiscussionVotesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionVotesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionVotesInput, Prisma.UserUncheckedUpdateWithoutDiscussionVotesInput>
+}
+
+export type UserUpdateWithoutDiscussionVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
+  puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
+  puzzleProgress?: Prisma.PuzzleProgressUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  tutorialProgress?: Prisma.TutorialProgressUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
+  codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
 export type UserCreateWithoutEmailVerificationTokensInput = {
   id?: string
   email: string
@@ -733,6 +1053,7 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -746,6 +1067,8 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
@@ -758,6 +1081,7 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -771,6 +1095,8 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
@@ -799,6 +1125,7 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -812,6 +1139,8 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
@@ -824,6 +1153,7 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -837,6 +1167,8 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -849,6 +1181,7 @@ export type UserCreateWithoutSessionsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -862,6 +1195,8 @@ export type UserCreateWithoutSessionsInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -874,6 +1209,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -887,6 +1223,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -915,6 +1253,7 @@ export type UserUpdateWithoutSessionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -928,6 +1267,8 @@ export type UserUpdateWithoutSessionsInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -940,6 +1281,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -953,6 +1295,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutPuzzlesInput = {
@@ -965,6 +1309,7 @@ export type UserCreateWithoutPuzzlesInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzleAttempts?: Prisma.PuzzleAttemptCreateNestedManyWithoutUserInput
@@ -978,6 +1323,8 @@ export type UserCreateWithoutPuzzlesInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutPuzzlesInput = {
@@ -990,6 +1337,7 @@ export type UserUncheckedCreateWithoutPuzzlesInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedCreateNestedManyWithoutUserInput
@@ -1003,6 +1351,8 @@ export type UserUncheckedCreateWithoutPuzzlesInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutPuzzlesInput = {
@@ -1031,6 +1381,7 @@ export type UserUpdateWithoutPuzzlesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzleAttempts?: Prisma.PuzzleAttemptUpdateManyWithoutUserNestedInput
@@ -1044,6 +1395,8 @@ export type UserUpdateWithoutPuzzlesInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzlesInput = {
@@ -1056,6 +1409,7 @@ export type UserUncheckedUpdateWithoutPuzzlesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzleAttempts?: Prisma.PuzzleAttemptUncheckedUpdateManyWithoutUserNestedInput
@@ -1069,6 +1423,8 @@ export type UserUncheckedUpdateWithoutPuzzlesInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutPuzzleAttemptsInput = {
@@ -1081,6 +1437,7 @@ export type UserCreateWithoutPuzzleAttemptsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1094,6 +1451,8 @@ export type UserCreateWithoutPuzzleAttemptsInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
@@ -1106,6 +1465,7 @@ export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1119,6 +1479,8 @@ export type UserUncheckedCreateWithoutPuzzleAttemptsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutPuzzleAttemptsInput = {
@@ -1147,6 +1509,7 @@ export type UserUpdateWithoutPuzzleAttemptsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1160,6 +1523,8 @@ export type UserUpdateWithoutPuzzleAttemptsInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
@@ -1172,6 +1537,7 @@ export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1185,6 +1551,8 @@ export type UserUncheckedUpdateWithoutPuzzleAttemptsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutPuzzleProgressInput = {
@@ -1197,6 +1565,7 @@ export type UserCreateWithoutPuzzleProgressInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1210,6 +1579,8 @@ export type UserCreateWithoutPuzzleProgressInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutPuzzleProgressInput = {
@@ -1222,6 +1593,7 @@ export type UserUncheckedCreateWithoutPuzzleProgressInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1235,6 +1607,8 @@ export type UserUncheckedCreateWithoutPuzzleProgressInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutPuzzleProgressInput = {
@@ -1263,6 +1637,7 @@ export type UserUpdateWithoutPuzzleProgressInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1276,6 +1651,8 @@ export type UserUpdateWithoutPuzzleProgressInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
@@ -1288,6 +1665,7 @@ export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1301,6 +1679,8 @@ export type UserUncheckedUpdateWithoutPuzzleProgressInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -1313,6 +1693,7 @@ export type UserCreateWithoutProjectsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1326,6 +1707,8 @@ export type UserCreateWithoutProjectsInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -1338,6 +1721,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1351,6 +1735,8 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -1379,6 +1765,7 @@ export type UserUpdateWithoutProjectsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1392,6 +1779,8 @@ export type UserUpdateWithoutProjectsInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -1404,6 +1793,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1417,6 +1807,8 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutTutorialProgressInput = {
@@ -1429,6 +1821,7 @@ export type UserCreateWithoutTutorialProgressInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1442,6 +1835,8 @@ export type UserCreateWithoutTutorialProgressInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutTutorialProgressInput = {
@@ -1454,6 +1849,7 @@ export type UserUncheckedCreateWithoutTutorialProgressInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1467,6 +1863,8 @@ export type UserUncheckedCreateWithoutTutorialProgressInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutTutorialProgressInput = {
@@ -1495,6 +1893,7 @@ export type UserUpdateWithoutTutorialProgressInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1508,6 +1907,8 @@ export type UserUpdateWithoutTutorialProgressInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTutorialProgressInput = {
@@ -1520,6 +1921,7 @@ export type UserUncheckedUpdateWithoutTutorialProgressInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1533,6 +1935,8 @@ export type UserUncheckedUpdateWithoutTutorialProgressInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutQuizAttemptsInput = {
@@ -1545,6 +1949,7 @@ export type UserCreateWithoutQuizAttemptsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1558,6 +1963,8 @@ export type UserCreateWithoutQuizAttemptsInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutQuizAttemptsInput = {
@@ -1570,6 +1977,7 @@ export type UserUncheckedCreateWithoutQuizAttemptsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1583,6 +1991,8 @@ export type UserUncheckedCreateWithoutQuizAttemptsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutQuizAttemptsInput = {
@@ -1611,6 +2021,7 @@ export type UserUpdateWithoutQuizAttemptsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1624,6 +2035,8 @@ export type UserUpdateWithoutQuizAttemptsInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
@@ -1636,6 +2049,7 @@ export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1649,6 +2063,8 @@ export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutPreferenceInput = {
@@ -1661,6 +2077,7 @@ export type UserCreateWithoutPreferenceInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1674,6 +2091,8 @@ export type UserCreateWithoutPreferenceInput = {
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceInput = {
@@ -1686,6 +2105,7 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1699,6 +2119,8 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceInput = {
@@ -1727,6 +2149,7 @@ export type UserUpdateWithoutPreferenceInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1740,6 +2163,8 @@ export type UserUpdateWithoutPreferenceInput = {
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceInput = {
@@ -1752,6 +2177,7 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1765,6 +2191,8 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutCodingProblemsInput = {
@@ -1777,6 +2205,7 @@ export type UserCreateWithoutCodingProblemsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1790,6 +2219,8 @@ export type UserCreateWithoutCodingProblemsInput = {
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutCodingProblemsInput = {
@@ -1802,6 +2233,7 @@ export type UserUncheckedCreateWithoutCodingProblemsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1815,6 +2247,8 @@ export type UserUncheckedCreateWithoutCodingProblemsInput = {
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutCodingProblemsInput = {
@@ -1843,6 +2277,7 @@ export type UserUpdateWithoutCodingProblemsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1856,6 +2291,8 @@ export type UserUpdateWithoutCodingProblemsInput = {
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCodingProblemsInput = {
@@ -1868,6 +2305,7 @@ export type UserUncheckedUpdateWithoutCodingProblemsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1881,6 +2319,8 @@ export type UserUncheckedUpdateWithoutCodingProblemsInput = {
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutCodingSubmissionsInput = {
@@ -1893,6 +2333,7 @@ export type UserCreateWithoutCodingSubmissionsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -1906,6 +2347,8 @@ export type UserCreateWithoutCodingSubmissionsInput = {
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingDrafts?: Prisma.CodingDraftCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutCodingSubmissionsInput = {
@@ -1918,6 +2361,7 @@ export type UserUncheckedCreateWithoutCodingSubmissionsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -1931,6 +2375,8 @@ export type UserUncheckedCreateWithoutCodingSubmissionsInput = {
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingDrafts?: Prisma.CodingDraftUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutCodingSubmissionsInput = {
@@ -1959,6 +2405,7 @@ export type UserUpdateWithoutCodingSubmissionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -1972,6 +2419,8 @@ export type UserUpdateWithoutCodingSubmissionsInput = {
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingDrafts?: Prisma.CodingDraftUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCodingSubmissionsInput = {
@@ -1984,6 +2433,7 @@ export type UserUncheckedUpdateWithoutCodingSubmissionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1997,6 +2447,8 @@ export type UserUncheckedUpdateWithoutCodingSubmissionsInput = {
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingDrafts?: Prisma.CodingDraftUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 export type UserCreateWithoutCodingDraftsInput = {
@@ -2009,6 +2461,7 @@ export type UserCreateWithoutCodingDraftsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleCreateNestedManyWithoutCreatorInput
@@ -2022,6 +2475,8 @@ export type UserCreateWithoutCodingDraftsInput = {
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
   codingProblems?: Prisma.CodingProblemCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteCreateNestedManyWithoutVoterInput
 }
 
 export type UserUncheckedCreateWithoutCodingDraftsInput = {
@@ -2034,6 +2489,7 @@ export type UserUncheckedCreateWithoutCodingDraftsInput = {
   name?: string | null
   avatarUrl?: string | null
   role?: $Enums.Role
+  bio?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   puzzles?: Prisma.PuzzleUncheckedCreateNestedManyWithoutCreatorInput
@@ -2047,6 +2503,8 @@ export type UserUncheckedCreateWithoutCodingDraftsInput = {
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
   codingProblems?: Prisma.CodingProblemUncheckedCreateNestedManyWithoutCreatorInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedCreateNestedManyWithoutUserInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedCreateNestedManyWithoutAuthorInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedCreateNestedManyWithoutVoterInput
 }
 
 export type UserCreateOrConnectWithoutCodingDraftsInput = {
@@ -2075,6 +2533,7 @@ export type UserUpdateWithoutCodingDraftsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUpdateManyWithoutCreatorNestedInput
@@ -2088,6 +2547,8 @@ export type UserUpdateWithoutCodingDraftsInput = {
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
   codingProblems?: Prisma.CodingProblemUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUpdateManyWithoutVoterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCodingDraftsInput = {
@@ -2100,6 +2561,7 @@ export type UserUncheckedUpdateWithoutCodingDraftsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   puzzles?: Prisma.PuzzleUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2113,6 +2575,8 @@ export type UserUncheckedUpdateWithoutCodingDraftsInput = {
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
   codingProblems?: Prisma.CodingProblemUncheckedUpdateManyWithoutCreatorNestedInput
   codingSubmissions?: Prisma.CodingSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  discussionPosts?: Prisma.DiscussionPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionVotes?: Prisma.DiscussionVoteUncheckedUpdateManyWithoutVoterNestedInput
 }
 
 
@@ -2132,6 +2596,8 @@ export type UserCountOutputType = {
   codingProblems: number
   codingSubmissions: number
   codingDrafts: number
+  discussionPosts: number
+  discussionVotes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2146,6 +2612,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   codingProblems?: boolean | UserCountOutputTypeCountCodingProblemsArgs
   codingSubmissions?: boolean | UserCountOutputTypeCountCodingSubmissionsArgs
   codingDrafts?: boolean | UserCountOutputTypeCountCodingDraftsArgs
+  discussionPosts?: boolean | UserCountOutputTypeCountDiscussionPostsArgs
+  discussionVotes?: boolean | UserCountOutputTypeCountDiscussionVotesArgs
 }
 
 /**
@@ -2235,6 +2703,20 @@ export type UserCountOutputTypeCountCodingDraftsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.CodingDraftWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionPostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionVoteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2246,6 +2728,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
+  bio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   puzzles?: boolean | Prisma.User$puzzlesArgs<ExtArgs>
@@ -2260,6 +2743,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   codingProblems?: boolean | Prisma.User$codingProblemsArgs<ExtArgs>
   codingSubmissions?: boolean | Prisma.User$codingSubmissionsArgs<ExtArgs>
   codingDrafts?: boolean | Prisma.User$codingDraftsArgs<ExtArgs>
+  discussionPosts?: boolean | Prisma.User$discussionPostsArgs<ExtArgs>
+  discussionVotes?: boolean | Prisma.User$discussionVotesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2273,6 +2758,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
+  bio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2287,6 +2773,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
+  bio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2301,11 +2788,12 @@ export type UserSelectScalar = {
   name?: boolean
   avatarUrl?: boolean
   role?: boolean
+  bio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "passwordHash" | "googleId" | "emailVerifiedAt" | "name" | "avatarUrl" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "passwordHash" | "googleId" | "emailVerifiedAt" | "name" | "avatarUrl" | "role" | "bio" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   puzzles?: boolean | Prisma.User$puzzlesArgs<ExtArgs>
   puzzleAttempts?: boolean | Prisma.User$puzzleAttemptsArgs<ExtArgs>
@@ -2319,6 +2807,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   codingProblems?: boolean | Prisma.User$codingProblemsArgs<ExtArgs>
   codingSubmissions?: boolean | Prisma.User$codingSubmissionsArgs<ExtArgs>
   codingDrafts?: boolean | Prisma.User$codingDraftsArgs<ExtArgs>
+  discussionPosts?: boolean | Prisma.User$discussionPostsArgs<ExtArgs>
+  discussionVotes?: boolean | Prisma.User$discussionVotesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2339,6 +2829,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     codingProblems: Prisma.$CodingProblemPayload<ExtArgs>[]
     codingSubmissions: Prisma.$CodingSubmissionPayload<ExtArgs>[]
     codingDrafts: Prisma.$CodingDraftPayload<ExtArgs>[]
+    discussionPosts: Prisma.$DiscussionPostPayload<ExtArgs>[]
+    discussionVotes: Prisma.$DiscussionVotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2356,6 +2848,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string | null
     avatarUrl: string | null
     role: $Enums.Role
+    /**
+     * Free text shown on the public profile at /u/<username>. Null for an
+     * account that has never written one; the profile omits the line rather
+     * than printing a placeholder.
+     */
+    bio: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2764,6 +3262,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   codingProblems<T extends Prisma.User$codingProblemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codingProblemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodingProblemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   codingSubmissions<T extends Prisma.User$codingSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codingSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodingSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   codingDrafts<T extends Prisma.User$codingDraftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$codingDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CodingDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionPosts<T extends Prisma.User$discussionPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionVotes<T extends Prisma.User$discussionVotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionVotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2802,6 +3302,7 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
+  readonly bio: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -3477,6 +3978,54 @@ export type User$codingDraftsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.CodingDraftScalarFieldEnum | Prisma.CodingDraftScalarFieldEnum[]
+}
+
+/**
+ * User.discussionPosts
+ */
+export type User$discussionPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionPost
+   */
+  select?: Prisma.DiscussionPostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionPost
+   */
+  omit?: Prisma.DiscussionPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionPostInclude<ExtArgs> | null
+  where?: Prisma.DiscussionPostWhereInput
+  orderBy?: Prisma.DiscussionPostOrderByWithRelationInput | Prisma.DiscussionPostOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionPostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionPostScalarFieldEnum | Prisma.DiscussionPostScalarFieldEnum[]
+}
+
+/**
+ * User.discussionVotes
+ */
+export type User$discussionVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionVote
+   */
+  select?: Prisma.DiscussionVoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionVote
+   */
+  omit?: Prisma.DiscussionVoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionVoteInclude<ExtArgs> | null
+  where?: Prisma.DiscussionVoteWhereInput
+  orderBy?: Prisma.DiscussionVoteOrderByWithRelationInput | Prisma.DiscussionVoteOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionVoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionVoteScalarFieldEnum | Prisma.DiscussionVoteScalarFieldEnum[]
 }
 
 /**

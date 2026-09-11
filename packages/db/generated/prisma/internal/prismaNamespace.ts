@@ -398,6 +398,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  DiscussionPost: 'DiscussionPost',
+  DiscussionVote: 'DiscussionVote',
   EmailVerificationToken: 'EmailVerificationToken',
   Session: 'Session',
   BlogPost: 'BlogPost',
@@ -432,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "emailVerificationToken" | "session" | "blogPost" | "tutorialTrack" | "tutorialSection" | "tutorialPage" | "puzzle" | "puzzleAttempt" | "puzzleProgress" | "project" | "featuredCircuit" | "diagramPreset" | "clap" | "tutorialProgress" | "quizAttempt" | "userPreference" | "codingProblem" | "codingSubmission" | "codingDraft"
+    modelProps: "user" | "discussionPost" | "discussionVote" | "emailVerificationToken" | "session" | "blogPost" | "tutorialTrack" | "tutorialSection" | "tutorialPage" | "puzzle" | "puzzleAttempt" | "puzzleProgress" | "project" | "featuredCircuit" | "diagramPreset" | "clap" | "tutorialProgress" | "quizAttempt" | "userPreference" | "codingProblem" | "codingSubmission" | "codingDraft"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -507,6 +509,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscussionPost: {
+      payload: Prisma.$DiscussionPostPayload<ExtArgs>
+      fields: Prisma.DiscussionPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscussionPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscussionPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscussionPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscussionPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        findMany: {
+          args: Prisma.DiscussionPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>[]
+        }
+        create: {
+          args: Prisma.DiscussionPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        createMany: {
+          args: Prisma.DiscussionPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscussionPostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscussionPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        update: {
+          args: Prisma.DiscussionPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscussionPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscussionPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscussionPostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscussionPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionPostPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscussionPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscussionPost>
+        }
+        groupBy: {
+          args: Prisma.DiscussionPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscussionPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscussionVote: {
+      payload: Prisma.$DiscussionVotePayload<ExtArgs>
+      fields: Prisma.DiscussionVoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscussionVoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscussionVoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>
+        }
+        findFirst: {
+          args: Prisma.DiscussionVoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscussionVoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>
+        }
+        findMany: {
+          args: Prisma.DiscussionVoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>[]
+        }
+        create: {
+          args: Prisma.DiscussionVoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>
+        }
+        createMany: {
+          args: Prisma.DiscussionVoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscussionVoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>[]
+        }
+        delete: {
+          args: Prisma.DiscussionVoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>
+        }
+        update: {
+          args: Prisma.DiscussionVoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscussionVoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscussionVoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscussionVoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscussionVoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscussionVotePayload>
+        }
+        aggregate: {
+          args: Prisma.DiscussionVoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscussionVote>
+        }
+        groupBy: {
+          args: Prisma.DiscussionVoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionVoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscussionVoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscussionVoteCountAggregateOutputType> | number
         }
       }
     }
@@ -1965,11 +2115,37 @@ export const UserScalarFieldEnum = {
   name: 'name',
   avatarUrl: 'avatarUrl',
   role: 'role',
+  bio: 'bio',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const DiscussionPostScalarFieldEnum = {
+  id: 'id',
+  targetKind: 'targetKind',
+  targetSlug: 'targetSlug',
+  authorId: 'authorId',
+  title: 'title',
+  body: 'body',
+  code: 'code',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiscussionPostScalarFieldEnum = (typeof DiscussionPostScalarFieldEnum)[keyof typeof DiscussionPostScalarFieldEnum]
+
+
+export const DiscussionVoteScalarFieldEnum = {
+  postId: 'postId',
+  voterId: 'voterId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscussionVoteScalarFieldEnum = (typeof DiscussionVoteScalarFieldEnum)[keyof typeof DiscussionVoteScalarFieldEnum]
 
 
 export const EmailVerificationTokenScalarFieldEnum = {
@@ -2347,6 +2523,20 @@ export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'ContentKind'
+ */
+export type EnumContentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentKind'>
+    
+
+
+/**
+ * Reference to a field of type 'ContentKind[]'
+ */
+export type ListEnumContentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -2420,20 +2610,6 @@ export type EnumFeaturedPlacementFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'FeaturedPlacement[]'
  */
 export type ListEnumFeaturedPlacementFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeaturedPlacement[]'>
-    
-
-
-/**
- * Reference to a field of type 'ContentKind'
- */
-export type EnumContentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentKind'>
-    
-
-
-/**
- * Reference to a field of type 'ContentKind[]'
- */
-export type ListEnumContentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentKind[]'>
     
 
 
@@ -2616,6 +2792,8 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  discussionPost?: Prisma.DiscussionPostOmit
+  discussionVote?: Prisma.DiscussionVoteOmit
   emailVerificationToken?: Prisma.EmailVerificationTokenOmit
   session?: Prisma.SessionOmit
   blogPost?: Prisma.BlogPostOmit

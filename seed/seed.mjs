@@ -130,8 +130,20 @@ async function main() {
   // is self-contained - so they go last, where a failure cannot leave anything
   // else half-seeded.
   await seedResource("practices", path.join(here, "practices"), "/api/practices", seedHeaders());
+  // Discussions last. Each file names its author by handle, and those accounts
+  // are created by `pnpm community:seed` - run that first or every thread here
+  // fails with "Unknown author", which is the intended loud failure: a thread
+  // silently reattributed to the admin would be worse than none.
+  await seedResource(
+    "discussions",
+    path.join(here, "discussions"),
+    "/api/community/discussions/threads",
+    seedHeaders(),
+  );
 
-  console.log(`\nDone. Visit ${base}/blog, ${base}/tutorials, ${base}/puzzles, and ${base}/practices`);
+  console.log(
+    `\nDone. Visit ${base}/blog, ${base}/tutorials, ${base}/puzzles, ${base}/practices and ${base}/community/discussions`,
+  );
 }
 
 main().catch((err) => {

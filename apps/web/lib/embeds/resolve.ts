@@ -122,7 +122,10 @@ function resolveWidget(key: string, data: Record<string, unknown> | undefined): 
   return {
     title: data && typeof data.title === "string" ? data.title : key,
     content: { render: "widget", widget: key, data: data ?? {} },
-    sourceHref: "/embeds",
+    // The embedding reference is a section of /tools now. Pointing at the old
+    // /embeds route still works, but it would send every oEmbed consumer
+    // through a 308 first.
+    sourceHref: "/tools#embeds",
     height: DEFAULT_HEIGHT,
   };
 }

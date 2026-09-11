@@ -1,0 +1,19 @@
+{
+  "slug": "does-python-have-tail-call-optimisation",
+  "title": "Does Python do tail-call optimisation? (no, and here is what to do instead)",
+  "author": "tail_recursive",
+  "createdAt": "2026-09-08T12:30:00.000Z",
+  "body": "Short answer: no, and it is not an oversight. Guido has written about it more than once. The reasons given are that it breaks tracebacks, and that it makes a function's stack behaviour depend on whether a call happens to be in tail position, which is invisible at the call site.\n\nSo if you've written something like this and it dies at 1000 frames:\n\n```python\ndef walk(node, acc):\n    if node is None:\n        return acc\n    return walk(node.next, acc + [node.val])\n```\n\nThe options, roughly in the order I'd reach for them:\n\n1. **Just write the loop.** Genuinely. A tail-recursive function is a loop wearing a hat.\n2. **Explicit stack** if the recursion isn't tail-shaped (tree traversal, backtracking). You manage a list instead of the call stack and you can make it as deep as memory allows.\n3. `sys.setrecursionlimit` — only as a last resort and know that it does not grow the actual C stack, so you trade a clean exception for a possible hard crash.\n4. A trampoline, if you're committed to the functional style. Return a thunk instead of recursing and drive it from a loop.\n\nFor the example above the loop is four lines and faster.",
+  "replies": [
+    {
+      "author": "off_by_one",
+      "createdAt": "2026-09-08T15:22:00.000Z",
+      "body": "the `acc + [node.val]` in that example is its own problem btw, that's quadratic. building a new list every frame. `acc.append(...)` or just collect in the loop."
+    },
+    {
+      "author": "midnight_compiler",
+      "createdAt": "2026-09-09T09:11:00.000Z",
+      "body": "Worth adding that this is a language-implementation choice, not a fact about recursion. Scheme *requires* proper tail calls in the standard. JS specified them in ES6 and then basically only Safari shipped it. C compilers do it as an optimisation at -O2 but you can't rely on it.\n\nSo \"is this tail recursive\" is a meaningful question about your code, and \"will it be optimised\" is a separate question about your runtime."
+    }
+  ]
+}

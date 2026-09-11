@@ -1,0 +1,24 @@
+{
+  "slug": "why-is-unordered-map-so-slow-here",
+  "title": "Why is std::unordered_map losing to a sorted vector on 200k lookups?",
+  "author": "segfaulter",
+  "createdAt": "2026-09-04T13:02:00.000Z",
+  "body": "Benchmarked two versions of the same thing and the O(log n) one won. I've read the \"cache locality\" answer a hundred times but I want to know how much of it is that vs something else.\n\n```cpp\n// version A: ~340ms\nstd::unordered_map<int, int> m;\nfor (int k : keys) total += m[k];\n\n// version B: ~120ms\nstd::sort(v.begin(), v.end());\nfor (int k : keys) total += std::lower_bound(v.begin(), v.end(), k)->second;\n```\n\n200k entries, 200k lookups, random int keys, `-O2`.\n\nMy guess is that every `unordered_map` lookup is a pointer chase into a node allocated somewhere unrelated, so it's a guaranteed cache miss, while the binary search touches maybe 4-5 cache lines and the top of the tree stays hot. But 3x seems like a lot.",
+  "replies": [
+    {
+      "author": "midnight_compiler",
+      "createdAt": "2026-09-04T15:30:00.000Z",
+      "body": "Your guess is right and 3x is normal. The standard basically mandates a bad layout: `unordered_map` is required to have stable references and bucket iteration, which forces separate chaining with individually allocated nodes. Every single lookup is at minimum one miss on the bucket array and one on the node.\n\nTwo other things eating you:\n\n1. `m[k]` is not a lookup, it's an insert-if-missing. It has to be non-const and it can rehash. Use `m.find(k)` if you're only reading.\n2. The default hash for `int` in libstdc++ is identity. If your keys have any structure you get clustering for free.\n\nIf you want a real hash map, `absl::flat_hash_map` or `ankerl::unordered_dense` are open-addressed and usually beat the sorted vector back."
+    },
+    {
+      "author": "off_by_one",
+      "createdAt": "2026-09-05T07:44:00.000Z",
+      "body": "Also: if the keys are known up front and you never insert after, the sorted vector is just the correct data structure. \"Hash map for lookups\" is a reflex, not a rule.\n\nThe crossover in my testing is somewhere around a few thousand elements *if* you're doing mixed insert/lookup. Read-only, the vector wins basically forever."
+    },
+    {
+      "author": "nandhole",
+      "createdAt": "2026-09-05T10:10:00.000Z",
+      "body": "worth timing the sort separately btw. if you're paying 80ms to sort so you can save 220ms on lookups that's still a win here, but it flips if you only do a handful of lookups."
+    }
+  ]
+}

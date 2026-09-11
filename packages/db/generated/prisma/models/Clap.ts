@@ -406,10 +406,6 @@ export type ClapSumOrderByAggregateInput = {
   count?: Prisma.SortOrder
 }
 
-export type EnumContentKindFieldUpdateOperationsInput = {
-  set?: $Enums.ContentKind
-}
-
 
 
 export type ClapSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{

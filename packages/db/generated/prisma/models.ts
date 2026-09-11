@@ -9,6 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/DiscussionPost'
+export type * from './models/DiscussionVote'
 export type * from './models/EmailVerificationToken'
 export type * from './models/Session'
 export type * from './models/BlogPost'

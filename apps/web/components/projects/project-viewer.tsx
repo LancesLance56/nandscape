@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactFlowProvider } from "@xyflow/react";
 import { CircuitStage } from "@/components/content/blocks/circuit/circuit-stage";
@@ -53,11 +54,22 @@ export function ProjectViewer({
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h1 className="font-display text-xl font-bold text-ink">{project.name}</h1>
-          <p className=" text-xs text-slate">by {project.ownerUsername}</p>
+          <p className=" text-xs text-slate">
+            by{" "}
+            <Link href={`/u/${project.ownerUsername}`} className="hover:text-copper-dark">
+              {project.ownerUsername}
+            </Link>
+          </p>
           {project.description && <p className="mt-1.5 max-w-2xl text-sm text-ink-soft">{project.description}</p>}
         </div>
         <div className="flex shrink-0 items-start gap-2">
           {error && <span className="text-xs text-signal-coral">{error}</span>}
+          <Link
+            href={`/discuss/project/${project.slug}`}
+            className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+          >
+            Discuss
+          </Link>
           <EmbedBuilder target={{ kind: "circuit", id: project.slug }} title={project.name} defaultHeight={420} />
           {canFork && (
             <button

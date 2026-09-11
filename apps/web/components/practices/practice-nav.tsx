@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, List } from "lucide-react";
+import { ChevronLeft, List, MessagesSquare } from "lucide-react";
 import { Logo } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthStatus } from "@/components/auth-status";
@@ -20,7 +20,16 @@ import { AuthStatus } from "@/components/auth-status";
  * 3rem tall, full-bleed, and a server component - it holds no state of its own,
  * unlike the main navbar with its mobile dropdown.
  */
-export function PracticeNav({ problemTitle }: { problemTitle?: string }) {
+export function PracticeNav({
+  problemTitle,
+  discussSlug,
+  discussCount,
+}: {
+  problemTitle?: string;
+  /** Given on a problem page, which puts a Discuss link in the bar. */
+  discussSlug?: string;
+  discussCount?: number;
+}) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-12 border-b border-border bg-surface/95 backdrop-blur-md">
       <nav className="flex h-12 w-full items-center gap-3 px-4">
@@ -58,6 +67,19 @@ export function PracticeNav({ problemTitle }: { problemTitle?: string }) {
         )}
 
         <div className="ml-auto flex shrink-0 items-center gap-3">
+          {/* The discussion is a page of its own rather than a pane in here:
+              this workspace is locked to the viewport and its two panes each
+              scroll separately, so an article column has nowhere to go. */}
+          {discussSlug && (
+            <Link
+              href={`/discuss/practice/${discussSlug}`}
+              className="flex items-center gap-1.5 text-sm text-ink-soft transition-colors hover:text-ink"
+            >
+              <MessagesSquare className="h-3.5 w-3.5 shrink-0" />
+              <span className="hidden sm:inline">Discuss</span>
+              {discussCount ? <span className="font-mono text-xs text-slate">{discussCount}</span> : null}
+            </Link>
+          )}
           <ThemeToggle />
           <AuthStatus variant="inline" />
         </div>

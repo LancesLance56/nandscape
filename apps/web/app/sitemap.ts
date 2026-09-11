@@ -6,6 +6,7 @@ import { listTutorialTracks, listTutorialTrackTrees } from "@/lib/tutorials/tuto
 import { TOOLS, toolHref } from "@/lib/tools/tools";
 import { listPuzzleRecords } from "@/lib/puzzles/puzzle-records";
 import { listPublicProjects } from "@/lib/projects/projects";
+import { listActiveThreads } from "@/lib/community/discussions";
 
 // Same freshness window the listing pages themselves use (see e.g.
 // app/page.tsx) - the sitemap shouldn't need to be more up to date than the
@@ -20,11 +21,10 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
   { path: "/tutorials", changeFrequency: "weekly", priority: 0.8 },
   { path: "/blog", changeFrequency: "daily", priority: 0.8 },
   { path: "/community", changeFrequency: "daily", priority: 0.6 },
+  { path: "/community/circuits", changeFrequency: "daily", priority: 0.6 },
+  { path: "/community/leaderboard", changeFrequency: "daily", priority: 0.5 },
+  { path: "/community/discussions", changeFrequency: "daily", priority: 0.7 },
   { path: "/tools", changeFrequency: "monthly", priority: 0.9 },
-  // The embed URLs themselves are noindex (they're the same content as the
-  // page they came from), but the page *about* embedding is a landing page in
-  // its own right and the thing worth ranking.
-  { path: "/embeds", changeFrequency: "monthly", priority: 0.8 },
   { path: "/about", changeFrequency: "yearly", priority: 0.4 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.3 },
 ];
@@ -41,14 +41,16 @@ const STATIC_ROUTES: { path: string; changeFrequency: MetadataRoute.Sitemap[numb
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
 
-  const [posts, tutorialPages, tutorialTracks, trackTrees, puzzleRecords, publicProjects] = await Promise.all([
-    listPublishedPosts().catch(() => []),
-    listPublishedTutorialPages().catch(() => []),
-    listTutorialTracks().catch(() => []),
-    listTutorialTrackTrees().catch(() => []),
-    listPuzzleRecords().catch(() => []),
-    listPublicProjects().catch(() => []),
-  ]);
+  const [posts, tutorialPages, tutorialTracks, trackTrees, puzzleRecords, publicProjects, threads] =
+    await Promise.all([
+      listPublishedPosts().catch(() => []),
+      listPublishedTutorialPages().catch(() => []),
+      listTutorialTracks().catch(() => []),
+      listTutorialTrackTrees().catch(() => []),
+      listPuzzleRecords().catch(() => []),
+      listPublicProjects().catch(() => []),
+      listActiveThreads(500).catch(() => []),
+    ]);
 
   // page slug -> its track slug, so each lesson can be listed at its
   // canonical nested URL rather than the legacy flat one (which redirects).
@@ -123,6 +125,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
+  // Profiles of people who have published something, derived from the public
+  // projects already fetched above rather than from a users query - an account
+  // with nothing public on it is a thin page, and listing every signup would
+  // also quietly turn the sitemap into a member directory.
+  const profileEntries: MetadataRoute.Sitemap = [
+    ...new Set(publicProjects.map((project) => project.ownerUsername)),
+  ].map((username) => ({
+    url: `${base}/u/${username}`,
+    changeFrequency: "weekly",
+    priority: 0.4,
+  }));
+
+  // Discussions are reader-written pages that answer a specific question,
+  // which is exactly the shape that earns long-tail search traffic.
+  const threadEntries: MetadataRoute.Sitemap = threads.map((thread) => ({
+    url: `${base}${thread.href}`,
+    lastModified: new Date(thread.lastActivity),
+    changeFrequency: "weekly",
+    priority: 0.5,
+  }));
+
   return [
     ...staticEntries,
     ...postEntries,
@@ -131,5 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...tutorialEntries,
     ...puzzleEntries,
     ...projectEntries,
+    ...threadEntries,
+    ...profileEntries,
   ];
 }

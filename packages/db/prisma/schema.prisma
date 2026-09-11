@@ -22,6 +22,10 @@ model User {
   name                    String?
   avatarUrl               String?
   role                    Role                     @default(USER)
+  /// Free text shown on the public profile at /u/<username>. Null for an
+  /// account that has never written one; the profile omits the line rather
+  /// than printing a placeholder.
+  bio                     String?
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
   puzzles                 Puzzle[]
@@ -36,8 +40,69 @@ model User {
   codingProblems          CodingProblem[]
   codingSubmissions       CodingSubmission[]
   codingDrafts            CodingDraft[]
+  discussionPosts         DiscussionPost[]
+  discussionVotes         DiscussionVote[]
 
   @@index([email])
+}
+
+/// One post in a discussion.
+///
+/// A discussion is addressed by `targetKind` + `targetSlug` - the same
+/// addressing `Clap` already uses, which is why `ContentKind` grew rather than
+/// a second enum appearing. Most discussions hang off a piece of content: a
+/// problem, a lesson, a circuit or an article. `GENERAL` is the exception, and
+/// its slug is the thread's own, so a standalone discussion is the same row
+/// shape as an attached one rather than a second table.
+///
+/// `code` is separate from `body` rather than being fenced inside it, because
+/// the two are revealed differently: prose always shows, and code sits behind
+/// a click so a problem page cannot spoil itself for someone still working.
+/// Fencing would mean parsing Markdown to decide what to hide.
+///
+/// Replies are one level deep. `parentId` pointing at the same table allows
+/// arbitrary nesting, but the reader only ever renders children of a top-level
+/// post - unbounded nesting is a threading UI, not a comment section.
+model DiscussionPost {
+  id         String           @id @default(cuid())
+  targetKind ContentKind
+  targetSlug String           @map("target_slug")
+  authorId   String           @map("author_id")
+  author     User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  /// Set on the opening post of a GENERAL thread, which has no content page to
+  /// borrow a heading from. Null everywhere else, including on every reply.
+  title      String?
+  /// Markdown. Rendered with the same component the rest of the site uses, so
+  /// a discussion post and a problem statement support exactly the same
+  /// syntax - there is no second dialect to document.
+  body       String
+  code       String?
+  parentId   String?          @map("parent_id")
+  parent     DiscussionPost?  @relation("DiscussionReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    DiscussionPost[] @relation("DiscussionReplies")
+  votes      DiscussionVote[]
+  createdAt  DateTime         @default(now()) @map("created_at")
+  updatedAt  DateTime         @updatedAt @map("updated_at")
+
+  @@index([targetKind, targetSlug])
+  @@index([authorId])
+  @@index([parentId])
+  @@map("discussion_posts")
+}
+
+/// One upvote. The composite primary key *is* the "one vote per person per
+/// post" rule, so there is no separate unique constraint and no way to write a
+/// duplicate - unlike Clap, which counts repeat applause on purpose.
+model DiscussionVote {
+  postId    String         @map("post_id")
+  voterId   String         @map("voter_id")
+  createdAt DateTime       @default(now()) @map("created_at")
+  post      DiscussionPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  voter     User           @relation(fields: [voterId], references: [id], onDelete: Cascade)
+
+  @@id([postId, voterId])
+  @@index([voterId])
+  @@map("discussion_votes")
 }
 
 model EmailVerificationToken {
@@ -341,9 +406,17 @@ enum Difficulty {
 /// because tutorial pages and blog posts are addressed by slug everywhere else
 /// in the app, and a clap should survive a post being re-seeded (which is a
 /// delete plus an insert, and so a new id).
+/// What a clap or a discussion is attached to. Claps only ever name the first
+/// two; the rest exist because a discussion hangs off any piece of content.
+/// GENERAL is the one that is attached to nothing - a standalone thread, which
+/// carries its own title and its own slug.
 enum ContentKind {
   BLOG
   TUTORIAL
+  PRACTICE
+  PROJECT
+  PUZZLE
+  GENERAL
 }
 
 /// Medium-style applause, countable and available to signed-out readers.
