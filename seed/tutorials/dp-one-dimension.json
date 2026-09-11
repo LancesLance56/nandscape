@@ -1,9 +1,9 @@
 {
   "slug": "dp-one-dimension",
-  "title": "Problems That Fit in One Row",
+  "title": "One Dimensional Dynamic Programming",
   "excerpt": "Three classic problems, one row of cells each. The recurrence usually falls out in a line once the state is right, and choosing the state is where all the thinking actually goes.",
   "authorName": "Lance Dy Chua",
-  "status": "published",
+  "status": "draft",
   "publishedAt": "2026-08-20T11:00:00Z",
   "tags": [
     "dynamic-programming",

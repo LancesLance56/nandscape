@@ -4,7 +4,7 @@
   "excerpt": "Binary searching a partition instead of a value: how to find the median of two sorted arrays without merging them, and why the sentinels remove every edge case.",
   "authorName": "Nandscape",
   "status": "published",
-  "publishedAt": "2026-09-04T00:00:00.000Z",
+  "publishedAt": "2026-09-04T00:00:00Z",
   "tags": [
     "binary search",
     "arrays",
@@ -52,8 +52,8 @@
     },
     {
       "id": "c-3",
-      "type": "callout",
       "tone": "note",
+      "type": "callout",
       "title": "Key takeaways",
       "content": [
         {
@@ -63,9 +63,9 @@
     },
     {
       "id": "h-5",
+      "text": "What the median actually requires",
       "type": "heading",
-      "level": 2,
-      "text": "What the median actually requires"
+      "level": 2
     },
     {
       "id": "p-6",
@@ -143,7 +143,6 @@
     {
       "id": "l-8",
       "type": "list",
-      "ordered": true,
       "items": [
         [
           {
@@ -155,7 +154,8 @@
             "text": "Nothing on the left exceeds anything on the right: a[i-1] <= b[j] and b[j-1] <= a[i]."
           }
         ]
-      ]
+      ],
+      "ordered": true
     },
     {
       "id": "p-11",
@@ -201,8 +201,8 @@
     },
     {
       "id": "c-12",
-      "type": "callout",
       "tone": "important",
+      "type": "callout",
       "title": "Why (n + m + 1) / 2 and not (n + m) / 2",
       "content": [
         {
@@ -234,9 +234,9 @@
     },
     {
       "id": "h-14",
+      "text": "Searching the cut",
       "type": "heading",
-      "level": 2,
-      "text": "Searching the cut"
+      "level": 2
     },
     {
       "id": "p-15",
@@ -283,7 +283,6 @@
     {
       "id": "l-16",
       "type": "list",
-      "ordered": false,
       "items": [
         [
           {
@@ -300,7 +299,8 @@
             "text": "Otherwise the cut is valid and the answer reads straight off it."
           }
         ]
-      ]
+      ],
+      "ordered": false
     },
     {
       "id": "p-20",
@@ -387,9 +387,9 @@
     },
     {
       "id": "h-21",
+      "text": "The sentinels are the whole trick",
       "type": "heading",
-      "level": 2,
-      "text": "The sentinels are the whole trick"
+      "level": 2
     },
     {
       "id": "p-22",
@@ -466,12 +466,6 @@
     },
     {
       "id": "t-24",
-      "type": "table",
-      "headers": [
-        "Position",
-        "Stands in for",
-        "Why it is correct"
-      ],
       "rows": [
         [
           "a[i-1] when i = 0",
@@ -494,7 +488,13 @@
           "Same reasoning on the other array"
         ]
       ],
-      "caption": "With these, an empty array is just an array whose cut is trivially at both ends."
+      "type": "table",
+      "caption": "With these, an empty array is just an array whose cut is trivially at both ends.",
+      "headers": [
+        "Position",
+        "Stands in for",
+        "Why it is correct"
+      ]
     },
     {
       "id": "p-25",
@@ -562,9 +562,9 @@
     },
     {
       "id": "h-26",
+      "text": "Walking through an example",
       "type": "heading",
-      "level": 2,
-      "text": "Walking through an example"
+      "level": 2
     },
     {
       "id": "p-27",
@@ -596,14 +596,6 @@
     },
     {
       "id": "t-28",
-      "type": "table",
-      "headers": [
-        "i",
-        "j = 4 − i",
-        "left of a / b",
-        "right of a / b",
-        "verdict"
-      ],
       "rows": [
         [
           "1",
@@ -627,44 +619,46 @@
           "8 ≤ 9 and 7 ≤ +∞ → valid"
         ]
       ],
-      "caption": "Odd total, so the answer is max(8, 7) = 8."
+      "type": "table",
+      "caption": "Odd total, so the answer is max(8, 7) = 8.",
+      "headers": [
+        "i",
+        "j = 4 − i",
+        "left of a / b",
+        "right of a / b",
+        "verdict"
+      ]
     },
     {
       "id": "h-29",
+      "text": "The code",
       "type": "heading",
-      "level": 2,
-      "text": "The code"
+      "level": 2
     },
     {
       "id": "code-30",
+      "code": "def find_median(a, b):\n    # Search the shorter array so the forced cut j always lands inside b.\n    if len(a) > len(b):\n        a, b = b, a\n\n    n, m = len(a), len(b)\n    half = (n + m + 1) // 2      # +1 leaves the odd extra on the left\n    low, high = 0, n             # inclusive: cutting at either end is legal\n\n    while low <= high:\n        i = (low + high) // 2    # a[:i] goes left\n        j = half - i             # forced by the half-size rule\n\n        # Sentinels remove every empty-array and end-of-array special case.\n        a_left = a[i - 1] if i > 0 else float('-inf')\n        a_right = a[i] if i < n else float('inf')\n        b_left = b[j - 1] if j > 0 else float('-inf')\n        b_right = b[j] if j < m else float('inf')\n\n        if a_left <= b_right and b_left <= a_right:\n            if (n + m) % 2 == 1:\n                return float(max(a_left, b_left))\n            return (max(a_left, b_left) + min(a_right, b_right)) / 2.0\n\n        if a_left > b_right:\n            high = i - 1         # too many of a on the left\n        else:\n            low = i + 1\n\n    return 0.0                   # unreachable for valid input\n",
       "type": "code",
       "language": "python",
-      "code": "def find_median(a, b):\n    # Search the shorter array so the forced cut j always lands inside b.\n    if len(a) > len(b):\n        a, b = b, a\n\n    n, m = len(a), len(b)\n    half = (n + m + 1) // 2      # +1 leaves the odd extra on the left\n    low, high = 0, n             # inclusive: cutting at either end is legal\n\n    while low <= high:\n        i = (low + high) // 2    # a[:i] goes left\n        j = half - i             # forced by the half-size rule\n\n        # Sentinels remove every empty-array and end-of-array special case.\n        a_left = a[i - 1] if i > 0 else float('-inf')\n        a_right = a[i] if i < n else float('inf')\n        b_left = b[j - 1] if j > 0 else float('-inf')\n        b_right = b[j] if j < m else float('inf')\n\n        if a_left <= b_right and b_left <= a_right:\n            if (n + m) % 2 == 1:\n                return float(max(a_left, b_left))\n            return (max(a_left, b_left) + min(a_right, b_right)) / 2.0\n\n        if a_left > b_right:\n            high = i - 1         # too many of a on the left\n        else:\n            low = i + 1\n\n    return 0.0                   # unreachable for valid input\n",
       "variants": [
         {
-          "language": "javascript",
-          "code": "function findMedian(a, b) {\n  // Search the shorter array so the forced cut j always lands inside b.\n  if (a.length > b.length) [a, b] = [b, a];\n\n  const n = a.length;\n  const m = b.length;\n  const half = Math.floor((n + m + 1) / 2);\n  let low = 0;\n  let high = n;\n\n  while (low <= high) {\n    const i = Math.floor((low + high) / 2);\n    const j = half - i;\n\n    const aLeft = i > 0 ? a[i - 1] : -Infinity;\n    const aRight = i < n ? a[i] : Infinity;\n    const bLeft = j > 0 ? b[j - 1] : -Infinity;\n    const bRight = j < m ? b[j] : Infinity;\n\n    if (aLeft <= bRight && bLeft <= aRight) {\n      if ((n + m) % 2 === 1) return Math.max(aLeft, bLeft);\n      return (Math.max(aLeft, bLeft) + Math.min(aRight, bRight)) / 2;\n    }\n\n    if (aLeft > bRight) high = i - 1;\n    else low = i + 1;\n  }\n\n  return 0;\n}\n"
+          "code": "function findMedian(a, b) {\n  // Search the shorter array so the forced cut j always lands inside b.\n  if (a.length > b.length) [a, b] = [b, a];\n\n  const n = a.length;\n  const m = b.length;\n  const half = Math.floor((n + m + 1) / 2);\n  let low = 0;\n  let high = n;\n\n  while (low <= high) {\n    const i = Math.floor((low + high) / 2);\n    const j = half - i;\n\n    const aLeft = i > 0 ? a[i - 1] : -Infinity;\n    const aRight = i < n ? a[i] : Infinity;\n    const bLeft = j > 0 ? b[j - 1] : -Infinity;\n    const bRight = j < m ? b[j] : Infinity;\n\n    if (aLeft <= bRight && bLeft <= aRight) {\n      if ((n + m) % 2 === 1) return Math.max(aLeft, bLeft);\n      return (Math.max(aLeft, bLeft) + Math.min(aRight, bRight)) / 2;\n    }\n\n    if (aLeft > bRight) high = i - 1;\n    else low = i + 1;\n  }\n\n  return 0;\n}\n",
+          "language": "javascript"
         },
         {
-          "language": "cpp",
-          "code": "double findMedian(std::vector<long long> a, std::vector<long long> b) {\n    if (a.size() > b.size()) std::swap(a, b);\n\n    const long long n = (long long)a.size();\n    const long long m = (long long)b.size();\n    const long long half = (n + m + 1) / 2;\n\n    // Integer sentinels rather than floating infinities, so no value in range\n    // can ever compare equal to one of them.\n    const long long NEG = std::numeric_limits<long long>::min();\n    const long long POS = std::numeric_limits<long long>::max();\n\n    long long low = 0, high = n;\n    while (low <= high) {\n        long long i = (low + high) / 2;\n        long long j = half - i;\n\n        long long aLeft  = (i > 0) ? a[(std::size_t)(i - 1)] : NEG;\n        long long aRight = (i < n) ? a[(std::size_t)i]       : POS;\n        long long bLeft  = (j > 0) ? b[(std::size_t)(j - 1)] : NEG;\n        long long bRight = (j < m) ? b[(std::size_t)j]       : POS;\n\n        if (aLeft <= bRight && bLeft <= aRight) {\n            if ((n + m) % 2 == 1) return (double)std::max(aLeft, bLeft);\n            return ((double)std::max(aLeft, bLeft) +\n                    (double)std::min(aRight, bRight)) / 2.0;\n        }\n\n        if (aLeft > bRight) high = i - 1;\n        else low = i + 1;\n    }\n\n    return 0.0;\n}\n"
+          "code": "double findMedian(std::vector<long long> a, std::vector<long long> b) {\n    if (a.size() > b.size()) std::swap(a, b);\n\n    const long long n = (long long)a.size();\n    const long long m = (long long)b.size();\n    const long long half = (n + m + 1) / 2;\n\n    // Integer sentinels rather than floating infinities, so no value in range\n    // can ever compare equal to one of them.\n    const long long NEG = std::numeric_limits<long long>::min();\n    const long long POS = std::numeric_limits<long long>::max();\n\n    long long low = 0, high = n;\n    while (low <= high) {\n        long long i = (low + high) / 2;\n        long long j = half - i;\n\n        long long aLeft  = (i > 0) ? a[(std::size_t)(i - 1)] : NEG;\n        long long aRight = (i < n) ? a[(std::size_t)i]       : POS;\n        long long bLeft  = (j > 0) ? b[(std::size_t)(j - 1)] : NEG;\n        long long bRight = (j < m) ? b[(std::size_t)j]       : POS;\n\n        if (aLeft <= bRight && bLeft <= aRight) {\n            if ((n + m) % 2 == 1) return (double)std::max(aLeft, bLeft);\n            return ((double)std::max(aLeft, bLeft) +\n                    (double)std::min(aRight, bRight)) / 2.0;\n        }\n\n        if (aLeft > bRight) high = i - 1;\n        else low = i + 1;\n    }\n\n    return 0.0;\n}\n",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-31",
+      "text": "Complexity",
       "type": "heading",
-      "level": 2,
-      "text": "Complexity"
+      "level": 2
     },
     {
       "id": "t-32",
-      "type": "table",
-      "headers": [
-        "Approach",
-        "Time",
-        "Space"
-      ],
       "rows": [
         [
           "Concatenate and sort",
@@ -681,6 +675,12 @@
           "O(log(min(n, m)))",
           "O(1)"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Approach",
+        "Time",
+        "Space"
       ]
     },
     {
@@ -727,14 +727,13 @@
     },
     {
       "id": "h-34",
+      "text": "The mistakes that actually happen",
       "type": "heading",
-      "level": 2,
-      "text": "The mistakes that actually happen"
+      "level": 2
     },
     {
       "id": "l-35",
       "type": "list",
-      "ordered": false,
       "items": [
         [
           {
@@ -761,12 +760,13 @@
             "text": "Returning an integer. With an even total the median can be a half-integer, so the return type has to be floating point."
           }
         ]
-      ]
+      ],
+      "ordered": false
     },
     {
       "id": "c-41",
-      "type": "callout",
       "tone": "tip",
+      "type": "callout",
       "title": "Try it first",
       "content": [
         {
@@ -776,8 +776,8 @@
           "text": "/practices/median-two-sorted-arrays",
           "marks": [
             {
-              "kind": "link",
-              "href": "/practices/median-two-sorted-arrays"
+              "href": "/practices/median-two-sorted-arrays",
+              "kind": "link"
             }
           ]
         },

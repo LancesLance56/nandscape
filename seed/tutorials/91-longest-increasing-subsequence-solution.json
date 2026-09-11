@@ -4,7 +4,7 @@
   "excerpt": "The patience-sorting solution to LIS: why the tails array works, why its contents are not the answer, and how binary search replaces the quadratic scan.",
   "authorName": "Nandscape",
   "status": "published",
-  "publishedAt": "2026-09-04T00:00:00.000Z",
+  "publishedAt": "2026-09-04T00:00:00Z",
   "tags": [
     "dynamic programming",
     "binary search",
@@ -27,7 +27,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Given an array, find the length of the longest strictly increasing subsequence — a set of values that appear in order, though not necessarily next to each other. In "
+          "text": "Given an array, find the length of the longest strictly increasing subsequence, the set of values that appear in order, though not necessarily next to each other. In "
         },
         {
           "text": "[10, 9, 2, 5, 3, 7, 101, 18]",
@@ -58,15 +58,26 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The quadratic solution is the one most people reach first, and it is correct. This page is about the one that is not obvious: an O(n log n) method that maintains an array whose contents are, at almost every step, not a subsequence of the input at all — and whose length is nevertheless always the right answer."
+          "text": "It's easy to come up with a quadratic solution using two for loops, but there exists an "
+        },
+        {
+          "text": "O(n log n)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " solution."
         }
       ]
     },
     {
       "id": "c-3",
-      "type": "callout",
       "tone": "note",
-      "title": "Key takeaways",
+      "type": "callout",
+      "title": "Key Observation",
       "content": [
         {
           "text": "The O(n²) dynamic program asks \"what is the longest run ending here?\" and rescans everything before it. The faster method inverts the question to \"for each length, what is the smallest value a run of that length can end on?\" That array is sorted by construction, so binary search applies, and its length is the answer even though its contents usually are not."
@@ -75,9 +86,9 @@
     },
     {
       "id": "h-5",
+      "text": "Why the obvious dynamic program is too slow",
       "type": "heading",
-      "level": 2,
-      "text": "Why the obvious dynamic program is too slow"
+      "level": 2
     },
     {
       "id": "p-6",
@@ -123,31 +134,31 @@
     },
     {
       "id": "code-7",
+      "code": "def length_of_lis(nums):           # O(n^2) - correct, too slow\n    best = [1] * len(nums)\n    for i in range(len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                best[i] = max(best[i], best[j] + 1)\n    return max(best) if best else 0\n",
       "type": "code",
-      "language": "python",
-      "code": "def length_of_lis(nums):           # O(n^2) - correct, too slow\n    best = [1] * len(nums)\n    for i in range(len(nums)):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                best[i] = max(best[i], best[j] + 1)\n    return max(best) if best else 0\n"
+      "language": "python"
     },
     {
       "id": "p-8",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is easy to justify and easy to get right. It is also two nested loops, and at 100,000 elements that is ten billion comparisons. The judge's time limit exists precisely to rule it out."
+          "text": "This is easy to justify and easy to get right. It is also two nested loops, and at 100,000 elements that is ten billion comparisons."
         }
       ]
     },
     {
       "id": "h-9",
+      "text": "The idea: track the best ending value per length",
       "type": "heading",
-      "level": 2,
-      "text": "The idea: track the best ending value per length"
+      "level": 2
     },
     {
       "id": "p-10",
       "type": "paragraph",
       "content": [
         {
-          "text": "Turn the question around. Instead of asking how long a run ending at each "
+          "text": "Turn the question around; instead of asking how long a run ending at each "
         },
         {
           "text": "position",
@@ -220,14 +231,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two properties fall out, and everything else depends on them:"
+          "text": "Observe:"
         }
       ]
     },
     {
       "id": "l-13",
       "type": "list",
-      "ordered": true,
       "items": [
         [
           {
@@ -258,7 +268,8 @@
             "text": " only ever gets filled once a run of that length has genuinely been seen."
           }
         ]
-      ]
+      ],
+      "ordered": true
     },
     {
       "id": "p-16",
@@ -282,7 +293,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now process the input left to right. For each value "
+          "text": "For each value "
         },
         {
           "text": "x",
@@ -322,7 +333,6 @@
     {
       "id": "l-18",
       "type": "list",
-      "ordered": false,
       "items": [
         [
           {
@@ -334,20 +344,21 @@
             "text": "If there is one, overwrite it with x. A run of that length can now end on something smaller, which can only make future extensions easier."
           }
         ]
-      ]
+      ],
+      "ordered": false
     },
     {
       "id": "h-21",
+      "text": "Example",
       "type": "heading",
-      "level": 2,
-      "text": "Walking through an example"
+      "level": 2
     },
     {
       "id": "p-22",
       "type": "paragraph",
       "content": [
         {
-          "text": "Take "
+          "text": "Look at "
         },
         {
           "text": "[10, 9, 2, 5, 3, 7, 101, 18]",
@@ -364,12 +375,6 @@
     },
     {
       "id": "t-23",
-      "type": "table",
-      "headers": [
-        "Value",
-        "Action",
-        "tails afterwards"
-      ],
       "rows": [
         [
           "10",
@@ -412,46 +417,30 @@
           "[2, 3, 7, 18]"
         ]
       ],
-      "caption": "The answer is 4 — the length of tails, not its contents."
+      "type": "table",
+      "caption": "The answer is 4 i.e., the number of tails",
+      "headers": [
+        "Value",
+        "Action",
+        "tails afterwards"
+      ]
     },
     {
       "id": "c-24",
-      "type": "callout",
       "tone": "important",
-      "title": "tails is not the answer",
+      "type": "callout",
+      "title": "Tails is NOT the answer",
       "content": [
         {
-          "text": "Here the final tails happens to equal a real subsequence, which is a coincidence worth distrusting. Run the algorithm on "
-        },
-        {
-          "text": "[1, 6, 7, 2]",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " and it ends holding "
-        },
-        {
-          "text": "[1, 2, 7]",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": ", which is not a subsequence of the input at all — 2 appears after 7. The length is still correct. If you need the subsequence itself and not just its length, record a predecessor index alongside each value and walk the chain backwards at the end."
+          "text": "In this example, the array tails is a valid solution to the increasing subsequence problem, but that is NOT ALWAYS the case. What is always true, is that the length of the array of tails is the length of the longest increasing subsequence."
         }
       ]
     },
     {
       "id": "h-26",
+      "text": "The code",
       "type": "heading",
-      "level": 2,
-      "text": "The code"
+      "level": 2
     },
     {
       "id": "p-27",
@@ -464,25 +453,25 @@
     },
     {
       "id": "code-28",
+      "code": "import bisect\n\n\ndef length_of_lis(nums):\n    tails = []\n    for n in nums:\n        # First index whose value is >= n. bisect_left, not bisect_right:\n        # the subsequence must be strictly increasing, so an equal value\n        # has to replace rather than extend.\n        i = bisect.bisect_left(tails, n)\n        if i == len(tails):\n            tails.append(n)\n        else:\n            tails[i] = n\n    return len(tails)\n",
       "type": "code",
       "language": "python",
-      "code": "import bisect\n\n\ndef length_of_lis(nums):\n    tails = []\n    for n in nums:\n        # First index whose value is >= n. bisect_left, not bisect_right:\n        # the subsequence must be strictly increasing, so an equal value\n        # has to replace rather than extend.\n        i = bisect.bisect_left(tails, n)\n        if i == len(tails):\n            tails.append(n)\n        else:\n            tails[i] = n\n    return len(tails)\n",
       "variants": [
         {
-          "language": "javascript",
-          "code": "function lengthOfLis(nums) {\n  const tails = [];\n  for (const n of nums) {\n    // Hand-rolled lower_bound: first index whose value is >= n.\n    let lo = 0;\n    let hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >> 1;\n      if (tails[mid] < n) lo = mid + 1;\n      else hi = mid;\n    }\n    if (lo === tails.length) tails.push(n);\n    else tails[lo] = n;\n  }\n  return tails.length;\n}\n"
+          "code": "function lengthOfLis(nums) {\n  const tails = [];\n  for (const n of nums) {\n    // Hand-rolled lower_bound: first index whose value is >= n.\n    let lo = 0;\n    let hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >> 1;\n      if (tails[mid] < n) lo = mid + 1;\n      else hi = mid;\n    }\n    if (lo === tails.length) tails.push(n);\n    else tails[lo] = n;\n  }\n  return tails.length;\n}\n",
+          "language": "javascript"
         },
         {
-          "language": "cpp",
-          "code": "long long lengthOfLis(std::vector<long long> nums) {\n    std::vector<long long> tails;\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        // lower_bound is >= (strictly increasing). upper_bound would be >,\n        // which solves the non-decreasing variant instead.\n        std::vector<long long>::iterator it =\n            std::lower_bound(tails.begin(), tails.end(), nums[i]);\n        if (it == tails.end()) tails.push_back(nums[i]);\n        else *it = nums[i];\n    }\n    return (long long)tails.size();\n}\n"
+          "code": "long long lengthOfLis(std::vector<long long> nums) {\n    std::vector<long long> tails;\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        // lower_bound is >= (strictly increasing). upper_bound would be >,\n        // which solves the non-decreasing variant instead.\n        std::vector<long long>::iterator it =\n            std::lower_bound(tails.begin(), tails.end(), nums[i]);\n        if (it == tails.end()) tails.push_back(nums[i]);\n        else *it = nums[i];\n    }\n    return (long long)tails.size();\n}\n",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-29",
+      "text": "Why it is O(n log n)",
       "type": "heading",
-      "level": 2,
-      "text": "Why it is O(n log n)"
+      "level": 2
     },
     {
       "id": "p-30",
@@ -500,7 +489,40 @@
           ]
         },
         {
-          "text": ", which never holds more than n entries, so each search is O(log n). Appending and overwriting are both O(1). That gives O(n log n) time and O(n) space."
+          "text": ", which never holds more than n entries, so each search is O(log n). Appending and overwriting are both "
+        },
+        {
+          "text": "O(1)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ". Overall, "
+        },
+        {
+          "text": "O(n log n)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " time and "
+        },
+        {
+          "text": "O(n)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " space."
         }
       ]
     },
@@ -509,20 +531,30 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The quadratic version does O(n) work per element instead of O(log n). At n = 100,000 that is the difference between roughly 1.7 million operations and 10 billion."
+          "text": "The quadratic version does O(n) work per element instead of O(log n). At "
+        },
+        {
+          "text": "n = 100,000",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " that is the difference between roughly 1.7 million operations and 10 billion, which is ~5800x more efficient!"
         }
       ]
     },
     {
       "id": "h-32",
+      "text": "The mistakes that actually happen",
       "type": "heading",
-      "level": 2,
-      "text": "The mistakes that actually happen"
+      "level": 2
     },
     {
       "id": "l-33",
       "type": "list",
-      "ordered": false,
       "items": [
         [
           {
@@ -544,12 +576,13 @@
             "text": "Forgetting the empty input. An empty array has length 0, and tails is naturally empty, so the base case needs no special handling — but the quadratic version's max() call does."
           }
         ]
-      ]
+      ],
+      "ordered": false
     },
     {
       "id": "c-38",
-      "type": "callout",
       "tone": "tip",
+      "type": "callout",
       "title": "Try it first",
       "content": [
         {
@@ -559,8 +592,8 @@
           "text": "/practices/longest-increasing-subsequence",
           "marks": [
             {
-              "kind": "link",
-              "href": "/practices/longest-increasing-subsequence"
+              "href": "/practices/longest-increasing-subsequence",
+              "kind": "link"
             }
           ]
         },

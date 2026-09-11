@@ -30,63 +30,14 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The last tutorial finished on a count: twenty-five calls to answer seven questions. Put that way, the fix more or less announces itself. Answer each question once, write the answer down somewhere, and look it up the next time somebody asks for it."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That's "
-        },
-        {
-          "text": "memoization",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", and in most languages it costs about three lines of change to a function you've already written. The function keeps its shape. It keeps its base case, it keeps its recursive case, and the induction argument from the recursion guide goes through completely unchanged, which matters more than it might look: you're not being asked to trust a new algorithm, only a store sitting beside an old one."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Filling those same answers in from the bottom up, with no recursion at all, is "
-        },
-        {
-          "text": "tabulation",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ". Both are on this page, because the second is easiest to understand as a rewrite of the first, and because the choice between them comes up every single time you solve one of these problems."
-        }
-      ]
-    },
-    {
       "id": "h-code",
-      "text": "Memoization in three lines",
+      "text": "Memoization Overview",
       "type": "heading",
       "level": 2
     },
     {
       "id": "code-memo",
-      "code": "function fib(n, memo = new Map()) {\n  if (n <= 1) return n;\n  if (memo.has(n)) return memo.get(n);          // already answered\n  const value = fib(n - 1, memo) + fib(n - 2, memo);\n  memo.set(n, value);                           // write it down\n  return value;\n}",
+      "code": "function fib(n, memo = new Map()) {\n  if (n <= 1)\n    return n;\n\n  if (memo.has(n)) \n    return memo.get(n); // use already calculated value\n\n  const value = fib(n - 1, memo) + fib(n - 2, memo);\n\n  memo.set(n, value); // store value just calculated\n\n  return value;\n}",
       "type": "code",
       "language": "javascript",
       "variants": [
@@ -105,13 +56,14 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Two of those lines carry the whole idea. One checks the store before doing any work at all, one writes the result into the store on the way back out. The arithmetic in between is the original recursion, untouched."
+          "text": "The only two lines added here to implement memoization are the ones with comments. One line checks the store before doing any work at all, the other writes the result into the store on the way back out."
         }
       ]
     },
     {
-      "id": "p-code-2",
-      "type": "paragraph",
+      "id": "callout_8cb28c58",
+      "tone": "important",
+      "type": "callout",
       "content": [
         {
           "text": "The Python version takes a small detour worth flagging, since it catches people. Writing memo equals empty dictionary directly in the parameter list would build that dictionary once, at the moment the function is defined, and then every later call anywhere in the program would quietly share it. The None check builds a fresh one per top-level call."
@@ -141,31 +93,66 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Twenty-five calls become eleven. The repeated subtrees don't shrink, they stop existing altogether, since a call that finds its answer waiting in the memo returns on the spot and never grows anything beneath it. What's left is the seven distinct questions plus four lookups, drawn dashed so you can tell at a glance which calls did work and which just collected it."
+          "text": "25 to 11 calls seems like a small improvement, but this increased efficiently gets more significant as the number increases. The repeated subtrees don't shrink, they stop existing altogether, since a call that finds its answer waiting in the memo returns on the spot and never grows anything beneath it. "
         }
       ]
     },
     {
       "id": "h-cost",
-      "text": "What memoization costs now",
+      "text": "Memoization Cost",
       "type": "heading",
       "level": 2
-    },
-    {
-      "id": "p-cost-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "There's a formula for the cost of a memoized recursion, and it's friendlier than most complexity arguments. Count the distinct subproblems. Count the work each one does on its own, not counting its recursive calls. Multiply the two."
-        }
-      ]
     },
     {
       "id": "p-cost-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci has n plus 1 distinct subproblems and each does a single addition, so the whole thing runs in linear time. That's down from exponential, and the price is a table holding n entries. Trading memory for time is the standard bargain of this entire section, and it's very nearly always worth taking."
+          "text": "Fibonacci has "
+        },
+        {
+          "text": "2ⁿ",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " total function calls "
+        },
+        {
+          "text": "n + 1",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " distinct calculations and each does a single addition, so with memoization it runs in "
+        },
+        {
+          "text": "O(N)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", and without it runs in"
+        },
+        {
+          "text": " O(2ⁿ)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " time complexity."
         }
       ]
     },
@@ -202,6 +189,27 @@
       ]
     },
     {
+      "id": "callout_5cb74f1b",
+      "tone": "important",
+      "type": "callout",
+      "content": [
+        {
+          "text": "Memoization costs a bit more memory, more specifically "
+        },
+        {
+          "text": "O(N)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " space complexity."
+        }
+      ]
+    },
+    {
       "id": "h-key",
       "text": "Choosing the key",
       "type": "heading",
@@ -212,25 +220,51 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The one real decision in memoization is what to use as the key, and getting it wrong produces the most confusing class of bug in the topic. The rule fits in a sentence: the key has to capture everything the answer depends on, and nothing else."
-        }
-      ]
-    },
-    {
-      "id": "p-key-2",
-      "type": "paragraph",
-      "content": [
+          "text": "The one real decision in memoization is what to use as the key, which must be unique! Almost all of the time, the key is the inputs to a function. For example the key for the value of "
+        },
         {
-          "text": "Put too little in the key and the store hands back an answer that was computed under different circumstances, which shows up as the algorithm being subtly and inconsistently wrong. Put too much in and no two calls ever match, so the store fills up, never hits, and the only thing you've bought is memory pressure."
-        }
-      ]
-    },
-    {
-      "id": "p-key-3",
-      "type": "paragraph",
-      "content": [
+          "text": "F(1, 2)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
         {
-          "text": "Fibonacci makes this look trivial, since there's one argument and it's obviously the key. Binomial coefficients are the honest version. C(n,k) counts the ways of choosing k things out of n, and it obeys a rule with the same shape as Fibonacci's."
+          "text": " would probably be a tuple like "
+        },
+        {
+          "text": "(1, 2)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " in python. What the key looks like depends on the programming language, most languages would use some kind of list type like tuples in python, but some programming languages have their own required rules. In JavaScript, object keys are strings and you may opt for a key that looks like "
+        },
+        {
+          "text": "`1-2`",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " or the general form"
+        },
+        {
+          "text": "`${a}-${b}`",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " ."
         }
       ]
     },
@@ -241,20 +275,22 @@
       "language": "text"
     },
     {
-      "id": "p-key-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The reasoning behind that middle line is worth a moment. Fix your attention on the first item. Every group of k either contains it or doesn't, those two cases can't both happen and between them they cover everything, so counting each and adding gives the total. Two arguments change on the way down, which means the key has to be the pair. Store on n alone and C(6,3) will cheerfully hand back whatever C(6,1) worked out earlier."
-        }
-      ]
-    },
-    {
       "id": "p-key-5",
       "type": "paragraph",
       "content": [
         {
-          "text": "The widget below opens on Choose with the memo already switched on, so the entries in the memo panel are written as pairs rather than single numbers. That small change in what a key looks like is what pushes the two-dimensional problems later in this section toward a grid."
+          "text": "This case is just like the one we explored earlier, and the key in code would be something like "
+        },
+        {
+          "text": "(n, k)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": "."
         }
       ]
     },
@@ -268,32 +304,42 @@
       "widget": "recursion-tree"
     },
     {
+      "id": "callout_71df20da",
+      "tone": "note",
+      "type": "callout",
+      "title": "Task",
+      "content": [
+        {
+          "text": "Try implementing this yourself, it should be trivial from what we have already covered in the previous examples."
+        }
+      ]
+    },
+    {
       "id": "h-limits",
       "text": "What memoization does not fix",
       "type": "heading",
       "level": 2
     },
     {
-      "id": "p-limit-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Two things, and neither is obscure. The first is the call stack. A memoized recursion still recurses, so a problem needing a hundred thousand levels of depth runs out of stack long before it runs out of ideas, and plenty of languages have no tail-call elimination to fall back on. Python stops at a thousand frames by default."
-        }
-      ]
-    },
-    {
-      "id": "p-limit-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The second is that the cost formula cuts both ways. Distinct subproblems multiplied by work per subproblem is an honest number, and when the first factor's already astronomical, storing results does nothing for you. A memo turns repeated work into stored work. It can't turn an exponential number of genuinely different questions into a small one."
-        }
-      ]
+      "id": "list_6f2eabe6",
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "A memoized recursion still recurses, so a problem needing a hundred thousand levels of depth runs out of stack long before it runs out of ideas, and plenty of languages have no tail-call elimination to fall back on. Python stops at a thousand frames by default."
+          }
+        ],
+        [
+          {
+            "text": "Distinct subproblems multiplied by work per subproblem is an honest number, and when the first factor's already astronomical, storing results does nothing for you. A memo turns repeated work into stored work. It can't turn an exponential number of genuinely different questions into a small one."
+          }
+        ]
+      ],
+      "ordered": false
     },
     {
       "id": "h-tools",
-      "text": "The version you will actually write",
+      "text": "In Practice",
       "type": "heading",
       "level": 2
     },
@@ -302,7 +348,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Most languages ship something that does all of this for you. Python keeps a decorator in the standard library: put a cache above the function and every call gets stored, keyed on whatever arguments it was handed. The body stays exactly as it was in the naive version, which is the whole appeal."
+          "text": "Most languages ship something that does all of this for you, since the store track lines of code causes clutter. Python keeps a decorator in the standard library: put a cache above the function and every call gets stored, keyed on whatever arguments it was handed. The body stays exactly as it was in the naive version, which is the whole appeal."
         }
       ]
     },
@@ -317,7 +363,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "It's worth knowing and worth handling with some care. The decorator keys on the arguments, so every argument has to be hashable, and passing a list in fails on the spot. It also holds entries forever unless you switch to the version that takes a size limit, which is harmless inside a script that runs once and a slow leak inside a service that runs for months."
+          "text": "It's worth knowing and worth handling with some care. The decorator keys on the arguments, so every argument has to be hashable, and passing a list in fails on the spot. It also holds entries forever unless you switch to the version that takes a size limit, usually harmless inside a script that runs once, but it can be a slow leak inside a service that runs for months."
         }
       ]
     },
@@ -326,31 +372,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There's a reason to write the store out by hand at least once before reaching for the decorator. The decorator quietly answers the question you're supposed to be thinking about. What identifies a subproblem is the decision this entire topic turns on, and a tool that settles it for you by taking the whole argument list is right most of the time and silently wrong the rest of it."
-        }
-      ]
-    },
-    {
-      "id": "h-order",
-      "text": "Only the subproblems that come up",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-order-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Memoization does one thing that's genuinely awkward to reproduce any other way. It solves only the subproblems that actually arise, because the recursion asks for what it needs and never goes looking for anything else, so a problem with an enormous space of possible subproblems and a narrow path through it pays only for the path."
-        }
-      ]
-    },
-    {
-      "id": "p-order-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Fibonacci hides this, since reaching fib(40) means passing through every smaller value along the way and there's nothing to skip. Plenty of problems aren't built like that. Hold on to the point, because tabulation, in the second half of this page, trades this property away for something else worth having."
+          "text": "There's a reason to write the store out by hand at least once before reaching for the decorator. The decorator quietly answers the question you're supposed to be thinking about. What identifies a subproblem is the decision this entire topic turns on, and a tool that settles it for you by taking the whole argument list is right most of the time, but it fails quietly."
         }
       ]
     },
@@ -415,52 +437,53 @@
       "widget": "quiz"
     },
     {
-      "id": "p-bridge",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Both of those limits point the same direction. If the recursion exists only to decide which subproblem gets solved first, and every subproblem's going to be solved sooner or later anyway, then the recursion can be thrown away and the answers filled in directly."
-        }
-      ]
+      "id": "widget_f50cc70d",
+      "data": {
+        "preset": "memoization-in-recursion"
+      },
+      "type": "interactive",
+      "widget": "flowchart"
     },
     {
       "id": "h-tabulation",
-      "text": "Tabulation: the same table without the recursion",
+      "text": "Tabulation: no recursion!",
       "type": "heading",
       "level": 2
-    },
-    {
-      "id": "p-tab-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The memo from the first half of this page is already a table. It's keyed by subproblem, it holds one answer per key, and by the time the program finishes, every entry that was ever going to be filled has been filled. The only thing the recursion contributed was deciding what order to fill them in."
-        }
-      ]
     },
     {
       "id": "p-tab-hook-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "So skip it. Work the order out yourself, fill the table from one end to the other, and never make a recursive call at all. That's "
+          "text": "Memoization uses recursion to recursively find the next answer from previous answers, and the memoization part caches values that were already computed. You may have realized that in this case, the recursion part is actually pretty much optional for lots of problems like Fibonacci. Rather than using a recursive call to produce "
         },
         {
-          "text": "tabulation",
+          "text": "n",
           "marks": [
             {
-              "kind": "bold"
+              "kind": "code"
             }
           ]
         },
         {
-          "text": ", and it's what most people picture when they say dynamic programming."
+          "text": " numbers, we can simply loop in the range "
+        },
+        {
+          "text": "[0, n]",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": ", and then use the sum of the two previous rows to get the current. This technique is tabulation!"
         }
       ]
     },
     {
       "id": "h-stairs",
-      "text": "Climbing stairs, bottom-up",
+      "text": "Climbing stairs",
       "type": "heading",
       "level": 2
     },
@@ -469,7 +492,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Fibonacci is a poor advertisement for any of this, because nobody's ever urgently needed the fortieth Fibonacci number. Here's the same arithmetic attached to a question somebody might actually ask. A staircase has n steps, you can climb either one step or two at a time, and the task is to count the different ways of reaching the top."
+          "text": "A staircase has "
+        },
+        {
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " steps, you can climb either one step or two at a time, and the task is to count the different ways of reaching the top."
         }
       ]
     },
@@ -478,25 +512,29 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Work backwards from the top step. However you got to step n, your last move was either a small step from n minus 1 or a big one from n minus 2. Those two sets of routes have nothing in common, and between them they cover every route there is, so the count for step n is the count for n minus 1 added to the count for n minus 2."
-        }
-      ]
-    },
-    {
-      "id": "p-stairs-3",
-      "type": "paragraph",
-      "content": [
+          "text": "This problem can be solved using recursion, so lets work backwards starting at the step "
+        },
         {
-          "text": "The base cases deserve a second of thought rather than a guess. There's exactly one way to be standing at the bottom, which is to not have moved yet. There's exactly one way to be on step 1. Those two anchor everything above them."
-        }
-      ]
-    },
-    {
-      "id": "p-stairs-widget",
-      "type": "paragraph",
-      "content": [
+          "text": "n",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
         {
-          "text": "Below is that table being filled in, one cell at a time, and the arrows are the part to watch: each one points from a cell that's already settled into the cell currently being worked out, which is the recurrence drawn rather than written."
+          "text": ". However you got to step n, your last move was either a small step from n minus 1 or a big one from n minus 2. Those two sets of routes have nothing in common, and between them they cover every route there is, so "
+        },
+        {
+          "text": "ways(n) = ways(n - 1) + ways(n - 2)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " . In other words, we have the nth Fibonacci number of ways to reach the nth step."
         }
       ]
     },
@@ -535,6 +573,31 @@
       ]
     },
     {
+      "id": "p_56f1711c",
+      "type": "paragraph",
+      "content": [
+        {
+          "text": "Wait a minute! A complete tabulation here isn't even necessary. We can simplify the code further, by only storing two values instead of an array."
+        }
+      ]
+    },
+    {
+      "id": "code_f91d5448",
+      "code": "function climbStairs(n) {\n  let ahead = 1\n  let behind = 1\n  for (let i = 2; i <= n; i++) {\n    let sum = ahead + behind\n    behind = ahead\n    ahead = sum\n  }\n  return ahead;\n}",
+      "type": "code",
+      "language": "javascript",
+      "variants": [
+        {
+          "code": "def climb_stairs(n):\n    ahead = 1\n    behind = 1\n    for _ in range(2, n + 1):\n        sum = ahead + behind\n        behind = ahead\n        ahead = sum\n    return ahead",
+          "language": "python"
+        },
+        {
+          "code": "long long climbStairs(int n) {\n    long long ahead = 1;\n    long long behind = 1;\n    for (int i = 2; i <= n; i++) {\n        long long sum = ahead + behind;\n        behind = ahead;\n        ahead = sum;\n    }\n    return ahead;\n}",
+          "language": "cpp"
+        }
+      ]
+    },
+    {
       "id": "h-convert",
       "text": "Turning any memo into a table",
       "type": "heading",
@@ -545,7 +608,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There's a mechanical way across, and it's worth knowing because it means you never have to invent a bottom-up solution from nothing. Write the memoized recursion first, get it correct, then translate it a piece at a time."
+          "text": "Let's figure out how to translate a memo-style algorithm into the tabular one."
         }
       ]
     },
@@ -574,7 +637,6 @@
         ]
       ],
       "type": "table",
-      "caption": "Nothing is invented on the way across. The last row is the only real work.",
       "headers": [
         "In the memoized version",
         "Becomes, in the table"
@@ -585,16 +647,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Only the last row asks anything of you. Everything above it is transcription, and if the recursive version was correct, then the transcribed version computes exactly the same numbers, for exactly the same reasons, in a different order. That's exactly why the translation is worth trusting: nothing about the reasoning changed, only the order it runs in."
-        }
-      ]
-    },
-    {
-      "id": "p-convert-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Two habits make this less error-prone than it sounds. Fill the base cells before the loop rather than special-casing them inside it, so the loop body has one job. And write the loop bounds before the loop body, since the bounds are where the fill order actually lives, and it's easier to get them right while the dependency arrows are still fresh in your head."
+          "text": "Everything except for the last row is trivial to do. Everything above it is transcription, and if the recursive version was correct, then the transcribed version computes exactly the same numbers, for exactly the same reasons, in a different order. "
         }
       ]
     },
@@ -609,7 +662,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The one thing tabulation asks of you that memoization doesn't is an order. A cell can only be filled once every cell it depends on has been filled already, and working that out is more or less the entire design work in a bottom-up solution. Everything else is transcription."
+          "text": "The one thing tabulation asks of you that memoization doesn't is an order. A cell can only be filled once every cell it depends on has been filled already, and working that out is more or less the hard part."
         }
       ]
     },
@@ -618,7 +671,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Climbing stairs makes it look like a non-issue, since every cell reads to its left and left to right is the obvious sweep. Get it wrong on a harder problem and the failure isn't subtle. You read a cell that hasn't been written yet, and depending on the language you get a zero, an undefined, or a crash, none of which points at the real mistake."
+          "text": "Climbing stairs makes it look like a non-issue, since every cell reads to its left and left to right is the obvious sweep. Get it wrong on a harder problem and you'll start accessing calculated values that don't exist yet. In other words, the most important part about using the tabulation method is getting the order correct!"
         }
       ]
     },
@@ -627,7 +680,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "A reliable way to check an order is to draw every dependency as an arrow and confirm none of them point forward. If they all run backwards along the direction you're filling, the order is safe. The grid problems later in this section are that same test applied in two directions at once."
+          "text": "A reliable way to check an order is to visualize every dependency as an arrow and confirm none of them point forward. If they all run backwards along the direction you're filling, the order is safe. The grid problems later in this section are that same test applied in two directions at once."
         }
       ]
     },
@@ -667,20 +720,11 @@
         ]
       ],
       "type": "table",
-      "caption": "Same answers, different trade-offs, and neither one wins in general.",
+      "caption": "Same answers, different trade-offs, and neither one wins overall",
       "headers": [
         "",
-        "Memoization, top-down",
-        "Tabulation, bottom-up"
-      ]
-    },
-    {
-      "id": "p-choose-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Memoization is usually quicker to write, since you take a recursion you already believe in and bolt a store onto the side of it, and it has the advantage of skipping subproblems that never come up. Tabulation avoids the stack entirely and opens the door to the memory trick below."
-        }
+        "Memoization: top-down",
+        "Tabulation: bottom-up"
       ]
     },
     {
@@ -688,43 +732,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "In an interview, write whichever one you can get correct. In production, measure. They compute the same answers, so the choice is about the shape of your code and the shape of the machine rather than about the mathematics."
-        }
-      ]
-    },
-    {
-      "id": "h-space",
-      "text": "Throwing most of the table away",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-space-1",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Look at the arrows in the widget once more. Each cell reads the two immediately to its left, and nothing ever reaches further back than that. By the time the loop is filling cell 20, cell 3 will never be read again, and it's still sitting there occupying memory for no reason at all. Cell 3 is dead weight."
-        }
-      ]
-    },
-    {
-      "id": "p-space-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So stop keeping it. Two variables hold everything the loop needs, and the array disappears."
-        }
-      ]
-    },
-    {
-      "id": "code-rolling",
-      "code": "function climbStairs(n) {\n  let prev = 1;   // ways to reach step i - 2\n  let curr = 1;   // ways to reach step i - 1\n  for (let i = 2; i <= n; i++) {\n    const next = prev + curr;\n    prev = curr;\n    curr = next;\n  }\n  return curr;\n}",
-      "type": "code",
-      "language": "javascript",
-      "variants": [
-        {
-          "code": "def climb_stairs(n):\n    prev, curr = 1, 1        # steps i - 2 and i - 1\n    for _ in range(2, n + 1):\n        prev, curr = curr, prev + curr\n    return curr",
-          "language": "python"
+          "text": "In an interview, write whichever one you can get correct, usually some problems tend to one over the other."
         }
       ]
     },
@@ -734,15 +742,6 @@
       "content": [
         {
           "text": "Memory drops from n cells to a fixed handful, and the running time doesn't change at all. The trick works whenever a recurrence reaches back only a fixed distance, which covers a surprising share of the problems in this section. Look for it once the algorithm's correct, never before."
-        }
-      ]
-    },
-    {
-      "id": "p-space-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It costs you one thing worth naming out loud. With the table gone, there's nothing left to walk back through, so you can report the answer but not the route that produced it. That trade returns in the grid problems, where the filled table is the only record of how the answer was assembled."
         }
       ]
     },
@@ -805,15 +804,6 @@
       },
       "type": "interactive",
       "widget": "quiz"
-    },
-    {
-      "id": "p-next",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Climbing stairs was picked because its recurrence was already familiar from Fibonacci, which let the fill order and the memory trick have the stage to themselves without a second idea competing for attention. The harder skill is different. It's taking a problem you've never seen and working out what the table should hold in the first place."
-        }
-      ]
     }
   ]
 }

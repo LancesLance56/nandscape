@@ -4,7 +4,7 @@
   "excerpt": "Why a heap is not fast enough for sliding window maximum, how a decreasing deque answers every window in O(1) amortised, and the two removal rules that make it work.",
   "authorName": "Nandscape",
   "status": "published",
-  "publishedAt": "2026-09-04T00:00:00.000Z",
+  "publishedAt": "2026-09-04T00:00:00Z",
   "tags": [
     "arrays",
     "deque",
@@ -75,8 +75,8 @@
     },
     {
       "id": "c-3",
-      "type": "callout",
       "tone": "note",
+      "type": "callout",
       "title": "Key takeaways",
       "content": [
         {
@@ -86,9 +86,9 @@
     },
     {
       "id": "h-5",
+      "text": "Why the obvious approaches fall short",
       "type": "heading",
-      "level": 2,
-      "text": "Why the obvious approaches fall short"
+      "level": 2
     },
     {
       "id": "p-6",
@@ -110,9 +110,9 @@
     },
     {
       "id": "h-8",
+      "text": "The observation that gives O(n)",
       "type": "heading",
-      "level": 2,
-      "text": "The observation that gives O(n)"
+      "level": 2
     },
     {
       "id": "p-9",
@@ -261,9 +261,9 @@
     },
     {
       "id": "h-12",
+      "text": "The two removal rules",
       "type": "heading",
-      "level": 2,
-      "text": "The two removal rules"
+      "level": 2
     },
     {
       "id": "p-13",
@@ -277,7 +277,6 @@
     {
       "id": "l-14",
       "type": "list",
-      "ordered": true,
       "items": [
         [
           {
@@ -289,12 +288,13 @@
             "text": "From the front — expiry. If the front index has fallen outside the window, pop it. It is still the largest of what remains in the deque, but it is no longer inside the window."
           }
         ]
-      ]
+      ],
+      "ordered": true
     },
     {
       "id": "c-17",
-      "type": "callout",
       "tone": "important",
+      "type": "callout",
       "title": "Store indices, not values",
       "content": [
         {
@@ -326,9 +326,9 @@
     },
     {
       "id": "h-19",
+      "text": "Walking through an example",
       "type": "heading",
-      "level": 2,
-      "text": "Walking through an example"
+      "level": 2
     },
     {
       "id": "p-20",
@@ -360,13 +360,6 @@
     },
     {
       "id": "t-21",
-      "type": "table",
-      "headers": [
-        "i",
-        "value",
-        "deque after both rules",
-        "window output"
-      ],
       "rows": [
         [
           "0",
@@ -417,35 +410,42 @@
           "7"
         ]
       ],
-      "caption": "Output: [3, 3, 5, 5, 6, 7]."
+      "type": "table",
+      "caption": "Output: [3, 3, 5, 5, 6, 7].",
+      "headers": [
+        "i",
+        "value",
+        "deque after both rules",
+        "window output"
+      ]
     },
     {
       "id": "h-22",
+      "text": "The code",
       "type": "heading",
-      "level": 2,
-      "text": "The code"
+      "level": 2
     },
     {
       "id": "code-23",
+      "code": "from collections import deque\n\n\ndef max_sliding_window(nums, k):\n    window = deque()   # indices, values strictly decreasing front to back\n    out = []\n\n    for i, n in enumerate(nums):\n        # Dominance: anything smaller at the back is finished.\n        while window and nums[window[-1]] <= n:\n            window.pop()\n        window.append(i)\n\n        # Expiry: the front may have slid out of range.\n        if window[0] <= i - k:\n            window.popleft()\n\n        # Only emit once the first full window exists.\n        if i >= k - 1:\n            out.append(nums[window[0]])\n\n    return out\n",
       "type": "code",
       "language": "python",
-      "code": "from collections import deque\n\n\ndef max_sliding_window(nums, k):\n    window = deque()   # indices, values strictly decreasing front to back\n    out = []\n\n    for i, n in enumerate(nums):\n        # Dominance: anything smaller at the back is finished.\n        while window and nums[window[-1]] <= n:\n            window.pop()\n        window.append(i)\n\n        # Expiry: the front may have slid out of range.\n        if window[0] <= i - k:\n            window.popleft()\n\n        # Only emit once the first full window exists.\n        if i >= k - 1:\n            out.append(nums[window[0]])\n\n    return out\n",
       "variants": [
         {
-          "language": "javascript",
-          "code": "function maxSlidingWindow(nums, k) {\n  const window = []; // indices, values strictly decreasing front to back\n  const out = [];\n\n  for (let i = 0; i < nums.length; i += 1) {\n    // Dominance: anything smaller at the back is finished.\n    while (window.length > 0 && nums[window[window.length - 1]] <= nums[i]) {\n      window.pop();\n    }\n    window.push(i);\n\n    // Expiry: the front may have slid out of range.\n    if (window[0] <= i - k) window.shift();\n\n    if (i >= k - 1) out.push(nums[window[0]]);\n  }\n\n  return out;\n}\n"
+          "code": "function maxSlidingWindow(nums, k) {\n  const window = []; // indices, values strictly decreasing front to back\n  const out = [];\n\n  for (let i = 0; i < nums.length; i += 1) {\n    // Dominance: anything smaller at the back is finished.\n    while (window.length > 0 && nums[window[window.length - 1]] <= nums[i]) {\n      window.pop();\n    }\n    window.push(i);\n\n    // Expiry: the front may have slid out of range.\n    if (window[0] <= i - k) window.shift();\n\n    if (i >= k - 1) out.push(nums[window[0]]);\n  }\n\n  return out;\n}\n",
+          "language": "javascript"
         },
         {
-          "language": "cpp",
-          "code": "std::vector<long long> maxSlidingWindow(std::vector<long long> nums, long long k) {\n    std::deque<std::size_t> window;  // indices, values decreasing front to back\n    std::vector<long long> out;\n\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        // Dominance: anything smaller at the back is finished.\n        while (!window.empty() && nums[window.back()] <= nums[i]) window.pop_back();\n        window.push_back(i);\n\n        // Expiry: the front may have slid out of range.\n        if ((long long)window.front() + k <= (long long)i) window.pop_front();\n\n        if ((long long)i >= k - 1) out.push_back(nums[window.front()]);\n    }\n\n    return out;\n}\n"
+          "code": "std::vector<long long> maxSlidingWindow(std::vector<long long> nums, long long k) {\n    std::deque<std::size_t> window;  // indices, values decreasing front to back\n    std::vector<long long> out;\n\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        // Dominance: anything smaller at the back is finished.\n        while (!window.empty() && nums[window.back()] <= nums[i]) window.pop_back();\n        window.push_back(i);\n\n        // Expiry: the front may have slid out of range.\n        if ((long long)window.front() + k <= (long long)i) window.pop_front();\n\n        if ((long long)i >= k - 1) out.push_back(nums[window.front()]);\n    }\n\n    return out;\n}\n",
+          "language": "cpp"
         }
       ]
     },
     {
       "id": "h-24",
+      "text": "Why the inner loop does not make it quadratic",
       "type": "heading",
-      "level": 2,
-      "text": "Why the inner loop does not make it quadratic"
+      "level": 2
     },
     {
       "id": "p-25",
@@ -506,13 +506,6 @@
     },
     {
       "id": "t-28",
-      "type": "table",
-      "headers": [
-        "Approach",
-        "Time",
-        "Space",
-        "Why it loses"
-      ],
       "rows": [
         [
           "Rescan each window",
@@ -532,18 +525,24 @@
           "O(k)",
           "—"
         ]
+      ],
+      "type": "table",
+      "headers": [
+        "Approach",
+        "Time",
+        "Space",
+        "Why it loses"
       ]
     },
     {
       "id": "h-29",
+      "text": "The mistakes that actually happen",
       "type": "heading",
-      "level": 2,
-      "text": "The mistakes that actually happen"
+      "level": 2
     },
     {
       "id": "l-30",
       "type": "list",
-      "ordered": false,
       "items": [
         [
           {
@@ -570,12 +569,13 @@
             "text": "In JavaScript, shift() on a plain array is O(n) in the worst case. It is fine at these sizes, but a real deque is the honest structure."
           }
         ]
-      ]
+      ],
+      "ordered": false
     },
     {
       "id": "c-36",
-      "type": "callout",
       "tone": "tip",
+      "type": "callout",
       "title": "Try it first",
       "content": [
         {
@@ -585,8 +585,8 @@
           "text": "/practices/sliding-window-maximum",
           "marks": [
             {
-              "kind": "link",
-              "href": "/practices/sliding-window-maximum"
+              "href": "/practices/sliding-window-maximum",
+              "kind": "link"
             }
           ]
         },
