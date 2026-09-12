@@ -58,7 +58,7 @@ const DEMOS: Demo[] = [
     label: "Merge sort flowchart",
     target: { kind: "flowchart", id: "merge" },
     title: "Merge sort",
-    height: 460,
+    height: 690,
   },
   {
     id: "graph",

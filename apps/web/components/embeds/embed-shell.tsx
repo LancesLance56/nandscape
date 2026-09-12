@@ -44,7 +44,14 @@ export function EmbedShell({
       {bleed ? (
         <div className="fixed inset-0 bg-surface">{children}</div>
       ) : (
-        <div className="min-h-screen w-full bg-surface p-3 sm:p-4">{children}</div>
+        // Centered both ways rather than flowing from the top-left corner.
+        // A widget's natural size rarely matches the box the host actually
+        // gave the iframe - a short flowchart in a tall frame, a narrow K-map
+        // in a wide one - and centering is what makes that look intentional
+        // instead of like content stranded in a corner.
+        <div className="flex min-h-screen w-full items-center justify-center bg-surface p-3 sm:p-4">
+          {children}
+        </div>
       )}
 
       {options.credit && <CreditLink title={title} href={sourceUrl} />}

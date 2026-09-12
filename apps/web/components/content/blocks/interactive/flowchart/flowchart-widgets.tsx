@@ -61,7 +61,8 @@ function readOptions(data: Record<string, unknown>) {
     legend: bool(i.legend, true),
     download: bool(i.download, true),
     fullscreen: bool(i.fullscreen, true),
-    maxHeight: typeof data.height === "number" ? data.height : 730,
+    // Kept in step with Reader's own default in viewer.tsx.
+    maxHeight: typeof data.height === "number" ? data.height : 1095,
   };
 }
 
@@ -120,7 +121,7 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
         initial={initial}
         autosave={false}
         variant="embedded"
-        height={typeof data.height === "number" ? data.height : 560}
+        height={typeof data.height === "number" ? data.height : 840}
       />
     </WidgetFrame>
   );

@@ -89,7 +89,10 @@ export interface EmbedCatalogEntry {
 }
 
 export const DEFAULT_HEIGHT = 520;
-export const FLOWCHART_HEIGHT = 460;
+// 50% taller than the original 460, to match the bigger default render size
+// in viewer.tsx and flowchart-widgets.tsx - the suggested <iframe height="">
+// a copied snippet carries should fit what the diagram now actually draws at.
+export const FLOWCHART_HEIGHT = 690;
 export const CIRCUIT_HEIGHT = 420;
 
 /* -------------------------------------------------------------------------- */

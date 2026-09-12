@@ -298,7 +298,7 @@ export const TOOLS: ToolDefinition[] = [
     intro:
       "Build a flowchart by adding boxes and dragging arrows between them. Boxes place themselves until you move one, and then they stay put. Start from a blank chart or load one of the sorting algorithms.",
     widget: "flowchart-maker",
-    embedHeight: 700,
+    embedHeight: 1050,
     howTo: [
       "Add boxes from the palette: start and end are pills, process is a rectangle, decision is a diamond.",
       "Adding a box while another is selected connects the two, so a chain of steps builds itself.",

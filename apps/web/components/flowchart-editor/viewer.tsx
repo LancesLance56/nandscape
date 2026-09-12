@@ -73,6 +73,18 @@ const DRAG_THRESHOLD = 3;
  */
 const ZOOM_BOOST = 1.3;
 
+/**
+ * The absolute ceiling on `fit`, regardless of how much room is going spare.
+ *
+ * Without one, a two-box diagram alone in a wide frame would zoom to fill it
+ * and read as a poster rather than a flowchart. This is the number that
+ * actually governs how big a diagram whose own aspect ratio does not force it
+ * smaller gets drawn - raising it is what "flowcharts as a whole, bigger"
+ * means, more than either ZOOM_BOOST or maxHeight below, both of which only
+ * matter once something else is already the binding constraint.
+ */
+const MAX_FIT = 2.1;
+
 interface View {
   x: number;
   y: number;
@@ -141,8 +153,9 @@ function Reader({
   download = true,
   // Diagrams are wider than they are tall, so height is what a flowchart runs
   // out of first. Worth about a third more of it than a widget would normally
-  // take - a chart that fits is a chart somebody reads.
-  maxHeight = 730,
+  // take - a chart that fits is a chart somebody reads. Kept in step with the
+  // matching default in flowchart-widgets.tsx's readOptions().
+  maxHeight = 1095,
   className,
   expanded = false,
   onExpand,
@@ -231,11 +244,11 @@ function Reader({
     const availW = box.w - PAD * 2;
     const availH = (expanded ? box.h : maxHeight) - PAD * 2;
     if (availW <= 0 || availH <= 0 || bounds.width <= 0 || bounds.height <= 0) return 1;
-    return Math.max(0.15, Math.min(1.4, (availW / bounds.width) * ZOOM_BOOST, availH / bounds.height));
+    return Math.max(0.15, Math.min(MAX_FIT, (availW / bounds.width) * ZOOM_BOOST, availH / bounds.height));
   }, [box.w, box.h, expanded, maxHeight, bounds]);
 
-  // Short diagrams get a short frame; nobody wants 730px of background under a
-  // four-box chart. Expanded, the dialog owns the height.
+  // Short diagrams get a short frame; nobody wants 1095px of background under
+  // a four-box chart. Expanded, the dialog owns the height.
   const frameHeight = expanded ? undefined : Math.min(maxHeight, bounds.height * fit + PAD * 2);
 
   const home = useMemo<View>(() => {
