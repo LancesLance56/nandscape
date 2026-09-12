@@ -44,7 +44,7 @@ export function Hero() {
             Free, no signup, runs in your browser
           </p>
 
-          <h1 className="mt-7 text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.08] xl:text-[3.4rem]">
+          <h1 className="mt-7 text-balance font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.08] xl:text-[3.4rem]">
             The interactive approach to <span className="text-accent-display">computer science</span>
           </h1>
 
@@ -53,15 +53,18 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            {/* The pair share a transition and a press: two buttons side by
+                side that respond differently to the same gesture is the kind
+                of thing nobody names and everybody feels. */}
             <Link
               href="/tutorials"
-              className="rounded-full bg-copper px-6 py-3 text-sm font-semibold text-copper-ink transition-colors hover:bg-copper-dark"
+              className="rounded-full bg-copper px-6 py-3 text-sm font-semibold text-copper-ink shadow-sm transition-[background-color,box-shadow,transform] duration-200 ease-out hover:bg-copper-dark hover:shadow-md active:scale-[0.97] motion-reduce:transition-none"
             >
               Start learning
             </Link>
             <Link
               href="/puzzles"
-              className="rounded-full border border-border-strong bg-surface-card/70 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-sm transition-colors hover:border-ink-soft"
+              className="rounded-full border border-border-strong bg-surface-card/70 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-sm transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out hover:border-ink-soft hover:bg-surface-card hover:shadow-sm active:scale-[0.97] motion-reduce:transition-none"
             >
               Try a problem
             </Link>

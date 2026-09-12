@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
 import { PuzzleChip } from "@/components/puzzles/puzzle-chip";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeader } from "./section-header";
 import type { PuzzleSpec } from "@/types/puzzle";
 
 /**
@@ -35,24 +36,13 @@ export async function PuzzlesShowcase() {
 
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
-            <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Practice
-          </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">Try a Logic Problem</h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft">
-            Each one is a chip with its pins named and its gate budget stamped on the lid. What it has to do, and
-            whether you managed it, is on the other side of the click. Your job is the inside.
-          </p>
-        </div>
-        <Link
-          href="/puzzles"
-          className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
-        >
-          Browse all problems &rarr;
-        </Link>
+      <ScrollReveal className="mb-10">
+        <SectionHeader
+          eyebrow="Practice"
+          title="Try a logic problem"
+          blurb="Each one is a chip with its pins named and its gate budget stamped on the lid. What it has to do, and whether you managed it, is on the other side of the click. Your job is the inside."
+          action={{ href: "/puzzles", label: "Browse all problems" }}
+        />
       </ScrollReveal>
 
       {featured.length === 0 ? (
@@ -63,7 +53,7 @@ export async function PuzzlesShowcase() {
             <ScrollReveal key={puzzle.slug} delay={i * 50}>
               <Link
                 href={`/puzzles/${puzzle.slug}`}
-                className="group flex h-full items-center justify-center rounded-2xl border border-border bg-surface-card p-4 transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:border-copper/40 hover:shadow-[0_18px_36px_-24px_rgba(20,27,20,0.5)] motion-reduce:transition-none"
+                className="group flex h-full items-center justify-center rounded-xl border border-border bg-surface-card p-4 transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:border-copper/40 hover:shadow-[var(--shadow-lift)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 <PuzzleChip puzzle={puzzle} className="w-full" />
               </Link>

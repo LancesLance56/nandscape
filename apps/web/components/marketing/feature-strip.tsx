@@ -1,10 +1,22 @@
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Card } from "@/components/ui/card";
-import { hexToRgba } from "@/lib/editor/block-colors";
+import { SectionHeader } from "./section-header";
 
-// The green accent, then two ink-wash tonal steps beside it - a deliberate
-// trio rather than three hues competing.
-const FEATURE_COLORS = ["#2B8341", "#6F8F76", "#9E9E9E"] as const;
+/**
+ * The green accent, then two ink-wash tonal steps beside it - a deliberate
+ * trio rather than three hues competing.
+ *
+ * Written as token expressions rather than the three literal hexes these used
+ * to be. The first of those was the light-mode green, which on the dark card
+ * ground came out at roughly 3:1 against 12px semibold text; every one of
+ * these now inherits whatever the theme has decided `--copper` and
+ * `--ink-soft` are.
+ */
+const FEATURE_ACCENTS = [
+  "var(--copper)",
+  "color-mix(in oklab, var(--copper) 45%, var(--ink-soft))",
+  "var(--ink-soft)",
+] as const;
 
 function BlocksIcon({ className }: { className?: string }) {
   return (
@@ -56,26 +68,35 @@ const STATS = [
 
 export function FeatureStrip() {
   return (
-    <section className="py-14">
+    <section className="py-20">
+      <ScrollReveal className="mb-10">
+        <SectionHeader eyebrow="Features" title="Made for hands-on learning" />
+      </ScrollReveal>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {STATS.map((stat, i) => {
-          const color = FEATURE_COLORS[i];
+          const color = FEATURE_ACCENTS[i];
           const Icon = stat.icon;
 
           return (
             <ScrollReveal key={stat.title} delay={i * 100}>
               <Card className="flex h-full flex-col p-6">
                 <div
-                  style={{ backgroundColor: hexToRgba(color, 0.12), color }}
+                  style={{ background: `color-mix(in oklab, ${color} 14%, transparent)`, color }}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
                 >
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="mt-4 text-xs font-semibold" style={{ color }}>
+                {/* Same mono-caps label the section heads use, so a card's
+                    kicker and a section's kicker are the same object. */}
+                <span
+                  className="mt-5 font-mono text-[11px] font-semibold uppercase tracking-[0.12em]"
+                  style={{ color }}
+                >
                   {stat.label}
                 </span>
-                <h3 className="mt-2 text-lg font-semibold text-ink">{stat.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-ink-soft">{stat.body}</p>
+                <h3 className="mt-2.5 font-display text-lg font-semibold text-ink">{stat.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{stat.body}</p>
               </Card>
             </ScrollReveal>
           );

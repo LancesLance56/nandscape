@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeader } from "./section-header";
 import { Card } from "@/components/ui/card";
 import { getPuzzleBySlug } from "@/lib/puzzles/puzzles";
 import { getProjectBySlug } from "@/lib/projects/projects";
@@ -45,22 +46,23 @@ export async function LiveDemo() {
 
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-8 flex flex-col items-center gap-2 text-center">
-        <div className="flex items-center gap-2 text-sm font-medium text-copper-dark">
-          <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-          Worked example
-        </div>
-        <h2 className="text-3xl font-semibold text-ink">Practice Makes Perfect</h2>
-        <p className="max-w-xl text-sm leading-relaxed text-ink-soft">
-          Learn through hands-on experience.
-        </p>
+      {/* Left-aligned like every other section. This one used to be centred,
+          which made it read as a different page rather than the next block of
+          the same one. */}
+      <ScrollReveal className="mb-10">
+        <SectionHeader
+          eyebrow="Worked example"
+          title="Practice makes perfect"
+          blurb="One problem from the set, stated the way the puzzle states it, with a working answer running beside it. Flip an input and the wires light up."
+          action={{ href: "/logic-editor", label: "Open the editor" }}
+        />
       </ScrollReveal>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
         {puzzle && (
           <ScrollReveal delay={80}>
             <Card className="flex h-full flex-col p-5">
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate">Example problem</span>
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Example problem</span>
 
               <h3 className="mt-2 font-display text-lg font-semibold leading-snug text-ink">{puzzle.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-soft">{puzzle.description}</p>
@@ -78,7 +80,7 @@ export async function LiveDemo() {
         <ScrollReveal delay={140} className={puzzle ? undefined : "lg:col-span-2"}>
           <Card className="flex h-full flex-col overflow-hidden">
             <div className="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate">
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">
                 {hasSolution ? "One solution · 4 NAND gates" : "The editor"}
               </span>
               <span className="font-mono text-[10px] text-slate">click an input to flip it</span>

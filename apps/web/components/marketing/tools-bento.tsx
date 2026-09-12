@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeader } from "./section-header";
 import { SortingVisualizerWidget } from "@/components/content/blocks/interactive/sorting/sorting-visualizer-widget";
 import { NumberBaseExplorerWidget } from "@/components/content/blocks/interactive/number-base-explorer-widget";
 import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
@@ -219,24 +220,13 @@ export function ToolsBento() {
 
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
-        <div>
-          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
-            <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Try them out
-          </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">Tools &amp; Visualizers</h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft">
-            {TOOLS.length} interactive tools that each do one job, from a K-map solver to a graph traversal you can
-            scrub frame by frame. All free, all in the browser.
-          </p>
-        </div>
-        <Link
-          href="/tools"
-          className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
-        >
-          Browse all tools &rarr;
-        </Link>
+      <ScrollReveal className="mb-10">
+        <SectionHeader
+          eyebrow="Try them out"
+          title="Tools &amp; visualizers"
+          blurb={`${TOOLS.length} interactive tools that each do one job, from a K-map solver to a graph traversal you can scrub frame by frame. All free, all in the browser.`}
+          action={{ href: "/tools", label: "Browse all tools" }}
+        />
       </ScrollReveal>
 
       <ScrollReveal delay={100}>
@@ -248,7 +238,7 @@ export function ToolsBento() {
             const tool = bySlug.get(tile.slug)!;
             const accent = accents[i];
             const href = toolHref(tool);
-            const chrome = "relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-card p-4";
+            const chrome = "relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface-card p-4";
 
             // A tile running a widget cannot be a link - every click inside it
             // belongs to the widget - so it carries the link in its corner and
@@ -292,7 +282,7 @@ export function ToolsBento() {
                   chrome,
                   "group/tile transition-[transform,border-color,box-shadow] duration-300 ease-out motion-reduce:transition-none",
                   "hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--tile-accent)_45%,transparent)]",
-                  "hover:shadow-[0_18px_36px_-24px_rgba(20,27,20,0.5)]",
+                  "hover:shadow-[var(--shadow-lift)] motion-reduce:hover:translate-y-0",
                   tile.span,
                 )}
               >

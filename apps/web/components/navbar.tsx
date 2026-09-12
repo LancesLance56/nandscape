@@ -36,7 +36,7 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-surface/90 backdrop-blur-md">
-      <nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6 sm:px-10">
+      <nav className="mx-auto flex h-20 w-full max-w-330 items-center justify-between px-6 sm:px-10">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo className="h-7 w-7 shrink-0 text-ink" />
           <span className="text-lg font-bold text-ink">Nandscape</span>

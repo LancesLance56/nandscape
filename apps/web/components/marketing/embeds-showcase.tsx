@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Check, Copy } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeader } from "./section-header";
 import { buildEmbedSnippet, embedPath, type EmbedTarget } from "@/lib/embeds/embeddable";
 import { cn } from "@/lib/cn";
 import { useOrigin } from "@/hooks/use-origin";
@@ -96,25 +96,13 @@ export function EmbedsShowcase() {
 
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
-        <div>
-          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
-            <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Embeds
-          </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">Put any of it on your own site</h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft">
-            Every tool, visualizer, flowchart and circuit here is an embed. You paste one iframe, and your readers can
-            drive it the same way you can, without loading a script or making an account. It is meant for teachers,
-            course notes, and anyone explaining this stuff to somebody else.
-          </p>
-        </div>
-        <Link
-          href="/embeds"
-          className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
-        >
-          Browse embeddables &rarr;
-        </Link>
+      <ScrollReveal className="mb-10">
+        <SectionHeader
+          eyebrow="Embeds"
+          title="Put any of it on your own site"
+          blurb="Every tool, visualizer, flowchart and circuit here is an embed. You paste one iframe, and your readers can drive it the same way you can, without loading a script or making an account. It is meant for teachers, course notes, and anyone explaining this stuff to somebody else."
+          action={{ href: "/embeds", label: "Browse embeddables" }}
+        />
       </ScrollReveal>
 
       <ScrollReveal delay={100}>
@@ -128,7 +116,7 @@ export function EmbedsShowcase() {
               className={cn(
                 "rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors",
                 demo.id === active.id
-                  ? "border-copper bg-copper text-white"
+                  ? "border-copper bg-copper text-copper-ink"
                   : "border-border bg-surface-card text-ink-soft hover:border-ink-soft hover:text-ink",
               )}
             >
@@ -142,7 +130,7 @@ export function EmbedsShowcase() {
               breathe. A real iframe against the real route, so a broken embed
               shows up here before anyone reports it. No title bar: the code
               panel below already says what this is. */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
+          <div className="overflow-hidden rounded-xl border border-border bg-surface-card">
             <iframe
               key={active.id}
               src={embedPath(active.target)}
@@ -154,7 +142,7 @@ export function EmbedsShowcase() {
           </div>
 
           {/* The line you paste, sitting under the thing it produces. */}
-          <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-card">
+          <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface-card">
             <div className="flex items-center justify-between gap-2 border-b border-border bg-surface-2 px-4 py-2.5">
               <span className="text-[11px] font-semibold text-ink">Paste this</span>
               <button

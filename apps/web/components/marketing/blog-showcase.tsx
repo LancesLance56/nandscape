@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { PostSummary } from "@/types/blog";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeader } from "./section-header";
 import { DEFAULT_BLOCK_COLORS } from "@/lib/editor/block-colors";
 
 /**
@@ -32,20 +33,13 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
 
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-copper-dark">
-            <span className="h-1.75 w-1.75 rounded-full bg-copper" />
-            Nandscape Blogs
-          </div>
-          <h2 className="font-display text-3xl font-semibold text-ink">Read Articles About CS</h2>
-        </div>
-        <Link
-          href="/blog"
-          className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
-        >
-          Read the blog →
-        </Link>
+      <ScrollReveal className="mb-10">
+        <SectionHeader
+          eyebrow="Writing"
+          title="Read articles about CS"
+          blurb="Longer pieces on the ideas the tutorials only have room to use."
+          action={{ href: "/blog", label: "Read the blog" }}
+        />
       </ScrollReveal>
 
       {featured.length === 0 ? (
@@ -78,7 +72,7 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
                       </h3>
                       <span
                         style={{ color }}
-                        className="hidden shrink-0 text-[11px] font-semibold uppercase tracking-[0.08em] sm:block"
+                        className="hidden shrink-0 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] sm:block"
                       >
                         {post.tags[0] ?? "Article"}
                       </span>

@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { listTutorialTrackTrees } from "@/lib/tutorials/tutorial-tracks";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeader } from "./section-header";
 import { FolderStack, type Folder, type FolderTab } from "./folder-stack";
 import { tutorialPath } from "@/types/tutorial";
 import type { TutorialTrackTree } from "@/types/tutorial";
@@ -112,26 +112,12 @@ export async function TutorialsShowcase() {
   return (
     <section className="py-20">
       <ScrollReveal>
-        <p className="mb-3 flex items-center gap-2 font-mono text-[11px] tracking-wide text-copper-dark">
-          <span className="h-1.5 w-1.5 rounded-full bg-copper" />
-          {lessons} lessons · {folders.length} folders
-        </p>
-
-        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
-          <h2 className="font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.02em] text-balance text-ink sm:text-5xl">
-            Learn step by step
-          </h2>
-          <Link
-            href="/tutorials"
-            className="rounded-xl border border-border-strong/70 bg-surface-card/80 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-sm transition-all hover:border-ink-soft hover:shadow-md active:scale-[0.97]"
-          >
-            Browse all tutorials &rarr;
-          </Link>
-        </div>
-
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
-          A short stack of lessons for everything computer science, fully interactive and fun.
-        </p>
+        <SectionHeader
+          eyebrow={`${lessons} lessons · ${folders.length} folders`}
+          title="Learn step by step"
+          blurb="A short stack of lessons for everything computer science, fully interactive and fun."
+          action={{ href: "/tutorials", label: "Browse all tutorials" }}
+        />
       </ScrollReveal>
 
       <ScrollReveal delay={80} className="mt-10">

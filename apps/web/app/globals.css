@@ -50,6 +50,12 @@
   --border: #dcdcdc;
   --border-strong: #cfcfcf;
 
+  /* The lift a card gets while the pointer is on it. A token rather than a
+     literal because the light-mode value is a wash of ink that is invisible on
+     a dark ground - the homepage tiles all carried the same hard-coded rgba,
+     and half of them were shadowless in dark mode. */
+  --shadow-lift: 0 18px 36px -24px rgba(20, 27, 20, 0.5);
+
   /* The primary accent. Still named --copper* so every `text-copper`,
      `bg-copper-bg`, `ring-copper` on the site keeps working; the one hue on an
      otherwise ink-wash page - a bright GeeksforGeeks-style leaf green,
@@ -103,6 +109,8 @@
 
   --border: #303030;
   --border-strong: #424242;
+
+  --shadow-lift: 0 18px 36px -20px rgba(0, 0, 0, 0.75);
 
   --ink: #cfcfcf;
   --ink-soft: #9a9a9a;
