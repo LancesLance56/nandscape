@@ -1,27 +1,55 @@
-import Link from "next/link";
+import { gateTypeToString } from "@nandscape/engine";
 import { listPuzzles } from "@/lib/puzzles/puzzles";
 import { PuzzleChip } from "@/components/puzzles/puzzle-chip";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { cn } from "@/lib/cn";
-import { SectionHeader, TILE_CLASS } from "./section-header";
+import { SectionHeader } from "./section-header";
+import { PuzzleDemo, type DemoPuzzle } from "./puzzle-demo";
 import type { PuzzleSpec } from "@/types/puzzle";
 
 /**
- * The puzzles block: a tray of chips waiting to be filled in.
+ * The logic problems block, sitting directly below the coding problems.
  *
- * Each problem is drawn as the package it asks you to build - see PuzzleChip,
- * which is the same component the worked example on this page uses, so the
- * problem you are shown solved and the problems you are offered look like the
- * same kind of object.
+ * Both sections now contain the problem rather than describing it, and both
+ * are built the same way: a picker, one framed card, the real editor inside
+ * it. What they must not share is the artwork, or the page reads as one
+ * section printed twice - so this one keeps the chip. A logic problem is a
+ * package with its pins named and its gate budget stamped on the lid, which is
+ * a different kind of object from a function signature and a code editor.
+ *
+ * The chip is drawn here rather than in the client component next door, so
+ * PuzzleSpec - test cases, display groups and all - never has to be serialized
+ * into the page. Only the drawing travels.
  */
-const FEATURED_SLUGS = [
-  "and-from-nand",
-  "two-to-one-multiplexer",
-  "xor-from-scratch",
-  "sr-latch-1-bit-memory",
-  "full-adder-no-xor",
-  "gated-d-latch-nor-only",
-];
+
+/**
+ * The problems the picker offers, in order.
+ *
+ * Three, and short ones: AND from NAND is four gates, and someone can finish
+ * it in the frame. A demo nobody can complete is an advert for the scroll bar.
+ */
+const FEATURED_SLUGS = ["and-from-nand", "two-to-one-multiplexer", "xor-from-scratch"];
+
+/** The gate restriction, in the words the puzzle page uses. */
+function restriction(puzzle: PuzzleSpec): string | null {
+  if (puzzle.allowedGateTypes?.length) {
+    return `${puzzle.allowedGateTypes.map(gateTypeToString).join("/")} only`;
+  }
+  if (puzzle.disallowedGateTypes?.length) {
+    return `no ${puzzle.disallowedGateTypes.map(gateTypeToString).join("/")}`;
+  }
+  return null;
+}
+
+/** Gate budget and gate restriction, as the two lines the card prints. */
+function constraintsOf(puzzle: PuzzleSpec): string[] {
+  const lines: string[] = [];
+  if (puzzle.gateBudget !== null) {
+    lines.push(`${puzzle.gateBudget} gate${puzzle.gateBudget === 1 ? "" : "s"} or fewer`);
+  }
+  const limit = restriction(puzzle);
+  if (limit) lines.push(limit);
+  return lines;
+}
 
 export async function PuzzlesShowcase() {
   let puzzles: PuzzleSpec[] = [];
@@ -32,8 +60,19 @@ export async function PuzzlesShowcase() {
   }
 
   const bySlug = new Map(puzzles.map((p) => [p.slug, p]));
-  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter((p): p is PuzzleSpec => Boolean(p));
-  if (featured.length === 0) featured = puzzles.slice(0, 6);
+  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter(
+    (p): p is PuzzleSpec => Boolean(p),
+  );
+  if (featured.length === 0) featured = puzzles.slice(0, 3);
+
+  const problems: DemoPuzzle[] = featured.map((puzzle) => ({
+    slug: puzzle.slug,
+    title: puzzle.title,
+    difficulty: puzzle.difficulty,
+    description: puzzle.description,
+    constraints: constraintsOf(puzzle),
+    chip: <PuzzleChip puzzle={puzzle} className="w-full" />,
+  }));
 
   return (
     <section className="py-20">
@@ -41,26 +80,17 @@ export async function PuzzlesShowcase() {
         <SectionHeader
           eyebrow="Logic problems"
           title="Try a logic problem"
-          blurb="Each one is a chip with its pins named and its gate budget stamped on the lid. What it has to do, and whether you managed it, is on the other side of the click. Your job is the inside."
+          blurb="A chip with its pins named and its gate budget stamped on the lid. Wire up the inside, run the tests, and watch the signals settle. The editor below is the real one."
           action={{ href: "/puzzles", label: "Browse all problems" }}
         />
       </ScrollReveal>
 
-      {featured.length === 0 ? (
+      {problems.length === 0 ? (
         <p className="text-sm text-ink-soft">No puzzles in the database yet.</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((puzzle, i) => (
-            <ScrollReveal key={puzzle.slug} delay={i * 50}>
-              <Link
-                href={`/puzzles/${puzzle.slug}`}
-                className={cn(TILE_CLASS, "items-center justify-center")}
-              >
-                <PuzzleChip puzzle={puzzle} className="w-full" />
-              </Link>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScrollReveal delay={80}>
+          <PuzzleDemo puzzles={problems} />
+        </ScrollReveal>
       )}
     </section>
   );
