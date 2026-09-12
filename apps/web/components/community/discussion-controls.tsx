@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MarkdownEditor } from "@/components/community/markdown-editor";
+import { RichTextEditor } from "@/components/content/rich-text-editor";
 import { pluralize } from "@/lib/community/format";
 import type { DiscussionKind } from "@/lib/community/discussions";
 import { cn } from "@/lib/cn";
@@ -214,17 +214,17 @@ export function PostForm({
 
   return (
     <div>
-      <MarkdownEditor value={body} onChange={setBody} placeholder={placeholder} rows={rows} />
+      <RichTextEditor value={body} onChange={setBody} placeholder={placeholder} rows={rows} />
 
       {allowSpoiler && showSpoiler && (
         <div className="mt-3">
           <p className="mb-1.5 text-xs text-slate">
             Hidden until a reader asks for it. Put the actual answer here.
           </p>
-          <MarkdownEditor
+          <RichTextEditor
             value={spoiler}
             onChange={setSpoiler}
-            placeholder="```python&#10;def solve():&#10;    ...&#10;```"
+            placeholder="The solution, in whatever language you wrote it in."
             rows={5}
           />
         </div>

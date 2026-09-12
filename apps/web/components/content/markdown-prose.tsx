@@ -22,8 +22,12 @@ import { cn } from "@/lib/cn";
  * singleton's `codeToHtml` is synchronous once the highlighter exists, so a
  * fenced block is coloured inline while the tree renders - no client pass, no
  * flash of unhighlighted code - through the same `highlight()` the blog uses.
- * The live preview in the composer is the client-side twin of this, in
- * `markdown-preview.tsx`, and shares every element but the fence.
+ *
+ * This used to have a client-side twin, `markdown-preview.tsx`, which drew the
+ * live preview beside the old textarea composer. The composer is a Tiptap
+ * editor now (`components/content/rich-text-editor.tsx`), so the draft is
+ * already shown as prose while it is typed and there is nothing left to
+ * preview. This file is the only Markdown renderer on the site.
  */
 export function MarkdownProse({
   source,

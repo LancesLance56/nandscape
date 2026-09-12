@@ -14,6 +14,7 @@ import type {
 import { checkProblem, countBy, type ProblemCheck } from "@/lib/practice/validate";
 import { formatValue } from "@/lib/practice/compare";
 import { CodeField } from "./code-field";
+import { RichTextEditor } from "@/components/content/rich-text-editor";
 import { TableFrame, TableScroll, tableClasses } from "@/components/ui/table-frame";
 import "./problem-studio.css";
 
@@ -863,18 +864,26 @@ function StatementSection({
         title="Statement"
         aside="Markdown — headings and constraints are yours to shape"
       />
-      <div className="studio-panel">
-        <div className="studio-panel-head">
-          <span className="mono">statement.md</span>
-          <span>Markdown · GFM tables · fenced code</span>
-          <span style={{ marginLeft: "auto" }}>
-            {words} word{words === 1 ? "" : "s"}
+      {/* The statement is the one field on this page a reader will actually
+          read as prose, so it is edited as prose. The Markdown tab inside the
+          editor is still the source of truth for anyone who would rather type
+          the pipes of a table than tab through its cells - and the column
+          still holds Markdown either way. */}
+      <RichTextEditor
+        value={statement}
+        onChange={onChange}
+        rows={18}
+        toolbar="full"
+        placeholder="What the function has to do, and what the reader may assume about its input."
+        aside={
+          <span className="studio-statement-aside">
+            <span className="mono">statement.md</span>
+            <span>
+              {words} word{words === 1 ? "" : "s"}
+            </span>
           </span>
-        </div>
-        {/* The same highlighted field the code sections use, in Markdown mode:
-            headings, emphasis and fences colour as you type. */}
-        <CodeField value={statement} language="markdown" minRows={18} onChange={onChange} />
-      </div>
+        }
+      />
     </section>
   );
 }

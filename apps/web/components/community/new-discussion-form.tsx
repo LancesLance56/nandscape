@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { MarkdownEditor } from "@/components/community/markdown-editor";
+import { RichTextEditor } from "@/components/content/rich-text-editor";
 import { MAX_TITLE_LENGTH, MIN_TITLE_LENGTH } from "@/lib/community/limits";
 
 /**
@@ -68,13 +68,15 @@ export function NewDiscussionForm() {
       <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wide text-slate">
         Body
       </label>
-      <MarkdownEditor
+      <RichTextEditor
         value={body}
         onChange={setBody}
         rows={14}
-        placeholder={
-          "What you tried, what happened, and what you expected instead.\n\n```python\n# code goes in a fence\n```\n\n- lists, **bold**, tables and > quotes all work"
-        }
+        toolbar="full"
+        // One line, not the old Markdown cheat sheet: the toolbar is the cheat
+        // sheet now, and a placeholder is drawn inside a single empty
+        // paragraph rather than across the whole box.
+        placeholder="What you tried, what happened, and what you expected instead."
       />
 
       {error && <p className="mt-3 text-xs text-signal-coral">{error}</p>}

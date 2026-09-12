@@ -1,0 +1,392 @@
+/*
+ * The rich-text editor's own component layer.
+ *
+ * Why CSS and not Tailwind classes on the nodes: the writing surface is a
+ * contenteditable that ProseMirror builds and rebuilds itself, so there is no
+ * component map to hang `className` off the way `markdown-elements.tsx` does
+ * for the published page. Node `HTMLAttributes` could carry a class each, but
+ * headings need a different one per level and a table cell needs one per
+ * variant, which turns into a second styling system that has to be kept in
+ * step with the first.
+ *
+ * So: plain CSS against the site's own tokens, like `problem-studio.css` and
+ * `dashboard.css`. Dark mode comes free, because `--ink`, `--surface-*`,
+ * `--border` and `--copper` already flip under `.dark` in globals.css.
+ *
+ * These rules mirror the published treatment (`markdown-elements.tsx` and the
+ * block components it imports from) closely rather than exactly. Close enough
+ * that an author is looking at the article while writing it; not a promise
+ * that the two are pixel-identical, which would be a promise this file could
+ * not keep.
+ */
+
+.rte {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-card);
+}
+
+/* ── the strip above the surface ──────────────────────────────────────── */
+
+.rte-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 0.375rem 0.5rem;
+}
+
+.rte-bar-end {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.rte-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--slate);
+  padding-left: 0.25rem;
+}
+
+.rte-tools {
+  min-height: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.rte-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+}
+
+.rte-tool svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.rte-tool:hover:not(:disabled) {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+.rte-tool:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.rte-tool-on,
+.rte-tool-on:hover:not(:disabled) {
+  background: var(--copper);
+  color: var(--copper-ink);
+}
+
+.rte-sep {
+  width: 1px;
+  height: 1rem;
+  margin: 0 0.25rem;
+  background: var(--border-strong);
+}
+
+.rte-tabs {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.rte-tab {
+  border-radius: 0.375rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.rte-tab:hover {
+  color: var(--ink);
+}
+
+.rte-tab-on,
+.rte-tab-on:hover {
+  background: var(--surface-card);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ── the surface ──────────────────────────────────────────────────────── */
+
+.rte-content {
+  padding: 0.875rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+.rte-surface {
+  outline: none;
+  min-height: inherit;
+}
+
+/* ProseMirror sets this on the whole editable; the caret is the only cursor
+   that should show over text. */
+.rte-surface:focus {
+  outline: none;
+}
+
+/* `display: block` here would outrank the user-agent's `[hidden]` rule, and
+   the inactive pane stays mounted rather than being unmounted. */
+.rte-source[hidden] {
+  display: none;
+}
+
+.rte-source {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  background: var(--surface-card);
+  padding: 0.875rem;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+  outline: none;
+}
+
+/* The placeholder, drawn by @tiptap/extensions into the first empty block. */
+.rte-surface p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--slate);
+}
+
+/* ── content: the published look, as closely as a contenteditable allows ─ */
+
+.rte-surface > * {
+  margin: 0;
+}
+
+.rte-surface > * + * {
+  margin-top: 1.25rem;
+}
+
+.rte-surface > * + :is(h1, h2, h3, h4) {
+  margin-top: 2rem;
+}
+
+.rte-surface > :is(h1, h2, h3, h4) + * {
+  margin-top: 0.6rem;
+}
+
+.rte-surface p {
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.rte-surface :is(h1, h2, h3, h4) {
+  font-family: var(--font-display);
+  color: var(--ink);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.rte-surface h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+}
+
+.rte-surface h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.rte-surface h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.rte-surface h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.rte-surface :is(ul, ol) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.5rem;
+  color: var(--ink-soft);
+}
+
+.rte-surface ul {
+  list-style: disc;
+}
+
+.rte-surface ol {
+  list-style: decimal;
+}
+
+.rte-surface li {
+  padding-left: 0.25rem;
+  line-height: 1.625;
+}
+
+.rte-surface li::marker {
+  color: var(--slate);
+}
+
+/* A task list is a list of checkboxes, not of bullets. */
+.rte-surface ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.25rem;
+}
+
+.rte-surface ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding-left: 0;
+}
+
+.rte-surface ul[data-type="taskList"] li > label {
+  margin-top: 0.2rem;
+  user-select: none;
+}
+
+.rte-surface ul[data-type="taskList"] input[type="checkbox"] {
+  width: 0.875rem;
+  height: 0.875rem;
+  accent-color: var(--copper);
+}
+
+.rte-surface ul[data-type="taskList"] li > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.rte-surface strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.rte-surface em {
+  font-style: italic;
+}
+
+.rte-surface s {
+  color: var(--slate);
+  text-decoration: line-through;
+}
+
+.rte-surface a {
+  color: var(--copper-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rte-surface hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+/* A `>` quote reads as an aside, which on this site is a filled grey box
+   rather than a bare left rule - matching the callout the renderer uses. */
+.rte-surface blockquote {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 0.75rem 1rem;
+  color: var(--ink-soft);
+}
+
+.rte-surface blockquote > * + * {
+  margin-top: 0.5rem;
+}
+
+.rte-surface code {
+  border-radius: 0.25rem;
+  background: var(--surface-3);
+  padding: 0.1rem 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--ink);
+}
+
+.rte-surface pre {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+/* Inside a fence the span is the block, so it must not draw a second chip. */
+.rte-surface pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.rte-surface table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  table-layout: fixed;
+  overflow: hidden;
+}
+
+.rte-surface :is(th, td) {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rte-surface th {
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.rte-surface td {
+  color: var(--ink);
+}
+
+/* ProseMirror's cell selection, which has no styling of its own. */
+.rte-surface .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--copper-bg);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.rte-surface :is(th, td) {
+  position: relative;
+}
+
+/* The node-level selection ProseMirror draws for an atom such as a rule. */
+.rte-surface .ProseMirror-selectednode {
+  outline: 2px solid var(--copper);
+  outline-offset: 2px;
+}

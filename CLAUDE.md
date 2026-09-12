@@ -157,6 +157,13 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
   sections still render.
 - Authored either through the in-app Lexical editor
   (`apps/web/components/blog-editor/`) or the `seed/` JSON files.
+- Every **Markdown** field — a discussion body, a spoiler solution, a coding
+  problem's statement — is edited with `components/content/rich-text-editor.tsx`,
+  a **Tiptap** surface whose value is still a Markdown string. The schema in
+  `lib/rich-text/extensions.ts` is exactly GFM, so the editor cannot produce
+  formatting `@tiptap/markdown` then drops on save, and every editor keeps a
+  Markdown tab: both tabs edit the same string, so switching costs nothing.
+  Blog and tutorial bodies are block arrays and stay on Lexical.
 - `DiagramPreset` — named diagrams looked up by slug, moved out of the bundle
   so fixing a teaching diagram isn't a code deploy. A flowchart row now holds a
   **drawing** (`lib/flowchart-editor/model.ts`), not the old auto-laid-out
@@ -181,6 +188,12 @@ next year as it does today.
   holds the whole pointer state machine, deliberately in one file;
   `viewer.tsx` is the read-only surface articles embed, with the walkthrough
   player, notes, focus dimming and legend.
+- A published diagram is **read-only but not fixed in place**: `viewer.tsx` is a
+  pan/zoom viewport, not a scroller. Drag to pan, wheel to zoom, double-click to
+  refit, and the expand chip opens the same reader in a `Dialog`. There are no
+  zoom buttons by design. A bare wheel only zooms once that diagram has been
+  pressed (Ctrl/Cmd-wheel and the dialog always zoom), so a diagram in the
+  middle of an article is not a hole the page scroll falls into.
 - The editor is embeddable: `<FlowchartEditor variant="embedded" initial=… 
   onChange=… autosave={false} />` is what the blog editor and
   `/admin/diagrams/[slug]` mount.

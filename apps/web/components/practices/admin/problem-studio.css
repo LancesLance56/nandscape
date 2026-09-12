@@ -350,3 +350,14 @@
   overflow-wrap: inherit;
   word-break: inherit;
 }
+
+/* The statement is edited with the site's shared rich-text editor rather than
+   a code field, so it needs the panel head's metadata line reproduced in the
+   editor's own tab strip - `.rte` is deliberately not styled from here. */
+.studio-statement-aside {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--color-text-soft);
+}
