@@ -1,16 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
-import type { PuzzleDifficulty } from "@/types/puzzle";
+import { useState } from "react";
 
 /**
  * A real logic problem, open on the homepage.
  *
  * The sibling of PracticeDemo above it, and built to the same argument: a tile
- * describes an editor, this contains one. The right-hand pane is the actual
+ * describes an editor, this contains one. The frame is the actual
  * /puzzles/[slug] page - the same canvas, the same gate palette, the same Run
  * tests button grading against the same truth table.
  *
@@ -23,31 +19,22 @@ import type { PuzzleDifficulty } from "@/types/puzzle";
  * and because it is same-origin it reads the same stored theme, so the frame
  * follows the site's light/dark toggle.
  *
- * Left of it is the chip, which is this section's own artwork and the thing
- * that stops it reading as the coding section printed twice. The statement
- * itself is deliberately *not* repeated there: the editor carries its own
- * problem panel, and two copies of one specification in one section is worse
- * than none.
- */
-
-/**
- * The layout splits at `xl`, not at `lg`, and the reason is the frame's width.
+ * There is no statement column beside it, and that absence is the design. The
+ * editor's own problem panel already gives the title, the difficulty, the
+ * pins, the gate budget and the gate restriction, a few centimetres to the
+ * right of where a second copy of all of it used to sit. Printing one
+ * specification twice in one section helped nobody read it and cost the editor
+ * half the width.
  *
- * The editor hides its sidebar - which is where the problem panel and the Run
- * tests button live - below 768px of *its own* viewport. A two-column split at
- * `lg` leaves the frame around 600px on a 1024px screen, which would quietly
- * take the Run button away. Stacked below `xl`, the frame gets the full width
- * of the section and stays over the threshold.
+ * Losing the column also settles what had been a breakpoint problem. The
+ * editor hides its sidebar - the problem panel and the Run tests button -
+ * below 768px of its own viewport, and a two-column split pushed the frame
+ * under that on a 1024px screen. Taking the whole section, there is no width
+ * left to lose.
  */
 export interface DemoPuzzle {
   slug: string;
   title: string;
-  difficulty: PuzzleDifficulty;
-  description: string;
-  /** Gate budget and any gate restriction, already worded. */
-  constraints: string[];
-  /** The chip drawing, rendered upstream. */
-  chip: ReactNode;
 }
 
 export function PuzzleDemo({ puzzles }: { puzzles: DemoPuzzle[] }) {
@@ -84,59 +71,17 @@ export function PuzzleDemo({ puzzles }: { puzzles: DemoPuzzle[] }) {
         </div>
       )}
 
-      {/* No frame, at any level. There was a tinted card holding both columns
-          and a second card around the statement, and inside the frame the
-          editor draws its own padded panels on its own ground - so a reader
-          counting borders inward found three before reaching anything they
-          could click. The statement is now type on the page and the editor is
-          the only box in the section, which is the one that earns it. */}
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] xl:gap-8">
-        <article className="flex flex-col">
-          <h3 className="font-display text-xl font-semibold leading-tight text-ink">
-            {active.title}
-          </h3>
-          <div className="mt-2.5">
-            <DifficultyTag difficulty={active.difficulty} />
-          </div>
-
-          <p className="mt-3 text-sm leading-relaxed text-ink-soft">{active.description}</p>
-
-          {/* The package you are being asked to fill in, drawn with its pins
-              named. Hidden below `xl`, where the card is one column and the
-              chip would simply push the editor off the screen. */}
-          <div className="mt-5 hidden xl:block">{active.chip}</div>
-
-          {active.constraints.length > 0 && (
-            <dl className="mt-5 space-y-1.5 border-t border-border pt-4 text-xs text-ink-soft">
-              {active.constraints.map((constraint) => (
-                <dd key={constraint} className="font-mono">
-                  {constraint}
-                </dd>
-              ))}
-            </dl>
-          )}
-
-          <Link
-            href={`/puzzles/${active.slug}`}
-            className="group mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-copper-dark transition-colors hover:text-copper"
-          >
-            Open it full screen
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transition-none" />
-          </Link>
-        </article>
-
-        {/* Keyed by slug so switching the picker reloads the frame rather
-            than leaving the previous puzzle's canvas in place. Lazy, so a
-            reader who never scrolls this far never pays for React Flow and
-            the simulation engine. */}
-        <iframe
-          key={active.slug}
-          src={`/puzzles/${active.slug}`}
-          title={`${active.title} - build it in the Nandscape editor`}
-          loading="lazy"
-          className="h-[32rem] w-full rounded-xl border-0 xl:h-[40rem]"
-        />
-      </div>
+      {/* Keyed by slug so switching the picker reloads the frame rather than
+          leaving the previous puzzle's canvas in place. Lazy, so a reader who
+          never scrolls this far never pays for React Flow and the simulation
+          engine. */}
+      <iframe
+        key={active.slug}
+        src={`/puzzles/${active.slug}`}
+        title={`${active.title} - build it in the Nandscape editor`}
+        loading="lazy"
+        className="h-[32rem] w-full rounded-xl border-0 xl:h-[40rem]"
+      />
     </div>
   );
 }
