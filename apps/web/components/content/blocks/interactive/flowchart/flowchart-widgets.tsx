@@ -62,7 +62,7 @@ function readOptions(data: Record<string, unknown>) {
     download: bool(i.download, true),
     fullscreen: bool(i.fullscreen, true),
     // Kept in step with Reader's own default in viewer.tsx.
-    maxHeight: typeof data.height === "number" ? data.height : 1095,
+    maxHeight: typeof data.height === "number" ? data.height : 1205,
   };
 }
 

@@ -7,6 +7,8 @@ import { SortingVisualizerWidget } from "@/components/content/blocks/interactive
 import { NumberBaseExplorerWidget } from "@/components/content/blocks/interactive/number-base-explorer-widget";
 import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
 import { TOOLS, toolHref } from "@/lib/tools/tools";
+import { DEFAULT_HEIGHT } from "@/lib/embeds/embeddable";
+import { EmbedCopy } from "./embed-copy";
 import { accentsFor } from "@/lib/ui/accent-palette";
 import { cn } from "@/lib/cn";
 
@@ -224,7 +226,7 @@ export function ToolsBento() {
         <SectionHeader
           eyebrow="Try them out"
           title="Tools &amp; visualizers"
-          blurb={`${TOOLS.length} interactive tools that each do one job, from a K-map solver to a graph traversal you can scrub frame by frame. All free, all in the browser.`}
+          blurb={`${TOOLS.length} interactive tools that each do one job, from a K-map solver to a graph traversal you can scrub frame by frame. All free, all in the browser, and every one of them embeddable - press Embed on any tile for the iframe tag to paste into your own page.`}
           action={{ href: "/tools", label: "Browse all tools" }}
         />
       </ScrollReveal>
@@ -258,25 +260,35 @@ export function ToolsBento() {
                       </div>
                       <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-soft">{tile.blurb}</p>
                     </div>
-                    <Link
-                      href={href}
-                      title={tool.title}
-                      className="group/open flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-copper-dark"
-                    >
-                      Open
-                      <ChevronRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/open:translate-x-0.5 motion-reduce:transition-none" />
-                    </Link>
+                    <div className="flex shrink-0 items-center gap-0.5">
+                      <EmbedCopy
+                        slug={tool.slug}
+                        title={tool.title}
+                        height={tool.embedHeight ?? DEFAULT_HEIGHT}
+                      />
+                      <Link
+                        href={href}
+                        title={tool.title}
+                        className="group/open flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-copper-dark"
+                      >
+                        Open
+                        <ChevronRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/open:translate-x-0.5 motion-reduce:transition-none" />
+                      </Link>
+                    </div>
                   </div>
                   <div className="flex min-h-0 flex-1 flex-col justify-center">{tile.widget}</div>
                 </div>
               );
             }
 
+            // A div wrapping a stretched link, not a link wrapping everything.
+            // The tile has two actions now - open the tool, copy its embed tag
+            // - and a button inside an anchor is neither valid markup nor
+            // reliably clickable. The anchor covers the tile instead, and the
+            // Embed button sits above it.
             return (
-              <Link
+              <div
                 key={tile.slug}
-                href={href}
-                title={tool.title}
                 style={{ "--tile-accent": accent } as CSSProperties}
                 className={cn(
                   chrome,
@@ -293,6 +305,20 @@ export function ToolsBento() {
                   style={{
                     background: `radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, ${accent} 12%, transparent), transparent 70%)`,
                   }}
+                />
+
+                <Link
+                  href={href}
+                  title={tool.title}
+                  aria-label={tool.title}
+                  className="absolute inset-0 z-10 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper"
+                />
+
+                <EmbedCopy
+                  slug={tool.slug}
+                  title={tool.title}
+                  height={tool.embedHeight ?? DEFAULT_HEIGHT}
+                  className="absolute right-2 top-2 z-20 bg-surface-card/80 backdrop-blur-sm"
                 />
 
                 <div
@@ -314,7 +340,7 @@ export function ToolsBento() {
                   </div>
                   <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-ink-soft">{tile.blurb}</p>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

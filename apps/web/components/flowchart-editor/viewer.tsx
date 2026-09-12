@@ -155,7 +155,7 @@ function Reader({
   // out of first. Worth about a third more of it than a widget would normally
   // take - a chart that fits is a chart somebody reads. Kept in step with the
   // matching default in flowchart-widgets.tsx's readOptions().
-  maxHeight = 1095,
+  maxHeight = 1205,
   className,
   expanded = false,
   onExpand,
@@ -247,7 +247,7 @@ function Reader({
     return Math.max(0.15, Math.min(MAX_FIT, (availW / bounds.width) * ZOOM_BOOST, availH / bounds.height));
   }, [box.w, box.h, expanded, maxHeight, bounds]);
 
-  // Short diagrams get a short frame; nobody wants 1095px of background under
+  // Short diagrams get a short frame; nobody wants 1205px of background under
   // a four-box chart. Expanded, the dialog owns the height.
   const frameHeight = expanded ? undefined : Math.min(maxHeight, bounds.height * fit + PAD * 2);
 
@@ -389,7 +389,15 @@ function Reader({
   /* --- the rest -------------------------------------------------------- */
 
   const selectedEl = selected ? page.elements.find((e) => e.id === selected) : undefined;
-  const noteCount = page.elements.filter((e) => e.note).length;
+
+  // Nothing selected, or a selection that carries no note, draws no panel at
+  // all. The reserved strip that used to sit under every diagram explaining
+  // that notes existed is gone: the dot ShapeView paints in the corner of a
+  // box that has one already says so, and it says it on the box rather than in
+  // a caption the eye has to travel to.
+  const openNote = selectedEl?.note;
+  const noteTitle = selectedEl && isShape(selectedEl) ? selectedEl.text : selectedEl?.label;
+
   const legendItems = useMemo(() => (legend ? deriveLegend(shown) : []), [legend, shown]);
 
   return (
@@ -426,8 +434,19 @@ function Reader({
         }}
         onDoubleClick={() => setView(null)}
       >
+        {/*
+          `will-change: transform` only while the pointer is actually dragging.
+          Left on permanently - which is how this started - it pins the drawing
+          to its own compositor layer, and the compositor rasterizes that layer
+          once and then scales the bitmap. Every diagram on the site was being
+          drawn as a stretched image of itself rather than as vectors, which is
+          the blur. Dropped at rest, the browser re-rasterizes at the zoom
+          actually in effect and the strokes and 12px labels come back sharp.
+          During a pan the layer buys smoothness and nobody can see detail in a
+          moving diagram anyway, so it goes back on for exactly that long.
+        */}
         <div
-          className="absolute left-0 top-0 origin-top-left will-change-transform"
+          className={cn("absolute left-0 top-0 origin-top-left", panning && "will-change-transform")}
           style={{
             transform: `translate(${v.x}px, ${v.y}px) scale(${v.zoom})`,
             width: shown.width,
@@ -483,24 +502,41 @@ function Reader({
           </span>
         </div>
 
-        {legendItems.length > 0 && (
-          <div className="pointer-events-none absolute inset-x-2 bottom-2 flex flex-wrap gap-x-3 gap-y-1 rounded-md bg-surface-card/85 px-2 py-1 backdrop-blur-sm">
-            {legendItems.map((item) => (
-              <span key={item.key} className="flex items-center gap-1.5 text-[11px] text-slate">
-                <SymbolGlyph
-                  symbol={item.symbol}
-                  width={16}
-                  height={11}
-                  stroke={item.stroke}
-                  fill={item.fill}
-                  strokeWidth={1.2}
-                  radius={3}
-                />
-                {item.label}
-              </span>
-            ))}
-          </div>
-        )}
+        {/* The floor of the frame: an open note, and the legend under it. Both
+            are chrome over the drawing rather than panels beneath it, so the
+            diagram gets the whole frame and a note appears where the reader is
+            already looking instead of below the thing they just clicked. */}
+        <div className="pointer-events-none absolute inset-x-2 bottom-2 flex flex-col gap-1.5">
+          {notes && openNote && (
+            <div className="pointer-events-auto max-h-24 overflow-y-auto rounded-md border border-border bg-surface-card/95 px-2.5 py-1.5 backdrop-blur-sm">
+              {noteTitle && (
+                <div className="mb-0.5 text-[11px] font-semibold text-copper-dark">
+                  {noteTitle.replace(/\n/g, " · ")}
+                </div>
+              )}
+              <p className="text-xs leading-relaxed text-ink-soft">{openNote}</p>
+            </div>
+          )}
+
+          {legendItems.length > 0 && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1 rounded-md bg-surface-card/85 px-2 py-1 backdrop-blur-sm">
+              {legendItems.map((item) => (
+                <span key={item.key} className="flex items-center gap-1.5 text-[11px] text-slate">
+                  <SymbolGlyph
+                    symbol={item.symbol}
+                    width={16}
+                    height={11}
+                    stroke={item.stroke}
+                    fill={item.fill}
+                    strokeWidth={1.2}
+                    radius={3}
+                  />
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {steps.length > 0 && walkthrough && tracing && (
@@ -520,17 +556,6 @@ function Reader({
         </>
       )}
 
-      {notes && noteCount > 0 && (
-        <NotePanel
-          title={selectedEl && isShape(selectedEl) ? selectedEl.text : selectedEl?.label}
-          note={selectedEl?.note}
-          placeholder={
-            selectedEl
-              ? "No note on this one."
-              : `Click a box with a dot in the corner to read why it is there. ${noteCount} of them have one.`
-          }
-        />
-      )}
     </div>
   );
 }
@@ -564,27 +589,6 @@ function Chip({
     >
       {children}
     </button>
-  );
-}
-
-function NotePanel({ title, note, placeholder }: { title?: string; note?: string; placeholder: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface-2/40 p-3">
-      {/* Fixed height plus scroll, so notes of different lengths and the
-          no-selection placeholder all leave the panel the same size. */}
-      <div className="h-16 overflow-y-auto">
-        {note ? (
-          <>
-            {title && (
-              <div className="mb-1 text-[11px] font-semibold text-copper-dark">{title.replace(/\n/g, " · ")}</div>
-            )}
-            <p className="text-xs leading-relaxed text-ink-soft">{note}</p>
-          </>
-        ) : (
-          <p className="text-xs italic text-slate">{placeholder}</p>
-        )}
-      </div>
-    </div>
   );
 }
 
