@@ -4,6 +4,11 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
+ * The chrome the homepage sections share: the heading, the outbound link, and
+ * the card tile.
+ *
+ * ---
+ *
  * The heading every homepage section wears.
  *
  * There used to be one of these written out per section, and they had drifted:
@@ -85,3 +90,18 @@ export function SectionLink({ href, label }: { href: string; label: string }) {
     </Link>
   );
 }
+
+/**
+ * A card in one of the homepage grids.
+ *
+ * The lift is the same everywhere it appears, and the shadow is a token rather
+ * than a literal so it survives the dark theme - the two grids used to carry
+ * the same hard-coded ink wash, which on a dark ground was no shadow at all.
+ * Reduced motion keeps the border and drops the travel.
+ */
+export const TILE_CLASS = cn(
+  "group flex h-full flex-col rounded-xl border border-border bg-surface-card p-4",
+  "transition-[transform,border-color,box-shadow] duration-300 ease-out",
+  "hover:-translate-y-1 hover:border-copper/40 hover:shadow-[var(--shadow-lift)]",
+  "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+);

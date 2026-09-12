@@ -3,6 +3,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { FeatureStrip } from "@/components/marketing/feature-strip";
 import { LiveDemo } from "@/components/marketing/live-demo";
+import { PracticesShowcase } from "@/components/marketing/practices-showcase";
 import { PuzzlesShowcase } from "@/components/marketing/puzzles-showcase";
 import { TutorialsShowcase } from "@/components/marketing/tutorials-showcase";
 import { EmbedsShowcase } from "@/components/marketing/embeds-showcase";
@@ -35,6 +36,7 @@ export default async function Home() {
         <EmbedsShowcase />
         <LiveDemo />
         <FeatureStrip />
+        <PracticesShowcase />
         <PuzzlesShowcase />
         <BlogShowcase posts={posts} />
       </main>
