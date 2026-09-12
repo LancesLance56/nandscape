@@ -173,9 +173,9 @@ export function PracticeSplit({ left, right, topOffsetRem }: PracticeSplitProps)
       }
       className="lg:flex lg:h-[calc(100dvh-var(--practice-top))] lg:overflow-hidden"
     >
-      {/* The pane itself scrolls, not this wrapper: each side is a framed sheet
-          and a scrollbar belongs inside the frame, not between the two. */}
-      <div className="min-w-0 lg:h-full lg:w-[var(--practice-split)] lg:shrink-0">{left}</div>
+      <div className="min-w-0 lg:w-[var(--practice-split)] lg:shrink-0 lg:overflow-y-auto">
+        {left}
+      </div>
 
       {/*
         A real separator, not a decorative line: it is focusable and reports its
@@ -194,12 +194,11 @@ export function PracticeSplit({ left, right, topOffsetRem }: PracticeSplitProps)
         onPointerDown={onPointerDown}
         onKeyDown={onKeyDown}
         onDoubleClick={reset}
-        className="group hidden shrink-0 cursor-col-resize items-center justify-center focus-visible:outline-none lg:flex lg:w-3"
+        className="group hidden shrink-0 cursor-col-resize items-center justify-center border-x border-border bg-surface-2 transition-colors hover:bg-copper-bg focus-visible:bg-copper-bg focus-visible:outline-none lg:flex lg:w-1.5"
       >
-        {/* Bare ground between the two sheets, with a grip that only appears on
-            hover or focus - visible enough to find, quiet enough not to draw
-            the eye while reading. */}
-        <span className="h-10 w-1 rounded-full bg-transparent transition-colors group-hover:bg-border-strong group-focus-visible:bg-copper" />
+        {/* A grip that only appears on hover or focus - visible enough to find,
+            quiet enough not to draw the eye while reading. */}
+        <span className="h-8 w-0.5 rounded-full bg-transparent transition-colors group-hover:bg-copper group-focus-visible:bg-copper" />
       </div>
 
       <div className="min-w-0 lg:h-full lg:flex-1">{right}</div>

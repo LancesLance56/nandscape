@@ -1,41 +1,43 @@
-import Link from "next/link";
-
 import { listPracticeRecords } from "@/lib/practice/practice-records";
-import { DifficultyTag } from "@/components/puzzles/difficulty-tag";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { SectionHeader, TILE_CLASS } from "./section-header";
-import type { PracticeSignature, PracticeSpec } from "@/types/practice";
+import { StatementMarkdown } from "@/components/practices/statement-markdown";
+import { SectionHeader } from "./section-header";
+import { PracticeDemo, type DemoProblem } from "./practice-demo";
+import { formatValue } from "@/lib/practice/compare";
+import type { PracticeSpec } from "@/types/practice";
 
 /**
  * The coding problems block, sitting directly above the logic problems.
  *
- * The two are siblings - the navbar calls them Logic Problems and Coding
- * Problems, and they share a browser (`components/problems`) - so they get the
- * same heading shape, the same grid and the same tile. What they must not
- * share is the artwork, or the page reads as one section printed twice.
+ * This used to be a grid of six tiles. A tile describes an editor; the section
+ * now contains one - the same workspace /practices/[slug] runs, loaded with a
+ * seeded problem, with Run wired to the same judge. Someone can write an answer
+ * and have it graded without an account and without leaving the homepage, which
+ * a tile can only promise.
  *
- * A logic puzzle is drawn as the chip it asks you to build, with its pins
- * named. The equivalent here is the signature: the function's name, what it is
- * handed and what it has to give back, which is the whole contract a coding
- * problem states before you have read a word of the statement. Everything else
- * on the tile is a number the reader can act on - how hard, how many cases it
- * will be judged against, what it is about.
+ * The sibling section below it, Logic Problems, keeps its grid on purpose: the
+ * two are siblings in the navbar and share a browser, so they must not look
+ * like one section printed twice. One states a problem and lets you solve it;
+ * the other lays out the set.
  *
- * Languages are deliberately absent from the tile. Every problem in the set
- * supports all three, so a row of identical chips on six cards would be six
- * cards of noise; the section says it once, in the blurb.
+ * Statements are rendered here rather than in the client component below,
+ * because the Markdown renderer is a Server Component - fenced code is
+ * coloured by the Shiki singleton as the tree renders, with no client pass -
+ * and they travel down as slots.
  */
-const FEATURED_SLUGS = [
-  "two-sum",
-  "count-set-bits",
-  "merge-intervals",
-  "group-anagrams",
-  "course-schedule",
-  "edit-distance",
-];
 
-/** How many topic tags a tile shows before it stops. */
-const TAG_LIMIT = 2;
+/**
+ * The problems the picker offers, in order.
+ *
+ * Three, not six: each one is a whole statement and a starter stub in the RSC
+ * payload, and a picker wide enough to wrap stops reading as a picker. They
+ * climb in difficulty, and they are chosen to be short - a demo nobody can
+ * finish in the frame is an advert for the scroll bar.
+ */
+const FEATURED_SLUGS = ["two-sum", "count-set-bits", "merge-intervals"];
+
+/** How many topic tags the statement header shows before it stops. */
+const TAG_LIMIT = 3;
 
 export async function PracticesShowcase() {
   let practices: PracticeSpec[] = [];
@@ -46,8 +48,22 @@ export async function PracticesShowcase() {
   }
 
   const bySlug = new Map(practices.map((p) => [p.slug, p]));
-  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter((p): p is PracticeSpec => Boolean(p));
-  if (featured.length === 0) featured = practices.slice(0, 6);
+  let featured = FEATURED_SLUGS.map((slug) => bySlug.get(slug)).filter(
+    (p): p is PracticeSpec => Boolean(p),
+  );
+  if (featured.length === 0) featured = practices.slice(0, 3);
+
+  const problems: DemoProblem[] = featured.map((practice) => ({
+    slug: practice.slug,
+    title: practice.title,
+    difficulty: practice.difficulty,
+    tags: practice.tags.slice(0, TAG_LIMIT),
+    summary: practice.summary,
+    languages: practice.languages,
+    starterCode: practice.starterCode,
+    statement: <StatementMarkdown source={practice.statement} />,
+    examples: <Examples practice={practice} />,
+  }));
 
   return (
     <section className="py-20">
@@ -60,74 +76,63 @@ export async function PracticesShowcase() {
         />
       </ScrollReveal>
 
-      {featured.length === 0 ? (
+      {problems.length === 0 ? (
         <p className="text-sm text-ink-soft">No coding problems in the database yet.</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((practice, i) => (
-            <ScrollReveal key={practice.slug} delay={i * 50}>
-              <Link href={`/practices/${practice.slug}`} className={TILE_CLASS}>
-                <div className="flex items-center justify-between gap-3">
-                  <DifficultyTag difficulty={practice.difficulty} />
-                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">
-                    {practice.visibleTests.length + practice.hiddenTestCount} tests
-                  </span>
-                </div>
-
-                <h3 className="mt-2.5 font-display text-base font-semibold text-ink transition-colors group-hover:text-copper-dark">
-                  {practice.title}
-                </h3>
-                <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-ink-soft">{practice.summary}</p>
-
-                {/* Pushed to the floor of the tile, so the signatures line up
-                    across a row however long the summaries above them run. */}
-                <div className="mt-auto pt-4">
-                  <Signature signature={practice.signature} />
-
-                  {practice.tags.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {practice.tags.slice(0, TAG_LIMIT).map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-slate"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </Link>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScrollReveal delay={80}>
+          <PracticeDemo problems={problems} />
+        </ScrollReveal>
       )}
     </section>
   );
 }
 
 /**
- * The function you have to write, spelled the way the starter code spells it.
+ * The worked examples, in the shape the problem page gives them.
  *
- * Names in ink and types in slate, so the shape of the problem - two arrays in,
- * one integer out - is legible before any of it is read. It wraps rather than
- * truncating: a clipped signature is worse than a two-line one, because the
- * part that gets cut is the return type.
+ * Formatted fields rather than a raw JSON dump of the case: the arguments are
+ * shown as a call, which is how the reader's own function will receive them.
  */
-function Signature({ signature }: { signature: PracticeSignature }) {
+function Examples({ practice }: { practice: PracticeSpec }) {
+  if (practice.visibleTests.length === 0) return null;
+
   return (
-    <code className="block break-words rounded-lg border border-border bg-surface-2 px-2.5 py-2 font-mono text-[11px] leading-relaxed">
-      <span className="font-semibold text-copper-dark">{signature.name}</span>
-      <span className="text-slate">(</span>
-      {signature.params.map((param, i) => (
-        <span key={param.name}>
-          {i > 0 && <span className="text-slate">, </span>}
-          <span className="text-ink">{param.name}</span>
-          <span className="text-slate">: {param.type}</span>
-        </span>
-      ))}
-      <span className="text-slate">) &rarr; </span>
-      <span className="text-ink">{signature.returns}</span>
-    </code>
+    <section>
+      <h4 className="mb-3 font-display text-base font-semibold text-ink">Examples</h4>
+      <div className="space-y-3">
+        {practice.visibleTests.map((testCase) => (
+          <div key={testCase.index} className="rounded-lg border border-border bg-surface-2/50 p-3">
+            <dl className="space-y-1.5 text-xs">
+              <div className="grid grid-cols-[4.5rem_1fr] gap-2">
+                <dt className="text-ink-soft">Input</dt>
+                <dd className="overflow-x-auto font-mono text-ink">
+                  {practice.signature.params
+                    .map((param, index) => `${param.name} = ${formatValue(testCase.args[index])}`)
+                    .join(", ")}
+                </dd>
+              </div>
+              <div className="grid grid-cols-[4.5rem_1fr] gap-2">
+                <dt className="text-ink-soft">Output</dt>
+                <dd className="overflow-x-auto font-mono text-ink">
+                  {formatValue(testCase.expected)}
+                </dd>
+              </div>
+              {testCase.explanation && (
+                <div className="grid grid-cols-[4.5rem_1fr] gap-2">
+                  <dt className="text-ink-soft">Why</dt>
+                  <dd className="text-ink-soft">{testCase.explanation}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        ))}
+      </div>
+      {practice.hiddenTestCount > 0 && (
+        <p className="mt-3 text-xs text-ink-soft">
+          Submitting also runs {practice.hiddenTestCount} hidden test
+          {practice.hiddenTestCount === 1 ? "" : "s"}.
+        </p>
+      )}
+    </section>
   );
 }
