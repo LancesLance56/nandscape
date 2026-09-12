@@ -80,7 +80,7 @@ export async function PuzzlesShowcase() {
         <SectionHeader
           eyebrow="Logic problems"
           title="Try a logic problem"
-          blurb="A chip with its pins named and its gate budget stamped on the lid. Wire up the inside, run the tests, and watch the signals settle. The editor below is the real one."
+          blurb="A chip with its pins named and its gate budget stamped on the lid, waiting for you to wire up the inside."
           action={{ href: "/puzzles", label: "Browse all problems" }}
         />
       </ScrollReveal>

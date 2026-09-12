@@ -26,7 +26,7 @@ import type { PuzzleDifficulty } from "@/types/puzzle";
  * Left of it is the chip, which is this section's own artwork and the thing
  * that stops it reading as the coding section printed twice. The statement
  * itself is deliberately *not* repeated there: the editor carries its own
- * problem panel, and two copies of one specification in one card is worse
+ * problem panel, and two copies of one specification in one section is worse
  * than none.
  */
 
@@ -36,8 +36,8 @@ import type { PuzzleDifficulty } from "@/types/puzzle";
  * The editor hides its sidebar - which is where the problem panel and the Run
  * tests button live - below 768px of *its own* viewport. A two-column split at
  * `lg` leaves the frame around 600px on a 1024px screen, which would quietly
- * take the Run button away. Stacked below `xl`, the frame gets the full card
- * and stays over the threshold.
+ * take the Run button away. Stacked below `xl`, the frame gets the full width
+ * of the section and stays over the threshold.
  */
 export interface DemoPuzzle {
   slug: string;
@@ -84,61 +84,58 @@ export function PuzzleDemo({ puzzles }: { puzzles: DemoPuzzle[] }) {
         </div>
       )}
 
-      <div className="rounded-2xl border border-border bg-surface-2/50 p-2 shadow-[var(--shadow-lift)]">
-        <div className="grid gap-2 xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
-          <article className="flex flex-col rounded-xl border border-border bg-surface-card px-5 py-5">
-            <h3 className="font-display text-xl font-semibold leading-tight text-ink">
-              {active.title}
-            </h3>
-            <div className="mt-2.5">
-              <DifficultyTag difficulty={active.difficulty} />
-            </div>
+      {/* No frame, at any level. There was a tinted card holding both columns
+          and a second card around the statement, and inside the frame the
+          editor draws its own padded panels on its own ground - so a reader
+          counting borders inward found three before reaching anything they
+          could click. The statement is now type on the page and the editor is
+          the only box in the section, which is the one that earns it. */}
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] xl:gap-8">
+        <article className="flex flex-col">
+          <h3 className="font-display text-xl font-semibold leading-tight text-ink">
+            {active.title}
+          </h3>
+          <div className="mt-2.5">
+            <DifficultyTag difficulty={active.difficulty} />
+          </div>
 
-            <p className="mt-3 text-sm leading-relaxed text-ink-soft">{active.description}</p>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">{active.description}</p>
 
-            {/* The package you are being asked to fill in, drawn with its pins
-                named. Hidden below `xl`, where the card is one column and the
-                chip would simply push the editor off the screen. */}
-            <div className="mt-5 hidden xl:block">{active.chip}</div>
+          {/* The package you are being asked to fill in, drawn with its pins
+              named. Hidden below `xl`, where the card is one column and the
+              chip would simply push the editor off the screen. */}
+          <div className="mt-5 hidden xl:block">{active.chip}</div>
 
-            {active.constraints.length > 0 && (
-              <dl className="mt-5 space-y-1.5 border-t border-border pt-4 text-xs text-ink-soft">
-                {active.constraints.map((constraint) => (
-                  <dd key={constraint} className="font-mono">
-                    {constraint}
-                  </dd>
-                ))}
-              </dl>
-            )}
+          {active.constraints.length > 0 && (
+            <dl className="mt-5 space-y-1.5 border-t border-border pt-4 text-xs text-ink-soft">
+              {active.constraints.map((constraint) => (
+                <dd key={constraint} className="font-mono">
+                  {constraint}
+                </dd>
+              ))}
+            </dl>
+          )}
 
-            <Link
-              href={`/puzzles/${active.slug}`}
-              className="group mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-copper-dark transition-colors hover:text-copper"
-            >
-              Open it full screen
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transition-none" />
-            </Link>
-          </article>
+          <Link
+            href={`/puzzles/${active.slug}`}
+            className="group mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-copper-dark transition-colors hover:text-copper"
+          >
+            Open it full screen
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transition-none" />
+          </Link>
+        </article>
 
-          {/* The frame, bare. It had a captioned panel around it, and that was
-              a fourth border inside the third: the editor already draws its own
-              padded, rounded panels on its own ground, so anything wrapped
-              round the iframe reads as a box inside a box. The caption said
-              "wire it up, then run the tests", which the editor's own Run tests
-              button says better.
-
-              Keyed by slug so switching the picker reloads the frame rather
-              than leaving the previous puzzle's canvas in place. Lazy, so a
-              reader who never scrolls this far never pays for React Flow and
-              the simulation engine. */}
-          <iframe
-            key={active.slug}
-            src={`/puzzles/${active.slug}`}
-            title={`${active.title} - build it in the Nandscape editor`}
-            loading="lazy"
-            className="h-[32rem] w-full rounded-xl border-0 xl:h-[40rem]"
-          />
-        </div>
+        {/* Keyed by slug so switching the picker reloads the frame rather
+            than leaving the previous puzzle's canvas in place. Lazy, so a
+            reader who never scrolls this far never pays for React Flow and
+            the simulation engine. */}
+        <iframe
+          key={active.slug}
+          src={`/puzzles/${active.slug}`}
+          title={`${active.title} - build it in the Nandscape editor`}
+          loading="lazy"
+          className="h-[32rem] w-full rounded-xl border-0 xl:h-[40rem]"
+        />
       </div>
     </div>
   );

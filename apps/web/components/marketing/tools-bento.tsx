@@ -226,7 +226,7 @@ export function ToolsBento() {
         <SectionHeader
           eyebrow="Try them out"
           title="Tools &amp; visualizers"
-          blurb={`${TOOLS.length} interactive tools that each do one job, from a K-map solver to a graph traversal you can scrub frame by frame. All free, all in the browser, and every one of them embeddable - press Embed on any tile for the iframe tag to paste into your own page.`}
+          blurb={`${TOOLS.length} interactive tools that each do one job, free in the browser, and every one of them embeddable with the Embed button on its tile.`}
           action={{ href: "/tools", label: "Browse all tools" }}
         />
       </ScrollReveal>

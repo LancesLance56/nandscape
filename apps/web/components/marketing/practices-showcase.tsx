@@ -71,7 +71,7 @@ export async function PracticesShowcase() {
         <SectionHeader
           eyebrow="Coding problems"
           title="Try a coding problem"
-          blurb="Implement one function, run it against the worked examples, then submit it against the hidden cases. Python, JavaScript or C++, in the browser, with nothing to install."
+          blurb="Implement one function in Python, JavaScript or C++, run it against the worked examples, then submit it against the hidden cases."
           action={{ href: "/practices", label: "Browse all problems" }}
         />
       </ScrollReveal>
