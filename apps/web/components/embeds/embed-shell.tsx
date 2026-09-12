@@ -44,12 +44,16 @@ export function EmbedShell({
       {bleed ? (
         <div className="fixed inset-0 bg-surface">{children}</div>
       ) : (
-        // Centered both ways rather than flowing from the top-left corner.
-        // A widget's natural size rarely matches the box the host actually
-        // gave the iframe - a short flowchart in a tall frame, a narrow K-map
-        // in a wide one - and centering is what makes that look intentional
-        // instead of like content stranded in a corner.
-        <div className="flex min-h-screen w-full items-center justify-center bg-surface p-3 sm:p-4">
+        // A column, not a row, and that choice is the whole trick: the main
+        // axis runs vertically, so `justify-center` centers the widget in a
+        // frame taller than it needs, while the cross axis keeps its default
+        // stretch and the widget still fills the width it was given.
+        //
+        // Centering on both axes of a *row* looks equivalent and is not. It
+        // sizes the child to its content, and a widget that lays itself out
+        // against the width it is handed - the sorting stage, a diagram
+        // fitting itself to its frame - collapses to a sliver.
+        <div className="flex min-h-screen w-full flex-col justify-center bg-surface p-3 sm:p-4">
           {children}
         </div>
       )}

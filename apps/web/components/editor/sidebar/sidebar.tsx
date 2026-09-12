@@ -3,39 +3,30 @@
 import {useUiStore} from "@/store/ui-store";
 import {ProblemPanel} from "./problem-panel";
 import {ProjectsPanel} from "./projects-panel";
-import type {SidebarTab} from "@/types/editor";
 
-const TABS: { id: SidebarTab; label: string }[] = [
-  {id: "projects", label: "Projects"},
-  {id: "problem", label: "Problem"},
-];
-
+/**
+ * The left panel: the problem you are solving, or the projects you have saved.
+ *
+ * There used to be a Projects/Problem tab strip across the top, and it was
+ * chrome offering a choice that never existed. Which panel belongs here is
+ * decided entirely by how the editor was opened - CircuitEditor sets it when
+ * it loads, "problem" for a puzzle and "projects" for a project or the
+ * sandbox - and the other tab is always the wrong one. Inside a puzzle,
+ * Projects was a door out of the thing you had just clicked into; in the
+ * sandbox, Problem was a panel whose entire content was a link telling you to
+ * go and open a puzzle.
+ *
+ * So the strip is gone and the panel is whatever the context called for. The
+ * store still carries `sidebarTab`, because something still has to say which
+ * of the two this is - it is simply no longer a control.
+ */
 export function Sidebar() {
   const activeTab = useUiStore((s) => s.sidebarTab);
-  const setTab = useUiStore((s) => s.setSidebarTab);
 
   return (
     <div className="flex h-full flex-col bg-surface-card">
-      <div className="flex gap-1 rounded-t-2xl bg-surface-2 p-1.5">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setTab(tab.id)}
-            className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-              activeTab === tab.id
-                ? "bg-surface-card text-ink shadow-sm"
-                : "text-ink-soft hover:bg-surface-card/60 hover:text-ink"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       <div className="flex flex-1 flex-col overflow-y-auto">
-        {activeTab === "problem" && <ProblemPanel/>}
-        {activeTab === "projects" && <ProjectsPanel/>}
+        {activeTab === "problem" ? <ProblemPanel/> : <ProjectsPanel/>}
       </div>
     </div>
   );

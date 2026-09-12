@@ -120,28 +120,24 @@ export function PuzzleDemo({ puzzles }: { puzzles: DemoPuzzle[] }) {
             </Link>
           </article>
 
-          <div className="overflow-hidden rounded-xl border border-border bg-surface-card">
-            <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2.5">
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">
-                The editor
-              </span>
-              <span className="font-mono text-[10px] text-slate">
-                wire it up, then run the tests
-              </span>
-            </div>
+          {/* The frame, bare. It had a captioned panel around it, and that was
+              a fourth border inside the third: the editor already draws its own
+              padded, rounded panels on its own ground, so anything wrapped
+              round the iframe reads as a box inside a box. The caption said
+              "wire it up, then run the tests", which the editor's own Run tests
+              button says better.
 
-            {/* Keyed by slug so switching the picker reloads the frame rather
-                than leaving the previous puzzle's canvas in place. Lazy, so a
-                reader who never scrolls this far never pays for React Flow and
-                the simulation engine. */}
-            <iframe
-              key={active.slug}
-              src={`/puzzles/${active.slug}`}
-              title={`${active.title} - build it in the Nandscape editor`}
-              loading="lazy"
-              className="h-[32rem] w-full border-0 xl:h-[40rem]"
-            />
-          </div>
+              Keyed by slug so switching the picker reloads the frame rather
+              than leaving the previous puzzle's canvas in place. Lazy, so a
+              reader who never scrolls this far never pays for React Flow and
+              the simulation engine. */}
+          <iframe
+            key={active.slug}
+            src={`/puzzles/${active.slug}`}
+            title={`${active.title} - build it in the Nandscape editor`}
+            loading="lazy"
+            className="h-[32rem] w-full rounded-xl border-0 xl:h-[40rem]"
+          />
         </div>
       </div>
     </div>
