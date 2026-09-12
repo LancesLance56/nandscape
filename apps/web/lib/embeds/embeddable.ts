@@ -224,6 +224,19 @@ export function embedOptionsQuery(options: EmbedOptions): string {
   return string ? `?${string}` : "";
 }
 
+/**
+ * The reader-facing options plus, for a `widget` target, its inline config -
+ * merged so a caller only has to call one function. `data` is meaningless for
+ * every other kind (they resolve their own data server-side from `id` alone),
+ * so it is simply ignored rather than asked for conditionally.
+ */
+function embedQuery(options: EmbedOptions, data?: Record<string, unknown>): string {
+  const params = new URLSearchParams(embedOptionsQuery(options).replace(/^\?/, ""));
+  if (data) params.set("data", encodeEmbedData(data));
+  const string = params.toString();
+  return string ? `?${string}` : "";
+}
+
 /* -------------------------------------------------------------------------- */
 /* Snippet                                                                    */
 /* -------------------------------------------------------------------------- */
@@ -235,10 +248,27 @@ export interface SnippetInput {
   width?: number | "responsive";
   height: number;
   options?: EmbedOptions;
+  /** Inline config for a `widget` target - see decodeEmbedData above. */
+  data?: Record<string, unknown>;
 }
 
-export function embedUrl({ origin, target, options }: Pick<SnippetInput, "origin" | "target" | "options">): string {
-  return `${origin}${embedPath(target)}${embedOptionsQuery(options ?? DEFAULT_EMBED_OPTIONS)}`;
+export function embedUrl({
+  origin,
+  target,
+  options,
+  data,
+}: Pick<SnippetInput, "origin" | "target" | "options" | "data">): string {
+  return `${origin}${embedPath(target)}${embedQuery(options ?? DEFAULT_EMBED_OPTIONS, data)}`;
+}
+
+/** Path-only form of embedUrl, for a same-origin iframe that has no need to
+ *  spell out its own host. */
+export function embedSrc({
+  target,
+  options,
+  data,
+}: Pick<SnippetInput, "target" | "options" | "data">): string {
+  return `${embedPath(target)}${embedQuery(options ?? DEFAULT_EMBED_OPTIONS, data)}`;
 }
 
 /**
@@ -253,8 +283,9 @@ export function buildEmbedSnippet({
   width = 640,
   height,
   options = DEFAULT_EMBED_OPTIONS,
+  data,
 }: SnippetInput): string {
-  const src = embedUrl({ origin, target, options });
+  const src = embedUrl({ origin, target, options, data });
   const sizing =
     width === "responsive"
       ? `style="width:100%;border:0" height="${height}"`

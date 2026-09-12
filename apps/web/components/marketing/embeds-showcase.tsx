@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { SectionHeader } from "./section-header";
-import { buildEmbedSnippet, embedPath, type EmbedTarget } from "@/lib/embeds/embeddable";
+import { buildEmbedSnippet, embedSrc, type EmbedTarget } from "@/lib/embeds/embeddable";
 import { cn } from "@/lib/cn";
 import { useOrigin } from "@/hooks/use-origin";
 
@@ -28,15 +28,23 @@ interface Demo {
   target: EmbedTarget;
   title: string;
   height: number;
+  /** Inline config for a `widget` target - see lib/embeds/embeddable.ts. */
+  data?: Record<string, unknown>;
 }
 
 const DEMOS: Demo[] = [
   {
     id: "sorting",
-    label: "Sorting visualizer",
-    target: { kind: "tool", id: "sorting-algorithm-visualizer" },
-    title: "Sorting Algorithm Visualizer",
-    height: 720,
+    label: "Quick sort visualizer",
+    // The `widget` kind rather than the `tool` one: the tool page is the
+    // "master" visualizer - all seven algorithms, a compare table, an FAQ -
+    // and that is the wrong first impression for a paste-one-line pitch. This
+    // is the same small, single-algorithm view the quick sort tutorial embeds
+    // inline, with the picker locked to the one algorithm the label promises.
+    target: { kind: "widget", id: "sorting-visualizer" },
+    data: { layout: "compact", algorithms: ["quick"], preset: "random", size: 12 },
+    title: "Quick sort visualizer",
+    height: 400,
   },
   {
     id: "kmap",
@@ -63,8 +71,9 @@ const DEMOS: Demo[] = [
 
 /** The demo gets its own full-width row now, so it can afford a bit more
  *  height without letting the section take over the page. Real embeds use
- *  whatever height the host asks for. */
-const PREVIEW_HEIGHT = 460;
+ *  whatever height the host asks for. 20% taller than the original 460 -
+ *  the K-map and graph demos were the tightest fit at that size. */
+const PREVIEW_HEIGHT = 552;
 
 export function EmbedsShowcase() {
   const [active, setActive] = useState(DEMOS[0]);
@@ -80,6 +89,7 @@ export function EmbedsShowcase() {
         title: active.title,
         width: "responsive",
         height: active.height,
+        data: active.data,
       }),
     [origin, active],
   );
@@ -133,7 +143,7 @@ export function EmbedsShowcase() {
           <div className="overflow-hidden rounded-xl border border-border bg-surface-card">
             <iframe
               key={active.id}
-              src={embedPath(active.target)}
+              src={embedSrc({ target: active.target, data: active.data })}
               title={`${active.title} embed preview`}
               loading="lazy"
               style={{ height: PREVIEW_HEIGHT, border: 0 }}
