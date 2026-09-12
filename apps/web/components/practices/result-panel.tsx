@@ -56,7 +56,7 @@ export function ResultPanel({ result, running, mode }: ResultPanelProps) {
     return (
       <div className="flex h-full items-center justify-center px-6 text-center text-sm text-ink-soft">
         <p>
-          <span className="font-medium text-ink">Run</span> checks the examples above.{" "}
+          <span className="font-medium text-ink">Run Tests</span> checks the worked examples.{" "}
           <span className="font-medium text-ink">Submit</span> checks those plus the hidden cases.
         </p>
       </div>

@@ -44,46 +44,62 @@ export default async function PracticePage({ params }: PageParams) {
 
   return (
     <>
-      <PracticeNav problemTitle={practice.title} discussSlug={slug} discussCount={discussCount} />
+      <PracticeNav problemTitle={practice.title} />
       {/*
-        A workspace, not an article: full-bleed, locked to the viewport, with
-        each pane scrolling on its own and a draggable divider between them -
-        the layout every judge converges on, because horizontal space is the
-        scarce resource when a statement and an editor have to be read
-        together. There is no centred container and no footer; both would push
-        the editor down and reintroduce a whole-page scroll, which is the thing
-        that makes a split view useless.
+        A workspace, not an article: locked to the viewport, with each pane
+        scrolling on its own and a draggable divider between them - the layout
+        every judge converges on, because horizontal space is the scarce
+        resource when a statement and an editor have to be read together. There
+        is no centred container and no footer; both would push the editor down
+        and reintroduce a whole-page scroll, which is the thing that makes a
+        split view useless.
 
-        `mt-12` clears the 3rem PracticeNav, and PracticeSplit sizes itself
-        against the same figure. `dvh` rather than `vh` so the bottom of the
-        editor is not hidden under mobile browser chrome.
+        The two panes are sheets laid on the page rather than a full-bleed
+        split: a thin margin of ground all the way round, and each pane framed,
+        so the statement and the editor read as two instruments side by side
+        instead of one window sawn in half.
+
+        `mt-12` clears the 3rem PracticeNav; the 0.75rem padding above and
+        below is the other 1.5rem PracticeSplit is told to subtract. `dvh`
+        rather than `vh` so the bottom of the editor is not hidden under mobile
+        browser chrome.
 
         Below `lg` this collapses back to ordinary document flow: two half-width
         columns on a phone would leave neither readable, so the statement simply
         sits above the editor and the page scrolls normally.
       */}
-      <main className="mt-12">
+      <main className="mt-12 p-3">
         <PracticeSplit
-          topOffsetRem={3}
+          topOffsetRem={4.5}
           left={
-            <article className="px-5 py-6 sm:px-6">
-                <header className="mb-6">
-                  <div className="mb-2 flex flex-wrap items-center gap-3">
-                    <DifficultyTag difficulty={practice.difficulty} />
-                    {practice.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-surface-3 px-2 py-0.5 text-[0.65rem] text-ink-soft"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <h1 className="font-display text-2xl font-semibold leading-tight text-ink">
-                    {practice.title}
-                  </h1>
-                  {practice.summary && <p className="mt-2 text-sm text-ink-soft">{practice.summary}</p>}
-                </header>
+            <article className="h-full overflow-hidden rounded-xl border border-border bg-surface-card lg:overflow-y-auto">
+              <header className="border-b border-border px-5 py-5 sm:px-6">
+                <h1 className="font-display text-2xl font-semibold leading-tight text-ink">
+                  {practice.title}
+                </h1>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <DifficultyTag difficulty={practice.difficulty} pill />
+                  {practice.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-surface-3 px-2.5 py-0.5 text-xs text-ink-soft"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </header>
+
+              <div className="px-5 py-5 sm:px-6">
+                {practice.summary && (
+                  // The one-line framing, on its own tinted ground above the
+                  // statement proper - the thing someone reads to decide
+                  // whether they understand the problem before reading how it
+                  // is specified.
+                  <p className="mb-6 rounded-lg bg-surface-2/70 px-4 py-3 text-sm leading-relaxed text-ink-soft">
+                    {practice.summary}
+                  </p>
+                )}
 
                 {/* Markdown, so the author decides the statement's shape - which
                     headings it has, whether constraints are a list or a table.
@@ -146,10 +162,11 @@ export default async function PracticePage({ params }: PageParams) {
                     {practice.timeLimitMs} ms and {practice.memoryLimitMb} MB per test case.
                   </p>
                 </section>
+              </div>
             </article>
           }
           right={
-            <div className="h-full px-5 pb-6 sm:px-6 lg:p-0">
+            <div className="mt-3 h-full lg:mt-0">
               <PracticeWorkspace
                 practice={{
                   slug: practice.slug,
@@ -157,6 +174,7 @@ export default async function PracticePage({ params }: PageParams) {
                   starterCode: practice.starterCode,
                 }}
                 signedIn={Boolean(user)}
+                discussCount={discussCount}
               />
             </div>
           }
