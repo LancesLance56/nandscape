@@ -50,6 +50,14 @@ export function resolveDoc(data: Record<string, unknown>): Doc | null {
   );
 }
 
+/**
+ * How much larger an article draws a diagram than the viewer's own defaults.
+ * Applied to the zoom ceilings and the height budget alike, so a chart grows
+ * whichever of them was the binding constraint. The expand dialog ignores it -
+ * that one fits the screen.
+ */
+const ARTICLE_SCALE = 1.6;
+
 /** Block-level switches. A page can turn a feature on for one diagram. */
 function readOptions(data: Record<string, unknown>) {
   const i = (data.interactive ?? {}) as Record<string, unknown>;
@@ -62,7 +70,8 @@ function readOptions(data: Record<string, unknown>) {
     download: bool(i.download, true),
     fullscreen: bool(i.fullscreen, true),
     // Kept in step with Reader's own default in viewer.tsx.
-    maxHeight: typeof data.height === "number" ? data.height : 1205,
+    maxHeight: Math.round((typeof data.height === "number" ? data.height : 1205) * ARTICLE_SCALE),
+    scale: ARTICLE_SCALE,
   };
 }
 

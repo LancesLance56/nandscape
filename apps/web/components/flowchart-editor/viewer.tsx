@@ -46,7 +46,7 @@ import { darkPage } from "@/lib/flowchart-editor/theme-ink";
 import { useIsDark } from "@/lib/flowchart-editor/use-dark";
 import { LineView } from "./line-view";
 import { ShapeView, SymbolGlyph } from "./shape-view";
-import { StepCaption, StepControls, useStepPlayer } from "@/components/content/blocks/interactive/shared/step-player";
+import { StepControls, useStepPlayer } from "@/components/content/blocks/interactive/shared/step-player";
 
 const EMPTY: ReadonlySet<string> = new Set();
 const NO_STEPS: readonly WalkStep[] = [];
@@ -85,6 +85,9 @@ const ZOOM_BOOST = 1.3;
  */
 const MAX_FIT = 2.1;
 
+/** Room kept clear at the top of the frame for the walkthrough caption. */
+const CAPTION_INSET = 64;
+
 interface View {
   x: number;
   y: number;
@@ -106,6 +109,12 @@ export interface DiagramViewerProps {
   fullscreen?: boolean;
   /** Cap the drawing's on-screen height. */
   maxHeight?: number;
+  /**
+   * Multiplies the inline fit's zoom ceilings (MAX_FIT, ZOOM_BOOST). Pass a
+   * matching `maxHeight` too, or a height-bound chart cannot grow. The dialog
+   * ignores it.
+   */
+  scale?: number;
   className?: string;
 }
 
@@ -156,6 +165,7 @@ function Reader({
   // take - a chart that fits is a chart somebody reads. Kept in step with the
   // matching default in flowchart-widgets.tsx's readOptions().
   maxHeight = 1205,
+  scale = 1,
   className,
   expanded = false,
   onExpand,
@@ -240,25 +250,34 @@ function Reader({
    * a resize loop starts. Expanded, the dialog fixes the height in CSS, so the
    * measurement is safe and the fit uses all of it.
    */
+  // The walkthrough's narration rides inside the frame, under the chip row, so
+  // the drawing's home view starts below it rather than behind it.
+  const captioning = steps.length > 0 && walkthrough && tracing;
+  const topInset = captioning ? CAPTION_INSET : 0;
+  const boost = expanded ? 1 : scale;
+
   const fit = useMemo(() => {
     const availW = box.w - PAD * 2;
-    const availH = (expanded ? box.h : maxHeight) - PAD * 2;
+    const availH = (expanded ? box.h : maxHeight) - PAD * 2 - topInset;
     if (availW <= 0 || availH <= 0 || bounds.width <= 0 || bounds.height <= 0) return 1;
-    return Math.max(0.15, Math.min(MAX_FIT, (availW / bounds.width) * ZOOM_BOOST, availH / bounds.height));
-  }, [box.w, box.h, expanded, maxHeight, bounds]);
+    return Math.max(
+      0.15,
+      Math.min(MAX_FIT * boost, (availW / bounds.width) * ZOOM_BOOST * boost, availH / bounds.height),
+    );
+  }, [box.w, box.h, expanded, maxHeight, topInset, boost, bounds]);
 
   // Short diagrams get a short frame; nobody wants 1205px of background under
   // a four-box chart. Expanded, the dialog owns the height.
-  const frameHeight = expanded ? undefined : Math.min(maxHeight, bounds.height * fit + PAD * 2);
+  const frameHeight = expanded ? undefined : Math.min(maxHeight, bounds.height * fit + PAD * 2 + topInset);
 
   const home = useMemo<View>(() => {
-    const h = expanded ? box.h : (frameHeight ?? 0);
+    const h = (expanded ? box.h : (frameHeight ?? 0)) - topInset;
     return {
       zoom: fit,
       x: (box.w - bounds.width * fit) / 2 - bounds.x * fit,
-      y: (h - bounds.height * fit) / 2 - bounds.y * fit,
+      y: topInset + (h - bounds.height * fit) / 2 - bounds.y * fit,
     };
-  }, [box.w, box.h, expanded, frameHeight, fit, bounds]);
+  }, [box.w, box.h, expanded, frameHeight, topInset, fit, bounds]);
 
   /**
    * `null` means nobody has touched the camera, which is what lets a resize
@@ -310,7 +329,7 @@ function Reader({
     if (e.button !== 0 && e.button !== 1) return;
     // Chips sit inside the viewport so they stay put while it moves; pressing
     // one is not the start of a pan.
-    if ((e.target as HTMLElement).closest("button")) return;
+    if ((e.target as HTMLElement).closest("button, [data-chrome]")) return;
     if (e.button === 1) e.preventDefault();
 
     // A drag that ended off the surface never produced a click to consume the
@@ -355,6 +374,8 @@ function Reader({
 
     const onWheel = (e: WheelEvent) => {
       const modified = e.ctrlKey || e.metaKey;
+      // The caption scrolls itself.
+      if ((e.target as HTMLElement).closest("[data-chrome]")) return;
       if (!expanded && !modified && !engagedRef.current) return;
       e.preventDefault();
       if (modified) setEngaged(true);
@@ -429,7 +450,7 @@ function Reader({
           e.stopPropagation();
         }}
         onClick={(e) => {
-          if ((e.target as HTMLElement).closest("[data-element-id]")) return;
+          if ((e.target as HTMLElement).closest("[data-element-id], [data-chrome]")) return;
           setSelected(null);
         }}
         onDoubleClick={() => setView(null)}
@@ -477,11 +498,20 @@ function Reader({
         {/* Chrome is pinned to the frame, never to the drawing - a "Tracing"
             button that pans away with the chart is a button you go looking
             for. */}
-        <div className="pointer-events-none absolute inset-x-2 top-2 flex flex-wrap items-center gap-1.5">
+        <div className="pointer-events-none absolute inset-x-2 top-2 flex flex-wrap items-start gap-1.5">
           {steps.length > 0 && walkthrough && (
             <Chip active={tracing} onClick={() => setTracing((value) => !value)}>
               {tracing ? "Tracing" : "Trace it"}
             </Chip>
+          )}
+          {captioning && (
+            <p
+              data-chrome
+              aria-live="polite"
+              className="pointer-events-auto max-h-12 min-w-0 flex-1 basis-48 cursor-auto overflow-y-auto rounded-md border border-border bg-surface-card/95 px-2.5 py-1 text-xs leading-relaxed text-ink-soft backdrop-blur-sm"
+            >
+              {steps[Math.min(player.index, steps.length - 1)]?.caption ?? ""}
+            </p>
           )}
           {focus && (
             <Chip active={focusOn} onClick={() => setFocusOn((value) => !value)}>
@@ -539,21 +569,18 @@ function Reader({
         </div>
       </div>
 
-      {steps.length > 0 && walkthrough && tracing && (
-        <>
-          <StepCaption text={steps[Math.min(player.index, steps.length - 1)]?.caption ?? ""} />
-          <StepControls
-            index={player.index}
-            total={steps.length}
-            playing={player.playing}
-            onPlay={player.play}
-            onPause={player.pause}
-            onNext={player.next}
-            onPrev={player.prev}
-            onReset={player.reset}
-            onScrub={player.setIndex}
-          />
-        </>
+      {captioning && (
+        <StepControls
+          index={player.index}
+          total={steps.length}
+          playing={player.playing}
+          onPlay={player.play}
+          onPause={player.pause}
+          onNext={player.next}
+          onPrev={player.prev}
+          onReset={player.reset}
+          onScrub={player.setIndex}
+        />
       )}
 
     </div>
