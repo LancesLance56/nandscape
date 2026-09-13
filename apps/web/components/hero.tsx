@@ -39,11 +39,6 @@ export function Hero() {
             At max-w-3xl the copy reached 1097px while the right-hand card
             started at 1059, so the two overlapped on a 1425px screen. */}
         <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center xl:max-w-2xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-border-strong/70 bg-surface-card/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal-green" />
-            Free, no signup, runs in your browser
-          </p>
-
           <h1 className="mt-7 text-balance font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.08] xl:text-[3.4rem]">
             The interactive approach to <span className="text-accent-display">computer science</span>
           </h1>
