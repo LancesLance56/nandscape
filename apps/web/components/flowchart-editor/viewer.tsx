@@ -60,33 +60,28 @@ const MAX_ZOOM = 4;
 const DRAG_THRESHOLD = 3;
 
 /**
- * How much bigger than a pure width-fit a diagram is allowed to be drawn.
- *
- * A flowchart of an algorithm is intrinsically wide - eleven boxes in a chain
- * is eleven box widths - so shrinking one until it fits an article column
- * leaves it short, and its 12px labels somewhere near illegible. Drawing it a
- * third larger and letting the reader push it sideways is the better trade,
- * and pushing is now a drag rather than a scrollbar.
- *
- * A chart that is tall rather than wide never reaches this: the height budget
- * binds first, and nothing overflows.
- */
-const ZOOM_BOOST = 1.3;
-
-/**
  * The absolute ceiling on `fit`, regardless of how much room is going spare.
  *
  * Without one, a two-box diagram alone in a wide frame would zoom to fill it
- * and read as a poster rather than a flowchart. This is the number that
- * actually governs how big a diagram whose own aspect ratio does not force it
- * smaller gets drawn - raising it is what "flowcharts as a whole, bigger"
- * means, more than either ZOOM_BOOST or maxHeight below, both of which only
- * matter once something else is already the binding constraint.
+ * and read as a poster rather than a flowchart. The fit itself is a contain:
+ * the whole drawing is on screen when the page loads, and the reader zooms in
+ * from there.
  */
 const MAX_FIT = 2.1;
 
 /** Room kept clear at the top of the frame for the walkthrough caption. */
 const CAPTION_INSET = 64;
+
+/**
+ * The least zoom a trace step centres its node at. A fitted overview of a
+ * large chart can sit well under 1, where labels are hard to read; following
+ * the trace brings it up to the drawing's own scale, and never pulls a reader
+ * who is already closer back out.
+ */
+const TRACE_ZOOM = 1;
+
+/** How long the camera takes to glide to the next step's node. */
+const GLIDE_MS = 350;
 
 interface View {
   x: number;
@@ -241,8 +236,14 @@ function Reader({
     return () => ro.disconnect();
   }, []);
 
+  // The walkthrough's narration rides inside the frame, under the chip row, so
+  // the drawing's home view starts below it rather than behind it.
+  const captioning = steps.length > 0 && walkthrough && tracing;
+  const topInset = captioning ? CAPTION_INSET : 0;
+  const boost = expanded ? 1 : scale;
+
   /**
-   * The zoom the drawing opens at.
+   * The zoom the drawing opens at: zoom-to-fit, the whole drawing in view.
    *
    * Inline this is measured against `maxHeight` rather than against the box's
    * own height, because the box's height is derived from this number - asking
@@ -250,20 +251,11 @@ function Reader({
    * a resize loop starts. Expanded, the dialog fixes the height in CSS, so the
    * measurement is safe and the fit uses all of it.
    */
-  // The walkthrough's narration rides inside the frame, under the chip row, so
-  // the drawing's home view starts below it rather than behind it.
-  const captioning = steps.length > 0 && walkthrough && tracing;
-  const topInset = captioning ? CAPTION_INSET : 0;
-  const boost = expanded ? 1 : scale;
-
   const fit = useMemo(() => {
     const availW = box.w - PAD * 2;
     const availH = (expanded ? box.h : maxHeight) - PAD * 2 - topInset;
     if (availW <= 0 || availH <= 0 || bounds.width <= 0 || bounds.height <= 0) return 1;
-    return Math.max(
-      0.15,
-      Math.min(MAX_FIT * boost, (availW / bounds.width) * ZOOM_BOOST * boost, availH / bounds.height),
-    );
+    return Math.max(0.05, Math.min(MAX_FIT * boost, availW / bounds.width, availH / bounds.height));
   }, [box.w, box.h, expanded, maxHeight, topInset, boost, bounds]);
 
   // Short diagrams get a short frame; nobody wants 1205px of background under
@@ -284,7 +276,59 @@ function Reader({
    * re-fit the drawing and a resize after a drag leave it alone.
    */
   const [view, setView] = useState<View | null>(null);
+
+  /**
+   * Following the trace.
+   *
+   * Every time the step changes, the camera glides to put that step's node in
+   * the middle of the frame (below the caption), at TRACE_ZOOM or closer.
+   * Reset goes back to the fitted overview instead, as does turning tracing
+   * off. The page loads fitted too: nothing moves until the reader steps.
+   *
+   * Done as a render-time adjustment keyed on the step index rather than in an
+   * effect, so the centred camera lands in the same commit as the highlight.
+   */
+  const [tracedIndex, setTracedIndex] = useState(player.index);
+  const [gliding, setGliding] = useState(false);
+
+  if (tracedIndex !== player.index) {
+    setTracedIndex(player.index);
+    const target = steps[Math.min(player.index, steps.length - 1)]?.target;
+    const el = target ? shown.elements.find((e) => e.id === target) : undefined;
+    if (tracing && el && box.w > 0) {
+      const r = elementBounds(el, shown);
+      const zoom = Math.min(MAX_ZOOM, Math.max(TRACE_ZOOM, (view ?? home).zoom));
+      const frameH = expanded ? box.h : (frameHeight ?? 0);
+      setGliding(true);
+      setView({
+        zoom,
+        x: box.w / 2 - (r.x + r.width / 2) * zoom,
+        y: topInset + (frameH - topInset) / 2 - (r.y + r.height / 2) * zoom,
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (!gliding) return;
+    const t = window.setTimeout(() => setGliding(false), GLIDE_MS);
+    return () => window.clearTimeout(t);
+  }, [gliding, view]);
+
   const v = view ?? home;
+
+  /** Back to the fitted overview, gliding. */
+  const refit = () => {
+    setGliding(true);
+    setView(null);
+  };
+
+  // Marking step 0 as already followed is what stops the index change above
+  // from centring on the first node straight after the refit.
+  const onReset = () => {
+    setTracedIndex(0);
+    refit();
+    player.reset();
+  };
 
   // The committed camera, for handlers that have to read it rather than be
   // re-created every time it moves.
@@ -336,6 +380,8 @@ function Reader({
     // flag, and a stale one would swallow the next real click.
     draggedRef.current = false;
     setEngaged(true);
+    // A drag takes the camera out of a glide, or it would trail the pointer.
+    setGliding(false);
     const startX = e.clientX;
     const startY = e.clientY;
     const origin = vRef.current;
@@ -379,6 +425,7 @@ function Reader({
       if (!expanded && !modified && !engagedRef.current) return;
       e.preventDefault();
       if (modified) setEngaged(true);
+      setGliding(false);
 
       const r = node.getBoundingClientRect();
       const fx = e.clientX - r.left;
@@ -453,7 +500,7 @@ function Reader({
           if ((e.target as HTMLElement).closest("[data-element-id], [data-chrome]")) return;
           setSelected(null);
         }}
-        onDoubleClick={() => setView(null)}
+        onDoubleClick={refit}
       >
         {/*
           `will-change: transform` only while the pointer is actually dragging.
@@ -470,6 +517,7 @@ function Reader({
           className={cn("absolute left-0 top-0 origin-top-left", panning && "will-change-transform")}
           style={{
             transform: `translate(${v.x}px, ${v.y}px) scale(${v.zoom})`,
+            transition: gliding ? `transform ${GLIDE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)` : undefined,
             width: shown.width,
             height: shown.height,
           }}
@@ -500,7 +548,13 @@ function Reader({
             for. */}
         <div className="pointer-events-none absolute inset-x-2 top-2 flex flex-wrap items-start gap-1.5">
           {steps.length > 0 && walkthrough && (
-            <Chip active={tracing} onClick={() => setTracing((value) => !value)}>
+            <Chip
+              active={tracing}
+              onClick={() => {
+                setTracing((value) => !value);
+                refit();
+              }}
+            >
               {tracing ? "Tracing" : "Trace it"}
             </Chip>
           )}
@@ -578,7 +632,7 @@ function Reader({
           onPause={player.pause}
           onNext={player.next}
           onPrev={player.prev}
-          onReset={player.reset}
+          onReset={onReset}
           onScrub={player.setIndex}
         />
       )}
