@@ -107,7 +107,7 @@ export const LineView = memo(function LineView({
         <path
           d={d}
           fill="none"
-          stroke="var(--fe-accent, #2b8341)"
+          stroke="var(--fe-accent, #2659e0)"
           strokeWidth={s.strokeWidth + 4}
           strokeOpacity={0.28}
           strokeLinecap="round"

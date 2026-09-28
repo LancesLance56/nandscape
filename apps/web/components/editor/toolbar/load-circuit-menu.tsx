@@ -100,7 +100,7 @@ export function LoadCircuitMenu() {
           <div
             ref={panelRef}
             style={{ position: "fixed", left: coords.left, top: coords.top, zIndex: 999 }}
-            className="w-64 rounded-xl border border-border bg-surface-card py-2 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+            className="w-64 rounded-xl border border-border bg-surface-card py-2 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
           >
             <div className="flex flex-col gap-1 px-2 pb-2">
               <div className="flex items-center justify-between px-1">

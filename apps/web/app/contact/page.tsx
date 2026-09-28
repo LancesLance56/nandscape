@@ -42,10 +42,10 @@ export default function ContactPage() {
         <div className="mt-8 rounded-2xl border border-border bg-surface-card p-6">
           <h2 className="text-[11px] font-bold uppercase tracking-wide text-slate">Email</h2>
           <a
-            href="mailto:hello@nandscape.dev"
+            href="mailto:hello@nandscape.org"
             className="mt-1 block font-display text-lg font-semibold text-copper hover:text-copper-dark"
           >
-            hello@nandscape.dev
+            hello@nandscape.org
           </a>
         </div>
 

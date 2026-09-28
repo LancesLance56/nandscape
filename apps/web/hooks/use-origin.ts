@@ -25,7 +25,7 @@ const subscribe = () => () => {};
 
 /** Matches production, where the fallback and the real origin are the same
  *  string and nothing visibly swaps. */
-const CANONICAL_ORIGIN = "https://nandscape.dev";
+const CANONICAL_ORIGIN = "https://nandscape.org";
 
 export function useOrigin(fallback: string = CANONICAL_ORIGIN): string {
   return useSyncExternalStore(

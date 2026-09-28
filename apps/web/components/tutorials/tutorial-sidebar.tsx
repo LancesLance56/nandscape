@@ -243,7 +243,7 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
         aria-label="Show tutorial navigation"
         aria-expanded={open}
         className={cn(
-          "fixed left-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-2 rounded-r-xl border border-l-0 border-border bg-surface-card py-3 pl-2 pr-2.5 text-ink-soft shadow-[0_8px_24px_rgba(21,27,24,0.10)] transition hover:text-copper-dark",
+          "fixed left-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-2 rounded-r-xl border border-l-0 border-border bg-surface-card py-3 pl-2 pr-2.5 text-ink-soft shadow-[0_8px_24px_rgba(8,7,8,0.10)] transition hover:text-copper-dark",
           open ? "pointer-events-none -translate-x-full opacity-0" : "opacity-100",
         )}
       >
@@ -267,7 +267,7 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
         aria-label="Tutorial navigation"
         aria-hidden={!open}
         className={cn(
-          "fixed left-0 top-20 bottom-4 z-40 flex w-[19rem] max-w-[86vw] flex-col overflow-y-auto overscroll-contain rounded-r-2xl border border-l-0 border-border bg-surface-card px-4 py-4 shadow-[0_24px_60px_rgba(21,27,24,0.16)] transition-transform duration-200 ease-out",
+          "fixed left-0 top-20 bottom-4 z-40 flex w-[19rem] max-w-[86vw] flex-col overflow-y-auto overscroll-contain rounded-r-2xl border border-l-0 border-border bg-surface-card px-4 py-4 shadow-[0_24px_60px_rgba(8,7,8,0.16)] transition-transform duration-200 ease-out",
           open ? "translate-x-0" : "-translate-x-[110%]",
         )}
       >

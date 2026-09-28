@@ -30,10 +30,10 @@ body:has(.dashboard-shell) [data-slot="sheet-content"] {
      Assigned to the entity, never to its rank, so filtering or reordering a
      chart never repaints a series out from under a reader.
 
-     Lessons takes the site's green accent; quizzes and puzzles are two ink-wash
+     Lessons takes the site's blue accent; quizzes and puzzles are two ink-wash
      tonal steps beside it. All three hold >=3:1 against their surface and read
      apart side by side. */
-  --series-lessons: #2b8341;
+  --series-lessons: #2659e0;
   --series-quizzes: #8a8a8a;
   --series-puzzles: #bdbdbd;
   /* Grid, axes and the empty half of a meter track: one shade off the surface,
@@ -51,7 +51,7 @@ body:has(.dashboard-shell) [data-slot="sheet-content"] {
 
   /* Not the light values lightened: their own steps, chosen inside the dark
      lightness band (OKLCH L 0.48-0.67) and re-validated against #1c1c1c. */
-  --series-lessons: #52b869;
+  --series-lessons: #6b93ff;
   --series-quizzes: #8f8f8f;
   --series-puzzles: #5f5f5f;
 }

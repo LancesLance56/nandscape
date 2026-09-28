@@ -1,18 +1,19 @@
 /**
- * The muted ramp used to tint index tiles.
+ * The ramp used to tint index tiles.
  *
- * Ink-wash page with a single sage accent, so tiles stay in a narrow
- * sage-through-grey range rather than reaching for a full spectrum. Rendered at
- * 14-34% over transparent (see rail.tsx), so even neighbouring steps land as
- * visibly different washes.
+ * The brand primaries - crayola blue, scarlet rush, golden pollen - plus a
+ * deeper blue and the ink, so a grid of tiles reads as blocks of flat primary
+ * colour rather than a gradient of one hue. Rendered at 14-34% over
+ * transparent (see rail.tsx), so even the pollen lands as a legible wash, and
+ * the numerals mix toward black for contrast.
  */
 export const ACCENT_PALETTE: readonly string[] = [
-  "#2b8341", // green (the accent)
-  "#4f8a5c",
-  "#6f8f76",
-  "#7d7d7d", // neutral ink
-  "#8f8f8f",
-  "#a2a2a2",
+  "#3772ff", // crayola blue (the accent)
+  "#df2935", // scarlet rush
+  "#fdca40", // golden pollen
+  "#1d47c2", // deep blue
+  "#4a474b", // ink
+  "#b81d28", // deep scarlet
 ];
 
 /**

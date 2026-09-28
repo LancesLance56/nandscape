@@ -57,9 +57,9 @@ import {
 /** The site palette, as the ink a drawing is made from. */
 const PALETTE = [
   "#252525", "#545454", "#7d7d7d", "#cfcfcf", "#ececec", "#ffffff",
-  "#1f6b33", "#2b8341", "#e0efe2", "#b8860b", "#e8b93c", "#faf0d4",
-  "#b33f2a", "#e1543b", "#fbe3dd", "#2f6fd0", "#5b9bf5", "#e2ecfb",
-  "#c24a7c", "#f7e2ec", "#0f7e4a", "#dff3e7", "#3d2f26", "#f4f4f4",
+  "#1d47c2", "#2659e0", "#dfe7ff", "#a87800", "#fdca40", "#fff2c7",
+  "#b81d28", "#df2935", "#fbe0e2", "#3772ff", "#6b93ff", "#e1e9ff",
+  "#c24a7c", "#f7e2ec", "#0f7e4a", "#dff3e7", "#080708", "#e6e8e6",
 ];
 
 const FONTS = ["Inter", "Georgia", "Courier New", "Arial", "Verdana", "Times New Roman"];

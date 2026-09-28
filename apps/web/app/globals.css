@@ -12,15 +12,31 @@
    defined further down as *aliases* onto these, so an imported shadcn
    component lands in the site's palette instead of the default neutral grey,
    and there is still exactly one place to change a colour.
+
+   The brand is five colours: black, crayola blue, scarlet rush, golden pollen
+   and alabaster grey. Light mode is black ink on alabaster, dark mode is
+   alabaster ink on black; blue is the one interactive accent, scarlet is the
+   warning, pollen is the highlighter.
    --------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
-  --surface: #f4f4f4;
-  --surface-2: #ececec;
-  --surface-3: #e2e2e2;
-  --surface-4: #d6d6d6;
+  /* The brand swatches, exactly as specified. Fixed in both themes - they are
+     the identity, not the UI - so reach for them only in brand marks (the
+     logo, the stripe, decorative dots). UI colour goes through the themed
+     tokens below, which are these same hues stepped for contrast. */
+  --brand-black: #080708;
+  --brand-blue: #3772ff;
+  --brand-red: #df2935;
+  --brand-yellow: #fdca40;
+  --brand-grey: #e6e8e6;
+  --brand-gradient: linear-gradient(90deg, var(--brand-blue) 0%, var(--brand-red) 50%, var(--brand-yellow) 100%);
+
+  --surface: #e6e8e6;
+  --surface-2: #dcdfdc;
+  --surface-3: #d1d5d1;
+  --surface-4: #c4c9c4;
   --surface-card: #ffffff;
 
   /* A sheet of paper laid *on* a surface. Paper is white in both themes - a
@@ -33,113 +49,129 @@
   --paper-ink-soft: #545454;
   --paper-muted: #7d7d7d;
   --paper-line: #cfcfcf;
-  --paper-accent: #1f6b33;
+  --paper-accent: #1d47c2;
 
   /* Coloured folder stock for the homepage folder stack (folder-stack.tsx).
-     Four low-chroma pastels rather than a grey ramp so the drawer reads as
-     real folders: sage, manila, clay, mist. */
-  --folder-1: #d7e4c2;
-  --folder-2: #f0dfb7;
-  --folder-3: #eed4c3;
-  --folder-4: #d2e0ec;
+     Pale washes of the brand colours rather than a grey ramp so the drawer
+     reads as real folders: blue, pollen, scarlet, alabaster. */
+  --folder-1: #d6e1ff;
+  --folder-2: #feeab0;
+  --folder-3: #f7d0d3;
+  --folder-4: #d8dcd8;
 
-  --ink: #252525;
-  --ink-soft: #545454;
-  --slate: #7d7d7d;
+  --ink: #080708;
+  --ink-soft: #4a474b;
+  --slate: #6a676b;
 
-  --border: #dcdcdc;
-  --border-strong: #cfcfcf;
+  --border: #d0d4d0;
+  --border-strong: #bcc1bc;
 
   /* The lift a card gets while the pointer is on it. A token rather than a
      literal because the light-mode value is a wash of ink that is invisible on
      a dark ground - the homepage tiles all carried the same hard-coded rgba,
      and half of them were shadowless in dark mode. */
-  --shadow-lift: 0 18px 36px -24px rgba(20, 27, 20, 0.5);
+  --shadow-lift: 0 18px 36px -24px rgba(8, 7, 8, 0.5);
 
   /* The primary accent. Still named --copper* so every `text-copper`,
-     `bg-copper-bg`, `ring-copper` on the site keeps working; the one hue on an
-     otherwise ink-wash page - a bright GeeksforGeeks-style leaf green,
-     deepened just enough to clear AA both ways (~4.75:1 on white, and white on
-     it). */
-  --copper: #2b8341;
-  --copper-dark: #1f6b33;
-  --copper-bg: #e0efe2;
+     `bg-copper-bg`, `ring-copper` on the site keeps working. Crayola blue,
+     deepened just enough to clear AA both ways (~4.75:1 on alabaster, ~5.9:1
+     for white on it) - the brand #3772ff itself is only ~4.2:1 on white. */
+  --copper: #2659e0;
+  --copper-dark: #1d47c2;
+  --copper-bg: #dfe7ff;
   --copper-ink: #ffffff;
-  /* Display-size accent - the truer, brighter green, which only ever runs at
-     headline size. */
-  --accent-display: #2f8d46;
+  /* Display-size accent - the true brand blue, which only ever runs at
+     headline size, where 3:1 is enough. */
+  --accent-display: #3772ff;
 
+  /* Logic HIGH and "accepted". Not a brand colour, and kept anyway: green for
+     a live wire and a passing test is a convention a learner already reads. */
   --signal-green: #1ca463;
   --signal-green-strong: #0f7e4a;
   --signal-green-bg: #dff3e7;
 
-  --signal-coral: #e1543b;
-  --signal-coral-strong: #b33f2a;
-  --signal-coral-bg: #fbe3dd;
+  /* Scarlet rush: errors, LOW, destructive actions. The brand value clears AA
+     on white as-is. */
+  --signal-coral: #df2935;
+  --signal-coral-strong: #b81d28;
+  --signal-coral-bg: #fbe0e2;
+
+  /* Golden pollen: the highlighter - text selection, "new", callouts. Far too
+     light for text on a light ground, so text uses -strong and anything drawn
+     on the bright fill uses -ink. */
+  --pollen: #fdca40;
+  --pollen-strong: #8f6700;
+  --pollen-bg: #fff2c7;
+  --pollen-ink: #080708;
 
   --signal-unknown: #ff00ff;
 
-  /* Diagram accents. The palette above is deliberately warm and narrow, which
-     is right for site chrome but leaves a flowchart unable to say "these two
-     stages are different kinds of thing". These add the two hues the ramp is
-     missing, scoped to diagrams by convention rather than used as UI colour. */
-  --diagram-blue: #2f6fd0;
-  --diagram-blue-bg: #e2ecfb;
+  /* Diagram accents, scoped to diagrams by convention rather than used as UI
+     colour, so a flowchart can say "these two stages are different kinds of
+     thing". */
+  --diagram-blue: #3772ff;
+  --diagram-blue-bg: #e1e9ff;
   /* Kept the --diagram-violet name (flowchart-nodes.tsx reads it); the value is
-     now a rose so the palette carries no purple. */
+     a rose so the palette carries no purple. */
   --diagram-violet: #c24a7c;
   --diagram-violet-bg: #f7e2ec;
-  --diagram-amber: #b8860b;
-  --diagram-amber-bg: #faf0d4;
+  --diagram-amber: #a87800;
+  --diagram-amber-bg: #fff2c7;
 }
 
 .dark {
   color-scheme: dark;
-  /* Ink wash inverted: pale strokes on a near-black ground. */
-  --surface: #1a1a1a;
-  --surface-card: #222222;
-  --surface-2: #282828;
-  --surface-3: #323232;
-  --surface-4: #3d3d3d;
+  /* Alabaster ink on a black lifted a step off the brand #080708 - pure
+     brand black behind long reading was harsh on the eyes. */
+  --surface: #111012;
+  --surface-card: #1a191b;
+  --surface-2: #222023;
+  --surface-3: #2b292c;
+  --surface-4: #363437;
 
-  --folder-1: #2d3826;
-  --folder-2: #3b331f;
-  --folder-3: #3d2f26;
-  --folder-4: #263240;
+  --folder-1: #152040;
+  --folder-2: #362b0c;
+  --folder-3: #3a1519;
+  --folder-4: #232523;
 
-  --border: #303030;
-  --border-strong: #424242;
+  --border: #2c2a2d;
+  --border-strong: #3f3c41;
 
-  --shadow-lift: 0 18px 36px -20px rgba(0, 0, 0, 0.75);
+  --shadow-lift: 0 18px 36px -20px rgba(0, 0, 0, 0.85);
 
-  --ink: #cfcfcf;
-  --ink-soft: #9a9a9a;
-  --slate: #7d7d7d;
+  --ink: #e6e8e6;
+  --ink-soft: #a9aca9;
+  --slate: #807e82;
 
-  /* Green lifted for the dark ground. As in light mode the -dark step is the
+  /* Blue lifted for the dark ground. As in light mode the -dark step is the
      *higher-contrast* one (here lighter, not darker). */
-  --copper: #52b869;
-  --copper-dark: #78d38c;
-  --copper-bg: #163020;
-  --copper-ink: #071a0d;
-  --accent-display: #5cc574;
+  --copper: #6b93ff;
+  --copper-dark: #9cb8ff;
+  --copper-bg: #0f1a3a;
+  --copper-ink: #080708;
+  --accent-display: #5a86ff;
 
   --signal-green: #2ece86;
   --signal-green-strong: #6ee7b0;
-  --signal-green-bg: #123324;
+  --signal-green-bg: #0f2c1e;
 
-  --signal-coral: #f0715a;
-  --signal-coral-strong: #f79683;
-  --signal-coral-bg: #3a1a14;
+  --signal-coral: #ff5a64;
+  --signal-coral-strong: #ff8a91;
+  --signal-coral-bg: #3a1216;
+
+  --pollen: #fdca40;
+  --pollen-strong: #fdd76a;
+  --pollen-bg: #332808;
+  --pollen-ink: #080708;
 
   --signal-unknown: #ff00ff;
 
-  --diagram-blue: #5b9bf5;
-  --diagram-blue-bg: #16233a;
+  --diagram-blue: #6b93ff;
+  --diagram-blue-bg: #111c3a;
   --diagram-violet: #e77ba6;
   --diagram-violet-bg: #3a1f2b;
-  --diagram-amber: #e0b341;
-  --diagram-amber-bg: #332a12;
+  --diagram-amber: #fdca40;
+  --diagram-amber-bg: #332808;
 }
 
 /* ---------------------------------------------------------------------------
@@ -179,9 +211,9 @@
   --ring: var(--copper);
 
   --chart-1: var(--copper);
-  --chart-2: var(--signal-green);
-  --chart-3: var(--signal-coral);
-  --chart-4: var(--copper-dark);
+  --chart-2: var(--signal-coral);
+  --chart-3: var(--pollen);
+  --chart-4: var(--signal-green);
   --chart-5: var(--slate);
 
   --sidebar: var(--surface-2);
@@ -193,8 +225,10 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--copper);
 
-  /* Matches the rounded-xl the hand-written cards already use. */
-  --radius: 0.75rem;
+  /* Crisper than it was (0.75rem): a primary-colour palette reads as
+     geometric, and pill-soft corners fought it. Every rounded-* utility
+     derives from this, so the hand-written cards follow. */
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -230,6 +264,17 @@
   --color-signal-coral: var(--signal-coral);
   --color-signal-coral-strong: var(--signal-coral-strong);
   --color-signal-coral-bg: var(--signal-coral-bg);
+
+  --color-pollen: var(--pollen);
+  --color-pollen-strong: var(--pollen-strong);
+  --color-pollen-bg: var(--pollen-bg);
+  --color-pollen-ink: var(--pollen-ink);
+
+  --color-brand-black: var(--brand-black);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-red: var(--brand-red);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-grey: var(--brand-grey);
 
   --font-display: var(--font-inter-sans), sans-serif;
   --font-body: var(--font-inter-sans), sans-serif;
@@ -285,6 +330,12 @@
 body {
   background: var(--surface);
   color: var(--ink);
+}
+
+/* Selection is the highlighter: pollen under black ink, in both themes. */
+::selection {
+  background: var(--brand-yellow);
+  color: var(--brand-black);
 }
 
 /* Inside @layer base on purpose. Unlayered CSS outranks everything Tailwind
@@ -519,7 +570,7 @@ body {
 
    Every one of these is an alias onto the site palette above, never a new
    colour - the same discipline the shadcn layer follows. The editor therefore
-   inherits the leaf green, the ink wash and the border ramp, and flips with
+   inherits the crayola blue, the ink wash and the border ramp, and flips with
    the site's theme toggle without owning a single dark rule.
 
    The two that are *not* aliases are the ones that must not flip: the page is
@@ -550,7 +601,7 @@ body {
 
   /* Paper, and the ink on it. Fixed in both themes. */
   --fe-page: var(--paper);
-  --fe-grid: #ebebeb;
+  --fe-grid: #eceeec;
   --fe-guide: var(--signal-coral);
 
   --fe-symbol: var(--ink-soft);
@@ -562,8 +613,8 @@ body {
 .dark .fe-root {
   /* One deliberate departure from the aliases: the workspace around the page
      goes darker than any site surface. A white sheet needs something to sit
-     against, and --surface-3 at 0x32 leaves the paper glowing. */
-  --fe-canvas: #101010;
+     against, and --surface-3 leaves the paper glowing. */
+  --fe-canvas: #030203;
   --fe-grid: #ececec;
 }
 

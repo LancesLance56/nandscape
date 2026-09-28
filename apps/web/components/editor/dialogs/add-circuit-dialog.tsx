@@ -33,7 +33,7 @@ export function AddCircuitDialog({ onCloseAction }: { onCloseAction: () => void 
 
   return (
     <div
-      className="w-64 rounded-xl border border-border bg-surface-card py-2 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+      className="w-64 rounded-xl border border-border bg-surface-card py-2 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex flex-col gap-1 px-2 pb-2">

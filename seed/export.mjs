@@ -15,8 +15,8 @@ import path from "node:path";
  *
  * Usage:
  *   node seed/export.mjs --base http://localhost:3000
- *   node seed/export.mjs --base https://nandscape.dev --only tutorials
- *   node seed/export.mjs --base https://nandscape.dev --drafts \
+ *   node seed/export.mjs --base https://nandscape.org --only tutorials
+ *   node seed/export.mjs --base https://nandscape.org --drafts \
  *     --email you@example.com --password ...
  *
  * --drafts additionally exports unpublished posts, which needs an admin

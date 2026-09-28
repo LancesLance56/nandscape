@@ -158,7 +158,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
   };
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)]">
+    <div className="not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(8,7,8,0.08)]">
       <div className="flex items-center gap-2.5 border-b border-border bg-surface-2 px-4 py-2.5">
         <span className=" text-[11px] font-semibold text-ink">{title}</span>
         {projectSlug && (

@@ -30,7 +30,7 @@ export function SaveSubcircuitDialog({onCloseAction}: { onCloseAction: () => voi
 
   return (
     <div
-      className="w-80 rounded-2xl border border-border bg-surface-card p-5 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+      className="w-80 rounded-2xl border border-border bg-surface-card p-5 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
       onClick={(e) => e.stopPropagation()}
     >
       <h2 className="mb-3 font-display text-base font-bold text-ink">Save as circuit block</h2>

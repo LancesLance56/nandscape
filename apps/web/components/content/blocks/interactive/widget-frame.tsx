@@ -38,7 +38,7 @@ export function WidgetFrame({
   return (
     <div
       className={cn(
-        "not-prose overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)] ",
+        "not-prose overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(8,7,8,0.08)] ",
         className,
       )}
     >

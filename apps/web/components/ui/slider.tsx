@@ -69,7 +69,7 @@ export function Slider({
 
       <motion.span
         aria-hidden
-        className="absolute rounded-full border-2 border-copper bg-surface-card shadow-[0_1px_3px_rgba(20,27,20,0.25)] transition-transform group-hover:scale-110 group-active:scale-95 motion-reduce:transition-none"
+        className="absolute rounded-full border-2 border-copper bg-surface-card shadow-[0_1px_3px_rgba(8,7,8,0.25)] transition-transform group-hover:scale-110 group-active:scale-95 motion-reduce:transition-none"
         style={{ width: THUMB, height: THUMB }}
         animate={{ left: travel }}
         transition={transition}

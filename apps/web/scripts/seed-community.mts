@@ -141,7 +141,7 @@ async function upsertPeople(): Promise<Map<string, string>> {
        RETURNING id`,
       [
         randomUUID(),
-        `${person.username}@nandscape.dev`,
+        `${person.username}@nandscape.org`,
         person.username,
         person.bio,
         daysAgo(Math.max(...person.activeDays) + 30),

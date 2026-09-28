@@ -29,12 +29,13 @@ export function HeroBackdrop() {
         </g>
 
         {/* Junction dots where the guides turn, the one place the trace reads
-            as a circuit rather than as decoration. */}
-        <g fill="currentColor" className="opacity-70">
-          <circle cx="300" cy="340" r="2.5" />
-          <circle cx="1140" cy="300" r="2.5" />
-          <circle cx="412" cy="722" r="2.5" />
-          <circle cx="1028" cy="722" r="2.5" />
+            as a circuit rather than as decoration. One per brand primary, so
+            the palette shows up in the whitespace as well as the chrome. */}
+        <g className="opacity-80">
+          <circle cx="300" cy="340" r="3" fill="var(--brand-blue)" />
+          <circle cx="1140" cy="300" r="3" fill="var(--brand-red)" />
+          <circle cx="412" cy="722" r="3" fill="var(--brand-yellow)" />
+          <circle cx="1028" cy="722" r="3" fill="var(--brand-blue)" />
         </g>
       </svg>
     </div>

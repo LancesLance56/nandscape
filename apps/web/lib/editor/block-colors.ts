@@ -14,15 +14,15 @@ export const GATE_COLORS: Partial<Record<GateType, string>> = {
 
 // block-colors.ts
 export const DEFAULT_BLOCK_COLORS: readonly string[] = [
-  "#2B8341", // green - the site accent
+  "#2659E0", // blue - the site accent
   "#4CAF7D", // signal green
-  "#E0A339", // amber
-  "#D9694F", // signal coral
+  "#FDCA40", // pollen
+  "#DF2935", // scarlet - signal coral
   "#B25A3B", // rust
   "#8A8F5C", // olive
   "#E05C97", // pink
   "#8C8C8C", // neutral gray
-  "#3F7FBF", // blue - unused hue in this set, reads as structured/tabular data
+  "#E0A339", // amber
 ];
 
 export function hexToRgba(hex: string, alpha: number): string {

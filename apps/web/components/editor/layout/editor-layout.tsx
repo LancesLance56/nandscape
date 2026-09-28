@@ -40,11 +40,11 @@ export function EditorLayout() {
           style={{
             background:
               "radial-gradient(60% 50% at 0% 0%, var(--copper-bg), transparent 60%), " +
-              "radial-gradient(55% 45% at 100% 100%, var(--signal-green-bg), transparent 60%)",
+              "radial-gradient(55% 45% at 100% 100%, var(--pollen-bg), transparent 60%)",
           }}
         />
 
-        <div className="shrink-0 rounded-2xl border border-border/60 bg-surface-card/90 backdrop-blur-xl shadow-[0_2px_10px_rgba(21,27,24,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
+        <div className="shrink-0 rounded-2xl border border-border/60 bg-surface-card/90 backdrop-blur-xl shadow-[0_2px_10px_rgba(8,7,8,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
           <Toolbar/>
         </div>
 
@@ -56,13 +56,13 @@ export function EditorLayout() {
               onResize={setSidebarWidth}
               min={0}
               max={400}
-              className="overflow-hidden rounded-2xl border border-border/60 bg-surface-card/95 shadow-[0_2px_10px_rgba(21,27,24,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]"
+              className="overflow-hidden rounded-2xl border border-border/60 bg-surface-card/95 shadow-[0_2px_10px_rgba(8,7,8,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]"
             >
               <Sidebar/>
             </ResizablePanel>
           )}
 
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/60 bg-surface-card shadow-[0_2px_10px_rgba(21,27,24,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/60 bg-surface-card shadow-[0_2px_10px_rgba(8,7,8,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
             <div className="relative min-h-0 flex-1">
               <CircuitCanvas/>
               <SelectionSummaryOverlay/>
@@ -78,7 +78,7 @@ export function EditorLayout() {
               onResize={setInspectorWidth}
               min={220}
               max={480}
-              className="overflow-hidden rounded-2xl border border-border/60 bg-surface-card/95 shadow-[0_2px_10px_rgba(21,27,24,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]"
+              className="overflow-hidden rounded-2xl border border-border/60 bg-surface-card/95 shadow-[0_2px_10px_rgba(8,7,8,0.06)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)]"
             >
               <Inspector/>
             </ResizablePanel>

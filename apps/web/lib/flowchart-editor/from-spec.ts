@@ -50,12 +50,12 @@ import {
  */
 const ACCENT_INK: Record<FlowAccent, { fill: string; stroke: string; text: string }> = {
   neutral: { fill: "#ffffff", stroke: "#252525", text: "#252525" },
-  copper: { fill: "#e0efe2", stroke: "#2b8341", text: "#1f6b33" },
+  copper: { fill: "#dfe7ff", stroke: "#2659e0", text: "#1d47c2" },
   green: { fill: "#dff3e7", stroke: "#1ca463", text: "#0f7e4a" },
-  coral: { fill: "#fbe3dd", stroke: "#e1543b", text: "#b33f2a" },
-  blue: { fill: "#e2ecfb", stroke: "#2f6fd0", text: "#24559f" },
+  coral: { fill: "#fbe0e2", stroke: "#df2935", text: "#b81d28" },
+  blue: { fill: "#e1e9ff", stroke: "#3772ff", text: "#1d47c2" },
   violet: { fill: "#f7e2ec", stroke: "#c24a7c", text: "#98325c" },
-  amber: { fill: "#faf0d4", stroke: "#b8860b", text: "#7a5a07" },
+  amber: { fill: "#fff2c7", stroke: "#a87800", text: "#8f6700" },
 };
 
 /** The old node vocabulary, mapped onto the symbol catalogue. */

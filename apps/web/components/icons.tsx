@@ -40,12 +40,12 @@ export function Logo({className}: IconProps) {
         fill="currentColor"
       />
 
-      {/* Bubble */}
+      {/* Bubble - the inversion, in the brand scarlet */}
       <circle
         cx="31"
         cy="18"
         r="3"
-        fill="var(--copper)"
+        fill="var(--brand-red)"
       />
 
       {/* Output */}
@@ -54,7 +54,7 @@ export function Logo({className}: IconProps) {
         y1="18"
         x2="36"
         y2="18"
-        stroke="var(--copper)"
+        stroke="var(--brand-blue)"
         strokeWidth="2.2"
         strokeLinecap="round"
       />

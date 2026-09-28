@@ -242,7 +242,7 @@ export const ShapeView = memo(function ShapeView({
         <span
           aria-hidden
           className="pointer-events-none absolute -inset-px rounded-[2px]"
-          style={{ outline: "1px solid var(--fe-accent, #2b8341)", outlineOffset: 1 }}
+          style={{ outline: "1px solid var(--fe-accent, #2659e0)", outlineOffset: 1 }}
         />
       )}
     </div>

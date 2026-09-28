@@ -343,7 +343,7 @@ implements one function, never a whole program.
 - `next.config.ts`: `output: "standalone"`; `serverExternalPackages: ["shiki"]`
   (bundling Shiki silently breaks syntax highlighting); `turbopack.root` points
   at the repo root because this is a monorepo; `allowedDevOrigins` lists
-  `nandscape.dev` and a LAN IP.
+  `nandscape.org` and a LAN IP.
 - Docker dev runs `next dev --webpack` (not Turbopack) with `WATCHPACK_POLLING`
   so bind-mounted file changes are noticed.
 - "Exactly one active row" invariants (`FeaturedCircuit`) are enforced in

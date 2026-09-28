@@ -79,7 +79,7 @@ export function SimulationSettingsMenu() {
           <div
             ref={panelRef}
             style={{ position: "fixed", left: coords.left, top: coords.top, zIndex: 999 }}
-            className="w-72 rounded-xl border border-border bg-surface-card p-4 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+            className="w-72 rounded-xl border border-border bg-surface-card p-4 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
           >
             <span className=" text-[11px] font-semibold text-slate">
               Simulation settings

@@ -15,7 +15,7 @@
  *
  *  1. An exact table for the palette the site actually uses. Every entry is a
  *     real token pair from globals.css - `--copper` in light against `--copper`
- *     in dark - so a converted diagram lands on the same greens and ambers the
+ *     in dark - so a converted diagram lands on the same blues and ambers the
  *     surrounding page uses, rather than on something merely darker.
  *  2. A lightness flip for anything else, so a colour someone picked by hand
  *     still reads. Hue and saturation survive; only the lightness turns over.
@@ -34,7 +34,7 @@ const DARK_INK: Record<string, string> = {
   "#545454": "#a2a2a2",
   "#252525": "#d8d8d8",
 
-  // Leaf green: --copper.
+  // Leaf green: the pre-rebrand --copper.
   "#e0efe2": "#163020",
   "#2b8341": "#52b869",
   "#1f6b33": "#78d38c",
@@ -67,6 +67,29 @@ const DARK_INK: Record<string, string> = {
   "#8a6508": "#ecc76a",
 
   "#3d2f26": "#d8cec6",
+
+  // The brand palette (see globals.css). The older entries above stay, so a
+  // drawing saved before the rebrand still re-inks.
+  "#080708": "#e6e8e6",
+  "#e6e8e6": "#242224",
+
+  // Crayola blue: --copper and --diagram-blue.
+  "#dfe7ff": "#0f1a3a",
+  "#2659e0": "#6b93ff",
+  "#1d47c2": "#9cb8ff",
+  "#e1e9ff": "#111c3a",
+  "#3772ff": "#6b93ff",
+
+  // Scarlet rush.
+  "#fbe0e2": "#3a1216",
+  "#df2935": "#ff5a64",
+  "#b81d28": "#ff8a91",
+
+  // Golden pollen.
+  "#fff2c7": "#332808",
+  "#fdca40": "#fdca40",
+  "#a87800": "#fdca40",
+  "#8f6700": "#fdd76a",
 };
 
 /* -------------------------------------------------------------------------

@@ -31,6 +31,9 @@ interface AlgorithmRunnerProps {
   frame?: boolean;
   className?: string;
   hint?: string;
+  /** Drops the example switcher and the hint row, for tight spots like the
+   *  homepage bento. Modes, the side panel and the narration stay. */
+  compact?: boolean;
   /** Passed through to the canvas: outline each group (used for SCCs). */
   groupHulls?: boolean;
   groupLabel?: string;
@@ -57,6 +60,7 @@ export function AlgorithmRunner({
   frame = true,
   className,
   hint,
+  compact = false,
   groupHulls,
   groupLabel,
 }: AlgorithmRunnerProps) {
@@ -79,7 +83,7 @@ export function AlgorithmRunner({
         />
       )}
 
-      {examples && examples.length > 1 && (
+      {!compact && examples && examples.length > 1 && (
         <Segmented
           className="mb-3"
           label="Example"
@@ -101,7 +105,7 @@ export function AlgorithmRunner({
           />
           {/* Reserved whether or not a hint is passed, so its presence never
               shifts the canvas. */}
-          <p className="mt-1 min-h-[1.25rem] text-center text-[11px] text-slate">{hint}</p>
+          {!compact && <p className="mt-1 min-h-[1.25rem] text-center text-[11px] text-slate">{hint}</p>}
         </div>
         {panel && <div className="flex flex-col gap-3">{panel(step)}</div>}
       </div>

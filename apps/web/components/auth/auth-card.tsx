@@ -50,7 +50,7 @@ export function AuthCard({
 }) {
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(21,27,24,0.08)]">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(8,7,8,0.08)]">
         {/* Two routes, shown as one control. An active tab is a plain span so
             the current page is not a link to itself. */}
         <div className="grid grid-cols-2 border-b border-border bg-surface-2">

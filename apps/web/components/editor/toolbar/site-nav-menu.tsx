@@ -74,7 +74,7 @@ export function SiteNavMenu() {
           <div
             ref={panelRef}
             style={{ position: "fixed", left: coords.left, top: coords.top, zIndex: 999 }}
-            className="w-52 rounded-xl border border-border bg-surface-card py-1.5 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+            className="w-52 rounded-xl border border-border bg-surface-card py-1.5 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
           >
             {LINKS.map((link) => {
               const active = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);

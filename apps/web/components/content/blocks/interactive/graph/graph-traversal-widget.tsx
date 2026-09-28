@@ -111,6 +111,7 @@ export function GraphTraversalWidget({
       graph={graph}
       steps={steps}
       frame={frame}
+      compact={data.compact === true}
       className={data.className as string}
       modes={[
         { id: "bfs", label: "BFS (queue)" },

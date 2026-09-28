@@ -50,7 +50,7 @@ export function ContextMenu() {
     <div
       ref={ref}
       style={{left: menu.x, top: menu.y}}
-      className="fixed z-50 w-52 rounded-xl border border-border bg-surface-card py-1.5 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+      className="fixed z-50 w-52 rounded-xl border border-border bg-surface-card py-1.5 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
     >
       {items.map((item, index) => (
         <button

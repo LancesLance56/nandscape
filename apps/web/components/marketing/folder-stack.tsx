@@ -234,10 +234,10 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
               style={{
                 background: face,
                 boxShadow: isOpen
-                  ? "0 -10px 26px -14px rgba(20,27,20,0.28), 0 26px 50px -30px rgba(20,27,20,0.5)"
+                  ? "0 -10px 26px -14px rgba(8,7,8,0.28), 0 26px 50px -30px rgba(8,7,8,0.5)"
                   : isHover
-                    ? "0 -10px 24px -14px rgba(20,27,20,0.26), 0 20px 40px -26px rgba(20,27,20,0.5)"
-                    : "0 -8px 20px -14px rgba(20,27,20,0.22)",
+                    ? "0 -10px 24px -14px rgba(8,7,8,0.26), 0 20px 40px -26px rgba(8,7,8,0.5)"
+                    : "0 -8px 20px -14px rgba(8,7,8,0.22)",
               }}
             >
               {/* Full-face hit area, under everything, so anywhere on a closed
@@ -289,7 +289,7 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
                     background:
                       "linear-gradient(178deg, var(--paper) 0%, color-mix(in oklab, var(--copper) 5%, var(--paper)) 100%)",
                     boxShadow:
-                      "0 1px 1px rgba(20,27,20,0.06), 0 14px 30px -20px rgba(20,27,20,0.45), inset 0 1px 0 rgba(255,255,255,0.55)",
+                      "0 1px 1px rgba(8,7,8,0.06), 0 14px 30px -20px rgba(8,7,8,0.45), inset 0 1px 0 rgba(255,255,255,0.55)",
                   }}
                 >
                   {/* The ruling, printed on the same LINE the rows are laid out
@@ -322,7 +322,7 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
                     <span
                       key={k}
                       aria-hidden
-                      className="pointer-events-none absolute left-[10px] h-2 w-2 -translate-y-1/2 rounded-full shadow-[inset_0_1px_2px_rgba(20,27,20,0.45)] sm:left-[13px] sm:h-[9px] sm:w-[9px]"
+                      className="pointer-events-none absolute left-[10px] h-2 w-2 -translate-y-1/2 rounded-full shadow-[inset_0_1px_2px_rgba(8,7,8,0.45)] sm:left-[13px] sm:h-[9px] sm:w-[9px]"
                       style={{ top: holeTop + k * HOLE_PITCH, background: face }}
                     />
                   ))}

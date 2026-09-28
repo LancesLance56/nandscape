@@ -55,7 +55,7 @@ export function ImportCircuitButton() {
         }}
       />
       {error && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-56 rounded-lg border border-signal-coral/40 bg-surface-card px-2.5 py-1.5 text-[11px] text-signal-coral shadow-[0_8px_24px_rgba(21,27,24,0.16)]">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-56 rounded-lg border border-signal-coral/40 bg-surface-card px-2.5 py-1.5 text-[11px] text-signal-coral shadow-[0_8px_24px_rgba(8,7,8,0.16)]">
           {error}
         </div>
       )}

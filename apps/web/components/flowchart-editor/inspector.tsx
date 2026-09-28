@@ -250,10 +250,10 @@ function Category({
 const QUICK_STYLES = [
   { name: "Paper", fill: "#ffffff", stroke: "#252525", textColor: "#252525" },
   { name: "Wash", fill: "#f4f4f4", stroke: "#545454", textColor: "#252525" },
-  { name: "Leaf", fill: "#e0efe2", stroke: "#2b8341", textColor: "#1f6b33" },
-  { name: "Amber", fill: "#faf0d4", stroke: "#b8860b", textColor: "#7a5a07" },
-  { name: "Coral", fill: "#fbe3dd", stroke: "#b33f2a", textColor: "#8c3220" },
-  { name: "Blue", fill: "#e2ecfb", stroke: "#2f6fd0", textColor: "#24559f" },
+  { name: "Blue", fill: "#dfe7ff", stroke: "#2659e0", textColor: "#1d47c2" },
+  { name: "Pollen", fill: "#fff2c7", stroke: "#a87800", textColor: "#8f6700" },
+  { name: "Scarlet", fill: "#fbe0e2", stroke: "#df2935", textColor: "#b81d28" },
+  { name: "Ink", fill: "#080708", stroke: "#080708", textColor: "#e6e8e6" },
   { name: "Rose", fill: "#f7e2ec", stroke: "#c24a7c", textColor: "#98325c" },
   { name: "Bare", fill: "transparent", stroke: "#252525", textColor: "#252525" },
 ] as const;

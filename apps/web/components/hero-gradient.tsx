@@ -129,8 +129,8 @@ export function HeroGradient() {
           right: -10%;
           background: linear-gradient(
             225deg,
-            var(--signal-green),
-            var(--signal-green-bg)
+            var(--pollen),
+            var(--pollen-bg)
           );
           animation: floatCorner2 28s ease-in-out infinite alternate;
         }

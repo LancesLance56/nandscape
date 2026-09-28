@@ -176,7 +176,7 @@ export const PAGE_HEIGHT = 816;
  */
 export const PAPER_INK = "#252525";
 export const PAPER_LINE = "#cfcfcf";
-export const PAPER_ACCENT = "#1f6b33";
+export const PAPER_ACCENT = "#1d47c2";
 
 export const DEFAULT_SHAPE_STYLE: ShapeStyle = {
   fill: "#ffffff",

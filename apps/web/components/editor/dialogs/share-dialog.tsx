@@ -221,7 +221,7 @@ export function ShareDialog({ onCloseAction }: { onCloseAction: () => void }) {
 
   return (
     <div
-      className="w-96 rounded-2xl border border-border bg-surface-card p-5 shadow-[0_16px_40px_rgba(21,27,24,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+      className="w-96 rounded-2xl border border-border bg-surface-card p-5 shadow-[0_16px_40px_rgba(8,7,8,0.16)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
       onClick={(e) => e.stopPropagation()}
     >
       <h2 className="mb-4 font-display text-base font-bold text-ink">Share</h2>

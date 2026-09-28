@@ -1442,7 +1442,7 @@
           "text": "Kruskal's algorithm",
           "marks": [
             {
-              "href": "https://nandscape.dev/tutorials/dsa/graph-mst-kruskal-prim",
+              "href": "https://nandscape.org/tutorials/dsa/graph-mst-kruskal-prim",
               "kind": "link"
             }
           ]
@@ -1465,7 +1465,7 @@
           "text": "Bellman-Ford algorithm",
           "marks": [
             {
-              "href": "https://nandscape.dev/tutorials/dsa/graph-bellman-ford",
+              "href": "https://nandscape.org/tutorials/dsa/graph-bellman-ford",
               "kind": "link"
             }
           ]

@@ -150,22 +150,40 @@ interface Tile {
 
 /**
  * Order matters: the grid is packed by CSS auto-placement, and this sequence
- * fills a four-column layout exactly - three rows, no holes - and folds down
- * to two columns without leaving any either. Reordering or resizing a tile
- * means re-checking that, because auto-placement never backfills a gap.
+ * fills a six-column layout exactly - two rows, no holes - and folds down to
+ * two columns without leaving any either. Reordering or resizing a tile means
+ * re-checking that, because auto-placement never backfills a gap.
+ *
+ * Two rows is the point. The two tall live widgets sit side by side on the
+ * first rather than stacked, so their heights do not add up, and the whole
+ * bento fits under the navbar on a 1080p screen.
  */
 const TILES: Tile[] = [
   {
     slug: "sorting-algorithm-visualizer",
     name: "Sorting Visualizer",
     blurb: "Seven algorithms, one frame at a time, with the comparisons and writes counted underneath.",
-    span: "col-span-2 row-span-2",
+    span: "col-span-2 lg:col-span-3",
     widget: (
       <SortingVisualizerWidget
         data={{ compact: true, algorithm: "quick", preset: "random", size: 18, seed: 20260816 }}
         frame={false}
       />
     ),
+  },
+  {
+    slug: "graph-algorithm-visualizer",
+    name: "Graph Traversal",
+    blurb: "Play or scrub a BFS or DFS; the queue and the visited order keep up.",
+    span: "col-span-2 lg:col-span-3",
+    widget: <GraphTraversalWidget data={{ mode: "bfs", compact: true }} frame={false} />,
+  },
+  {
+    slug: "number-base-converter",
+    name: "Number Bases",
+    blurb: "Flip a bit and watch binary, decimal and hex move together.",
+    span: "col-span-2 lg:col-span-2",
+    widget: <NumberBaseExplorerWidget data={{ bits: 8, initial: 182, title: "One byte" }} frame={false} />,
   },
   {
     slug: "karnaugh-map-solver",
@@ -182,13 +200,6 @@ const TILES: Tile[] = [
     art: (a) => <FlowArt accent={a} />,
   },
   {
-    slug: "number-base-converter",
-    name: "Number Bases",
-    blurb: "Flip a bit and watch binary, decimal and hex move together.",
-    span: "col-span-2",
-    widget: <NumberBaseExplorerWidget data={{ bits: 8, initial: 182, title: "One byte" }} frame={false} />,
-  },
-  {
     slug: "topological-sort-visualizer",
     name: "Topological Sort",
     blurb: "Kahn's algorithm a node at a time, in-degrees falling as it goes.",
@@ -201,13 +212,6 @@ const TILES: Tile[] = [
     blurb: "A fresh random map every time. Group it yourself and find out if it is minimal.",
     span: "col-span-1",
     art: (a) => <PracticeArt accent={a} />,
-  },
-  {
-    slug: "graph-algorithm-visualizer",
-    name: "Graph Traversal",
-    blurb: "Play or scrub a BFS or DFS; the queue and the visited order keep up.",
-    span: "col-span-2",
-    widget: <GraphTraversalWidget data={{ mode: "bfs" }} frame={false} />,
   },
 ];
 
@@ -235,7 +239,7 @@ export function ToolsBento() {
         {/* Rows have a floor, not a fixed height: the tiles running a real
             widget need whatever they need, and letting their band grow keeps
             every other tile in the row aligned with them. */}
-        <div className="grid auto-rows-[minmax(8.5rem,auto)] grid-cols-2 gap-3 lg:auto-rows-[minmax(9.5rem,auto)] lg:grid-cols-4">
+        <div className="grid auto-rows-[minmax(8.5rem,auto)] grid-cols-2 gap-3 lg:auto-rows-[minmax(9.5rem,auto)] lg:grid-cols-6">
           {tiles.map((tile, i) => {
             const tool = bySlug.get(tile.slug)!;
             const accent = accents[i];

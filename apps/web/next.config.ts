@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname, "../../"),
   },
-  allowedDevOrigins: [`localhost:${devPort}`, 'nandscape.dev', '192.168.5.67'],
+  allowedDevOrigins: [`localhost:${devPort}`, 'nandscape.org', '192.168.5.67'],
 
   // Several thin graph-theory / sorting intro lessons were merged into one
   // stronger page each (better for search, one canonical URL instead of
