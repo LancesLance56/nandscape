@@ -17,11 +17,11 @@ Symbol: two Scratch-style code blocks. The top one is a "hat" block (the domed s
 | logo-horizontal-dark.svg | lockup, #E6E8E6 wordmark, transparent bg (for #111012) |
 | mark.svg | symbol only, orange + blue |
 | mark-mono-black.svg / mark-mono-white.svg | single flat colour |
-| preview.png | render check at real sizes, not a production asset |
+| preview.png | render check at real sizes, not a production asset (predates the Inter wordmark) |
 
 Colours: top (hat) block is Signal Orange #FF751A (`--brand-orange` in globals.css), bottom block is Signal Blue #3772FF. Other colours are exact hex values from apps/web/app/globals.css (--brand-*). They are hardcoded because CSS variables don't resolve in an SVG loaded via <img> or as a favicon.
 
-The wordmark is JetBrains Mono Bold converted to outlines, so it needs no font. The stripe under it is --brand-gradient.
+The wordmark is Inter Bold (the site's font, `--font-display`) converted to outlines, so it needs no font, with -0.02em tracking and the font's own kerning. There is no stripe under it. The outlines are cut from the same Inter build `next/font` serves, so the logo and the page text match exactly.
 
 Decisions and caveats:
 - Yellow dot left out of the favicon. At 16px it would be about 1px, and there's no spot for it that doesn't clutter the symbol.
