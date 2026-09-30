@@ -32,6 +32,16 @@ export const metadata: Metadata = {
   description:
     "Nandscape teaches computer science through interactive tools and puzzles, starting with digital logic: build real circuits and watch them run.",
   alternates: { canonical: "/" },
+  // Sources live in public/brand/ (see its README). favicon.ico and
+  // apple-touch-icon.png are rasterised from favicon.svg and
+  // logo-square-dark.svg respectively.
+  icons: {
+    icon: [
+      { url: "/brand/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+    ],
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+  },
 };
 
 export const viewport: Viewport = {
