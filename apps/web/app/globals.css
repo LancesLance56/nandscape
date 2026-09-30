@@ -28,6 +28,7 @@
      tokens below, which are these same hues stepped for contrast. */
   --brand-black: #080708;
   --brand-blue: #3772ff;
+  --brand-orange: #ff751a;
   --brand-red: #df2935;
   --brand-yellow: #fdca40;
   --brand-grey: #e6e8e6;
@@ -272,6 +273,7 @@
 
   --color-brand-black: var(--brand-black);
   --color-brand-blue: var(--brand-blue);
+  --color-brand-orange: var(--brand-orange);
   --color-brand-red: var(--brand-red);
   --color-brand-yellow: var(--brand-yellow);
   --color-brand-grey: var(--brand-grey);

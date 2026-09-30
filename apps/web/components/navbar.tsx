@@ -17,7 +17,7 @@ import {
   X,
 } from "lucide-react";
 
-import { Logo } from "@/components/icons";
+import { LogoLockup } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthStatus } from "@/components/auth-status";
 import { cn } from "@/lib/cn";
@@ -180,9 +180,8 @@ export function Navbar() {
             outer two sharing the leftover width equally, so the links sit on
             the true centre line of the page rather than wherever the logo's
             width happens to push them. */}
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 justify-self-start rounded-md">
-          <Logo className="h-7 w-7 shrink-0 text-ink" />
-          <span className="text-lg font-bold tracking-tight text-ink">Nandscape</span>
+        <Link href="/" className="flex shrink-0 items-center justify-self-start rounded-md">
+          <LogoLockup className="h-9 w-auto shrink-0 text-ink" />
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
