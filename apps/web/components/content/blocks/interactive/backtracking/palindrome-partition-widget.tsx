@@ -67,7 +67,7 @@ export function PalindromePartitionWidget({ data }: { data: Record<string, unkno
             {p && p.parts.length > 0 ? (
               <div className="flex flex-wrap items-center gap-1">
                 {p.parts.map((part, i) => (
-                  <span key={i} className="rounded-md bg-signal-green/15 px-2 py-1 font-mono text-xs font-bold text-signal-green">
+                  <span key={i} className="rounded-md bg-signal-green/15 px-2 py-1 font-label text-xs font-bold text-signal-green">
                     {part}
                   </span>
                 ))}
@@ -107,7 +107,7 @@ function StringStrip({ text, payload }: { text: string; payload: PalindromePaylo
               {cutBefore && <span className="mx-0.5 h-8 w-0.5 rounded bg-copper" aria-hidden />}
               <span
                 className={cn(
-                  "flex h-9 w-8 items-center justify-center rounded-md border font-mono text-sm font-bold transition-colors",
+                  "flex h-9 w-8 items-center justify-center rounded-md border font-label text-sm font-bold transition-colors",
                   committed && "border-signal-green bg-signal-green/15 text-signal-green",
                   testing && ok && "border-copper bg-copper text-white",
                   testing && !ok && "border-signal-coral bg-signal-coral/25 text-signal-coral",
@@ -123,7 +123,7 @@ function StringStrip({ text, payload }: { text: string; payload: PalindromePaylo
       <p className="mt-2 text-[11px] text-slate">
         {end !== null ? (
           <>
-            Testing <span className="font-mono font-bold text-ink">{text.slice(start, end + 1)}</span>:{" "}
+            Testing <span className="font-label font-bold text-ink">{text.slice(start, end + 1)}</span>:{" "}
             {ok ? (
               <span className="font-semibold text-signal-green">a palindrome, so this cut is allowed</span>
             ) : (
@@ -160,7 +160,7 @@ function PalindromeTable({ text, payload }: { text: string; payload: PalindromeP
           <tr>
             <th className="w-6" />
             {[...text].map((ch, j) => (
-              <th key={j} className="w-6 pb-1 font-mono font-bold text-slate">
+              <th key={j} className="w-6 pb-1 font-label font-bold text-slate">
                 {ch}
               </th>
             ))}
@@ -169,7 +169,7 @@ function PalindromeTable({ text, payload }: { text: string; payload: PalindromeP
         <tbody>
           {[...text].map((ch, i) => (
             <tr key={i}>
-              <th className="pr-1 text-right font-mono font-bold text-slate">{ch}</th>
+              <th className="pr-1 text-right font-label font-bold text-slate">{ch}</th>
               {[...text].map((_, j) => {
                 if (j < i) return <td key={j} className="h-6 w-6" />;
                 const yes = isPalindrome(text, i, j);

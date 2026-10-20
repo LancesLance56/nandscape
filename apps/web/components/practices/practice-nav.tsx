@@ -77,7 +77,7 @@ export function PracticeNav({
             >
               <MessagesSquare className="h-3.5 w-3.5 shrink-0" />
               <span className="hidden sm:inline">Discuss</span>
-              {discussCount ? <span className="font-mono text-xs text-slate">{discussCount}</span> : null}
+              {discussCount ? <span className="font-label text-xs text-slate">{discussCount}</span> : null}
             </Link>
           )}
           <ThemeToggle />

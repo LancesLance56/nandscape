@@ -66,7 +66,7 @@ export default async function CommunityPage() {
                   title={thread.title}
                   detail={
                     <span className="flex items-center gap-2">
-                      <span className="inline-flex h-5 items-center rounded-4xl bg-surface-2 px-2 font-mono text-[10px] font-medium text-ink-soft">
+                      <span className="inline-flex h-5 items-center rounded-4xl bg-surface-2 px-2 font-label text-[10px] font-medium text-ink-soft">
                         {thread.kindLabel}
                       </span>
                       <span className="truncate">
@@ -77,7 +77,7 @@ export default async function CommunityPage() {
                   meta={
                     <span className="flex items-center gap-3">
                       <span className="hidden sm:inline">{shortAgo(thread.lastActivity)}</span>
-                      <span className="w-6 text-right font-mono text-copper-dark">
+                      <span className="w-6 text-right font-label text-copper-dark">
                         {thread.count}
                       </span>
                     </span>
@@ -105,13 +105,13 @@ export default async function CommunityPage() {
                     filled={entry.rank <= 3}
                     title={
                       <span className="flex items-center gap-2.5">
-                        <span className="w-4 shrink-0 font-mono text-xs text-slate">
+                        <span className="w-4 shrink-0 font-label text-xs text-slate">
                           {String(entry.rank).padStart(2, "0")}
                         </span>
                         <span className="truncate">@{entry.username}</span>
                       </span>
                     }
-                    meta={<span className="font-mono text-copper-dark">{entry.value}</span>}
+                    meta={<span className="font-label text-copper-dark">{entry.value}</span>}
                   />
                 ))}
               </Rail>
@@ -123,7 +123,7 @@ export default async function CommunityPage() {
               <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-slate">
                 Your streak
               </p>
-              <p className="mb-3.5 font-mono text-[28px] font-semibold text-accent-display">
+              <p className="mb-3.5 font-label text-[28px] font-semibold text-accent-display">
                 {streak.days} {streak.days === 1 ? "day" : "days"}
               </p>
               <div className="mb-3.5 flex gap-1">

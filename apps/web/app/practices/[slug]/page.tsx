@@ -105,7 +105,7 @@ export default async function PracticePage({ params }: PageParams) {
                         <dl className="space-y-1.5 text-xs">
                           <div className="grid grid-cols-[4.5rem_1fr] gap-2">
                             <dt className="text-ink-soft">Input</dt>
-                            <dd className="overflow-x-auto font-mono text-ink">
+                            <dd className="overflow-x-auto font-code text-ink">
                               {practice.signature.params
                                 .map(
                                   (param, index) =>
@@ -116,7 +116,7 @@ export default async function PracticePage({ params }: PageParams) {
                           </div>
                           <div className="grid grid-cols-[4.5rem_1fr] gap-2">
                             <dt className="text-ink-soft">Output</dt>
-                            <dd className="overflow-x-auto font-mono text-ink">
+                            <dd className="overflow-x-auto font-code text-ink">
                               {formatValue(testCase.expected)}
                             </dd>
                           </div>

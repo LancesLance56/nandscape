@@ -42,7 +42,7 @@ export function SectionHeader({
         {/* Mono caps, which is the label idiom the rest of the site already
             uses - the footer column heads, the panel captions in the worked
             example - rather than a sixth invention. */}
-        <p className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-copper-dark">
+        <p className="flex items-center gap-2 font-label text-[11px] font-semibold uppercase tracking-[0.14em] text-copper-dark">
           <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-copper" />
           {eyebrow}
         </p>

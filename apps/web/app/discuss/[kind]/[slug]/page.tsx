@@ -87,7 +87,7 @@ export default async function DiscussPage({
     <>
       <Navbar />
       <main className="mx-auto max-w-4xl px-6 pb-24 pt-32 sm:px-10">
-        <p className="mb-3 font-mono text-[11px] text-slate">
+        <p className="mb-3 font-label text-[11px] text-slate">
           <Link href="/community/discussions" className="hover:text-copper-dark">
             Discussions
           </Link>
@@ -113,7 +113,7 @@ export default async function DiscussPage({
 
         <div className="mb-5 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
           <p className="text-[13px] text-slate">
-            <span className="font-mono text-ink-soft">{total}</span> {total === 1 ? "post" : "posts"}
+            <span className="font-label text-ink-soft">{total}</span> {total === 1 ? "post" : "posts"}
             {" · solutions are hidden until you ask for them"}
           </p>
           <div className="flex items-center gap-0.5 rounded-xl border border-border bg-surface-2 p-1">

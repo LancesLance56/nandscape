@@ -183,7 +183,7 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
       {/* The recurrence, as a single reference line rather than a boxed panel.
           It does not change frame to frame, so it does not deserve the same
           weight as the panels that do. */}
-      <p className="mb-3 font-mono text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+      <p className="mb-3 font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
 
       <div className="grid gap-4 lg:grid-cols-[2fr_minmax(0,1fr)] lg:items-start">
         <div className="flex min-w-0 flex-col gap-2">
@@ -210,7 +210,7 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
                 </>
               )}
             </span>
-            <span className="font-mono font-semibold text-signal-green-strong">{run.answer}</span>
+            <span className="font-label font-semibold text-signal-green-strong">{run.answer}</span>
           </div>
 
           {/* The panel the whole widget is built around: reading a recursion as
@@ -243,7 +243,7 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
               ) : (
                 <div className="flex flex-wrap gap-1.5">
                   {step.memo.map((m) => (
-                    <span key={m.key} className="rounded-md bg-copper-bg px-2 py-1 font-mono text-[11px] font-bold text-copper-dark">
+                    <span key={m.key} className="rounded-md bg-copper-bg px-2 py-1 font-label text-[11px] font-bold text-copper-dark">
                       {m.key} to {m.value}
                     </span>
                   ))}

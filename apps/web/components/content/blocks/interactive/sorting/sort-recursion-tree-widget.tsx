@@ -49,7 +49,7 @@ export function SortRecursionTreeWidget({ data }: { data: Record<string, unknown
 
   return (
     <WidgetFrame>
-      <p className="mb-3 font-mono text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+      <p className="mb-3 font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
 
       <div className="grid gap-4 lg:grid-cols-[2fr_minmax(0,1fr)] lg:items-start">
         <div className="flex min-w-0 flex-col gap-2">
@@ -62,7 +62,7 @@ export function SortRecursionTreeWidget({ data }: { data: Record<string, unknown
             <span>
               <b className="text-ink">{step.calls}</b> calls
             </span>
-            <span className="font-mono font-semibold text-signal-green-strong">{run.answer}</span>
+            <span className="font-label font-semibold text-signal-green-strong">{run.answer}</span>
           </div>
 
           <PanelBox title="Call stack">

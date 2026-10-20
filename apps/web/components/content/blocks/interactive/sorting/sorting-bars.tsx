@@ -135,7 +135,7 @@ function AuxRow({ aux }: { aux?: SortStep["aux"] }) {
           <span
             key={i}
             className={cn(
-              "flex h-5 min-w-5 items-center justify-center rounded px-1 font-mono text-[10px] font-bold tabular-nums",
+              "flex h-5 min-w-5 items-center justify-center rounded px-1 font-label text-[10px] font-bold tabular-nums",
               v === null
                 ? "border border-dashed border-border-strong text-border-strong"
                 : highlight.has(i)

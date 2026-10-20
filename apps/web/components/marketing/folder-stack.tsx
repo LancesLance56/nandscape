@@ -258,7 +258,7 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
               {/* The strip of folder you can always see. The tabs name it, so
                   all this carries is the count and the open/shut cue. */}
               <div className="pointer-events-none relative z-10 flex items-center justify-end gap-2.5 px-5 pt-3 sm:px-7">
-                <span className="font-mono text-[11px] tabular-nums text-slate">
+                <span className="font-label text-[11px] tabular-nums text-slate">
                   {folder.count} {folder.count === 1 ? "lesson" : "lessons"}
                 </span>
                 <ChevronDown
@@ -354,7 +354,7 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
                                 {tab.title}
                               </span>
                             </span>
-                            <span className="shrink-0 font-mono text-[10px] tabular-nums text-paper-muted transition-colors duration-200 group-hover/section:text-paper-accent">
+                            <span className="shrink-0 font-label text-[10px] tabular-nums text-paper-muted transition-colors duration-200 group-hover/section:text-paper-accent">
                               {rest > 0
                                 ? `+${rest} more ${rest === 1 ? "lesson" : "lessons"}`
                                 : `${tab.count} ${tab.count === 1 ? "lesson" : "lessons"}`}
@@ -371,7 +371,7 @@ export function FolderStack({ folders }: { folders: Folder[] }) {
                               className={cn(ROW, "group/lesson pl-3")}
                               style={{ height: LINE }}
                             >
-                              <span className="w-3 shrink-0 font-mono text-[9px] tabular-nums text-paper-accent/55">
+                              <span className="w-3 shrink-0 font-label text-[9px] tabular-nums text-paper-accent/55">
                                 {li + 1}
                               </span>
                               <span className="truncate text-[12px] text-paper-ink-soft transition-colors duration-200 group-hover/lesson:text-paper-accent">

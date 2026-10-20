@@ -178,7 +178,7 @@ function Quiz({ data }: { data: QuizData }) {
           <div className="flex flex-col gap-4">
             <div className="flex items-baseline justify-between gap-3">
               <p className="text-sm font-semibold leading-relaxed text-ink">{current.prompt}</p>
-              <span className="shrink-0 font-mono text-[10px] tabular-nums text-slate">
+              <span className="shrink-0 font-label text-[10px] tabular-nums text-slate">
                 {step + 1}/{questions.length}
               </span>
             </div>
@@ -224,7 +224,7 @@ function Quiz({ data }: { data: QuizData }) {
                     </span>
 
                     {option.code ? (
-                      <span className="font-mono text-[13px]">{option.code}</span>
+                      <span className="font-code text-[13px]">{option.code}</span>
                     ) : (
                       <span>{option.label}</span>
                     )}

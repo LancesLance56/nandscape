@@ -108,7 +108,7 @@ export function EmbedBuilder({
             rows={4}
             value={snippet}
             onFocus={(e) => e.currentTarget.select()}
-            className="w-full resize-none rounded-lg border border-border-strong bg-surface px-2 py-1.5 font-mono text-[11px] leading-relaxed text-ink outline-none focus:border-copper"
+            className="w-full resize-none rounded-lg border border-border-strong bg-surface px-2 py-1.5 font-code text-[11px] leading-relaxed text-ink outline-none focus:border-copper"
           />
 
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-ink-soft">
@@ -131,7 +131,7 @@ export function EmbedBuilder({
                 step={20}
                 value={height}
                 onChange={(e) => setHeight(Math.max(160, Math.min(1600, Number(e.target.value) || defaultHeight)))}
-                className="w-16 rounded-md border border-border-strong bg-surface px-1.5 py-0.5 font-mono text-[11px] text-ink outline-none focus:border-copper"
+                className="w-16 rounded-md border border-border-strong bg-surface px-1.5 py-0.5 font-code text-[11px] text-ink outline-none focus:border-copper"
               />
             </label>
 

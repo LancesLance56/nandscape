@@ -108,17 +108,17 @@ export default async function LeaderboardPage({
               filled={entry.rank <= 3}
               leading={
                 <span className="flex items-center gap-3.5">
-                  <span className="w-6 shrink-0 font-mono text-[13px] text-slate">
+                  <span className="w-6 shrink-0 font-label text-[13px] text-slate">
                     {String(entry.rank).padStart(2, "0")}
                   </span>
                   <AvatarDisc username={entry.username} size="lg" />
                 </span>
               }
-              title={<span className="font-mono">@{entry.username}</span>}
+              title={<span className="font-label">@{entry.username}</span>}
               meta={
                 <span className="flex items-center gap-4">
                   <span className="hidden text-xs text-ink-soft sm:inline">{entry.support}</span>
-                  <span className="w-24 text-right font-mono text-[15px] font-semibold text-copper-dark">
+                  <span className="w-24 text-right font-label text-[15px] font-semibold text-copper-dark">
                     {entry.value} {entry.unit}
                   </span>
                 </span>

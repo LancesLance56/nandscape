@@ -76,14 +76,14 @@ export function PreviewCodeBlock({ block }: { block: CodeBlock }) {
         </div>
       ) : (
         block.language && (
-          <div className="border-b border-border px-4 py-1.5 font-mono text-[11px] text-slate">{block.language}</div>
+          <div className="border-b border-border px-4 py-1.5 font-label text-[11px] text-slate">{block.language}</div>
         )
       )}
 
       {html ? (
-        <div className="font-mono text-sm" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="font-code text-sm" dangerouslySetInnerHTML={{ __html: html }} />
       ) : (
-        <pre className="overflow-x-auto p-4 font-mono text-sm text-ink">
+        <pre className="overflow-x-auto p-4 font-code text-sm text-ink">
           <code>{current.code}</code>
         </pre>
       )}

@@ -75,7 +75,7 @@ export function CodeField({
   const shared: React.CSSProperties = {
     margin: 0,
     padding: "14px 16px",
-    fontFamily: "var(--font-mono)",
+    fontFamily: "var(--font-label)",
     fontSize: "12.5px",
     lineHeight: 1.75,
     letterSpacing: "normal",

@@ -108,12 +108,12 @@ export function EmbedsSection() {
             <tbody>
               {URL_SHAPES.map((row) => (
                 <tr key={row.pattern} className="border-b border-border/60">
-                  <td className="py-2.5 pr-4 font-mono text-xs text-ink">{row.pattern}</td>
+                  <td className="py-2.5 pr-4 font-code text-xs text-ink">{row.pattern}</td>
                   <td className="py-2.5 pr-4 text-xs text-ink-soft">{row.meaning}</td>
                   <td className="py-2.5">
                     <Link
                       href={row.example}
-                      className="font-mono text-xs text-copper hover:text-copper-dark"
+                      className="font-code text-xs text-copper hover:text-copper-dark"
                       target="_blank"
                     >
                       {row.example}
@@ -129,7 +129,7 @@ export function EmbedsSection() {
         <ul className="mt-3 flex flex-col gap-2">
           {OPTIONS.map((option) => (
             <li key={option.flag} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm text-ink-soft">
-              <code className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-xs text-ink">
+              <code className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-code text-xs text-ink">
                 {option.flag}
               </code>
               {option.does}
@@ -155,7 +155,7 @@ export function EmbedsSection() {
           , including WordPress, Ghost, Notion and Discourse, can turn a pasted Nandscape link into the running tool
           with no HTML at all. Tool and project pages carry the discovery link, and the endpoint is public:
         </p>
-        <pre className="mt-3 overflow-x-auto rounded-xl border border-border bg-surface-card p-3 font-mono text-[11px] leading-relaxed text-ink-soft">
+        <pre className="mt-3 overflow-x-auto rounded-xl border border-border bg-surface-card p-3 font-code text-[11px] leading-relaxed text-ink-soft">
           {`GET ${origin}/api/oembed?url=${origin}/tools/sorting-algorithm-visualizer&format=json`}
         </pre>
       </section>

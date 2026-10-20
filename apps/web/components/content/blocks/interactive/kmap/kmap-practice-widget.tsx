@@ -210,7 +210,7 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
               <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">
                 {revealed ? "Minimal answer" : "Your expression"}
               </div>
-              <p className="break-words font-mono text-lg font-bold leading-snug text-ink">
+              <p className="break-words font-label text-lg font-bold leading-snug text-ink">
                 {revealed ? (
                   <>
                     <span className="text-copper-dark">F</span> = {sopExpression(solution.cover, variables)}

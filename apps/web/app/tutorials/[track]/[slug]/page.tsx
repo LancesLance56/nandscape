@@ -112,8 +112,9 @@ export default async function TutorialPage({ params }: PageProps) {
         // caps and centres them, so the shell shouldn't also clamp to its
         // default reading measure.
         className="max-w-none"
+        // No standfirst: the excerpt is still the page's SEO description, but
+        // on the page itself it only restated the title.
         title={page.title}
-        lede={page.excerpt ?? undefined}
         breadcrumb={
           <nav aria-label="Breadcrumb" className="mb-4 text-xs text-slate">
             <Link href="/tutorials" className="hover:text-copper-dark">

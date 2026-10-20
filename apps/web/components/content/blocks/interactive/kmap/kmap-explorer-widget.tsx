@@ -332,7 +332,7 @@ function ExpressionPanel({
   return (
     <div className="rounded-xl border border-border bg-gradient-to-br from-surface-card to-surface-2/50 p-4">
       <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">{label}</div>
-      <p className="break-words font-mono text-lg font-bold leading-snug text-ink">
+      <p className="break-words font-label text-lg font-bold leading-snug text-ink">
         {expression ? (
           <>
             <span className="text-copper-dark">F</span> = {expression}
@@ -355,7 +355,7 @@ function GroupChips({ groups }: { groups: { term: string; color: string; size: n
           className="flex items-center gap-1.5 rounded-full py-1 pl-2.5 pr-2 text-xs font-bold text-white"
           style={{ backgroundColor: g.color }}
         >
-          <span className="font-mono">{g.term}</span>
+          <span className="font-label">{g.term}</span>
           <span className="rounded-full bg-black/20 px-1.5 text-[10px] tabular-nums">{g.size}</span>
         </span>
       ))}

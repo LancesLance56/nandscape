@@ -88,7 +88,7 @@ export default async function ProfilePage({
             <h1 className="mb-1 font-display text-2xl font-bold tracking-tight text-ink">
               @{profile.username}
             </h1>
-            <p className="mb-2.5 font-mono text-[13px] text-slate">
+            <p className="mb-2.5 font-label text-[13px] text-slate">
               {joinedLabel(profile.createdAt)}
             </p>
             {profile.bio && (
@@ -101,7 +101,7 @@ export default async function ProfilePage({
           {statTiles.map((tile) => (
             <div key={tile.label} className="bg-surface-card px-5 py-4">
               <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-slate">{tile.label}</p>
-              <p className="font-mono text-[22px] font-semibold text-ink">{tile.value}</p>
+              <p className="font-label text-[22px] font-semibold text-ink">{tile.value}</p>
               <p className="mt-1 text-xs text-ink-soft">{tile.note}</p>
             </div>
           ))}
@@ -194,7 +194,7 @@ async function SolvedTab({ userId }: { userId: string }) {
           meta={
             <span className="flex items-center gap-3">
               <DifficultyTag difficulty={problem.difficulty} />
-              <span className="w-20 text-right font-mono">{shortAgo(problem.solvedAt)}</span>
+              <span className="w-20 text-right font-label">{shortAgo(problem.solvedAt)}</span>
             </span>
           }
         />
@@ -219,7 +219,7 @@ async function ActivityTab({ userId }: { userId: string }) {
               <span className="text-ink-soft"> {event.detail}</span>
             </span>
           }
-          meta={<span className="font-mono">{longAgo(event.at)}</span>}
+          meta={<span className="font-label">{longAgo(event.at)}</span>}
         />
       ))}
     </Rail>
@@ -238,7 +238,7 @@ async function PostsTab({ userId }: { userId: string }) {
           href={post.href}
           title={post.heading}
           detail={post.body.split("\n")[0]}
-          meta={<span className="font-mono text-copper-dark">{post.score}</span>}
+          meta={<span className="font-label text-copper-dark">{post.score}</span>}
         />
       ))}
     </Rail>

@@ -60,7 +60,7 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
                 >
                   <span
                     style={{ color }}
-                    className="w-6 shrink-0 pt-0.5 font-mono text-xs tabular-nums opacity-45 transition-opacity group-hover:opacity-100"
+                    className="w-6 shrink-0 pt-0.5 font-label text-xs tabular-nums opacity-45 transition-opacity group-hover:opacity-100"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -72,7 +72,7 @@ export function BlogShowcase({ posts }: { posts: PostSummary[] }) {
                       </h3>
                       <span
                         style={{ color }}
-                        className="hidden shrink-0 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] sm:block"
+                        className="hidden shrink-0 font-label text-[10px] font-semibold uppercase tracking-[0.14em] sm:block"
                       >
                         {post.tags[0] ?? "Article"}
                       </span>

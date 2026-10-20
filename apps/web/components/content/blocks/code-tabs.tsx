@@ -54,7 +54,7 @@ export function CodeTabs({ variants, className }: { variants: RenderedVariant[];
         ))}
       </div>
 
-      <div className="font-mono text-sm" dangerouslySetInnerHTML={{ __html: current.html }} />
+      <div className="font-code text-sm" dangerouslySetInnerHTML={{ __html: current.html }} />
     </div>
   );
 }

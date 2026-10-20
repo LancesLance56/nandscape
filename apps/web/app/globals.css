@@ -5,39 +5,56 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------------------
-   Nandscape palette.
+   Nandscape palette - "Calcite".
 
    These named tokens are the source of truth for every colour on the site.
    shadcn's own token names (--background, --primary, --muted, and so on) are
    defined further down as *aliases* onto these, so an imported shadcn
-   component lands in the site's palette instead of the default neutral grey,
-   and there is still exactly one place to change a colour.
+   component lands in the site's palette, and there is still exactly one place
+   to change a colour.
 
-   The brand is five colours: black, crayola blue, scarlet rush, golden pollen
-   and alabaster grey. Light mode is black ink on alabaster, dark mode is
-   alabaster ink on black; blue is the one interactive accent, scarlet is the
-   warning, pollen is the highlighter.
+   Built from four swatches:
+
+     #DDDCDB  calcite   - the warm stone grey; the surface ramp is tints of it
+     #FD7B41  orange    - the accent
+     #EDBF9B  peach     - the soft partner to the orange: washes, selection
+     #3C4044  charcoal  - the ink in light mode, the ground in dark mode
+
+   Light is the default theme. Orange #FD7B41 is only ~2.6:1 on white, so it
+   runs as-is only at headline size (--accent-display); text and buttons use
+   a deepened step (--copper, 4.6:1) that keeps the hue. On the charcoal dark
+   ground the true orange clears AA by itself, so dark mode uses it directly.
+
+   Green, red, blue and amber extend the four for the things a palette of four
+   cannot say: pass/fail, logic HIGH/LOW, and the tinted tutorial callouts.
+   They are warmed slightly so they sit with the stone and orange rather than
+   against them.
    --------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
-  /* The brand swatches, exactly as specified. Fixed in both themes - they are
-     the identity, not the UI - so reach for them only in brand marks (the
-     logo, the stripe, decorative dots). UI colour goes through the themed
-     tokens below, which are these same hues stepped for contrast. */
+  /* The Calcite swatches, exactly as specified. Fixed in both themes - reach
+     for them in brand marks and decoration; UI colour goes through the themed
+     tokens below. The --brand-* swatches are the logo's own colours (the
+     orange and blue snap blocks) and must not be repainted with the palette. */
+  --calcite: #dddcdb;
+  --calcite-orange: #fd7b41;
+  --calcite-peach: #edbf9b;
+  --calcite-charcoal: #3c4044;
   --brand-black: #080708;
   --brand-blue: #3772ff;
   --brand-orange: #ff751a;
   --brand-red: #df2935;
   --brand-yellow: #fdca40;
   --brand-grey: #e6e8e6;
-  --brand-gradient: linear-gradient(90deg, var(--brand-blue) 0%, var(--brand-red) 50%, var(--brand-yellow) 100%);
+  --brand-gradient: linear-gradient(90deg, #fd7b41 0%, #edbf9b 100%);
 
-  --surface: #e6e8e6;
-  --surface-2: #dcdfdc;
-  --surface-3: #d1d5d1;
-  --surface-4: #c4c9c4;
+  /* Tints of calcite, lightest first. --surface-3 is the swatch itself. */
+  --surface: #efeeec;
+  --surface-2: #e6e5e3;
+  --surface-3: #dddcdb;
+  --surface-4: #cdcbc9;
   --surface-card: #ffffff;
 
   /* A sheet of paper laid *on* a surface. Paper is white in both themes - a
@@ -46,133 +63,170 @@
      and accent rather than borrowing the ones that flip. Anything drawn on a
      sheet must use these; anything drawn on a surface must not. */
   --paper: #ffffff;
-  --paper-ink: #252525;
-  --paper-ink-soft: #545454;
-  --paper-muted: #7d7d7d;
-  --paper-line: #cfcfcf;
-  --paper-accent: #1d47c2;
+  --paper-ink: #3c4044;
+  --paper-ink-soft: #5c6166;
+  --paper-muted: #84888c;
+  --paper-line: #d6d5d3;
+  --paper-accent: #c74f1a;
 
-  /* Coloured folder stock for the homepage folder stack (folder-stack.tsx).
-     Pale washes of the brand colours rather than a grey ramp so the drawer
-     reads as real folders: blue, pollen, scarlet, alabaster. */
-  --folder-1: #d6e1ff;
-  --folder-2: #feeab0;
-  --folder-3: #f7d0d3;
-  --folder-4: #d8dcd8;
+  /* Coloured folder stock for the homepage folder stack (folder-stack.tsx):
+     peach, orange wash, calcite, and a pale blue for contrast. */
+  --folder-1: #f6dcc8;
+  --folder-2: #fde3d6;
+  --folder-3: #e6e5e4;
+  --folder-4: #dfe7f3;
 
-  --ink: #080708;
-  --ink-soft: #4a474b;
-  --slate: #6a676b;
+  /* Charcoal ink, ~9.4:1 on the page - strong, but never black. */
+  --ink: #3c4044;
+  --ink-soft: #5c6166;
+  --slate: #7d8186;
 
-  --border: #d0d4d0;
-  --border-strong: #bcc1bc;
+  --border: #dedcda;
+  --border-strong: #cbc9c7;
 
-  /* The lift a card gets while the pointer is on it. A token rather than a
-     literal because the light-mode value is a wash of ink that is invisible on
-     a dark ground - the homepage tiles all carried the same hard-coded rgba,
-     and half of them were shadowless in dark mode. */
-  --shadow-lift: 0 18px 36px -24px rgba(8, 7, 8, 0.5);
+  /* The lift a card gets while the pointer is on it. */
+  --shadow-lift: 0 18px 36px -24px rgba(60, 64, 68, 0.4);
+  /* The resting shadow under a white card - barely there. */
+  --shadow-card: 0 1px 2px rgba(60, 64, 68, 0.05), 0 4px 14px -8px rgba(60, 64, 68, 0.14);
 
   /* The primary accent. Still named --copper* so every `text-copper`,
-     `bg-copper-bg`, `ring-copper` on the site keeps working. Crayola blue,
-     deepened just enough to clear AA both ways (~4.75:1 on alabaster, ~5.9:1
-     for white on it) - the brand #3772ff itself is only ~4.2:1 on white. */
-  --copper: #2659e0;
-  --copper-dark: #1d47c2;
-  --copper-bg: #dfe7ff;
+     `bg-copper-bg`, `ring-copper` on the site keeps working - and it is
+     an orange again, so the name is nearly honest. */
+  --copper: #c74f1a;
+  --copper-dark: #a8410f;
+  --copper-bg: #fde8dc;
   --copper-ink: #ffffff;
-  /* Display-size accent - the true brand blue, which only ever runs at
-     headline size, where 3:1 is enough. */
-  --accent-display: #3772ff;
+  /* The true Calcite orange, at headline size only. */
+  --accent-display: #fd7b41;
 
-  /* Logic HIGH and "accepted". Not a brand colour, and kept anyway: green for
-     a live wire and a passing test is a convention a learner already reads. */
-  --signal-green: #1ca463;
-  --signal-green-strong: #0f7e4a;
-  --signal-green-bg: #dff3e7;
+  /* Peach: the soft wash. Selection, highlights, "new". */
+  --peach: #edbf9b;
+  --peach-bg: #fbeee3;
 
-  /* Scarlet rush: errors, LOW, destructive actions. The brand value clears AA
-     on white as-is. */
-  --signal-coral: #df2935;
-  --signal-coral-strong: #b81d28;
-  --signal-coral-bg: #fbe0e2;
+  /* Green: logic HIGH, "accepted", tips. */
+  --signal-green: #2f8a57;
+  --signal-green-strong: #236b43;
+  --signal-green-bg: #e5f3ea;
 
-  /* Golden pollen: the highlighter - text selection, "new", callouts. Far too
-     light for text on a light ground, so text uses -strong and anything drawn
-     on the bright fill uses -ink. */
-  --pollen: #fdca40;
-  --pollen-strong: #8f6700;
-  --pollen-bg: #fff2c7;
-  --pollen-ink: #080708;
+  /* Red: errors, LOW, destructive actions, "important". */
+  --signal-coral: #c2413a;
+  --signal-coral-strong: #9e302a;
+  --signal-coral-bg: #fbe7e5;
+
+  /* Blue: notes, information, links in diagrams. */
+  --signal-blue: #2f6fb3;
+  --signal-blue-strong: #24578f;
+  --signal-blue-bg: #e4eef9;
+
+  /* Amber: warnings and the highlighter. Too light for text on a light
+     ground, so text uses -strong and anything drawn on the fill uses -ink. */
+  --pollen: #f2b544;
+  --pollen-strong: #8a5a00;
+  --pollen-bg: #fdf3dc;
+  --pollen-ink: #3c4044;
 
   --signal-unknown: #ff00ff;
 
   /* Diagram accents, scoped to diagrams by convention rather than used as UI
      colour, so a flowchart can say "these two stages are different kinds of
      thing". */
-  --diagram-blue: #3772ff;
-  --diagram-blue-bg: #e1e9ff;
-  /* Kept the --diagram-violet name (flowchart-nodes.tsx reads it); the value is
-     a rose so the palette carries no purple. */
-  --diagram-violet: #c24a7c;
-  --diagram-violet-bg: #f7e2ec;
+  --diagram-blue: #3f72c2;
+  --diagram-blue-bg: #e4eef9;
+  /* Kept the --diagram-violet name (flowchart-nodes.tsx reads it). */
+  --diagram-violet: #b8547e;
+  --diagram-violet-bg: #f8e6ee;
   --diagram-amber: #a87800;
-  --diagram-amber-bg: #fff2c7;
+  --diagram-amber-bg: #fdf3dc;
 }
 
 .dark {
   color-scheme: dark;
-  /* Alabaster ink on a black lifted a step off the brand #080708 - pure
-     brand black behind long reading was harsh on the eyes. */
-  --surface: #111012;
-  --surface-card: #1a191b;
-  --surface-2: #222023;
-  --surface-3: #2b292c;
-  --surface-4: #363437;
+  /* Charcoal, not black: the page sits a little below #3C4044, and
+     raised surfaces step back up towards it. */
+  --surface: #26292c;
+  --surface-card: #2e3135;
+  --surface-2: #373a3e;
+  --surface-3: #414448;
+  --surface-4: #4c5055;
 
-  --folder-1: #152040;
-  --folder-2: #362b0c;
-  --folder-3: #3a1519;
-  --folder-4: #232523;
+  --folder-1: #4a3a2f;
+  --folder-2: #4d3426;
+  --folder-3: #3c4044;
+  --folder-4: #2f3a48;
 
-  --border: #2c2a2d;
-  --border-strong: #3f3c41;
+  --border: #3c3f43;
+  --border-strong: #51555a;
 
-  --shadow-lift: 0 18px 36px -20px rgba(0, 0, 0, 0.85);
+  --shadow-lift: 0 18px 36px -20px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 14px -8px rgba(0, 0, 0, 0.35);
 
-  --ink: #e6e8e6;
-  --ink-soft: #a9aca9;
-  --slate: #807e82;
+  /* Calcite as the ink. */
+  --ink: #efeeed;
+  --ink-soft: #c8c6c4;
+  --slate: #9c9a98;
 
-  /* Blue lifted for the dark ground. As in light mode the -dark step is the
-     *higher-contrast* one (here lighter, not darker). */
-  --copper: #6b93ff;
-  --copper-dark: #9cb8ff;
-  --copper-bg: #0f1a3a;
-  --copper-ink: #080708;
-  --accent-display: #5a86ff;
+  /* The true orange clears AA on charcoal. As in light mode the -dark step
+     is the *higher-contrast* one (here lighter, not darker). */
+  --copper: #fd7b41;
+  --copper-dark: #ff9b6e;
+  --copper-bg: #4d3426;
+  --copper-ink: #26292c;
+  --accent-display: #fd7b41;
 
-  --signal-green: #2ece86;
-  --signal-green-strong: #6ee7b0;
-  --signal-green-bg: #0f2c1e;
+  --peach: #edbf9b;
+  --peach-bg: #4a3a2f;
 
-  --signal-coral: #ff5a64;
-  --signal-coral-strong: #ff8a91;
-  --signal-coral-bg: #3a1216;
+  --signal-green: #5cc98a;
+  --signal-green-strong: #8fdcae;
+  --signal-green-bg: #2a4135;
 
-  --pollen: #fdca40;
-  --pollen-strong: #fdd76a;
-  --pollen-bg: #332808;
-  --pollen-ink: #080708;
+  --signal-coral: #ff7a70;
+  --signal-coral-strong: #ffa29b;
+  --signal-coral-bg: #4d302e;
+
+  --signal-blue: #78a8e6;
+  --signal-blue-strong: #a6c6f0;
+  --signal-blue-bg: #2f3d52;
+
+  --pollen: #f2b544;
+  --pollen-strong: #f6cb76;
+  --pollen-bg: #4a3f26;
+  --pollen-ink: #26292c;
 
   --signal-unknown: #ff00ff;
 
-  --diagram-blue: #6b93ff;
-  --diagram-blue-bg: #111c3a;
-  --diagram-violet: #e77ba6;
-  --diagram-violet-bg: #3a1f2b;
-  --diagram-amber: #fdca40;
-  --diagram-amber-bg: #332808;
+  --diagram-blue: #78a8e6;
+  --diagram-blue-bg: #2f3d52;
+  --diagram-violet: #e08bb0;
+  --diagram-violet-bg: #4a2f3c;
+  --diagram-amber: #f2b544;
+  --diagram-amber-bg: #4a3f26;
+}
+
+/* ---------------------------------------------------------------------------
+   Typography roles.
+
+   Every font on the site comes from one of these five, so changing the face
+   of a role is a one-line edit here. The faces themselves are loaded in
+   app/layout.tsx (next/font), which exposes them as --font-inter-sans and
+   --font-jetbrains-mono; load a new one there, then point a role at it.
+
+     --type-body     paragraphs, UI text, buttons, inputs   (font-body, font-sans)
+     --type-heading  h1-h6 and section titles               (font-heading)
+     --type-display  big hero / page titles                 (font-display)
+     --type-label    small eyebrows, counters, numbering    (font-label)
+     --type-code     code, and only code - it must stay      (font-code, font-mono)
+                     monospaced or indentation stops lining up
+
+   The site is Inter throughout; code is the one exception.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --type-body: var(--font-inter-sans), system-ui, sans-serif;
+  --type-heading: var(--font-inter-sans), system-ui, sans-serif;
+  --type-display: var(--font-inter-sans), system-ui, sans-serif;
+  --type-label: var(--font-inter-sans), system-ui, sans-serif;
+  --type-code: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ---------------------------------------------------------------------------
@@ -226,10 +280,10 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--copper);
 
-  /* Crisper than it was (0.75rem): a primary-colour palette reads as
-     geometric, and pill-soft corners fought it. Every rounded-* utility
-     derives from this, so the hand-written cards follow. */
-  --radius: 0.5rem;
+  /* Soft, generous corners: cards and callouts read as rounded tiles laid on
+     the page. Every rounded-* utility derives from this, so the hand-written
+     cards follow. */
+  --radius: 0.75rem;
 }
 
 @theme inline {
@@ -257,6 +311,15 @@
   --color-copper-bg: var(--copper-bg);
   --color-copper-ink: var(--copper-ink);
   --color-accent-display: var(--accent-display);
+  --color-peach: var(--peach);
+  --color-peach-bg: var(--peach-bg);
+  --color-signal-blue: var(--signal-blue);
+  --color-signal-blue-strong: var(--signal-blue-strong);
+  --color-signal-blue-bg: var(--signal-blue-bg);
+  --color-calcite: var(--calcite);
+  --color-calcite-orange: var(--calcite-orange);
+  --color-calcite-peach: var(--calcite-peach);
+  --color-calcite-charcoal: var(--calcite-charcoal);
 
   --color-signal-green: var(--signal-green);
   --color-signal-green-strong: var(--signal-green-strong);
@@ -278,13 +341,17 @@
   --color-brand-yellow: var(--brand-yellow);
   --color-brand-grey: var(--brand-grey);
 
-  --font-display: var(--font-inter-sans), sans-serif;
-  --font-body: var(--font-inter-sans), sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
+  /* Utilities onto the roles above - change faces there, not here. */
+  --font-display: var(--type-display);
+  --font-body: var(--type-body);
+  --font-label: var(--type-label);
+  --font-code: var(--type-code);
+  /* font-mono stays a synonym for code, for shadcn and anything imported. */
+  --font-mono: var(--type-code);
   /* shadcn components reach for font-sans; point it at the site's body face
      rather than letting it fall through to the Tailwind default stack. */
-  --font-sans: var(--font-inter-sans), sans-serif;
-  --font-heading: var(--font-inter-sans), sans-serif;
+  --font-sans: var(--type-body);
+  --font-heading: var(--type-heading);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -332,12 +399,20 @@
 body {
   background: var(--surface);
   color: var(--ink);
+  font-family: var(--type-body);
 }
 
-/* Selection is the highlighter: pollen under black ink, in both themes. */
+/* Headings default to the heading role; a font-* utility on one still wins. */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--type-heading);
+  }
+}
+
+/* Selection is the peach highlighter under charcoal, in both themes. */
 ::selection {
-  background: var(--brand-yellow);
-  color: var(--brand-black);
+  background: var(--calcite-peach);
+  color: var(--calcite-charcoal);
 }
 
 /* Inside @layer base on purpose. Unlayered CSS outranks everything Tailwind
@@ -572,7 +647,7 @@ body {
 
    Every one of these is an alias onto the site palette above, never a new
    colour - the same discipline the shadcn layer follows. The editor therefore
-   inherits the crayola blue, the ink wash and the border ramp, and flips with
+   inherits the orange accent, the ink wash and the border ramp, and flips with
    the site's theme toggle without owning a single dark rule.
 
    The two that are *not* aliases are the ones that must not flip: the page is
@@ -609,14 +684,14 @@ body {
   --fe-symbol: var(--ink-soft);
   --fe-symbol-fill: transparent;
 
-  font-family: var(--font-inter-sans), system-ui, sans-serif;
+  font-family: var(--type-body);
 }
 
 .dark .fe-root {
   /* One deliberate departure from the aliases: the workspace around the page
      goes darker than any site surface. A white sheet needs something to sit
      against, and --surface-3 leaves the paper glowing. */
-  --fe-canvas: #030203;
+  --fe-canvas: #232629;
   --fe-grid: #ececec;
 }
 

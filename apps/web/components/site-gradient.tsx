@@ -2,6 +2,10 @@
 
 import React, { useEffect, useRef } from "react";
 
+/** The faint 48px grid behind the homepage. Switched off for now rather than
+ *  deleted - flip this back to `true` to bring it back. */
+const SHOW_GRID = false;
+
 export function SiteGradient() {
   const particlesRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -109,6 +113,7 @@ export function SiteGradient() {
           style={{ transform: "translateY(calc(var(--scroll-y) * 0.05))", willChange: "transform" }}
         />*/}
 
+        {SHOW_GRID && (
         <div
           className="absolute inset-0 dark:opacity-[0.15] mix-blend-normal"
           style={{
@@ -119,6 +124,7 @@ export function SiteGradient() {
             `,
           }}
         />
+        )}
 
         <div
           ref={particlesRef}

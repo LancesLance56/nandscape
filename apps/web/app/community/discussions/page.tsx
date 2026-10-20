@@ -46,7 +46,7 @@ export default async function DiscussionsPage() {
               title={thread.title}
               detail={
                 <span className="flex items-center gap-2">
-                  <span className="inline-flex h-5 items-center rounded-4xl bg-surface-2 px-2 font-mono text-[10px] font-medium text-ink-soft">
+                  <span className="inline-flex h-5 items-center rounded-4xl bg-surface-2 px-2 font-label text-[10px] font-medium text-ink-soft">
                     {thread.kindLabel}
                   </span>
                   <span className="truncate">
@@ -59,7 +59,7 @@ export default async function DiscussionsPage() {
               meta={
                 <span className="flex items-center gap-3">
                   <span className="hidden sm:inline">{shortAgo(thread.lastActivity)}</span>
-                  <span className="w-6 text-right font-mono text-copper-dark">{thread.count}</span>
+                  <span className="w-6 text-right font-label text-copper-dark">{thread.count}</span>
                 </span>
               }
             />

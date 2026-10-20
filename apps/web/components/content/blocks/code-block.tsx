@@ -29,9 +29,9 @@ export async function CodeBlockView({
     return (
       <div className={cn("not-prose overflow-hidden rounded-xl border border-border bg-surface-2", block.className)}>
         {block.language && (
-          <div className="border-b border-border px-4 py-1.5 font-mono text-[11px] text-slate">{block.language}</div>
+          <div className="border-b border-border px-4 py-1.5 font-label text-[11px] text-slate">{block.language}</div>
         )}
-        <div className="font-mono text-sm" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="font-code text-sm" dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     );
   }

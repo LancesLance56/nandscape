@@ -11,7 +11,7 @@
    were on.
 
    globals.css already maps every shadcn token onto the site's palette, so the
-   sidebar, dropdowns and avatars land in teal and slate without any help.
+   sidebar, dropdowns and avatars land in the site palette without any help.
    What is left is the handful of things the template's markup reaches for that
    the site had no token for - three sidebar shades, a card hover, and its type
    scale - plus the chart series colours. That is all this file is.
@@ -30,12 +30,12 @@ body:has(.dashboard-shell) [data-slot="sheet-content"] {
      Assigned to the entity, never to its rank, so filtering or reordering a
      chart never repaints a series out from under a reader.
 
-     Lessons takes the site's blue accent; quizzes and puzzles are two ink-wash
-     tonal steps beside it. All three hold >=3:1 against their surface and read
-     apart side by side. */
-  --series-lessons: #2659e0;
-  --series-quizzes: #8a8a8a;
-  --series-puzzles: #bdbdbd;
+     Lessons takes the site's orange accent; quizzes and puzzles are two warm
+     stone steps beside it, so the charts sit in the Calcite palette rather
+     than a cool grey. Lessons and quizzes hold >=3:1 against the card. */
+  --series-lessons: var(--copper);
+  --series-quizzes: #8c8986;
+  --series-puzzles: #c4c1be;
   /* Grid, axes and the empty half of a meter track: one shade off the surface,
      never a dash. */
   --chart-grid: var(--border);
@@ -49,11 +49,11 @@ body:has(.dashboard-shell) [data-slot="sheet-content"] {
   --card-hover: var(--surface-3);
   --sidebar-badge: var(--surface-4);
 
-  /* Not the light values lightened: their own steps, chosen inside the dark
-     lightness band (OKLCH L 0.48-0.67) and re-validated against #1c1c1c. */
-  --series-lessons: #6b93ff;
-  --series-quizzes: #8f8f8f;
-  --series-puzzles: #5f5f5f;
+  /* Their own steps for the charcoal ground, not the light values
+     lightened: the true Calcite orange, then two warm greys. */
+  --series-lessons: #fd7b41;
+  --series-quizzes: #a19e9b;
+  --series-puzzles: #66696d;
 }
 
 /* The three sizes the template's sidebar and chips are drawn at, which sit

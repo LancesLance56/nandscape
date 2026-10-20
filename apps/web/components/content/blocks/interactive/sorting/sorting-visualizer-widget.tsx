@@ -405,7 +405,7 @@ function CompactBody({ view }: { view: SortingView }) {
               onShuffle={input.shuffle}
               size="sm"
             />
-            <span className="font-mono text-[11px] tabular-nums text-slate">
+            <span className="font-label text-[11px] tabular-nums text-slate">
               {index + 1} / {total}
             </span>
           </div>
@@ -569,16 +569,16 @@ function RaceSide({
     <div className="flex min-w-0 flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
         <span className="text-[13px] font-semibold text-ink">
-          <span className="mr-1.5 font-mono text-[11px] text-slate">{side}</span>
+          <span className="mr-1.5 font-label text-[11px] text-slate">{side}</span>
           {meta.label}
         </span>
-        <span className="font-mono text-[10.5px] text-slate">
+        <span className="font-label text-[10.5px] text-slate">
           {step.comparisons} comparisons · {step.writes} writes
         </span>
       </div>
       <SortingBars step={step} maxValue={maxValue} height={150} compact />
       <div className="flex items-center justify-between text-[10.5px]">
-        <span className="font-mono text-slate">
+        <span className="font-label text-slate">
           {Math.min(index + 1, run.steps.length)} / {run.steps.length} frames
         </span>
         <span className={cn("font-semibold", done ? "text-signal-green" : "text-transparent")} aria-hidden={!done}>

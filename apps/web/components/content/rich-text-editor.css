@@ -47,7 +47,7 @@
 }
 
 .rte-hint {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   color: var(--slate);
   padding-left: 0.25rem;
@@ -156,7 +156,7 @@
   resize: vertical;
   background: var(--surface-card);
   padding: 0.875rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 13px;
   line-height: 1.7;
   color: var(--ink);
@@ -319,7 +319,7 @@
   border-radius: 0.25rem;
   background: var(--surface-3);
   padding: 0.1rem 0.25rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 0.9em;
   color: var(--ink);
 }
@@ -330,7 +330,7 @@
   border: 1px solid var(--border);
   background: var(--surface-2);
   padding: 1rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--ink);

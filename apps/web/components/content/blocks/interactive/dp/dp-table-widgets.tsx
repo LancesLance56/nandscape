@@ -44,7 +44,7 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
       {/* The recurrence, as a single reference line rather than a boxed panel:
           it never changes frame to frame, so it should not compete for space
           with the panel that does. */}
-      <p className="mb-3 font-mono text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+      <p className="mb-3 font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
 
       <div className="grid gap-4 lg:grid-cols-[2fr_minmax(0,1fr)] lg:items-start">
         <div className="flex min-w-0 flex-col gap-2">
@@ -82,7 +82,7 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
               place that says how the two are connected. */}
           <PanelBox title="This cell" bodyClassName="min-h-[1.5rem]">
             {step.formula ? (
-              <span className="font-mono text-xs font-semibold text-copper-dark">{step.formula}</span>
+              <span className="font-label text-xs font-semibold text-copper-dark">{step.formula}</span>
             ) : (
               <span className="text-xs italic text-slate">nothing being worked out</span>
             )}

@@ -50,6 +50,7 @@ import {
 } from "@/components/ui/sidebar";
 import { isActive } from "./nav";
 import { cn } from "@/lib/cn";
+import { LogoLockup } from "@/components/icons";
 
 /**
  * The dashboard's left rail.
@@ -197,9 +198,8 @@ export function DashboardSidebar({ areaLabel, areaRoot, groups, user }: Dashboar
   return (
     <Sidebar className="h-full border-none">
       <SidebarHeader className="flex-row items-center justify-between gap-2 px-4 pt-6 pb-0">
-        <Link href="/" className="flex items-center gap-2">
-          <CircuitBoard className="size-5 text-copper" />
-          <span className="font-display text-lg font-bold tracking-tight text-ink">Nandscape</span>
+        <Link href="/" className="flex items-center">
+          <LogoLockup className="h-5 w-auto text-ink" />
         </Link>
         <span className="rounded-md bg-(--sidebar-badge) px-2 py-1.5 text-xxs text-ink-soft">
           {areaLabel}

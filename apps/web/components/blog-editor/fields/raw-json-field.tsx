@@ -53,7 +53,7 @@ export function RawJsonField({
         onChange={(e) => setText(e.target.value)}
         onBlur={commit}
         spellCheck={false}
-        className={`${fieldInputClass} resize-y font-mono text-xs`}
+        className={`${fieldInputClass} resize-y font-code text-xs`}
       />
       {parseError && <p className="text-xs text-signal-coral">Invalid JSON: {parseError}</p>}
       {!parseError && issues.length > 0 && (

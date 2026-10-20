@@ -195,7 +195,7 @@ function TreeShapeSummary({
             <div key={depth} className="flex items-center gap-2">
               <span
                 className={cn(
-                  "w-12 shrink-0 text-right font-mono text-[10px] tabular-nums",
+                  "w-12 shrink-0 text-right font-label text-[10px] tabular-nums",
                   isActive ? "font-bold text-copper-dark" : "text-slate",
                 )}
               >
@@ -213,7 +213,7 @@ function TreeShapeSummary({
                   style={{ left: `${openedPct - cutPct}%`, width: `${cutPct}%` }}
                 />
               </div>
-              <span className="w-14 shrink-0 font-mono text-[10px] tabular-nums text-slate">
+              <span className="w-14 shrink-0 font-label text-[10px] tabular-nums text-slate">
                 {seen[depth]}/{total[depth]}
               </span>
             </div>

@@ -37,7 +37,7 @@ export function AvatarDisc({
     <span
       aria-hidden
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full font-mono font-semibold",
+        "flex shrink-0 items-center justify-center rounded-full font-label font-semibold",
         muted ? "bg-surface-2 text-ink-soft" : "bg-copper-bg text-copper-dark",
         SIZES[size],
         className,

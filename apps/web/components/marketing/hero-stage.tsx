@@ -98,7 +98,7 @@ function HeroCircuit() {
 
   return (
     <figure className="m-0 flex w-full max-w-[26rem] flex-col">
-      <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Logic circuit</p>
+      <p className="mb-2 font-label text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Logic circuit</p>
       <div className="h-[240px] overflow-hidden rounded-xl border border-border bg-surface-card/50">
         <ReactFlowProvider>
           <CircuitStage
@@ -139,7 +139,7 @@ function HeroSorting() {
 
   return (
     <figure className="m-0 flex w-full max-w-[26rem] flex-col">
-      <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Sorting</p>
+      <p className="mb-2 font-label text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Sorting</p>
       {/* Same 240px box as the circuit canvas so the two demos sit level
           (SortingBars is border-box, so height includes its border/padding). */}
       <SortingBars step={step} maxValue={maxValue} height={240} compact />
@@ -203,7 +203,7 @@ export function HeroGraphCard() {
 
   return (
     <div className="w-[17rem] rounded-xl border border-border bg-surface-card/80 p-3 shadow-sm backdrop-blur-sm">
-      <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Graph traversal</p>
+      <p className="mb-2 font-label text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Graph traversal</p>
       <GraphCanvas graph={HERO_GRAPH} step={step} markedNode="H" height={170} />
     </div>
   );
@@ -228,7 +228,7 @@ export function HeroKMapCard() {
 
   return (
     <div className="rounded-xl border border-border bg-surface-card/80 p-3 shadow-sm backdrop-blur-sm">
-      <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Karnaugh map</p>
+      <p className="mb-2 font-label text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">Karnaugh map</p>
       <KMapGrid
         layout={layout}
         cells={KMAP_CELLS}

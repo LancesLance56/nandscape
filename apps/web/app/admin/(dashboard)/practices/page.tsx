@@ -42,7 +42,7 @@ export default async function AdminPracticesPage() {
       {practices.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border px-6 py-12 text-center text-sm text-ink-soft">
           No coding problems yet. Seed them with{" "}
-          <code className="font-mono text-xs">node seed/seed.mjs</code> or create one here.
+          <code className="font-code text-xs">node seed/seed.mjs</code> or create one here.
         </p>
       ) : (
         <ul className="divide-y divide-border rounded-lg border border-border bg-surface-card">
@@ -54,7 +54,7 @@ export default async function AdminPracticesPage() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-ink">{practice.title}</p>
-                  <p className="truncate font-mono text-xs text-ink-soft">{practice.slug}</p>
+                  <p className="truncate font-label text-xs text-ink-soft">{practice.slug}</p>
                 </div>
                 <span className="hidden text-xs text-ink-soft sm:inline">
                   {practice.visibleTests.length} example · {practice.hiddenTestCount} hidden

@@ -27,7 +27,7 @@ import { algorithmMeta, type AlgorithmMeta, type SortAlgorithmId, type SortStep 
 /** The mono all-caps section label the panels are titled with. */
 export function PanelLabel({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-slate", className)}>
+    <div className={cn("font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-slate", className)}>
       {children}
     </div>
   );
@@ -152,7 +152,7 @@ export function AlgorithmSelect({
 }) {
   return (
     <label className={cn("inline-flex items-center gap-2", className)}>
-      {label && <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-slate">{label}</span>}
+      {label && <span className="font-label text-[10px] font-semibold uppercase tracking-[0.08em] text-slate">{label}</span>}
       <span className="relative inline-flex items-center">
         <select
           value={value}
@@ -195,7 +195,7 @@ export function ComplexityRows({ meta }: { meta: AlgorithmMeta }) {
           )}
         >
           <span className="text-[12px] text-slate">{k}</span>
-          <span className="font-mono text-[11px] font-semibold text-ink">{v}</span>
+          <span className="font-label text-[11px] font-semibold text-ink">{v}</span>
         </div>
       ))}
     </div>
@@ -215,7 +215,7 @@ export function ComplexityChips({ meta }: { meta: AlgorithmMeta }) {
       {chips.map(([k, v]) => (
         <div key={k} className="rounded-md border border-border px-2.5 py-1.5">
           <PanelLabel>{k}</PanelLabel>
-          <div className="mt-0.5 font-mono text-[12px] font-semibold text-ink">{v}</div>
+          <div className="mt-0.5 font-label text-[12px] font-semibold text-ink">{v}</div>
         </div>
       ))}
     </div>
@@ -359,7 +359,7 @@ export function NarrationLog({
                     : "text-slate/60 hover:bg-surface-2 hover:text-slate",
               )}
             >
-              <span className="mr-1.5 font-mono tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+              <span className="mr-1.5 font-label tabular-nums">{String(i + 1).padStart(2, "0")}</span>
               {steps[i].caption}
             </button>
           );
@@ -387,7 +387,7 @@ export function NarrationLog({
 export function Pseudocode({ meta, line, className }: { meta: AlgorithmMeta; line?: number; className?: string }) {
   return (
     <div className={cn("rounded-lg border border-border bg-surface-card p-2.5", className)}>
-      <div className="h-[10rem] overflow-auto whitespace-pre font-mono text-[10.5px] leading-[1.7] text-slate">
+      <div className="h-[10rem] overflow-auto whitespace-pre font-label text-[10.5px] leading-[1.7] text-slate">
         {meta.pseudocode.map((text, i) => (
           <div
             key={i}
@@ -475,7 +475,7 @@ export function TradeoffTable({
                 <td className="px-3 py-1.5 text-ink">{row.meta.label}</td>
                 <td className="px-3 py-1.5 text-right tabular-nums text-ink-soft">{row.comparisons}</td>
                 <td className="px-3 py-1.5 text-right tabular-nums text-ink-soft">{row.writes}</td>
-                <td className="px-3 py-1.5 text-right font-mono text-slate">{row.meta.time[2]}</td>
+                <td className="px-3 py-1.5 text-right font-label text-slate">{row.meta.time[2]}</td>
               </tr>
             ))}
           </tbody>

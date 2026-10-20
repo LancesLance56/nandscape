@@ -2,20 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState, type ComponentType } from "react";
-import {
-  BookOpen,
-  Braces,
-  ChevronDown,
-  CircuitBoard,
-  Cpu,
-  FolderKanban,
-  Menu,
-  Users,
-  Workflow,
-  Wrench,
-  X,
-} from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 import { LogoLockup } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -26,7 +14,6 @@ interface NavItem {
   label: string;
   href: string;
   description: string;
-  icon: ComponentType<{ className?: string }>;
 }
 
 type NavEntry =
@@ -37,19 +24,16 @@ const TUTORIALS: NavItem = {
   label: "Tutorials",
   href: "/tutorials",
   description: "Lessons from logic gates to algorithms",
-  icon: BookOpen,
 };
 const TOOLS: NavItem = {
   label: "Tools",
   href: "/tools",
   description: "K-map solver, base converter, truth tables",
-  icon: Wrench,
 };
 const COMMUNITY: NavItem = {
   label: "Community",
   href: "/community",
   description: "Discussion, shared circuits and rankings",
-  icon: Users,
 };
 
 // Eight destinations are too many for one row at tablet widths, so the two
@@ -62,13 +46,11 @@ const PRACTICE: NavItem[] = [
     label: "Logic Problems",
     href: "/puzzles",
     description: "Wire real gates to meet a spec",
-    icon: Cpu,
   },
   {
     label: "Coding Problems",
     href: "/practices",
     description: "Write a function, submit for hidden tests",
-    icon: Braces,
   },
 ];
 const BUILD: NavItem[] = [
@@ -76,19 +58,16 @@ const BUILD: NavItem[] = [
     label: "Logic Editor",
     href: "/logic-editor",
     description: "Design and simulate circuits",
-    icon: CircuitBoard,
   },
   {
     label: "Flowcharts",
     href: "/flowchart",
     description: "Draw algorithm diagrams",
-    icon: Workflow,
   },
   {
     label: "Projects",
     href: "/projects",
     description: "Circuits you and others have built",
-    icon: FolderKanban,
   },
 ];
 
@@ -170,7 +149,7 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      className="fixed inset-x-0 top-0 z-50 border-b border-border bg-surface/85 backdrop-blur-md"
+      className="fixed inset-x-0 top-0 z-50 border-b border-border bg-surface-card/90 backdrop-blur-md"
     >
       <nav
         aria-label="Main"
@@ -216,7 +195,7 @@ export function Navbar() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             onClick={() => setMenuPath(mobileOpen ? null : pathname)}
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-border-strong text-ink transition-colors hover:bg-surface-2 lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border-strong text-ink transition-colors hover:bg-surface-2 lg:hidden"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -231,7 +210,7 @@ export function Navbar() {
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-7 px-4 py-6 sm:px-6 sm:py-8">
             {MOBILE_SECTIONS.map((section) => (
               <section key={section.label}>
-                <h2 className="mb-2 px-1 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-slate">
+                <h2 className="mb-2 px-1 font-label text-[11px] font-semibold uppercase tracking-[0.14em] text-slate">
                   {section.label}
                 </h2>
                 <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -262,9 +241,8 @@ function TopLink({ item, active }: { item: NavItem; active: boolean }) {
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative flex h-10 items-center rounded-md px-3 text-sm font-medium transition-colors",
-        active ? "text-ink" : "text-ink-soft hover:bg-surface-2 hover:text-ink",
-        active && "after:absolute after:inset-x-3 after:-bottom-[19px] after:h-0.5 after:bg-copper",
+        "relative flex h-10 items-center rounded-full px-4 text-sm font-medium transition-colors",
+        active ? "bg-copper-bg text-copper-dark" : "text-ink-soft hover:bg-surface-2 hover:text-ink",
       )}
     >
       {item.label}
@@ -316,10 +294,12 @@ function NavGroup({
         aria-controls={panelId}
         onClick={() => onOpenChange(!open)}
         className={cn(
-          "relative flex h-10 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors",
-          active || open ? "text-ink" : "text-ink-soft hover:text-ink",
-          open ? "bg-surface-2" : "hover:bg-surface-2",
-          active && "after:absolute after:inset-x-3 after:-bottom-[19px] after:h-0.5 after:bg-copper",
+          "relative flex h-10 items-center gap-1 rounded-full px-4 text-sm font-medium transition-colors",
+          active
+            ? "bg-copper-bg text-copper-dark"
+            : open
+              ? "bg-surface-2 text-ink"
+              : "text-ink-soft hover:bg-surface-2 hover:text-ink",
         )}
       >
         {label}
@@ -333,7 +313,7 @@ function NavGroup({
         // pt-3 is a bridge: the pointer crosses it on the way down without
         // leaving the group and closing the panel.
         <div id={panelId} className="absolute left-1/2 top-full z-10 -translate-x-1/2 pt-3">
-          <ul className="w-[22rem] rounded-xl border border-border bg-surface-card p-2 shadow-(--shadow-lift)">
+          <ul className="w-[22rem] rounded-2xl border border-border bg-surface-card p-2 shadow-(--shadow-lift)">
             {items.map((item) => (
               <li key={item.href}>
                 <ItemCard
@@ -351,7 +331,7 @@ function NavGroup({
   );
 }
 
-/** An icon, a label and one line saying what is there. Used by both menus. */
+/** A label and one line saying what is there. Used by both menus. */
 function ItemCard({
   item,
   active,
@@ -364,32 +344,23 @@ function ItemCard({
   /** Inside a dropdown the panel is the card, so rows drop their border. */
   bare?: boolean;
 }) {
-  const Icon = item.icon;
   return (
     <Link
       href={item.href}
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group flex items-start gap-3 rounded-lg p-3 transition-colors",
+        "group block rounded-xl px-4 py-3 transition-colors",
         !bare && "border bg-surface-card",
         active
           ? cn("bg-copper-bg", !bare && "border-copper/40")
           : cn("hover:bg-surface-2", !bare && "border-border"),
       )}
     >
-      <span
-        className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition-colors",
-          active ? "bg-copper text-copper-ink" : "bg-copper-bg text-copper group-hover:bg-copper group-hover:text-copper-ink",
-        )}
-      >
-        <Icon className="h-4.5 w-4.5" />
+      <span className={cn("block text-sm font-semibold", active ? "text-copper-dark" : "text-ink")}>
+        {item.label}
       </span>
-      <span className="min-w-0">
-        <span className="block text-sm font-semibold text-ink">{item.label}</span>
-        <span className="mt-0.5 block text-xs leading-snug text-slate">{item.description}</span>
-      </span>
+      <span className="mt-0.5 block text-xs leading-snug text-slate">{item.description}</span>
     </Link>
   );
 }

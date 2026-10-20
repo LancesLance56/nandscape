@@ -43,7 +43,7 @@ export function CodeBlockEditor({
       <Field label="Code">
         <textarea
           rows={10}
-          className={`${fieldInputClass} resize-y font-mono`}
+          className={`${fieldInputClass} resize-y font-code`}
           value={block.code}
           onChange={(e) => onChange({ code: e.target.value })}
         />
@@ -93,7 +93,7 @@ export function CodeBlockEditor({
               </div>
               <textarea
                 rows={8}
-                className={`${fieldInputClass} resize-y font-mono`}
+                className={`${fieldInputClass} resize-y font-code`}
                 value={v.code}
                 onChange={(e) => updateVariant(i, { code: e.target.value })}
                 placeholder={`The same snippet, in ${v.language || "another language"}`}

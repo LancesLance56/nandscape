@@ -39,7 +39,7 @@ export function Meter({ label, value, total, caption, className, complete }: Met
         aria-valuemin={0}
         aria-valuemax={Math.max(total, 0)}
         aria-label={label}
-        className="h-2 w-full overflow-hidden rounded-full bg-copper-bg"
+        className="h-2 w-full overflow-hidden rounded-full bg-(--chart-track)"
       >
         <div
           className={cn(

@@ -73,7 +73,7 @@ export function DiscussionThread({
                       <AvatarDisc username={post.author.username} size="sm" />
                       <span className="text-[13px] font-semibold">{post.author.username}</span>
                     </Link>
-                    <span className="font-mono text-[11px] text-slate">
+                    <span className="font-label text-[11px] text-slate">
                       {longAgo(post.createdAt)}
                     </span>
                   </div>
@@ -104,7 +104,7 @@ export function DiscussionThread({
                         >
                           {reply.author.username}
                         </Link>
-                        <span className="font-mono text-[11px] text-slate">
+                        <span className="font-label text-[11px] text-slate">
                           {longAgo(reply.createdAt)}
                         </span>
                       </div>

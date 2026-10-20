@@ -93,7 +93,7 @@ export function ResultPanel({ result, running, mode }: ResultPanelProps) {
           {VERDICT_HINT[result.error.kind] && (
             <p className="mb-2 text-xs text-ink-soft">{VERDICT_HINT[result.error.kind]}</p>
           )}
-          <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-ink">
+          <pre className="overflow-x-auto whitespace-pre-wrap break-words font-code text-xs leading-relaxed text-ink">
             {result.error.message}
           </pre>
         </div>
@@ -149,8 +149,8 @@ function CaseRow({ result }: { result: TestCaseResult }) {
               <Field label="Got" value={formatValue(result.actual)} tone="bad" />
             </>
           )}
-          {result.stderr && <Field label="Error" value={result.stderr} tone="bad" mono />}
-          {result.stdout && <Field label="Your output" value={result.stdout} mono />}
+          {result.stderr && <Field label="Error" value={result.stderr} tone="bad" />}
+          {result.stdout && <Field label="Your output" value={result.stdout} />}
         </div>
       )}
 
@@ -159,7 +159,7 @@ function CaseRow({ result }: { result: TestCaseResult }) {
           green makes the panel feel like it is withholding information. */}
       {result.visible && result.status === "passed" && result.stdout && (
         <div className="border-t border-border px-3 py-2">
-          <Field label="Your output" value={result.stdout} mono />
+          <Field label="Your output" value={result.stdout} />
         </div>
       )}
     </li>
@@ -170,20 +170,18 @@ function Field({
   label,
   value,
   tone,
-  mono,
 }: {
   label: string;
   value: string;
   tone?: "bad";
-  mono?: boolean;
 }) {
   return (
     <div className="grid grid-cols-[5.5rem_1fr] gap-2">
       <span className="pt-0.5 text-xs text-ink-soft">{label}</span>
       <pre
-        className={`overflow-x-auto whitespace-pre-wrap break-words text-xs leading-relaxed ${
-          mono ? "font-mono" : "font-mono"
-        } ${tone === "bad" ? "text-signal-coral-strong" : "text-ink"}`}
+        className={`overflow-x-auto whitespace-pre-wrap break-words font-code text-xs leading-relaxed ${
+          tone === "bad" ? "text-signal-coral-strong" : "text-ink"
+        }`}
       >
         {value}
       </pre>

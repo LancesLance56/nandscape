@@ -22,9 +22,11 @@ import "react-activity-calendar/tooltips.css";
 
 const DAYS = 365;
 
-/** Empty through busiest, as a blue wash deepening on paper. */
-const LIGHT = ["#dcdfdc", "#d3deff", "#9db6ff", "#5a86ff", "#2659e0"];
-const DARK = ["#1a181a", "#15213f", "#1f3572", "#3560d6", "#6b93ff"];
+/** Empty through busiest: a stone-grey empty day, then peach deepening to
+ *  the orange accent. The empty step matches the card's own --surface-2, so
+ *  an idle year reads as part of the card rather than a field of holes. */
+const LIGHT = ["#e6e5e3", "#f6d9c4", "#f2ad84", "#ea7f4c", "#c74f1a"];
+const DARK = ["#373a3e", "#5a3f30", "#8a5133", "#c9632f", "#fd7b41"];
 
 function levelFor(count: number): number {
   if (count <= 0) return 0;

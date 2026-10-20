@@ -58,7 +58,7 @@ export default function RootLayout({
       className={`${interSans.variable} ${jetbrainsMono.variable}`}
     >
     <body className="font-body antialiased bg-surface text-ink">
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light">
       {children}
     </ThemeProvider>
     {/* GoatCounter: cookieless pageview counting, no consent banner needed.

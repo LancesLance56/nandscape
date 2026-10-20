@@ -62,7 +62,7 @@ export default async function AdminDiagramsPage() {
       {diagrams.length === 0 ? (
         <p className="rounded-2xl border border-border bg-surface-card p-6 text-sm text-slate">
           No diagrams stored yet. Seed them with{" "}
-          <code className="font-mono text-xs">node seed/seed.mjs</code>, or create one above.
+          <code className="font-code text-xs">node seed/seed.mjs</code>, or create one above.
         </p>
       ) : (
         Array.from(groups.entries()).map(([label, entries]) => (
@@ -84,7 +84,7 @@ export default async function AdminDiagramsPage() {
                         <span className="block truncate text-sm text-ink group-hover:text-copper-dark">
                           {diagram.title}
                         </span>
-                        <span className="block truncate font-mono text-xxs text-slate">
+                        <span className="block truncate font-label text-xxs text-slate">
                           {diagram.slug}
                         </span>
                       </span>

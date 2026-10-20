@@ -307,7 +307,7 @@ export function DiagramPresetEditor({ initial, usage }: DiagramPresetEditorProps
             <span>
               Graph presets store fine, but no widget reads one yet - the graph widgets only take an
               inline spec. Until{" "}
-              <code className="font-mono">lib/diagrams/resolve-block-diagrams.ts</code> maps a graph
+              <code className="font-code">lib/diagrams/resolve-block-diagrams.ts</code> maps a graph
               widget family, this will not render on a page.
             </span>
           </p>
@@ -319,7 +319,7 @@ export function DiagramPresetEditor({ initial, usage }: DiagramPresetEditorProps
             }}
             spellCheck={false}
             rows={20}
-            className={cn(inputClass, "font-mono text-xs leading-relaxed")}
+            className={cn(inputClass, "font-label text-xs leading-relaxed")}
           />
           {jsonError && (
             <p role="alert" className="text-xs text-signal-coral-strong">

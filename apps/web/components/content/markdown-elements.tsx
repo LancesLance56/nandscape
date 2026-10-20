@@ -82,7 +82,7 @@ export const markdownElements: Components = {
     ) : null,
 
   sup: ({ children }) => (
-    <sup className="ml-0.5 font-mono text-[0.7em] text-copper-dark">{children}</sup>
+    <sup className="ml-0.5 font-label text-[0.7em] text-copper-dark">{children}</sup>
   ),
 
   // GFM footnotes land in a trailing <section>; the list inside it is already
@@ -123,11 +123,11 @@ export const markdownElements: Components = {
 
 /** The frame a fenced code block sits in, shared by both renderers. */
 export const CODE_FRAME_CLASS =
-  "not-prose block overflow-hidden rounded-xl border border-border bg-surface-2 font-mono text-sm";
+  "not-prose block overflow-hidden rounded-xl border border-border bg-surface-2 font-code text-sm";
 
 /** The inline `code` span, shared by both renderers. */
 export const INLINE_CODE_CLASS =
-  "rounded bg-surface-3 px-1 py-0.5 font-mono text-[0.9em] text-ink";
+  "rounded bg-surface-3 px-1 py-0.5 font-code text-[0.9em] text-ink";
 
 /** Headings carry the same anchor ids as heading blocks, so deep links work. */
 function Heading({ level, children }: { level: 1 | 2 | 3 | 4; children?: ReactNode }) {

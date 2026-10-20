@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { tutorialPath, type TutorialNavPage } from "@/types/tutorial";
@@ -25,13 +26,15 @@ export function TutorialPager({
       {prev ? (
         <Link
           href={tutorialPath(prev.trackSlug, prev.slug)}
-          className="group flex flex-col gap-1 rounded-xl border border-border bg-surface-card px-4 py-3 transition-colors hover:border-border-strong hover:bg-surface-2"
+          className="group flex items-center gap-4 rounded-2xl bg-surface-card px-5 py-4 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
         >
-          <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Previous
+          <PagerArrow>
+            <ArrowLeft className="h-4 w-4" />
+          </PagerArrow>
+          <span className="flex min-w-0 flex-col gap-0.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-slate">Previous</span>
+            <span className="text-sm font-semibold text-ink group-hover:text-copper">{prev.title}</span>
           </span>
-          <span className="text-sm font-semibold text-ink group-hover:text-copper-dark">{prev.title}</span>
         </Link>
       ) : (
         <span aria-hidden />
@@ -40,15 +43,26 @@ export function TutorialPager({
       {next ? (
         <Link
           href={tutorialPath(next.trackSlug, next.slug)}
-          className="group flex flex-col gap-1 rounded-xl border border-border bg-surface-card px-4 py-3 text-right transition-colors hover:border-border-strong hover:bg-surface-2 sm:col-start-2"
+          className="group flex items-center justify-end gap-4 rounded-2xl bg-surface-card px-5 py-4 text-right shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift) sm:col-start-2"
         >
-          <span className="flex items-center justify-end gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">
-            Next
-            <ArrowRight className="h-3.5 w-3.5" />
+          <span className="flex min-w-0 flex-col gap-0.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-slate">Next</span>
+            <span className="text-sm font-semibold text-ink group-hover:text-copper">{next.title}</span>
           </span>
-          <span className="text-sm font-semibold text-ink group-hover:text-copper-dark">{next.title}</span>
+          <PagerArrow>
+            <ArrowRight className="h-4 w-4" />
+          </PagerArrow>
         </Link>
       ) : null}
     </nav>
+  );
+}
+
+/** The round orange arrow button. */
+function PagerArrow({ children }: { children: ReactNode }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-copper text-copper-ink transition-transform group-hover:scale-105">
+      {children}
+    </span>
   );
 }

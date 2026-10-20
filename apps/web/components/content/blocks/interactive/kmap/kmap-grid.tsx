@@ -104,7 +104,7 @@ export function KMapGrid({
           <div
             key={code}
             style={{ width: cell }}
-            className="pb-1 text-center font-mono text-[11px] font-bold tracking-wider text-slate"
+            className="pb-1 text-center font-label text-[11px] font-bold tracking-wider text-slate"
           >
             {toBinary(code, layout.colBits)}
           </div>
@@ -117,7 +117,7 @@ export function KMapGrid({
           <div
             key={code}
             style={{ height: cell }}
-            className="flex items-center justify-end pr-1.5 font-mono text-[11px] font-bold tracking-wider text-slate"
+            className="flex items-center justify-end pr-1.5 font-label text-[11px] font-bold tracking-wider text-slate"
           >
             {toBinary(code, layout.rowBits)}
           </div>
@@ -172,7 +172,7 @@ export function KMapGrid({
                     {showIndices && (
                       <span
                         aria-hidden
-                        className="absolute left-1.5 top-1 font-mono font-semibold text-slate/70"
+                        className="absolute left-1.5 top-1 font-label font-semibold text-slate/70"
                         style={{ fontSize: indexFont }}
                       >
                         {minterm}
@@ -237,7 +237,7 @@ export function KMapGrid({
                             x={rx + 9 + (group.label.length * 6.6) / 2}
                             y={ry + 3.5}
                             textAnchor="middle"
-                            className="font-mono text-[10px] font-bold"
+                            className="font-label text-[10px] font-bold"
                             fill="#ffffff"
                           >
                             {group.label}

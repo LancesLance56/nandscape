@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { tutorialPath, type TutorialTrackTree } from "@/types/tutorial";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft, List } from "lucide-react";
 
 const OPEN_STORAGE_KEY = "nandscape:tutorial-sidebar-open";
 
@@ -66,7 +66,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
       // the nav can find "where the reader is" without threading a ref down
       // through every level of the tree.
       data-current-page={active ? "true" : undefined}
-      className={`block rounded-lg px-3 py-1.5 text-sm transition-colors ${
+      className={`block rounded-xl px-3 py-1.5 text-sm transition-colors ${
         active ? "bg-copper-bg font-semibold text-copper-dark" : "text-ink-soft hover:bg-surface-2 hover:text-ink"
       }`}
     >
@@ -243,7 +243,7 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
         aria-label="Show tutorial navigation"
         aria-expanded={open}
         className={cn(
-          "fixed left-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-2 rounded-r-xl border border-l-0 border-border bg-surface-card py-3 pl-2 pr-2.5 text-ink-soft shadow-[0_8px_24px_rgba(8,7,8,0.10)] transition hover:text-copper-dark",
+          "fixed left-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-2 rounded-r-2xl bg-surface-card py-3 pl-2 pr-2.5 text-ink-soft shadow-(--shadow-lift) transition hover:text-copper",
           open ? "pointer-events-none -translate-x-full opacity-0" : "opacity-100",
         )}
       >
@@ -258,7 +258,7 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
         <div
           aria-hidden
           onClick={() => setOpen(false)}
-          className="fixed inset-0 top-20 z-30 bg-ink/40 lg:bg-transparent"
+          className="fixed inset-0 top-20 z-30 bg-ink/30 lg:bg-transparent"
         />
       )}
 
@@ -267,20 +267,23 @@ export function TutorialSidebar({ tracks = [] }: { tracks?: TutorialTrackTree[] 
         aria-label="Tutorial navigation"
         aria-hidden={!open}
         className={cn(
-          "fixed left-0 top-20 bottom-4 z-40 flex w-[19rem] max-w-[86vw] flex-col overflow-y-auto overscroll-contain rounded-r-2xl border border-l-0 border-border bg-surface-card px-4 py-4 shadow-[0_24px_60px_rgba(8,7,8,0.16)] transition-transform duration-200 ease-out",
+          "fixed left-0 top-24 bottom-4 z-40 flex w-[20rem] max-w-[86vw] flex-col overflow-y-auto overscroll-contain rounded-r-3xl bg-surface-card px-4 py-5 shadow-[0_24px_60px_rgba(30,38,51,0.16)] transition-transform duration-200 ease-out",
           open ? "translate-x-0" : "-translate-x-[110%]",
         )}
       >
-        <div className="mb-2 flex items-center justify-between pl-2">
-          <span className="text-[10px] font-bold uppercase tracking-wide text-slate">Contents</span>
+        <div className="mb-3 flex items-center gap-3 pl-1">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-2 text-ink-soft">
+            <List className="h-4 w-4" />
+          </span>
+          <span className="flex-1 font-semibold text-ink">Table of contents</span>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Hide tutorial navigation"
             title="Hide tutorial navigation"
-            className="rounded-md p-1 text-slate transition-colors hover:bg-surface-2 hover:text-ink"
+            className="rounded-full p-1.5 text-slate transition-colors hover:bg-surface-2 hover:text-ink"
           >
-            <PanelIcon />
+            <ChevronLeft className="h-4 w-4" />
           </button>
         </div>
         <nav className="flex flex-col gap-1">

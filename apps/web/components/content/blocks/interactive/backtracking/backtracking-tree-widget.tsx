@@ -88,7 +88,7 @@ export function BacktrackingTreeWidget({ data }: { data: Record<string, unknown>
       }
       panel={(step) => (
         <PanelBox title={problem === "subsets" ? "Current subset" : "Current combination"}>
-          <span className="font-mono text-sm font-semibold text-ink">
+          <span className="font-label text-sm font-semibold text-ink">
             {(step.activeId && partialById.get(step.activeId)) || <span className="italic text-slate">empty</span>}
           </span>
         </PanelBox>

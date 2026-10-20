@@ -29,7 +29,7 @@ function SudokuBoard({ payload }: { payload: SudokuPayload | undefined }) {
           <div
             key={i}
             className={cn(
-              "flex h-7 w-7 items-center justify-center bg-surface font-mono text-sm transition-colors sm:h-8 sm:w-8",
+              "flex h-7 w-7 items-center justify-center bg-surface font-label text-sm transition-colors sm:h-8 sm:w-8",
               // Heavier separators on the 3x3 box boundaries, which is what
               // makes the constraint structure readable at a glance.
               col % 3 === 2 && col !== 8 && "border-r-2 border-r-border-strong",
@@ -112,7 +112,7 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
                   <span
                     key={c}
                     className={cn(
-                      "flex h-6 w-6 items-center justify-center rounded font-mono text-xs font-bold",
+                      "flex h-6 w-6 items-center justify-center rounded font-label text-xs font-bold",
                       c === payload.value ? "bg-copper text-white" : "bg-surface-3 text-ink-soft",
                     )}
                   >
@@ -141,13 +141,13 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
             <div className="flex flex-col gap-1.5 text-xs">
               <div className="flex items-center justify-between">
                 <span className={cn(strategy === "first" ? "font-bold text-ink" : "text-slate")}>Reading order</span>
-                <span className="font-mono text-ink-soft">
+                <span className="font-label text-ink-soft">
                   {comparison.first.filled} filled, {comparison.first.dead} dead ends
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className={cn(strategy === "mrv" ? "font-bold text-ink" : "text-slate")}>Fewest candidates</span>
-                <span className="font-mono text-ink-soft">
+                <span className="font-label text-ink-soft">
                   {comparison.mrv.filled} filled, {comparison.mrv.dead} dead ends
                 </span>
               </div>

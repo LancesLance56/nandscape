@@ -99,7 +99,7 @@ export function PermutationsWidget({ data }: { data: Record<string, unknown> }) 
                 <span
                   key={`${ch}-${i}`}
                   className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-md border font-mono text-sm font-bold",
+                    "flex h-9 w-9 items-center justify-center rounded-md border font-label text-sm font-bold",
                     mode === "swap" && i < step.path.length - 1
                       ? "border-signal-green bg-signal-green/15 text-signal-green"
                       : "border-copper bg-copper-bg text-copper-dark",
@@ -131,12 +131,12 @@ export function PermutationsWidget({ data }: { data: Record<string, unknown> }) 
           <div className="flex flex-wrap gap-1.5">
             {mode === "used"
               ? freeLetters(letters, step.path.slice(1)).map((ch, i) => (
-                  <span key={`${ch}-${i}`} className="rounded-md bg-surface-3 px-2 py-1 font-mono text-xs font-bold text-ink-soft">
+                  <span key={`${ch}-${i}`} className="rounded-md bg-surface-3 px-2 py-1 font-label text-xs font-bold text-ink-soft">
                     {ch}
                   </span>
                 ))
               : Array.from({ length: Math.max(0, letters.length - (step.path.length - 1)) }).map((_, i) => (
-                  <span key={i} className="rounded-md bg-surface-3 px-2 py-1 font-mono text-xs font-bold text-ink-soft">
+                  <span key={i} className="rounded-md bg-surface-3 px-2 py-1 font-label text-xs font-bold text-ink-soft">
                     {step.path.length - 1 + i + 1}
                   </span>
                 ))}

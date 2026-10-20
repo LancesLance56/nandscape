@@ -70,7 +70,7 @@ function PracticeArt({ accent }: { accent: string }) {
     <div className="relative h-full w-full">
       <KmapArt accent={accent} cells={[4, 5, 9]} />
       <span
-        className="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full font-mono text-[13px] font-semibold"
+        className="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full font-label text-[13px] font-semibold"
         style={{ background: `color-mix(in oklab, ${accent} 18%, transparent)`, color: accent }}
       >
         ?
@@ -110,7 +110,7 @@ function DagArt({ accent }: { accent: string }) {
       {nodes.map(([x, y], i) => (
         <g key={i}>
           <circle cx={x} cy={y} r={11} fill={accent} opacity={0.9 - i * 0.18} />
-          <text x={x} y={y + 4} textAnchor="middle" className="font-mono text-[11px]" fill="var(--paper)">
+          <text x={x} y={y + 4} textAnchor="middle" className="font-label text-[11px]" fill="var(--paper)">
             {i + 1}
           </text>
         </g>

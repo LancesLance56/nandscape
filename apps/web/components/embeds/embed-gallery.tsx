@@ -88,7 +88,7 @@ export function EmbedGallery({ catalog }: { catalog: EmbedCatalogEntry[] }) {
         <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
           <div className="flex items-center gap-2 border-b border-border bg-surface-2 px-4 py-2.5">
             <span className="truncate text-[11px] font-semibold text-ink">{selected.title}</span>
-            <span className="ml-auto shrink-0 font-mono text-[10px] text-slate">{embedPath(selected)}</span>
+            <span className="ml-auto shrink-0 font-code text-[10px] text-slate">{embedPath(selected)}</span>
           </div>
           <iframe
             key={`${selected.kind}:${selected.id}`}

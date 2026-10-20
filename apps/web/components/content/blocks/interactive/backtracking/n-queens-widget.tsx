@@ -222,7 +222,7 @@ export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
                 return (
                   <div key={r} className="flex items-baseline justify-between gap-2 text-[11px]">
                     <span className="text-slate">r{r + 1}</span>
-                    <span className={cn("font-mono font-bold", col === undefined ? "text-border-strong" : "text-copper-dark")}>
+                    <span className={cn("font-label font-bold", col === undefined ? "text-border-strong" : "text-copper-dark")}>
                       {col === undefined ? "-" : "abcdefgh"[col]}
                     </span>
                   </div>

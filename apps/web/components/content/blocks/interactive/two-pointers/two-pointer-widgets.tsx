@@ -51,7 +51,7 @@ function LaneView({ lane }: { lane: PointerLane }) {
           <div key={i} className="flex flex-col items-center">
             <span
               className={cn(
-                "flex h-8 min-w-8 items-center justify-center rounded px-1.5 font-mono text-xs font-bold tabular-nums transition-colors",
+                "flex h-8 min-w-8 items-center justify-center rounded px-1.5 font-label text-xs font-bold tabular-nums transition-colors",
                 TONE_CLASS[lane.tones?.[i] ?? "idle"],
               )}
             >
@@ -287,7 +287,7 @@ export function WaterContainerWidget({ data }: { data: Record<string, unknown> }
               <span
                 key={i}
                 className={cn(
-                  "flex-1 text-center font-mono text-[10px] font-bold tabular-nums",
+                  "flex-1 text-center font-label text-[10px] font-bold tabular-nums",
                   i === lo || i === hi ? "text-copper-dark" : "text-slate",
                 )}
               >

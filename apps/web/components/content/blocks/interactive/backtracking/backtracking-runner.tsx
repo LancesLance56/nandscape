@@ -136,7 +136,7 @@ export function BacktrackingRunner<P>({
             ) : (
               <div className="flex max-h-32 flex-col gap-1 overflow-y-auto">
                 {step.solutions.map((s, i) => (
-                  <span key={`${s}-${i}`} className="font-mono text-xs font-semibold text-signal-green">
+                  <span key={`${s}-${i}`} className="font-label text-xs font-semibold text-signal-green">
                     {s}
                   </span>
                 ))}

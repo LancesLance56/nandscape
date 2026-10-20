@@ -71,7 +71,7 @@ export function VoteButton({
       >
         <ChevronUp className="h-3.5 w-3.5" />
       </button>
-      <span className="font-mono text-xs font-semibold tabular-nums text-ink-soft">{score}</span>
+      <span className="font-label text-xs font-semibold tabular-nums text-ink-soft">{score}</span>
     </div>
   );
 }

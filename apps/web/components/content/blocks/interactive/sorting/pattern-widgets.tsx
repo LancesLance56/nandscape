@@ -32,7 +32,7 @@ function Chips({ values, highlight, tone = "muted" }: { values: number[]; highli
         <span
           key={i}
           className={cn(
-            "flex h-6 min-w-6 items-center justify-center rounded px-1.5 font-mono text-xs font-bold tabular-nums",
+            "flex h-6 min-w-6 items-center justify-center rounded px-1.5 font-label text-xs font-bold tabular-nums",
             hi.has(i)
               ? "bg-copper text-white"
               : tone === "green"
@@ -221,7 +221,7 @@ function Row({ label, values, pointer }: { label: string; values: number[]; poin
           <span
             key={i}
             className={cn(
-              "flex h-7 min-w-7 items-center justify-center rounded px-1.5 font-mono text-xs font-bold tabular-nums",
+              "flex h-7 min-w-7 items-center justify-center rounded px-1.5 font-label text-xs font-bold tabular-nums",
               i === pointer
                 ? "bg-copper text-white ring-2 ring-copper-dark"
                 : i < pointer
@@ -419,7 +419,7 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
         <div className="min-h-[2.75rem]">
           {step.running && (
             <div className="rounded-lg border border-border bg-surface-2/40 px-3 py-2">
-              <span className="font-mono text-sm font-bold text-ink">{step.running}</span>
+              <span className="font-label text-sm font-bold text-ink">{step.running}</span>
             </div>
           )}
 

@@ -28,7 +28,7 @@ function restriction(puzzle: PuzzleSpec): string | null {
 
 function Pin({ name, side }: { name: string; side: "in" | "out" }) {
   const label = (
-    <span className="min-w-0 truncate font-mono text-[9px] leading-none text-slate">{name}</span>
+    <span className="min-w-0 truncate font-label text-[9px] leading-none text-slate">{name}</span>
   );
   const wire = (
     <span
@@ -62,7 +62,7 @@ function PinColumn({ ports, side }: { ports: { name: string }[]; side: "in" | "o
         <Pin key={port.name} name={port.name} side={side} />
       ))}
       {rest > 0 && (
-        <span className={cn("font-mono text-[9px] leading-none text-slate/70", side === "in" && "text-right")}>
+        <span className={cn("font-label text-[9px] leading-none text-slate/70", side === "in" && "text-right")}>
           +{rest}
         </span>
       )}
@@ -81,7 +81,7 @@ export function PuzzleChip({ puzzle, className }: { puzzle: PuzzleSpec; classNam
       {/* The package. */}
       <div className="relative flex min-w-0 flex-1 flex-col items-center justify-center rounded-lg border border-border-strong bg-gradient-to-b from-surface-2 to-surface-3 px-3 py-4 text-center transition-colors duration-300 group-hover/chip:border-copper/50">
         <h3 className="line-clamp-2 text-[13px] font-semibold leading-snug text-ink">{puzzle.title}</h3>
-        <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
+        <p className="mt-1 font-label text-[9px] uppercase tracking-[0.12em] text-slate">
           &le;{budget}
           {limit ? ` · ${limit}` : ""}
         </p>
