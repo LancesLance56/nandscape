@@ -20,15 +20,6 @@
       "className": "text-copper-dark"
     },
     {
-      "id": "p-dek",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It makes your code faster. Not in a theoretical or subtle way, in a \"this exact line decides how much work your server does\" way."
-        }
-      ]
-    },
-    {
       "id": "p-hook",
       "type": "paragraph",
       "content": [
@@ -83,7 +74,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Most people stop thinking about Boolean algebra the day the digital logic final ends. That's a mistake, because it never actually left your code. Every "
+          "text": "Most programmers never learn the basics of Boolean algebra. That's a mistake, because even in high-level programming languages, optimizations are still available using these concepts. Every "
         },
         {
           "text": "if",
@@ -126,15 +117,6 @@
       "content": [
         {
           "text": "The compiler doesn't know your intent, it only knows the expression you wrote. Two logically equivalent expressions can compile to wildly different amounts of runtime work, and the rules for which is which are exactly the rules of Boolean algebra: short-circuit evaluation, De Morgan's laws, distribution, factoring. You already used one of them in the last section without naming it."
-        }
-      ]
-    },
-    {
-      "id": "p-nh-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The rest of this post is three of those rules, applied to code you'd actually write."
         }
       ]
     },
@@ -307,7 +289,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Principle 1 showed the mechanism. Here's why it matters once you multiply it by real traffic. Say a permission check costs meaningfully more than a login check, and a request comes in from a user who isn't logged in."
+          "text": "Say a permission check costs meaningfully more than a login check, and a request comes in from a user who isn't logged in."
         }
       ]
     },

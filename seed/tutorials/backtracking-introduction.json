@@ -53,7 +53,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Eight queens is a good example. Choosing 8 squares out of 64 gives you a little over 4.4 billion arrangements to check, and almost all of them are nonsense: two queens on the same square, three stacked in one column, that kind of thing."
+          "text": "For problems like the classic N-queens LeetCode problem, choosing 8 squares out of 64 gives you a little over 4.4 billion arrangements to check, and most importantly most of these arrangements are obviously wrong and just a waste of time to check."
         }
       ]
     },
@@ -62,7 +62,18 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "But you can already do better than that, just by thinking about the problem instead of the code. Two queens in the same row always attack each other, so any real solution has exactly one queen per row. So instead of choosing squares, choose a column for each of the 8 rows. That's 8 to the power of 8, about 16.7 million, still huge, but nearly three hundred times smaller, and it came from a minute of thinking rather than a clever trick."
+          "text": "Instead of brute forcing all configurations, we can start with one queen, then try out all possible "
+        },
+        {
+          "text": "legal ",
+          "marks": [
+            {
+              "kind": "bold"
+            }
+          ]
+        },
+        {
+          "text": "configurations for two queens, then three, and so on. Two queens in the same row always attack each other, so any real solution has exactly one queen per row. So instead of choosing squares, choose a column for each of the 8 rows. That's 8 to the power of 8, about 16.7 million, still huge, but nearly three hundred times smaller."
         }
       ]
     },
@@ -99,7 +110,7 @@
     },
     {
       "id": "h-tree",
-      "text": " Thinking in Trees",
+      "text": "Wait, it's all a tree?",
       "type": "heading",
       "level": 2
     },
@@ -108,7 +119,32 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Since it's impossible to check all possible answers, backtracking uses a tree to check all possible legal boards step by step."
+          "text": "Since it's impossible to check all possible answers, backtracking uses a "
+        },
+        {
+          "text": "tree",
+          "marks": [
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            },
+            {
+              "href": "https://nandscape.dev/tutorials/dsa/graph-theory-basics",
+              "kind": "link"
+            }
+          ]
+        },
+        {
+          "text": " ",
+          "marks": [
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
+        },
+        {
+          "text": "to check all possible legal boards step by step."
         }
       ]
     },
@@ -117,7 +153,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The root is the empty attempt, before you've decided anything. Every edge going down is a possible legal move, and every node is the partial answer you've built so far. It follows then that this tree has all possible legal board configurations, since we "
+          "text": "Every edge going down is a possible legal move, and every node is the partial answer you've built so far. It follows then that this tree has all possible legal board configurations, since we "
         },
         {
           "text": "failed early",
@@ -146,8 +182,9 @@
       "widget": "backtracking-tree"
     },
     {
-      "id": "p-tree-3",
-      "type": "paragraph",
+      "id": "callout_2b3e5c8c",
+      "tone": "important",
+      "type": "callout",
       "content": [
         {
           "text": "Your own code never actually builds this tree as a data structure, but it illustrates the shape your recursive calls trace out over time. Going down an edge is a function call, and coming back up is the backtrack. Once you can see it that way, pruning has an obvious meaning: you're cutting off an entire subtree, leaves and all."
@@ -165,7 +202,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Backtracking seems complicated, but every single backtracking algorithm looks roughly the same."
+          "text": "Backtracking seems complicated, but every single backtracking algorithm has the same structure."
         }
       ]
     },
@@ -174,7 +211,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "We start by checking if we are at the "
+          "text": "We start by checking if we are at the leaf i.e., the "
         },
         {
           "text": "bottom ",
@@ -211,9 +248,9 @@
     },
     {
       "id": "code-template",
-      "code": "function solve(state):\n    if state is a complete answer:\n        record it\n        return\n\n    for each choice available from state:\n        if choice is not allowed:\n            continue          # prune: never build anything below here\n\n        apply choice          # choose\n        solve(state)          # explore\n        undo choice           # un-choose",
+      "code": "def solve(state):\n    if state.property == complete:\n        # record\n        return\n\n    for choice in available_choices:\n        if not legal(choice):\n            continue # fail early\n        \n        apply(choice) # usually change in state\n        solve(state)\n        undo(choice)",
       "type": "code",
-      "language": "text"
+      "language": "python"
     },
     {
       "id": "p-template-3",
@@ -287,7 +324,7 @@
           ]
         },
         {
-          "text": " items really does produce 2 to the power of "
+          "text": " items really does produce some base to the power of "
         },
         {
           "text": "n",
@@ -339,9 +376,6 @@
               "kind": "bold"
             }
           ]
-        },
-        {
-          "text": " The classic one. Its symptom is answers that get longer and longer as the run goes on, with items showing up in them from branches you thought you'd already left."
         }
       ]
     },
@@ -350,15 +384,6 @@
       "code": "for (let i = start; i < nums.length; i++) {\n  current.push(nums[i]);\n  solve(i + 1);\n  // current.pop();   <-- forgotten\n}",
       "type": "code",
       "language": "javascript"
-    },
-    {
-      "id": "p-mistake-1b",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The state is shared across every branch, so a choice made in one branch is still sitting there when a sibling branch runs. The fix is just the missing line. The habit that stops it from happening: write the undo right after the recursive call, before you do anything else."
-        }
-      ]
     },
     {
       "id": "p-mistake-2",
@@ -582,13 +607,15 @@
     },
     {
       "id": "h_b3b59ac6",
-      "text": "Homework",
+      "text": "Take home",
       "type": "heading",
       "level": 2
     },
     {
-      "id": "p_e3a73f50",
-      "type": "paragraph",
+      "id": "callout_e836a867",
+      "tone": "important",
+      "type": "callout",
+      "title": "Homework",
       "content": [
         {
           "text": "Try out the classic N-queens problem on LeetCode. It's classified as hard, but now that you have read this article, you already know all you need to know."

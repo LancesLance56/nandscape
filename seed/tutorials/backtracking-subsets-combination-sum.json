@@ -25,132 +25,17 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Subsets is the gentlest problem in this section, so it's worth doing carefully instead of rushing through it. Nothing here ever gets rejected, so you can just watch the recursion's shape without a prune muddying the picture."
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The task: given a list of distinct numbers, produce every subset. For [1,2,3] that's eight answers, from the empty set all the way up to the whole thing."
-        }
-      ]
-    },
-    {
-      "id": "h-count",
-      "text": "Knowing the answer's size before you start",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-count",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "It pays to know how many answers to expect, since that's what tells you what your program is allowed to cost."
-        }
-      ]
-    },
-    {
-      "id": "p-count-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Every item faces one independent decision: in or out. With "
-        },
-        {
-          "text": "n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " items that's "
-        },
-        {
-          "text": "2",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " multiplied by itself "
-        },
-        {
-          "text": "n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " times, so 2 to the power of "
-        },
-        {
-          "text": "n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " subsets. For 3 items, 8. For 20 items, about a million. For 40, over a trillion."
-        }
-      ]
-    },
-    {
-      "id": "p-count-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "So there's no fast algorithm hiding in here. Any correct program has to produce 2 to the power of "
-        },
-        {
-          "text": "n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " answers, and just printing them takes that long. When the output itself is exponential the algorithm has to be too, and this is one of the rare cases where an exponential runtime isn't a sign you did something wrong."
-        }
-      ]
-    },
-    {
       "id": "h-decisions",
-      "text": "Turning it into decisions",
+      "text": "Subsets and Backtracking",
       "type": "heading",
       "level": 2
-    },
-    {
-      "id": "p-decisions",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "The template from the introduction needs three things filled in: what a complete answer looks like, what choices exist at each step, and which of them are allowed."
-        }
-      ]
     },
     {
       "id": "p-decisions-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "The natural reading is that a state is a partial subset, and a choice is \"which item do I add next.\" Every state is already a valid subset, so every node in the tree records an answer instead of only the leaves. That's unusual, and worth noticing: in most problems only complete states count."
+          "text": "The natural solution is that a state is a partial subset, and a choice is \"which item do I add next.\" Every state is already a valid subset, so every node in the tree records an answer instead of only the leaves."
         }
       ]
     },
@@ -159,53 +44,30 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "But now a real problem shows up. If each step can choose any item, you'll build the same subset over and over under different orderings."
+          "text": "But now a real problem shows up: if each step can choose any item, you'll build the same subset over and over under different orderings."
         }
       ]
     },
     {
-      "id": "code-dup",
-      "code": "Without a start index, choosing from all of [1,2,3] every time:\n\n  [] -> [1] -> [1,2]        and        [] -> [2] -> [2,1]\n\nSame set, built twice, and the tree keeps doing it. With start,\na branch only ever looks at items to the RIGHT of what it took.",
-      "type": "code",
-      "language": "text"
+      "id": "table_4d521f19",
+      "rows": [
+        [
+          "[] -> [1] -> [1,2]",
+          "[] -> [2] -> [2,1]"
+        ]
+      ],
+      "type": "table",
+      "headers": [
+        "Possible Path 1",
+        "Possible Path 2"
+      ]
     },
     {
       "id": "p-decisions-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "The fix is a single parameter. Pass down a start index and only choose items at or after it, so once you've taken item 2, later steps only consider items 3 onward. Each subset then gets built in exactly one order and shows up exactly once."
-        }
-      ]
-    },
-    {
-      "id": "p-decisions-5",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "This one parameter is the difference between 2 to the power of "
-        },
-        {
-          "text": "n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " work and "
-        },
-        {
-          "text": "n",
-          "marks": [
-            {
-              "kind": "code"
-            }
-          ]
-        },
-        {
-          "text": " factorial work. It's the most important line in the problem, and it looks like nothing at all."
+          "text": "To fix this all we need to do is add one more parameter to our recursive function. Pass down a start index and only choose items at or after it, so once you've taken item 2, later steps only consider items 3 onward. Each subset then gets built in exactly one order and shows up exactly once."
         }
       ]
     },
