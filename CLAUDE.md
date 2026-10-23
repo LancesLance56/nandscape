@@ -65,6 +65,9 @@ Copy `.env.example` → `.env` at the repo root. Key vars:
   pool in the web app. `packages/db` loads `.env` itself via `prisma.config.ts`.
 - `SEED_SECRET` — a seed-script-only credential the content-write API routes
   accept via an `x-seed-secret` header, so seeding needs no real login.
+- `ANALYTICS_TOKEN` — bearer token for `GET /api/admin/analytics/summary`
+  (aggregate usage stats the owner's nandscape.dev dashboard reads; compared
+  in constant time by `lib/auth/analytics-token.ts`). Unset = endpoint off (503).
 - `SITE_URL` — public origin; used to build the Google OAuth redirect URI and
   canonical URLs. Must match the reverse-proxy host in production.
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Google sign-in.
