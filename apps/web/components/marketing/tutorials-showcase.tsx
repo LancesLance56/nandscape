@@ -1,12 +1,12 @@
 import { listTutorialTrackTrees } from "@/lib/tutorials/tutorial-tracks";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { SectionHeader } from "./section-header";
-import { FolderStack, type Folder, type FolderTab } from "./folder-stack";
+import { FolderTabs, type Folder, type FolderSection } from "./folder-tabs";
 import { tutorialPath } from "@/types/tutorial";
 import type { TutorialTrackTree } from "@/types/tutorial";
 
 /**
- * The tutorials block: a drawer of four topic folders.
+ * The tutorials block: one folder with an index tab per subject.
  *
  * The nine sections are regrouped by subject rather than by the
  * digital-logic / DSA split - "Logic & Gates", "Graphs" and so on - so the
@@ -15,16 +15,29 @@ import type { TutorialTrackTree } from "@/types/tutorial";
  * tree; only the grouping and the blurbs are curated here.
  */
 /**
- * How many real lesson titles each section card previews. Lives here rather
- * than in folder-stack: that module is "use client", and a plain value
- * imported from a client module into a server component arrives as a client
- * reference, not the number.
+ * How many real lesson titles each section sends down: the six the sheet lists
+ * on a desk, plus the next one, which its "more in this section" link points
+ * at. Lives here rather than in folder-tabs: that module is "use client", and
+ * a plain value imported from a client module into a server component arrives
+ * as a client reference, not the number.
  */
-const LESSON_PREVIEW = 3;
+const LESSON_PREVIEW = 7;
 
-const FOLDERS: { id: string; label: string; blurb: string; tabs: { slug: string; name: string }[] }[] = [
+/** Each subject wears one of the four brand colours, the same ones the tools use. */
+const FOLDERS: {
+  id: string;
+  tab: string;
+  label: string;
+  color: string;
+  ink: string;
+  blurb: string;
+  tabs: { slug: string; name: string }[];
+}[] = [
   {
     id: "logic",
+    tab: "Logic & Gates",
+    color: "#ff751a",
+    ink: "#1d1f22",
     label: "Logic & Gates",
     blurb:
       "Detailed explanation and introduction to how logic gates work",
@@ -36,6 +49,9 @@ const FOLDERS: { id: string; label: string; blurb: string; tabs: { slug: string;
   },
   {
     id: "graphs",
+    tab: "Graphs",
+    color: "#3772ff",
+    ink: "#ffffff",
     label: "Graphs",
     blurb:
       "Interactive guide on graph theory for CS students",
@@ -47,6 +63,9 @@ const FOLDERS: { id: string; label: string; blurb: string; tabs: { slug: string;
   },
   {
     id: "search",
+    tab: "Recursion & Search",
+    color: "#fdca40",
+    ink: "#1d1f22",
     label: "Recursion & Search for coding interviews and programming",
     blurb:
       "Try, fail, back up, try again, and the trick of never solving the same subproblem twice.",
@@ -57,6 +76,9 @@ const FOLDERS: { id: string; label: string; blurb: string; tabs: { slug: string;
   },
   {
     id: "sorting",
+    tab: "Sorting",
+    color: "#2f8a57",
+    ink: "#ffffff",
     label: "The most studied problem in computing",
     blurb:
       "Several ways to put a list in order, each animated one frame at a time, and why the fast ones are fast.",
@@ -74,17 +96,14 @@ export async function TutorialsShowcase() {
 
   // Flatten every track's sections into one lookup, so a curated folder can
   // pull a section by slug without caring which track it lived under.
-  const sections = new Map<string, Omit<FolderTab, "slug" | "name">>();
+  const sections = new Map<string, Omit<FolderSection, "slug" | "name">>();
   for (const track of tracks) {
     for (const s of track.sections) {
       if (s.pages.length === 0) continue;
-      const first = s.pages[0];
       sections.set(s.slug, {
-        title: s.title,
         count: s.pages.length,
-        href: tutorialPath(first.trackSlug, first.slug),
         // The opening run of real lesson titles. Enough to show what a section
-        // actually teaches; the card says how many more there are.
+        // actually teaches; the sheet says how many more there are.
         lessons: s.pages.slice(0, LESSON_PREVIEW).map((page) => ({
           title: page.title,
           href: tutorialPath(page.trackSlug, page.slug),
@@ -94,16 +113,25 @@ export async function TutorialsShowcase() {
   }
 
   const folders: Folder[] = FOLDERS.map((f) => {
-    const tabs = f.tabs
-      .map((t): FolderTab | null => {
+    const found = f.tabs
+      .map((t): FolderSection | null => {
         const sec = sections.get(t.slug);
         if (!sec) return null;
         return { slug: t.slug, name: t.name, ...sec };
       })
-      .filter((t): t is FolderTab => t !== null);
+      .filter((t): t is FolderSection => t !== null);
 
-    return { id: f.id, label: f.label, blurb: f.blurb, count: tabs.reduce((n, t) => n + t.count, 0), tabs };
-  }).filter((f) => f.tabs.length > 0);
+    return {
+      id: f.id,
+      tab: f.tab,
+      title: f.label,
+      blurb: f.blurb,
+      color: f.color,
+      ink: f.ink,
+      count: found.reduce((n, t) => n + t.count, 0),
+      sections: found,
+    };
+  }).filter((f) => f.sections.length > 0);
 
   if (folders.length === 0) return null;
 
@@ -121,7 +149,7 @@ export async function TutorialsShowcase() {
       </ScrollReveal>
 
       <ScrollReveal delay={80} className="mt-10">
-        <FolderStack folders={folders} />
+        <FolderTabs folders={folders} />
       </ScrollReveal>
     </section>
   );

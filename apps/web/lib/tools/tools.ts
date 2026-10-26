@@ -7,8 +7,14 @@
  * can't be found or cited on their own - each entry here gives one its own
  * URL, its own tool-intent title, and its own place in the sitemap.
  */
+import type { ToolGroup } from "./tool-groups";
+
+export { TOOL_GROUPS, type ToolGroup } from "./tool-groups";
+
 export interface ToolDefinition {
   slug: string;
+  /** Which subject it belongs to: its colour and its filter on /tools. */
+  group: ToolGroup;
   /** The on-page H1. */
   title: string;
   seoTitle: string;
@@ -52,6 +58,7 @@ export interface ToolDefinition {
 export const TOOLS: ToolDefinition[] = [
   {
     slug: "karnaugh-map-solver",
+    group: "logic",
     title: "Karnaugh Map Solver",
     seoTitle: "Karnaugh Map Solver: Simplify Boolean Expressions Online",
     seoDescription:
@@ -110,6 +117,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "karnaugh-map-practice",
+    group: "logic",
     title: "Karnaugh Map Practice Problems",
     seoTitle: "Karnaugh Map Practice Problems: Random K-Map Generator",
     seoDescription:
@@ -164,6 +172,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "number-base-converter",
+    group: "numbers",
     title: "Binary, Decimal and Hex Converter",
     seoTitle: "Binary to Decimal Converter: Binary, Decimal and Hex",
     seoDescription:
@@ -182,6 +191,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "twos-complement-calculator",
+    group: "numbers",
     title: "Two's Complement Calculator",
     seoTitle: "Two's Complement Calculator: Signed Binary Explained",
     seoDescription:
@@ -200,6 +210,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "truth-table-generator",
+    group: "logic",
     title: "Truth Table Generator",
     seoTitle: "Truth Table Generator for Logic Gates and Expressions",
     seoDescription:
@@ -221,6 +232,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "sorting-algorithm-visualizer",
+    group: "algorithms",
     title: "Sorting Algorithm Visualizer",
     seoTitle: "Sorting Algorithm Visualizer: Compare 7 Sorts Step by Step",
     seoDescription:
@@ -281,6 +293,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "flowchart-maker",
+    group: "diagrams",
     href: "/flowchart",
     title: "Flowchart Maker",
     seoTitle: "Free Flowchart Maker for Algorithms: Build and Edit Online",
@@ -339,6 +352,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "graph-algorithm-visualizer",
+    group: "algorithms",
     title: "Graph Algorithm Visualizer",
     seoTitle: "Graph Algorithm Visualizer: BFS, DFS and Dijkstra",
     seoDescription:
@@ -367,6 +381,7 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "topological-sort-visualizer",
+    group: "algorithms",
     title: "Topological Sort Visualizer",
     seoTitle: "Topological Sort Visualizer: Kahn's Algorithm Step by Step",
     seoDescription:

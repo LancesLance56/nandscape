@@ -3,348 +3,154 @@ import type { CSSProperties, ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { SectionHeader } from "./section-header";
-import { SortingVisualizerWidget } from "@/components/content/blocks/interactive/sorting/sorting-visualizer-widget";
-import { NumberBaseExplorerWidget } from "@/components/content/blocks/interactive/number-base-explorer-widget";
-import { GraphTraversalWidget } from "@/components/content/blocks/interactive/graph/graph-traversal-widget";
-import { TOOLS, toolHref } from "@/lib/tools/tools";
-import { DEFAULT_HEIGHT } from "@/lib/embeds/embeddable";
-import { EmbedCopy } from "./embed-copy";
-import { accentsFor } from "@/lib/ui/accent-palette";
+import { BfsArt, BitsArt, FlowArt, KmapArt, KmapPracticeArt, SortArt, TopoArt } from "./tool-art";
+import { TOOL_GROUPS, TOOLS, toolHref } from "@/lib/tools/tools";
 import { cn } from "@/lib/cn";
 
 /**
- * The tools shelf: every interactive widget on the site, laid out as a bento.
+ * The tools shelf: the homepage's bento of interactive tools.
  *
- * This replaced a section that embedded the sorting visualizer live. One tool
- * running on the homepage said "we have a sorting visualizer"; nine tiles say
- * "this place is full of things you can drive", which is the actual pitch. The
- * sorting visualizer keeps the biggest tile, since it is the one that used to
- * hold the section on its own.
+ * Every tile shows the thing its tool works on - bars sorting themselves, a
+ * graph being explored, a byte counting up - and none of the controls. The
+ * controls are what the tool page is for; at tile size they were a row of
+ * buttons nobody could read, and they crowded out the picture that makes
+ * someone want to click. So each tile is one big link, and the three moving
+ * drawings loop on their own while they are on screen.
  *
- * Three tiles run the real thing: the sorting visualizer in its compact mode,
- * the number base explorer, and a graph traversal you can play and scrub.
- * They turn the grid from a picture of a toolbox into one you can put your
- * hands in. The rest draw a cheap little SVG or block of type standing in for
- * their tool and link to it, so they cost no client JavaScript at all.
- *
- * Sizes are deliberately uneven. A tile carrying nothing but a drawing and a
- * sentence does not earn two columns, so most of them take one; width is
- * spent on the live tiles and on the two drawings that are actually wide.
+ * Sizes are deliberately uneven: the two algorithms that are most fun to
+ * watch take half the width each, the byte takes a third, and the still
+ * drawings share the rest. On a phone the same order folds to two columns.
  *
  * Which tools exist, what they are called and where they live all come from
- * TOOLS. Only the ordering, the tile sizes, the shorthand names (a bento tile
- * is too narrow for "Binary, Decimal and Hex Converter") and the artwork are
- * decided here.
+ * TOOLS, and so does each tile's colour (its subject's). Only the order, the
+ * sizes, the shorthand names and the artwork are decided here.
  */
 
-/* ---------------------------------------------------------------- artwork */
-
-/** A 4x4 map with one group ringed. */
-function KmapArt({ accent, cells, ring }: { accent: string; cells: number[]; ring?: boolean }) {
-  return (
-    <svg viewBox="0 0 116 84" className="h-full w-full">
-      {Array.from({ length: 16 }, (_, i) => {
-        const on = cells.includes(i);
-        return (
-          <rect
-            key={i}
-            x={(i % 4) * 28 + 3}
-            y={Math.floor(i / 4) * 20 + 3}
-            width={25}
-            height={17}
-            rx={3}
-            fill={on ? accent : "currentColor"}
-            opacity={on ? 0.8 : 0.1}
-          />
-        );
-      })}
-      {ring && (
-        <rect x={30} y={0} width={57} height={63} rx={7} fill="none" stroke={accent} strokeWidth={1.6} strokeDasharray="5 4" />
-      )}
-    </svg>
-  );
-}
-
-function PracticeArt({ accent }: { accent: string }) {
-  return (
-    <div className="relative h-full w-full">
-      <KmapArt accent={accent} cells={[4, 5, 9]} />
-      <span
-        className="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full font-label text-[13px] font-semibold"
-        style={{ background: `color-mix(in oklab, ${accent} 18%, transparent)`, color: accent }}
-      >
-        ?
-      </span>
-    </div>
-  );
-}
-
-/** A DAG resolving left to right, numbered in the order it comes out. */
-function DagArt({ accent }: { accent: string }) {
-  const nodes = [
-    [16, 44],
-    [54, 20],
-    [54, 68],
-    [92, 44],
-  ];
-
-  return (
-    <svg viewBox="0 0 116 88" className="h-full w-full">
-      {[
-        [0, 1],
-        [0, 2],
-        [1, 3],
-        [2, 3],
-      ].map(([a, b], i) => (
-        <line
-          key={i}
-          x1={nodes[a][0] + 9}
-          y1={nodes[a][1]}
-          x2={nodes[b][0] - 9}
-          y2={nodes[b][1]}
-          stroke="currentColor"
-          strokeWidth={1.4}
-          opacity={0.28}
-        />
-      ))}
-      {nodes.map(([x, y], i) => (
-        <g key={i}>
-          <circle cx={x} cy={y} r={11} fill={accent} opacity={0.9 - i * 0.18} />
-          <text x={x} y={y + 4} textAnchor="middle" className="font-label text-[11px]" fill="var(--paper)">
-            {i + 1}
-          </text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-/** Box, decision, two branches. */
-function FlowArt({ accent }: { accent: string }) {
-  return (
-    <svg viewBox="0 0 116 88" className="h-full w-full">
-      <path d="M58 20 L58 34 M58 54 L58 66 M40 66 L76 66" stroke="currentColor" strokeWidth={1.4} opacity={0.3} fill="none" />
-      <rect x={38} y={4} width={40} height={16} rx={8} fill="currentColor" opacity={0.18} />
-      <path d="M58 34 L74 44 L58 54 L42 44 Z" fill={accent} opacity={0.85} />
-      <rect x={22} y={66} width={36} height={16} rx={3} fill="currentColor" opacity={0.18} />
-      <rect x={62} y={66} width={36} height={16} rx={3} fill="currentColor" opacity={0.18} />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ tiles */
+type Size = "half" | "third" | "sixth";
 
 interface Tile {
   /** Must match a slug in TOOLS; a tile whose tool is gone is dropped. */
   slug: string;
   /** Short enough for a narrow tile. TOOLS keeps the full, searchable title. */
   name: string;
-  blurb: string;
-  /** Grid footprint. Two columns is a privilege, not the default. */
-  span: string;
-  /** The real widget, running in the tile. Beats any drawing, costs client JS. */
-  widget?: ReactNode;
-  /** Otherwise: a drawing standing in for the tool, and the tile is a link. */
-  art?: (accent: string) => ReactNode;
+  size: Size;
+  art: ReactNode;
 }
 
 /**
- * Order matters: the grid is packed by CSS auto-placement, and this sequence
- * fills a six-column layout exactly - two rows, no holes - and folds down to
- * two columns without leaving any either. Reordering or resizing a tile means
- * re-checking that, because auto-placement never backfills a gap.
- *
- * Two rows is the point. The two tall live widgets sit side by side on the
- * first rather than stacked, so their heights do not add up, and the whole
- * bento fits under the navbar on a 1080p screen.
+ * Order matters: CSS auto-placement packs this into two full rows of six
+ * columns (3 + 3, then 2 + 1 + 1 + 1 + 1), and into two columns without
+ * holes on a phone.
  */
 const TILES: Tile[] = [
   {
     slug: "sorting-algorithm-visualizer",
     name: "Sorting Visualizer",
-    blurb: "Seven algorithms, one frame at a time, with the comparisons and writes counted underneath.",
-    span: "col-span-2 lg:col-span-3",
-    widget: (
-      <SortingVisualizerWidget
-        data={{ compact: true, algorithm: "quick", preset: "random", size: 18, seed: 20260816 }}
-        frame={false}
-      />
-    ),
+    size: "half",
+    art: <SortArt className="flex h-full w-full items-end gap-1 px-[18px] pt-5 lg:gap-1.5 lg:px-7 lg:pt-7" />,
   },
   {
     slug: "graph-algorithm-visualizer",
     name: "Graph Traversal",
-    blurb: "Play or scrub a BFS or DFS; the queue and the visited order keep up.",
-    span: "col-span-2 lg:col-span-3",
-    widget: <GraphTraversalWidget data={{ mode: "bfs", compact: true }} frame={false} />,
+    size: "half",
+    art: (
+      <span className="grid h-full place-items-center px-3.5 pt-2.5 lg:px-[22px] lg:pt-[18px]">
+        <BfsArt r={21} className="h-full max-h-[170px] w-full lg:max-h-[270px]" />
+      </span>
+    ),
   },
   {
     slug: "number-base-converter",
     name: "Number Bases",
-    blurb: "Flip a bit and watch binary, decimal and hex move together.",
-    span: "col-span-2 lg:col-span-2",
-    widget: <NumberBaseExplorerWidget data={{ bits: 8, initial: 182, title: "One byte" }} frame={false} />,
+    size: "third",
+    art: (
+      <span className="grid h-full place-items-center pt-3.5 lg:pt-5">
+        <BitsArt />
+      </span>
+    ),
   },
-  {
-    slug: "karnaugh-map-solver",
-    name: "K-map Solver",
-    blurb: "Cells to 1 or don't-care; the minimal sum-of-products falls out.",
-    span: "col-span-1",
-    art: (a) => <KmapArt accent={a} cells={[1, 2, 5, 6, 9, 10]} ring />,
-  },
-  {
-    slug: "flowchart-maker",
-    name: "Flowchart Maker",
-    blurb: "Add boxes, connect them, layout is automatic.",
-    span: "col-span-1",
-    art: (a) => <FlowArt accent={a} />,
-  },
+  { slug: "karnaugh-map-solver", name: "K-map Solver", size: "sixth", art: <KmapArt className="w-full max-w-[150px]" /> },
+  { slug: "flowchart-maker", name: "Flowchart Maker", size: "sixth", art: <FlowArt className="w-full max-w-[110px] lg:max-w-[150px]" /> },
   {
     slug: "topological-sort-visualizer",
     name: "Topological Sort",
-    blurb: "Kahn's algorithm a node at a time, in-degrees falling as it goes.",
-    span: "col-span-1",
-    art: (a) => <DagArt accent={a} />,
+    size: "sixth",
+    art: <TopoArt className="w-full max-w-[120px] lg:max-w-[160px]" />,
   },
   {
     slug: "karnaugh-map-practice",
     name: "K-map Practice",
-    blurb: "A fresh random map every time. Group it yourself and find out if it is minimal.",
-    span: "col-span-1",
-    art: (a) => <PracticeArt accent={a} />,
+    size: "sixth",
+    art: <KmapPracticeArt className="w-full max-w-[150px]" />,
   },
 ];
+
+const SIZE: Record<Size, string> = {
+  half: "col-span-2 h-[230px] rounded-[20px] lg:col-span-3 lg:h-auto lg:min-h-[340px] lg:rounded-[22px]",
+  third: "col-span-2 h-[170px] rounded-[20px] lg:h-auto lg:min-h-[220px] lg:rounded-[22px]",
+  sixth: "col-span-1 h-40 rounded-[18px] lg:h-auto lg:min-h-[220px] lg:rounded-[22px]",
+};
 
 export function ToolsBento() {
   const bySlug = new Map(TOOLS.map((tool) => [tool.slug, tool]));
   const tiles = TILES.filter((tile) => bySlug.has(tile.slug));
   if (tiles.length === 0) return null;
 
-  // Same helper the /tools index uses, so a tool keeps its colour between the
-  // two pages instead of being copper here and olive there.
-  const accents = accentsFor(tiles.map((tile) => tile.slug));
-
   return (
     <section className="py-20">
-      <ScrollReveal className="mb-10">
+      <ScrollReveal className="mb-8 lg:mb-10">
         <SectionHeader
           eyebrow="Try them out"
           title="Tools &amp; visualizers"
-          blurb={`${TOOLS.length} interactive tools that each do one job, free in the browser, and every one of them embeddable with the Embed button on its tile.`}
+          blurb={`${TOOLS.length} interactive tools that each do one job, free in the browser, and every one of them embeddable.`}
           action={{ href: "/tools", label: "Browse all tools" }}
         />
       </ScrollReveal>
 
       <ScrollReveal delay={100}>
-        {/* Rows have a floor, not a fixed height: the tiles running a real
-            widget need whatever they need, and letting their band grow keeps
-            every other tile in the row aligned with them. */}
-        <div className="grid auto-rows-[minmax(8.5rem,auto)] grid-cols-2 gap-3 lg:auto-rows-[minmax(9.5rem,auto)] lg:grid-cols-6">
-          {tiles.map((tile, i) => {
+        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-6 lg:gap-3.5">
+          {tiles.map((tile) => {
             const tool = bySlug.get(tile.slug)!;
-            const accent = accents[i];
-            const href = toolHref(tool);
-            const chrome = "relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface-card p-4";
+            const accent = TOOL_GROUPS[tool.group].color;
+            const big = tile.size !== "sixth";
 
-            // A tile running a widget cannot be a link - every click inside it
-            // belongs to the widget - so it carries the link in its corner and
-            // sits still instead of lifting under the cursor.
-            if (tile.widget) {
-              return (
-                <div
-                  key={tile.slug}
-                  style={{ "--tile-accent": accent } as CSSProperties}
-                  className={cn(chrome, tile.span)}
-                >
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: accent }} />
-                        <h3 className="truncate text-[13px] font-semibold text-ink">{tile.name}</h3>
-                      </div>
-                      <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-soft">{tile.blurb}</p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-0.5">
-                      <EmbedCopy
-                        slug={tool.slug}
-                        title={tool.title}
-                        height={tool.embedHeight ?? DEFAULT_HEIGHT}
-                      />
-                      <Link
-                        href={href}
-                        title={tool.title}
-                        className="group/open flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-copper-dark"
-                      >
-                        Open
-                        <ChevronRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/open:translate-x-0.5 motion-reduce:transition-none" />
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="flex min-h-0 flex-1 flex-col justify-center">{tile.widget}</div>
-                </div>
-              );
-            }
-
-            // A div wrapping a stretched link, not a link wrapping everything.
-            // The tile has two actions now - open the tool, copy its embed tag
-            // - and a button inside an anchor is neither valid markup nor
-            // reliably clickable. The anchor covers the tile instead, and the
-            // Embed button sits above it.
             return (
-              <div
+              <Link
                 key={tile.slug}
+                href={toolHref(tool)}
+                title={tool.title}
                 style={{ "--tile-accent": accent } as CSSProperties}
                 className={cn(
-                  chrome,
-                  "group/tile transition-[transform,border-color,box-shadow] duration-300 ease-out motion-reduce:transition-none",
-                  "hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--tile-accent)_45%,transparent)]",
-                  "hover:shadow-[var(--shadow-lift)] motion-reduce:hover:translate-y-0",
-                  tile.span,
+                  "group/tile grid grid-rows-[minmax(0,1fr)_auto] overflow-hidden border border-border bg-surface-card text-ink",
+                  "transition-[transform,border-color,box-shadow] duration-300 ease-out",
+                  "hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--tile-accent)_45%,transparent)] hover:shadow-[var(--shadow-lift)]",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper",
+                  "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                  SIZE[tile.size],
                 )}
               >
-                {/* A wash of the tile's own colour, only while hovered. */}
                 <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 motion-reduce:transition-none"
-                  style={{
-                    background: `radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, ${accent} 12%, transparent), transparent 70%)`,
-                  }}
-                />
-
-                <Link
-                  href={href}
-                  title={tool.title}
-                  aria-label={tool.title}
-                  className="absolute inset-0 z-10 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper"
-                />
-
-                <EmbedCopy
-                  slug={tool.slug}
-                  title={tool.title}
-                  height={tool.embedHeight ?? DEFAULT_HEIGHT}
-                  className="absolute right-2 top-2 z-20 bg-surface-card/80 backdrop-blur-sm"
-                />
-
-                <div
                   className={cn(
-                    "relative flex min-h-0 flex-1 items-center justify-center text-ink opacity-80",
-                    "transition-opacity duration-300 group-hover/tile:opacity-100 motion-reduce:transition-none",
+                    // A grid row rather than a flex child, so the drawings'
+                    // percentage heights resolve against a tile that only has
+                    // a min-height.
+                    "min-h-0",
+                    !big && "grid place-items-center px-3 pt-3.5 lg:px-4 lg:pt-[18px]",
                   )}
                 >
-                  {/* Capped, so a tile stretched by a tall neighbour shows a
-                      normally sized drawing rather than a billboard. */}
-                  <div className="h-full max-h-24 w-full">{tile.art?.(accent)}</div>
-                </div>
-
-                <div className="relative mt-3 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: accent }} />
-                    <h3 className="truncate text-[13px] font-semibold text-ink">{tile.name}</h3>
-                    <ChevronRight className="ml-auto h-3.5 w-3.5 shrink-0 text-slate transition-transform duration-300 group-hover/tile:translate-x-0.5 motion-reduce:transition-none" />
-                  </div>
-                  <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-ink-soft">{tile.blurb}</p>
-                </div>
-              </div>
+                  {tile.art}
+                </span>
+                <span className={cn("flex items-center gap-2", big ? "px-4 py-3 lg:px-[22px] lg:py-4" : "px-3.5 py-3 lg:px-4 lg:py-3.5")}>
+                  <span aria-hidden className="h-2 w-2 shrink-0 rounded-[3px] lg:h-[9px] lg:w-[9px]" style={{ background: accent }} />
+                  <span className={cn("min-w-0 flex-1 truncate font-bold", big ? "text-[15px]" : "text-[13.5px] lg:text-sm")}>
+                    {tile.name}
+                  </span>
+                  <ChevronRight
+                    aria-hidden
+                    className="h-4 w-4 shrink-0 text-slate transition-transform duration-300 group-hover/tile:translate-x-0.5 motion-reduce:transition-none"
+                  />
+                </span>
+              </Link>
             );
           })}
         </div>

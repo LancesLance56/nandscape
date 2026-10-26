@@ -26,14 +26,18 @@ export default async function Home() {
     <>
       <SiteGradient />
       <Navbar />
-      <main className="relative mx-auto max-w-330 px-6 sm:px-10">
-        <Hero />
-        <TutorialsShowcase />
-        <ToolsBento />
-        <PracticesShowcase />
-        <PuzzlesShowcase />
-        <BlogShowcase posts={posts} />
-      </main>
+      {/* Full width and clipped sideways, so the hero's brand blocks can
+          overhang into the margin without making a phone scroll sideways. */}
+      <div className="overflow-x-clip">
+        <main className="relative mx-auto max-w-330 px-6 sm:px-10">
+          <Hero />
+          <TutorialsShowcase />
+          <ToolsBento />
+          <PracticesShowcase />
+          <PuzzlesShowcase />
+          <BlogShowcase posts={posts} />
+        </main>
+      </div>
       <Footer />
     </>
   );

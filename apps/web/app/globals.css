@@ -532,6 +532,18 @@ body {
   background: transparent;
 }
 
+/* For a strip that scrolls sideways with the next item peeking (the homepage
+   subject tabs, the /tools filters): the peek already says there is more, and
+   a bar under it would only read as a rule. Unlayered, like the rule above,
+   so it can beat it - a Tailwind utility sits in a layer and cannot. */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* ---------------------------------------------------------------------------
    Shiki dual theme.
