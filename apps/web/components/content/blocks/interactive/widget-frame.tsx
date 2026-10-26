@@ -52,7 +52,7 @@ export function WidgetFrame({
       </div>
       <div
         className={cn(
-          "bg-[radial-gradient(var(--border-strong)_1px,transparent_1px)] p-5 sm:p-6",
+          "p-5 sm:p-6",
           contentClassName,
         )}
       >

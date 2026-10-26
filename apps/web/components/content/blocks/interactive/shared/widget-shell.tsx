@@ -284,7 +284,6 @@ function DetailedView({
       <div
         className={cn(
           "relative mx-2 rounded-xl border border-border bg-surface sm:mx-4",
-          "bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:18px_18px]",
           !options && "mt-0.5",
         )}
       >
