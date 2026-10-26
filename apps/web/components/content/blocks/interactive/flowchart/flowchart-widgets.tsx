@@ -27,7 +27,7 @@ import { toDoc } from "@/lib/flowchart-editor/from-spec";
 import { DiagramViewer } from "@/components/flowchart-editor/viewer";
 import { FlowchartEditor } from "@/components/flowchart-editor/editor";
 import { ALL_CHARTS } from "@/lib/flowchart/charts";
-import { WidgetFrame } from "../widget-frame";
+import { ActionDock, WidgetShell, useWidgetView } from "../shared/widget-shell";
 
 /* -------------------------------------------------------------------------
  * Resolving what to draw
@@ -91,7 +91,26 @@ export function FlowchartWidget({ data }: { data: Record<string, unknown> }) {
     );
   }
 
-  return <DiagramViewer doc={doc} {...options} />;
+  return (
+    <WidgetShell
+      kind="Diagram"
+      title={doc.title && doc.title !== "Untitled drawing" ? doc.title : "Flowchart"}
+      stage={<ViewerForView doc={doc} options={options} />}
+    />
+  );
+}
+
+/**
+ * The viewer, trimmed for the focused view: the walkthrough stays (it is how
+ * the diagram is read), while notes and the legend wait for the detailed view.
+ */
+function ViewerForView({ doc, options }: { doc: Doc; options: ReturnType<typeof readOptions> }) {
+  const view = useWidgetView();
+  return view === "focused" ? (
+    <DiagramViewer doc={doc} {...options} notes={false} legend={false} />
+  ) : (
+    <DiagramViewer doc={doc} {...options} />
+  );
 }
 
 /** The same viewer, for surfaces that already hold a drawing. */
@@ -117,22 +136,26 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
   const initial = useMemo(() => resolveDoc(data) ?? undefined, [data]);
 
   return (
-    <WidgetFrame
-      title="Diagram editor"
-      subtitle="Draw the boxes, route every line by hand"
-      action={
-        <Link href="/flowchart" className="text-[11px] font-semibold text-copper hover:text-copper-dark">
-          Open the full tool &rarr;
-        </Link>
+    <WidgetShell
+      kind="Diagram editor"
+      title="Draw the boxes, route every line by hand"
+      prompt="Drag a shape onto the page, then draw a line between two shapes."
+      stage={
+        <FlowchartEditor
+          initial={initial}
+          autosave={false}
+          variant="embedded"
+          height={typeof data.height === "number" ? data.height : 840}
+        />
       }
-    >
-      <FlowchartEditor
-        initial={initial}
-        autosave={false}
-        variant="embedded"
-        height={typeof data.height === "number" ? data.height : 840}
-      />
-    </WidgetFrame>
+      dock={
+        <ActionDock hint="Nothing re-routes on its own: drag a bend to move it.">
+          <Link href="/flowchart" className="text-[13px] font-semibold text-copper-dark hover:text-copper">
+            Open the full tool &rarr;
+          </Link>
+        </ActionDock>
+      }
+    />
   );
 }
 

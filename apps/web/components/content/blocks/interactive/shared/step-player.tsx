@@ -1,23 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, Shuffle } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Slider } from "@/components/ui/slider";
 
 const PLAY_INTERVAL_MS = 1400;
 
+/** Playback speeds offered in the dock. 1 is the default. */
+export const PLAY_SPEEDS = [0.5, 1, 2] as const;
+export type PlaySpeed = (typeof PLAY_SPEEDS)[number];
+
 /**
- * Transport controls shared by every stepped algorithm widget: play/pause,
- * single step either direction, reset, and a scrubber. Owns the "which frame
+ * Transport state shared by every stepped algorithm widget: play/pause,
+ * single step either direction, reset, scrub and speed. Owns the "which frame
  * are we on" state so each widget only has to hand over a list of steps.
  *
- * Used by both the graph widgets and the backtracking widgets, which is why
- * it lives here rather than beside either of them.
+ * Used by the graph, backtracking, DP, sorting and two-pointer widgets, which
+ * is why it lives in shared/ rather than beside any one of them.
  */
 export function useStepPlayer(total: number, intervalMs: number = PLAY_INTERVAL_MS) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState<PlaySpeed>(1);
   const totalRef = useRef(total);
   totalRef.current = total;
 
@@ -43,10 +48,10 @@ export function useStepPlayer(total: number, intervalMs: number = PLAY_INTERVAL_
         }
         return i + 1;
       });
-    }, intervalMs);
+    }, intervalMs / speed);
 
     return () => window.clearInterval(id);
-  }, [playing, intervalMs]);
+  }, [playing, intervalMs, speed]);
 
   const atEnd = index >= total - 1;
 
@@ -54,6 +59,8 @@ export function useStepPlayer(total: number, intervalMs: number = PLAY_INTERVAL_
     index,
     playing,
     atEnd,
+    speed,
+    setSpeed,
     setIndex,
     play: () => {
       // Replaying from the end should start over, not sit still.
@@ -76,6 +83,17 @@ export function useStepPlayer(total: number, intervalMs: number = PLAY_INTERVAL_
   };
 }
 
+export type StepPlayer = ReturnType<typeof useStepPlayer>;
+
+/* -------------------------------------------------------------------------- */
+/* Transport dock                                                             */
+/* -------------------------------------------------------------------------- */
+
+const ICON_BTN =
+  "grid size-8 shrink-0 place-items-center rounded-lg border border-border-strong bg-surface-card text-ink-soft transition-colors hover:border-slate hover:text-ink disabled:cursor-not-allowed disabled:opacity-40";
+const GHOST_BTN =
+  "grid size-8 shrink-0 place-items-center rounded-lg text-ink-soft transition-colors hover:bg-surface-3 hover:text-ink";
+
 interface StepControlsProps {
   index: number;
   total: number;
@@ -86,10 +104,24 @@ interface StepControlsProps {
   onPrev: () => void;
   onReset: () => void;
   onScrub: (i: number) => void;
-  /** Extra control rendered inline, e.g. a playback-speed selector. */
-  extra?: React.ReactNode;
+  /** Shows a speed button (cycles 0.5x / 1x / 2x) when given. */
+  speed?: PlaySpeed;
+  onSpeed?: (s: PlaySpeed) => void;
+  /** Adds a shuffle button beside reset, e.g. re-roll the input. */
+  onShuffle?: () => void;
+  /** Extra control rendered at the end of the dock. */
+  extra?: ReactNode;
+  className?: string;
 }
 
+/**
+ * The transport dock: back / play / next, the scrubber with the step count,
+ * then speed and reset (and shuffle). One row that never wraps, down to a
+ * phone's width: the scrubber is the part that gives way, and speed is a
+ * single button that cycles rather than a three-way switch. Renders only its
+ * row; WidgetShell supplies the tinted bar it sits in, so the same controls
+ * also work loose, as the flowchart viewer uses them.
+ */
 export function StepControls({
   index,
   total,
@@ -100,65 +132,121 @@ export function StepControls({
   onPrev,
   onReset,
   onScrub,
+  speed,
+  onSpeed,
+  onShuffle,
   extra,
+  className,
 }: StepControlsProps) {
-  const btn =
-    "rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40";
+  const last = Math.max(total - 1, 0);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className={cn("flex w-full min-w-0 flex-nowrap items-center gap-1.5 sm:gap-2.5", className)}>
+      <button type="button" onClick={onPrev} disabled={index === 0} className={ICON_BTN} aria-label="Previous step">
+        <ChevronLeft className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={playing ? onPause : onPlay}
+        className="grid size-10 shrink-0 place-items-center rounded-full bg-copper text-copper-ink shadow-[0_6px_14px_-6px_var(--copper)] transition-colors hover:bg-copper-dark"
+        aria-label={playing ? "Pause" : index >= last ? "Replay from the start" : "Play"}
+      >
+        {playing ? <Pause className="size-4 fill-current" /> : <Play className="ml-0.5 size-4 fill-current" />}
+      </button>
+      <button type="button" onClick={onNext} disabled={index >= last} className={ICON_BTN} aria-label="Next step">
+        <ChevronRight className="size-4" />
+      </button>
+
       <Slider
         min={0}
-        max={Math.max(total - 1, 0)}
+        max={last}
         value={index}
         onChange={onScrub}
         aria-label="Scrub through the algorithm steps"
+        className="mx-1 min-w-12 flex-1"
       />
 
-      <div className="flex flex-wrap items-center gap-2">
-        <button type="button" onClick={onPrev} disabled={index === 0} className={btn}>
-          ← Back
-        </button>
+      <span className="shrink-0 whitespace-nowrap font-mono text-xs tabular-nums text-ink-soft">
+        <b className="font-semibold text-ink">{index + 1}</b>/{total}
+      </span>
 
+      {speed !== undefined && onSpeed && (
         <button
           type="button"
-          onClick={playing ? onPause : onPlay}
-          className={cn(
-            "rounded-lg px-4 py-1.5 text-xs font-semibold text-white transition-colors",
-            "bg-copper hover:bg-copper-dark",
-          )}
+          onClick={() => onSpeed(PLAY_SPEEDS[(PLAY_SPEEDS.indexOf(speed) + 1) % PLAY_SPEEDS.length])}
+          title="Playback speed"
+          aria-label={`Playback speed ${speed}x, click to change`}
+          // The first thing to go when the dock is narrow (a phone-width tile).
+          className="h-8 w-11 shrink-0 rounded-lg bg-surface-3 font-mono text-xs font-semibold text-ink transition-colors hover:bg-surface-4 @max-[22rem]:hidden"
         >
-          {playing ? "Pause" : index >= total - 1 ? "Replay" : "Play"}
+          {speed}×
         </button>
+      )}
 
-        <button type="button" onClick={onNext} disabled={index >= total - 1} className={btn}>
-          Step →
+      <button type="button" onClick={onReset} className={GHOST_BTN} aria-label="Reset">
+        <RotateCcw className="size-4" />
+      </button>
+      {onShuffle && (
+        <button type="button" onClick={onShuffle} className={GHOST_BTN} aria-label="Shuffle the input">
+          <Shuffle className="size-4" />
         </button>
+      )}
 
-        <button type="button" onClick={onReset} className={btn}>
-          Reset
-        </button>
-
-        {extra}
-
-        <span className="ml-auto text-xs text-slate">
-          Step {index + 1} of {total}
-        </span>
-      </div>
+      {extra}
     </div>
   );
 }
 
-/**
- * The narration line under the diagram. Height is *fixed*, not just a minimum:
- * a long caption scrolls inside its own box rather than pushing everything
- * below it down, so the widget never changes height as the reader steps.
- */
-export function StepCaption({ text }: { text: string }) {
+/** StepControls wired straight to a `useStepPlayer` result. */
+export function PlayerDock({
+  player,
+  total,
+  onShuffle,
+  onReset,
+  extra,
+}: {
+  player: StepPlayer;
+  total: number;
+  onShuffle?: () => void;
+  /** Overrides the player's own reset, e.g. to also clear widget state. */
+  onReset?: () => void;
+  extra?: ReactNode;
+}) {
   return (
-    <p className="h-[3.75rem] overflow-y-auto rounded-lg border border-border bg-surface-2/50 px-3 py-2.5 text-sm leading-relaxed text-ink-soft">
-      {text}
-    </p>
+    <StepControls
+      index={player.index}
+      total={total}
+      playing={player.playing}
+      onPlay={player.play}
+      onPause={player.pause}
+      onNext={player.next}
+      onPrev={player.prev}
+      onReset={onReset ?? player.reset}
+      onScrub={player.setIndex}
+      speed={player.speed}
+      onSpeed={player.setSpeed}
+      onShuffle={onShuffle}
+      extra={extra}
+    />
+  );
+}
+
+/**
+ * A narration line on its own, for layouts that do not go through
+ * WidgetShell. Height is *fixed*, not just a minimum: a long caption scrolls
+ * inside its own box rather than pushing everything below it down, so the
+ * widget never changes height as the reader steps.
+ */
+export function StepCaption({ text, step }: { text: ReactNode; step?: ReactNode }) {
+  return (
+    <div className="flex h-[4.5rem] items-start gap-3 overflow-y-auto">
+      {step !== undefined && (
+        <span className="h-6 min-w-7 shrink-0 rounded-md bg-copper-bg px-1.5 text-center text-xs font-bold leading-6 tabular-nums text-copper-dark">
+          {step}
+        </span>
+      )}
+      <p className="mt-0.5 text-sm leading-[1.55] text-ink">{text}</p>
+    </div>
   );
 }
 
@@ -182,14 +270,8 @@ interface StepTransportProps {
 }
 
 /**
- * The same transport as `StepControls`, drawn as icon buttons rather than
- * labelled ones.
- *
- * Both exist on purpose. `StepControls` is a full-width strip that owns its
- * own scrubber and step counter, which suits a widget whose whole body is one
- * diagram. This one is a fixed-width cluster that composes: it sits in a
- * toolbar next to counters, or centred under a stage, and leaves the scrubber
- * and the counter to whatever is laying the widget out.
+ * The same transport as `StepControls` without the scrubber and counter: a
+ * fixed-width cluster that composes into a toolbar next to other controls.
  */
 export function StepTransport({
   index,
@@ -204,12 +286,12 @@ export function StepTransport({
   size = "md",
   className,
 }: StepTransportProps) {
-  const box = size === "md" ? "h-[30px] w-[30px]" : "h-[26px] w-[26px]";
+  const box = size === "md" ? "size-8" : "size-7";
   const glyph = size === "md" ? "size-3.5" : "size-3";
   const btn = cn(
     box,
-    "grid place-items-center rounded-md border border-border-strong text-ink-soft transition-colors",
-    "hover:bg-surface-2 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40",
+    "grid place-items-center rounded-lg border border-border-strong bg-surface-card text-ink-soft transition-colors",
+    "hover:border-slate hover:text-ink disabled:cursor-not-allowed disabled:opacity-40",
   );
 
   return (
@@ -220,21 +302,12 @@ export function StepTransport({
       <button
         type="button"
         onClick={playing ? onPause : onPlay}
-        className={cn(
-          box,
-          "grid place-items-center rounded-md bg-copper text-copper-ink transition-colors hover:bg-copper-dark",
-        )}
+        className={cn(box, "grid place-items-center rounded-full bg-copper text-copper-ink transition-colors hover:bg-copper-dark")}
         aria-label={playing ? "Pause" : index >= total - 1 ? "Replay from the start" : "Play"}
       >
-        {playing ? <Pause className={glyph} /> : <Play className={glyph} />}
+        {playing ? <Pause className={cn(glyph, "fill-current")} /> : <Play className={cn(glyph, "fill-current")} />}
       </button>
-      <button
-        type="button"
-        onClick={onNext}
-        disabled={index >= total - 1}
-        className={btn}
-        aria-label="Next step"
-      >
+      <button type="button" onClick={onNext} disabled={index >= total - 1} className={btn} aria-label="Next step">
         <ChevronRight className={glyph} />
       </button>
       <button type="button" onClick={onReset} className={btn} aria-label="Reset">

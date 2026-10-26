@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { WidgetFrame } from "./widget-frame";
+import { ActionDock, Legend, WidgetShell } from "./shared/widget-shell";
 import { cn } from "@/lib/cn";
-import { WidgetButton } from "./shared/widget-ui";
+import { Banner, WidgetButton } from "./shared/widget-ui";
 
 interface MintermPickerData {
   variables?: unknown;
@@ -81,20 +81,23 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
     [...picked].every((r) => actualMinterms.has(r));
 
   return (
-    <WidgetFrame title={title} subtitle={`${actualMinterms.size} row(s) actually output 1`} className={className}>
-      <div className="flex flex-col gap-4">
-        <p className="text-sm text-ink-soft">{instructions}</p>
-
-        <div className="overflow-hidden rounded-xl border border-border">
-          <table className="w-full border-collapse text-sm">
+    <WidgetShell
+      kind="Practice"
+      title={title}
+      meta={`${actualMinterms.size} row(s) output 1`}
+      className={className}
+      prompt={instructions}
+      stage={
+        <div className="mx-auto w-full max-w-md overflow-hidden rounded-xl border border-border bg-surface-card">
+          <table className="w-full border-collapse font-mono text-sm">
             <thead>
               <tr className="bg-surface-2 text-slate">
                 {variables.map((v) => (
-                  <th key={v} className="px-4 py-2 text-center font-semibold">
+                  <th key={v} className="px-4 py-2 text-center font-sans font-semibold">
                     {v}
                   </th>
                 ))}
-                <th className="px-4 py-2 text-center font-semibold">F</th>
+                <th className="border-l border-border-strong px-4 py-2 text-center font-sans font-semibold">F</th>
               </tr>
             </thead>
             <tbody>
@@ -104,41 +107,51 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
                 const isCorrectPick = checked && isPicked && actualMinterms.has(row);
                 const isWrongPick = checked && isPicked && !actualMinterms.has(row);
                 const isMissed = checked && !isPicked && actualMinterms.has(row);
-
                 return (
                   <tr
                     key={row}
                     onClick={() => toggleRow(row)}
+                    aria-selected={isPicked}
                     className={cn(
                       "cursor-pointer border-t border-border transition-colors",
                       isCorrectPick
-                        ? "bg-signal-green-bg/70"
+                        ? "bg-signal-green-bg"
                         : isWrongPick
-                          ? "bg-signal-coral-bg/70"
+                          ? "bg-signal-coral-bg"
                           : isMissed
                             ? "bg-copper-bg/60"
                             : isPicked
-                              ? "bg-copper-bg/40"
-                              : "hover:bg-surface-2/60",
+                              ? "bg-copper-bg"
+                              : "hover:bg-surface-2",
                     )}
                   >
                     {bits.map((b, i) => (
-                      <td key={i} className="px-4 py-2 text-center text-ink">
+                      <td key={i} className="px-4 py-2.5 text-center text-ink">
                         {b}
                       </td>
                     ))}
-                    <td className="px-4 py-2 text-center font-bold text-ink">{truthTable[row]}</td>
+                    <td className="border-l border-border-strong px-4 py-2.5 text-center font-bold text-ink">{truthTable[row]}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-
-        <div className="flex items-center gap-3">
-          <WidgetButton tone="primary" onClick={() => setChecked(true)}>
-            Check my answer
-          </WidgetButton>
+      }
+      legend={
+        checked ? (
+          <Legend
+            items={[
+              { color: "var(--signal-green)", label: "Picked correctly" },
+              { color: "var(--copper)", label: "Missed" },
+              { color: "var(--signal-coral)", label: "Picked, but F is 0" },
+            ]}
+          />
+        ) : undefined
+      }
+      status={checked ? <Banner tone={correct ? "good" : "bad"}>{correct ? correctMessage : incorrectMessage}</Banner> : undefined}
+      dock={
+        <ActionDock hint="Click every row where F is 1.">
           <WidgetButton
             onClick={() => {
               setPicked(new Set());
@@ -147,21 +160,11 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
           >
             Clear
           </WidgetButton>
-        </div>
-
-        {checked && (
-          <p
-            className={cn(
-              "rounded-lg border px-3 py-2 text-xs font-semibold",
-              correct
-                ? "border-signal-green/40 bg-signal-green-bg text-signal-green-strong"
-                : "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",
-            )}
-          >
-            {correct ? correctMessage : incorrectMessage}
-          </p>
-        )}
-      </div>
-    </WidgetFrame>
+          <WidgetButton tone="primary" size="md" onClick={() => setChecked(true)}>
+            Check my answer
+          </WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

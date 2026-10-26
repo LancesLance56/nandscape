@@ -173,6 +173,17 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
   `FlowchartSpec`; see "Diagrams" below.
 - DS&A visualization logic lives in `apps/web/lib/` (`backtracking/`, `dp/`,
   `graph/`, `sorting/`, `kmap/`, `tree-layout.ts`).
+- Every interactive widget renders inside
+  `components/content/blocks/interactive/shared/widget-shell.tsx`. It opens in
+  the **Focused** view (one primary switch, the narration as a large prompt,
+  the stage, a compact readout, the dock); a small "Details" chip switches to
+  the **Detailed** step-through view (eyebrow + title, options row, the stage
+  in a well beside side panels, numbered narration). A widget fills named
+  slots (`primary`, `options`, `stage`, `side`, `readout`, `caption`,
+  `dock`, …) and the shell decides where each goes, so a new widget should do
+  the same rather than lay out its own card. Stepped widgets use
+  `PlayerDock` from `shared/step-player.tsx`; designs are on the "Nandscape
+  Widget Redesign" canvas.
 
 ### Diagrams (`/flowchart`, and every diagram in the content)
 

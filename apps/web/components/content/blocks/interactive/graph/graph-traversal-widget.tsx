@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { bfsSteps, dfsSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, ChipRow, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -108,6 +109,15 @@ export function GraphTraversalWidget({
 
   return (
     <AlgorithmRunner
+      title={isBfs ? "Breadth-first search" : "Depth-first search"}
+      readout={(step) => (
+        <StatReadout
+          stats={[
+            { label: isBfs ? "waiting in the queue" : "waiting on the stack", value: step.frontier.length },
+            { label: "visited", value: step.visited.length, tone: "good" },
+          ]}
+        />
+      )}
       graph={graph}
       steps={steps}
       frame={frame}

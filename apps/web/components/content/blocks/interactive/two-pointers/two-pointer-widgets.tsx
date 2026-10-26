@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { containerWaterSteps } from "@/lib/two-pointers/algorithms";
 import { findMode, SHAPE_LABELS, type TwoPointerModeId } from "@/lib/two-pointers/modes";
 import type { MatrixView, PointerLane } from "@/lib/two-pointers/types";
-import { WidgetFrame } from "../widget-frame";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { WidgetShell } from "../shared/widget-shell";
 import { Banner, ChipRow, PanelBox, Segmented, StatReadout } from "../shared/widget-ui";
 import { cn } from "@/lib/cn";
 
@@ -26,7 +26,7 @@ const TONE_CLASS: Record<string, string> = {
   window: "bg-copper-bg text-copper-dark",
   dropped: "bg-surface-2 text-border-strong line-through",
   kept: "bg-signal-green/15 text-signal-green",
-  hit: "bg-signal-green text-white",
+  hit: "bg-signal-green text-surface-card",
 };
 
 function LaneView({ lane }: { lane: PointerLane }) {
@@ -148,59 +148,58 @@ export function TwoPointerExplorerWidget({ data }: { data: Record<string, unknow
   if (!step) return null;
 
   return (
-    <WidgetFrame title="Two pointers" subtitle={SHAPE_LABELS[mode.shape]}>
-      <div className="flex flex-col gap-4">
-        {offered.length > 1 && (
+    <WidgetShell
+      kind="Two pointers"
+      title={mode.label}
+      meta={SHAPE_LABELS[mode.shape]}
+      primary={
+        offered.length > 1 ? (
           <Segmented
-            label="Problem"
             options={offered.map((m) => ({ id: m.id, label: m.label }))}
             value={mode.id}
             onChange={(id) => setModeId(id)}
             variant="solid"
           />
-        )}
-
-        <p className="text-[11px] leading-relaxed text-slate">{mode.blurb}</p>
-
-        <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface-2/40 p-3">
+        ) : undefined
+      }
+      options={<p className="text-xs leading-relaxed text-slate">{mode.blurb}</p>}
+      stage={
+        <div className="flex flex-col gap-2">
           {step.lanes.map((l, i) => (
             <LaneView key={`${l.label}-${i}`} lane={l} />
           ))}
         </div>
-
-        {step.matrix && <MatrixPanel matrix={step.matrix} />}
-
-        {step.stats && step.stats.length > 0 && (
+      }
+      readout={
+        step.stats && step.stats.length > 0 ? (
           <StatReadout stats={[...step.stats, { label: "comparisons", value: step.comparisons }]} />
-        )}
-
-        <PanelBox title="Answers banked so far">
-          <ChipRow items={step.results} emptyLabel="nothing yet" reserveRows={2} />
-        </PanelBox>
-
-        <StepCaption text={step.caption} />
-
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-
-        {player.atEnd && (
-          <Banner tone="good">
-            {run.answer} · {run.complexity}
-          </Banner>
-        )}
-
-        {run.truncated && <Banner tone="info">This run hit the frame limit, so the tail is not shown.</Banner>}
-      </div>
-    </WidgetFrame>
+        ) : undefined
+      }
+      sideWidth={step.matrix ? 240 : 200}
+      side={
+        <>
+          {step.matrix && <MatrixPanel matrix={step.matrix} />}
+          <PanelBox title="Answers banked so far">
+            <ChipRow items={step.results} emptyLabel="nothing yet" reserveRows={2} />
+          </PanelBox>
+        </>
+      }
+      status={
+        player.atEnd || run.truncated ? (
+          <div className="flex flex-col gap-2">
+            {player.atEnd && (
+              <Banner tone="good">
+                {run.answer} · {run.complexity}
+              </Banner>
+            )}
+            {run.truncated && <Banner tone="info">This run hit the frame limit, so the tail is not shown.</Banner>}
+          </div>
+        ) : undefined
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }
 
@@ -239,9 +238,12 @@ export function WaterContainerWidget({ data }: { data: Record<string, unknown> }
   const inRange = lo < hi;
 
   return (
-    <WidgetFrame title="Container with most water" subtitle={`${n} walls`}>
-      <div className="flex flex-col gap-4">
-        <div className="relative rounded-lg border border-border bg-surface-2/40 p-3">
+    <WidgetShell
+      kind="Two pointers"
+      title="Container with most water"
+      meta={`${n} walls`}
+      stage={
+        <div className="relative">
           {/* The water sits behind the walls, spanning the current pair and
               capped at the shorter of the two. */}
           {/* items-stretch, not items-end: the bars size themselves with a
@@ -299,29 +301,18 @@ export function WaterContainerWidget({ data }: { data: Record<string, unknown> }
             ))}
           </div>
         </div>
-
-        {step.stats && <StatReadout stats={step.stats} />}
-
-        <StepCaption text={step.caption} />
-
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-
-        {player.atEnd && (
+      }
+      readout={step.stats ? <StatReadout stats={step.stats} /> : undefined}
+      status={
+        player.atEnd ? (
           <Banner tone="good">
             {run.answer} · {run.complexity}
           </Banner>
-        )}
-      </div>
-    </WidgetFrame>
+        ) : undefined
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }

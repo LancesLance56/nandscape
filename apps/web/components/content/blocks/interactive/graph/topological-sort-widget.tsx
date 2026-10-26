@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { topologicalSortSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, ChipRow, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -101,6 +102,15 @@ export function TopologicalSortWidget({
 
   return (
     <AlgorithmRunner
+      title="Topological sort"
+      readout={(step) => (
+        <StatReadout
+          stats={[
+            { label: "ready", value: step.frontier.length },
+            { label: "emitted", value: `${step.visited.length} / ${graph.nodes.length}`, tone: "good" },
+          ]}
+        />
+      )}
       graph={graph}
       steps={steps}
       frame={frame}

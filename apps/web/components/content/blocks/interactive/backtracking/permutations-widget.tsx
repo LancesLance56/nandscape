@@ -77,6 +77,8 @@ export function PermutationsWidget({ data }: { data: Record<string, unknown> }) 
 
   return (
     <BacktrackingRunner
+      title="Permutations"
+      primaryToggle="mode"
       run={run}
       toggles={toggles}
       solutionsLabel="Permutations found"

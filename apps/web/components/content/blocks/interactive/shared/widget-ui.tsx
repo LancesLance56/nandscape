@@ -59,7 +59,7 @@ export function Segmented<T extends string>({
 }) {
   return (
     <div className={cn("flex flex-wrap items-center gap-1.5", className)}>
-      {label && <span className="text-[11px] font-semibold text-slate">{label}</span>}
+      {label && <span className="text-xs font-medium text-slate">{label}</span>}
       <ToggleGroup
         aria-label={label}
         value={[value]}
@@ -77,7 +77,10 @@ export function Segmented<T extends string>({
         // algorithms measured 465px against a 375px viewport and dragged the
         // whole homepage into horizontal scroll. The buttons this replaced were
         // in a plain flex-wrap row and wrapped for free.
-        className="flex-wrap gap-1.5"
+        className={cn(
+          "flex-wrap",
+          variant === "solid" ? "gap-0.5 rounded-[10px] bg-surface-2 p-[3px]" : "gap-1",
+        )}
       >
         {options.map((opt) => (
           <ToggleGroupItem
@@ -91,13 +94,19 @@ export function Segmented<T extends string>({
             // the attribute, React state drove the colours, and they disagreed
             // for a frame on every click. Styling off the attribute leaves one.
             className={cn(
-              "border font-semibold transition-colors",
-              variant === "solid" ? "rounded-full border-transparent" : "rounded-md",
-              size === "sm" ? "px-2.5 py-1 text-[11px]" : "px-2 py-0.5 text-[10px]",
-              variant === "solid" && size === "sm" && "px-3 py-1.5 text-xs",
+              "transition-colors",
               variant === "solid"
-                ? "bg-surface-2 text-ink-soft hover:text-ink aria-pressed:bg-copper aria-pressed:text-copper-ink"
-                : "border-border-strong bg-transparent text-ink-soft hover:bg-surface-2 hover:text-ink aria-pressed:border-copper aria-pressed:bg-copper-bg aria-pressed:text-copper-dark",
+                ? cn(
+                    "rounded-[7px] border-0 bg-transparent font-medium text-ink-soft hover:text-ink",
+                    "aria-pressed:bg-surface-card aria-pressed:font-semibold aria-pressed:text-ink",
+                    "aria-pressed:shadow-[0_1px_2px_rgba(8,7,8,0.12),0_0_0_1px_var(--border)]",
+                    size === "sm" ? "h-8 px-3 text-[13px]" : "h-7 px-2.5 text-xs",
+                  )
+                : cn(
+                    "rounded-full border border-transparent bg-transparent font-medium text-ink-soft hover:bg-surface-2 hover:text-ink",
+                    "aria-pressed:border-copper aria-pressed:bg-copper-bg aria-pressed:font-semibold aria-pressed:text-copper-dark",
+                    size === "sm" ? "h-7 px-2.5 text-xs" : "h-6 px-2 text-[11px]",
+                  ),
             )}
           >
             {opt.label}
@@ -144,14 +153,14 @@ const widgetButtonVariants = cva(
   {
     variants: {
       tone: {
-        neutral: "border border-border-strong text-ink-soft hover:bg-surface-2 hover:text-ink",
-        primary: "bg-copper text-copper-ink hover:bg-copper-dark",
-        danger: "border border-border-strong text-signal-coral hover:bg-surface-2",
+        neutral: "border border-border-strong bg-surface-card text-ink hover:border-slate",
+        primary: "border border-transparent bg-copper text-copper-ink hover:bg-copper-dark",
+        danger: "border border-border-strong bg-surface-card text-signal-coral-strong hover:border-slate",
       },
       size: {
         xs: "rounded-md px-2 py-0.5 text-[10px]",
-        sm: "rounded-lg px-3 py-1.5 text-[11px]",
-        md: "rounded-lg px-4 py-2 text-xs",
+        sm: "h-8 rounded-lg px-3 text-xs",
+        md: "h-9 rounded-[10px] px-4 text-[13px]",
       },
     },
     defaultVariants: { tone: "neutral", size: "sm" },
@@ -191,10 +200,11 @@ export function Stat({
   tone?: "default" | "good" | "warn";
 }) {
   return (
-    <div className="rounded-lg border border-border bg-surface-2/40 px-2.5 py-2 text-center">
+    <div className="rounded-[10px] bg-surface-2 px-3.5 py-2.5">
+      <div className="text-[11px] font-semibold text-slate">{label}</div>
       <div
         className={cn(
-          "font-display text-lg font-bold leading-none tabular-nums",
+          "mt-0.5 font-mono text-[22px] font-bold leading-tight tabular-nums",
           tone === "good" && "text-signal-green",
           tone === "warn" && "text-copper-dark",
           tone === "default" && "text-ink",
@@ -202,7 +212,6 @@ export function Stat({
       >
         {value}
       </div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate">{label}</div>
     </div>
   );
 }
@@ -214,21 +223,21 @@ export function StatReadout({
   stats: { label: string; value: string | number; tone?: "default" | "good" | "warn" }[];
 }) {
   return (
-    <div className="flex flex-wrap gap-x-5 gap-y-2">
+    <div className="flex flex-wrap gap-x-[18px] gap-y-1.5 text-xs text-slate">
       {stats.map((s) => (
-        <div key={s.label} className="flex flex-col">
-          <span
+        <span key={s.label}>
+          <b
             className={cn(
-              "font-display text-lg font-bold leading-none tabular-nums",
+              "mr-1 text-[15px] font-bold tabular-nums",
               s.tone === "good" && "text-signal-green",
               s.tone === "warn" && "text-copper-dark",
               (!s.tone || s.tone === "default") && "text-ink",
             )}
           >
             {s.value}
-          </span>
-          <span className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate">{s.label}</span>
-        </div>
+          </b>
+          {s.label}
+        </span>
       ))}
     </div>
   );
@@ -239,10 +248,10 @@ export function Banner({ tone, children }: { tone: "info" | "good" | "bad"; chil
   return (
     <p
       className={cn(
-        "rounded-lg border px-3 py-2 text-xs font-medium leading-relaxed",
-        tone === "good" && "border-signal-green/40 bg-signal-green-bg text-signal-green-strong",
-        tone === "bad" && "border-signal-coral/40 bg-signal-coral-bg text-signal-coral-strong",
-        tone === "info" && "border-border bg-surface-2/60 text-ink-soft",
+        "rounded-[10px] px-3.5 py-2.5 text-[13px] font-medium leading-relaxed",
+        tone === "good" && "bg-signal-green-bg text-signal-green-strong",
+        tone === "bad" && "bg-signal-coral-bg text-signal-coral-strong",
+        tone === "info" && "bg-surface-2 text-ink-soft",
       )}
     >
       {children}
@@ -270,8 +279,8 @@ export function PanelBox({
   bodyClassName?: string;
 }) {
   return (
-    <div className={cn("rounded-lg border border-border bg-surface-2/50 p-3", className)}>
-      <div className="mb-2 text-[11px] font-semibold text-slate">{title}</div>
+    <div className={cn("rounded-xl border border-border bg-surface-card p-3", className)}>
+      <div className="mb-2.5 text-xs font-semibold text-ink-soft">{title}</div>
       <div className={bodyClassName}>{children}</div>
     </div>
   );
@@ -319,7 +328,7 @@ export function ChipRow({
         <span
           key={`${item}-${i}`}
           className={cn(
-            "inline-flex h-[1.875rem] items-center rounded-md px-2 text-xs font-bold",
+            "inline-flex h-[1.875rem] min-w-[1.875rem] items-center justify-center rounded-lg px-2 text-[13px] font-bold",
             tone === "copper" ? "bg-copper-bg text-copper-dark" : "bg-surface-3 text-ink-soft",
           )}
         >

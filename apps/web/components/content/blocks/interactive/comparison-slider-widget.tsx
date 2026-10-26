@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { Slider } from "@/components/ui/slider";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { StatReadout } from "./shared/widget-ui";
 
 /**
  * Renamed/generalized from `boolean-algebra/boolean-slider-widget.tsx`.
@@ -51,42 +53,38 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
     .replace("{pct}", String(pct))
     .replace("{saved}", (total - good).toLocaleString());
 
-  return (
-    <div className={cn("rounded-xl border border-border bg-surface-card p-5 ", data.className)}>
-      <div className="mb-3 text-xs font-semibold text-slate">{prompt}</div>
-      <div className="mb-5 flex items-center gap-4">
-        <Slider
-          min={0}
-          max={100}
-          value={pct}
-          onChange={setPct}
-          aria-label={prompt}
-          className="flex-1"
-        />
-        <span className="w-14 text-right text-sm font-semibold text-copper">{pct}%</span>
+  const bar = (label: string, width: number, value: number, tone: string) => (
+    <div className="grid grid-cols-[6rem_minmax(0,1fr)_5rem] items-center gap-3 text-xs font-semibold text-slate">
+      <span>{label}</span>
+      <div className="h-4 overflow-hidden rounded-full bg-surface-3">
+        <div className={cn("h-full rounded-full transition-all duration-300", tone)} style={{ width: `${width}%` }} />
       </div>
-
-      <div className="flex flex-col gap-2.5">
-        <div className="flex items-center gap-2.5 text-xs">
-          <span className="w-20 shrink-0 text-slate">{badLabel}</span>
-          <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
-            <div className="h-full bg-signal-coral" style={{ width: "100%" }} />
-          </div>
-          <span className="w-24 shrink-0 text-right text-slate">{total.toLocaleString()}</span>
-        </div>
-        <div className="flex items-center gap-2.5 text-xs">
-          <span className="w-20 shrink-0 text-slate">{goodLabel}</span>
-          <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
-            <div
-              className="h-full bg-copper transition-all duration-300"
-              style={{ width: `${goodBarWidth}%` }}
-            />
-          </div>
-          <span className="w-24 shrink-0 text-right text-slate">{good.toLocaleString()}</span>
-        </div>
-      </div>
-
-      <p className="mt-4 text-sm leading-relaxed text-ink-soft">{explanation}</p>
+      <b className="text-right font-mono text-ink">{value.toLocaleString()}</b>
     </div>
+  );
+
+  return (
+    <WidgetShell
+      kind="Estimate"
+      title={prompt}
+      className={data.className}
+      prompt={prompt}
+      stage={
+        <div className="mx-auto flex w-full max-w-[36rem] flex-col gap-5">
+          <div className="flex items-center gap-4">
+            <Slider min={0} max={100} value={pct} onChange={setPct} aria-label={prompt} className="flex-1" />
+            <span className="w-14 text-right font-mono text-lg font-bold text-copper-dark">{pct}%</span>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            {bar(badLabel, 100, total, "bg-signal-coral")}
+            {bar(goodLabel, goodBarWidth, good, "bg-copper")}
+          </div>
+        </div>
+      }
+      readout={<StatReadout stats={[{ label: "calls that never needed to happen", value: (total - good).toLocaleString(), tone: "good" }]} />}
+      caption={explanation}
+      captionLabel="Why"
+      dock={<ActionDock hint="Drag the slider, or use the arrow keys." />}
+    />
   );
 }

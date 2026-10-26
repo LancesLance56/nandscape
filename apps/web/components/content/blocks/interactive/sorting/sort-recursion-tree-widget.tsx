@@ -3,8 +3,9 @@
 import { useMemo } from "react";
 import { mergeSortRun, quickSortRun } from "@/lib/sorting/recursion";
 import { CallTreeCanvas, CallTreeLegend } from "../dp/call-tree-canvas";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { ChipRow, PanelBox, WidgetFrame } from "../shared/widget-ui";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { WidgetShell } from "../shared/widget-shell";
+import { ChipRow, PanelBox, StatReadout } from "../shared/widget-ui";
 
 type SortAlgo = "merge" | "quick";
 
@@ -48,43 +49,26 @@ export function SortRecursionTreeWidget({ data }: { data: Record<string, unknown
   }
 
   return (
-    <WidgetFrame>
-      <p className="mb-3 font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
-
-      <div className="grid gap-4 lg:grid-cols-[2fr_minmax(0,1fr)] lg:items-start">
-        <div className="flex min-w-0 flex-col gap-2">
-          <CallTreeCanvas nodes={run.nodes} step={step} markRepeats={false} maxHeight={380} />
-          <CallTreeLegend showRepeats={false} showHits={false} />
-        </div>
-
-        <div className="flex min-w-0 flex-col gap-2.5">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[11px] text-slate">
-            <span>
-              <b className="text-ink">{step.calls}</b> calls
-            </span>
-            <span className="font-label font-semibold text-signal-green-strong">{run.answer}</span>
-          </div>
-
+    <WidgetShell
+      kind="Sorting"
+      title={algorithm === "quick" ? "Quicksort, call by call" : "Merge sort, call by call"}
+      options={
+        <p className="font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+      }
+      stage={<CallTreeCanvas nodes={run.nodes} step={step} markRepeats={false} maxHeight={270} />}
+      readout={<StatReadout stats={[{ label: "calls", value: step.calls }]} />}
+      legend={<CallTreeLegend showRepeats={false} showHits={false} />}
+      side={
+        <>
           <PanelBox title="Call stack">
             <ChipRow items={step.stack} emptyLabel="nothing running" reserveRows={2} />
           </PanelBox>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-2">
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-      </div>
-    </WidgetFrame>
+          <p className="font-label text-xs font-semibold text-signal-green-strong">{run.answer}</p>
+        </>
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }

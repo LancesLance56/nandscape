@@ -3,8 +3,9 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { arraySteps, gridSteps, type ArrayProblem, type GridProblem } from "@/lib/dp/tables";
 import type { TableRun } from "@/lib/dp/types";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { PanelBox, SegmentedRow, StatusSlot, WidgetFrame, type SegmentedGroup } from "../shared/widget-ui";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { WidgetShell, toggleSlots } from "../shared/widget-shell";
+import { PanelBox, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { DpTableCanvas, DpTableLegend } from "./dp-table-canvas";
 
 /**
@@ -18,6 +19,8 @@ import { DpTableCanvas, DpTableLegend } from "./dp-table-canvas";
  */
 
 interface TableRunnerProps {
+  /** Detailed-view title: the problem's name. */
+  title: string;
   run: TableRun;
   toggles: SegmentedGroup[];
   formatValue?: (value: number) => string;
@@ -26,7 +29,7 @@ interface TableRunnerProps {
   hint?: string;
 }
 
-function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunnerProps) {
+function TableRunner({ title, run, toggles, formatValue, inputNote, hint }: TableRunnerProps) {
   const player = useStepPlayer(run.steps.length);
   const step = run.steps[Math.min(player.index, run.steps.length - 1)];
 
@@ -38,15 +41,16 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
   const hasPath = run.steps[run.steps.length - 1].path.length > 0;
 
   return (
-    <WidgetFrame>
-      <SegmentedRow groups={toggles} className="mb-2" />
-
-      {/* The recurrence, as a single reference line rather than a boxed panel:
-          it never changes frame to frame, so it should not compete for space
-          with the panel that does. */}
-      <p className="mb-3 font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
-
-      <div className="grid gap-4 lg:grid-cols-[2fr_minmax(0,1fr)] lg:items-start">
+    <WidgetShell
+      kind="Dynamic programming"
+      title={title}
+      {...toggleSlots(toggles)}
+      // The recurrence never changes frame to frame, so it is a reference line
+      // in the options row rather than a panel competing for space.
+      options={
+        <p className="font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+      }
+      stage={
         <div className="flex min-w-0 flex-col gap-2">
           <DpTableCanvas
             step={step}
@@ -55,28 +59,23 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
             rowTitle={run.rowTitle}
             colTitle={run.colTitle}
             formatValue={formatValue}
-            maxHeight={380}
+            maxHeight={270}
           />
           {inputNote}
-          <DpTableLegend showPath={hasPath} />
         </div>
-
-        <div className="flex min-w-0 flex-col gap-2.5">
-          {/* Stats and the answer share one slim, unboxed strip instead of two
-              separate panels, so "This cell" gets the room instead. */}
-          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[11px] text-slate">
-            <span>
-              <b className="text-ink">{Math.min(step.filled, total)}</b> of {total} filled
-              {step.deps.length > 0 && (
-                <>
-                  {" "}
-                  &middot; <b className="text-copper-dark">{step.deps.length}</b> read now
-                </>
-              )}
-            </span>
-            <span className="font-semibold text-signal-green-strong">{run.answer}</span>
-          </div>
-
+      }
+      readout={
+        <StatReadout
+          stats={[
+            { label: `of ${total} filled`, value: Math.min(step.filled, total) },
+            ...(step.deps.length > 0 ? [{ label: "read now", value: step.deps.length, tone: "warn" as const }] : []),
+          ]}
+        />
+      }
+      legend={<DpTableLegend showPath={hasPath} />}
+      sideWidth={230}
+      side={
+        <>
           {/* The arithmetic for one cell, spelled out. The table shows what the
               answer is and the arrows show where it came from; this is the only
               place that says how the two are connected. */}
@@ -87,31 +86,21 @@ function TableRunner({ run, toggles, formatValue, inputNote, hint }: TableRunner
               <span className="text-xs italic text-slate">nothing being worked out</span>
             )}
           </PanelBox>
-
-          <p className="min-h-[1.25rem] text-[11px] leading-relaxed text-slate">{hint}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-2">
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-        <StatusSlot lines={1}>
-          {run.truncated && (
-            <p className="text-[11px] text-copper-dark">This run hit the frame limit and stopped early.</p>
-          )}
-        </StatusSlot>
-      </div>
-    </WidgetFrame>
+          <PanelBox title="Answer">
+            <span className="text-xs font-semibold text-signal-green-strong">{run.answer}</span>
+          </PanelBox>
+          {hint && <p className="text-[11px] leading-relaxed text-slate">{hint}</p>}
+        </>
+      }
+      status={
+        run.truncated ? (
+          <p className="text-[11px] text-copper-dark">This run hit the frame limit and stopped early.</p>
+        ) : undefined
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }
 
@@ -180,6 +169,7 @@ export function DpArrayWidget({ data }: { data: Record<string, unknown> }) {
 
   return (
     <TableRunner
+      title={ARRAY_PROBLEMS.find((p) => p.id === problem)?.label ?? "Filling a table"}
       run={run}
       toggles={toggles}
       formatValue={problem === "coins" ? (v) => (v === -1 ? "none" : String(v)) : undefined}
@@ -238,5 +228,12 @@ export function DpTableWidget({ data }: { data: Record<string, unknown> }) {
         },
       ];
 
-  return <TableRunner run={run} toggles={toggles} hint={GRID_HINTS[problem]} />;
+  return (
+    <TableRunner
+      title={GRID_PROBLEMS.find((p) => p.id === problem)?.label ?? "Filling a table"}
+      run={run}
+      toggles={toggles}
+      hint={GRID_HINTS[problem]}
+    />
+  );
 }

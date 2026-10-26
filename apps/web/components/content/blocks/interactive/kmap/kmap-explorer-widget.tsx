@@ -19,9 +19,9 @@ import {
   termFor,
 } from "@/lib/kmap/kmap";
 import { gradeCover, solveKMap } from "@/lib/kmap/solve";
-import { WidgetFrame } from "../widget-frame";
+import { ActionDock, WidgetShell } from "../shared/widget-shell";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
-import { Banner, Stat, WidgetButton } from "../shared/widget-ui";
+import { Banner, PanelBox, Stat, WidgetButton } from "../shared/widget-ui";
 
 type Mode = "solve" | "practice";
 
@@ -195,124 +195,114 @@ export function KMapExplorerWidget({
   const canonicalLiterals = ones.length * varCount;
   const minimalLiterals = solution.cover.reduce((n, imp) => n + literalCount(imp, varCount), 0);
 
-  const content = (
-    <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:gap-8">
-      <div className="flex flex-col items-center gap-4">
-        <KMapGrid
-          layout={layout}
-          cells={cells}
-          groups={drawnGroups}
-          selected={selected}
-          onCellClick={mode === "solve" ? cycleCell : toggleSelect}
-          ariaLabel={`Karnaugh map for ${variables.join("")}`}
-        />
-        <KMapCellLegend showDontCare={allowDontCare} />
+  const subtitle =
+    mode === "solve"
+      ? `${ones.length} one${ones.length === 1 ? "" : "s"} · ${solution.cover.length} group${solution.cover.length === 1 ? "" : "s"}`
+      : `${grade.termCount} / ${solution.cover.length} groups`;
 
-        <div className="flex flex-wrap justify-center gap-2">
+  const groupChips =
+    mode === "solve" || showAnswer
+      ? solution.cover.map((imp, i) => ({
+          term: termFor(imp, variables),
+          color: DEFAULT_BLOCK_COLORS[i % DEFAULT_BLOCK_COLORS.length],
+          size: mintermsOf(imp, varCount).length,
+        }))
+      : confirmed.map((g) => ({
+          term: g.term,
+          color: g.color,
+          size: mintermsOf(g.implicant, varCount).length,
+        }));
+
+  return (
+    <WidgetShell
+      kind="Boolean algebra"
+      title={title}
+      meta={subtitle}
+      bare={!frame}
+      className={className}
+      prompt={
+        mode === "solve"
+          ? "Click a cell to flip it. The groups and the expression follow."
+          : "Select the 1s that belong together, then confirm the group."
+      }
+      stage={
+        <div className="flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
+          <KMapGrid
+            layout={layout}
+            cells={cells}
+            groups={drawnGroups}
+            selected={selected}
+            onCellClick={mode === "solve" ? cycleCell : toggleSelect}
+            ariaLabel={`Karnaugh map for ${variables.join("")}`}
+          />
+          <div className="w-full max-w-xs">
+            <ExpressionPanel
+              label={mode === "solve" || showAnswer ? "Minimal sum of products" : "Your expression"}
+              expression={expression}
+              empty={mode === "practice" ? "No groups yet." : undefined}
+            />
+          </div>
+        </div>
+      }
+      legend={<KMapCellLegend showDontCare={allowDontCare} />}
+      sideWidth={240}
+      side={
+        <>
+          {(mode === "solve" || showAnswer) && ones.length > 0 && !solution.isTautology && (
+            <div className="grid grid-cols-3 gap-1.5">
+              <Stat label="terms" value={solution.cover.length} />
+              <Stat label="literals" value={minimalLiterals} />
+              <Stat
+                label="saved"
+                value={canonicalLiterals > 0 ? `-${Math.max(0, Math.round((1 - minimalLiterals / canonicalLiterals) * 100))}%` : "-"}
+                tone="good"
+              />
+            </div>
+          )}
+          <PanelBox title={mode === "solve" || showAnswer ? "Groups in the minimal cover" : "Groups you have found"}>
+            <GroupChips groups={groupChips} />
+          </PanelBox>
+          {mode === "solve" && (
+            <p className="text-[11px] leading-relaxed text-slate">
+              {ones.length === 0
+                ? "The map is empty, so the function is constant 0. Click cells to set them to 1."
+                : solution.isTautology
+                  ? "Every cell is 1 or don't-care, so the function simplifies to the constant 1."
+                  : `${ones.length} one${ones.length === 1 ? "" : "s"}${dontCares.length > 0 ? ` and ${dontCares.length} don't-care${dontCares.length === 1 ? "" : "s"}` : ""}, covered by ${solution.cover.length} group${solution.cover.length === 1 ? "" : "s"}. ${solution.alternativeCovers.length > 0 ? `There ${solution.alternativeCovers.length === 1 ? "is 1 other grouping" : `are ${solution.alternativeCovers.length} other groupings`} that is just as small.` : "This grouping is the only minimal one."}`}
+            </p>
+          )}
+        </>
+      }
+      // Reserved height so the feedback changing as you build groups never
+      // resizes the widget.
+      status={
+        mode === "practice" ? (
+          <div className="min-h-[3.5rem]">
+            <PracticeFeedback grade={grade} hasGroups={confirmed.length > 0} onesCount={ones.length} message={message} />
+          </div>
+        ) : undefined
+      }
+      dock={
+        <ActionDock>
           {mode === "practice" && (
             <>
               <WidgetButton tone="primary" onClick={confirmGroup} disabled={selected.length === 0}>
                 Confirm group
               </WidgetButton>
-              <WidgetButton onClick={() => setSelected([])}>
-                Clear selection
-              </WidgetButton>
-              <WidgetButton onClick={() => setShowAnswer((v) => !v)}>
-                {showAnswer ? "Hide answer" : "Show answer"}
-              </WidgetButton>
+              <WidgetButton onClick={() => setSelected([])}>Clear selection</WidgetButton>
+              <WidgetButton onClick={() => setShowAnswer((v) => !v)}>{showAnswer ? "Hide answer" : "Show answer"}</WidgetButton>
             </>
           )}
-          {mode === "solve" && (
-            <WidgetButton onClick={() => setCells(emptyCells(varCount))}>
-              Clear map
-            </WidgetButton>
-          )}
+          {mode === "solve" && <WidgetButton onClick={() => setCells(emptyCells(varCount))}>Clear map</WidgetButton>}
           <WidgetButton
             tone="danger"
             onClick={mode === "solve" ? () => setCells(initialCells ?? emptyCells(varCount)) : reset}
           >
             Reset
           </WidgetButton>
-        </div>
-      </div>
-
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
-        <ExpressionPanel
-          label={mode === "solve" || showAnswer ? "Minimal sum of products" : "Your expression"}
-          expression={expression}
-          empty={mode === "practice" ? "No groups yet." : undefined}
-        />
-
-        {(mode === "solve" || showAnswer) && ones.length > 0 && !solution.isTautology && (
-          <div className="grid grid-cols-3 gap-2">
-            <Stat label="terms" value={solution.cover.length} />
-            <Stat label="literals" value={minimalLiterals} />
-            <Stat
-              label="vs minterms"
-              value={canonicalLiterals > 0 ? `-${Math.max(0, Math.round((1 - minimalLiterals / canonicalLiterals) * 100))}%` : "-"}
-              tone="good"
-            />
-          </div>
-        )}
-
-        <div className="rounded-lg border border-border bg-surface-2/40 p-3">
-          <div className="mb-2 text-[11px] font-semibold text-slate">
-            {mode === "solve" || showAnswer ? "Groups in the minimal cover" : "Groups you have found"}
-          </div>
-          <GroupChips
-            groups={
-              mode === "solve" || showAnswer
-                ? solution.cover.map((imp, i) => ({
-                    term: termFor(imp, variables),
-                    color: DEFAULT_BLOCK_COLORS[i % DEFAULT_BLOCK_COLORS.length],
-                    size: mintermsOf(imp, varCount).length,
-                  }))
-                : confirmed.map((g) => ({
-                    term: g.term,
-                    color: g.color,
-                    size: mintermsOf(g.implicant, varCount).length,
-                  }))
-            }
-          />
-        </div>
-
-        {/* Fixed height so the feedback message changing as you build groups
-            never resizes the widget. */}
-        {mode === "practice" && (
-          <div className="min-h-[4.5rem]">
-            <PracticeFeedback
-              grade={grade}
-              hasGroups={confirmed.length > 0}
-              onesCount={ones.length}
-              message={message}
-            />
-          </div>
-        )}
-
-        {mode === "solve" && (
-          <p className="text-[11px] leading-relaxed text-slate">
-            {ones.length === 0
-              ? "The map is empty, so the function is constant 0. Click cells to set them to 1."
-              : solution.isTautology
-                ? "Every cell is 1 or don't-care, so the function simplifies to the constant 1."
-                : `${ones.length} one${ones.length === 1 ? "" : "s"}${dontCares.length > 0 ? ` and ${dontCares.length} don't-care${dontCares.length === 1 ? "" : "s"}` : ""}, covered by ${solution.cover.length} group${solution.cover.length === 1 ? "" : "s"}. ${solution.alternativeCovers.length > 0 ? `There ${solution.alternativeCovers.length === 1 ? "is 1 other grouping" : `are ${solution.alternativeCovers.length} other groupings`} that is just as small.` : "This grouping is the only minimal one."}`}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-
-  if (!frame) return content;
-
-  const subtitle =
-    mode === "solve"
-      ? `${ones.length} one${ones.length === 1 ? "" : "s"} · ${solution.cover.length} group${solution.cover.length === 1 ? "" : "s"}`
-      : `${grade.termCount} / ${solution.cover.length} groups`;
-
-  return (
-    <WidgetFrame title={title} subtitle={subtitle} className={className}>
-      {content}
-    </WidgetFrame>
+        </ActionDock>
+      }
+    />
   );
 }
 

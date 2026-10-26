@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { Stat, WidgetButton } from "./shared/widget-ui";
 
 const DEFAULT_BITS = 8;
 const DEFAULT_TITLE = "Number Base Explorer";
@@ -50,50 +52,54 @@ export function NumberBaseExplorerWidget({
   const placeValues = Array.from({ length: bits }, (_, i) => 2 ** (bits - 1 - i));
 
   return (
-    <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      <div className="mb-4 text-xs font-semibold text-slate">{title}, click a bit to flip it</div>
-
-      <div className="flex justify-center gap-1.5">
-        {binary.split("").map((bit, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => toggleBit(i)}
-            aria-label={`Bit ${i}, value ${placeValues[i]}, currently ${bit}`}
-            className={cn(
-              "flex h-11 w-9 items-center justify-center rounded-lg border-2 text-lg font-bold transition-all",
-              bit === "1"
-                ? "border-copper bg-copper-bg text-copper-dark"
-                : "border-border-strong bg-surface-2 text-slate",
-            )}
-          >
-            {bit}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-1 flex justify-center gap-1.5">
-        {placeValues.map((pv) => (
-          <span key={pv} className="w-9 text-center text-[10px] text-slate">
-            {pv}
-          </span>
-        ))}
-      </div>
-
-      <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-        <div className="rounded-lg bg-surface-2 p-3">
-          <div className="text-[11px] text-slate">Binary</div>
-          <div className="mt-1 text-base font-bold text-ink sm:text-lg">{binary}</div>
+    <WidgetShell
+      kind="Number systems"
+      title={title}
+      bare={!frame}
+      className={className}
+      // A host that draws its own box (the homepage bento) gets the bits and
+      // the readouts only: its tile already says what the tool does.
+      prompt={frame ? "Click a bit to flip it. All three readouts follow." : undefined}
+      stage={
+        <div className="flex flex-col items-center gap-5">
+          <div className={cn("flex flex-wrap justify-center", frame ? "gap-1.5" : "gap-1")}>
+            {binary.split("").map((bit, i) => (
+              <div key={i} className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => toggleBit(i)}
+                  aria-label={`Bit ${i}, value ${placeValues[i]}, currently ${bit}`}
+                  className={cn(
+                    frame ? "h-12 w-10 text-xl" : "h-10 w-8 text-lg",
+                    "grid place-items-center rounded-[10px] border-2 font-mono font-bold transition-colors",
+                    bit === "1" ? "border-copper bg-copper-bg text-copper-dark" : "border-border-strong bg-surface-2 text-slate",
+                  )}
+                >
+                  {bit}
+                </button>
+                <span className="font-mono text-[10px] text-slate">{placeValues[i]}</span>
+              </div>
+            ))}
+          </div>
+          <div className={cn("grid w-full max-w-md gap-2.5", frame ? "grid-cols-3" : "grid-cols-2")}>
+            {/* The bits above already are the binary, so a tile with no room
+                to spare drops the repeat. */}
+            {frame && <Stat label="Binary" value={binary} />}
+            <Stat label="Decimal" value={value} tone="warn" />
+            <Stat label="Hex" value={`0x${hex}`} />
+          </div>
         </div>
-        <div className="rounded-lg bg-surface-2 p-3">
-          <div className="text-[11px] text-slate">Decimal</div>
-          <div className="mt-1 text-lg font-bold text-ink">{value}</div>
-        </div>
-        <div className="rounded-lg bg-surface-2 p-3">
-          <div className="text-[11px] text-slate">Hex</div>
-          <div className="mt-1 text-lg font-bold text-ink">0x{hex}</div>
-        </div>
-      </div>
-    </div>
+      }
+      caption={frame ? "Each bit is worth twice the one to its right. Every group of four bits is exactly one hex digit." : undefined}
+      captionLabel="Tip"
+      dock={
+        frame ? (
+          <ActionDock hint="Click a bit to flip it.">
+          <WidgetButton onClick={() => setValue(0)}>Clear</WidgetButton>
+          <WidgetButton onClick={() => setValue(Math.floor(Math.random() * 2 ** bits))}>Random</WidgetButton>
+          </ActionDock>
+        ) : undefined
+      }
+    />
   );
 }

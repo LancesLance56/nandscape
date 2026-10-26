@@ -15,9 +15,9 @@ import {
 } from "@/lib/kmap/kmap";
 import { gradeCover } from "@/lib/kmap/solve";
 import { generateProblem, randomSeed, type Difficulty } from "@/lib/kmap/random";
-import { WidgetFrame } from "../widget-frame";
+import { WidgetShell } from "../shared/widget-shell";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
-import { Banner, Segmented, Stat, WidgetButton } from "../shared/widget-ui";
+import { Banner, PanelBox, Segmented, StatReadout, WidgetButton } from "../shared/widget-ui";
 
 const DIFFICULTIES: { id: Difficulty; label: string; blurb: string }[] = [
   { id: "easy", label: "Easy", blurb: "3 variables, no don't-cares" },
@@ -152,110 +152,86 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
   const yourLiterals = confirmed.reduce((n, g) => n + literalCount(g.implicant, varCount), 0);
 
   return (
-    <WidgetFrame
+    <WidgetShell
+      kind="Practice"
       title="Karnaugh map practice"
-      subtitle={`${DIFFICULTIES.find((d) => d.id === difficulty)?.label} · ${solvedCount} solved`}
-    >
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Segmented
-            label="Difficulty"
-            value={difficulty}
-            onChange={newProblem}
-            options={DIFFICULTIES.map((d) => ({ id: d.id, label: d.label, hint: d.blurb }))}
+      meta={`${solvedCount} solved`}
+      primary={
+        <Segmented
+          variant="solid"
+          value={difficulty}
+          onChange={newProblem}
+          options={DIFFICULTIES.map((d) => ({ id: d.id, label: d.label, hint: d.blurb }))}
+        />
+      }
+      prompt="Cover every 1 with as few groups as you can."
+      stage={
+        <div className="flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
+          <KMapGrid
+            layout={layout}
+            cells={cells}
+            groups={drawn}
+            selected={selected}
+            onCellClick={toggle}
+            ariaLabel={`Practice Karnaugh map for ${variables.join("")}`}
           />
-
-          <WidgetButton tone="primary" className="ml-auto" onClick={() => newProblem()}>
-            New random problem
-          </WidgetButton>
-        </div>
-
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:gap-8">
-          <div className="flex flex-col items-center gap-4">
-            <KMapGrid
-              layout={layout}
-              cells={cells}
-              groups={drawn}
-              selected={selected}
-              onCellClick={toggle}
-              ariaLabel={`Practice Karnaugh map for ${variables.join("")}`}
-            />
-            <KMapCellLegend showDontCare={dontCares.length > 0} />
-
-            <div className="flex flex-wrap justify-center gap-2">
-              <WidgetButton tone="primary" onClick={confirmGroup} disabled={selected.length === 0 || revealed}>
-                Confirm group
-              </WidgetButton>
-              <WidgetButton onClick={() => setSelected([])} disabled={selected.length === 0}>
-                Clear selection
-              </WidgetButton>
-              <WidgetButton
-                onClick={() => {
-                  setConfirmed([]);
-                  setSelected([]);
-                  setRevealed(false);
-                  setError(null);
-                }}
-              >
-                Start over
-              </WidgetButton>
-              <WidgetButton tone="danger" onClick={() => setRevealed((v) => !v)}>
-                {revealed ? "Hide answer" : "Give up"}
-              </WidgetButton>
+          <div className="w-full max-w-xs rounded-xl border border-border bg-surface-card p-4">
+            <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">
+              {revealed ? "Minimal answer" : "Your expression"}
             </div>
+            <p className="break-words font-label text-lg font-bold leading-snug text-ink">
+              {revealed ? (
+                <>
+                  <span className="text-copper-dark">F</span> = {sopExpression(solution.cover, variables)}
+                </>
+              ) : confirmed.length > 0 ? (
+                <>
+                  <span className="text-copper-dark">F</span> = {confirmed.map((g) => g.term).join(" + ")}
+                </>
+              ) : (
+                <span className="text-base font-normal italic text-slate">No groups yet.</span>
+              )}
+            </p>
           </div>
-
-          <div className="flex min-w-0 flex-1 flex-col gap-3">
-            <div className="rounded-xl border border-border bg-gradient-to-br from-surface-card to-surface-2/50 p-4">
-              <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">
-                {revealed ? "Minimal answer" : "Your expression"}
-              </div>
-              <p className="break-words font-label text-lg font-bold leading-snug text-ink">
-                {revealed ? (
-                  <>
-                    <span className="text-copper-dark">F</span> = {sopExpression(solution.cover, variables)}
-                  </>
-                ) : confirmed.length > 0 ? (
-                  <>
-                    <span className="text-copper-dark">F</span> = {confirmed.map((g) => g.term).join(" + ")}
-                  </>
-                ) : (
-                  <span className="text-base font-normal italic text-slate">No groups yet.</span>
-                )}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2">
-              <Stat label="1s to cover" value={ones.length} />
-              <Stat label="your terms" value={confirmed.length} />
-              <Stat label="your literals" value={yourLiterals} />
-            </div>
-
-            <div className="rounded-lg border border-border bg-surface-2/40 p-3">
-              <div className="mb-2 text-[11px] font-semibold text-slate">Target</div>
-              <p className="text-xs leading-relaxed text-ink-soft">
-                Cover every 1 using{" "}
-                <span className="font-bold text-ink">
-                  {solution.cover.length} group{solution.cover.length === 1 ? "" : "s"}
-                </span>{" "}
-                and{" "}
-                <span className="font-bold text-ink">
-                  {solution.cover.reduce((n, i) => n + literalCount(i, varCount), 0)} literals
-                </span>
-                .
-                {dontCares.length > 0 && (
-                  <>
-                    {" "}
-                    The {dontCares.length} don&apos;t-care cell{dontCares.length === 1 ? "" : "s"} may be included to grow a
-                    group, or left out.
-                  </>
-                )}
-              </p>
-            </div>
-
-            {/* One reserved slot for the running feedback, so it changing as
-                you build groups never resizes the widget. */}
-            <div className="min-h-[5rem]">
+        </div>
+      }
+      readout={
+        <StatReadout
+          stats={[
+            { label: "1s to cover", value: ones.length },
+            { label: "your terms", value: confirmed.length, tone: "warn" },
+            { label: "your literals", value: yourLiterals },
+          ]}
+        />
+      }
+      legend={<KMapCellLegend showDontCare={dontCares.length > 0} />}
+      sideWidth={230}
+      side={
+        <PanelBox title="Target">
+          <p className="text-xs leading-relaxed text-ink-soft">
+            Cover every 1 using{" "}
+            <span className="font-bold text-ink">
+              {solution.cover.length} group{solution.cover.length === 1 ? "" : "s"}
+            </span>{" "}
+            and{" "}
+            <span className="font-bold text-ink">
+              {solution.cover.reduce((n, i) => n + literalCount(i, varCount), 0)} literals
+            </span>
+            .
+            {dontCares.length > 0 && (
+              <>
+                {" "}
+                The {dontCares.length} don&apos;t-care cell{dontCares.length === 1 ? "" : "s"} may be included to grow a
+                group, or left out.
+              </>
+            )}
+          </p>
+        </PanelBox>
+      }
+      // One reserved slot for the running feedback, so it changing as you
+      // build groups never resizes the widget.
+      status={
+        <div className="min-h-[3.5rem]">
             {error ? (
               <Banner tone="bad">{error}</Banner>
             ) : revealed ? (
@@ -273,13 +249,9 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
             ) : grade.isMinimal ? (
               <div className="flex flex-col gap-2">
                 <Banner tone="good">Minimal. Every 1 covered with the fewest possible terms and literals.</Banner>
-                <button
-                  type="button"
-                  onClick={() => newProblem()}
-                  className="self-start rounded-lg bg-signal-green px-3.5 py-1.5 text-[11px] font-semibold text-white hover:brightness-95"
-                >
+                <WidgetButton tone="primary" className="self-start" onClick={() => newProblem()}>
                   Next problem →
-                </button>
+                </WidgetButton>
               </div>
             ) : !grade.coversAllOnes ? (
               <Banner tone="info">
@@ -297,10 +269,36 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
                 {grade.optimalTermCount} / {grade.optimalLiteralCount}. Look for bigger groups.
               </Banner>
             )}
-            </div>
-          </div>
         </div>
-      </div>
-    </WidgetFrame>
+      }
+      dock={
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            <WidgetButton tone="primary" size="md" onClick={confirmGroup} disabled={selected.length === 0 || revealed}>
+              Add group
+            </WidgetButton>
+            <WidgetButton onClick={() => setSelected([])} disabled={selected.length === 0}>
+              Clear selection
+            </WidgetButton>
+          </div>
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <WidgetButton
+              onClick={() => {
+                setConfirmed([]);
+                setSelected([]);
+                setRevealed(false);
+                setError(null);
+              }}
+            >
+              Start over
+            </WidgetButton>
+            <WidgetButton tone="danger" onClick={() => setRevealed((v) => !v)}>
+              {revealed ? "Hide answer" : "Give up"}
+            </WidgetButton>
+            <WidgetButton onClick={() => newProblem()}>New problem</WidgetButton>
+          </div>
+        </>
+      }
+    />
   );
 }

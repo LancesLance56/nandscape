@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { WidgetFrame } from "./widget-frame";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
 import { cn } from "@/lib/cn";
 import { WidgetButton } from "./shared/widget-ui";
 
@@ -51,10 +52,10 @@ function CodeDisplay({
           <span
             key={i}
             className={cn(
-              "flex h-12 w-9 items-center justify-center rounded-md border-2 text-xl font-bold transition-colors",
+              "grid h-12 w-10 place-items-center rounded-[10px] border-2 font-mono text-xl font-bold transition-colors",
               isChanged
-                ? "border-copper bg-copper-bg text-copper-dark"
-                : "border-border-strong bg-surface-card text-ink",
+                ? "border-signal-blue bg-signal-blue-bg text-signal-blue-strong"
+                : "border-border-strong bg-surface-2 text-ink",
             )}
           >
             {d}
@@ -87,48 +88,51 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
 
   const isWrap = index === 0;
 
+  const pane = (label: string, value: number, changed: Set<number>, good: boolean) => (
+    <div className="flex flex-col items-center gap-2.5 rounded-xl border border-border bg-surface-card p-4">
+      <span className="text-xs font-semibold text-slate">{label}</span>
+      <CodeDisplay value={value} bits={bits} changed={changed} />
+      <span className={cn("text-[13px] font-bold", good ? "text-signal-green-strong" : "text-signal-coral-strong")}>
+        {changed.size} bit{changed.size === 1 ? "" : "s"} changed
+      </span>
+    </div>
+  );
+
   return (
-    <WidgetFrame title={title} subtitle={`step ${index + 1} of ${size}`} className={className}>
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-center gap-3">
-          <WidgetButton onClick={() => setIndex((i) => (i - 1 + size) % size)}>
-            ← Prev
-          </WidgetButton>
-          <span className=" text-xs text-slate">
-            {isWrap ? "wrapping from the last row back to the first" : `row ${prevIndex} → row ${index}`}
-          </span>
-          <WidgetButton onClick={() => setIndex((i) => (i + 1) % size)}>
-            Next →
-          </WidgetButton>
+    <WidgetShell
+      kind="Number systems"
+      title={title}
+      meta={`row ${index + 1} of ${size}`}
+      className={className}
+      prompt={
+        isWrap
+          ? "Wrapping from the last row back to the first: Gray code still flips one bit."
+          : `Row ${prevIndex} → row ${index}: binary flips ${binaryChanged.size} bit${binaryChanged.size === 1 ? "" : "s"}, Gray code flips 1.`
+      }
+      stage={
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          {pane("Binary counting order", binaryNow, binaryChanged, binaryChanged.size === 1)}
+          {pane("Gray code order", grayNow, grayChanged, true)}
         </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface-2 p-4">
-            <span className=" text-[11px] font-semibold text-slate">
-              Binary counting order
-            </span>
-            <CodeDisplay value={binaryNow} bits={bits} changed={binaryChanged} />
-            <span
-              className={cn(
-                " text-xs font-semibold",
-                binaryChanged.size === 1 ? "text-signal-green-strong" : "text-signal-coral-strong",
-              )}
-            >
-              {binaryChanged.size} bit{binaryChanged.size === 1 ? "" : "s"} changed
-            </span>
-          </div>
-
-          <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface-2 p-4">
-            <span className=" text-[11px] font-semibold text-slate">
-              Gray code order
-            </span>
-            <CodeDisplay value={grayNow} bits={bits} changed={grayChanged} />
-            <span className=" text-xs font-semibold text-signal-green-strong">
-              {grayChanged.size} bit changed
-            </span>
-          </div>
-        </div>
-      </div>
-    </WidgetFrame>
+      }
+      caption={
+        isWrap
+          ? "Gray code wraps around too: the last row and the first differ in one bit, which is why a K-map's edges count as neighbours."
+          : `Counting in binary from ${prevIndex} to ${index} changes ${binaryChanged.size} bit${binaryChanged.size === 1 ? "" : "s"} at once. Gray code changes exactly one, which is why K-map rows and columns are labelled in this order.`
+      }
+      captionLabel={`${index + 1}/${size}`}
+      dock={
+        <ActionDock hint={isWrap ? "Back at the start." : `Row ${prevIndex} → row ${index}`}>
+          <WidgetButton onClick={() => setIndex((i) => (i - 1 + size) % size)} aria-label="Previous row">
+            <ChevronLeft className="size-3.5" />
+            Prev
+          </WidgetButton>
+          <WidgetButton tone="primary" onClick={() => setIndex((i) => (i + 1) % size)} aria-label="Next row">
+            Next
+            <ChevronRight className="size-3.5" />
+          </WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

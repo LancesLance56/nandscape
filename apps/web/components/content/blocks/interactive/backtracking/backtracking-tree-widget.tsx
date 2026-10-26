@@ -77,6 +77,7 @@ export function BacktrackingTreeWidget({ data }: { data: Record<string, unknown>
 
   return (
     <BacktrackingRunner
+      title={problem === "subsets" ? `Subsets of ${items.join("")}` : `Combinations that sum to ${target}`}
       run={run}
       toggles={toggles}
       solutionsLabel={problem === "subsets" ? "Subsets found" : "Combinations found"}

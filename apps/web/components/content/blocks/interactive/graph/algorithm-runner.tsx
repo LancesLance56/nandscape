@@ -1,10 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { cn } from "@/lib/cn";
 import type { AlgorithmStep, GraphSpec } from "@/lib/graph/types";
 import { GraphCanvas } from "./graph-canvas";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { OptionGroup, WidgetShell, useWidgetView } from "../shared/widget-shell";
 
 // The graph widgets import these from here rather than from ../shared, so
 // they stay re-exported for those callers.
@@ -13,26 +13,32 @@ import { Segmented } from "../shared/widget-ui";
 export { ChipRow, PanelBox, StatusSlot, ReservedBox } from "../shared/widget-ui";
 
 interface AlgorithmRunnerProps {
+  /** Detailed-view title, e.g. "Breadth-first search". */
+  title: string;
+  /** Detailed-view eyebrow. */
+  kind?: string;
   graph: GraphSpec;
   steps: AlgorithmStep[];
-  /** Mode switcher (BFS/DFS, Kruskal/Prim) rendered above the canvas. */
+  /** Mode switcher (BFS/DFS, Kruskal/Prim): the shell's primary control. */
   modes?: { id: string; label: string }[];
   activeMode?: string;
   onModeChange?: (id: string) => void;
-  /** Worked-example switcher, rendered as a quieter row below the modes. */
+  /** Worked-example switcher, in the detailed options row. */
   examples?: { id: string; label: string }[];
   activeExample?: string;
   onExampleChange?: (id: string) => void;
   /** Clickable nodes for choosing a start node. */
   onNodeClick?: (id: string) => void;
   markedNode?: string | null;
-  /** Algorithm-specific readout (queue, distance table, edge list). */
+  /** Algorithm-specific side panels (queue, distance table, edge list). Detailed view. */
   panel?: (step: AlgorithmStep) => ReactNode;
+  /** A compact readout shown in both views, under the stage. */
+  readout?: (step: AlgorithmStep) => ReactNode;
   frame?: boolean;
   className?: string;
   hint?: string;
   /** Drops the example switcher and the hint row, for tight spots like the
-   *  homepage bento. Modes, the side panel and the narration stay. */
+   *  homepage bento. */
   compact?: boolean;
   /** Passed through to the canvas: outline each group (used for SCCs). */
   groupHulls?: boolean;
@@ -40,12 +46,13 @@ interface AlgorithmRunnerProps {
 }
 
 /**
- * Canvas + transport + narration, wired together. Each algorithm widget
- * supplies its precomputed steps and an optional side panel; everything
- * about playback, scrubbing and drawing lives here so the widgets stay
- * small enough to read.
+ * Canvas + transport + narration, wired into WidgetShell. Each algorithm
+ * widget supplies its precomputed steps and optional panels; everything about
+ * playback, scrubbing and drawing lives here so the widgets stay small.
  */
 export function AlgorithmRunner({
+  title,
+  kind = "Graphs",
   graph,
   steps,
   modes,
@@ -57,6 +64,7 @@ export function AlgorithmRunner({
   onNodeClick,
   markedNode,
   panel,
+  readout,
   frame = true,
   className,
   hint,
@@ -72,29 +80,34 @@ export function AlgorithmRunner({
   }
 
   return (
-    <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      {modes && modes.length > 1 && (
-        <Segmented
-          className="mb-3"
-          variant="solid"
-          options={modes}
-          value={activeMode ?? modes[0].id}
-          onChange={(id) => onModeChange?.(id)}
-        />
-      )}
-
-      {!compact && examples && examples.length > 1 && (
-        <Segmented
-          className="mb-3"
-          label="Example"
-          options={examples}
-          value={activeExample ?? examples[0].id}
-          onChange={(id) => onExampleChange?.(id)}
-        />
-      )}
-
-      <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-        <div>
+    <WidgetShell
+      kind={kind}
+      title={title}
+      bare={!frame}
+      className={className}
+      primary={
+        modes && modes.length > 1 ? (
+          <Segmented
+            variant="solid"
+            options={modes}
+            value={activeMode ?? modes[0].id}
+            onChange={(id) => onModeChange?.(id)}
+          />
+        ) : undefined
+      }
+      options={
+        !compact && examples && examples.length > 1 ? (
+          <OptionGroup label="Example">
+            <Segmented
+              options={examples}
+              value={activeExample ?? examples[0].id}
+              onChange={(id) => onExampleChange?.(id)}
+            />
+          </OptionGroup>
+        ) : undefined
+      }
+      stage={
+        <Stage hint={compact ? undefined : hint}>
           <GraphCanvas
             graph={graph}
             step={step}
@@ -102,29 +115,27 @@ export function AlgorithmRunner({
             markedNode={markedNode}
             groupHulls={groupHulls}
             groupLabel={groupLabel}
+            height={compact ? 130 : undefined}
           />
-          {/* Reserved whether or not a hint is passed, so its presence never
-              shifts the canvas. */}
-          {!compact && <p className="mt-1 min-h-[1.25rem] text-center text-[11px] text-slate">{hint}</p>}
-        </div>
-        {panel && <div className="flex flex-col gap-3">{panel(step)}</div>}
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3">
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-      </div>
-    </div>
+        </Stage>
+      }
+      side={panel ? panel(step) : undefined}
+      sideWidth={230}
+      readout={readout?.(step)}
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={steps.length} />}
+    />
   );
 }
 
+/** The canvas, plus its "click a node" hint in the detailed view only. */
+function Stage({ hint, children }: { hint?: string; children: ReactNode }) {
+  const view = useWidgetView();
+  return (
+    <div>
+      {children}
+      {view === "detailed" && hint && <p className="mt-1 text-center text-[11px] text-slate">{hint}</p>}
+    </div>
+  );
+}

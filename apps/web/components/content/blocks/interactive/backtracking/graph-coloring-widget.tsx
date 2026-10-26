@@ -3,7 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { COLOR_NAMES, mColoringSteps, type ColoringPayload } from "@/lib/backtracking/puzzles";
 import type { GraphSpec } from "@/lib/graph/types";
-import { PanelBox, SegmentedRow, StatReadout, StatusSlot, type SegmentedGroup } from "../shared/widget-ui";
+import { Banner, PanelBox, StatReadout, WidgetButton, type SegmentedGroup } from "../shared/widget-ui";
+import { ActionDock, KeepWidgetView, WidgetShell, toggleSlots } from "../shared/widget-shell";
 import { BacktrackingRunner } from "./backtracking-runner";
 
 type Example = { id: string; label: string; graph: GraphSpec; note: string };
@@ -106,7 +107,7 @@ function ColoringCanvas({
   const byId = new Map(graph.nodes.map((n) => [n.id, n]));
 
   return (
-    <svg viewBox="0 0 390 245" className="w-full rounded-lg border border-border bg-surface-2/40" role="img" aria-label="Graph being coloured">
+    <svg viewBox="0 0 390 245" className="max-h-[min(280px,40svh)] w-full rounded-lg border border-border bg-surface-2/40" role="img" aria-label="Graph being coloured">
       {graph.edges.map((e) => {
         const a = byId.get(e.from);
         const b = byId.get(e.to);
@@ -183,6 +184,14 @@ function ColoringCanvas({
  * three and running out of options on the last node every single time.
  */
 export function GraphColoringWidget({ data }: { data: Record<string, unknown> }) {
+  return (
+    <KeepWidgetView>
+      <GraphColoringInner data={data} />
+    </KeepWidgetView>
+  );
+}
+
+function GraphColoringInner({ data }: { data: Record<string, unknown> }) {
   const examples = useMemo(() => resolveExamples(data, EXAMPLES), [data]);
   const [exampleId, setExampleId] = useState(
     typeof data.example === "string" && examples.some((e) => e.id === data.example) ? data.example : examples[0].id,
@@ -224,6 +233,8 @@ export function GraphColoringWidget({ data }: { data: Record<string, unknown> })
 
   return (
     <BacktrackingRunner
+      title="Graph colouring"
+      primaryToggle="mode"
       run={run}
       toggles={toggles}
       solutionsLabel="Valid colourings"
@@ -303,58 +314,42 @@ function ManualColoring({
   const solved = coloured === graph.nodes.length && brokenEdges.length === 0;
 
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-5">
-      <SegmentedRow groups={toggles} className="mb-4" />
-
-      <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-        <div>
-          <ColoringCanvas graph={graph} colors={colors} onNodeClick={cycle} />
-          <p className="mt-2 text-[11px] text-slate">
-            Click a node to cycle it through the {m} colours and back to uncoloured. {note}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <PanelBox title="Progress">
-            <StatReadout
-              stats={[
-                { label: "nodes coloured", value: `${coloured} / ${graph.nodes.length}` },
-                { label: "broken edges", value: brokenEdges.length, tone: brokenEdges.length > 0 ? "warn" : "good" },
-              ]}
-            />
-          </PanelBox>
-
-          <PanelBox title="Edges joining two of the same colour" bodyClassName="h-16 overflow-y-auto">
-            {brokenEdges.length === 0 ? (
-              <span className="text-xs italic text-slate">none</span>
-            ) : (
-              <div className="flex flex-col gap-1">
-                {brokenEdges.map((e) => (
-                  <span key={`${e.from}-${e.to}`} className="text-xs text-signal-coral">
-                    {e.from} and {e.to} are both {COLOR_NAMES[colors[e.from]]}
-                  </span>
-                ))}
-              </div>
-            )}
-          </PanelBox>
-
-          <StatusSlot lines={2}>
-            {solved && (
-              <p className="rounded-lg border border-signal-green bg-signal-green/10 px-3 py-2 text-sm font-semibold text-signal-green">
-                Every node coloured, no edge broken, {m} colours used.
-              </p>
-            )}
-          </StatusSlot>
-
-          <button
-            type="button"
-            onClick={() => setColors({})}
-            className="self-start rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft hover:bg-surface-2 hover:text-ink"
-          >
-            Clear colours
-          </button>
-        </div>
-      </div>
-    </div>
+    <WidgetShell
+      kind="Backtracking"
+      title="Graph colouring"
+      {...toggleSlots(toggles, "mode")}
+      stage={<ColoringCanvas graph={graph} colors={colors} onNodeClick={cycle} />}
+      prompt={solved ? "Every node coloured, and no edge joins two of the same colour." : "Colour every node so no edge joins two of the same colour."}
+      caption={`Click a node to cycle it through the ${m} colours and back to uncoloured. ${note}`}
+      readout={
+        <StatReadout
+          stats={[
+            { label: "nodes coloured", value: `${coloured} / ${graph.nodes.length}` },
+            { label: "broken edges", value: brokenEdges.length, tone: brokenEdges.length > 0 ? "warn" : "good" },
+          ]}
+        />
+      }
+      side={
+        <PanelBox title="Edges joining two of the same colour" bodyClassName="h-24 overflow-y-auto">
+          {brokenEdges.length === 0 ? (
+            <span className="text-xs italic text-slate">none</span>
+          ) : (
+            <div className="flex flex-col gap-1">
+              {brokenEdges.map((e) => (
+                <span key={`${e.from}-${e.to}`} className="text-xs text-signal-coral">
+                  {e.from} and {e.to} are both {COLOR_NAMES[colors[e.from]]}
+                </span>
+              ))}
+            </div>
+          )}
+        </PanelBox>
+      }
+      status={solved ? <Banner tone="good">Every node coloured, no edge broken, {m} colours used.</Banner> : undefined}
+      dock={
+        <ActionDock hint="Click a node to change its colour.">
+          <WidgetButton onClick={() => setColors({})}>Clear colours</WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

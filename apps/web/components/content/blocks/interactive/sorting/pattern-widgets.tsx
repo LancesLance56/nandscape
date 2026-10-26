@@ -13,11 +13,11 @@ import {
   type PartitionMode,
 } from "@/lib/sorting/patterns";
 import { mulberry32 } from "@/lib/sorting/types";
-import { WidgetFrame } from "../widget-frame";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { WidgetShell } from "../shared/widget-shell";
 import { cn } from "@/lib/cn";
 import { SortingBars } from "./sorting-bars";
-import { Segmented, Stat, WidgetButton } from "../shared/widget-ui";
+import { Banner, Segmented, StatReadout } from "../shared/widget-ui";
 
 /* -------------------------------------------------------------------------
  * Shared bits
@@ -34,7 +34,7 @@ function Chips({ values, highlight, tone = "muted" }: { values: number[]; highli
           className={cn(
             "flex h-6 min-w-6 items-center justify-center rounded px-1.5 font-label text-xs font-bold tabular-nums",
             hi.has(i)
-              ? "bg-copper text-white"
+              ? "bg-copper text-copper-ink"
               : tone === "green"
                 ? "bg-signal-green/15 text-signal-green"
                 : "bg-surface-3 text-ink-soft",
@@ -81,42 +81,37 @@ export function PartitionExplorerWidget({ data }: { data: Record<string, unknown
   const maxValue = Math.max(...input, 1);
 
   return (
-    <WidgetFrame title="One-pass partitioning" subtitle={PARTITION_MODES.find((m) => m.id === mode)?.label}>
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Segmented label="Problem" options={PARTITION_MODES.map((m) => ({ id: m.id, label: m.label }))} value={mode} onChange={setMode} />
-          <WidgetButton onClick={() => setSeed(Math.floor(Math.random() * 1e9))}>
-            Shuffle
-          </WidgetButton>
-        </div>
-
-        <p className="text-[11px] text-slate">{blurb}</p>
-
-        <SortingBars step={step} maxValue={maxValue} height={140} />
-
-        <div className="grid grid-cols-2 gap-2">
-          <Stat label="comparisons" value={step.comparisons} />
-          <Stat label="swaps" value={Math.floor(step.writes / 2)} />
-        </div>
-
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
+    <WidgetShell
+      kind="Sorting patterns"
+      title="One-pass partitioning"
+      primary={
+        <Segmented
+          variant="solid"
+          options={PARTITION_MODES.map((m) => ({ id: m.id, label: m.label }))}
+          value={mode}
+          onChange={setMode}
         />
+      }
+      options={<p className="text-xs text-slate">{blurb}</p>}
+      stage={<SortingBars step={step} maxValue={maxValue} height={160} />}
+      readout={
+        <StatReadout
+          stats={[
+            { label: "comparisons", value: step.comparisons },
+            { label: "swaps", value: Math.floor(step.writes / 2), tone: "warn" },
+          ]}
+        />
+      }
+      details={
         <p className="text-[11px] leading-relaxed text-slate">
           Every one of these runs in a single pass with no extra memory. Sorting would also work and would be O(n log n);
           these are O(n) because the values come from a tiny fixed set.
         </p>
-      </div>
-    </WidgetFrame>
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} onShuffle={() => setSeed(Math.floor(Math.random() * 1e9))} />}
+    />
   );
 }
 
@@ -150,65 +145,62 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
   if (!step) return null;
 
   return (
-    <WidgetFrame title="Two-pointer merge" subtitle={MERGE_MODES.find((m) => m.id === mode)?.label}>
-      <div className="flex flex-col gap-4">
-        <Segmented label="Operation" options={MERGE_MODES} value={mode} onChange={setMode} />
-
-        <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface-2/40 p-3">
-          <Row label="left" values={step.left} pointer={step.i} />
-          <Row label="right" values={step.right} pointer={step.j} />
-        </div>
-
-        <div className="rounded-lg border border-border bg-surface-2/40 p-3">
-          <div className="mb-2 text-[11px] font-semibold text-slate">
-            {mode === "inversions" ? "merged output" : "result"}
+    <WidgetShell
+      kind="Sorting patterns"
+      title="Two-pointer merge"
+      primary={<Segmented variant="solid" options={MERGE_MODES} value={mode} onChange={setMode} />}
+      stage={
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
+            <Row label="left" values={step.left} pointer={step.i} />
+            <Row label="right" values={step.right} pointer={step.j} />
           </div>
-          {/* Fixed height + scroll: the output grows every step, and without
-              this the widget would get taller with each emitted value. */}
-          <div className="h-16 overflow-y-auto">
-            <Chips values={step.output} highlight={step.emitted !== undefined ? [step.emitted] : []} tone="green" />
-          </div>
-        </div>
-
-        {mode === "inversions" && (
-          <div className="grid grid-cols-2 gap-2">
-            <Stat label="inversions" value={step.inversions ?? 0} tone="good" />
-            <Stat label="comparisons" value={step.comparisons} />
-          </div>
-        )}
-        {mode !== "inversions" && (
-          <div className="grid grid-cols-2 gap-2">
-            <Stat label="comparisons" value={step.comparisons} />
-            <Stat label="emitted" value={step.output.length} tone="good" />
-          </div>
-        )}
-
-        {/* Reserved whether or not this step credits any inversions. */}
-        <div className="min-h-[4.5rem]">
-          {step.creditedFrom && step.creditedFrom.length > 0 && (
-            <div className="rounded-lg border border-copper/40 bg-copper-bg/40 p-3">
-              <div className="mb-1.5 text-[11px] font-semibold text-copper-dark">
-                These {step.creditedFrom.length} left value(s) are all greater, so each forms an inversion
-              </div>
-              <Chips values={step.creditedFrom} />
+          <div>
+            <div className="mb-1.5 text-[11px] font-semibold text-slate">
+              {mode === "inversions" ? "merged output" : "result"}
             </div>
-          )}
+            {/* Fixed height + scroll: the output grows every step, and without
+                this the widget would get taller with each emitted value. */}
+            <div className="h-16 overflow-y-auto">
+              <Chips values={step.output} highlight={step.emitted !== undefined ? [step.emitted] : []} tone="green" />
+            </div>
+          </div>
         </div>
-
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
+      }
+      readout={
+        <StatReadout
+          stats={
+            mode === "inversions"
+              ? [
+                  { label: "inversions", value: step.inversions ?? 0, tone: "good" },
+                  { label: "comparisons", value: step.comparisons },
+                ]
+              : [
+                  { label: "comparisons", value: step.comparisons },
+                  { label: "emitted", value: step.output.length, tone: "good" },
+                ]
+          }
         />
-      </div>
-    </WidgetFrame>
+      }
+      details={
+        mode === "inversions" ? (
+          // Reserved whether or not this step credits any inversions.
+          <div className="min-h-[4.5rem]">
+            {step.creditedFrom && step.creditedFrom.length > 0 && (
+              <div className="rounded-lg border border-copper/40 bg-copper-bg/40 p-3">
+                <div className="mb-1.5 text-[11px] font-semibold text-copper-dark">
+                  These {step.creditedFrom.length} left value(s) are all greater, so each forms an inversion
+                </div>
+                <Chips values={step.creditedFrom} />
+              </div>
+            )}
+          </div>
+        ) : undefined
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }
 
@@ -223,7 +215,7 @@ function Row({ label, values, pointer }: { label: string; values: number[]; poin
             className={cn(
               "flex h-7 min-w-7 items-center justify-center rounded px-1.5 font-label text-xs font-bold tabular-nums",
               i === pointer
-                ? "bg-copper text-white ring-2 ring-copper-dark"
+                ? "bg-copper text-copper-ink ring-2 ring-copper-dark"
                 : i < pointer
                   ? "bg-surface-3 text-border-strong line-through"
                   : "bg-surface-3 text-ink-soft",
@@ -272,13 +264,13 @@ export function IntervalExplorerWidget({ data }: { data: Record<string, unknown>
   const pct = (v: number) => (v / maxTime) * 100;
 
   return (
-    <WidgetFrame
+    <WidgetShell
+      kind="Sorting patterns"
       title="Interval sweep"
-      subtitle={mode === "merge" ? "Merging overlaps" : `Peak overlap: ${step.maxConcurrent ?? 0}`}
-    >
-      <div className="flex flex-col gap-4">
+      meta={mode === "merge" ? "merging overlaps" : `peak overlap ${step.maxConcurrent ?? 0}`}
+      primary={
         <Segmented
-          label="Problem"
+          variant="solid"
           options={[
             { id: "merge" as const, label: "Merge overlapping" },
             { id: "platforms" as const, label: "Minimum platforms" },
@@ -286,69 +278,67 @@ export function IntervalExplorerWidget({ data }: { data: Record<string, unknown>
           value={mode}
           onChange={setMode}
         />
+      }
+      stage={
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1.5">
+            <div className="mb-1 text-[11px] font-semibold text-slate">Input, sorted by start time</div>
+            {step.ordered.map((iv, i) => (
+              <div key={i} className="relative h-6">
+                <div className="absolute inset-0 rounded bg-surface-3/50" />
+                <div
+                  className={cn(
+                    "absolute flex h-full items-center justify-center rounded text-[10px] font-bold transition-colors",
+                    i === step.active ? "bg-copper text-copper-ink" : "bg-border-strong text-surface",
+                  )}
+                  style={{ left: `${pct(iv.start)}%`, width: `${Math.max(pct(iv.end - iv.start), 6)}%` }}
+                >
+                  {iv.start}-{iv.end}
+                </div>
+              </div>
+            ))}
+          </div>
 
-        <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-surface-2/40 p-3">
-          <div className="mb-1 text-[11px] font-semibold text-slate">Input, sorted by start time</div>
-          {step.ordered.map((iv, i) => (
-            <div key={i} className="relative h-6">
-              <div className="absolute inset-0 rounded bg-surface-3/50" />
-              <div
-                className={cn(
-                  "absolute flex h-full items-center justify-center rounded text-[10px] font-bold transition-colors",
-                  i === step.active ? "bg-copper text-white" : "bg-border-strong text-surface",
-                )}
-                style={{ left: `${pct(iv.start)}%`, width: `${Math.max(pct(iv.end - iv.start), 6)}%` }}
-              >
-                {iv.start}-{iv.end}
+          {mode === "merge" && (
+            <div>
+              <div className="mb-1 text-[11px] font-semibold text-signal-green-strong">
+                Merged output ({step.merged.length})
+              </div>
+              {/* Fixed height + scroll so the list growing per step doesn't
+                  stretch the widget. */}
+              <div className="flex h-24 flex-col gap-1.5 overflow-y-auto">
+                {step.merged.length === 0 && <span className="text-xs italic text-slate">nothing yet</span>}
+                {step.merged.map((iv, i) => (
+                  <div key={i} className="relative h-6 shrink-0">
+                    <div
+                      className="absolute flex h-full items-center justify-center rounded bg-signal-green text-[10px] font-bold text-surface-card"
+                      style={{ left: `${pct(iv.start)}%`, width: `${Math.max(pct(iv.end - iv.start), 6)}%` }}
+                    >
+                      {iv.start}-{iv.end}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          )}
         </div>
-
-        {mode === "merge" && (
-          <div className="rounded-lg border border-signal-green/40 bg-signal-green-bg/30 p-3">
-            <div className="mb-1 text-[11px] font-semibold text-signal-green-strong">
-              Merged output ({step.merged.length})
-            </div>
-            {/* Fixed height + scroll so the list growing per step doesn't
-                stretch the widget. */}
-            <div className="flex h-24 flex-col gap-1.5 overflow-y-auto">
-              {step.merged.length === 0 && <span className="text-xs italic text-slate">nothing yet</span>}
-              {step.merged.map((iv, i) => (
-                <div key={i} className="relative h-6 shrink-0">
-                  <div
-                    className="absolute flex h-full items-center justify-center rounded bg-signal-green text-[10px] font-bold text-white"
-                    style={{ left: `${pct(iv.start)}%`, width: `${Math.max(pct(iv.end - iv.start), 6)}%` }}
-                  >
-                    {iv.start}-{iv.end}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {mode === "platforms" && (
-          <div className="grid grid-cols-2 gap-2">
-            <Stat label="in use now" value={step.concurrent ?? 0} />
-            <Stat label="peak so far" value={step.maxConcurrent ?? 0} tone="good" />
-          </div>
-        )}
-
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-      </div>
-    </WidgetFrame>
+      }
+      readout={
+        mode === "platforms" ? (
+          <StatReadout
+            stats={[
+              { label: "in use now", value: step.concurrent ?? 0 },
+              { label: "peak so far", value: step.maxConcurrent ?? 0, tone: "good" },
+            ]}
+          />
+        ) : (
+          <StatReadout stats={[{ label: "merged blocks", value: step.merged.length, tone: "good" }]} />
+        )
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }
 
@@ -386,16 +376,20 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
   if (!step) return null;
 
   return (
-    <WidgetFrame title="Sort, then one pass" subtitle={PAIRING_MODES.find((m) => m.id === mode)?.label}>
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Segmented label="Problem" options={PAIRING_MODES.map((m) => ({ id: m.id, label: m.label }))} value={mode} onChange={setMode} />
-          <WidgetButton onClick={() => setSeed(Math.floor(Math.random() * 1e9))}>
-            Shuffle
-          </WidgetButton>
-        </div>
-
-        <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-2/40 p-3">
+    <WidgetShell
+      kind="Sorting patterns"
+      title="Sort, then one pass"
+      meta={PAIRING_MODES.find((m) => m.id === mode)?.label}
+      primary={
+        <Segmented
+          variant="solid"
+          options={PAIRING_MODES.map((m) => ({ id: m.id, label: m.label }))}
+          value={mode}
+          onChange={setMode}
+        />
+      }
+      stage={
+        <div className="flex flex-col gap-3">
           <div>
             <div className="mb-1.5 text-[10px] font-semibold uppercase text-slate">
               {needsSecond ? (mode === "tywin" ? "your army (sorted)" : "passengers (sorted)") : "sorted values"}
@@ -412,41 +406,23 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
               </>
             )}
           </div>
+          {/* One reserved slot for the running-total line and the final
+              answer, so neither appearing changes the widget's height. */}
+          <div className="min-h-[2.75rem]">
+            {step.running && <span className="font-label text-sm font-bold text-ink">{step.running}</span>}
+            {step.done && <Banner tone="good">Answer: {run.answer}</Banner>}
+          </div>
         </div>
-
-        {/* One reserved slot for the running-total line and the final answer,
-            so neither one appearing changes the widget's height. */}
-        <div className="min-h-[2.75rem]">
-          {step.running && (
-            <div className="rounded-lg border border-border bg-surface-2/40 px-3 py-2">
-              <span className="font-label text-sm font-bold text-ink">{step.running}</span>
-            </div>
-          )}
-
-          {step.done && (
-            <p className="rounded-lg border border-signal-green/40 bg-signal-green-bg px-3 py-2 text-xs font-semibold text-signal-green-strong">
-              Answer: {run.answer}
-            </p>
-          )}
-        </div>
-
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
+      }
+      details={
         <p className="text-[11px] leading-relaxed text-slate">
           In every one of these the sort does the real work. What follows is a single linear pass, and the only hard part
           is the argument for why the sorted pairing is the best one.
         </p>
-      </div>
-    </WidgetFrame>
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} onShuffle={() => setSeed(Math.floor(Math.random() * 1e9))} />}
+    />
   );
 }

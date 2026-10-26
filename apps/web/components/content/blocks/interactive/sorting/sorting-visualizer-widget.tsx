@@ -14,24 +14,19 @@ import {
   type SortRun,
   type SortStep,
 } from "@/lib/sorting/types";
-import { WidgetFrame } from "../widget-frame";
-import { StepCaption, StepControls, StepTransport, useStepPlayer } from "../shared/step-player";
-import { Segmented, Stat, StatusSlot } from "../shared/widget-ui";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { OptionGroup, WidgetShell } from "../shared/widget-shell";
+import { Segmented, StatReadout } from "../shared/widget-ui";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/cn";
 import { SortingBars, SortingLegend } from "./sorting-bars";
 import {
   AlgorithmHeading,
-  AlgorithmRail,
   AlgorithmSelect,
-  ComplexityChips,
   ComplexityRows,
-  CounterPills,
   FactList,
-  Narration,
   NarrationLog,
   PanelLabel,
-  ProgressRail,
   Pseudocode,
   TradeoffTable,
   type CostRow,
@@ -40,22 +35,19 @@ import {
 /**
  * The sorting visualiser.
  *
- * One run, four arrangements of it. `console` is the default and the one used
- * almost everywhere: a picker rail, the stage, and a facts panel, so the
- * reader can switch algorithms and see the trade-off that explains what they
- * just watched. The other three exist because a particular lesson needs one
- * particular thing bigger:
+ * One run, drawn in WidgetShell: focused by default (algorithm switch, the
+ * bars, the counters, the dock), with the facts panel and the reference
+ * material behind the "Details" view. `layout` decides what that reference
+ * material is, because a particular lesson needs one particular thing:
  *
+ *   - `console` the cost of every algorithm on this input (the default).
  *   - `log`     the whole narration history, clickable, for the recursive
  *               sorts where the order of the splits is the point.
- *   - `compact` the pseudocode beside the bars, with the executing line lit,
- *               for the lessons that walk through the code.
+ *   - `compact` the pseudocode, with the executing line lit, for the lessons
+ *               that walk through the code.
  *   - `race`    two algorithms on the same input, for the comparisons.
  *   - `mini`    stage only, for the homepage tile. Not selectable from
  *               content; it is what `compact: true` has always meant.
- *
- * The layouts share `useSortingView` and the panels in `sorting-parts.tsx`,
- * so a change to how a run is set up or how a fact is drawn lands in all four.
  */
 
 const SPEEDS = [
@@ -177,27 +169,20 @@ function useSortingView(data: Record<string, unknown>, defaultSize: number, defa
 /* Shared controls                                                            */
 /* -------------------------------------------------------------------------- */
 
-/** Input shape, array size and playback speed: the settings every layout has. */
-function InputControls({
-  input,
-  showPreset = true,
-  className,
-}: {
-  input: SortingInput;
-  showPreset?: boolean;
-  className?: string;
-}) {
+/** Input shape and array size: the settings every layout has. Speed lives in the dock. */
+function InputControls({ input, showPreset = true }: { input: SortingInput; showPreset?: boolean }) {
   return (
-    <div className={cn("flex flex-wrap items-center gap-x-4 gap-y-2", className)}>
+    <>
       {showPreset && (
-        <Segmented
-          label="Input"
-          value={input.preset}
-          onChange={input.setPreset}
-          options={PRESETS.map((p) => ({ id: p.id, label: p.label, hint: p.note }))}
-        />
+        <OptionGroup label="Input">
+          <Segmented
+            value={input.preset}
+            onChange={input.setPreset}
+            options={PRESETS.map((p) => ({ id: p.id, label: p.label, hint: p.note }))}
+          />
+        </OptionGroup>
       )}
-      <label className="flex items-center gap-2 text-[11px] font-semibold text-slate">
+      <label className="flex items-center gap-2 text-xs font-medium text-slate">
         Size
         <Slider
           min={5}
@@ -205,18 +190,11 @@ function InputControls({
           value={input.size}
           onChange={input.setSize}
           aria-label="Number of values to sort"
-          className="w-20"
+          className="w-24"
         />
         <span className="w-5 tabular-nums text-ink">{input.size}</span>
       </label>
-      <Segmented
-        label="Speed"
-        size="xs"
-        value={input.speed}
-        onChange={input.setSpeed}
-        options={SPEEDS.map((s) => ({ id: s.id, label: s.label }))}
-      />
-    </div>
+    </>
   );
 }
 
@@ -230,218 +208,74 @@ function runCounters(step: SortStep) {
 }
 
 /** The note shown when a run stopped at the frame cap rather than finishing. */
-function TruncatedNote({ run, meta }: { run: SortRun; meta: AlgorithmMeta }) {
+function truncatedNote(run: SortRun, meta: AlgorithmMeta) {
+  if (!run.truncated) return undefined;
   return (
-    <StatusSlot lines={2}>
-      {run.truncated && (
-        <p className="text-[11px] text-copper-dark">
-          This run hit the frame limit. {meta.label} needs more steps than are watchable at this size, which is itself
-          the argument for the O(n log n) sorts.
-        </p>
-      )}
-    </StatusSlot>
+    <p className="text-[11px] text-copper-dark">
+      This run hit the frame limit. {meta.label} needs more steps than are watchable at this size, which is itself the
+      argument for the O(n log n) sorts.
+    </p>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* 1a - console                                                               */
+/* Single run: console, log and compact                                       */
 /* -------------------------------------------------------------------------- */
 
-function ConsoleBody({ view, showComparison }: { view: SortingView; showComparison: boolean }) {
+function SingleShell({
+  view,
+  layout,
+  showComparison,
+  bare,
+}: {
+  view: SortingView;
+  layout: Exclude<SortLayout, "race">;
+  showComparison: boolean;
+  bare: boolean;
+}) {
   const { meta, step, index, total, player, input } = view;
+  const mini = layout === "mini";
 
   return (
-    <div className="@container flex flex-col gap-4">
-      <InputControls input={input} />
-
-      <div className="flex flex-col gap-4 @3xl:flex-row @3xl:gap-5">
-        <AlgorithmRail
-          ids={view.available}
-          value={view.algorithm}
-          onChange={view.setAlgorithm}
-          className="@3xl:w-[172px] @3xl:shrink-0 @3xl:border-r @3xl:border-border @3xl:pr-4"
-        />
-
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <SortingBars step={step} maxValue={view.maxValue} height={210} run={view.run} />
-          <SortingLegend />
-          <Narration index={index} total={total} text={step.caption} />
-          {/* Transport and counters each get their own line: sharing one
-              flex-wrap row meant the counters jumped below the buttons the
-              moment a count grew a digit. */}
-          <div className="flex flex-col gap-2.5">
-            <StepTransport
-              index={player.index}
-              total={total}
-              playing={player.playing}
-              onPlay={player.play}
-              onPause={player.pause}
-              onNext={player.next}
-              onPrev={player.prev}
-              onReset={player.reset}
-              onShuffle={input.shuffle}
-            />
-            <CounterPills items={runCounters(step)} />
-          </div>
-          <ProgressRail index={index} total={total} />
-        </div>
-
-        <div className="flex flex-col gap-3 @3xl:w-[228px] @3xl:shrink-0 @3xl:border-l @3xl:border-border @3xl:pl-4">
+    <WidgetShell
+      kind="Sorting"
+      title={meta.label}
+      meta={PRESETS.find((p) => p.id === input.preset)?.label}
+      bare={bare}
+      primary={<AlgorithmSelect ids={view.available} value={view.algorithm} onChange={view.setAlgorithm} />}
+      options={mini ? undefined : <InputControls input={input} />}
+      stage={<SortingBars step={step} maxValue={view.maxValue} height={mini ? 110 : 170} run={mini ? undefined : view.run} compact={mini} />}
+      readout={<StatReadout stats={runCounters(step)} />}
+      legend={mini ? undefined : <SortingLegend />}
+      sideWidth={240}
+      side={
+        <>
           <AlgorithmHeading meta={meta} />
           <p className="text-[12px] leading-[1.5] text-ink-soft">{meta.note}</p>
-          <div>
-            <PanelLabel className="mb-1">Complexity</PanelLabel>
-            <ComplexityRows meta={meta} />
-          </div>
+          {layout === "compact" ? (
+            <Pseudocode meta={meta} line={step.line} />
+          ) : (
+            <div>
+              <PanelLabel className="mb-1">Complexity</PanelLabel>
+              <ComplexityRows meta={meta} />
+            </div>
+          )}
           <FactList title="Good for" items={meta.goodFor} tone="good" />
           <FactList title="Watch out" items={meta.watchOut} tone="bad" />
-        </div>
-      </div>
-
-      <TruncatedNote run={view.run} meta={meta} />
-
-      {showComparison && view.available.length > 1 && (
-        <CostComparison view={view} highlight={[view.algorithm]} />
-      )}
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* 1b - stage over a narration log                                            */
-/* -------------------------------------------------------------------------- */
-
-function LogBody({ view }: { view: SortingView }) {
-  const { meta, step, index, total, player, input } = view;
-
-  return (
-    <div className="@container flex flex-col gap-4">
-      <Segmented
-        label="Algorithm"
-        variant="solid"
-        value={view.algorithm}
-        onChange={view.setAlgorithm}
-        options={view.available.map((id) => ({ id, label: algorithmMeta(id).label.replace(" sort", "") }))}
-      />
-
-      <SortingBars step={step} maxValue={view.maxValue} height={240} run={view.run} />
-      <SortingLegend />
-
-      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
-        <StepTransport
-          index={player.index}
-          total={total}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onShuffle={input.shuffle}
-        />
-        <InputControls input={input} />
-      </div>
-
-      <ProgressRail index={index} total={total} />
-
-      <div className="flex flex-col gap-4 border-t border-border pt-4 @2xl:flex-row @2xl:gap-5">
-        <NarrationLog
-          steps={view.run.steps}
-          index={index}
-          onJump={player.setIndex}
-          className="min-w-0 @2xl:flex-[1.15] @2xl:border-r @2xl:border-border @2xl:pr-5"
-        />
-        <div className="flex min-w-0 flex-col gap-3 @2xl:flex-1">
-          <AlgorithmHeading meta={meta} />
-          <ComplexityChips meta={meta} />
-          <div className="flex flex-col gap-4 @xl:flex-row">
-            <FactList title="Pros" items={meta.goodFor} tone="good" className="flex-1" />
-            <FactList title="Cons" items={meta.watchOut} tone="bad" className="flex-1" />
-          </div>
-        </div>
-      </div>
-
-      <TruncatedNote run={view.run} meta={meta} />
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* 1c - compact split, with the pseudocode                                    */
-/* -------------------------------------------------------------------------- */
-
-const COMPACT_TABS = [
-  { id: "narration", label: "Narration" },
-  { id: "complexity", label: "Complexity" },
-  { id: "tradeoffs", label: "Trade-offs" },
-] as const;
-
-type CompactTab = (typeof COMPACT_TABS)[number]["id"];
-
-function CompactBody({ view }: { view: SortingView }) {
-  const { meta, step, index, total, player, input } = view;
-  const [tab, setTab] = useState<CompactTab>("narration");
-
-  return (
-    <div className="@container flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <AlgorithmSelect ids={view.available} value={view.algorithm} onChange={view.setAlgorithm} />
-        <Segmented size="xs" value={tab} onChange={setTab} options={COMPACT_TABS} />
-      </div>
-
-      <div className="flex flex-col gap-3 @xl:flex-row @xl:gap-4">
-        <div className="flex min-w-0 flex-[1.25] flex-col gap-2.5">
-          <SortingBars step={step} maxValue={view.maxValue} height={172} run={view.run} />
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <StepTransport
-              index={player.index}
-              total={total}
-              playing={player.playing}
-              onPlay={player.play}
-              onPause={player.pause}
-              onNext={player.next}
-              onPrev={player.prev}
-              onReset={player.reset}
-              onShuffle={input.shuffle}
-              size="sm"
-            />
-            <span className="font-label text-[11px] tabular-nums text-slate">
-              {index + 1} / {total}
-            </span>
-          </div>
-          <ProgressRail index={index} total={total} />
-          <CounterPills items={runCounters(step)} />
-        </div>
-
-        <div className="flex min-w-0 flex-col gap-2.5 rounded-lg border border-border bg-surface-2/50 p-3 @xl:w-[17.5rem] @xl:shrink-0">
-          {tab === "narration" && (
-            <div key="narration" className="flex flex-col gap-2.5 duration-150 animate-in fade-in motion-reduce:animate-none">
-              <PanelLabel>Step {index + 1}</PanelLabel>
-              <p key={index} className="h-[3.4rem] overflow-y-auto text-[13px] leading-[1.45] text-ink">
-                {step.caption}
-              </p>
-              <Pseudocode meta={meta} line={step.line} />
-            </div>
-          )}
-          {tab === "complexity" && (
-            <div key="complexity" className="flex flex-col gap-2.5 duration-150 animate-in fade-in motion-reduce:animate-none">
-              <AlgorithmHeading meta={meta} />
-              <ComplexityRows meta={meta} />
-              <p className="text-[12px] leading-[1.5] text-ink-soft">{meta.note}</p>
-            </div>
-          )}
-          {tab === "tradeoffs" && (
-            <div key="tradeoffs" className="flex flex-col gap-3 duration-150 animate-in fade-in motion-reduce:animate-none">
-              <FactList title="Good for" items={meta.goodFor} tone="good" />
-              <FactList title="Watch out" items={meta.watchOut} tone="bad" />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <InputControls input={input} />
-      <TruncatedNote run={view.run} meta={meta} />
-    </div>
+        </>
+      }
+      details={
+        layout === "log" ? (
+          <NarrationLog steps={view.run.steps} index={index} onJump={player.setIndex} />
+        ) : layout === "console" && showComparison && view.available.length > 1 ? (
+          <CostComparison view={view} highlight={[view.algorithm]} />
+        ) : undefined
+      }
+      status={truncatedNote(view.run, meta)}
+      caption={step.caption}
+      captionLabel={index + 1}
+      dock={<PlayerDock player={player} total={total} onShuffle={input.shuffle} />}
+    />
   );
 }
 
@@ -488,62 +322,46 @@ function RaceBody({ data, frame }: { data: Record<string, unknown>; frame: boole
     [available, input.preset, input.size, input.seed],
   );
 
-  const body = (
-    <div className="@container flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+  return (
+    <WidgetShell
+      kind="Sorting"
+      title="Two sorts, one input"
+      meta={`${algorithmMeta(left).label} vs ${algorithmMeta(right).label}`}
+      bare={!frame}
+      primary={
         <div className="flex flex-wrap items-center gap-2">
           <AlgorithmSelect label="A" ids={available} value={left} onChange={setLeft} />
           <span className="text-[11px] text-slate">vs</span>
           <AlgorithmSelect label="B" ids={available} value={right} onChange={setRight} />
         </div>
-        <StepTransport
-          index={player.index}
-          total={total}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onShuffle={input.shuffle}
-        />
-      </div>
-
-      <div className="grid gap-4 @xl:grid-cols-2">
-        <RaceSide side="A" id={left} run={runA} step={stepA} index={index} maxValue={maxValue} />
-        <RaceSide side="B" id={right} run={runB} step={stepB} index={index} maxValue={maxValue} />
-      </div>
-
-      <SortingLegend />
-      <ProgressRail index={index} total={total} />
-
-      <div className="rounded-lg border border-border bg-surface-2/50 p-3">
-        <PanelLabel>Narration · side by side</PanelLabel>
-        <div className="mt-2 grid gap-x-5 gap-y-2 @xl:grid-cols-2">
-          <p key={`a-${index}`} className="h-[2.6rem] overflow-y-auto text-[12.5px] leading-[1.45] text-ink duration-150 animate-in fade-in motion-reduce:animate-none">
-            <b className="text-slate">A</b> — {stepA.caption}
-          </p>
-          <p key={`b-${index}`} className="h-[2.6rem] overflow-y-auto text-[12.5px] leading-[1.45] text-ink duration-150 animate-in fade-in motion-reduce:animate-none">
-            <b className="text-slate">B</b> — {stepB.caption}
-          </p>
+      }
+      options={<InputControls input={input} />}
+      stage={
+        <div className="@container">
+          <div className="grid gap-4 @xl:grid-cols-2">
+            <RaceSide side="A" id={left} run={runA} step={stepA} index={index} maxValue={maxValue} />
+            <RaceSide side="B" id={right} run={runB} step={stepB} index={index} maxValue={maxValue} />
+          </div>
         </div>
-      </div>
-
-      <InputControls input={input} />
-
-      <TradeoffTable
-        rows={rows}
-        highlight={[left, right]}
-        footnote="Counting sort runs on a smaller value range than the others, since it needs one bucket per distinct value."
-      />
-    </div>
-  );
-
-  if (!frame) return body;
-  return (
-    <WidgetFrame title="Sorting visualizer" subtitle={`${algorithmMeta(left).label} vs ${algorithmMeta(right).label}`}>
-      {body}
-    </WidgetFrame>
+      }
+      legend={<SortingLegend />}
+      details={
+        <TradeoffTable
+          rows={rows}
+          highlight={[left, right]}
+          footnote="Counting sort runs on a smaller value range than the others, since it needs one bucket per distinct value."
+        />
+      }
+      caption={
+        <>
+          <b className="text-slate">A</b> {stepA.caption}
+          <br />
+          <b className="text-slate">B</b> {stepB.caption}
+        </>
+      }
+      captionLabel={index + 1}
+      dock={<PlayerDock player={player} total={total} onShuffle={input.shuffle} />}
+    />
   );
 }
 
@@ -576,7 +394,7 @@ function RaceSide({
           {step.comparisons} comparisons · {step.writes} writes
         </span>
       </div>
-      <SortingBars step={step} maxValue={maxValue} height={150} compact />
+      <SortingBars step={step} maxValue={maxValue} height={120} compact />
       <div className="flex items-center justify-between text-[10.5px]">
         <span className="font-label text-slate">
           {Math.min(index + 1, run.steps.length)} / {run.steps.length} frames
@@ -585,42 +403,6 @@ function RaceSide({
           finished
         </span>
       </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* mini - stage only, for the homepage tile                                   */
-/* -------------------------------------------------------------------------- */
-
-function MiniBody({ view }: { view: SortingView }) {
-  const { step, total, player } = view;
-  return (
-    <div className="flex flex-col gap-3">
-      <Segmented
-        label="Algorithm"
-        value={view.algorithm}
-        onChange={view.setAlgorithm}
-        options={view.available.map((id) => ({ id, label: algorithmMeta(id).label.replace(" sort", "") }))}
-      />
-      <SortingBars step={step} maxValue={view.maxValue} height={150} compact />
-      <div className="grid grid-cols-3 gap-2">
-        <Stat label="comparisons" value={step.comparisons} />
-        <Stat label="writes" value={step.writes} />
-        <Stat label="in place" value={`${step.sorted.length} / ${step.array.length}`} tone="good" />
-      </div>
-      <StepCaption text={step.caption} />
-      <StepControls
-        index={player.index}
-        total={total}
-        playing={player.playing}
-        onPlay={player.play}
-        onPause={player.pause}
-        onNext={player.next}
-        onPrev={player.prev}
-        onReset={player.reset}
-        onScrub={player.setIndex}
-      />
     </div>
   );
 }
@@ -683,25 +465,5 @@ function SortingSingle({
 
   if (!view.step) return <p className="text-sm text-signal-coral">Sorting widget: nothing to run.</p>;
 
-  const body =
-    layout === "log" ? (
-      <LogBody view={view} />
-    ) : layout === "compact" ? (
-      <CompactBody view={view} />
-    ) : layout === "mini" ? (
-      <MiniBody view={view} />
-    ) : (
-      <ConsoleBody view={view} showComparison={showComparison} />
-    );
-
-  if (!frame) return body;
-
-  return (
-    <WidgetFrame
-      title="Sorting visualizer"
-      subtitle={`${view.meta.label} · ${PRESETS.find((p) => p.id === view.input.preset)?.label}`}
-    >
-      {body}
-    </WidgetFrame>
-  );
+  return <SingleShell view={view} layout={layout} showComparison={showComparison} bare={!frame} />;
 }

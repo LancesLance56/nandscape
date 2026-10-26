@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { bellmanFordSteps } from "@/lib/graph/algorithms";
 import { edgeKey, type GraphSpec } from "@/lib/graph/types";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -126,6 +127,19 @@ export function BellmanFordWidget({
 
   return (
     <AlgorithmRunner
+      title="Bellman-Ford"
+      readout={(step) => (
+        <StatReadout
+          stats={[
+            { label: step.phase ? "" : "setting up", value: step.phase ?? "" },
+            {
+              label: "nodes reached",
+              value: graph.nodes.filter((n) => (step.table?.[n.id] ?? "∞") !== "∞").length,
+              tone: "good",
+            },
+          ]}
+        />
+      )}
       graph={graph}
       steps={steps}
       frame={frame}

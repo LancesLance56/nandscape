@@ -1,22 +1,27 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { cn } from "@/lib/cn";
 import type { BacktrackRun, BacktrackStep } from "@/lib/backtracking/types";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { ChipRow, PanelBox, SegmentedRow, StatReadout, StatusSlot, type SegmentedGroup } from "../shared/widget-ui";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { OptionGroup, WidgetShell, toggleSlots, useWidgetView } from "../shared/widget-shell";
+import { ChipRow, PanelBox, Segmented, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { SearchTreeCanvas, TreeLegend } from "./search-tree-canvas";
 
 export type TreeView = "tree" | "profile";
 
 interface BacktrackingRunnerProps<P> {
+  /** Detailed-view title, e.g. "N-Queens". */
+  title: string;
   run: BacktrackRun<P>;
   /** Problem-specific visual (a board, a string with cuts, a coloured graph). */
   visual?: (step: BacktrackStep<P>) => ReactNode;
   /** Extra readouts beside the standard path/solutions/counters. */
   panel?: (step: BacktrackStep<P>) => ReactNode;
-  /** Switchers rendered above the visual, e.g. mode or size pickers. */
+  /** Switchers, e.g. mode or size pickers. One becomes the shell's primary
+   *  control (see `primaryToggle`); the rest go in the detailed options row. */
   toggles?: SegmentedGroup[];
+  /** Id of the toggle shown in both views. Defaults to the first. */
+  primaryToggle?: string;
   showTree?: boolean;
   /** Label for the solutions box, e.g. "Subsets found". */
   solutionsLabel?: string;
@@ -44,10 +49,12 @@ interface BacktrackingRunnerProps<P> {
  * small enough to read.
  */
 export function BacktrackingRunner<P>({
+  title,
   run,
   visual,
   panel,
   toggles,
+  primaryToggle,
   showTree = true,
   solutionsLabel = "Solutions found",
   showDeadInLegend = true,
@@ -64,66 +71,47 @@ export function BacktrackingRunner<P>({
     return <p className="text-sm text-signal-coral">Backtracking widget: nothing to run.</p>;
   }
 
-  const treeToggle: SegmentedGroup | null = showTree
-    ? {
-        id: "tree-view",
-        label: "Search view",
-        active: treeView,
-        onChange: (id) => setTreeView(id as TreeView),
-        options: [
+  const treeToggle = showTree ? (
+    <OptionGroup label="Search view">
+      <Segmented
+        options={[
           { id: "tree", label: "Tree" },
           { id: "profile", label: "Depth profile" },
-        ],
-      }
-    : null;
-  const allToggles = treeToggle ? [...(toggles ?? []), treeToggle] : (toggles ?? []);
+        ]}
+        value={treeView}
+        onChange={(id) => setTreeView(id as TreeView)}
+      />
+    </OptionGroup>
+  ) : undefined;
+  const slots = toggleSlots(toggles ?? [], primaryToggle, treeToggle);
 
   return (
-    <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      <SegmentedRow groups={allToggles} className="mb-4" />
-
-      {/* The board sits in an `auto` column so the panels start right beside
-          it instead of leaving dead space, and the tree moves out of this
-          grid entirely (below) because it is a wide element and was being
-          squeezed into half the width.
-
-          min-w-0 on the panel column is load-bearing: grid and flex children
-          default to min-width:auto and refuse to shrink below their content,
-          which previously let the tree stretch the page to tens of thousands
-          of pixels instead of scrolling inside its own box. */}
-      <div
-        className={cn(
-          "grid gap-4 lg:items-start",
-          visual ? "lg:grid-cols-[auto_minmax(0,1fr)]" : "lg:grid-cols-[1.7fr_minmax(0,1fr)]",
-        )}
-      >
-        <div className="flex min-w-0 flex-col gap-2">
-          {/* Centred because a small board (4x4) is narrower than the hint
-              beneath it, and left-aligning it leaves all the slack on one
-              side. */}
-          {visual && <div className="flex justify-center">{visual(step)}</div>}
-          {/* With no board to show, the tree is the visual, so it stays in
-              the left column rather than dropping below an empty space. */}
-          {!visual && showTree && <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} />}
-          {/* Capped to the widest a board gets. An `auto` grid column is
-              sized by its widest child, so a roomier cap here would widen
-              the column and reopen the gap between board and panels. */}
-          {hint && <p className="max-w-[21rem] text-[11px] leading-relaxed text-slate">{hint}</p>}
-        </div>
-
-        <div className="flex min-w-0 flex-col gap-2.5">
-          {/* Unboxed rather than another titled panel: this is the one readout
-              that never has anything problem-specific in it, so it does not
-              need the same weight as the panels that do. */}
-          {/* The running solution count lives in the Solutions panel below,
-              which also lists them - no need to also carry it here. */}
-          <StatReadout
-            stats={[
-              { label: "nodes entered", value: step.visited },
-              { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
-            ]}
-          />
-
+    <WidgetShell
+      kind="Backtracking"
+      title={title}
+      bare={!frame}
+      className={className}
+      primary={slots.primary}
+      options={slots.options}
+      stage={
+        <Stage
+          hint={hint}
+          visual={visual ? <div className="flex justify-center">{visual(step)}</div> : null}
+          tree={showTree ? <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} /> : null}
+        />
+      }
+      readout={
+        <StatReadout
+          stats={[
+            { label: "nodes entered", value: step.visited },
+            { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
+            { label: "found", value: step.solutions.length, tone: "good" },
+          ]}
+        />
+      }
+      sideWidth={230}
+      side={
+        <>
           <PanelBox title="Call stack">
             <ChipRow items={step.path} emptyLabel="back at the root" reserveRows={2} />
           </PanelBox>
@@ -143,46 +131,46 @@ export function BacktrackingRunner<P>({
               </div>
             )}
           </PanelBox>
-        </div>
-      </div>
+        </>
+      }
+      status={
+        run.truncated ? (
+          <p className="text-[11px] text-copper-dark">
+            This run hit the step limit and stopped early. The tree keeps growing past this point, which is rather the
+            lesson: the search space outgrows what is watchable long before it outgrows what is computable.
+          </p>
+        ) : undefined
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
+  );
+}
 
-      {/* Narration and transport sit directly under the board rather than
-          below the tree. Driving the widget is the main interaction, and it
-          was previously pushed a full screen down by a block of secondary
-          reference material. */}
-      <div className="mt-4 flex flex-col gap-2.5">
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-        <StatusSlot lines={2}>
-          {run.truncated && (
-            <p className="text-[11px] text-copper-dark">
-              This run hit the step limit and stopped early. The tree keeps growing past this point, which is rather the
-              lesson: the search space outgrows what is watchable long before it outgrows what is computable.
-            </p>
-          )}
-        </StatusSlot>
-      </div>
-
-      {/* The search view is reference material you consult rather than drive,
-          so it sits last - but it is always shown at a fixed height (the tree
-          canvas pans and zooms in place) rather than behind a disclosure whose
-          open/closed state would change the widget's height. */}
-      {visual && showTree && (
-        <div className="mt-4">
-          <div className="mb-2 text-[11px] font-semibold text-slate">Search view</div>
-          <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} />
+/**
+ * The board (or the tree, when a problem has no board), plus its hint.
+ *
+ * With a board, the detailed view puts the search tree *beside* it rather than
+ * below: stacked, the two outgrew a laptop screen, and side by side the
+ * reader can watch a move on the board and its branch in the tree at once.
+ */
+function Stage({ hint, visual, tree }: { hint?: string; visual: ReactNode; tree: ReactNode }) {
+  const view = useWidgetView();
+  const detailed = view === "detailed";
+  return (
+    <div className="flex min-w-0 flex-col gap-2">
+      {detailed && visual && tree ? (
+        <div className="grid items-start gap-3 lg:grid-cols-[auto_minmax(0,1fr)]">
+          {visual}
+          {/* Too much for a phone on top of the board: the tree is for
+              screens with room beside it. */}
+          <div className="hidden min-w-0 md:block">{tree}</div>
         </div>
+      ) : (
+        (visual ?? tree)
       )}
+      {detailed && hint && <p className="text-center text-[11px] leading-relaxed text-slate">{hint}</p>}
     </div>
   );
 }

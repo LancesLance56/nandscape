@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Check, RotateCcw, X } from "lucide-react";
-import { WidgetFrame } from "./widget-frame";
+import { ActionDock, DetailedOnly, WidgetShell } from "./shared/widget-shell";
 import { cn } from "@/lib/cn";
-import { WidgetButton } from "./shared/widget-ui";
+import { Banner, WidgetButton } from "./shared/widget-ui";
 
 export interface QuizOption {
   label?: string;
@@ -135,55 +135,50 @@ function Quiz({ data }: { data: QuizData }) {
 
   const passed = score >= Math.ceil(questions.length / 2);
 
+  const answeredRight = answeredCurrent && current.options[chosen]?.correct;
+
   return (
-    <WidgetFrame title={title} className={data.className}>
-      <div className="flex flex-col gap-4">
-        {/* One segment per question: answered ones carry their result, so the
-            run so far is readable at a glance. */}
-        <div className="flex gap-1" role="presentation">
+    <WidgetShell
+      kind="Check yourself"
+      title={title}
+      meta={finished ? "done" : `question ${step + 1} of ${questions.length}`}
+      className={data.className}
+      // One segment per question: answered ones carry their result, so the
+      // run so far is readable at a glance. It sits where a mode switch would.
+      primary={
+        <div className="flex w-56 gap-1" role="presentation">
           {questions.map((q, i) => {
             const answer = selectedByStep[i];
             const state =
               answer === undefined
                 ? i === step && !finished
-                  ? "bg-copper/40"
-                  : "bg-border"
+                  ? "bg-copper"
+                  : "bg-surface-4"
                 : q.options[answer]?.correct
-                  ? "bg-signal-green-strong"
+                  ? "bg-signal-green"
                   : "bg-signal-coral";
-            return <span key={i} className={cn("h-1 flex-1 rounded-full transition-colors", state)} />;
+            return <span key={i} className={cn("h-1.5 flex-1 rounded-full transition-colors", state)} />;
           })}
         </div>
-
-        {finished ? (
+      }
+      prompt={finished ? undefined : current.prompt}
+      stage={
+        finished ? (
           <div className="flex flex-col items-center gap-3 py-6 text-center">
             <span className="font-display text-4xl font-bold tabular-nums text-ink">
               {score}
               <span className="text-2xl text-slate">/{questions.length}</span>
             </span>
-            <p
-              className={cn(
-                "text-sm font-semibold",
-                passed ? "text-signal-green-strong" : "text-signal-coral-strong",
-              )}
-            >
+            <p className={cn("text-sm font-semibold", passed ? "text-signal-green-strong" : "text-signal-coral-strong")}>
               {passed ? passMessage : failMessage}
             </p>
-            <WidgetButton size="md" onClick={restart}>
-              <RotateCcw className="h-3.5 w-3.5" />
-              Retake quiz
-            </WidgetButton>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-baseline justify-between gap-3">
-              <p className="text-sm font-semibold leading-relaxed text-ink">{current.prompt}</p>
-              <span className="shrink-0 font-label text-[10px] tabular-nums text-slate">
-                {step + 1}/{questions.length}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-2">
+          <div className="mx-auto flex w-full max-w-[34rem] flex-col gap-3">
+            <DetailedOnly>
+              <p className="text-[15px] font-semibold leading-relaxed text-ink">{current.prompt}</p>
+            </DetailedOnly>
+            <div role="group" aria-label="Answer choices" className="flex flex-col gap-2.5">
               {current.options.map((option, i) => {
                 const isChosen = chosen === i;
                 const reveal = answeredCurrent;
@@ -194,37 +189,38 @@ function Quiz({ data }: { data: QuizData }) {
                     key={i}
                     type="button"
                     disabled={reveal}
+                    aria-pressed={isChosen}
                     onClick={() => selectOption(i)}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl border px-3.5 py-2.5 text-left text-sm transition-colors",
-                      !reveal && "border-border-strong bg-surface-2 text-ink hover:border-copper hover:bg-surface-card",
-                      reveal && isRight && "border-signal-green-strong/50 bg-signal-green-bg text-signal-green-strong",
-                      reveal && !isRight && isChosen && "border-signal-coral/50 bg-signal-coral-bg text-signal-coral",
-                      reveal && !isRight && !isChosen && "border-border bg-surface-2 text-ink-soft opacity-50",
+                      "flex min-h-[52px] items-center gap-3.5 rounded-xl border-[1.5px] py-2 pl-2 pr-3.5 text-left text-sm transition-colors",
+                      !reveal && "border-border-strong bg-surface-card text-ink hover:border-slate",
+                      reveal && isRight && "border-signal-green bg-signal-green-bg text-signal-green-strong",
+                      reveal && !isRight && isChosen && "border-signal-coral bg-signal-coral-bg text-signal-coral-strong",
+                      reveal && !isRight && !isChosen && "border-border-strong bg-surface-card text-ink-soft opacity-50",
                     )}
                   >
                     {/* State is carried by shape as well as colour, so the
                         right answer is not conveyed by hue alone. */}
                     <span
                       className={cn(
-                        "flex size-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold",
-                        !reveal && "border-border-strong text-slate",
-                        reveal && isRight && "border-signal-green-strong bg-signal-green-strong text-white",
-                        reveal && !isRight && isChosen && "border-signal-coral bg-signal-coral text-white",
-                        reveal && !isRight && !isChosen && "border-border text-slate",
+                        "grid size-[30px] shrink-0 place-items-center rounded-lg text-[13px] font-bold",
+                        !reveal && "bg-surface-2 text-ink-soft",
+                        reveal && isRight && "bg-signal-green text-surface-card",
+                        reveal && !isRight && isChosen && "bg-signal-coral text-surface-card",
+                        reveal && !isRight && !isChosen && "bg-surface-2 text-slate",
                       )}
                     >
                       {reveal && isRight ? (
-                        <Check className="h-3 w-3" />
+                        <Check className="size-4" />
                       ) : reveal && isChosen ? (
-                        <X className="h-3 w-3" />
+                        <X className="size-4" />
                       ) : (
                         String.fromCharCode(65 + i)
                       )}
                     </span>
 
                     {option.code ? (
-                      <span className="font-code text-[13px]">{option.code}</span>
+                      <span className="font-code text-[15px] font-semibold">{option.code}</span>
                     ) : (
                       <span>{option.label}</span>
                     )}
@@ -232,25 +228,42 @@ function Quiz({ data }: { data: QuizData }) {
                 );
               })}
             </div>
-
-            {answeredCurrent && (
-              <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18 }}
-                className="flex flex-col gap-3 border-t border-dashed border-border pt-3.5"
-              >
-                {current.explanation && (
-                  <p className="text-sm leading-relaxed text-ink-soft">{current.explanation}</p>
-                )}
-                <WidgetButton tone="primary" size="md" onClick={goNext}>
-                  {isLast ? "See results" : "Next question"}
-                </WidgetButton>
-              </motion.div>
-            )}
           </div>
-        )}
-      </div>
-    </WidgetFrame>
+        )
+      }
+      status={
+        !finished && answeredCurrent ? (
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.18 }}
+            className="mx-auto w-full max-w-[34rem]"
+          >
+            <Banner tone={answeredRight ? "good" : "bad"}>
+              <b>{answeredRight ? "Correct. " : "Not quite. "}</b>
+              {current.explanation}
+            </Banner>
+          </motion.div>
+        ) : undefined
+      }
+      dock={
+        finished ? (
+          <ActionDock hint={`${score} of ${questions.length} right.`}>
+            <WidgetButton size="md" onClick={restart}>
+              <RotateCcw className="h-3.5 w-3.5" />
+              Retake quiz
+            </WidgetButton>
+          </ActionDock>
+        ) : (
+          <ActionDock hint={answeredCurrent ? undefined : "Pick an answer."}>
+            {answeredCurrent && (
+              <WidgetButton tone="primary" size="md" onClick={goNext}>
+                {isLast ? "See results" : "Next question"}
+              </WidgetButton>
+            )}
+          </ActionDock>
+        )
+      }
+    />
   );
 }

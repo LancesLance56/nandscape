@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { Led } from "@/components/ui/led";
-import { WidgetFrame } from "./widget-frame";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { Banner, StatReadout } from "./shared/widget-ui";
 import { cn } from "@/lib/cn";
 
 const DEFAULT_VARS: readonly string[] = ["A", "B", "C"];
@@ -72,80 +73,83 @@ export function TruthTableExplorerWidget({ data }: { data: Record<string, unknow
   const rows = useMemo(() => Array.from({ length: size }, (_, i) => i), [size]);
 
   return (
-    <WidgetFrame title={title} subtitle={`${discoveredCount} / ${size} combinations found`} className={className}>
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col items-center gap-5 rounded-xl border border-border bg-surface-card p-5">
-          <div className="flex gap-6">
-            {variables.map((v, i) => (
-              <ToggleSwitch key={v} label={v} checked={switches[i]} onChange={() => toggleAt(i)} />
-            ))}
+    <WidgetShell
+      kind="Boolean logic"
+      title={title}
+      className={className}
+      prompt="Flip the inputs and fill in the table: what is the mystery box doing?"
+      stage={
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-center">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-surface-card p-3 sm:gap-4 sm:p-4">
+            <div className="flex gap-6">
+              {variables.map((v, i) => (
+                <ToggleSwitch key={v} label={v} checked={switches[i]} onChange={() => toggleAt(i)} />
+              ))}
+            </div>
+
+            <div className="flex h-14 w-36 items-center justify-center rounded-xl border-2 border-dashed border-border-strong bg-surface-2 text-xs font-semibold text-slate sm:h-20">
+              {mysteryLabel}
+            </div>
+
+            <Led label="F" value={output ? 1 : 0} />
           </div>
 
-          <div className="flex h-24 w-40 items-center justify-center rounded-xl border-2 border-dashed border-border-strong bg-surface-2 text-xs font-semibold text-slate">
-            {mysteryLabel}
-          </div>
-
-          <Led label="F" value={output ? 1 : 0} />
-        </div>
-
-        <div className="flex-1 overflow-hidden rounded-xl border border-border">
-          <table className="w-full border-collapse text-xs">
-            <thead>
-              <tr className="bg-surface-2 text-slate">
-                {variables.map((v) => (
-                  <th key={v} className="px-3 py-2 text-center font-semibold">
-                    {v}
-                  </th>
-                ))}
-                <th className="px-3 py-2 text-center font-semibold">F</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((rowIndex) => {
-                const bits = indexToBits(rowIndex, variables.length);
-                const found = visited[rowIndex];
-                const isCurrent = rowIndex === currentIndex;
-                return (
-                  <tr
-                    key={rowIndex}
-                    className={cn(
-                      "border-t border-border transition-colors",
-                      isCurrent ? "bg-copper-bg/60" : found !== undefined ? "bg-surface-card" : "bg-surface-2/40",
-                    )}
-                  >
-                    {bits.map((b, i) => (
-                      <td key={i} className="px-3 py-1.5 text-center">
+          <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-surface-card sm:max-w-xs">
+            <table className="w-full border-collapse font-mono text-xs">
+              <thead>
+                <tr className="bg-surface-2 text-slate">
+                  {variables.map((v) => (
+                    <th key={v} className="px-3 py-2 text-center font-sans font-semibold">
+                      {v}
+                    </th>
+                  ))}
+                  <th className="border-l border-border-strong px-3 py-2 text-center font-sans font-semibold">F</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((rowIndex) => {
+                  const bits = indexToBits(rowIndex, variables.length);
+                  const found = visited[rowIndex];
+                  const isCurrent = rowIndex === currentIndex;
+                  return (
+                    <tr
+                      key={rowIndex}
+                      className={cn(
+                        "border-t border-border transition-colors",
+                        isCurrent ? "bg-copper-bg" : found !== undefined ? "bg-surface-card" : "bg-surface-2/40",
+                      )}
+                    >
+                      {bits.map((b, i) => (
+                        <td key={i} className="px-3 py-1 text-center">
+                          {found === undefined ? (
+                            <span className="text-slate">?</span>
+                          ) : b ? (
+                            <span className="text-signal-green-strong">1</span>
+                          ) : (
+                            <span className="text-signal-coral-strong">0</span>
+                          )}
+                        </td>
+                      ))}
+                      <td className="border-l border-border-strong px-3 py-1 text-center font-bold">
                         {found === undefined ? (
                           <span className="text-slate">?</span>
-                        ) : b ? (
-                          <span className="text-signal-green">1</span>
+                        ) : found ? (
+                          <span className="text-signal-green-strong">1</span>
                         ) : (
-                          <span className="text-signal-coral">0</span>
+                          <span className="text-signal-coral-strong">0</span>
                         )}
                       </td>
-                    ))}
-                    <td className="px-3 py-1.5 text-center font-bold">
-                      {found === undefined ? (
-                        <span className="text-slate">?</span>
-                      ) : found ? (
-                        <span className="text-signal-green">1</span>
-                      ) : (
-                        <span className="text-signal-coral">0</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-
-      {discoveredCount === size && (
-        <p className="mt-5 rounded-lg border border-signal-green/40 bg-signal-green-bg px-4 py-3 text-xs font-semibold text-signal-green-strong">
-          {completionMessage}
-        </p>
-      )}
-    </WidgetFrame>
+      }
+      readout={<StatReadout stats={[{ label: `of ${size} combinations found`, value: discoveredCount, tone: discoveredCount === size ? "good" : "default" }]} />}
+      status={discoveredCount === size ? <Banner tone="good">{completionMessage}</Banner> : undefined}
+      dock={<ActionDock hint="Each new combination of switches fills in one more row." />}
+    />
   );
 }

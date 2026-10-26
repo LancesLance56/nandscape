@@ -3,6 +3,9 @@
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/cn";
 import { WidgetButton } from "./shared/widget-ui";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { Banner, PanelBox } from "./shared/widget-ui";
 
 interface ReorderItem {
   id: string;
@@ -83,81 +86,82 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
     }
   };
 
-  return (
-    <div className={cn("rounded-xl border border-border bg-surface-card p-5 ", data.className)}>
-      <ul className="mb-4 flex flex-col gap-2">
-        {items.map((item, i) => (
-          <li
-            key={item.id}
-            className="flex items-center gap-3 rounded-lg border border-border bg-surface-2 px-3 py-2.5"
-          >
-            <span className="w-5 text-xs text-slate">{i + 1}</span>
-            <span className="flex-1 text-sm text-ink">{item.name}</span>
-            <span className=" text-[11px] text-slate">cost ~{item.cost}</span>
-            <span className="flex gap-1">
-              <WidgetButton size="xs" aria-label="Move up" onClick={() => move(i, -1)}>
-                ↑
-              </WidgetButton>
-              <WidgetButton size="xs" aria-label="Move down" onClick={() => move(i, 1)}>
-                ↓
-              </WidgetButton>
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mb-3 flex flex-wrap justify-between gap-2 text-[13px] text-ink-soft">
-        <span>
-          expected cost per check, current order:{" "}
-          <span className={isOptimal ? "text-copper" : "text-ink"}>{current.toFixed(1)} units</span>
-        </span>
-        <span>
-          best possible: <span className="text-ink">{best.toFixed(1)} units</span>
-        </span>
+  const bar = (label: string, value: number, tone: string) => (
+    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)_3.5rem] items-center gap-3 text-xs font-semibold text-slate">
+      <span>{label}</span>
+      <div className="h-3.5 overflow-hidden rounded-full bg-surface-3">
+        <div className={cn("h-full rounded-full transition-all duration-300", tone)} style={{ width: `${(value / maxBar) * 100}%` }} />
       </div>
-
-      <div className="mb-4 flex flex-col gap-2">
-        <div className="flex items-center gap-2.5 text-xs">
-          <span className="w-16 shrink-0 text-slate">current</span>
-          <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
-            <div
-              className="h-full bg-signal-coral transition-all duration-300"
-              style={{ width: `${(current / maxBar) * 100}%` }}
-            />
-          </div>
-          <span className="w-16 shrink-0 text-right text-slate">{current.toFixed(1)}</span>
-        </div>
-        <div className="flex items-center gap-2.5 text-xs">
-          <span className="w-16 shrink-0 text-slate">optimal</span>
-          <div className="h-5 flex-1 overflow-hidden rounded border border-border bg-surface-2">
-            <div
-              className="h-full bg-copper transition-all duration-300"
-              style={{ width: `${(best / maxBar) * 100}%` }}
-            />
-          </div>
-          <span className="w-16 shrink-0 text-right text-slate">{best.toFixed(1)}</span>
-        </div>
-      </div>
-
-      <WidgetButton tone="primary" size="md" onClick={checkOrder}>
-        Check order
-      </WidgetButton>
-
-      {checked && (
-        <div className="mt-4 border-t border-dashed border-border pt-4">
-          {solved ? (
-            <p className=" text-[13px] text-copper">
-              Cheapest to most expensive. That minimizes the expected cost per check, since whichever one
-              fails, you paid the least to find out.
-            </p>
-          ) : (
-            <p className=" text-[13px] text-signal-coral">
-              Not quite optimal yet. Compare the expected cost above to the best possible, then keep
-              swapping.
-            </p>
-          )}
-        </div>
-      )}
+      <b className="text-right font-mono text-ink">{value.toFixed(1)}</b>
     </div>
+  );
+
+  return (
+    <WidgetShell
+      kind="Optimize"
+      title="Order the checks, cheapest first"
+      className={data.className}
+      prompt="Order the checks so the cheapest runs first."
+      stage={
+        <ul className="mx-auto flex w-full max-w-[34rem] flex-col gap-2">
+          {items.map((item, i) => (
+            <li
+              key={item.id}
+              className="flex h-12 items-center gap-3 rounded-xl border-[1.5px] border-border-strong bg-surface-card pl-3 pr-2"
+            >
+              <span className="w-4 font-mono text-xs text-slate">{i + 1}</span>
+              <span className="flex-1 text-sm font-semibold text-ink">{item.name}</span>
+              <span className="font-mono text-xs text-slate">cost ~{item.cost}</span>
+              <span className="flex gap-1">
+                <WidgetButton size="xs" className="size-8 p-0" aria-label={`Move ${item.name} up`} disabled={i === 0} onClick={() => move(i, -1)}>
+                  <ChevronUp className="size-3.5" />
+                </WidgetButton>
+                <WidgetButton
+                  size="xs"
+                  className="size-8 p-0"
+                  aria-label={`Move ${item.name} down`}
+                  disabled={i === items.length - 1}
+                  onClick={() => move(i, 1)}
+                >
+                  <ChevronDown className="size-3.5" />
+                </WidgetButton>
+              </span>
+            </li>
+          ))}
+        </ul>
+      }
+      side={
+        <PanelBox title="Expected cost per check">
+          <p className="text-[11px] leading-relaxed text-slate">Whichever check fails, you paid for everything before it.</p>
+        </PanelBox>
+      }
+      readout={
+        <div className="flex w-full max-w-[34rem] flex-col gap-2">
+          {bar("Your order", current, isOptimal ? "bg-copper" : "bg-signal-coral")}
+          {bar("Best possible", best, "bg-copper")}
+        </div>
+      }
+      status={
+        checked ? (
+          solved ? (
+            <Banner tone="good">
+              Cheapest to most expensive. That minimizes the expected cost per check, since whichever one fails, you
+              paid the least to find out.
+            </Banner>
+          ) : (
+            <Banner tone="bad">
+              Not quite optimal yet. Compare the expected cost above to the best possible, then keep swapping.
+            </Banner>
+          )
+        ) : undefined
+      }
+      dock={
+        <ActionDock hint="Use the arrows to swap neighbours.">
+          <WidgetButton tone="primary" size="md" onClick={checkOrder}>
+            Check order
+          </WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

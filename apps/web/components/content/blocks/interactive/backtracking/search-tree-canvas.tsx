@@ -77,7 +77,7 @@ interface SearchTreeCanvasProps {
  * layoutTree and are scaled to pixels here (not via a viewBox, which would
  * shrink the labels along with the spacing and make a wide tree unreadable).
  */
-export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 300, view = "tree" }: SearchTreeCanvasProps) {
+export function SearchTreeCanvas({ nodes, step, showGhosts = true, maxHeight = 240, view = "tree" }: SearchTreeCanvasProps) {
   const revealed = new Set(step.revealed);
 
   if (nodes.length === 0) {

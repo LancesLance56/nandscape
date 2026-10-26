@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { defaultSudoku, sudokuSteps, type SudokuPayload, type SudokuStrategy } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
 import { PanelBox, Segmented, StatReadout, type SegmentedOption } from "../shared/widget-ui";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { WidgetShell, useWidgetView } from "../shared/widget-shell";
 
 const STRATEGY_OPTIONS: readonly SegmentedOption<SudokuStrategy>[] = [
   { id: "first", label: "Next blank in reading order" },
@@ -87,24 +88,29 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
   if (!step) return <p className="text-sm text-signal-coral">Sudoku widget: nothing to run.</p>;
 
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-5">
-      <Segmented
-        className="mb-4"
-        label="Which cell to fill next"
-        value={strategy}
-        onChange={setStrategy}
-        options={STRATEGY_OPTIONS}
-      />
-
-      <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
-        <div className="overflow-x-auto">
-          <SudokuBoard payload={payload} />
-          <p className="mt-2 max-w-[18rem] text-[11px] text-slate">
-            Bold digits are the given clues and never change. Copper digits are values the solver is guessing.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3">
+    <WidgetShell
+      kind="Backtracking"
+      title="Sudoku solver"
+      primary={<Segmented variant="solid" value={strategy} onChange={setStrategy} options={STRATEGY_OPTIONS} />}
+      stage={
+        <Stage>
+          <div className="flex justify-center overflow-x-auto">
+            <SudokuBoard payload={payload} />
+          </div>
+        </Stage>
+      }
+      readout={
+        <StatReadout
+          stats={[
+            { label: "cells filled", value: step.visited },
+            { label: "dead ends", value: step.pruned, tone: step.pruned > 0 ? "warn" : "good" },
+            { label: "blanks left", value: payload?.board.filter((v) => v === 0).length ?? 0 },
+          ]}
+        />
+      }
+      sideWidth={240}
+      side={
+        <>
           <PanelBox title="Candidates for the active cell" bodyClassName="h-14 overflow-y-auto">
             {payload?.candidates && payload.candidates.length > 0 ? (
               <div className="flex flex-wrap gap-1">
@@ -113,7 +119,7 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
                     key={c}
                     className={cn(
                       "flex h-6 w-6 items-center justify-center rounded font-label text-xs font-bold",
-                      c === payload.value ? "bg-copper text-white" : "bg-surface-3 text-ink-soft",
+                      c === payload.value ? "bg-copper text-copper-ink" : "bg-surface-3 text-ink-soft",
                     )}
                   >
                     {c}
@@ -127,28 +133,18 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
             )}
           </PanelBox>
 
-          <PanelBox title="Work done">
-            <StatReadout
-              stats={[
-                { label: "cells filled", value: step.visited },
-                { label: "dead ends", value: step.pruned, tone: step.pruned > 0 ? "warn" : "good" },
-                { label: "blanks left", value: payload?.board.filter((v) => v === 0).length ?? 0 },
-              ]}
-            />
-          </PanelBox>
-
           <PanelBox title="Both strategies on this puzzle">
             <div className="flex flex-col gap-1.5 text-xs">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className={cn(strategy === "first" ? "font-bold text-ink" : "text-slate")}>Reading order</span>
                 <span className="font-label text-ink-soft">
-                  {comparison.first.filled} filled, {comparison.first.dead} dead ends
+                  {comparison.first.filled} filled, {comparison.first.dead} dead
                 </span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className={cn(strategy === "mrv" ? "font-bold text-ink" : "text-slate")}>Fewest candidates</span>
                 <span className="font-label text-ink-soft">
-                  {comparison.mrv.filled} filled, {comparison.mrv.dead} dead ends
+                  {comparison.mrv.filled} filled, {comparison.mrv.dead} dead
                 </span>
               </div>
               <p className="mt-1 text-[11px] leading-relaxed text-slate">
@@ -157,29 +153,34 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
               </p>
             </div>
           </PanelBox>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3">
-        <StepCaption text={step.caption} />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-        {run.truncated && (
+        </>
+      }
+      status={
+        run.truncated ? (
           <p className="text-[11px] text-copper-dark">
             This run hit the step limit before finishing, which is itself the point: reading order can spend a very long
             time in a branch that was doomed near the top.
           </p>
-        )}
-      </div>
+        ) : undefined
+      }
+      caption={step.caption}
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
+  );
+}
+
+/** The board, plus what its colours mean in the detailed view only. */
+function Stage({ children }: { children: ReactNode }) {
+  const view = useWidgetView();
+  return (
+    <div className="flex flex-col items-center gap-2">
+      {children}
+      {view === "detailed" && (
+        <p className="max-w-[18rem] text-center text-[11px] text-slate">
+          Bold digits are the given clues and never change. Copper digits are values the solver is guessing.
+        </p>
+      )}
     </div>
   );
 }

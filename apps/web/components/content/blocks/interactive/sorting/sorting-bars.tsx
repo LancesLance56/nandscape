@@ -63,7 +63,7 @@ export function SortingBars({
   return (
     <div className="flex w-full flex-col gap-1">
       <div
-        className="flex w-full items-end gap-[2px] rounded-lg border border-border bg-surface-2/40 p-2"
+        className="flex w-full items-end gap-[2px] overflow-hidden rounded-lg border border-border bg-surface-2/40 p-2"
         style={{ height }}
         role="img"
         aria-label={`Array of ${n} values, ${step.sorted.length} in final position`}

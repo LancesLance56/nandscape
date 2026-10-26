@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { Stat, WidgetButton } from "./shared/widget-ui";
 
 const DEFAULT_BITS = 8;
 
@@ -52,53 +54,52 @@ export function TwosComplementWidget({
   const signed = isNegative ? value - 2 ** bits : value;
 
   return (
-    <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      <div className="mb-4 text-xs font-semibold text-slate">Two&rsquo;s complement, click a bit to flip it</div>
-
-      <div className="flex justify-center gap-1.5">
-        {binary.split("").map((bit, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => toggleBit(i)}
-            aria-label={i === 0 ? `Sign bit, currently ${bit}` : `Bit ${i}, currently ${bit}`}
-            className={cn(
-              "flex h-11 w-9 items-center justify-center rounded-lg border-2 text-lg font-bold transition-all",
-              bit === "1"
-                ? i === 0
-                  ? "border-signal-coral bg-signal-coral-bg text-signal-coral-strong"
-                  : "border-copper bg-copper-bg text-copper-dark"
-                : "border-border-strong bg-surface-2 text-slate",
-            )}
-          >
-            {bit}
-          </button>
-        ))}
-      </div>
-      <div className="mt-1 flex justify-center">
-        <span className="text-[10px] text-slate">sign bit ↑</span>
-      </div>
-
-      <div className="mt-5 grid grid-cols-2 gap-3 text-center">
-        <div className="rounded-lg bg-surface-2 p-3">
-          <div className="text-[11px] text-slate">As unsigned</div>
-          <div className="mt-1 text-lg font-bold text-ink">{value}</div>
-        </div>
-        <div className="rounded-lg bg-surface-2 p-3">
-          <div className="text-[11px] text-slate">As two&rsquo;s complement</div>
-          <div className={cn("mt-1 text-lg font-bold", isNegative ? "text-signal-coral-strong" : "text-ink")}>
-            {signed}
+    <WidgetShell
+      kind="Number systems"
+      title="Two's complement"
+      bare={!frame}
+      className={className}
+      prompt="The same bits, read two ways. The first bit makes it negative."
+      stage={
+        <div className="flex flex-col items-center gap-5">
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {binary.split("").map((bit, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => toggleBit(i)}
+                  aria-label={i === 0 ? `Sign bit, currently ${bit}` : `Bit ${i}, currently ${bit}`}
+                  className={cn(
+                    "grid h-12 w-10 place-items-center rounded-[10px] border-2 font-mono text-xl font-bold transition-colors",
+                    bit === "1"
+                      ? i === 0
+                        ? "border-signal-coral bg-signal-coral-bg text-signal-coral-strong"
+                        : "border-copper bg-copper-bg text-copper-dark"
+                      : "border-border-strong bg-surface-2 text-slate",
+                  )}
+                >
+                  {bit}
+                </button>
+              ))}
+            </div>
+            <span className="self-start pl-2 text-[10px] text-slate">sign bit ↑</span>
+          </div>
+          <div className="grid w-full max-w-sm grid-cols-2 gap-2.5">
+            <Stat label="As unsigned" value={value} />
+            <Stat label="As two's complement" value={signed} tone={isNegative ? "warn" : "default"} />
           </div>
         </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={negate}
-        className="mt-4 w-full rounded-lg border border-border-strong px-3 py-2 text-sm font-semibold text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
-      >
-        Negate: invert every bit, then add 1
-      </button>
-    </div>
+      }
+      caption={`The top bit counts as −${2 ** (bits - 1)} instead of +${2 ** (bits - 1)}, so ${binary} reads as ${signed}.`}
+      captionLabel="Why"
+      dock={
+        <ActionDock hint="Click a bit to flip it.">
+          <WidgetButton tone="primary" onClick={negate}>
+            Negate: invert, then add 1
+          </WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

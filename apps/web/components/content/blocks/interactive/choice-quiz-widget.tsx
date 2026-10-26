@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { Banner, WidgetButton } from "./shared/widget-ui";
 
 interface ChoiceOption {
   label?: string;
@@ -52,51 +54,55 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
   };
 
   return (
-    <div className={cn("rounded-xl border border-border bg-surface-card p-5", data.className)}>
-      <div className="mb-3 text-xs font-semibold text-slate">
-        {data.prompt}
-      </div>
-      <div className="flex flex-wrap gap-3">
-        {data.options.map((option, i) => {
-          const isAnswered = answered !== null;
-          const isChosen = answered === i;
-          const stateClass = !isAnswered
-            ? "border-border-strong bg-surface-2 text-ink hover:border-copper"
-            : option.correct
-              ? "border-copper bg-copper-bg text-copper-dark"
-              : isChosen
-                ? "border-signal-coral bg-signal-coral-bg text-signal-coral"
-                : "border-border-strong bg-surface-2 text-ink-soft opacity-60";
-          return (
-            <button
-              key={i}
-              type="button"
-              disabled={isAnswered}
-              onClick={() => handleClick(i)}
-              className={cn(
-                "min-w-[200px] flex-1 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors",
-                stateClass,
-              )}
-            >
-              {option.code ? (
-                <span className="block text-[13px]">{option.code}</span>
-              ) : (
-                <span>
-                  <span className=" font-semibold">{option.label}</span> {option.sublabel}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {answered !== null && (
-        <div className="mt-4 border-t border-dashed border-border pt-4">
-          <div className="mb-2 text-xs font-semibold tracking-wide text-copper">
-            {data.verdictGood}
-          </div>
-          <p className="text-sm leading-relaxed text-ink-soft">{data.explanation}</p>
+    <WidgetShell
+      kind="Check yourself"
+      title={data.prompt}
+      className={data.className}
+      prompt={data.prompt}
+      stage={
+        <div role="group" aria-label="Answer choices" className="grid gap-3 sm:grid-cols-2">
+          {data.options.map((option, i) => {
+            const isAnswered = answered !== null;
+            const isChosen = answered === i;
+            return (
+              <button
+                key={i}
+                type="button"
+                disabled={isAnswered}
+                aria-pressed={isChosen}
+                onClick={() => handleClick(i)}
+                className={cn(
+                  "flex min-h-[64px] flex-col items-start justify-center gap-1 rounded-xl border-[1.5px] px-4 py-3 text-left text-sm font-medium transition-colors",
+                  !isAnswered && "border-border-strong bg-surface-card text-ink hover:border-slate",
+                  isAnswered && option.correct && "border-signal-green bg-signal-green-bg text-signal-green-strong",
+                  isAnswered && !option.correct && isChosen && "border-signal-coral bg-signal-coral-bg text-signal-coral-strong",
+                  isAnswered && !option.correct && !isChosen && "border-border-strong bg-surface-card text-ink-soft opacity-50",
+                )}
+              >
+                {option.code ? (
+                  <span className="font-mono text-[13px] leading-relaxed">{option.code}</span>
+                ) : (
+                  <span>
+                    <span className="font-semibold">{option.label}</span> {option.sublabel}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
-      )}
-    </div>
+      }
+      status={
+        answered !== null ? (
+          <Banner tone={data.options[answered]?.correct ? "good" : "bad"}>
+            <b>{data.verdictGood}</b> {data.explanation}
+          </Banner>
+        ) : undefined
+      }
+      dock={
+        <ActionDock hint={answered === null ? "Pick one." : "Same logic, same result, different amount of work."}>
+          {answered !== null && <WidgetButton onClick={() => setAnswered(null)}>Try again</WidgetButton>}
+        </ActionDock>
+      }
+    />
   );
 }

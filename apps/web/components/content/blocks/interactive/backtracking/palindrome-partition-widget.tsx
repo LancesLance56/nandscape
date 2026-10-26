@@ -46,6 +46,7 @@ export function PalindromePartitionWidget({ data }: { data: Record<string, unkno
 
   return (
     <BacktrackingRunner
+      title="Palindrome partitioning"
       run={run}
       toggles={toggles}
       solutionsLabel="Partitions found"

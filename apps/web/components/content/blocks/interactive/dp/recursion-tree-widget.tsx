@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import { recursionSteps, type RecursionMode, type RecursionProblem } from "@/lib/dp/recursion";
 import type { CallNode } from "@/lib/dp/types";
-import { StepCaption, StepControls, useStepPlayer } from "../shared/step-player";
-import { ChipRow, PanelBox, SegmentedRow, StatusSlot, WidgetFrame, type SegmentedGroup } from "../shared/widget-ui";
+import { PlayerDock, useStepPlayer } from "../shared/step-player";
+import { WidgetShell, toggleSlots } from "../shared/widget-shell";
+import { ChipRow, PanelBox, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { CallTreeCanvas, CallTreeLegend } from "./call-tree-canvas";
 
 /**
@@ -176,42 +177,31 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
     });
   }
 
+  const problemName = { factorial: "Factorial", fib: "Fibonacci", binomial: "Choose" }[problem];
+
   return (
-    <WidgetFrame>
-      <SegmentedRow groups={toggles} className="mb-2" />
-
-      {/* The recurrence, as a single reference line rather than a boxed panel.
-          It does not change frame to frame, so it does not deserve the same
-          weight as the panels that do. */}
-      <p className="mb-3 font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
-
-      <div className="grid gap-4 lg:grid-cols-[2fr_minmax(0,1fr)] lg:items-start">
-        <div className="flex min-w-0 flex-col gap-2">
-          <CallTreeCanvas nodes={run.nodes} step={step} markRepeats={mode === "naive"} maxHeight={380} />
-          <CallTreeLegend showRepeats={mode === "naive"} showHits={mode === "memo"} />
-        </div>
-
-        <div className="flex min-w-0 flex-col gap-2.5">
-          {/* Stats and the answer share one slim, unboxed strip instead of two
-              separate panels, so the reasoning panel below gets the room. */}
-          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[11px] text-slate">
-            <span>
-              <b className="text-ink">{step.calls}</b> calls
-              {mode === "naive" && (
-                <>
-                  {" "}
-                  &middot; <b className="text-ink">{revealedKeys.size}</b> distinct
-                </>
-              )}
-              {mode === "memo" && step.hits > 0 && (
-                <>
-                  {" "}
-                  &middot; <b className="text-copper-dark">{step.hits}</b> from memo
-                </>
-              )}
-            </span>
-            <span className="font-label font-semibold text-signal-green-strong">{run.answer}</span>
-          </div>
+    <WidgetShell
+      kind="Dynamic programming"
+      title={`The recursion tree: ${problemName}`}
+      {...toggleSlots(toggles, "mode")}
+      stage={<CallTreeCanvas nodes={run.nodes} step={step} markRepeats={mode === "naive"} maxHeight={270} />}
+      readout={
+        <StatReadout
+          stats={[
+            { label: "calls", value: step.calls },
+            ...(mode === "naive" ? [{ label: "distinct", value: revealedKeys.size }] : []),
+            ...(mode === "memo" && step.hits > 0 ? [{ label: "from memo", value: step.hits, tone: "warn" as const }] : []),
+          ]}
+        />
+      }
+      legend={<CallTreeLegend showRepeats={mode === "naive"} showHits={mode === "memo"} />}
+      sideWidth={240}
+      side={
+        <>
+          {/* The recurrence never changes frame to frame, so it is a reference
+              line rather than a panel competing with the ones that do. */}
+          <p className="font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+          <p className="font-label text-xs font-semibold text-signal-green-strong">{run.answer}</p>
 
           {/* The panel the whole widget is built around: reading a recursion as
               an induction proof, for whichever call is on screen right now. */}
@@ -251,37 +241,23 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
               )}
             </PanelBox>
           )}
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-2">
-        <StepCaption
-          text={
-            activeStatus === "cacheHit"
-              ? `${step.caption} Nothing was computed here, and the subtree that used to hang below it is simply gone.`
-              : step.caption
-          }
-        />
-        <StepControls
-          index={player.index}
-          total={run.steps.length}
-          playing={player.playing}
-          onPlay={player.play}
-          onPause={player.pause}
-          onNext={player.next}
-          onPrev={player.prev}
-          onReset={player.reset}
-          onScrub={player.setIndex}
-        />
-        <StatusSlot lines={2}>
-          {run.truncated && (
-            <p className="text-[11px] text-copper-dark">
-              This run hit the frame limit and stopped early: without a memo the tree outgrows what is watchable long
-              before it outgrows what a computer would attempt.
-            </p>
-          )}
-        </StatusSlot>
-      </div>
-    </WidgetFrame>
+        </>
+      }
+      status={
+        run.truncated ? (
+          <p className="text-[11px] text-copper-dark">
+            This run hit the frame limit and stopped early: without a memo the tree outgrows what is watchable long
+            before it outgrows what a computer would attempt.
+          </p>
+        ) : undefined
+      }
+      caption={
+        activeStatus === "cacheHit"
+          ? `${step.caption} Nothing was computed here, and the subtree that used to hang below it is simply gone.`
+          : step.caption
+      }
+      captionLabel={player.index + 1}
+      dock={<PlayerDock player={player} total={run.steps.length} />}
+    />
   );
 }

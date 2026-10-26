@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { cn } from "@/lib/cn";
 import { adjacency, type GraphSpec } from "@/lib/graph/types";
 import { GraphCanvas } from "./graph-canvas";
+import { PanelBox, Segmented, StatReadout, WidgetButton } from "../shared/widget-ui";
+import { ActionDock, WidgetShell } from "../shared/widget-shell";
 
 type Kind = "undirected" | "directed" | "weighted" | "dag" | "tree" | "disconnected";
 
@@ -167,66 +168,73 @@ export function GraphExplorerWidget({
   const degrees = useMemo(() => degreeSummary(preset.graph), [preset]);
 
   return (
-    <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", data.className as string)}>
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        {presets.map((p, i) => (
-          <button
-            key={p.kind}
-            type="button"
-            onClick={() => setActive(i)}
-            aria-pressed={i === active}
-            className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-              i === active
-                ? "bg-copper text-white"
-                : "bg-surface-2 text-ink-soft hover:text-ink",
-            )}
+    <WidgetShell
+      kind="Graphs"
+      title="Kinds of graph"
+      bare={!frame}
+      className={data.className as string}
+      primary={
+        <Segmented
+          variant="solid"
+          options={presets.map((p, i) => ({ id: String(i), label: p.label }))}
+          value={String(active)}
+          onChange={(id) => setActive(Number(id))}
+        />
+      }
+      stage={<GraphCanvas graph={preset.graph} />}
+      caption={preset.blurb}
+      captionLabel={`${active + 1}/${presets.length}`}
+      readout={
+        <StatReadout
+          stats={[
+            { label: "nodes", value: preset.graph.nodes.length },
+            { label: "edges", value: preset.graph.edges.length },
+          ]}
+        />
+      }
+      sideWidth={240}
+      side={
+        <>
+          <PanelBox title={`Adjacency list ${preset.graph.directed ? "(who each node points at)" : "(who each node touches)"}`}>
+            <div className="flex flex-col gap-1">
+              {preset.graph.nodes.map((n) => (
+                <div key={n.id} className="text-xs text-ink-soft">
+                  <span className="font-bold text-ink">{n.id}</span>
+                  {" → "}
+                  {(adj.get(n.id) ?? []).length > 0
+                    ? (adj.get(n.id) ?? [])
+                        .map((e) => (preset.graph.weighted ? `${e.to}(${e.weight})` : e.to))
+                        .join(", ")
+                    : "nothing"}
+                </div>
+              ))}
+            </div>
+          </PanelBox>
+          <PanelBox title={`Degree ${preset.graph.directed ? "(edges in and out)" : "(edges touching it)"}`}>
+            <div className="flex flex-col gap-1">
+              {degrees.map((d) => (
+                <div key={d.id} className="text-xs text-ink-soft">
+                  <span className="font-bold text-ink">{d.id}</span>: {d.text}
+                </div>
+              ))}
+            </div>
+          </PanelBox>
+        </>
+      }
+      dock={
+        <ActionDock hint={`${active + 1} of ${presets.length}: ${preset.label}`}>
+          <WidgetButton onClick={() => setActive((i) => Math.max(i - 1, 0))} disabled={active === 0}>
+            Previous
+          </WidgetButton>
+          <WidgetButton
+            tone="primary"
+            onClick={() => setActive((i) => Math.min(i + 1, presets.length - 1))}
+            disabled={active >= presets.length - 1}
           >
-            {p.label}
-          </button>
-        ))}
-      </div>
-
-      <GraphCanvas graph={preset.graph} />
-
-      <p className="mt-2 min-h-[4rem] text-sm leading-relaxed text-ink-soft">{preset.blurb}</p>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-border bg-surface-2/50 p-3">
-          <div className="mb-2 text-[11px] font-semibold text-slate">
-            Adjacency list {preset.graph.directed ? "(who each node points at)" : "(who each node touches)"}
-          </div>
-          <div className="flex flex-col gap-1">
-            {preset.graph.nodes.map((n) => (
-              <div key={n.id} className="text-xs text-ink-soft">
-                <span className="font-bold text-ink">{n.id}</span>
-                {" → "}
-                {(adj.get(n.id) ?? []).length > 0
-                  ? (adj.get(n.id) ?? [])
-                      .map((e) => (preset.graph.weighted ? `${e.to}(${e.weight})` : e.to))
-                      .join(", ")
-                  : "nothing"}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-border bg-surface-2/50 p-3">
-          <div className="mb-2 text-[11px] font-semibold text-slate">
-            Degree {preset.graph.directed ? "(edges in and out)" : "(edges touching it)"}
-          </div>
-          <div className="flex flex-col gap-1">
-            {degrees.map((d) => (
-              <div key={d.id} className="text-xs text-ink-soft">
-                <span className="font-bold text-ink">{d.id}</span>: {d.text}
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 border-t border-border pt-2 text-xs text-slate">
-            {preset.graph.nodes.length} nodes, {preset.graph.edges.length} edges
-          </div>
-        </div>
-      </div>
-    </div>
+            Next kind
+          </WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

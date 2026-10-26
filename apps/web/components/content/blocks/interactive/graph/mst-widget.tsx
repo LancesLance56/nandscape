@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { kruskalSteps, primSteps } from "@/lib/graph/algorithms";
 import { edgeKey, type GraphSpec } from "@/lib/graph/types";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -96,6 +97,21 @@ export function MstWidget({
 
   return (
     <AlgorithmRunner
+      title="Minimum spanning tree"
+      readout={(step) => {
+        const taken = new Set(step.treeEdges);
+        const total = graph.edges
+          .filter((e) => taken.has(edgeKey(e.from, e.to, false)))
+          .reduce((sum, e) => sum + (e.weight ?? 1), 0);
+        return (
+          <StatReadout
+            stats={[
+              { label: "total weight", value: total },
+              { label: "edges taken", value: `${taken.size} / ${graph.nodes.length - 1}`, tone: "good" },
+            ]}
+          />
+        );
+      }}
       graph={graph}
       steps={steps}
       frame={frame}

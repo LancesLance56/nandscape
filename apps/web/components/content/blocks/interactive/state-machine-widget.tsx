@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
+import { WidgetButton } from "./shared/widget-ui";
 
 const DEFAULT_TITLE = "Turnstile";
 const DEFAULT_STATES = ["Locked", "Unlocked"];
@@ -67,53 +69,64 @@ export function StateMachineWidget({
   };
 
   return (
-    <div className={cn(frame && "rounded-xl border border-border bg-surface-card p-5", className)}>
-      <div className="mb-4 flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate">{title}</span>
-        <button type="button" onClick={reset} className="text-xs font-semibold text-ink-soft transition-colors hover:text-ink">
-          Reset
-        </button>
-      </div>
-
-      <div className="flex flex-wrap justify-center gap-3">
-        {states.map((state) => (
-          <div
-            key={state}
-            className={cn(
-              "flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 px-1 text-center text-xs font-bold transition-all",
-              state === current
-                ? "scale-110 border-copper bg-copper-bg text-copper-dark shadow-sm"
-                : "border-border-strong bg-surface-2 text-slate",
-            )}
-          >
-            {state}
+    <WidgetShell
+      kind="State machines"
+      title={title}
+      bare={!frame}
+      className={className}
+      prompt={`It is ${current}. Send an input and see where it goes.`}
+      stage={
+        <div className="flex flex-col items-center gap-5">
+          <div className="flex flex-wrap justify-center gap-4">
+            {states.map((state) => (
+              <div
+                key={state}
+                aria-current={state === current ? "true" : undefined}
+                className={cn(
+                  "grid size-20 shrink-0 place-items-center rounded-full border-2 px-1 text-center text-[13px] font-bold transition-all",
+                  state === current
+                    ? "border-[3px] border-copper bg-copper-bg text-copper-dark shadow-[0_0_0_8px_color-mix(in_srgb,var(--copper)_12%,transparent)]"
+                    : "border-border-strong bg-surface-card text-slate",
+                )}
+              >
+                {state}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <div className="mt-5 flex flex-wrap justify-center gap-2">
-        {inputs.map((input) => {
-          const enabled = Boolean(transitions[`${current}|${input}`]);
-          return (
-            <button
-              key={input}
-              type="button"
-              disabled={!enabled}
-              onClick={() => fire(input)}
-              className={cn(
-                "rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors",
-                enabled
-                  ? "border-border-strong text-ink hover:bg-surface-2"
-                  : "cursor-not-allowed border-border text-slate/50",
-              )}
-            >
-              {input}
-            </button>
-          );
-        })}
-      </div>
-
-      <p className="mt-4 truncate text-center text-xs text-slate">{history.join(" → ")}</p>
-    </div>
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {inputs.map((input) => {
+              const enabled = Boolean(transitions[`${current}|${input}`]);
+              return (
+                <WidgetButton key={input} size="md" disabled={!enabled} onClick={() => fire(input)} className="min-w-24">
+                  {input}
+                </WidgetButton>
+              );
+            })}
+          </div>
+        </div>
+      }
+      readout={
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate">
+          {history.map((h, i) => (
+            <span key={i} className="flex items-center gap-1.5">
+              {i > 0 && "→"}
+              <span
+                className={cn(
+                  "rounded-md px-2 py-0.5 font-semibold",
+                  i === history.length - 1 ? "bg-copper-bg text-copper-dark" : "bg-surface-2 text-ink-soft",
+                )}
+              >
+                {h}
+              </span>
+            </span>
+          ))}
+        </div>
+      }
+      dock={
+        <ActionDock hint="Inputs with no arrow out of the current state are greyed out.">
+          <WidgetButton onClick={reset}>Reset</WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }

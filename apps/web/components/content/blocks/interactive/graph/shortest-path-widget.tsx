@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { dijkstraSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -101,6 +102,15 @@ export function ShortestPathWidget({
 
   return (
     <AlgorithmRunner
+      title="Shortest paths with Dijkstra"
+      readout={(step) => (
+        <StatReadout
+          stats={[
+            { label: `start`, value: start },
+            { label: "locked in", value: step.visited.length, tone: "good" },
+          ]}
+        />
+      )}
       graph={graph}
       steps={steps}
       frame={frame}

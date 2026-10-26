@@ -10,6 +10,8 @@ import { useSandboxProgressStore } from "@/store/sandbox-progress-store";
 import { makeScope } from "@/lib/editor/make-scope";
 import { CircuitStage } from "./circuit-stage";
 import type { EditorNode, EditorEdge } from "@/types/editor";
+import { ActionDock, Legend, WidgetShell } from "../interactive/shared/widget-shell";
+import { WidgetButton } from "../interactive/shared/widget-ui";
 
 /**
  * Either an inline snapshot (`nodes`/`edges` pasted or built into the block
@@ -158,32 +160,54 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
   };
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-2xl border border-border bg-surface-card shadow-[0_16px_40px_rgba(8,7,8,0.08)]">
-      <div className="flex items-center gap-2.5 border-b border-border bg-surface-2 px-4 py-2.5">
-        <span className=" text-[11px] font-semibold text-ink">{title}</span>
-        {projectSlug && (
-          <Link
-            href={`/projects/${projectSlug}`}
-            className=" text-[10px] font-medium text-slate underline decoration-border-strong underline-offset-2 hover:text-copper-dark"
-          >
-            View original
-          </Link>
-        )}
-        <button
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="ml-auto flex items-center gap-1.5 rounded-md border border-border-strong px-2 py-1 text-[10px] font-semibold text-ink-soft transition-colors hover:bg-surface-card hover:text-ink"
-        >
-          <ExpandIcon />
-          Zoom in
-        </button>
-      </div>
-
-      <div style={{ height }} className="relative overflow-hidden">
-        <ReactFlowProvider>
-          <CircuitStage nodes={nodes} edges={edges} />
-        </ReactFlowProvider>
-      </div>
+    <>
+      <WidgetShell
+        kind="Circuit"
+        title={title}
+        meta={
+          projectSlug ? (
+            <Link
+              href={`/projects/${projectSlug}`}
+              className="underline decoration-border-strong underline-offset-2 hover:text-copper-dark"
+            >
+              View original
+            </Link>
+          ) : undefined
+        }
+        className="my-8"
+        prompt="Click an input to flip it and watch the signals follow."
+        stage={
+          <div style={{ height }} className="relative overflow-hidden rounded-lg">
+            <ReactFlowProvider>
+              <CircuitStage nodes={nodes} edges={edges} />
+            </ReactFlowProvider>
+          </div>
+        }
+        legend={
+          <Legend
+            items={[
+              { color: "var(--signal-green)", label: "HIGH" },
+              { color: "var(--border-strong)", label: "LOW" },
+              { color: "var(--signal-unknown)", label: "Unknown (X)" },
+            ]}
+          />
+        }
+        dock={
+          <ActionDock>
+            <WidgetButton onClick={() => setExpanded(true)}>
+              <ExpandIcon />
+              Zoom in
+            </WidgetButton>
+            <WidgetButton
+              tone="primary"
+              onClick={handleOpenSandbox}
+              title="Loads this exact circuit into the sandbox editor so you can rewire, extend, or save it"
+            >
+              Open in the editor
+            </WidgetButton>
+          </ActionDock>
+        }
+      />
 
       {mounted &&
         expanded &&
@@ -208,7 +232,7 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
                     type="button"
                     onClick={handleOpenSandbox}
                     title="Loads this exact circuit into the sandbox editor so you can rewire, extend, or save it"
-                    className="rounded-md bg-copper px-2.5 py-1 text-[10px] font-semibold text-white transition-colors hover:bg-copper-dark"
+                    className="rounded-md bg-copper px-2.5 py-1 text-[10px] font-semibold text-copper-ink transition-colors hover:bg-copper-dark"
                   >
                     Open in sandbox editor →
                   </button>
@@ -231,6 +255,6 @@ export function CircuitEmbedWidget({ data }: { data: Record<string, unknown> }) 
           </div>,
           document.body,
         )}
-    </div>
+    </>
   );
 }

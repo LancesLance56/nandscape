@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { tarjanSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, ChipRow, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -87,6 +88,15 @@ export function TarjanSccWidget({
 
   return (
     <AlgorithmRunner
+      title="Strongly connected components"
+      readout={(step) => (
+        <StatReadout
+          stats={[
+            { label: "on the stack", value: step.frontier.length },
+            { label: "components found", value: step.groups?.length ?? 0, tone: "good" },
+          ]}
+        />
+      )}
       graph={graph}
       steps={steps}
       frame={frame}

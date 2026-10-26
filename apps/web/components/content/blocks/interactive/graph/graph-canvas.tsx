@@ -98,7 +98,9 @@ export function GraphCanvas({
     <svg
       viewBox={`0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`}
       style={height ? { height } : undefined}
-      className="w-full"
+      // Capped by the viewport as well as the column: a full-width 440x260
+      // viewBox in a wide article is 500px+ tall, more than a laptop shows.
+      className="max-h-[min(300px,40svh)] w-full"
       role="img"
       aria-label="Graph diagram"
     >

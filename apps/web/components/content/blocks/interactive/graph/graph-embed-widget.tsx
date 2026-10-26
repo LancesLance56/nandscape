@@ -1,6 +1,8 @@
 "use client";
 
 import { GraphCanvas } from "./graph-canvas";
+import { StatReadout } from "../shared/widget-ui";
+import { WidgetShell } from "../shared/widget-shell";
 import type { GraphSpec } from "@/lib/graph/types";
 
 /**
@@ -36,15 +38,19 @@ export function GraphEmbedWidget({ data }: { data: Record<string, unknown> }) {
   }
 
   return (
-    <figure className="m-0">
-      {data.title && (
-        <figcaption className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate">
-          {data.title}
-        </figcaption>
-      )}
-      <div className="rounded-xl border border-border bg-surface-card p-4">
-        <GraphCanvas graph={data.graph} />
-      </div>
-    </figure>
+    <WidgetShell
+      kind="Figure"
+      title={data.title ?? "A graph"}
+      prompt={data.title}
+      stage={<GraphCanvas graph={data.graph} />}
+      readout={
+        <StatReadout
+          stats={[
+            { label: "nodes", value: data.graph.nodes.length },
+            { label: "edges", value: data.graph.edges.length },
+          ]}
+        />
+      }
+    />
   );
 }

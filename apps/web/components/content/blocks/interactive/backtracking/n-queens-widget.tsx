@@ -3,7 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { allQueensSolutions, nQueensSteps, type QueensPayload } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox, SegmentedRow, StatReadout, StatusSlot, type SegmentedGroup } from "../shared/widget-ui";
+import { Banner, PanelBox, StatReadout, WidgetButton, type SegmentedGroup } from "../shared/widget-ui";
+import { ActionDock, KeepWidgetView, WidgetShell, toggleSlots } from "../shared/widget-shell";
 import { BacktrackingRunner } from "./backtracking-runner";
 
 const SIZES = [4, 5, 6, 7, 8];
@@ -51,8 +52,8 @@ function attackedSquares(queens: number[], n: number): Set<string> {
  * that width and a 4 by 4 board is as tall as an 8 by 8 one; pinned to fixed
  * pixels instead, it cannot shrink and runs off the side of a phone.
  */
-const MAX_CELL = 52;
-const MAX_BOARD = 336;
+const MAX_CELL = 44;
+const MAX_BOARD = 264;
 
 /** Cap for the whole board, so a small board stays small. */
 function boardWidth(n: number): number {
@@ -141,6 +142,14 @@ function QueensBoard({ n, queens, tryCol, tryRow, tryOk, blockedBy, showAttacks 
  * dead end is something the reader walks into rather than reads about.
  */
 export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
+  return (
+    <KeepWidgetView>
+      <NQueensInner data={data} />
+    </KeepWidgetView>
+  );
+}
+
+function NQueensInner({ data }: { data: Record<string, unknown> }) {
   const [n, setN] = useState(typeof data.n === "number" && SIZES.includes(data.n) ? data.n : 6);
   const [stopAtFirst, setStopAtFirst] = useState(data.allSolutions !== true);
   const [manual, setManual] = useState(false);
@@ -185,6 +194,8 @@ export function NQueensWidget({ data }: { data: Record<string, unknown> }) {
 
   return (
     <BacktrackingRunner
+      title="N-Queens"
+      primaryToggle="mode"
       // Remount on a size or run-scope change so the search view resets to
       // the default for the new board instead of carrying over a choice made
       // for a different one.
@@ -260,66 +271,56 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
   const solved = placed.length === n && conflicts.length === 0;
 
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-5">
-      <SegmentedRow groups={toggles} className="mb-4" />
-
-      <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-        <div>
+    <WidgetShell
+      kind="Backtracking"
+      title="N-Queens"
+      {...toggleSlots(toggles, "mode")}
+      stage={
+        <div className="flex justify-center">
           <ManualBoard n={n} coords={coords} onSquareClick={toggle} />
-          <p className="mt-2 text-[11px] text-slate">
-            Click any square to place or remove a queen. Nothing stops you putting two in one row, which is worth trying
-            once before reading why the solver refuses to.
-          </p>
         </div>
-
-        <div className="flex flex-col gap-3">
-          <PanelBox title="Progress">
-            <StatReadout
-              stats={[
-                { label: "queens placed", value: `${placed.length} / ${n}` },
-                { label: "conflicts", value: conflicts.length, tone: conflicts.length > 0 ? "warn" : "good" },
-              ]}
-            />
-          </PanelBox>
-
-          <PanelBox title="What is attacking what" bodyClassName="h-16 overflow-y-auto">
-            {conflicts.length === 0 ? (
-              <span className="text-xs italic text-slate">
-                {placed.length === 0 ? "nothing placed yet" : "no conflicts so far"}
-              </span>
-            ) : (
-              <div className="flex flex-col gap-1">
-                {conflicts.map((c, i) => (
-                  <span key={i} className="text-xs text-signal-coral">
-                    {c.a} and {c.b}: {c.why}
-                  </span>
-                ))}
-              </div>
-            )}
-          </PanelBox>
-
-          <StatusSlot lines={2}>
-            {solved && (
-              <p className="rounded-lg border border-signal-green bg-signal-green/10 px-3 py-2 text-sm font-semibold text-signal-green">
-                That is a valid solution. There are {totalSolutions} in total on this board.
-              </p>
-            )}
-          </StatusSlot>
-
-          <button
-            type="button"
-            onClick={() => setPlaced([])}
-            className="self-start rounded-lg border border-border-strong px-3 py-1.5 text-xs font-semibold text-ink-soft hover:bg-surface-2 hover:text-ink"
-          >
-            Clear board
-          </button>
-        </div>
-      </div>
-    </div>
+      }
+      prompt={solved ? "That is a valid solution." : `Place ${n} queens so none can attack another.`}
+      caption="Click any square to place or remove a queen. Nothing stops you putting two in one row, which is worth trying once before reading why the solver refuses to."
+      readout={
+        <StatReadout
+          stats={[
+            { label: "queens placed", value: `${placed.length} / ${n}` },
+            { label: "conflicts", value: conflicts.length, tone: conflicts.length > 0 ? "warn" : "good" },
+          ]}
+        />
+      }
+      side={
+        <PanelBox title="What is attacking what" bodyClassName="h-24 overflow-y-auto">
+          {conflicts.length === 0 ? (
+            <span className="text-xs italic text-slate">
+              {placed.length === 0 ? "nothing placed yet" : "no conflicts so far"}
+            </span>
+          ) : (
+            <div className="flex flex-col gap-1">
+              {conflicts.map((c, i) => (
+                <span key={i} className="text-xs text-signal-coral">
+                  {c.a} and {c.b}: {c.why}
+                </span>
+              ))}
+            </div>
+          )}
+        </PanelBox>
+      }
+      status={
+        solved ? (
+          <Banner tone="good">That is a valid solution. There are {totalSolutions} in total on this board.</Banner>
+        ) : undefined
+      }
+      dock={
+        <ActionDock hint="Red squares are attacked by a queen already on the board.">
+          <WidgetButton onClick={() => setPlaced([])}>Clear board</WidgetButton>
+        </ActionDock>
+      }
+    />
   );
 }
 
-/** Free-placement board: any number of queens, anywhere, conflicts shown in red. */
 function ManualBoard({
   n,
   coords,

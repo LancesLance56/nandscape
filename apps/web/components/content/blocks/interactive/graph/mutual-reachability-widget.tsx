@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import type { AlgorithmStep, GraphSpec } from "@/lib/graph/types";
 import { GraphCanvas, GROUP_COLORS } from "./graph-canvas";
-import { ChipRow, PanelBox, WidgetFrame } from "../shared/widget-ui";
+import { ChipRow, PanelBox, StatReadout } from "../shared/widget-ui";
+import { ActionDock, Legend, WidgetShell } from "../shared/widget-shell";
 
 /** The same flight network the Tarjan trace later runs on, so the reader meets
  *  the map once and only has to learn the algorithm the second time round. */
@@ -75,20 +76,6 @@ function reachableFrom(graph: GraphSpec, start: string, reverse: boolean): Set<s
   return seen;
 }
 
-function Swatch({ color, bordered, label }: { color: string; bordered?: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <span
-        className="h-2.5 w-2.5 shrink-0 rounded-sm"
-        style={{
-          background: color,
-          border: bordered ? "1px solid var(--border-strong)" : undefined,
-        }}
-      />
-      <span className="text-[11px] leading-tight text-ink-soft">{label}</span>
-    </div>
-  );
-}
 
 /**
  * The definition of a strongly connected component, made clickable.
@@ -148,33 +135,42 @@ export function MutualReachabilityWidget({
   }
 
   return (
-    <WidgetFrame frame={frame} className={data.className as string}>
-      <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-        <div>
-          <GraphCanvas graph={graph} step={step} onNodeClick={setPicked} markedNode={selected} groupHulls groupLabel="SCC" />
-          <p className="mt-1 text-center text-[11px] text-slate">
-            Click any node to ask the same two questions about it.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <PanelBox title={`Starting from ${selected}`}>
-            <div className="flex flex-col gap-1.5">
-              <Swatch color={GROUP_COLORS[0]} label="Both ways, so same component" />
-              <Swatch color="var(--signal-green)" label={`${selected} reaches it, no way back`} />
-              <Swatch color="var(--copper-bg)" bordered label={`Reaches ${selected}, but ${selected} cannot reach it`} />
-            </div>
-          </PanelBox>
-
+    <WidgetShell
+      kind="Graphs"
+      title="Who can reach whom?"
+      meta={`starting from ${selected}`}
+      bare={!frame}
+      className={data.className as string}
+      stage={<GraphCanvas graph={graph} step={step} onNodeClick={setPicked} markedNode={selected} groupHulls groupLabel="SCC" />}
+      caption={
+        component.length === 1
+          ? `${selected} is on no cycle, so it is a component all by itself. It reaches ${forwardOnly.length} and is reached from ${backwardOnly.length}, but never both ways.`
+          : `${component.length} airports can each reach every other and get back again: ${component.join(", ")}.`
+      }
+      readout={
+        <StatReadout
+          stats={[
+            { label: "both ways", value: component.length, tone: "good" },
+            { label: "it reaches", value: forwardOnly.length },
+            { label: "reach it", value: backwardOnly.length },
+          ]}
+        />
+      }
+      legend={
+        <Legend
+          items={[
+            { color: GROUP_COLORS[0], label: "Same component" },
+            { color: "var(--signal-green)", label: `${selected} reaches it` },
+            { color: "var(--copper-bg)", label: `Reaches ${selected}`, outline: true },
+          ]}
+        />
+      }
+      sideWidth={230}
+      side={
+        <>
           <PanelBox title={`Mutually reachable with ${selected}`}>
             <ChipRow items={component} emptyLabel="none" reserveRows={2} />
-            <p className="mt-2 min-h-[2.75rem] text-[11px] leading-relaxed text-slate">
-              {component.length === 1
-                ? `${selected} is on no cycle, so it is a component all by itself. That still counts as one.`
-                : `${component.length} airports, each able to reach every other and get back again.`}
-            </p>
           </PanelBox>
-
           <PanelBox title="One-way only">
             <div className="flex flex-col gap-2">
               <div>
@@ -187,8 +183,9 @@ export function MutualReachabilityWidget({
               </div>
             </div>
           </PanelBox>
-        </div>
-      </div>
-    </WidgetFrame>
+        </>
+      }
+      dock={<ActionDock hint="Click any node to ask the same two questions about it." />}
+    />
   );
 }
