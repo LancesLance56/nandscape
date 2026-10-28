@@ -29,7 +29,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "When you have to connect several places, each link has a cost: lay fibre between offices, wire up a circuit board, run power to a set of villages. You need everything connected and you want to spend as little as possible."
+          "text": "Imagine laying fibre between offices or running power to a set of villages. You need everything connected and you want to spend as little as possible."
         }
       ]
     },
@@ -49,31 +49,33 @@
           ]
         },
         {
-          "text": ". Spanning because it touches every node, tree because it has no cycles, minimum because no other spanning tree costs less."
+          "text": ". Spanning because it touches every node, tree because it has no cycles, minimum because it is the "
+        },
+        {
+          "text": "cheapest",
+          "marks": [
+            {
+              "kind": "italic"
+            }
+          ]
+        },
+        {
+          "text": " spanning tree."
         }
       ]
     },
     {
       "id": "h-why-tree",
-      "text": "Why the answer has to be a tree",
+      "text": "Why the answer is a tree",
       "type": "heading",
       "level": 2
-    },
-    {
-      "id": "p-why-tree",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Before choosing edges it is worth knowing what shape the answer takes, because it removes a lot of guesswork."
-        }
-      ]
     },
     {
       "id": "p-why-tree-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Suppose your solution contains a cycle. Then you can delete any one edge of that cycle and everything stays connected, because the rest of the cycle still joins the two ends. You just made it cheaper without losing anything. So a cheapest solution never contains a cycle."
+          "text": "Suppose your solution contains a cycle. Then you can delete any one edge of that cycle and everything stays connected, because the rest of the cycle still joins the two ends. You just made it cheaper without losing anything. So a cheapest solution never contains a cycle, assuming there are no negative weights."
         }
       ]
     },
@@ -82,7 +84,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Connected and acyclic is exactly the definition of a tree, which is why the previous page's fact matters here: a tree on "
+          "text": "Connected and acyclic is exactly the definition of a tree, and we know that a tree of "
         },
         {
           "text": "n",
@@ -110,7 +112,7 @@
     },
     {
       "id": "h-greedy",
-      "text": "The greedy idea, and why it's ok",
+      "text": "How and why a greedy solution works",
       "type": "heading",
       "level": 2
     },
@@ -128,27 +130,80 @@
       "type": "paragraph",
       "content": [
         {
-          "text": " Split the nodes into any two groups you like. Look at all the edges crossing between the groups. The "
+          "text": " Consider splitting the nodes into any two groups. Call an edge a \"crossing edge\" if it connects nodes in different groups. "
         },
         {
-          "text": "cheapest crossing edge is always safe",
+          "text": "The cheapest crossing edge is always safe, meaning some minimum spanning tree contains it.",
           "marks": [
             {
-              "kind": "bold"
+              "kind": "color",
+              "value": "var(--copper)"
             }
           ]
-        },
-        {
-          "text": ", meaning some minimum spanning tree contains it."
         }
       ]
     },
     {
-      "id": "p-greedy-3",
+      "id": "p_03dabb70",
       "type": "paragraph",
       "content": [
         {
-          "text": "The argument is short. Take any spanning tree that does not use that cheapest crossing edge. Add the edge anyway, and you have created exactly one cycle. That cycle must cross between the two groups a second time somewhere, using some other crossing edge, which by assumption costs at least as much. Delete that one. You still have a spanning tree and it costs no more than before. So there is always a minimum spanning tree containing the cheap edge, and taking it can never be a mistake."
+          "text": "To prove the argument in orange, we can use contradiction. Consider a spanning tree that doesn't use the cheapest crossing edge "
+        },
+        {
+          "text": "e",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " , instead using some other crossing edge "
+        },
+        {
+          "text": "e'",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " . Adding "
+        },
+        {
+          "text": "e",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " to the spanning tree creates a cycle because the two endpoints were already connected through another path using "
+        },
+        {
+          "text": "e'",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " . Because it's a cycle, we can remove the edge "
+        },
+        {
+          "text": "e'",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " and still have all nodes connected. Thus, there always exists a minimum spanning tree containing the cheapest crossing edge."
         }
       ]
     },
@@ -157,7 +212,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "That is the difference between this problem and shortest paths. Here there is a local decision that is provably never wrong. In shortest paths there is not, which is why Dijkstra needs its more careful argument about settling the smallest tentative distance."
+          "text": "In this problem, there are local \"decisions\" that are never wrong. In shortest paths there is not, which is why Dijkstra needs its more careful argument about settling the smallest tentative distance."
         }
       ]
     },
@@ -265,51 +320,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Notice B-C and B-D being skipped. Neither is expensive. They are rejected purely because their endpoints had already been joined by earlier choices, and adding them would have created a loop for no gain."
-        }
-      ]
-    },
-    {
-      "id": "h-dsu",
-      "text": "The structure that makes it fast",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-dsu",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Tracking groups under repeated merging is a small problem of its own, solved by a structure called "
-        },
-        {
-          "text": "union-find",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", or disjoint set union."
-        }
-      ]
-    },
-    {
-      "id": "p-dsu-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Each node points at a parent, and following parents upward lands you at the group's representative, so two nodes are in the same group when they arrive at the same representative. Merging two groups is one pointer assignment."
-        }
-      ]
-    },
-    {
-      "id": "p-dsu-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Left alone, those chains get long and lookups get slow. One cheap fix does most of the work: as you walk up, point each node you pass directly at its grandparent. The chains flatten themselves as a side effect of being used, and the operations end up so close to constant time that the sort dominates the runtime."
+          "text": "Notice B-C and B-D being skipped.  They are rejected purely because their endpoints had already been joined by earlier choices, and adding them would have created a loop for no gain."
         }
       ]
     },
@@ -324,7 +335,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a second approach, and comparing the two is more useful than learning either alone."
+          "text": "There is a second approach that is just as valid but has a different use case."
         }
       ]
     },
@@ -333,7 +344,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Kruskal grows many small fragments all over the graph and eventually merges them, while Prim grows one single blob outward from a starting node. At each step it asks: of all the edges leaving my blob, which is cheapest? Take that one, absorb the node on the far side, repeat."
+          "text": "Kruskal grows many small fragments all over the graph and eventually merges them, while Prim grows a path outward from a starting node. Each step of Prim's algorithm iterates through all the edges outward and taking the node on the end of the cheapest edge."
         }
       ]
     },
@@ -404,66 +415,121 @@
         "graph": {
           "edges": [
             {
-              "to": "B",
+              "to": "C",
               "from": "A",
-              "weight": 1
+              "weight": 8
+            },
+            {
+              "to": "F",
+              "from": "C",
+              "weight": 7
             },
             {
               "to": "D",
-              "from": "C",
+              "from": "F",
               "weight": 2
             },
             {
-              "to": "C",
+              "to": "E",
+              "from": "F",
+              "weight": 6
+            },
+            {
+              "to": "G",
+              "from": "E",
+              "weight": 2
+            },
+            {
+              "to": "H",
+              "from": "D",
+              "weight": 7
+            },
+            {
+              "to": "I",
+              "from": "H",
+              "weight": 9
+            },
+            {
+              "to": "G",
+              "from": "D",
+              "weight": 4
+            },
+            {
+              "to": "H",
+              "from": "G",
+              "weight": 14
+            },
+            {
+              "to": "I",
+              "from": "G",
+              "weight": 10
+            },
+            {
+              "to": "B",
               "from": "A",
-              "weight": 3
+              "weight": 4
             },
             {
               "to": "C",
               "from": "B",
-              "weight": 3
+              "weight": 11
             },
             {
               "to": "D",
               "from": "B",
-              "weight": 4
-            },
-            {
-              "to": "E",
-              "from": "D",
-              "weight": 5
+              "weight": 8
             },
             {
               "to": "E",
               "from": "C",
-              "weight": 6
+              "weight": 1
             }
           ],
           "nodes": [
             {
-              "x": 41.24375534057617,
-              "y": 105.18717956542969,
+              "x": 32.81519317626953,
+              "y": 125.9167251586914,
               "id": "A"
             },
             {
-              "x": 216.48243713378906,
-              "y": 31.63809585571289,
-              "id": "B"
-            },
-            {
-              "x": 398.11669921875,
-              "y": 129.4903564453125,
+              "x": 108.17530822753906,
+              "y": 204.9232940673828,
               "id": "C"
             },
             {
-              "x": 45.08109664916992,
-              "y": 170.42201232910156,
+              "x": 217.56903076171875,
+              "y": 50.556610107421875,
               "id": "D"
             },
             {
-              "x": 215.84288024902344,
-              "y": 239.49420166015625,
+              "x": 218.78451538085938,
+              "y": 206.1387939453125,
               "id": "E"
+            },
+            {
+              "x": 160.44119262695312,
+              "y": 128.3477020263672,
+              "id": "F"
+            },
+            {
+              "x": 325.74725341796875,
+              "y": 209.78524780273438,
+              "id": "G"
+            },
+            {
+              "x": 323.3162841796875,
+              "y": 50.556610107421875,
+              "id": "H"
+            },
+            {
+              "x": 407.184814453125,
+              "y": 125.9167251586914,
+              "id": "I"
+            },
+            {
+              "x": 110.60628509521484,
+              "y": 52.98758316040039,
+              "id": "B"
             }
           ],
           "weighted": true
@@ -473,26 +539,17 @@
       "widget": "mst-explorer"
     },
     {
-      "id": "h-ties",
-      "text": "Ties, and when the answer is unique",
-      "type": "heading",
-      "level": 2
-    },
-    {
       "id": "p-ties",
       "type": "paragraph",
       "content": [
         {
-          "text": "In the trace, A-C and B-C both cost 3. The algorithm took A-C because it came first in the sort, and had the sort ordered them the other way it would have taken B-C instead. Both give a tree costing 11."
-        }
-      ]
-    },
-    {
-      "id": "p-ties-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That is the general rule. When every edge weight is distinct the minimum spanning tree is unique. As soon as two edges share a weight there can be several different trees of the same minimum cost, and any of them is a correct answer. This catches people out on graded problems, where a checker that compares your edge list against one expected list will reject a perfectly good tree."
+          "text": "Don't forget that there can exist multiple minimum spanning trees.",
+          "marks": [
+            {
+              "kind": "color",
+              "value": "var(--copper)"
+            }
+          ]
         }
       ]
     },

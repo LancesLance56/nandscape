@@ -21,15 +21,6 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "An adder gives the same answer every time you feed it the same inputs. That reliability is what makes it trustworthy. But the output depends only on what is present right now, which also makes it useless the moment you need it to hold on to something."
-        }
-      ]
-    },
-    {
       "id": "h-combinational",
       "text": "Combinational Logic: A Pure Function of Its Inputs",
       "type": "heading",
@@ -40,7 +31,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Half adders, multiplexers and majority voters all belong to one family: combinational logic. A combinational circuit computes output = f(inputs) with no dependence on time. Feed it the same inputs twice and it answers twice the same way, with nothing in between remembered or carried forward from the first time to the second. Most of digital logic works this way. Circuits whose output depends on a sequence of inputs rather than a single snapshot are called sequential."
+          "text": "Half adders, multiplexers and majority voters all belong to the family of combinational logic. A combinational circuit computes output = f(inputs) with no dependence on time or previous inputs. Most of digital logic works this way, and circuits whose output depends on a sequence of inputs rather than a single snapshot are called sequential."
         }
       ]
     },
@@ -49,13 +40,13 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "But a computer needs more than math, and counting is the simplest place to see the gap. It has to hold a running total, remember which state a machine is in, and store a byte long after the signal that produced it has gone. None of that can be written as a pure function of the current inputs, because the whole point is that the answer depends on something no longer there: the history of the inputs."
+          "text": "Of course, computers also need to remember information and that means we need logic gates that depend on previous inputs"
         }
       ]
     },
     {
       "id": "h-trick",
-      "text": "The Trick: Route a Gate's Output Back Into Itself",
+      "text": "The idea",
       "type": "heading",
       "level": 2
     },
@@ -64,7 +55,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Now wire a gate's output back into one of its own inputs, either directly or through a neighboring gate that loops back. Something changes. The output is no longer a pure function of the outside inputs, because that old output is now literally one of the signals feeding the gate."
+          "text": "This is done by wiring a gate's output back into one of its own inputs, either directly or through a neighboring gate that loops back. The output is no longer a function of the outside inputs, because previous outputs now affect the state of the gate."
         }
       ]
     },
@@ -103,10 +94,30 @@
       ]
     },
     {
-      "id": "code-roadmap",
-      "code": "SR latch        -> two cross-coupled NOR gates, the smallest circuit that stores a bit\n                   (has one input combination that is genuinely forbidden)\nGated D latch   -> fixes the forbidden state by trading two inputs (S, R) for one (D)\n                   (still reacts to a signal LEVEL, which causes race-through when chained)\nD flip-flop     -> fixes race-through by reacting to a clock EDGE instead of a level\n                   (this is what real registers and counters are built from)",
-      "type": "code",
-      "language": "text"
+      "id": "table_dc543fa0",
+      "rows": [
+        [
+          "SR latch",
+          "2 inputs set Q to 1 or reset ",
+          "smallest circuit that stores a bit"
+        ],
+        [
+          "Gated D latch",
+          "data and enable as inputs",
+          "no illegal states unlike SR latch"
+        ],
+        [
+          "D flip-flop",
+          "uses clock edges/pulses to change Q",
+          "what registers and counters use"
+        ]
+      ],
+      "type": "table",
+      "headers": [
+        "Gate",
+        "Description",
+        "Fact"
+      ]
     },
     {
       "id": "p-9",

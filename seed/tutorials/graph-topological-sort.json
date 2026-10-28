@@ -24,43 +24,19 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
+      "id": "callout_fb9284ca",
+      "tone": "note",
+      "type": "callout",
+      "title": "Definition",
       "content": [
         {
-          "text": "|",
+          "text": "Topological sorting is a linear ordering of vertices for Directed Acyclic Graphs (DAGs), such that for every directed edge from vertex u to vertex v, u appears before v in the ordering.  ",
           "marks": [
-            {
-              "kind": "bold"
-            },
             {
               "kind": "color",
-              "value": "var(--copper)"
+              "value": ""
             }
           ]
-        },
-        {
-          "text": " Topological sorting is a linear ordering of vertices for Directed Acyclic Graphs (DAGs). "
-        }
-      ]
-    },
-    {
-      "id": "p-hook-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Producing a valid order is called "
-        },
-        {
-          "text": "topological sorting",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": ", and it is one of the most directly useful algorithms in this section, because the algorithm is the key to products like build plans, scheduling systems, and other things that need order."
         }
       ]
     },
@@ -71,103 +47,243 @@
       "level": 2
     },
     {
-      "id": "p-when",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Before finding an order it is worth asking when one exists, because the answer is clean and it drives the algorithm."
-        }
-      ]
-    },
-    {
       "id": "p-when-2",
       "type": "paragraph",
       "content": [
         {
-          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. Any ordering has to put one of the three first, and whichever you pick has something in the cycle that must come before it. So no matter how hard you try you wont find a valid order."
+          "text": "Suppose the graph has a cycle: A before B, B before C, C before A. No ordering is possible because all nodes must come before each other."
         }
       ]
+    },
+    {
+      "id": "widget_1a4260b0",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "B",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "A",
+              "from": "C"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 207.84841918945312,
+              "y": 31.018526077270508,
+              "id": "A"
+            },
+            {
+              "x": 101.68191528320312,
+              "y": 192.18695068359375,
+              "id": "B"
+            },
+            {
+              "x": 322.32916259765625,
+              "y": 193.466064453125,
+              "id": "C"
+            }
+          ],
+          "directed": true
+        }
+      },
+      "type": "interactive",
+      "widget": "graph-embed"
     },
     {
       "id": "p-when-3",
       "type": "paragraph",
       "content": [
         {
-          "text": "Proving that every DAG has a topological ordering is not as trivial but the key idea is that since there are no cycles, there will always be a source node, and after you add that as the first node in an ordering, you can essentially do the same for all its branches' top node.  So the question \"can these tasks be scheduled\" and the question \"is this graph a DAG\" are the same question, which is what makes DAGs so useful. In fact, the next page in this section discusses a method of turning a cyclic graph into a DAG, which proves to be useful for using other algorithms."
+          "text": "On the other hand, every graph with no cycles (a DAG) always has a topological ordering. This is because a DAG has at least one node with an in-degree of zero. From this, we can \"peel\" nodes off layer by layer without violating any dependency rules. "
         }
       ]
     },
     {
       "id": "h-idea",
-      "text": "Deriving the algorithm",
+      "text": "Deriving Kahn's algorithm",
       "type": "heading",
       "level": 2
     },
     {
-      "id": "p-idea",
+      "id": "p_72720794",
       "type": "paragraph",
       "content": [
         {
-          "text": "Think about what you would do by hand with a real to-do list; you'd look for something with nothing blocking it, do that, cross it off, and notice that crossing it off may have unblocked other things. Then repeat."
+          "text": "To start, we can push all the nodes with in-degree 0 to the stack, and remove it from the DAG. Once remove these nodes from the DAG, the nodes it used to point to are now of in-degree 0, and they too can be pushed to the stack, and removed from the graph. Continue doing this until no nodes remain, and the stack now contains a valid topological ordering."
         }
       ]
     },
     {
-      "id": "p-idea-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "That's pretty much the core idea of the algorithm, and it needs only one number per node, how many things are still blocking it, a count called the node's in-degree: the number of edges pointing at it."
+      "id": "widget_4d3e7a31",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "E",
+              "from": "B"
+            },
+            {
+              "to": "F",
+              "from": "C"
+            },
+            {
+              "to": "G",
+              "from": "F"
+            },
+            {
+              "to": "I",
+              "from": "H"
+            },
+            {
+              "to": "J",
+              "from": "I"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 89.53032684326172,
+              "y": 42.51057052612305,
+              "id": "A"
+            },
+            {
+              "x": 248.14051818847656,
+              "y": 39.95233917236328,
+              "id": "B"
+            },
+            {
+              "x": 163.07940673828125,
+              "y": 123.09477996826172,
+              "id": "C"
+            },
+            {
+              "x": 28.132831573486328,
+              "y": 119.8969955444336,
+              "id": "D"
+            },
+            {
+              "x": 331.9225158691406,
+              "y": 124.37389373779297,
+              "id": "E"
+            },
+            {
+              "x": 77.37873840332031,
+              "y": 220.30747985839844,
+              "id": "F"
+            },
+            {
+              "x": 223.19778442382812,
+              "y": 221.5865936279297,
+              "id": "G"
+            },
+            {
+              "x": 393.32000732421875,
+              "y": 45.70835494995117,
+              "id": "H"
+            },
+            {
+              "x": 395.2386779785156,
+              "y": 216.4701385498047,
+              "id": "I"
+            },
+            {
+              "x": 311.4566955566406,
+              "y": 215.19102478027344,
+              "id": "J"
+            }
+          ],
+          "directed": true
         }
-      ]
-    },
-    {
-      "id": "p-idea-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "A node with in-degree 0 has nothing waiting on it, so it is safe to emit. Emitting it removes its outgoing edges, which lowers the in-degree of everything it pointed at, which may drop some of them to 0 and make them available in turn. Keep a collection of the currently-available nodes so you do not have to rescan for them."
-        }
-      ]
+      },
+      "type": "interactive",
+      "widget": "topological-sort"
     },
     {
       "id": "p-idea-4",
       "type": "paragraph",
       "content": [
         {
-          "text": "This is Kahn's algorithm, and the pleasant part is the cycle check. You never have to look for a cycle explicitly. If you finish and have emitted fewer nodes than the graph contains, whatever is left is stuck behind something, and stuck means a cycle. The count is the detector."
+          "text": "This is Kahn's algorithm—not only can it create topological orderings—it can also detect cycles. If the algorithm finishes with a stack that has fewer nodes than the graph contains, no nodes left contain an in-degree of zero, therefore there must be a cycle. An implementation of Kahn's algorithm is found in the sections below."
         }
       ]
     },
     {
-      "id": "h-trace",
-      "text": "Example ",
-      "type": "heading",
-      "level": 2
-    },
-    {
-      "id": "p-trace",
+      "id": "p_3c4a03e4",
       "type": "paragraph",
       "content": [
         {
-          "text": "Same dependencies as the previous page: shirt before tie, shirt before belt, trousers before belt, trousers before shoes, socks before shoes, tie before jacket."
+          "text": ""
         }
       ]
     },
     {
-      "id": "widget_0de64478",
-      "data": {},
+      "id": "widget_b2b80c6e",
+      "data": {
+        "graph": {
+          "edges": [
+            {
+              "to": "C",
+              "from": "A"
+            },
+            {
+              "to": "D",
+              "from": "C"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 108.07748413085938,
+              "y": 73.50910949707031,
+              "id": "A"
+            },
+            {
+              "x": 275.0019226074219,
+              "y": 76.70689392089844,
+              "id": "C"
+            },
+            {
+              "x": 106.79837036132812,
+              "y": 191.18763732910156,
+              "id": "B"
+            },
+            {
+              "x": 283.9557189941406,
+              "y": 200.1414337158203,
+              "id": "D"
+            }
+          ],
+          "directed": true,
+          "annotations": []
+        }
+      },
       "type": "interactive",
       "widget": "topological-sort"
-    },
-    {
-      "id": "p-trace-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Notice that there were three nodes available at the very start, and the algorithm had to pick one. A different pick gives a different valid order. Topological orders are usually not unique, and a problem that expects one specific answer has to say which tie-break to use. If you need the lexicographically smallest order, make the ready collection a min-heap instead of a plain list, and the rest is unchanged."
-        }
-      ]
     },
     {
       "id": "h-dfs",
@@ -176,11 +292,11 @@
       "level": 2
     },
     {
-      "id": "p-dfs",
+      "id": "p_8d7c04d3",
       "type": "paragraph",
       "content": [
         {
-          "text": "There is a second method worth knowing, because it costs nothing once you have depth-first search and it shows up in a lot of published code."
+          "text": "If you need to do a depth-first search anyway, you can also use it to create a topological sorting."
         }
       ]
     },
@@ -189,7 +305,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Run a DFS. When a node "
+          "text": "Run a DFS on every node in the DAG. When a node "
         },
         {
           "text": "finishes",
@@ -209,7 +325,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The reason that works is worth a moment. A node cannot finish until everything downstream of it has finished, so it always lands earlier in the finish list than its dependents. Reversing puts it after them, which is exactly the ordering you want. Detecting cycles takes one extra piece of state: if the DFS ever meets an edge back to a node that is currently open, meaning you are still inside its call, that is a cycle."
+          "text": "Detecting cycles takes one extra piece of state: if the DFS ever meets an edge back to a node that is currently open, meaning you are still inside its call, that is a cycle."
         }
       ]
     },
@@ -218,7 +334,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Kahn's version is usually easier to reason about and gives you the cycle check for free. The DFS version is more compact if you already have a DFS in front of you and do not want the in-degree bookkeeping. Both cost "
+          "text": "Kahn's version is easier to reason about and gives you the cycle check for free. The DFS version is more compact if you already have a DFS in front of you and do not want the in-degree bookkeeping. Both of these algorithms run in "
         },
         {
           "text": "O(V + E)",
@@ -229,7 +345,18 @@
           ]
         },
         {
-          "text": "."
+          "text": " time and "
+        },
+        {
+          "text": "O(V)",
+          "marks": [
+            {
+              "kind": "code"
+            }
+          ]
+        },
+        {
+          "text": " space."
         }
       ]
     },
@@ -241,12 +368,12 @@
     },
     {
       "id": "code-impl",
-      "code": "function topologicalSort(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  const inDegree = new Array(nodeCount).fill(0);\n\n  for (const [before, after] of edges) {\n    adj[before].push(after);\n    inDegree[after]++;                 // one more thing blocking it\n  }\n\n  const ready = [];\n  for (let v = 0; v < nodeCount; v++) if (inDegree[v] === 0) ready.push(v);\n\n  const order = [];\n  while (ready.length > 0) {\n    const v = ready.pop();\n    order.push(v);\n    for (const next of adj[v]) {\n      if (--inDegree[next] === 0) ready.push(next);\n    }\n  }\n\n  // Anything left un-emitted is stuck behind a cycle.\n  return order.length === nodeCount ? order : null;\n}",
+      "code": "function topologicalSortKahn(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  const inDegree = new Array(nodeCount).fill(0);\n\n  for (const [before, after] of edges) {\n    adj[before].push(after);\n    inDegree[after]++;                 // one more thing blocking it\n  }\n\n  const ready = [];\n  for (let v = 0; v < nodeCount; v++) if (inDegree[v] === 0) ready.push(v);\n\n  const order = [];\n  while (ready.length > 0) {\n    const v = ready.pop();\n    order.push(v);\n    for (const next of adj[v]) {\n      if (--inDegree[next] === 0) ready.push(next);\n    }\n  }\n\n  // Anything left un-emitted is stuck behind a cycle.\n  return order.length === nodeCount ? order : null;\n}",
       "type": "code",
       "language": "javascript",
       "variants": [
         {
-          "code": "from collections import deque\n\ndef topological_sort(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    in_degree = [0] * node_count\n\n    for before, after in edges:\n        adj[before].append(after)\n        in_degree[after] += 1          # one more thing blocking it\n\n    ready = deque(v for v in range(node_count) if in_degree[v] == 0)\n\n    order = []\n    while ready:\n        v = ready.popleft()\n        order.append(v)\n        for nxt in adj[v]:\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)\n\n    # Anything left un-emitted is stuck behind a cycle.\n    return order if len(order) == node_count else None",
+          "code": "from collections import deque\n\ndef topological_sort_kahn(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    in_degree = [0] * node_count\n\n    for before, after in edges:\n        adj[before].append(after)\n        in_degree[after] += 1          # one more thing blocking it\n\n    ready = deque(v for v in range(node_count) if in_degree[v] == 0)\n\n    order = []\n    while ready:\n        v = ready.popleft()\n        order.append(v)\n        for nxt in adj[v]:\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)\n\n    # Anything left un-emitted is stuck behind a cycle.\n    return order if len(order) == node_count else None",
           "language": "python"
         }
       ]
@@ -267,13 +394,13 @@
           ]
         },
         {
-          "text": " rather than a partial order is intended behavior. A half-finished topological order is not a useful object, and callers that silently use one will produce a build that fails much later for reasons that look unrelated."
+          "text": " rather than a partial order is intended behavior which signals that the graph contains a cycle."
         }
       ]
     },
     {
       "id": "h-mistakes",
-      "text": "Where it goes wrong",
+      "text": "Common mistakes",
       "type": "heading",
       "level": 2
     },

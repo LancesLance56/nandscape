@@ -28,7 +28,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "We already tackled an algorithm that finds shortest paths, BFS. The problem is that it only counts hops, but in the real world some edges can be more expensive than others i.e., we need a way to find the shortest path with these weights accounted for. "
+          "text": "We already tackled how BFS can be used to find the shortest paths. The limitation is that each edge is as costly as all other edges, which is often not the case in real life. Dijkstra's algorithm helps us find the shortest path when some edges are more expensive to traverse than others."
         }
       ]
     },
@@ -49,43 +49,26 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Give every node a best-known distance. The source gets 0, because standing still is free. Everything else gets infinity, which is just a way of writing \"no route found yet\". Then repeat two steps until you run out of nodes."
+          "text": "Give every node a best-known distance, with the source gets 0, because standing still is free. Everything else gets infinity, which is just a way of writing \"no route found yet\". Then repeat the following steps:"
         }
       ]
     },
     {
-      "id": "p-algorithm-3",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "1. ",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": "Among the nodes you have not finalised, take the one with the smallest best-known distance and mark it settled. By the argument above, its number is now permanent."
-        }
-      ]
-    },
-    {
-      "id": "p-algorithm-4",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "2. ",
-          "marks": [
-            {
-              "kind": "bold"
-            }
-          ]
-        },
-        {
-          "text": "Look at each of that node's neighbors and ask a single question: is going through this node cheaper than the best route I currently know to that neighbor? If it is, write down the smaller number."
-        }
-      ]
+      "id": "list_8c36b631",
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Among the nodes you have not finalised, take the one with the smallest best-known distance and mark it settled."
+          }
+        ],
+        [
+          {
+            "text": "Look at each of that node's neighbors and ask if going through this node cheaper than the best route I currently know to that neighbor? If it is, write down the smaller number."
+          }
+        ]
+      ],
+      "ordered": true
     },
     {
       "id": "p-algorithm-5",
@@ -103,7 +86,7 @@
           ]
         },
         {
-          "text": " an edge, a piece of vocabulary considerably more intimidating than the idea behind it. Relaxing edge "
+          "text": " an edge. Relaxing edge "
         },
         {
           "text": "u -> v",
@@ -136,13 +119,13 @@
           ]
         },
         {
-          "text": ", and writing it down when it is. The name comes from picturing each distance as a stretched constraint that you let settle to a lower value once you find one."
+          "text": ", and writing it down if it is. The name comes from picturing each distance as a stretched constraint that you let settle to a lower value once you find one."
         }
       ]
     },
     {
       "id": "h-trace",
-      "text": "A full trace, by hand",
+      "text": "Full walkthrough",
       "type": "heading",
       "level": 2
     },
@@ -151,7 +134,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Reading the two rules is not the same as believing them. Below is the graph every round in this section runs on, five nodes and six weighted edges. Click a node to try it yourself, or just read on: every number below is worked out by hand next."
+          "text": "Below is the graph every round in this section runs on, five nodes and six weighted edges. Click a node to try it yourself, and check the full walkthrough."
         }
       ]
     },
@@ -410,7 +393,7 @@
     },
     {
       "id": "h-play",
-      "text": "Now drive it yourself",
+      "text": "More example",
       "type": "heading",
       "level": 2
     },
@@ -419,7 +402,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The number floating above each node is its best-known distance. Watch the numbers fall from infinity as better routes turn up, and watch the panel record which ones have been locked in. Try starting from a different node, and predict the first two settlements before you press play."
+          "text": "The number floating above each node is its best-known distance. Try starting from a different node, and predict the first two settlements before you press play."
         }
       ]
     },
@@ -664,23 +647,13 @@
       "level": 2
     },
     {
-      "id": "p-paths",
-      "type": "paragraph",
+      "id": "callout_d16ad0c5",
+      "tone": "note",
+      "type": "callout",
+      "title": "Idea",
       "content": [
         {
-          "text": "|",
-          "marks": [
-            {
-              "kind": "bold"
-            },
-            {
-              "kind": "color",
-              "value": "var(--copper)"
-            }
-          ]
-        },
-        {
-          "text": " Whenever you improve a node's distance, also record which node you came from."
+          "text": "Whenever you improve a node's distance, also record which node you came from."
         }
       ]
     },
@@ -757,11 +730,12 @@
       ]
     },
     {
-      "id": "p-cost-4",
-      "type": "paragraph",
+      "id": "callout_280bc4a4",
+      "tone": "tip",
+      "type": "callout",
       "content": [
         {
-          "text": "One practical detail trips people up. Most heap implementations cannot cheaply lower a key that is already inside, so the usual trick is to push the improved entry and leave the stale one in place. When a stale entry surfaces later its distance no longer matches the node's current best, so you skip it. That is the "
+          "text": "Most heap implementations cannot cheaply lower a key that is already inside, so the usual trick is to push the improved entry and leave the stale one in place. When a stale entry surfaces later its distance no longer matches the node's current best, so you skip it. That is the "
         },
         {
           "text": "if (d > dist[u]) continue;",
@@ -787,7 +761,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Go back to the argument that made all of this work. It relies on the fact that extra edges can never reduce a total. The thing is, there are definitely some scenarios where a negative weight makes sense, like when there are benefits to taking a route."
+          "text": "Go back to the argument that made all of this work. It relies on the fact that extra edges can never reduce a total, which negative edges violates."
         }
       ]
     },
@@ -999,12 +973,12 @@
             "prompt": "In the worked trace, D was assigned 9 and later changed to 5. What does that show?",
             "options": [
               {
-                "label": "Reaching a node is not the same as knowing its final distance",
-                "correct": true
-              },
-              {
                 "label": "The graph contained a negative edge",
                 "correct": false
+              },
+              {
+                "label": "Reaching a node is not the same as knowing its final distance",
+                "correct": true
               },
               {
                 "label": "The heap was missing its stale-entry check",

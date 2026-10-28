@@ -24,15 +24,6 @@
   ],
   "body": [
     {
-      "id": "p-hook",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "Search algorithms are what allow you to traverse a graph and make sense of what it looks like. In a real problem it can help you answer questions like, \"can I reach node X from Y?\" and \"which nodes are in the same connected clump as this one? Is there a cycle?\""
-        }
-      ]
-    },
-    {
       "id": "h-difference",
       "text": "Basic Idea",
       "type": "heading",
@@ -43,7 +34,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Take the node that has been waiting longest, and the collection behaves as a queue. You finish everything one step from the start before you look at anything two steps away, and the search spreads outward in rings. This is breadth-first search."
+          "text": "Take the node that has been waiting longest, and the collection behaves as a queue. You finish everything one step from the start before you look at anything two steps away, and the search spreads outward in rings. This is called breadth-first search."
         }
       ]
     },
@@ -52,28 +43,17 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Take the node you added most recently, and the collection behaves as a stack. You charge as deep as you can down a single path, and only when you run out of new ground do you back up to the most recent turning you skipped. That is depth-first search."
+          "text": "Take the node you added most recently, and the collection behaves as a stack. You charge as deep as you can down a single path, and only when you run out of new ground do you back up to the most recent turning you skipped. This is called depth-first search."
         }
       ]
     },
     {
-      "id": "p-difference-4",
-      "type": "paragraph",
+      "id": "callout_8a058c53",
+      "tone": "note",
+      "type": "callout",
       "content": [
         {
-          "text": "|",
-          "marks": [
-            {
-              "kind": "bold"
-            },
-            {
-              "kind": "color",
-              "value": "var(--copper)"
-            }
-          ]
-        },
-        {
-          "text": " In code the difference is "
+          "text": "In code the difference is "
         },
         {
           "text": "shift()",
@@ -84,7 +64,7 @@
           ]
         },
         {
-          "text": " against "
+          "text": " versus "
         },
         {
           "text": "pop()",
@@ -110,7 +90,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "Below is one graph, wired the same way for both runs. Neighbors are always tried in alphabetical order, so the run is reproducible and every step matches the caption underneath it. Try visualizing what the next step is and figure out the difference between BFS and DFS."
+          "text": "Take a look at the graph below, and try visualizing the difference between BFS and DFS. The algorithm used sorts neighbors in alphabetical order. "
         }
       ]
     },
@@ -211,7 +191,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "From here, you've probably noticed that the difference between BFS and DFS in words is that BFS checks branch by branch and DFS checks nodes in order of how far it is from the root."
+          "text": "From here, you've probably noticed that the difference between BFS and DFS is that BFS checks \"branch by branch\" while DFS checks nodes in order of how far it is from the root."
         }
       ]
     },
@@ -241,46 +221,25 @@
     },
     {
       "id": "h-shortest",
-      "text": "Why BFS gets shortest paths",
+      "text": "BFS gets shortest paths",
       "type": "heading",
       "level": 2
-    },
-    {
-      "id": "p-shortest-2",
-      "type": "paragraph",
-      "content": [
-        {
-          "text": "|",
-          "marks": [
-            {
-              "kind": "bold"
-            },
-            {
-              "kind": "color",
-              "value": "var(--copper)"
-            }
-          ]
-        },
-        {
-          "text": " when BFS first reaches a node, the number of steps it took is minimal"
-        }
-      ]
     },
     {
       "id": "p-shortest",
       "type": "paragraph",
       "content": [
         {
-          "text": "Put simply, BFS checks by distance starting with the closest. It then follows that the first time it reaches a certain node, that's the least distance because you checked each possibility from least distance to greatest."
+          "text": "BFS gets the shortest paths because it first checks by distance starting with the closest. It then follows that the first time it reaches a certain node, that's the least distance because you checked each possibility from least distance to greatest. BFS finds all possibilities starting with the shortest ones (unweighted). "
         }
       ]
     },
     {
-      "id": "p-shortest-4",
+      "id": "p_05f4067d",
       "type": "paragraph",
       "content": [
         {
-          "text": "Since nodes come out in non-decreasing order of distance, the first time you meet a node is via the shortest route to it. In summary, BFS finds all possibilities starting with the shortest ones (unweighted). "
+          "text": "Below is an example program for finding the minimum distance from the start to the nodes of a graph"
         }
       ]
     },
@@ -310,7 +269,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "DFS has a property BFS lacks: at any moment, the chain of calls you are inside "
+          "text": "DFS has a property BFS lacks: at any moment, the current chain of calls "
         },
         {
           "text": "is",
@@ -330,7 +289,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "This makes it useful for something like detecting cycles. If DFS ever finds an edge back to a node that is still open, meaning you are still inside its call, you have found a cycle, and the nodes on the current call stack are the cycle. Topological sorting falls out of the order in which DFS finishes nodes. Tarjan's algorithm for strongly connected components is DFS with two extra numbers per node."
+          "text": "One example is detecting cycles. If DFS ever finds an edge back to a node that is still open, meaning you are still inside its call, you have found a cycle, and the nodes on the current call stack are the cycle. Topological sorting falls out of the order in which DFS finishes nodes. Tarjan's algorithm for strongly connected components is DFS with two extra numbers per node."
         }
       ]
     },
@@ -401,7 +360,7 @@
       "type": "paragraph",
       "content": [
         {
-          "text": "The trap is that a real call stack has a size limit. On a graph shaped like a long chain of a hundred thousand nodes, the recursion goes a hundred thousand frames deep and the program dies with a stack overflow. The iterative version with an explicit array handles the same graph without complaint. On competitive programming sites this is a common and confusing source of runtime errors, since the logic is perfectly correct."
+          "text": "The trap is that a real call stack has a size limit. On a graph shaped like a long chain of a hundred thousand nodes, the recursion goes a hundred thousand frames deep and the program dies with a stack overflow. The iterative version with an explicit array does the same thing without this issue. On competitive programming sites this is a common and confusing source of runtime errors, since the logic is perfectly correct."
         }
       ]
     },
@@ -554,7 +513,7 @@
     },
     {
       "id": "h-code",
-      "text": "2 in 1",
+      "text": "2 in 1 implementation",
       "type": "heading",
       "level": 2
     },
