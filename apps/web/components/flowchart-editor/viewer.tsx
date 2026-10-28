@@ -72,6 +72,9 @@ const MAX_FIT = 2.1;
 /** Room kept clear at the top of the frame for the walkthrough caption. */
 const CAPTION_INSET = 64;
 
+/** Room kept under the drawing for the one-line legend floating there. */
+const LEGEND_INSET = 30;
+
 /**
  * The least zoom a trace step centres its node at. A fitted overview of a
  * large chart can sit well under 1, where labels are hard to read; following
@@ -110,6 +113,8 @@ export interface DiagramViewerProps {
    * ignores it.
    */
   scale?: number;
+  /** Drop the frame's own border, for a host card that already is the box. */
+  frameless?: boolean;
   className?: string;
 }
 
@@ -161,6 +166,7 @@ function Reader({
   // matching default in flowchart-widgets.tsx's readOptions().
   maxHeight = 1205,
   scale = 1,
+  frameless = false,
   className,
   expanded = false,
   onExpand,
@@ -240,6 +246,11 @@ function Reader({
   // the drawing's home view starts below it rather than behind it.
   const captioning = steps.length > 0 && walkthrough && tracing;
   const topInset = captioning ? CAPTION_INSET : 0;
+  // The legend floats over the floor of the frame, so the home view stops
+  // above it. Without this a connector looping under the bottom row of
+  // shapes ran behind the legend and read as cut off.
+  const legendItems = useMemo(() => (legend ? deriveLegend(shown) : []), [legend, shown]);
+  const bottomInset = legendItems.length > 0 ? LEGEND_INSET : 0;
   const boost = expanded ? 1 : scale;
 
   /**
@@ -253,23 +264,23 @@ function Reader({
    */
   const fit = useMemo(() => {
     const availW = box.w - PAD * 2;
-    const availH = (expanded ? box.h : maxHeight) - PAD * 2 - topInset;
+    const availH = (expanded ? box.h : maxHeight) - PAD * 2 - topInset - bottomInset;
     if (availW <= 0 || availH <= 0 || bounds.width <= 0 || bounds.height <= 0) return 1;
     return Math.max(0.05, Math.min(MAX_FIT * boost, availW / bounds.width, availH / bounds.height));
-  }, [box.w, box.h, expanded, maxHeight, topInset, boost, bounds]);
+  }, [box.w, box.h, expanded, maxHeight, topInset, bottomInset, boost, bounds]);
 
   // Short diagrams get a short frame; nobody wants 1205px of background under
   // a four-box chart. Expanded, the dialog owns the height.
-  const frameHeight = expanded ? undefined : Math.min(maxHeight, bounds.height * fit + PAD * 2 + topInset);
+  const frameHeight = expanded ? undefined : Math.min(maxHeight, bounds.height * fit + PAD * 2 + topInset + bottomInset);
 
   const home = useMemo<View>(() => {
-    const h = (expanded ? box.h : (frameHeight ?? 0)) - topInset;
+    const h = (expanded ? box.h : (frameHeight ?? 0)) - topInset - bottomInset;
     return {
       zoom: fit,
       x: (box.w - bounds.width * fit) / 2 - bounds.x * fit,
       y: topInset + (h - bounds.height * fit) / 2 - bounds.y * fit,
     };
-  }, [box.w, box.h, expanded, frameHeight, topInset, fit, bounds]);
+  }, [box.w, box.h, expanded, frameHeight, topInset, bottomInset, fit, bounds]);
 
   /**
    * `null` means nobody has touched the camera, which is what lets a resize
@@ -466,7 +477,6 @@ function Reader({
   const openNote = selectedEl?.note;
   const noteTitle = selectedEl && isShape(selectedEl) ? selectedEl.text : selectedEl?.label;
 
-  const legendItems = useMemo(() => (legend ? deriveLegend(shown) : []), [legend, shown]);
 
   return (
     // `fe-root` for the tokens, not the chrome: ShapeView and LineView are
@@ -477,7 +487,9 @@ function Reader({
       <div
         ref={hostRef}
         className={cn(
-          "relative w-full overflow-hidden rounded-lg border border-border",
+          "relative w-full overflow-hidden rounded-lg",
+          // The dialog always draws its own frame: there it is the only box.
+          (!frameless || expanded) && "border border-border",
           expanded && "min-h-0 flex-1",
         )}
         style={{

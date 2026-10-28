@@ -680,6 +680,116 @@ export function topologicalSortSteps(graph: GraphSpec): AlgorithmStep[] {
 }
 
 /**
+ * Topological sort by DFS finish order: a node goes onto the finished stack
+ * only once everything reachable from it is already there, so reading that
+ * stack from the top down is a valid order.
+ *
+ * `frontier` is the call stack (nodes whose call is still open) and `visited`
+ * is the finished stack in push order, so the canvas colours both without
+ * knowing this is a different algorithm. Roots are tried in the order the
+ * author listed the nodes, for the same reason Kahn's seeds its queue that
+ * way. An edge back into the call stack ends the run: it closes a cycle, and
+ * the cycle is exactly the slice of the call stack it points back into.
+ */
+export function topologicalSortDfsSteps(graph: GraphSpec): AlgorithmStep[] {
+  const steps: AlgorithmStep[] = [];
+  const adj = adjacency({ ...graph, directed: true });
+
+  const callStack: string[] = [];
+  const finished: string[] = [];
+  const done = new Set<string>();
+  const treeEdges: string[] = [];
+  // Index of the next neighbour each open call will look at.
+  const cursor = new Map<string, number>();
+
+  const frame = (caption: string, extra: Partial<AlgorithmStep> = {}): AlgorithmStep => ({
+    caption,
+    visited: [...finished],
+    active: callStack[callStack.length - 1] ?? null,
+    frontier: [...callStack],
+    treeEdges: [...treeEdges],
+    consideredEdge: null,
+    rejectedEdges: [],
+    ...extra,
+  });
+
+  steps.push(
+    frame(
+      `Nothing is visited yet. The call stack will hold every node whose DFS call is still open, and a node moves to the finished stack once everything it points to has finished.`,
+    ),
+  );
+
+  for (const { id: root } of graph.nodes) {
+    if (done.has(root)) continue;
+    callStack.push(root);
+    cursor.set(root, 0);
+    steps.push(frame(`${root} has not been visited, so start a DFS there. ${root} goes on the call stack.`));
+
+    while (callStack.length > 0) {
+      const node = callStack[callStack.length - 1];
+      const neighbours = adj.get(node) ?? [];
+      const i = cursor.get(node) ?? 0;
+
+      if (i < neighbours.length) {
+        cursor.set(node, i + 1);
+        const { to } = neighbours[i];
+        const key = edgeKey(node, to, true);
+
+        if (callStack.includes(to)) {
+          const cycle = callStack.slice(callStack.indexOf(to));
+          steps.push(
+            frame(
+              `${node} points at ${to}, which is still on the call stack: ${to}'s call has not returned yet. That edge closes a cycle, ${[...cycle, to].join(" → ")}, so no topological order exists.`,
+              { consideredEdge: key, groups: [cycle] },
+            ),
+          );
+          return steps;
+        }
+
+        if (done.has(to)) {
+          steps.push(
+            frame(`${node} points at ${to}, but ${to} has already finished. It is on the finished stack, so there is nothing to do.`, {
+              consideredEdge: key,
+            }),
+          );
+          continue;
+        }
+
+        treeEdges.push(key);
+        callStack.push(to);
+        cursor.set(to, 0);
+        steps.push(
+          frame(`${node} points at ${to}, which is new. Call into it: ${to} goes on top of the call stack.`, {
+            consideredEdge: key,
+          }),
+        );
+        continue;
+      }
+
+      callStack.pop();
+      done.add(node);
+      finished.push(node);
+      steps.push(
+        frame(
+          neighbours.length > 0
+            ? `Everything ${node} points to has finished, so ${node} finishes too. Pop it off the call stack and push it onto the finished stack.`
+            : `${node} points at nothing, so it finishes straight away. Pop it off the call stack and push it onto the finished stack.`,
+          { active: node },
+        ),
+      );
+    }
+  }
+
+  steps.push(
+    frame(
+      `Every node has finished. Read the finished stack from the top down: ${[...finished].reverse().join(" → ")}. Each node finished after everything it points to, so this order is a valid one.`,
+    ),
+  );
+
+  return steps;
+}
+
+/**
  * Bellman-Ford: no clever order, just sweep every edge V-1 times.
  *
  * This is the one generator here that never builds an adjacency list, because

@@ -82,9 +82,11 @@ interface CallTreeCanvasProps {
   /** Ring the calls whose answer was already computed somewhere to the left. */
   markRepeats?: boolean;
   maxHeight?: number;
+  /** Drop the tree's own box, for a stage already inside the widget card. */
+  frameless?: boolean;
 }
 
-export function CallTreeCanvas({ nodes, step, markRepeats = false, maxHeight = 340 }: CallTreeCanvasProps) {
+export function CallTreeCanvas({ nodes, step, markRepeats = false, maxHeight = 340, frameless }: CallTreeCanvasProps) {
   if (nodes.length === 0) {
     return <p className="text-sm text-slate">Nothing to draw yet.</p>;
   }
@@ -136,6 +138,7 @@ export function CallTreeCanvas({ nodes, step, markRepeats = false, maxHeight = 3
       nodeHeight={NODE_H}
       activeId={step.activeId}
       maxHeight={maxHeight}
+      frameless={frameless}
       ariaLabel="Recursion call tree"
     />
   );

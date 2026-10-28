@@ -291,10 +291,10 @@ const registryImpl: Record<string, WidgetDefinition> = {
   },
   "topological-sort": {
     name: "topological-sort",
-    label: "Topological Sort (Kahn's algorithm)",
+    label: "Topological Sort (Kahn's / DFS)",
     Renderer: TopologicalSortWidget,
     Editor: TopologicalSortWidgetEditor,
-    createDefault: () => ({}),
+    createDefault: () => ({ mode: "kahn" }),
   },
   "graph-embed": {
     name: "graph-embed",

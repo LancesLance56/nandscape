@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import { useEffect, useMemo } from "react";
 import {
   Controls,
@@ -142,6 +143,8 @@ interface RfTreeProps {
   activeId: string | null;
   maxHeight: number;
   ariaLabel: string;
+  /** No box of its own: the tree stands on the widget card. */
+  frameless?: boolean;
 }
 
 function RfTreeInner({
@@ -153,6 +156,7 @@ function RfTreeInner({
   activeId,
   maxHeight,
   ariaLabel,
+  frameless = false,
 }: RfTreeProps) {
   const sx = (x: number) => (x * renderWidth) / layoutWidth;
 
@@ -204,7 +208,10 @@ function RfTreeInner({
 
   return (
     <div
-      className="not-prose relative overflow-hidden rounded-lg border border-border bg-surface-2/30"
+      className={cn(
+        "not-prose relative overflow-hidden",
+        !frameless && "rounded-lg border border-border bg-surface-2/30",
+      )}
       style={{ height: maxHeight }}
     >
       <ReactFlow

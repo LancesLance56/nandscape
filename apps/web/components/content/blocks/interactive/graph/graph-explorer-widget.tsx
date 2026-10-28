@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { adjacency, type GraphSpec } from "@/lib/graph/types";
 import { GraphCanvas } from "./graph-canvas";
-import { PanelBox, Segmented, StatReadout, WidgetButton } from "../shared/widget-ui";
-import { ActionDock, WidgetShell } from "../shared/widget-shell";
+import { PanelBox, StatReadout, WidgetButton } from "../shared/widget-ui";
+import { ActionDock, WidgetShell, modeTabs } from "../shared/widget-shell";
 
 type Kind = "undirected" | "directed" | "weighted" | "dag" | "tree" | "disconnected";
 
@@ -173,14 +173,7 @@ export function GraphExplorerWidget({
       title="Kinds of graph"
       bare={!frame}
       className={data.className as string}
-      primary={
-        <Segmented
-          variant="solid"
-          options={presets.map((p, i) => ({ id: String(i), label: p.label }))}
-          value={String(active)}
-          onChange={(id) => setActive(Number(id))}
-        />
-      }
+      tabs={modeTabs(presets.map((p, i) => ({ id: String(i), label: p.label })), String(active), (id) => setActive(Number(id)))}
       stage={<GraphCanvas graph={preset.graph} />}
       caption={preset.blurb}
       captionLabel={`${active + 1}/${presets.length}`}

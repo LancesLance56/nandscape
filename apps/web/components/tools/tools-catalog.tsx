@@ -59,7 +59,11 @@ const SHELF: Record<string, { art: ReactNode; mono: string; line: string }> = {
     line: "Set cells; the minimal expression is solved as you go.",
   },
   "number-base-converter": { art: <BitsArt />, mono: "Nb", line: "Flip a bit and watch all three move together." },
-  "topological-sort-visualizer": { art: <TopoArt className="w-[44%]" />, mono: "Ts", line: "Kahn's algorithm, one node at a time." },
+  "topological-sort-visualizer": {
+    art: <TopoArt className="w-[44%]" />,
+    mono: "Ts",
+    line: "Kahn's algorithm or DFS, one node at a time.",
+  },
   "karnaugh-map-practice": {
     art: <KmapPracticeArt className="w-[44%]" />,
     mono: "Kp",

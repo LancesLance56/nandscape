@@ -57,9 +57,8 @@ export function isQuizData(data: unknown): data is QuizData {
  * Rebuilt around two things the old one lacked: a sense of where you are, and
  * a record that you did it.
  *
- * Progress is now a segmented bar rather than a "question 3 of 5" caption, and
- * each segment colours itself as you answer, so the result screen is already
- * legible before you reach it. Options are a single column with their state
+ * Progress is one green bar and a count rather than a "question 3 of 5"
+ * caption; whether each answer was right is said once, in its banner. Options are a single column with their state
  * spelled out by an icon as well as by colour, which the old two-tone borders
  * left to hue alone. Explanations slide in under the answered question instead
  * of appearing in a reserved gap, and the layout no longer reserves 7rem of
@@ -134,6 +133,7 @@ function Quiz({ data }: { data: QuizData }) {
   };
 
   const passed = score >= Math.ceil(questions.length / 2);
+  const answeredCount = Object.keys(selectedByStep).length;
 
   const answeredRight = answeredCurrent && current.options[chosen]?.correct;
 
@@ -143,24 +143,30 @@ function Quiz({ data }: { data: QuizData }) {
       title={title}
       meta={finished ? "done" : `question ${step + 1} of ${questions.length}`}
       className={data.className}
-      // One segment per question: answered ones carry their result, so the
-      // run so far is readable at a glance. It sits where a mode switch would.
+      // One continuous bar of answered questions, beside the count. Right and
+      // wrong are left to each answer's own banner and the result screen; the
+      // bar only says how far through you are.
       primary={
-        <div className="flex w-56 gap-1" role="presentation">
-          {questions.map((q, i) => {
-            const answer = selectedByStep[i];
-            const state =
-              answer === undefined
-                ? i === step && !finished
-                  ? "bg-copper"
-                  : "bg-surface-4"
-                : q.options[answer]?.correct
-                  ? "bg-signal-green"
-                  : "bg-signal-coral";
-            return <span key={i} className={cn("h-1.5 flex-1 rounded-full transition-colors", state)} />;
-          })}
+        <div className="flex items-center gap-3">
+          <span className="font-label text-xs font-semibold tabular-nums text-slate">
+            {answeredCount} / {questions.length}
+          </span>
+          <div
+            role="progressbar"
+            aria-label={`${answeredCount} of ${questions.length} answered`}
+            aria-valuemin={0}
+            aria-valuemax={questions.length}
+            aria-valuenow={answeredCount}
+            className="h-1.5 w-40 overflow-hidden rounded-full bg-surface-4 sm:w-56"
+          >
+            <div
+              className="h-full rounded-full bg-signal-green transition-[width] duration-300 ease-out motion-reduce:transition-none"
+              style={{ width: `${(answeredCount / questions.length) * 100}%` }}
+            />
+          </div>
         </div>
       }
+      roomy
       prompt={finished ? undefined : current.prompt}
       stage={
         finished ? (

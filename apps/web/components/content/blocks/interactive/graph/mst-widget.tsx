@@ -117,8 +117,8 @@ export function MstWidget({
       frame={frame}
       className={data.className as string}
       modes={[
-        { id: "kruskal", label: "Kruskal (cheapest edge anywhere)" },
-        { id: "prim", label: "Prim (grow one blob)" },
+        { id: "kruskal", label: "Kruskal", sub: "cheapest edge anywhere" },
+        { id: "prim", label: "Prim", sub: "grow one blob" },
       ]}
       activeMode={mode}
       onModeChange={(id) => setMode(id === "prim" ? "prim" : "kruskal")}

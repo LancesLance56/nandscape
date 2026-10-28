@@ -19,8 +19,8 @@ interface AlgorithmRunnerProps {
   kind?: string;
   graph: GraphSpec;
   steps: AlgorithmStep[];
-  /** Mode switcher (BFS/DFS, Kruskal/Prim): the shell's primary control. */
-  modes?: { id: string; label: string }[];
+  /** Mode switcher (BFS/DFS, Kruskal/Prim), drawn as the shell's folder tabs. */
+  modes?: { id: string; label: string; sub?: string }[];
   activeMode?: string;
   onModeChange?: (id: string) => void;
   /** Worked-example switcher, in the detailed options row. */
@@ -85,15 +85,10 @@ export function AlgorithmRunner({
       title={title}
       bare={!frame}
       className={className}
-      primary={
-        modes && modes.length > 1 ? (
-          <Segmented
-            variant="solid"
-            options={modes}
-            value={activeMode ?? modes[0].id}
-            onChange={(id) => onModeChange?.(id)}
-          />
-        ) : undefined
+      tabs={
+        modes && modes.length > 1
+          ? { options: modes, value: activeMode ?? modes[0].id, onChange: (id) => onModeChange?.(id) }
+          : undefined
       }
       options={
         !compact && examples && examples.length > 1 ? (

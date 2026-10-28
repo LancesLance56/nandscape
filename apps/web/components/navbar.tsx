@@ -147,10 +147,13 @@ export function Navbar() {
   }, [mobileOpen]);
 
   return (
-    <header
-      ref={navRef}
-      className="fixed inset-x-0 top-0 z-50 border-b border-border bg-surface-card/90 backdrop-blur-md"
-    >
+    <header ref={navRef} className="fixed inset-x-0 top-0 z-50 border-b border-border">
+      {/* The frosted background is its own layer, not the header's: a
+          backdrop-filter makes the element a containing block for fixed
+          descendants, which pinned the mobile menu's `fixed top-20 bottom-0`
+          to the 80px header instead of the viewport - it opened zero pixels
+          tall, so tapping the button looked like it did nothing. */}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-surface-card/90 backdrop-blur-md" />
       <nav
         aria-label="Main"
         className="mx-auto flex h-20 w-full max-w-330 items-center gap-6 px-4 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-10"

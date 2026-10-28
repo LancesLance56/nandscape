@@ -3,9 +3,9 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { defaultSudoku, sudokuSteps, type SudokuPayload, type SudokuStrategy } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox, Segmented, StatReadout, type SegmentedOption } from "../shared/widget-ui";
+import { PanelBox, StatReadout, type SegmentedOption } from "../shared/widget-ui";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
-import { WidgetShell, useWidgetView } from "../shared/widget-shell";
+import { WidgetShell, useWidgetView, modeTabs } from "../shared/widget-shell";
 
 const STRATEGY_OPTIONS: readonly SegmentedOption<SudokuStrategy>[] = [
   { id: "first", label: "Next blank in reading order" },
@@ -91,7 +91,7 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
     <WidgetShell
       kind="Backtracking"
       title="Sudoku solver"
-      primary={<Segmented variant="solid" value={strategy} onChange={setStrategy} options={STRATEGY_OPTIONS} />}
+      tabs={modeTabs(STRATEGY_OPTIONS, strategy, setStrategy)}
       stage={
         <Stage>
           <div className="flex justify-center overflow-x-auto">

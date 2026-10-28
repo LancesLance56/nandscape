@@ -15,9 +15,9 @@ import {
 } from "@/lib/kmap/kmap";
 import { gradeCover } from "@/lib/kmap/solve";
 import { generateProblem, randomSeed, type Difficulty } from "@/lib/kmap/random";
-import { WidgetShell } from "../shared/widget-shell";
+import { WidgetShell, modeTabs } from "../shared/widget-shell";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
-import { Banner, PanelBox, Segmented, StatReadout, WidgetButton } from "../shared/widget-ui";
+import { Banner, PanelBox, StatReadout, WidgetButton } from "../shared/widget-ui";
 
 const DIFFICULTIES: { id: Difficulty; label: string; blurb: string }[] = [
   { id: "easy", label: "Easy", blurb: "3 variables, no don't-cares" },
@@ -156,14 +156,7 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
       kind="Practice"
       title="Karnaugh map practice"
       meta={`${solvedCount} solved`}
-      primary={
-        <Segmented
-          variant="solid"
-          value={difficulty}
-          onChange={newProblem}
-          options={DIFFICULTIES.map((d) => ({ id: d.id, label: d.label, hint: d.blurb }))}
-        />
-      }
+      tabs={modeTabs(DIFFICULTIES.map((d) => ({ id: d.id, label: d.label, hint: d.blurb })), difficulty, newProblem)}
       prompt="Cover every 1 with as few groups as you can."
       stage={
         <div className="flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-center lg:gap-8">

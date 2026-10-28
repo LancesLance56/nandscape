@@ -91,7 +91,7 @@ export function BacktrackingRunner<P>({
       title={title}
       bare={!frame}
       className={className}
-      primary={slots.primary}
+      tabs={slots.tabs}
       options={slots.options}
       stage={
         <Stage

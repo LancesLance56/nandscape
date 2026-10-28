@@ -77,6 +77,24 @@ function MoreLink({ section, shown, className }: { section: FolderSection; shown
   );
 }
 
+/** An inverted corner: a square of the tab's colour with a quarter circle cut out. */
+const FILLET = 12;
+
+function Fillet({ side, color }: { side: "left" | "right"; color: string }) {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute bottom-0"
+      style={{
+        [side === "left" ? "right" : "left"]: "100%",
+        width: FILLET,
+        height: FILLET,
+        background: `radial-gradient(circle at ${side === "left" ? "0 0" : "100% 0"}, transparent ${FILLET - 0.5}px, ${color} ${FILLET}px)`,
+      }}
+    />
+  );
+}
+
 export function FolderTabs({ folders }: { folders: Folder[] }) {
   const [active, setActive] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -121,10 +139,10 @@ export function FolderTabs({ folders }: { folders: Folder[] }) {
               tabIndex={on ? 0 : -1}
               onClick={() => setActive(i)}
               className={cn(
-                "inline-flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-t-[12px] px-3.5 text-sm transition-[height,background-color,color] duration-200 ease-out sm:gap-2.5 sm:rounded-t-[14px] sm:px-[18px] sm:text-[15px] motion-reduce:transition-none",
+                "relative inline-flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-t-[12px] px-3.5 text-sm transition-[height,background-color,color] duration-200 ease-out sm:gap-2.5 sm:rounded-t-[14px] sm:px-[18px] sm:text-[15px] motion-reduce:transition-none",
                 "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-copper",
                 on
-                  ? "h-[46px] font-extrabold text-ink sm:h-[50px]"
+                  ? "z-10 h-[46px] font-extrabold text-ink sm:h-[50px]"
                   : "h-10 bg-surface-2 font-semibold text-ink-soft hover:text-ink sm:h-[42px]",
               )}
               style={on ? { background: wash(f.color) } : undefined}
@@ -132,17 +150,36 @@ export function FolderTabs({ folders }: { folders: Folder[] }) {
               <span aria-hidden className="h-2 w-2 shrink-0 rounded-[3px] sm:h-[9px] sm:w-[9px]" style={{ background: f.color }} />
               {f.tab}
               <span className="hidden font-label text-xs font-bold text-slate sm:inline">{f.count}</span>
+              {/* Concave fillets where the open tab meets the folder, so the
+                  tab flows into it instead of meeting it at a hard right
+                  angle. They paint over the neighbouring tabs' feet, the way
+                  a real folder tab sits in front of the ones beside it. The
+                  first tab has no left fillet: the folder's corner is square
+                  under it. */}
+              {on && (
+                <>
+                  {i > 0 && <Fillet side="left" color={wash(f.color)} />}
+                  <Fillet side="right" color={wash(f.color)} />
+                </>
+              )}
             </button>
           );
         })}
       </div>
 
+      <div className="relative">
+      {/* With another tab open, the first tab's grey folder sits behind the
+          open one, so its corner shows through the open folder's rounded
+          top-left instead of leaving a notch of page. */}
+      {active !== 0 && (
+        <span aria-hidden className="absolute left-0 top-0 h-[18px] w-[18px] bg-surface-2 sm:h-[22px] sm:w-[22px]" />
+      )}
       <div
         id="folder-panel"
         role="tabpanel"
         aria-labelledby={`folder-tab-${folder.id}`}
         className={cn(
-          "rounded-[18px] p-2.5 transition-[background-color] duration-200 sm:rounded-[22px] sm:p-4 motion-reduce:transition-none",
+          "relative rounded-[18px] p-2.5 transition-[background-color] duration-200 sm:rounded-[22px] sm:p-4 motion-reduce:transition-none",
           active === 0 && "rounded-tl-none sm:rounded-tl-none",
         )}
         style={{ background: wash(folder.color) }}
@@ -214,6 +251,7 @@ export function FolderTabs({ folders }: { folders: Folder[] }) {
             </Link>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

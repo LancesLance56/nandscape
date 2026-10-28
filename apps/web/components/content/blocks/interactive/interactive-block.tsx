@@ -72,6 +72,9 @@ const widgetRegistry: Record<string, ComponentType<WidgetProps>> = {
   "tarjan-scc": TarjanSccWidget,
   "mutual-reachability": MutualReachabilityWidget,
   "topological-sort": TopologicalSortWidget,
+  // Briefly its own widget before DFS became a mode of "topological-sort";
+  // kept so a block saved under the old name still renders.
+  "topological-sort-dfs": ({ data }) => <TopologicalSortWidget data={{ ...data, mode: "dfs" }} />,
   "backtracking-tree": BacktrackingTreeWidget,
   "permutations-explorer": PermutationsWidget,
   "n-queens": NQueensWidget,

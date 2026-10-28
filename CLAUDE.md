@@ -181,7 +181,15 @@ data-oriented (Structure-of-Arrays), event-driven, and graph-based:
   in a well beside side panels, numbered narration). A widget fills named
   slots (`primary`, `options`, `stage`, `side`, `readout`, `caption`,
   `dock`, …) and the shell decides where each goes, so a new widget should do
-  the same rather than lay out its own card. Stepped widgets use
+  the same rather than lay out its own card. A **mode switch** (BFS/DFS,
+  Kahn's/DFS, Kruskal/Prim) goes in `tabs` (build it with `modeTabs()`), not
+  as a Segmented in `primary`: the shell draws it as folder nibs standing on
+  the card's top edge, so it costs the card no height. A tab with `menu` is a
+  "More" dropdown (the sorting visualizer's rarer algorithms).
+  The Details chip is a stopgap being phased out: a widget whose focused view
+  shows everything sets `singleView` (the flowchart widgets do). Avoid boxes
+  inside the card - the card is the frame, so an embedded surface should drop
+  its own border (`frameless` on the diagram viewer and editor). Stepped widgets use
   `PlayerDock` from `shared/step-player.tsx`; designs are on the "Nandscape
   Widget Redesign" canvas.
 

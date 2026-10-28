@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EmbedBuilder } from "./embed-builder";
 import { embedPath, type EmbedCatalogEntry } from "@/lib/embeds/embeddable";
 import { cn } from "@/lib/cn";
@@ -36,7 +36,26 @@ export function EmbedGallery({ catalog }: { catalog: EmbedCatalogEntry[] }) {
     return [...byGroup.entries()];
   }, [catalog, query]);
 
+  // The preview follows the height the embed reports (see AutoHeightReporter
+  // in embed-shell.tsx), so it is never cut off or padded out by a catalog
+  // height that has drifted from the widget. Until the first report, the
+  // catalog height stands in. Keyed by entry, so a new pick starts over.
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const [reported, setReported] = useState<{ key: string; height: number } | null>(null);
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (e.source !== frameRef.current?.contentWindow) return;
+      const data = e.data as { type?: unknown; height?: unknown } | null;
+      if (data?.type !== "nandscape:embed:height" || typeof data.height !== "number") return;
+      setReported({ key: selectedId, height: Math.min(1600, Math.max(160, data.height)) });
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [selectedId]);
+
   if (!selected) return null;
+  const frameHeight =
+    reported?.key === `${selected.kind}:${selected.id}` ? reported.height : Math.min(selected.height, 1000);
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
@@ -85,18 +104,21 @@ export function EmbedGallery({ catalog }: { catalog: EmbedCatalogEntry[] }) {
 
       {/* The thing, running, plus its snippet. */}
       <div className="flex flex-col gap-3">
-        <div className="overflow-hidden rounded-2xl border border-border bg-surface-card">
-          <div className="flex items-center gap-2 border-b border-border bg-surface-2 px-4 py-2.5">
+        {/* No box round the preview: the embed brings its own card, and a
+            frame drawn round that one is a container in a container. */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-2 px-3">
             <span className="truncate text-[11px] font-semibold text-ink">{selected.title}</span>
             <span className="ml-auto shrink-0 font-code text-[10px] text-slate">{embedPath(selected)}</span>
           </div>
           <iframe
+            ref={frameRef}
             key={`${selected.kind}:${selected.id}`}
             src={embedPath(selected)}
             title={`${selected.title} embed preview`}
             loading="lazy"
-            style={{ height: Math.min(selected.height, 1000), border: 0 }}
-            className="w-full bg-surface"
+            style={{ height: frameHeight, border: 0 }}
+            className="w-full bg-transparent"
           />
         </div>
 

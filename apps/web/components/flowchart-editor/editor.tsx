@@ -53,6 +53,8 @@ export interface FlowchartEditorProps {
   /** Fill the window, or sit inside a page that owns the scroll. */
   variant?: "standalone" | "embedded";
   height?: number;
+  /** Embedded without its own border, for a host card that already is the box. */
+  frameless?: boolean;
 }
 
 export function FlowchartEditor({
@@ -61,6 +63,7 @@ export function FlowchartEditor({
   autosave = true,
   variant = "standalone",
   height = 560,
+  frameless = false,
 }: FlowchartEditorProps) {
   const [help, setHelp] = useState(false);
   useDocumentSource({ initial, onChange, autosave });
@@ -71,7 +74,9 @@ export function FlowchartEditor({
       style={
         variant === "standalone"
           ? { height: "100dvh" }
-          : { height, borderRadius: 12, border: "1px solid var(--fe-line)" }
+          : frameless
+            ? { height }
+            : { height, borderRadius: 12, border: "1px solid var(--fe-line)" }
       }
     >
       <div className="flex min-h-0 flex-1">

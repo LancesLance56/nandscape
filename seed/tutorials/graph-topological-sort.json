@@ -321,6 +321,103 @@
       ]
     },
     {
+      "id": "widget_dfs_dag",
+      "data": {
+        "mode": "dfs",
+        "graph": {
+          "edges": [
+            {
+              "to": "D",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "A"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            },
+            {
+              "to": "E",
+              "from": "B"
+            },
+            {
+              "to": "F",
+              "from": "C"
+            },
+            {
+              "to": "G",
+              "from": "F"
+            },
+            {
+              "to": "I",
+              "from": "H"
+            },
+            {
+              "to": "J",
+              "from": "I"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 89.53032684326172,
+              "y": 42.51057052612305,
+              "id": "A"
+            },
+            {
+              "x": 248.14051818847656,
+              "y": 39.95233917236328,
+              "id": "B"
+            },
+            {
+              "x": 163.07940673828125,
+              "y": 123.09477996826172,
+              "id": "C"
+            },
+            {
+              "x": 28.132831573486328,
+              "y": 119.8969955444336,
+              "id": "D"
+            },
+            {
+              "x": 331.9225158691406,
+              "y": 124.37389373779297,
+              "id": "E"
+            },
+            {
+              "x": 77.37873840332031,
+              "y": 220.30747985839844,
+              "id": "F"
+            },
+            {
+              "x": 223.19778442382812,
+              "y": 221.5865936279297,
+              "id": "G"
+            },
+            {
+              "x": 393.32000732421875,
+              "y": 45.70835494995117,
+              "id": "H"
+            },
+            {
+              "x": 395.2386779785156,
+              "y": 216.4701385498047,
+              "id": "I"
+            },
+            {
+              "x": 311.4566955566406,
+              "y": 215.19102478027344,
+              "id": "J"
+            }
+          ],
+          "directed": true
+        }
+      },
+      "type": "interactive",
+      "widget": "topological-sort"
+    },
+    {
       "id": "p-dfs-3",
       "type": "paragraph",
       "content": [
@@ -328,6 +425,58 @@
           "text": "Detecting cycles takes one extra piece of state: if the DFS ever meets an edge back to a node that is currently open, meaning you are still inside its call, that is a cycle."
         }
       ]
+    },
+    {
+      "id": "widget_dfs_cycle",
+      "data": {
+        "mode": "dfs",
+        "graph": {
+          "edges": [
+            {
+              "to": "C",
+              "from": "A"
+            },
+            {
+              "to": "D",
+              "from": "C"
+            },
+            {
+              "to": "B",
+              "from": "D"
+            },
+            {
+              "to": "C",
+              "from": "B"
+            }
+          ],
+          "nodes": [
+            {
+              "x": 108.07748413085938,
+              "y": 73.50910949707031,
+              "id": "A"
+            },
+            {
+              "x": 275.0019226074219,
+              "y": 76.70689392089844,
+              "id": "C"
+            },
+            {
+              "x": 106.79837036132812,
+              "y": 191.18763732910156,
+              "id": "B"
+            },
+            {
+              "x": 283.9557189941406,
+              "y": 200.1414337158203,
+              "id": "D"
+            }
+          ],
+          "directed": true,
+          "annotations": []
+        }
+      },
+      "type": "interactive",
+      "widget": "topological-sort"
     },
     {
       "id": "p-dfs-4",
@@ -374,6 +523,18 @@
       "variants": [
         {
           "code": "from collections import deque\n\ndef topological_sort_kahn(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    in_degree = [0] * node_count\n\n    for before, after in edges:\n        adj[before].append(after)\n        in_degree[after] += 1          # one more thing blocking it\n\n    ready = deque(v for v in range(node_count) if in_degree[v] == 0)\n\n    order = []\n    while ready:\n        v = ready.popleft()\n        order.append(v)\n        for nxt in adj[v]:\n            in_degree[nxt] -= 1\n            if in_degree[nxt] == 0:\n                ready.append(nxt)\n\n    # Anything left un-emitted is stuck behind a cycle.\n    return order if len(order) == node_count else None",
+          "language": "python"
+        }
+      ]
+    },
+    {
+      "id": "code-impl-dfs",
+      "code": "function topologicalSortDFS(nodeCount, edges) {\n  const adj = Array.from({ length: nodeCount }, () => []);\n  for (const [before, after] of edges) adj[before].push(after);\n\n  const NEW = 0, OPEN = 1, DONE = 2;\n  const state = new Array(nodeCount).fill(NEW);\n  const finished = [];\n\n  function visit(v) {\n    state[v] = OPEN;                   // still inside v's call\n    for (const next of adj[v]) {\n      if (state[next] === OPEN) return false;   // edge back into the call stack: a cycle\n      if (state[next] === NEW && !visit(next)) return false;\n    }\n    state[v] = DONE;\n    finished.push(v);                  // everything after v is already in the list\n    return true;\n  }\n\n  for (let v = 0; v < nodeCount; v++) {\n    if (state[v] === NEW && !visit(v)) return null;\n  }\n  return finished.reverse();\n}",
+      "type": "code",
+      "language": "javascript",
+      "variants": [
+        {
+          "code": "def topological_sort_dfs(node_count, edges):\n    adj = [[] for _ in range(node_count)]\n    for before, after in edges:\n        adj[before].append(after)\n\n    NEW, OPEN, DONE = 0, 1, 2\n    state = [NEW] * node_count\n    finished = []\n\n    def visit(v):\n        state[v] = OPEN                # still inside v's call\n        for nxt in adj[v]:\n            if state[nxt] == OPEN:\n                return False           # edge back into the call stack: a cycle\n            if state[nxt] == NEW and not visit(nxt):\n                return False\n        state[v] = DONE\n        finished.append(v)             # everything after v is already in the list\n        return True\n\n    for v in range(node_count):\n        if state[v] == NEW and not visit(v):\n            return None\n    return finished[::-1]",
           "language": "python"
         }
       ]

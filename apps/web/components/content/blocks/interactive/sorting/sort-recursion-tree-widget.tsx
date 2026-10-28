@@ -5,7 +5,8 @@ import { mergeSortRun, quickSortRun } from "@/lib/sorting/recursion";
 import { CallTreeCanvas, CallTreeLegend } from "../dp/call-tree-canvas";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
 import { WidgetShell } from "../shared/widget-shell";
-import { ChipRow, PanelBox, StatReadout } from "../shared/widget-ui";
+import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 type SortAlgo = "merge" | "quick";
 
@@ -52,23 +53,65 @@ export function SortRecursionTreeWidget({ data }: { data: Record<string, unknown
     <WidgetShell
       kind="Sorting"
       title={algorithm === "quick" ? "Quicksort, call by call" : "Merge sort, call by call"}
-      options={
-        <p className="font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
+      singleView
+      // The widget lays out its own reading order under the tree (key, then
+      // what just happened, then the stack), so everything is in the stage.
+      stage={
+        <div className="flex flex-col">
+          <CallTreeCanvas nodes={run.nodes} step={step} markRepeats={false} maxHeight={310} frameless />
+          <div className="flex justify-center pb-1 pt-2">
+            <CallTreeLegend showRepeats={false} showHits={false} />
+          </div>
+
+          <div className="mt-3 grid gap-x-6 gap-y-3 border-t border-border pt-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+            {/* Two lines reserved, so a short step after a long one does not
+                pull the dock up. */}
+            <p aria-live="polite" className="m-0 min-h-[2.75rem] text-[15px] font-medium leading-snug text-ink">
+              {step.caption}
+            </p>
+            <div className="flex items-baseline gap-1.5 sm:flex-col sm:items-end sm:gap-0">
+              <span className="font-display text-2xl font-bold leading-none tabular-nums text-ink">{step.calls}</span>
+              <span className="text-xs text-slate">{step.calls === 1 ? "call" : "calls"}</span>
+            </div>
+          </div>
+
+          <CallStackTrail stack={step.stack} />
+        </div>
       }
-      stage={<CallTreeCanvas nodes={run.nodes} step={step} markRepeats={false} maxHeight={270} />}
-      readout={<StatReadout stats={[{ label: "calls", value: step.calls }]} />}
-      legend={<CallTreeLegend showRepeats={false} showHits={false} />}
-      side={
-        <>
-          <PanelBox title="Call stack">
-            <ChipRow items={step.stack} emptyLabel="nothing running" reserveRows={2} />
-          </PanelBox>
-          <p className="font-label text-xs font-semibold text-signal-green-strong">{run.answer}</p>
-        </>
-      }
-      caption={step.caption}
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={run.steps.length} />}
     />
+  );
+}
+
+/**
+ * The call stack as one line, root first: every call still waiting on a
+ * child, then the one running now in copper. A trail rather than a panel, so
+ * it reads as "how we got here" and costs a single line.
+ */
+function CallStackTrail({ stack }: { stack: string[] }) {
+  return (
+    <div className="mt-3 flex min-h-7 flex-wrap items-center gap-x-1 gap-y-1.5">
+      <span className="mr-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-slate">Call stack</span>
+      {stack.length === 0 ? (
+        <span className="text-xs italic text-slate">nothing running</span>
+      ) : (
+        stack.map((label, i) => {
+          const tip = i === stack.length - 1;
+          return (
+            <span key={`${label}-${i}`} className="inline-flex items-center gap-1">
+              {i > 0 && <ChevronRight aria-hidden className="size-3 text-slate/70" />}
+              <span
+                className={cn(
+                  "rounded-md px-1.5 py-0.5 font-mono text-[11.5px] font-semibold",
+                  tip ? "bg-copper-bg text-copper-dark" : "text-ink-soft",
+                )}
+              >
+                {label}
+              </span>
+            </span>
+          );
+        })
+      )}
+    </div>
   );
 }

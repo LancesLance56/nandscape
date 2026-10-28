@@ -27,7 +27,7 @@ import { toDoc } from "@/lib/flowchart-editor/from-spec";
 import { DiagramViewer } from "@/components/flowchart-editor/viewer";
 import { FlowchartEditor } from "@/components/flowchart-editor/editor";
 import { ALL_CHARTS } from "@/lib/flowchart/charts";
-import { ActionDock, WidgetShell, useWidgetView } from "../shared/widget-shell";
+import { ActionDock, WidgetShell } from "../shared/widget-shell";
 
 /* -------------------------------------------------------------------------
  * Resolving what to draw
@@ -91,25 +91,16 @@ export function FlowchartWidget({ data }: { data: Record<string, unknown> }) {
     );
   }
 
+  // One view: the diagram already carries everything a detailed view would
+  // add (notes open on click, the legend sits on the frame), and the card is
+  // its only box - the viewer drops its own border inside it.
   return (
     <WidgetShell
       kind="Diagram"
       title={doc.title && doc.title !== "Untitled drawing" ? doc.title : "Flowchart"}
-      stage={<ViewerForView doc={doc} options={options} />}
+      singleView
+      stage={<DiagramViewer doc={doc} {...options} frameless />}
     />
-  );
-}
-
-/**
- * The viewer, trimmed for the focused view: the walkthrough stays (it is how
- * the diagram is read), while notes and the legend wait for the detailed view.
- */
-function ViewerForView({ doc, options }: { doc: Doc; options: ReturnType<typeof readOptions> }) {
-  const view = useWidgetView();
-  return view === "focused" ? (
-    <DiagramViewer doc={doc} {...options} notes={false} legend={false} />
-  ) : (
-    <DiagramViewer doc={doc} {...options} />
   );
 }
 
@@ -139,12 +130,16 @@ export function FlowchartMakerWidget({ data }: { data: Record<string, unknown> }
     <WidgetShell
       kind="Diagram editor"
       title="Draw the boxes, route every line by hand"
+      singleView
+      // The editor runs edge to edge: the card is its frame.
+      stageClassName="-mx-3 w-auto sm:-mx-6"
       prompt="Drag a shape onto the page, then draw a line between two shapes."
       stage={
         <FlowchartEditor
           initial={initial}
           autosave={false}
           variant="embedded"
+          frameless
           height={typeof data.height === "number" ? data.height : 840}
         />
       }

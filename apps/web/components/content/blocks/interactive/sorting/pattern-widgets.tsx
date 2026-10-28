@@ -14,10 +14,10 @@ import {
 } from "@/lib/sorting/patterns";
 import { mulberry32 } from "@/lib/sorting/types";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
-import { WidgetShell } from "../shared/widget-shell";
+import { WidgetShell, modeTabs } from "../shared/widget-shell";
 import { cn } from "@/lib/cn";
 import { SortingBars } from "./sorting-bars";
-import { Banner, Segmented, StatReadout } from "../shared/widget-ui";
+import { Banner, StatReadout } from "../shared/widget-ui";
 
 /* -------------------------------------------------------------------------
  * Shared bits
@@ -84,14 +84,7 @@ export function PartitionExplorerWidget({ data }: { data: Record<string, unknown
     <WidgetShell
       kind="Sorting patterns"
       title="One-pass partitioning"
-      primary={
-        <Segmented
-          variant="solid"
-          options={PARTITION_MODES.map((m) => ({ id: m.id, label: m.label }))}
-          value={mode}
-          onChange={setMode}
-        />
-      }
+      tabs={modeTabs(PARTITION_MODES.map((m) => ({ id: m.id, label: m.label })), mode, setMode)}
       options={<p className="text-xs text-slate">{blurb}</p>}
       stage={<SortingBars step={step} maxValue={maxValue} height={160} />}
       readout={
@@ -148,7 +141,7 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
     <WidgetShell
       kind="Sorting patterns"
       title="Two-pointer merge"
-      primary={<Segmented variant="solid" options={MERGE_MODES} value={mode} onChange={setMode} />}
+      tabs={modeTabs(MERGE_MODES, mode, setMode)}
       stage={
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">
@@ -268,17 +261,10 @@ export function IntervalExplorerWidget({ data }: { data: Record<string, unknown>
       kind="Sorting patterns"
       title="Interval sweep"
       meta={mode === "merge" ? "merging overlaps" : `peak overlap ${step.maxConcurrent ?? 0}`}
-      primary={
-        <Segmented
-          variant="solid"
-          options={[
+      tabs={modeTabs([
             { id: "merge" as const, label: "Merge overlapping" },
             { id: "platforms" as const, label: "Minimum platforms" },
-          ]}
-          value={mode}
-          onChange={setMode}
-        />
-      }
+          ], mode, setMode)}
       stage={
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
@@ -380,14 +366,7 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
       kind="Sorting patterns"
       title="Sort, then one pass"
       meta={PAIRING_MODES.find((m) => m.id === mode)?.label}
-      primary={
-        <Segmented
-          variant="solid"
-          options={PAIRING_MODES.map((m) => ({ id: m.id, label: m.label }))}
-          value={mode}
-          onChange={setMode}
-        />
-      }
+      tabs={modeTabs(PAIRING_MODES.map((m) => ({ id: m.id, label: m.label })), mode, setMode)}
       stage={
         <div className="flex flex-col gap-3">
           <div>

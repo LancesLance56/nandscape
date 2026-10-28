@@ -1,8 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
-import { Minimize2, PanelRight } from "lucide-react";
-import { useIsEmbedded } from "@/components/embeds/embed-chrome";
+import { createContext, useContext, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { ChevronDown, Minimize2, PanelRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Segmented, type SegmentedGroup } from "./widget-ui";
 
@@ -49,17 +48,27 @@ export function KeepWidgetView({ children, defaultView = "focused" }: { children
 }
 
 /**
+ * A widget's mode switch as the shell's `tabs`, keeping the widget's own id
+ * type for `onChange` (a `setMode` of a string union passes straight in).
+ */
+export function modeTabs<T extends string>(
+  options: readonly { id: T; label: string; sub?: string; hint?: string; menu?: readonly { id: T; label: string }[] }[],
+  value: T,
+  onChange: (id: T) => void,
+): WidgetTabs {
+  return { options, value, onChange: (id) => onChange(id as T) };
+}
+
+/**
  * Splits a widget's switchers into the shell's two slots: the primary one
- * (shown in both views, as the solid track) and the rest (the detailed options
+ * (shown in both views, as the folder tabs) and the rest (the detailed options
  * row, as text tabs). `extra` is appended to the options row.
  */
 export function toggleSlots(groups: readonly SegmentedGroup[], primaryId?: string, extra?: ReactNode) {
   const primary = groups.find((g) => g.id === primaryId) ?? groups[0];
   const rest = groups.filter((g) => g !== primary);
   return {
-    primary: primary ? (
-      <Segmented variant="solid" options={primary.options} value={primary.active} onChange={primary.onChange} />
-    ) : undefined,
+    tabs: primary ? modeTabs(primary.options, primary.active, primary.onChange) : undefined,
     options:
       rest.length > 0 || extra ? (
         <>
@@ -74,6 +83,26 @@ export function toggleSlots(groups: readonly SegmentedGroup[], primaryId?: strin
   };
 }
 
+export interface WidgetTab {
+  id: string;
+  label: string;
+  /** A quieter word after the label, e.g. "BFS" + "queue". */
+  sub?: string;
+  hint?: string;
+  /**
+   * Makes this tab a "More" menu: it opens a dropdown of these instead of
+   * selecting itself, is the open tab whenever `value` is one of them, and
+   * then shows that item's label in place of its own.
+   */
+  menu?: readonly { id: string; label: string }[];
+}
+
+export interface WidgetTabs {
+  options: readonly WidgetTab[];
+  value: string;
+  onChange: (id: string) => void;
+}
+
 export interface WidgetShellProps {
   /** Eyebrow above the title in the detailed view, e.g. "Graphs". */
   kind: string;
@@ -83,6 +112,13 @@ export interface WidgetShellProps {
   meta?: ReactNode;
   /** The one control that picks what the widget shows. Both views. */
   primary?: ReactNode;
+  /**
+   * Modes drawn as folder tabs standing on the card's top edge, instead of a
+   * switch inside it: the open tab is the card's own nib, and the row costs
+   * the card no height. Prefer this over a Segmented `primary` for a mode
+   * switch. In a `bare` shell it falls back to that Segmented.
+   */
+  tabs?: WidgetTabs;
   /** Secondary choices (example, size, start node). Detailed view only. */
   options?: ReactNode;
   /** The visual. Both views. */
@@ -110,6 +146,17 @@ export interface WidgetShellProps {
   /** Drop the card and the view switch, for hosts that draw their own box
    *  (the homepage bento). Always focused. */
   bare?: boolean;
+  /**
+   * One view only, with no Details chip: for a widget whose focused view
+   * already shows everything. The chip is meant to go away everywhere; this
+   * is how a widget opts out once it no longer needs a second view.
+   */
+  singleView?: boolean;
+  /**
+   * More air above and below the content, for a widget that is a prompt and
+   * a short list (a quiz) rather than a visual that fills the card.
+   */
+  roomy?: boolean;
   defaultView?: WidgetView;
   className?: string;
   /** Applied to the stage wrapper in both views. */
@@ -117,29 +164,243 @@ export interface WidgetShellProps {
 }
 
 export function WidgetShell(props: WidgetShellProps) {
-  const embedded = useIsEmbedded();
   const outer = useContext(ViewStateContext);
   const local = useState<WidgetView>(props.defaultView ?? "focused");
   const [view, setView] = outer ?? local;
-  const current = props.bare ? "focused" : view;
+  const current = props.bare || props.singleView ? "focused" : view;
+  const switchable = !props.bare && !props.singleView;
+  const panelId = useId();
+
+  // A bare shell has no card for a tab to belong to, so its modes go back to
+  // being the switch on top.
+  const { tabs: tabsProp, ...rest } = props;
+  const tabs = props.bare ? undefined : tabsProp;
+  const slots: WidgetShellProps =
+    props.bare && tabsProp
+      ? {
+          ...rest,
+          primary: (
+            <Segmented
+              variant="solid"
+              // A "More" tab has nothing to hide behind here: its items join the row.
+              options={tabsProp.options.flatMap((o) => o.menu ?? [{ id: o.id, label: o.label }])}
+              value={tabsProp.value}
+              onChange={tabsProp.onChange}
+            />
+          ),
+        }
+      : rest;
+
+  const toDetailed = () => setView("detailed");
+  const toFocused = () => setView("focused");
+  const firstOpen = tabs ? tabIsOpen(tabs.options[0], tabs.value) : false;
+
+  const card = (
+    <div
+      id={tabs ? panelId : undefined}
+      role={tabs ? "tabpanel" : undefined}
+      data-widget-shell={current}
+      className={cn(
+        "not-prose relative flex flex-col text-ink",
+        // Drawn inside an embed too: the card is the frame the folder tabs
+        // stand on, and the embed preview no longer wraps it in a box of its own.
+        !props.bare && "overflow-hidden rounded-[16.8px] border border-border bg-surface-card shadow-[var(--shadow-card)]",
+        // The first tab stands on this corner, so it is square under it.
+        firstOpen && "rounded-tl-none",
+        !tabs && props.className,
+      )}
+    >
+      {/* With tabs, the view chip lives on the tab row instead. */}
+      {current === "focused" ? (
+        <FocusedView {...slots} onDetails={!switchable || tabs ? undefined : toDetailed} />
+      ) : (
+        <DetailedView {...slots} onFocus={tabs ? undefined : toFocused} />
+      )}
+    </div>
+  );
 
   return (
     <WidgetViewContext.Provider value={current}>
-      <div
-        data-widget-shell={current}
-        className={cn(
-          "not-prose relative flex flex-col text-ink",
-          !props.bare && !embedded && "overflow-hidden rounded-[16.8px] border border-border bg-surface-card shadow-[var(--shadow-card)]",
-          props.className,
-        )}
-      >
-        {current === "focused" ? (
-          <FocusedView {...props} onDetails={props.bare ? undefined : () => setView("detailed")} />
-        ) : (
-          <DetailedView {...props} onFocus={() => setView("focused")} />
-        )}
-      </div>
+      {tabs ? (
+        <div className={cn("not-prose flex flex-col", props.className)}>
+          <FolderTabs
+            tabs={tabs}
+            panelId={panelId}
+            end={
+              !switchable ? null : current === "focused" ? (
+                <DetailsChip onClick={toDetailed} />
+              ) : (
+                <FocusedChip onClick={toFocused} />
+              )
+            }
+          />
+          <div className="relative">
+            {/* With a later tab open, the first tab's grey nib still stands on
+                the corner, so its colour shows through the card's rounded
+                top-left instead of a notch of page. */}
+            {!firstOpen && (
+              <span aria-hidden className="absolute left-0 top-0 size-[17px] border-l border-border bg-surface-2" />
+            )}
+            {card}
+          </div>
+        </div>
+      ) : (
+        card
+      )}
     </WidgetViewContext.Provider>
+  );
+}
+
+/** A tab is open when it is the value, or (a "More" tab) holds the value. */
+function tabIsOpen(tab: WidgetTab | undefined, value: string): boolean {
+  if (!tab) return false;
+  return tab.menu ? tab.menu.some((m) => m.id === value) : tab.id === value;
+}
+
+/**
+ * The modes as folder nibs: short, wide, sloped at the sides, each tucked
+ * slightly behind its neighbour. The open one sits in front in the card's own
+ * colour and drops a pixel over the card's border, so tab and card read as
+ * one folder.
+ *
+ * The slope is an inner layer tilted back in perspective, which turns a
+ * rounded rectangle into a rounded trapezoid; the button itself stays a plain
+ * box, so its hit area and focus ring are ordinary.
+ */
+function FolderTabs({ tabs, panelId, end }: { tabs: WidgetTabs; panelId: string; end: ReactNode }) {
+  const refs = useRef<(HTMLButtonElement | HTMLSelectElement | null)[]>([]);
+  const index = Math.max(
+    0,
+    tabs.options.findIndex((o) => tabIsOpen(o, tabs.value)),
+  );
+
+  // Arrow keys move between tabs, as the tabs pattern expects. Landing on a
+  // "More" tab opens its first item; inside its dropdown the arrows are the
+  // dropdown's own.
+  const onKeyDown = (e: KeyboardEvent) => {
+    if ((e.target as HTMLElement).tagName === "SELECT") return;
+    const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    const next = (index + step + tabs.options.length) % tabs.options.length;
+    const target = tabs.options[next];
+    tabs.onChange(target.menu ? (target.menu[0]?.id ?? target.id) : target.id);
+    refs.current[next]?.focus();
+  };
+
+  return (
+    <div className="flex items-end gap-2">
+      <div role="tablist" onKeyDown={onKeyDown} className="flex min-w-0 items-end pl-0.5">
+        {tabs.options.map((o, i) => {
+          const on = i === index;
+          // Earlier tabs stack above later ones, the open one above all.
+          const style = { zIndex: on ? tabs.options.length + 1 : tabs.options.length - i };
+          const className = cn(
+            "group/tab relative isolate -mr-2.5 inline-flex min-w-0 shrink items-baseline gap-1.5 whitespace-nowrap px-5 text-[13px] font-semibold transition-colors sm:min-w-28 sm:px-[26px]",
+            "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-copper has-[select:focus-visible]:outline-2 has-[select:focus-visible]:-outline-offset-2 has-[select:focus-visible]:outline-copper",
+            on ? "-mb-px h-[38px] leading-[38px] text-ink" : "h-[34px] leading-[34px] text-ink-soft hover:text-ink",
+          );
+          const nib = (
+            <span
+              aria-hidden
+              className={cn(
+                "absolute inset-0 -z-10 origin-bottom rounded-t-[9px] border border-b-0 border-border [transform:perspective(60px)_rotateX(14deg)]",
+                on ? "bg-surface-card shadow-[inset_0_2px_0_var(--copper)]" : "bg-surface-2 group-hover/tab:bg-surface-3",
+              )}
+            />
+          );
+
+          if (o.menu) {
+            // A native <select> laid invisibly over the nib: the platform's
+            // own dropdown, so it works by keyboard, screen reader and touch
+            // without a popover of our own. It lists the menu's items, plus
+            // the tab's own label as a placeholder while none of them is open.
+            const picked = o.menu.find((m) => m.id === tabs.value);
+            return (
+              <span key={o.id} style={style} className={className} title={o.hint}>
+                {nib}
+                <span className="truncate">{picked?.label ?? o.label}</span>
+                <ChevronDown aria-hidden className="size-3 shrink-0 self-center text-slate" />
+                <select
+                  ref={(el) => {
+                    refs.current[i] = el;
+                  }}
+                  aria-label={o.label}
+                  tabIndex={on ? 0 : -1}
+                  value={picked?.id ?? ""}
+                  onChange={(e) => e.target.value && tabs.onChange(e.target.value)}
+                  className="absolute inset-0 cursor-pointer opacity-0"
+                >
+                  {!picked && (
+                    <option value="" disabled>
+                      {o.label}
+                    </option>
+                  )}
+                  {o.menu.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </span>
+            );
+          }
+
+          return (
+            <button
+              key={o.id}
+              ref={(el) => {
+                refs.current[i] = el;
+              }}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              aria-controls={panelId}
+              tabIndex={on ? 0 : -1}
+              title={o.hint}
+              onClick={() => tabs.onChange(o.id)}
+              style={style}
+              className={className}
+            >
+              {nib}
+              <span className="truncate">{o.label}</span>
+              {o.sub && <span className="hidden text-[11px] font-medium text-slate sm:inline">{o.sub}</span>}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mb-1.5 ml-auto shrink-0">{end}</div>
+    </div>
+  );
+}
+
+function DetailsChip({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title="Open the detailed view"
+      aria-label="Open the detailed view"
+      className="inline-flex h-7 items-center justify-center gap-1.5 rounded-full border border-border bg-surface-card px-2.5 text-xs font-semibold text-slate transition-colors hover:border-border-strong hover:text-ink"
+    >
+      <PanelRight className="size-3.5" aria-hidden />
+      Details
+    </button>
+  );
+}
+
+function FocusedChip({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title="Back to the focused view"
+      aria-label="Back to the focused view"
+      className="inline-flex h-7 items-center gap-1.5 rounded-full border border-border bg-surface-card pl-2 pr-2.5 text-xs font-semibold text-slate transition-colors hover:border-border-strong hover:text-ink"
+    >
+      <Minimize2 className="size-3.5" aria-hidden />
+      Focused
+    </button>
   );
 }
 
@@ -156,9 +417,31 @@ function FocusedView({
   dock,
   stageClassName,
   bare,
+  roomy,
   onDetails,
 }: WidgetShellProps & { onDetails?: () => void }) {
   const text = prompt ?? caption;
+  const narration = (
+    <div
+      aria-live="polite"
+      className={cn(
+        "flex w-full max-w-[36rem] text-center tracking-[-0.01em] text-ink [&_code]:font-mono [&_code]:font-semibold [&_code]:text-copper-dark",
+        // A stepped widget's narration changes every frame and runs long,
+        // so it gets a fixed box (scrolling if it must) at a calmer size:
+        // the widget never changes height while it plays. A fixed prompt
+        // can afford to be large and set its own height.
+        prompt === undefined
+          ? bare
+            ? "h-[2.75rem] overflow-y-auto text-[13px] font-medium leading-snug"
+            : "h-[4.1rem] overflow-y-auto text-[15px] font-medium leading-snug"
+          : bare
+            ? "text-sm font-semibold leading-snug"
+            : "items-center text-base font-semibold leading-snug sm:text-lg",
+      )}
+    >
+      <p className="m-auto w-full">{text}</p>
+    </div>
+  );
   return (
     <>
       {(primary || onDetails) && (
@@ -189,28 +472,17 @@ function FocusedView({
         </div>
       )}
 
-      <div className={cn("flex flex-1 flex-col items-center gap-3 px-3 pb-3 pt-2 sm:px-6", bare && "gap-2 px-0 pb-2")}>
-        {text && (
-          <div
-            aria-live="polite"
-            className={cn(
-              "flex w-full max-w-[36rem] text-center tracking-[-0.01em] text-ink [&_code]:font-mono [&_code]:font-semibold [&_code]:text-copper-dark",
-              // A stepped widget's narration changes every frame and runs long,
-              // so it gets a fixed box (scrolling if it must) at a calmer size:
-              // the widget never changes height while it plays. A fixed prompt
-              // can afford to be large and set its own height.
-              prompt === undefined
-                ? bare
-                  ? "h-[2.75rem] overflow-y-auto text-[13px] font-medium leading-snug"
-                  : "h-[4.1rem] overflow-y-auto text-[15px] font-medium leading-snug"
-                : bare
-                  ? "text-sm font-semibold leading-snug"
-                  : "items-center text-base font-semibold leading-snug sm:text-lg",
-            )}
-          >
-            <p className="m-auto w-full">{text}</p>
-          </div>
+      <div
+        className={cn(
+          "flex flex-1 flex-col items-center gap-3 px-3 pb-3 pt-2 sm:px-6",
+          // No switch row above (a tabbed shell): the prompt is the first
+          // thing in the card and needs the breathing room the row gave it.
+          !primary && !onDetails && "pt-4 sm:pt-5",
+          roomy && "gap-4 pb-7 pt-6 sm:pb-9 sm:pt-8",
+          bare && "gap-2 px-0 pb-2 pt-2 sm:pt-2",
         )}
+      >
+        {text && narration}
         <div className={cn("w-full min-w-0", stageClassName)}>{stage}</div>
         {!bare && (readout || legend) && (
           <div className="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2">
@@ -243,8 +515,9 @@ function DetailedView({
   dock,
   details,
   stageClassName,
+  roomy,
   onFocus,
-}: WidgetShellProps & { onFocus: () => void }) {
+}: WidgetShellProps & { onFocus?: () => void }) {
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-x-5 gap-y-2 px-4 pb-2.5 pt-3 sm:px-5">
@@ -260,16 +533,7 @@ function DetailedView({
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           {primary}
-          <button
-            type="button"
-            onClick={onFocus}
-            title="Back to the focused view"
-            aria-label="Back to the focused view"
-            className="inline-flex h-7 items-center gap-1.5 rounded-full border border-border bg-surface-card pl-2 pr-2.5 text-xs font-semibold text-slate transition-colors hover:border-border-strong hover:text-ink"
-          >
-            <Minimize2 className="size-3.5" aria-hidden />
-            Focused
-          </button>
+          {onFocus && <FocusedChip onClick={onFocus} />}
         </div>
       </div>
 
@@ -294,7 +558,11 @@ function DetailedView({
           </div>
         )}
         <div
-          className={cn("grid gap-3 p-2.5 sm:p-3", side && "md:grid-cols-[minmax(0,1fr)_var(--side-w)]")}
+          className={cn(
+            "grid gap-3 p-2.5 sm:p-3",
+            roomy && "px-3 py-6 sm:px-5 sm:py-7",
+            side && "md:grid-cols-[minmax(0,1fr)_var(--side-w)]",
+          )}
           style={side ? ({ "--side-w": `${sideWidth}px` } as React.CSSProperties) : undefined}
         >
           <div className={cn("min-w-0", stageClassName)}>{stage}</div>

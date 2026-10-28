@@ -5,8 +5,8 @@ import { containerWaterSteps } from "@/lib/two-pointers/algorithms";
 import { findMode, SHAPE_LABELS, type TwoPointerModeId } from "@/lib/two-pointers/modes";
 import type { MatrixView, PointerLane } from "@/lib/two-pointers/types";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
-import { WidgetShell } from "../shared/widget-shell";
-import { Banner, ChipRow, PanelBox, Segmented, StatReadout } from "../shared/widget-ui";
+import { WidgetShell, modeTabs } from "../shared/widget-shell";
+import { Banner, ChipRow, PanelBox, StatReadout } from "../shared/widget-ui";
 import { cn } from "@/lib/cn";
 
 /* -------------------------------------------------------------------------
@@ -152,16 +152,7 @@ export function TwoPointerExplorerWidget({ data }: { data: Record<string, unknow
       kind="Two pointers"
       title={mode.label}
       meta={SHAPE_LABELS[mode.shape]}
-      primary={
-        offered.length > 1 ? (
-          <Segmented
-            options={offered.map((m) => ({ id: m.id, label: m.label }))}
-            value={mode.id}
-            onChange={(id) => setModeId(id)}
-            variant="solid"
-          />
-        ) : undefined
-      }
+      tabs={offered.length > 1 ? modeTabs(offered.map((m) => ({ id: m.id, label: m.label })), mode.id, (id) => setModeId(id)) : undefined}
       options={<p className="text-xs leading-relaxed text-slate">{mode.blurb}</p>}
       stage={
         <div className="flex flex-col gap-2">

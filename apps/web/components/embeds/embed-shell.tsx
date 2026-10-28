@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { useTheme } from "next-themes";
 import { EmbedChromeProvider } from "./embed-chrome";
 import type { EmbedOptions } from "@/lib/embeds/embeddable";
+import { cn } from "@/lib/cn";
 
 /**
  * Everything an embed page is, besides the thing being embedded.
  *
- * That comes to very little: no header, no card, no title bar. The host page
- * has already framed and captioned this iframe, so a second frame drawn inside
- * the first only makes the embed look pasted on. What remains are the few
+ * That comes to very little: no header and no title bar. A widget keeps its
+ * own card, because that card is the frame its folder tabs stand on, and it
+ * is the only frame: the host should not draw another round the iframe. What remains are the few
  * things the host cannot do for us: forcing the colour scheme, reporting the
  * content height, and the credit link.
  */
@@ -36,10 +37,11 @@ export function EmbedShell({
    */
   bleed?: boolean;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
   return (
     <EmbedChromeProvider>
       <EmbedTheme theme={options.theme} />
-      {!bleed && <AutoHeightReporter />}
+      {!bleed && <AutoHeightReporter target={contentRef} />}
 
       {bleed ? (
         <div className="fixed inset-0 bg-surface">{children}</div>
@@ -53,8 +55,13 @@ export function EmbedShell({
         // sizes the child to its content, and a widget that lays itself out
         // against the width it is handed - the sorting stage, a diagram
         // fitting itself to its frame - collapses to a sliver.
-        <div className="flex min-h-screen w-full flex-col justify-center bg-surface p-3 sm:p-4">
-          {children}
+        <div className="flex min-h-screen w-full flex-col justify-center bg-surface">
+          {/* The measured box: the outer one is at least the iframe's height,
+              so measuring it could only ever report growth. The bottom padding
+              is the credit link's own strip, so it never sits on the widget. */}
+          <div ref={contentRef} className={cn("p-3 sm:p-4", options.credit && "pb-11 sm:pb-12")}>
+            {children}
+          </div>
         </div>
       )}
 
@@ -97,14 +104,15 @@ function EmbedTheme({ theme }: { theme: EmbedOptions["theme"] }) {
  * several embed providers at once, and acting on `event.data.height` from an
  * unknown sender is how host pages resize the wrong frame.
  */
-function AutoHeightReporter() {
+function AutoHeightReporter({ target }: { target: RefObject<HTMLDivElement | null> }) {
   const last = useRef(0);
 
   useEffect(() => {
-    if (window.parent === window) return;
+    const el = target.current;
+    if (window.parent === window || !el) return;
 
     const post = () => {
-      const height = Math.ceil(document.documentElement.scrollHeight);
+      const height = Math.ceil(el.getBoundingClientRect().height);
       // Sub-pixel churn from a running animation would otherwise post on
       // every frame, and each post is a cross-origin structured clone.
       if (Math.abs(height - last.current) < 2) return;
@@ -118,14 +126,14 @@ function AutoHeightReporter() {
     // outlined, a flowchart note panel opening, a font finally loading.
     // Observing the document catches all of them.
     const observer = new ResizeObserver(post);
-    observer.observe(document.documentElement);
+    observer.observe(el);
     window.addEventListener("load", post);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("load", post);
     };
-  }, []);
+  }, [target]);
 
   return null;
 }

@@ -229,14 +229,15 @@ export function FactList({
   tone,
   className,
 }: {
-  title: string;
+  /** Omitted where something else already names the list, e.g. a tab. */
+  title?: string;
   items: string[];
   tone: "good" | "bad";
   className?: string;
 }) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <PanelLabel>{title}</PanelLabel>
+      {title && <PanelLabel>{title}</PanelLabel>}
       <ul className="flex flex-col gap-1.5">
         {items.map((item) => (
           <li key={item} className="flex gap-2 text-[12px] leading-[1.45] text-ink-soft">
@@ -384,9 +385,20 @@ export function NarrationLog({
  * `lib/sorting/algorithms.ts`, so the highlight follows the trace rather than
  * being re-derived from the caption text here.
  */
-export function Pseudocode({ meta, line, className }: { meta: AlgorithmMeta; line?: number; className?: string }) {
+export function Pseudocode({
+  meta,
+  line,
+  frameless = false,
+  className,
+}: {
+  meta: AlgorithmMeta;
+  line?: number;
+  /** No box of its own, for a column that is already inside the card. */
+  frameless?: boolean;
+  className?: string;
+}) {
   return (
-    <div className={cn("rounded-lg border border-border bg-surface-card p-2.5", className)}>
+    <div className={cn(!frameless && "rounded-lg border border-border bg-surface-card p-2.5", className)}>
       <div className="h-[10rem] overflow-auto whitespace-pre font-label text-[10.5px] leading-[1.7] text-slate">
         {meta.pseudocode.map((text, i) => (
           <div

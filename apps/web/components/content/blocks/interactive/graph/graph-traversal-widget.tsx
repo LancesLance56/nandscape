@@ -124,8 +124,8 @@ export function GraphTraversalWidget({
       compact={data.compact === true}
       className={data.className as string}
       modes={[
-        { id: "bfs", label: "BFS (queue)" },
-        { id: "dfs", label: "DFS (stack)" },
+        { id: "bfs", label: "BFS", sub: "queue" },
+        { id: "dfs", label: "DFS", sub: "stack" },
       ]}
       activeMode={mode}
       onModeChange={(id) => setMode(id === "dfs" ? "dfs" : "bfs")}

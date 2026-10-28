@@ -383,24 +383,26 @@ export const TOOLS: ToolDefinition[] = [
     slug: "topological-sort-visualizer",
     group: "algorithms",
     title: "Topological Sort Visualizer",
-    seoTitle: "Topological Sort Visualizer: Kahn's Algorithm Step by Step",
+    seoTitle: "Topological Sort Visualizer: Kahn's Algorithm and DFS Step by Step",
     seoDescription:
-      "Free topological sort visualizer using Kahn's algorithm. Watch the ready queue and in-degree counts update on a graph you can build yourself, including what happens when it hits a cycle.",
+      "Free topological sort visualizer with Kahn's algorithm and DFS side by side. Watch the ready queue, the call stack and the finished stack update on a graph you can build yourself, including what happens when it hits a cycle.",
     keywords: [
       "topological sort visualizer",
       "topological sort",
       "kahn's algorithm",
+      "dfs topological sort",
       "dependency graph",
       "cycle detection",
     ],
     intro:
-      "Kahn's algorithm, one node at a time. The ready queue and every node's in-degree update as it runs, and building a cycle shows exactly what happens when no order exists: the queue runs dry with nodes left over.",
+      "Topological sort two ways on the same graph. Kahn's algorithm keeps a ready queue of nodes with nothing left blocking them; the DFS version pushes each node onto a finished stack once everything after it is done. Build a cycle and both show exactly where it breaks.",
     widget: "topological-sort",
     howTo: [
-      "Press Play to run it, or Step to advance one node at a time.",
-      "Switch between the two built-in graphs: one is a valid order, the other is a genuine cycle.",
-      "Watch the in-degree panel. A node joins the ready queue the instant its count reaches zero.",
-      "On the cycle example, notice which nodes never turn green: they sit inside the cycle, or depend on something that does.",
+      "Press Play to run it, or Step to advance one frame at a time.",
+      "Switch between Kahn's and DFS to compare the two orders on the identical graph: both are valid, and they are usually different.",
+      "In Kahn's, watch the in-degree panel. A node joins the ready queue the instant its count reaches zero.",
+      "In DFS, watch the two stacks: shaded nodes are still open on the call stack, green ones have finished.",
+      "On the cycle example, Kahn's runs dry with nodes left over, and DFS stops at the first edge that points back into the call stack.",
     ],
     related: [
       { label: "Topological sort, derived from scratch", href: "/tutorials/dsa/graph-topological-sort" },
@@ -427,6 +429,21 @@ export const TOOLS: ToolDefinition[] = [
         question: "How is this different from a graph traversal like BFS?",
         answer:
           "BFS explores outward from one starting node and answers questions about distance. A topological sort has no single starting point: it processes the whole graph at once, tracking how many unmet dependencies each node has left, and a node only becomes eligible once every dependency ahead of it has already been placed.",
+      },
+      {
+        question: "Why does reversing the DFS finish order give a topological order?",
+        answer:
+          "A node's call cannot return until every node it points to has returned, so each node finishes after everything downstream of it. Reversing the finish order, or reading the finished stack from the top, therefore puts every node ahead of the nodes that depend on it.",
+      },
+      {
+        question: "How does DFS detect a cycle?",
+        answer:
+          "By remembering which nodes are still open, meaning their call is on the call stack. An edge to a finished node is harmless, but an edge to an open node points back at something you are still inside, and following the call stack from that node to the top closes a loop.",
+      },
+      {
+        question: "Should I use DFS or Kahn's algorithm?",
+        answer:
+          "Both run in O(V + E) time. Kahn's algorithm is iterative and gives the cycle check for free by counting emitted nodes; the DFS version is shorter if you already have a DFS written, but a recursive implementation can hit the recursion limit on very deep graphs.",
       },
     ],
   },
