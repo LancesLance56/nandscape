@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { Slider } from "@/components/ui/slider";
 import { ActionDock, WidgetShell } from "./shared/widget-shell";
-import { StatReadout } from "./shared/widget-ui";
+import { StageNote, StatReadout } from "./shared/widget-ui";
 
 /**
  * Renamed/generalized from `boolean-algebra/boolean-slider-widget.tsx`.
@@ -66,6 +66,7 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
   return (
     <WidgetShell
       kind="Estimate"
+      singleView
       title={prompt}
       className={data.className}
       prompt={prompt}
@@ -79,11 +80,10 @@ export function ComparisonSliderWidget({ data }: { data: Record<string, unknown>
             {bar(badLabel, 100, total, "bg-signal-coral")}
             {bar(goodLabel, goodBarWidth, good, "bg-copper")}
           </div>
+          {explanation && <StageNote>{explanation}</StageNote>}
         </div>
       }
       readout={<StatReadout stats={[{ label: "calls that never needed to happen", value: (total - good).toLocaleString(), tone: "good" }]} />}
-      caption={explanation}
-      captionLabel="Why"
       dock={<ActionDock hint="Drag the slider, or use the arrow keys." />}
     />
   );

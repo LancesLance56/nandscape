@@ -75,6 +75,7 @@ export function TruthTableExplorerWidget({ data }: { data: Record<string, unknow
   return (
     <WidgetShell
       kind="Boolean logic"
+      singleView
       title={title}
       className={className}
       prompt="Flip the inputs and fill in the table: what is the mystery box doing?"

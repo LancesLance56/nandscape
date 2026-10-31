@@ -6,7 +6,7 @@ import { findMode, SHAPE_LABELS, type TwoPointerModeId } from "@/lib/two-pointer
 import type { MatrixView, PointerLane } from "@/lib/two-pointers/types";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
 import { WidgetShell, modeTabs } from "../shared/widget-shell";
-import { Banner, ChipRow, PanelBox, StatReadout } from "../shared/widget-ui";
+import { Banner, ChipRow, PanelBox, StageNote, StatReadout } from "../shared/widget-ui";
 import { cn } from "@/lib/cn";
 
 /* -------------------------------------------------------------------------
@@ -151,29 +151,33 @@ export function TwoPointerExplorerWidget({ data }: { data: Record<string, unknow
     <WidgetShell
       kind="Two pointers"
       title={mode.label}
-      meta={SHAPE_LABELS[mode.shape]}
+      singleView
       tabs={offered.length > 1 ? modeTabs(offered.map((m) => ({ id: m.id, label: m.label })), mode.id, (id) => setModeId(id)) : undefined}
-      options={<p className="text-xs leading-relaxed text-slate">{mode.blurb}</p>}
       stage={
-        <div className="flex flex-col gap-2">
-          {step.lanes.map((l, i) => (
-            <LaneView key={`${l.label}-${i}`} lane={l} />
-          ))}
+        <div className="flex flex-col gap-3">
+          <div className="flex min-w-0 flex-col gap-2">
+            {step.lanes.map((l, i) => (
+              <LaneView key={`${l.label}-${i}`} lane={l} />
+            ))}
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="w-14 shrink-0 pt-2 text-[10px] font-semibold uppercase leading-none text-slate">banked</span>
+            <div className="min-w-0 flex-1">
+              <ChipRow items={step.results} emptyLabel="nothing yet" reserveRows={2} />
+            </div>
+          </div>
+          <StageNote>
+            <span className="font-semibold text-ink">{SHAPE_LABELS[mode.shape]}.</span> {mode.blurb}
+          </StageNote>
         </div>
       }
+      // Only the celebrity problem has a table worth a column of its own; a
+      // single lane would leave the column mostly empty.
+      side={step.matrix ? <MatrixPanel matrix={step.matrix} /> : undefined}
       readout={
         step.stats && step.stats.length > 0 ? (
           <StatReadout stats={[...step.stats, { label: "comparisons", value: step.comparisons }]} />
         ) : undefined
-      }
-      sideWidth={step.matrix ? 240 : 200}
-      side={
-        <>
-          {step.matrix && <MatrixPanel matrix={step.matrix} />}
-          <PanelBox title="Answers banked so far">
-            <ChipRow items={step.results} emptyLabel="nothing yet" reserveRows={2} />
-          </PanelBox>
-        </>
       }
       status={
         player.atEnd || run.truncated ? (
@@ -188,7 +192,6 @@ export function TwoPointerExplorerWidget({ data }: { data: Record<string, unknow
         ) : undefined
       }
       caption={step.caption}
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={run.steps.length} />}
     />
   );
@@ -232,6 +235,7 @@ export function WaterContainerWidget({ data }: { data: Record<string, unknown> }
     <WidgetShell
       kind="Two pointers"
       title="Container with most water"
+      singleView
       meta={`${n} walls`}
       stage={
         <div className="relative">

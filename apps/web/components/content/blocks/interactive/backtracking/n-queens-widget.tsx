@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { allQueensSolutions, nQueensSteps, type QueensPayload } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { Banner, PanelBox, StatReadout, WidgetButton, type SegmentedGroup } from "../shared/widget-ui";
+import { Banner, PanelBox, SideNote, StatReadout, WidgetButton, type SegmentedGroup } from "../shared/widget-ui";
 import { ActionDock, KeepWidgetView, WidgetShell, toggleSlots } from "../shared/widget-shell";
 import { BacktrackingRunner } from "./backtracking-runner";
 
@@ -274,6 +274,7 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
     <WidgetShell
       kind="Backtracking"
       title="N-Queens"
+      singleView
       {...toggleSlots(toggles, "mode")}
       stage={
         <div className="flex justify-center">
@@ -281,7 +282,6 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
         </div>
       }
       prompt={solved ? "That is a valid solution." : `Place ${n} queens so none can attack another.`}
-      caption="Click any square to place or remove a queen. Nothing stops you putting two in one row, which is worth trying once before reading why the solver refuses to."
       readout={
         <StatReadout
           stats={[
@@ -291,7 +291,8 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
         />
       }
       side={
-        <PanelBox title="What is attacking what" bodyClassName="h-24 overflow-y-auto">
+        <>
+        <PanelBox title="What is attacking what">
           {conflicts.length === 0 ? (
             <span className="text-xs italic text-slate">
               {placed.length === 0 ? "nothing placed yet" : "no conflicts so far"}
@@ -306,6 +307,11 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
             </div>
           )}
         </PanelBox>
+        <SideNote>
+          Nothing stops you putting two queens in one row. It is worth trying once before reading why the solver
+          refuses to.
+        </SideNote>
+        </>
       }
       status={
         solved ? (
@@ -313,7 +319,7 @@ function ManualQueens({ n, toggles, totalSolutions }: { n: number; toggles: Segm
         ) : undefined
       }
       dock={
-        <ActionDock hint="Red squares are attacked by a queen already on the board.">
+        <ActionDock hint="Click a square to place or remove a queen. Red squares are under attack.">
           <WidgetButton onClick={() => setPlaced([])}>Clear board</WidgetButton>
         </ActionDock>
       }

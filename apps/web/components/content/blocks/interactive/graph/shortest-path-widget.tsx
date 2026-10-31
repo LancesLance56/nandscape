@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { dijkstraSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
 import { StatReadout } from "../shared/widget-ui";
-import { AlgorithmRunner, PanelBox } from "./algorithm-runner";
+import { AlgorithmRunner, PanelBox, SideNote } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
   {
@@ -123,7 +123,7 @@ export function ShortestPathWidget({
       hint={`Click any node to route from it instead. Currently starting at ${start}.`}
       panel={(step) => (
         <>
-          <PanelBox title={`Cheapest known cost from ${start}`}>
+          <PanelBox title="Cheapest known cost" aside={`from ${start}`}>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               {graph.nodes.map((n) => {
                 const value = step.table?.[n.id] ?? "∞";
@@ -146,21 +146,16 @@ export function ShortestPathWidget({
               same panel would be reassuring the reader precisely where the
               algorithm is going wrong, so it says the opposite instead. */}
           {hasNegativeEdge ? (
-            <PanelBox title="Why this run cannot be trusted">
-              <p className="text-[11px] leading-relaxed text-slate">
-                Locking a node in is only safe when no later route can undercut it, and that argument needs
-                every weight to be non-negative. This graph has one that is not, so a locked number here may
-                simply be wrong, and Dijkstra has no way to notice.
-              </p>
-            </PanelBox>
+            <SideNote tone="bad">
+              <b>Why this run cannot be trusted.</b> Locking a node in is only safe when no later route can undercut
+              it, and that needs every weight to be non-negative. This graph has one that is not, so a locked number
+              here may simply be wrong, and Dijkstra has no way to notice.
+            </SideNote>
           ) : (
-            <PanelBox title="Why it never revisits">
-              <p className="text-[11px] leading-relaxed text-slate">
-                Once a node is locked in, no later discovery can beat it. Any other route would have to leave
-                through a node that already costs more, and edge weights are never negative, so it can only get
-                worse from there.
-              </p>
-            </PanelBox>
+            <SideNote>
+              <b>Why it never revisits.</b> Any other route to a locked node would have to leave through one that
+              already costs more, and no weight is negative, so it can only get worse from there.
+            </SideNote>
           )}
         </>
       )}

@@ -71,6 +71,7 @@ export function StateMachineWidget({
   return (
     <WidgetShell
       kind="State machines"
+      singleView
       title={title}
       bare={!frame}
       className={className}

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { kruskalSteps, primSteps } from "@/lib/graph/algorithms";
 import { edgeKey, type GraphSpec } from "@/lib/graph/types";
 import { StatReadout } from "../shared/widget-ui";
-import { AlgorithmRunner, PanelBox } from "./algorithm-runner";
+import { AlgorithmRunner, PanelBox, SideNote } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
   {
@@ -128,13 +128,10 @@ export function MstWidget({
       panel={(step) => {
         const taken = new Set(step.treeEdges);
         const rejected = new Set(step.rejectedEdges);
-        const total = graph.edges
-          .filter((e) => taken.has(edgeKey(e.from, e.to, false)))
-          .reduce((sum, e) => sum + (e.weight ?? 1), 0);
 
         return (
           <>
-            <PanelBox title={mode === "kruskal" ? "Edges, sorted cheapest first" : "Edges by weight"}>
+            <PanelBox title={mode === "kruskal" ? "Edges, cheapest first" : "Edges by weight"}>
               <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                 {sortedEdges.map((e) => {
                   const key = edgeKey(e.from, e.to, false);
@@ -166,13 +163,10 @@ export function MstWidget({
               </div>
             </PanelBox>
 
-            <PanelBox title="Total so far">
-              <p className="text-lg font-bold text-ink">{total}</p>
-              <p className="mt-1 text-[11px] leading-relaxed text-slate">
-                {taken.size} of {graph.nodes.length - 1} edges needed. A spanning tree over {graph.nodes.length}{" "}
-                nodes always uses exactly {graph.nodes.length - 1} edges.
-              </p>
-            </PanelBox>
+            <SideNote>
+              A spanning tree over {graph.nodes.length} nodes always uses exactly{" "}
+              <b>{graph.nodes.length - 1} edges</b>, so the run stops the moment it has them.
+            </SideNote>
           </>
         );
       }}

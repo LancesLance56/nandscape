@@ -92,7 +92,7 @@ export function PermutationsWidget({ data }: { data: Record<string, unknown> }) 
         const active = step.activeId;
         const partial = active ? (run.nodes.find((n) => n.id === active)?.partial ?? "") : "";
         return (
-          <div className="rounded-lg border border-border bg-surface-2/40 p-3">
+          <div>
             <div className="mb-2 text-[11px] font-semibold text-slate">
               {mode === "used" ? "Permutation being built" : "The array right now"}
             </div>

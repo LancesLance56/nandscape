@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { topologicalSortDfsSteps, topologicalSortSteps } from "@/lib/graph/algorithms";
 import type { GraphSpec } from "@/lib/graph/types";
 import { cn } from "@/lib/cn";
+import { StatReadout } from "../shared/widget-ui";
 import { AlgorithmRunner, ChipRow, PanelBox } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
@@ -95,73 +96,16 @@ const CHIP_TONE: Record<ListTone, string> = {
  */
 type ListKind = "stack" | "queue" | "order";
 
-/** One list drawn upright, every slot reserved so the panel keeps its height. */
-function ListColumn({
-  label,
-  items,
-  tone,
-  kind,
-  depth,
-}: {
-  label: string;
-  items: string[];
-  tone: ListTone;
-  kind: ListKind;
-  depth: number;
-}) {
-  const slots = Math.max(depth, 1);
-  const shown = kind === "stack" ? [...items].reverse() : items;
-  // A stack's chips sit at the bottom of the column; the others fill from the top.
-  const offset = kind === "stack" ? slots - shown.length : 0;
-  const marker = kind === "stack" ? "top" : kind === "queue" ? "next" : null;
-
-  return (
-    <div className="min-w-0">
-      <div className="mb-1.5 text-[11px] font-semibold text-slate">{label}</div>
-      <div
-        className={cn(
-          "flex flex-col gap-1 rounded-lg border border-dashed border-border-strong p-1",
-          kind === "stack" && "border-t-transparent",
-        )}
-      >
-        {Array.from({ length: slots }, (_, i) => {
-          const item = shown[i - offset];
-          return item === undefined ? (
-            <span key={`empty-${i}`} className="h-6" aria-hidden />
-          ) : (
-            <span
-              key={`${item}-${i}`}
-              className={cn(
-                "relative flex h-6 items-center justify-center rounded-md px-2 text-xs font-bold",
-                CHIP_TONE[tone],
-              )}
-            >
-              {item}
-              {marker && i === offset && (
-                <span className="absolute right-1.5 text-[9px] font-semibold uppercase tracking-wide opacity-70">
-                  {marker}
-                </span>
-              )}
-            </span>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/** The same list on one line, for the focused view's readout. */
-function ListStrip({ label, items, tone, kind }: { label: string; items: string[]; tone: ListTone; kind: ListKind }) {
+/** One list as a row of chips, for the panels beside the canvas. */
+function ListChips({ items, tone, kind }: { items: string[]; tone: ListTone; kind: ListKind }) {
   // The end the algorithm takes from next gets a ring: a stack's top is its
   // last item, a queue's front its first.
   const next = kind === "stack" ? items.length - 1 : kind === "queue" ? 0 : -1;
   return (
-    <span className="flex min-w-0 items-center gap-1.5 text-xs text-slate">
-      <span className="shrink-0 font-semibold">{label}</span>
-      <span className="flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none]">
-        {items.length === 0 ? (
-          <span className="italic">empty</span>
-        ) : (
+    <span className="flex min-h-7 flex-wrap items-center gap-1 text-xs text-slate">
+      {items.length === 0 ? (
+        <span className="italic">empty</span>
+      ) : (
           items.map((item, i) => (
             <span
               key={`${item}-${i}`}
@@ -174,8 +118,7 @@ function ListStrip({ label, items, tone, kind }: { label: string; items: string[
               {item}
             </span>
           ))
-        )}
-      </span>
+      )}
     </span>
   );
 }
@@ -214,7 +157,6 @@ export function TopologicalSortWidget({
     () => (mode === "dfs" ? topologicalSortDfsSteps(graph) : topologicalSortSteps(graph)),
     [graph, mode],
   );
-  const depth = graph.nodes.length;
   const isDfs = mode === "dfs";
 
   const lastStep = steps[steps.length - 1];
@@ -230,19 +172,9 @@ export function TopologicalSortWidget({
       activeMode={mode}
       onModeChange={(id) => setMode(id === "dfs" ? "dfs" : "kahn")}
       readout={(step) => (
-        <div className="flex w-full min-w-0 flex-wrap items-center gap-x-5 gap-y-1.5">
-          {isDfs ? (
-            <>
-              <ListStrip label="Call stack" items={step.frontier} tone="waiting" kind="stack" />
-              <ListStrip label="Finished" items={step.visited} tone="done" kind="stack" />
-            </>
-          ) : (
-            <>
-              <ListStrip label="Ready queue" items={step.frontier} tone="waiting" kind="queue" />
-              <ListStrip label="Emitted" items={step.visited} tone="done" kind="order" />
-            </>
-          )}
-        </div>
+        <StatReadout
+          stats={[{ label: isDfs ? "finished" : "emitted", value: `${step.visited.length} / ${graph.nodes.length}`, tone: "good" }]}
+        />
       )}
       graph={graph}
       steps={steps}
@@ -261,50 +193,45 @@ export function TopologicalSortWidget({
       panel={(step) =>
         isDfs ? (
           <>
-            <PanelBox title="Stacks">
-              <div className="grid grid-cols-2 gap-2">
-                <ListColumn label="Call stack" items={step.frontier} tone="waiting" kind="stack" depth={depth} />
-                <ListColumn label="Finished" items={step.visited} tone="done" kind="stack" depth={depth} />
-              </div>
+            <PanelBox title="Call stack" aside="top is last">
+              <ListChips items={step.frontier} tone="waiting" kind="stack" />
             </PanelBox>
-
-            <PanelBox title="Finished stack, read from the top">
+            <PanelBox title="Topological order" aside="finished, read from the top">
               <ChipRow items={[...step.visited].reverse()} emptyLabel="nothing finished yet" tone="muted" reserveRows={2} />
             </PanelBox>
           </>
         ) : (
           <>
-            <PanelBox title="Queue and output">
-              <div className="grid grid-cols-2 gap-2">
-                <ListColumn label="Ready queue" items={step.frontier} tone="waiting" kind="queue" depth={depth} />
-                <ListColumn label="Emitted" items={step.visited} tone="done" kind="order" depth={depth} />
-              </div>
-            </PanelBox>
-
-            <PanelBox title="In-degree (things still blocking it)">
-              <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                {graph.nodes.map((n) => {
-                  const emitted = step.visited.includes(n.id);
-                  const isStuck = step === lastStep && stuck.includes(n.id);
-                  return (
-                    <div key={n.id} className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-ink">{n.id}</span>
-                      <span
-                        className={
-                          emitted
-                            ? "font-bold text-signal-green-strong"
-                            : isStuck
-                              ? "font-bold text-signal-coral"
-                              : "text-ink-soft"
-                        }
-                      >
-                        {emitted ? "emitted" : (step.table?.[n.id] ?? "0")}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </PanelBox>
+          <PanelBox title="Ready queue" aside="in-degree 0">
+            <ListChips items={step.frontier} tone="waiting" kind="queue" />
+          </PanelBox>
+          <PanelBox title="Emitted, in order">
+            <ListChips items={step.visited} tone="done" kind="order" />
+          </PanelBox>
+          <PanelBox title="In-degree" aside="still blocking it">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+              {graph.nodes.map((n) => {
+                const emitted = step.visited.includes(n.id);
+                const isStuck = step === lastStep && stuck.includes(n.id);
+                return (
+                  <div key={n.id} className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-ink">{n.id}</span>
+                    <span
+                      className={
+                        emitted
+                          ? "font-bold text-signal-green-strong"
+                          : isStuck
+                            ? "font-bold text-signal-coral"
+                            : "text-ink-soft"
+                      }
+                    >
+                      {emitted ? "emitted" : (step.table?.[n.id] ?? "0")}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </PanelBox>
           </>
         )
       }

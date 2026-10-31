@@ -4,13 +4,12 @@ import type { ReactNode } from "react";
 import type { AlgorithmStep, GraphSpec } from "@/lib/graph/types";
 import { GraphCanvas } from "./graph-canvas";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
-import { OptionGroup, WidgetShell, useWidgetView } from "../shared/widget-shell";
+import { WidgetShell } from "../shared/widget-shell";
+import { CompactSelect } from "../shared/widget-ui";
 
 // The graph widgets import these from here rather than from ../shared, so
 // they stay re-exported for those callers.
-import { Segmented } from "../shared/widget-ui";
-
-export { ChipRow, PanelBox, StatusSlot, ReservedBox } from "../shared/widget-ui";
+export { ChipRow, PanelBox, SideNote, StatusSlot, ReservedBox } from "../shared/widget-ui";
 
 interface AlgorithmRunnerProps {
   /** Detailed-view title, e.g. "Breadth-first search". */
@@ -23,14 +22,15 @@ interface AlgorithmRunnerProps {
   modes?: { id: string; label: string; sub?: string }[];
   activeMode?: string;
   onModeChange?: (id: string) => void;
-  /** Worked-example switcher, in the detailed options row. */
+  /** Worked-example switcher, a select on the stage's header row. */
   examples?: { id: string; label: string }[];
   activeExample?: string;
   onExampleChange?: (id: string) => void;
   /** Clickable nodes for choosing a start node. */
   onNodeClick?: (id: string) => void;
   markedNode?: string | null;
-  /** Algorithm-specific side panels (queue, distance table, edge list). Detailed view. */
+  /** Algorithm-specific panels (queue, distance table, edge list), drawn as
+   *  the unboxed column beside the stage. */
   panel?: (step: AlgorithmStep) => ReactNode;
   /** A compact readout shown in both views, under the stage. */
   readout?: (step: AlgorithmStep) => ReactNode;
@@ -84,6 +84,7 @@ export function AlgorithmRunner({
       kind={kind}
       title={title}
       bare={!frame}
+      singleView
       className={className}
       tabs={
         modes && modes.length > 1
@@ -92,45 +93,30 @@ export function AlgorithmRunner({
       }
       options={
         !compact && examples && examples.length > 1 ? (
-          <OptionGroup label="Example">
-            <Segmented
-              options={examples}
-              value={activeExample ?? examples[0].id}
-              onChange={(id) => onExampleChange?.(id)}
-            />
-          </OptionGroup>
+          <CompactSelect
+            label="Example"
+            options={examples}
+            value={activeExample ?? examples[0].id}
+            onChange={(id) => onExampleChange?.(id)}
+          />
         ) : undefined
       }
       stage={
-        <Stage hint={compact ? undefined : hint}>
-          <GraphCanvas
-            graph={graph}
-            step={step}
-            onNodeClick={onNodeClick}
-            markedNode={markedNode}
-            groupHulls={groupHulls}
-            groupLabel={groupLabel}
-            height={compact ? 130 : undefined}
-          />
-        </Stage>
+        <GraphCanvas
+          graph={graph}
+          step={step}
+          onNodeClick={onNodeClick}
+          markedNode={markedNode}
+          groupHulls={groupHulls}
+          groupLabel={groupLabel}
+          height={compact ? 130 : undefined}
+        />
       }
-      side={panel ? panel(step) : undefined}
-      sideWidth={230}
+      side={compact ? undefined : panel?.(step)}
       readout={readout?.(step)}
+      legend={!compact && hint ? <p className="text-xs text-slate">{hint}</p> : undefined}
       caption={step.caption}
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={steps.length} />}
     />
-  );
-}
-
-/** The canvas, plus its "click a node" hint in the detailed view only. */
-function Stage({ hint, children }: { hint?: string; children: ReactNode }) {
-  const view = useWidgetView();
-  return (
-    <div>
-      {children}
-      {view === "detailed" && hint && <p className="mt-1 text-center text-[11px] text-slate">{hint}</p>}
-    </div>
   );
 }

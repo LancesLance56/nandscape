@@ -5,7 +5,7 @@ import { arraySteps, gridSteps, type ArrayProblem, type GridProblem } from "@/li
 import type { TableRun } from "@/lib/dp/types";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
 import { WidgetShell, toggleSlots } from "../shared/widget-shell";
-import { PanelBox, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
+import { PanelBox, SideNote, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { DpTableCanvas, DpTableLegend } from "./dp-table-canvas";
 
 /**
@@ -44,12 +44,8 @@ function TableRunner({ title, run, toggles, formatValue, inputNote, hint }: Tabl
     <WidgetShell
       kind="Dynamic programming"
       title={title}
+      singleView
       {...toggleSlots(toggles)}
-      // The recurrence never changes frame to frame, so it is a reference line
-      // in the options row rather than a panel competing for space.
-      options={
-        <p className="font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
-      }
       stage={
         <div className="flex min-w-0 flex-col gap-2">
           <DpTableCanvas
@@ -73,7 +69,6 @@ function TableRunner({ title, run, toggles, formatValue, inputNote, hint }: Tabl
         />
       }
       legend={<DpTableLegend showPath={hasPath} />}
-      sideWidth={230}
       side={
         <>
           {/* The arithmetic for one cell, spelled out. The table shows what the
@@ -86,10 +81,17 @@ function TableRunner({ title, run, toggles, formatValue, inputNote, hint }: Tabl
               <span className="text-xs italic text-slate">nothing being worked out</span>
             )}
           </PanelBox>
+          <PanelBox title="Recurrence">
+            <div className="flex flex-col gap-0.5 font-label text-[11px] leading-relaxed text-ink-soft">
+              {run.recurrence.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </div>
+          </PanelBox>
           <PanelBox title="Answer">
             <span className="text-xs font-semibold text-signal-green-strong">{run.answer}</span>
           </PanelBox>
-          {hint && <p className="text-[11px] leading-relaxed text-slate">{hint}</p>}
+          {hint && <SideNote>{hint}</SideNote>}
         </>
       }
       status={
@@ -98,7 +100,6 @@ function TableRunner({ title, run, toggles, formatValue, inputNote, hint }: Tabl
         ) : undefined
       }
       caption={step.caption}
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={run.steps.length} />}
     />
   );

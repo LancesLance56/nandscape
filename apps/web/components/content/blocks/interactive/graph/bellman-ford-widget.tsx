@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { bellmanFordSteps } from "@/lib/graph/algorithms";
 import { edgeKey, type GraphSpec } from "@/lib/graph/types";
 import { StatReadout } from "../shared/widget-ui";
-import { AlgorithmRunner, PanelBox } from "./algorithm-runner";
+import { AlgorithmRunner, PanelBox, SideNote } from "./algorithm-runner";
 
 const EXAMPLES: { id: string; label: string; graph: GraphSpec }[] = [
   {
@@ -154,15 +154,7 @@ export function BellmanFordWidget({
       hint={`Click any node to run from it instead. Currently starting at ${source}.`}
       panel={(step) => (
         <>
-          <PanelBox title="Where we are">
-            <p className="text-xs font-bold text-ink">{step.phase ?? "Bellman-Ford"}</p>
-            <p className="mt-1 text-[11px] leading-relaxed text-slate">
-              No node is ever locked in. Any number here can still drop on a later pass, which is exactly what
-              Dijkstra refuses to allow.
-            </p>
-          </PanelBox>
-
-          <PanelBox title={`Cheapest known cost from ${source}`}>
+          <PanelBox title="Cheapest known cost" aside={`from ${source}`}>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               {graph.nodes.map((n) => {
                 const value = step.table?.[n.id] ?? "∞";
@@ -187,7 +179,7 @@ export function BellmanFordWidget({
             </div>
           </PanelBox>
 
-          <PanelBox title="Edge list, swept top to bottom">
+          <PanelBox title="Edge list" aside="swept top to bottom">
             <div className="flex flex-col gap-0.5">
               {graph.edges.map((e) => {
                 const key = edgeKey(e.from, e.to, true);
@@ -211,6 +203,11 @@ export function BellmanFordWidget({
               })}
             </div>
           </PanelBox>
+
+          <SideNote>
+            No node is ever locked in. Any number here can still drop on a later pass, which is exactly what Dijkstra
+            refuses to allow.
+          </SideNote>
         </>
       )}
     />

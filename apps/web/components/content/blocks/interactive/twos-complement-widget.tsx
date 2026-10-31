@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { ActionDock, WidgetShell } from "./shared/widget-shell";
-import { Stat, WidgetButton } from "./shared/widget-ui";
+import { StageNote, Stat, WidgetButton } from "./shared/widget-ui";
 
 const DEFAULT_BITS = 8;
 
@@ -56,6 +56,7 @@ export function TwosComplementWidget({
   return (
     <WidgetShell
       kind="Number systems"
+      singleView
       title="Two's complement"
       bare={!frame}
       className={className}
@@ -89,10 +90,13 @@ export function TwosComplementWidget({
             <Stat label="As unsigned" value={value} />
             <Stat label="As two's complement" value={signed} tone={isNegative ? "warn" : "default"} />
           </div>
+          {frame && (
+            <StageNote>
+              The top bit counts as −{2 ** (bits - 1)} instead of +{2 ** (bits - 1)}, so {binary} reads as {signed}.
+            </StageNote>
+          )}
         </div>
       }
-      caption={`The top bit counts as −${2 ** (bits - 1)} instead of +${2 ** (bits - 1)}, so ${binary} reads as ${signed}.`}
-      captionLabel="Why"
       dock={
         <ActionDock hint="Click a bit to flip it.">
           <WidgetButton tone="primary" onClick={negate}>

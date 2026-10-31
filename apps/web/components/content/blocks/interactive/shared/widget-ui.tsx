@@ -1,6 +1,7 @@
 "use client";
 
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { createContext, useContext, useId, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/cn";
@@ -199,8 +200,11 @@ export function Stat({
   value: string | number;
   tone?: "default" | "good" | "warn";
 }) {
+  // Beside the stage the column is already the frame, so the figure stands
+  // on its own rather than in a tile.
+  const unboxed = useContext(InSideColumnContext);
   return (
-    <div className="rounded-[10px] bg-surface-2 px-3.5 py-2.5">
+    <div className={unboxed ? "min-w-0" : "rounded-[10px] bg-surface-2 px-3.5 py-2.5"}>
       <div className="text-[11px] font-semibold text-slate">{label}</div>
       <div
         className={cn(
@@ -243,6 +247,18 @@ export function StatReadout({
   );
 }
 
+/**
+ * A quiet line of explanation under a visual: the "why" that a single-view
+ * widget shows beside its prompt, not a message that comes and goes.
+ */
+export function StageNote({ children }: { children: ReactNode }) {
+  return (
+    <p className="mx-auto max-w-[36rem] text-center text-[13px] leading-relaxed text-ink-soft [&_code]:font-mono [&_code]:text-copper-dark">
+      {children}
+    </p>
+  );
+}
+
 /** Inline feedback: a hint, a correct answer, a wrong answer. */
 export function Banner({ tone, children }: { tone: "info" | "good" | "bad"; children: ReactNode }) {
   return (
@@ -263,14 +279,25 @@ export function Banner({ tone, children }: { tone: "info" | "good" | "bad"; chil
 /* Containers                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/** Small labelled box used by the algorithm side panels. */
+/**
+ * True inside the column a single-view shell draws beside its stage. The
+ * card is already the frame there, so a panel drops its own box and becomes
+ * a labelled section, and the shell does the spacing.
+ */
+export const InSideColumnContext = createContext(false);
+
+/** Small labelled box used by the algorithm side panels. Unboxed beside a
+ *  single-view stage (see InSideColumnContext). */
 export function PanelBox({
   title,
+  aside,
   children,
   className,
   bodyClassName,
 }: {
   title: string;
+  /** A quieter note after the title, e.g. "first in, first out". */
+  aside?: ReactNode;
   children: ReactNode;
   className?: string;
   /** Applied to the body wrapper - use a fixed `h-*` + `overflow-y-auto` here
@@ -278,11 +305,83 @@ export function PanelBox({
    *  table) so the panel keeps one height for the whole run. */
   bodyClassName?: string;
 }) {
+  if (useContext(InSideColumnContext)) {
+    return (
+      <section className={cn("min-w-0", className)}>
+        <h4 className="mb-2 flex items-baseline justify-between gap-2 text-[11px] font-semibold uppercase tracking-[0.04em] text-slate">
+          {title}
+          {aside && <span className="font-medium normal-case tracking-normal">{aside}</span>}
+        </h4>
+        <div className={bodyClassName}>{children}</div>
+      </section>
+    );
+  }
   return (
     <div className={cn("rounded-xl border border-border bg-surface-card p-3", className)}>
-      <div className="mb-2.5 text-xs font-semibold text-ink-soft">{title}</div>
+      <div className="mb-2.5 text-xs font-semibold text-ink-soft">
+        {title}
+        {aside && <span className="ml-1.5 font-normal text-slate">{aside}</span>}
+      </div>
       <div className={bodyClassName}>{children}</div>
     </div>
+  );
+}
+
+/**
+ * The one "why" sentence at the foot of a side column, under a hairline.
+ * Outside that column it is a plain small paragraph.
+ */
+export function SideNote({ children, tone = "default" }: { children: ReactNode; tone?: "default" | "bad" }) {
+  return (
+    <p
+      className={cn(
+        "mt-auto border-t border-border pt-3 text-xs leading-relaxed",
+        tone === "bad" ? "text-signal-coral-strong [&_b]:text-signal-coral-strong" : "text-slate [&_b]:text-ink-soft",
+      )}
+    >
+      {children}
+    </p>
+  );
+}
+
+/**
+ * A labelled native select, for a secondary choice like "Example" that sits
+ * on the stage's own header row. Native, so it works by keyboard, screen
+ * reader and touch with no popover of our own.
+ */
+export function CompactSelect<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly { id: T; label: string }[];
+  value: T;
+  onChange: (id: T) => void;
+}) {
+  const id = useId();
+  return (
+    <span className="inline-flex items-center gap-2">
+      <label htmlFor={id} className="text-xs font-semibold text-slate">
+        {label}
+      </label>
+      <span className="relative inline-flex">
+        <select
+          id={id}
+          value={value}
+          onChange={(e) => onChange(e.target.value as T)}
+          className="h-[30px] cursor-pointer appearance-none rounded-lg bg-surface-2 py-0 pl-2.5 pr-7 text-[13px] font-semibold text-ink transition-colors hover:bg-surface-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper"
+        >
+          {options.map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDown aria-hidden className="pointer-events-none absolute right-2 top-1/2 size-3.5 -translate-y-1/2 text-slate" />
+      </span>
+    </span>
   );
 }
 

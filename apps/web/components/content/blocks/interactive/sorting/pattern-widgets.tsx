@@ -17,7 +17,7 @@ import { PlayerDock, useStepPlayer } from "../shared/step-player";
 import { WidgetShell, modeTabs } from "../shared/widget-shell";
 import { cn } from "@/lib/cn";
 import { SortingBars } from "./sorting-bars";
-import { Banner, StatReadout } from "../shared/widget-ui";
+import { Banner, StageNote, StatReadout } from "../shared/widget-ui";
 
 /* -------------------------------------------------------------------------
  * Shared bits
@@ -84,9 +84,17 @@ export function PartitionExplorerWidget({ data }: { data: Record<string, unknown
     <WidgetShell
       kind="Sorting patterns"
       title="One-pass partitioning"
+      singleView
       tabs={modeTabs(PARTITION_MODES.map((m) => ({ id: m.id, label: m.label })), mode, setMode)}
-      options={<p className="text-xs text-slate">{blurb}</p>}
-      stage={<SortingBars step={step} maxValue={maxValue} height={160} />}
+      stage={
+        <div className="flex flex-col gap-2">
+          <SortingBars step={step} maxValue={maxValue} height={160} />
+          <StageNote>
+            {blurb} Sorting would also work, in O(n log n); this is O(n) with no extra memory because the values come
+            from a tiny fixed set.
+          </StageNote>
+        </div>
+      }
       readout={
         <StatReadout
           stats={[
@@ -94,12 +102,6 @@ export function PartitionExplorerWidget({ data }: { data: Record<string, unknown
             { label: "swaps", value: Math.floor(step.writes / 2), tone: "warn" },
           ]}
         />
-      }
-      details={
-        <p className="text-[11px] leading-relaxed text-slate">
-          Every one of these runs in a single pass with no extra memory. Sorting would also work and would be O(n log n);
-          these are O(n) because the values come from a tiny fixed set.
-        </p>
       }
       caption={step.caption}
       captionLabel={player.index + 1}
@@ -141,6 +143,7 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
     <WidgetShell
       kind="Sorting patterns"
       title="Two-pointer merge"
+      singleView
       tabs={modeTabs(MERGE_MODES, mode, setMode)}
       stage={
         <div className="flex flex-col gap-3">
@@ -158,6 +161,19 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
               <Chips values={step.output} highlight={step.emitted !== undefined ? [step.emitted] : []} tone="green" />
             </div>
           </div>
+          {mode === "inversions" && (
+            // Reserved whether or not this step credits any inversions.
+            <div className="min-h-[3.25rem]">
+              {step.creditedFrom && step.creditedFrom.length > 0 && (
+                <>
+                  <div className="mb-1.5 text-[11px] font-semibold text-copper-dark">
+                    These {step.creditedFrom.length} left value(s) are all greater, so each forms an inversion
+                  </div>
+                  <Chips values={step.creditedFrom} />
+                </>
+              )}
+            </div>
+          )}
         </div>
       }
       readout={
@@ -174,21 +190,6 @@ export function MergeExplorerWidget({ data }: { data: Record<string, unknown> })
                 ]
           }
         />
-      }
-      details={
-        mode === "inversions" ? (
-          // Reserved whether or not this step credits any inversions.
-          <div className="min-h-[4.5rem]">
-            {step.creditedFrom && step.creditedFrom.length > 0 && (
-              <div className="rounded-lg border border-copper/40 bg-copper-bg/40 p-3">
-                <div className="mb-1.5 text-[11px] font-semibold text-copper-dark">
-                  These {step.creditedFrom.length} left value(s) are all greater, so each forms an inversion
-                </div>
-                <Chips values={step.creditedFrom} />
-              </div>
-            )}
-          </div>
-        ) : undefined
       }
       caption={step.caption}
       captionLabel={player.index + 1}
@@ -260,7 +261,7 @@ export function IntervalExplorerWidget({ data }: { data: Record<string, unknown>
     <WidgetShell
       kind="Sorting patterns"
       title="Interval sweep"
-      meta={mode === "merge" ? "merging overlaps" : `peak overlap ${step.maxConcurrent ?? 0}`}
+      singleView
       tabs={modeTabs([
             { id: "merge" as const, label: "Merge overlapping" },
             { id: "platforms" as const, label: "Minimum platforms" },
@@ -365,7 +366,7 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
     <WidgetShell
       kind="Sorting patterns"
       title="Sort, then one pass"
-      meta={PAIRING_MODES.find((m) => m.id === mode)?.label}
+      singleView
       tabs={modeTabs(PAIRING_MODES.map((m) => ({ id: m.id, label: m.label })), mode, setMode)}
       stage={
         <div className="flex flex-col gap-3">
@@ -391,13 +392,11 @@ export function PairingExplorerWidget({ data }: { data: Record<string, unknown> 
             {step.running && <span className="font-label text-sm font-bold text-ink">{step.running}</span>}
             {step.done && <Banner tone="good">Answer: {run.answer}</Banner>}
           </div>
+          <StageNote>
+            The sort does the real work. What follows is a single linear pass, and the only hard part is the argument for
+            why the sorted pairing is the best one.
+          </StageNote>
         </div>
-      }
-      details={
-        <p className="text-[11px] leading-relaxed text-slate">
-          In every one of these the sort does the real work. What follows is a single linear pass, and the only hard part
-          is the argument for why the sorted pairing is the best one.
-        </p>
       }
       caption={step.caption}
       captionLabel={player.index + 1}

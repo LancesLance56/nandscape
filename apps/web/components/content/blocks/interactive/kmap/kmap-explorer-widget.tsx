@@ -21,7 +21,7 @@ import {
 import { gradeCover, solveKMap } from "@/lib/kmap/solve";
 import { ActionDock, WidgetShell } from "../shared/widget-shell";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
-import { Banner, PanelBox, Stat, WidgetButton } from "../shared/widget-ui";
+import { Banner, PanelBox, SideNote, Stat, StatReadout, WidgetButton } from "../shared/widget-ui";
 
 type Mode = "solve" | "practice";
 
@@ -195,11 +195,6 @@ export function KMapExplorerWidget({
   const canonicalLiterals = ones.length * varCount;
   const minimalLiterals = solution.cover.reduce((n, imp) => n + literalCount(imp, varCount), 0);
 
-  const subtitle =
-    mode === "solve"
-      ? `${ones.length} one${ones.length === 1 ? "" : "s"} · ${solution.cover.length} group${solution.cover.length === 1 ? "" : "s"}`
-      : `${grade.termCount} / ${solution.cover.length} groups`;
-
   const groupChips =
     mode === "solve" || showAnswer
       ? solution.cover.map((imp, i) => ({
@@ -217,8 +212,8 @@ export function KMapExplorerWidget({
     <WidgetShell
       kind="Boolean algebra"
       title={title}
-      meta={subtitle}
       bare={!frame}
+      singleView
       className={className}
       prompt={
         mode === "solve"
@@ -226,7 +221,7 @@ export function KMapExplorerWidget({
           : "Select the 1s that belong together, then confirm the group."
       }
       stage={
-        <div className="flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
+        <div className="flex justify-center">
           <KMapGrid
             layout={layout}
             cells={cells}
@@ -235,19 +230,19 @@ export function KMapExplorerWidget({
             onCellClick={mode === "solve" ? cycleCell : toggleSelect}
             ariaLabel={`Karnaugh map for ${variables.join("")}`}
           />
-          <div className="w-full max-w-xs">
-            <ExpressionPanel
-              label={mode === "solve" || showAnswer ? "Minimal sum of products" : "Your expression"}
-              expression={expression}
-              empty={mode === "practice" ? "No groups yet." : undefined}
-            />
-          </div>
         </div>
       }
+      readout={
+        mode === "practice" ? (
+          <StatReadout stats={[{ label: "groups", value: `${grade.termCount} / ${solution.cover.length}` }]} />
+        ) : undefined
+      }
       legend={<KMapCellLegend showDontCare={allowDontCare} />}
-      sideWidth={240}
       side={
         <>
+          <PanelBox title={mode === "solve" || showAnswer ? "Minimal sum of products" : "Your expression"}>
+            <Expression expression={expression} empty={mode === "practice" ? "No groups yet." : undefined} />
+          </PanelBox>
           {(mode === "solve" || showAnswer) && ones.length > 0 && !solution.isTautology && (
             <div className="grid grid-cols-3 gap-1.5">
               <Stat label="terms" value={solution.cover.length} />
@@ -263,13 +258,13 @@ export function KMapExplorerWidget({
             <GroupChips groups={groupChips} />
           </PanelBox>
           {mode === "solve" && (
-            <p className="text-[11px] leading-relaxed text-slate">
+            <SideNote>
               {ones.length === 0
                 ? "The map is empty, so the function is constant 0. Click cells to set them to 1."
                 : solution.isTautology
                   ? "Every cell is 1 or don't-care, so the function simplifies to the constant 1."
                   : `${ones.length} one${ones.length === 1 ? "" : "s"}${dontCares.length > 0 ? ` and ${dontCares.length} don't-care${dontCares.length === 1 ? "" : "s"}` : ""}, covered by ${solution.cover.length} group${solution.cover.length === 1 ? "" : "s"}. ${solution.alternativeCovers.length > 0 ? `There ${solution.alternativeCovers.length === 1 ? "is 1 other grouping" : `are ${solution.alternativeCovers.length} other groupings`} that is just as small.` : "This grouping is the only minimal one."}`}
-            </p>
+            </SideNote>
           )}
         </>
       }
@@ -310,28 +305,17 @@ export function KMapExplorerWidget({
  * Panels
  * ---------------------------------------------------------------------- */
 
-function ExpressionPanel({
-  label,
-  expression,
-  empty,
-}: {
-  label: string;
-  expression: string | null;
-  empty?: string;
-}) {
+export function Expression({ expression, empty }: { expression: string | null; empty?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-gradient-to-br from-surface-card to-surface-2/50 p-4">
-      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">{label}</div>
-      <p className="break-words font-label text-lg font-bold leading-snug text-ink">
-        {expression ? (
-          <>
-            <span className="text-copper-dark">F</span> = {expression}
-          </>
-        ) : (
-          <span className="text-base font-normal italic text-slate">{empty ?? "-"}</span>
-        )}
-      </p>
-    </div>
+    <p className="break-words font-label text-lg font-bold leading-snug text-ink">
+      {expression ? (
+        <>
+          <span className="text-copper-dark">F</span> = {expression}
+        </>
+      ) : (
+        <span className="text-sm font-normal italic text-slate">{empty ?? "-"}</span>
+      )}
+    </p>
   );
 }
 

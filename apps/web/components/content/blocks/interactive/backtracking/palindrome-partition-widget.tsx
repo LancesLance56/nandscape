@@ -92,7 +92,7 @@ function StringStrip({ text, payload }: { text: string; payload: PalindromePaylo
   const ok = payload?.isPalindrome ?? true;
 
   return (
-    <div className="rounded-lg border border-border bg-surface-2/40 p-3">
+    <div>
       <div className="mb-2 text-[11px] font-semibold text-slate">The string</div>
       <div className="flex flex-wrap items-center gap-0.5">
         {[...text].map((ch, i) => {
@@ -152,7 +152,7 @@ function PalindromeTable({ text, payload }: { text: string; payload: PalindromeP
   const activeEnd = payload?.end ?? -1;
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-surface-2/40 p-3">
+    <div className="overflow-x-auto">
       <div className="mb-2 text-[11px] font-semibold text-slate">
         isPalindrome[start][end], precomputed once instead of re-tested per branch
       </div>

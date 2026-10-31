@@ -56,6 +56,7 @@ export function ChoiceQuizWidget({ data }: { data: Record<string, unknown> }) {
   return (
     <WidgetShell
       kind="Check yourself"
+      singleView
       title={data.prompt}
       className={data.className}
       prompt={data.prompt}

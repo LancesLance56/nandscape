@@ -114,7 +114,7 @@ export function DpTableCanvas({
       <div
         ref={scrollRef}
         style={{ maxHeight }}
-        className="overflow-auto rounded-lg border border-border bg-surface-2/30 p-2"
+        className="overflow-auto"
       >
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Dynamic programming table" className="block">
           <defs>

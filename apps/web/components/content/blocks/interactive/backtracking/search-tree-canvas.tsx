@@ -175,7 +175,7 @@ function TreeShapeSummary({
   const activeDepth = step.activeId ? (nodes.find((n) => n.id === step.activeId)?.depth ?? null) : null;
 
   return (
-    <div className="rounded-lg border border-border bg-surface-2/30 p-3">
+    <div>
       <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <span className="text-[11px] font-semibold text-slate">Where the search is spending its time</span>
         <span className="text-[10px] text-slate">

@@ -3,7 +3,7 @@
 import { createContext, useContext, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { ChevronDown, Minimize2, PanelRight } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { Segmented, type SegmentedGroup } from "./widget-ui";
+import { CompactSelect, InSideColumnContext, Segmented, type SegmentedGroup } from "./widget-ui";
 
 /**
  * The chrome every interactive widget renders inside, in two views.
@@ -72,11 +72,16 @@ export function toggleSlots(groups: readonly SegmentedGroup[], primaryId?: strin
     options:
       rest.length > 0 || extra ? (
         <>
-          {rest.map((g) => (
-            <OptionGroup key={g.id} label={g.label}>
-              <Segmented options={g.options} value={g.active} onChange={g.onChange} />
-            </OptionGroup>
-          ))}
+          {rest.map((g) =>
+            // A long list of pills costs a row of its own; a select costs one chip.
+            g.options.length > 3 ? (
+              <CompactSelect key={g.id} label={g.label} options={g.options} value={g.active} onChange={g.onChange} />
+            ) : (
+              <OptionGroup key={g.id} label={g.label}>
+                <Segmented options={g.options} value={g.active} onChange={g.onChange} />
+              </OptionGroup>
+            ),
+          )}
           {extra}
         </>
       ) : undefined,
@@ -119,11 +124,16 @@ export interface WidgetShellProps {
    * switch. In a `bare` shell it falls back to that Segmented.
    */
   tabs?: WidgetTabs;
-  /** Secondary choices (example, size, start node). Detailed view only. */
+  /** Secondary choices (example, size, start node). Detailed view, or the
+   *  stage's header row in a single view with `side`. */
   options?: ReactNode;
   /** The visual. Both views. */
   stage: ReactNode;
-  /** Panels beside the stage. Detailed view only. */
+  /**
+   * Panels beside the stage. Detailed view, or - in a single view - an
+   * unboxed column beside the stage, where `PanelBox` becomes a labelled
+   * section (the "Focused v2" boards on the redesign canvas).
+   */
   side?: ReactNode;
   /** Width of the side column in the detailed view. */
   sideWidth?: number;
@@ -212,7 +222,11 @@ export function WidgetShell(props: WidgetShellProps) {
     >
       {/* With tabs, the view chip lives on the tab row instead. */}
       {current === "focused" ? (
-        <FocusedView {...slots} onDetails={!switchable || tabs ? undefined : toDetailed} />
+        props.singleView && props.side && !props.bare ? (
+          <SplitView {...slots} />
+        ) : (
+          <FocusedView {...slots} onDetails={!switchable || tabs ? undefined : toDetailed} />
+        )
       ) : (
         <DetailedView {...slots} onFocus={tabs ? undefined : toFocused} />
       )}
@@ -498,6 +512,81 @@ function FocusedView({
   );
 }
 
+/**
+ * A single view with nothing left behind a Details chip: the narration on
+ * top, then the stage with its choices and counts on a header row and its key
+ * underneath, and beside it the side panels as one unboxed column that never
+ * makes the card taller than the stage (on a phone, one sideways row under
+ * it). Every slot the detailed view used is here, so the chip has no reason
+ * to exist.
+ */
+function SplitView({
+  primary,
+  options,
+  stage,
+  side,
+  sideWidth = 248,
+  readout,
+  legend,
+  caption,
+  prompt,
+  status,
+  dock,
+  stageClassName,
+}: WidgetShellProps) {
+  const text = prompt ?? caption;
+  return (
+    <>
+      {primary && <div className="flex justify-center px-3 pt-2.5">{primary}</div>}
+      <div className="flex flex-1 flex-col gap-3 px-4 pb-4 pt-4 sm:px-6 sm:pt-5">
+        {text && (
+          <div
+            aria-live="polite"
+            className={cn(
+              "max-w-[46rem] tracking-[-0.01em] text-ink [&_code]:font-mono [&_code]:font-semibold [&_code]:text-copper-dark",
+              // A stepped narration changes every frame: a fixed box, so the
+              // card never changes height while it plays.
+              prompt === undefined
+                ? "h-[3.25rem] overflow-y-auto text-[15px] font-semibold leading-snug"
+                : "text-base font-semibold leading-snug",
+            )}
+          >
+            <p>{text}</p>
+          </div>
+        )}
+        {/* The side column is taken out of flow so its changing contents never
+            resize the card, which leaves the stage setting the height. A floor
+            keeps a short stage (a one-row table) from squeezing the column
+            into a scroll strip. */}
+        <div
+          className="grid gap-x-7 gap-y-4 md:min-h-[20rem] md:grid-cols-[minmax(0,1fr)_var(--side-w)]"
+          style={{ "--side-w": `${sideWidth}px` } as React.CSSProperties}
+        >
+          <div className="flex min-w-0 flex-col">
+            {(options || readout) && (
+              <div className="mb-3 flex flex-wrap items-center gap-x-[18px] gap-y-2 [&_[data-slot=toggle-group]]:flex-nowrap">
+                {options}
+                {readout && <div className="ml-auto">{readout}</div>}
+              </div>
+            )}
+            <div className={cn("min-w-0", stageClassName)}>{stage}</div>
+            {legend && <div className="mt-auto pt-3">{legend}</div>}
+            {status && <div className="pt-3">{status}</div>}
+          </div>
+          <InSideColumnContext.Provider value>
+            <div className="relative min-w-0">
+              <div className="flex gap-x-5 gap-y-[18px] overflow-x-auto pb-1 [scrollbar-width:thin] md:absolute md:inset-0 md:flex-col md:overflow-y-auto md:overflow-x-hidden md:pb-0 [&>*]:w-[210px] [&>*]:shrink-0 md:[&>*]:w-auto">
+                {side}
+              </div>
+            </div>
+          </InSideColumnContext.Provider>
+        </div>
+      </div>
+      {dock && <Dock>{dock}</Dock>}
+    </>
+  );
+}
+
 function DetailedView({
   kind,
   title,
@@ -614,12 +703,6 @@ function Dock({ children, bare }: { children: ReactNode; bare?: boolean }) {
       {children}
     </div>
   );
-}
-
-/** Renders its children only in the detailed view, e.g. a question that the
- *  focused view already shows as its prompt. */
-export function DetailedOnly({ children }: { children: ReactNode }) {
-  return useWidgetView() === "detailed" ? <>{children}</> : null;
 }
 
 /** Dock content for widgets without a transport: a hint left, buttons right. */

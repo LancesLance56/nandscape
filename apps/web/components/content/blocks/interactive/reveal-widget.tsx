@@ -44,6 +44,7 @@ export function RevealWidget({ data }: { data: Record<string, unknown> }) {
   return (
     <WidgetShell
       kind="Think first"
+      singleView
       title={data.prompt}
       className={data.className}
       prompt={data.prompt}

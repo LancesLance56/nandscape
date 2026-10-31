@@ -3,11 +3,12 @@
 import { useState, type ReactNode } from "react";
 import type { BacktrackRun, BacktrackStep } from "@/lib/backtracking/types";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
-import { OptionGroup, WidgetShell, toggleSlots, useWidgetView } from "../shared/widget-shell";
+import { OptionGroup, WidgetShell, toggleSlots } from "../shared/widget-shell";
 import { ChipRow, PanelBox, Segmented, StatReadout, type SegmentedGroup } from "../shared/widget-ui";
 import { SearchTreeCanvas, TreeLegend } from "./search-tree-canvas";
 
 export type TreeView = "tree" | "profile";
+type StageView = "board" | TreeView;
 
 interface BacktrackingRunnerProps<P> {
   /** Detailed-view title, e.g. "N-Queens". */
@@ -64,23 +65,26 @@ export function BacktrackingRunner<P>({
   className,
 }: BacktrackingRunnerProps<P>) {
   const player = useStepPlayer(run.steps.length);
-  const [treeView, setTreeView] = useState<TreeView>(defaultTreeView);
+  const [stageView, setStageView] = useState<StageView>(visual ? "board" : defaultTreeView);
   const step = run.steps[Math.min(player.index, run.steps.length - 1)];
 
   if (!step) {
     return <p className="text-sm text-signal-coral">Backtracking widget: nothing to run.</p>;
   }
 
+  // One thing on the stage at a time: the board, the tree or its depth
+  // profile. Side by side they outgrew the card once the panels moved beside
+  // the stage, and a switch costs one chip on the header row.
+  const showVisual = visual !== undefined && (!showTree || stageView === "board");
+  const treeView: TreeView = stageView === "board" ? defaultTreeView : stageView;
+  const viewOptions = [
+    ...(visual ? [{ id: "board" as const, label: "Board" }] : []),
+    { id: "tree" as const, label: "Tree" },
+    { id: "profile" as const, label: "Depth profile" },
+  ];
   const treeToggle = showTree ? (
-    <OptionGroup label="Search view">
-      <Segmented
-        options={[
-          { id: "tree", label: "Tree" },
-          { id: "profile", label: "Depth profile" },
-        ]}
-        value={treeView}
-        onChange={(id) => setTreeView(id as TreeView)}
-      />
+    <OptionGroup label="Show">
+      <Segmented options={viewOptions} value={stageView} onChange={setStageView} />
     </OptionGroup>
   ) : undefined;
   const slots = toggleSlots(toggles ?? [], primaryToggle, treeToggle);
@@ -90,26 +94,27 @@ export function BacktrackingRunner<P>({
       kind="Backtracking"
       title={title}
       bare={!frame}
+      singleView
       className={className}
       tabs={slots.tabs}
       options={slots.options}
       stage={
-        <Stage
-          hint={hint}
-          visual={visual ? <div className="flex justify-center">{visual(step)}</div> : null}
-          tree={showTree ? <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} /> : null}
-        />
+        showVisual && visual ? (
+          <div className="flex justify-center">{visual(step)}</div>
+        ) : showTree ? (
+          <TreeBlock run={run} step={step} showDeadInLegend={showDeadInLegend} view={treeView} />
+        ) : null
       }
+      legend={hint ? <p className="text-xs leading-relaxed text-slate">{hint}</p> : undefined}
       readout={
         <StatReadout
           stats={[
-            { label: "nodes entered", value: step.visited },
-            { label: "branches cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
+            { label: "entered", value: step.visited },
+            { label: "cut", value: step.pruned, tone: step.pruned > 0 ? "warn" : "default" },
             { label: "found", value: step.solutions.length, tone: "good" },
           ]}
         />
       }
-      sideWidth={230}
       side={
         <>
           <PanelBox title="Call stack">
@@ -118,7 +123,7 @@ export function BacktrackingRunner<P>({
 
           {panel?.(step)}
 
-          <PanelBox title={solutionsLabel}>
+          <PanelBox title={solutionsLabel} aside={step.solutions.length > 0 ? String(step.solutions.length) : undefined}>
             {step.solutions.length === 0 ? (
               <span className="text-xs italic text-slate">none yet</span>
             ) : (
@@ -142,36 +147,8 @@ export function BacktrackingRunner<P>({
         ) : undefined
       }
       caption={step.caption}
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={run.steps.length} />}
     />
-  );
-}
-
-/**
- * The board (or the tree, when a problem has no board), plus its hint.
- *
- * With a board, the detailed view puts the search tree *beside* it rather than
- * below: stacked, the two outgrew a laptop screen, and side by side the
- * reader can watch a move on the board and its branch in the tree at once.
- */
-function Stage({ hint, visual, tree }: { hint?: string; visual: ReactNode; tree: ReactNode }) {
-  const view = useWidgetView();
-  const detailed = view === "detailed";
-  return (
-    <div className="flex min-w-0 flex-col gap-2">
-      {detailed && visual && tree ? (
-        <div className="grid items-start gap-3 lg:grid-cols-[auto_minmax(0,1fr)]">
-          {visual}
-          {/* Too much for a phone on top of the board: the tree is for
-              screens with room beside it. */}
-          <div className="hidden min-w-0 md:block">{tree}</div>
-        </div>
-      ) : (
-        (visual ?? tree)
-      )}
-      {detailed && hint && <p className="text-center text-[11px] leading-relaxed text-slate">{hint}</p>}
-    </div>
   );
 }
 

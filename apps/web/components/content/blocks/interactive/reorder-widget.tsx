@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 import { WidgetButton } from "./shared/widget-ui";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { ActionDock, WidgetShell } from "./shared/widget-shell";
-import { Banner, PanelBox } from "./shared/widget-ui";
+import { Banner } from "./shared/widget-ui";
 
 interface ReorderItem {
   id: string;
@@ -101,6 +101,7 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
       kind="Optimize"
       title="Order the checks, cheapest first"
       className={data.className}
+      singleView
       prompt="Order the checks so the cheapest runs first."
       stage={
         <ul className="mx-auto flex w-full max-w-[34rem] flex-col gap-2">
@@ -130,13 +131,12 @@ export function ReorderWidget({ data }: { data: Record<string, unknown> }) {
           ))}
         </ul>
       }
-      side={
-        <PanelBox title="Expected cost per check">
-          <p className="text-[11px] leading-relaxed text-slate">Whichever check fails, you paid for everything before it.</p>
-        </PanelBox>
-      }
       readout={
         <div className="flex w-full max-w-[34rem] flex-col gap-2">
+          <p className="text-[11px] leading-relaxed text-slate">
+            <span className="font-semibold text-ink-soft">Expected cost per check.</span> Whichever check fails, you
+            paid for everything before it.
+          </p>
           {bar("Your order", current, isOptimal ? "bg-copper" : "bg-signal-coral")}
           {bar("Best possible", best, "bg-copper")}
         </div>

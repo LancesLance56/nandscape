@@ -109,11 +109,11 @@ export function TarjanSccWidget({
       hint="The pair above each node is arrival time / earliest node it can loop back to. Closed components get a shaded outline."
       panel={(step) => (
         <>
-          <PanelBox title="Stack (nodes in an unfinished component)">
+          <PanelBox title="Stack" aside="an unfinished component">
             <ChipRow items={step.frontier} emptyLabel="empty" reserveRows={2} />
           </PanelBox>
 
-          <PanelBox title="arrival / lowlink">
+          <PanelBox title="Arrival / lowlink">
             <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               {graph.nodes.map((n) => (
                 <div key={n.id} className="flex items-center justify-between text-xs">
@@ -124,7 +124,7 @@ export function TarjanSccWidget({
             </div>
           </PanelBox>
 
-          <PanelBox title="Components found" bodyClassName="h-[4.5rem] overflow-y-auto">
+          <PanelBox title="Components found">
             {step.groups && step.groups.length > 0 ? (
               <div className="flex flex-col gap-1">
                 {step.groups.map((g) => (

@@ -137,11 +137,11 @@ export function GraphTraversalWidget({
       hint="Click any node to start the traversal from there."
       panel={(step) => (
         <>
-          <PanelBox title={isBfs ? "Queue (first in, first out)" : "Stack (last in, first out)"}>
+          <PanelBox title={isBfs ? "Queue" : "Stack"} aside={isBfs ? "first in, first out" : "last in, first out"}>
             <ChipRow items={step.frontier} emptyLabel="empty" reserveRows={2} />
           </PanelBox>
 
-          <PanelBox title="Visited, in order" bodyClassName="h-9 overflow-y-auto">
+          <PanelBox title="Visited, in order">
             <p className="text-xs font-semibold text-ink">
               {step.visited.length > 0 ? (
                 step.visited.join(" → ")

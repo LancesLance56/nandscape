@@ -138,7 +138,7 @@ export function MutualReachabilityWidget({
     <WidgetShell
       kind="Graphs"
       title="Who can reach whom?"
-      meta={`starting from ${selected}`}
+      singleView
       bare={!frame}
       className={data.className as string}
       stage={<GraphCanvas graph={graph} step={step} onNodeClick={setPicked} markedNode={selected} groupHulls groupLabel="SCC" />}
@@ -168,20 +168,14 @@ export function MutualReachabilityWidget({
       sideWidth={230}
       side={
         <>
-          <PanelBox title={`Mutually reachable with ${selected}`}>
+          <PanelBox title={`Both ways with ${selected}`}>
             <ChipRow items={component} emptyLabel="none" reserveRows={2} />
           </PanelBox>
-          <PanelBox title="One-way only">
-            <div className="flex flex-col gap-2">
-              <div>
-                <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate">Can get to</div>
-                <ChipRow items={forwardOnly} emptyLabel="nothing new" tone="muted" reserveRows={1} />
-              </div>
-              <div>
-                <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate">Can be reached from</div>
-                <ChipRow items={backwardOnly} emptyLabel="nothing new" tone="muted" reserveRows={1} />
-              </div>
-            </div>
+          <PanelBox title={`${selected} can get to`} aside="one way">
+            <ChipRow items={forwardOnly} emptyLabel="nothing new" tone="muted" reserveRows={1} />
+          </PanelBox>
+          <PanelBox title={`Can reach ${selected}`} aside="one way">
+            <ChipRow items={backwardOnly} emptyLabel="nothing new" tone="muted" reserveRows={1} />
           </PanelBox>
         </>
       }

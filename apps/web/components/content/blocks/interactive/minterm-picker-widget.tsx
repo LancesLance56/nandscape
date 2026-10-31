@@ -83,6 +83,7 @@ export function MintermPickerWidget({ data }: { data: Record<string, unknown> })
   return (
     <WidgetShell
       kind="Practice"
+      singleView
       title={title}
       meta={`${actualMinterms.size} row(s) output 1`}
       className={className}

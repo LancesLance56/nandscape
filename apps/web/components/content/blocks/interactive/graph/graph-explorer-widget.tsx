@@ -171,12 +171,12 @@ export function GraphExplorerWidget({
     <WidgetShell
       kind="Graphs"
       title="Kinds of graph"
+      singleView
       bare={!frame}
       className={data.className as string}
       tabs={modeTabs(presets.map((p, i) => ({ id: String(i), label: p.label })), String(active), (id) => setActive(Number(id)))}
       stage={<GraphCanvas graph={preset.graph} />}
       caption={preset.blurb}
-      captionLabel={`${active + 1}/${presets.length}`}
       readout={
         <StatReadout
           stats={[
@@ -188,7 +188,7 @@ export function GraphExplorerWidget({
       sideWidth={240}
       side={
         <>
-          <PanelBox title={`Adjacency list ${preset.graph.directed ? "(who each node points at)" : "(who each node touches)"}`}>
+          <PanelBox title="Adjacency list" aside={preset.graph.directed ? "who each points at" : "who each touches"}>
             <div className="flex flex-col gap-1">
               {preset.graph.nodes.map((n) => (
                 <div key={n.id} className="text-xs text-ink-soft">
@@ -203,7 +203,7 @@ export function GraphExplorerWidget({
               ))}
             </div>
           </PanelBox>
-          <PanelBox title={`Degree ${preset.graph.directed ? "(edges in and out)" : "(edges touching it)"}`}>
+          <PanelBox title="Degree" aside={preset.graph.directed ? "in and out" : "edges touching it"}>
             <div className="flex flex-col gap-1">
               {degrees.map((d) => (
                 <div key={d.id} className="text-xs text-ink-soft">

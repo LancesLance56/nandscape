@@ -32,6 +32,7 @@ export function PollWidget({ data }: { data: Record<string, unknown> }) {
   return (
     <WidgetShell
       kind="Poll"
+      singleView
       title={data.question}
       className={data.className}
       prompt={data.question}

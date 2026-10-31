@@ -17,7 +17,8 @@ import { gradeCover } from "@/lib/kmap/solve";
 import { generateProblem, randomSeed, type Difficulty } from "@/lib/kmap/random";
 import { WidgetShell, modeTabs } from "../shared/widget-shell";
 import { KMapCellLegend, KMapGrid, type DrawnGroup } from "./kmap-grid";
-import { Banner, PanelBox, StatReadout, WidgetButton } from "../shared/widget-ui";
+import { Banner, PanelBox, SideNote, StatReadout, WidgetButton } from "../shared/widget-ui";
+import { Expression } from "./kmap-explorer-widget";
 
 const DIFFICULTIES: { id: Difficulty; label: string; blurb: string }[] = [
   { id: "easy", label: "Easy", blurb: "3 variables, no don't-cares" },
@@ -155,11 +156,11 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
     <WidgetShell
       kind="Practice"
       title="Karnaugh map practice"
-      meta={`${solvedCount} solved`}
+      singleView
       tabs={modeTabs(DIFFICULTIES.map((d) => ({ id: d.id, label: d.label, hint: d.blurb })), difficulty, newProblem)}
       prompt="Cover every 1 with as few groups as you can."
       stage={
-        <div className="flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
+        <div className="flex justify-center">
           <KMapGrid
             layout={layout}
             cells={cells}
@@ -168,24 +169,6 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
             onCellClick={toggle}
             ariaLabel={`Practice Karnaugh map for ${variables.join("")}`}
           />
-          <div className="w-full max-w-xs rounded-xl border border-border bg-surface-card p-4">
-            <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate">
-              {revealed ? "Minimal answer" : "Your expression"}
-            </div>
-            <p className="break-words font-label text-lg font-bold leading-snug text-ink">
-              {revealed ? (
-                <>
-                  <span className="text-copper-dark">F</span> = {sopExpression(solution.cover, variables)}
-                </>
-              ) : confirmed.length > 0 ? (
-                <>
-                  <span className="text-copper-dark">F</span> = {confirmed.map((g) => g.term).join(" + ")}
-                </>
-              ) : (
-                <span className="text-base font-normal italic text-slate">No groups yet.</span>
-              )}
-            </p>
-          </div>
         </div>
       }
       readout={
@@ -194,12 +177,25 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
             { label: "1s to cover", value: ones.length },
             { label: "your terms", value: confirmed.length, tone: "warn" },
             { label: "your literals", value: yourLiterals },
+            ...(solvedCount > 0 ? [{ label: "solved", value: solvedCount, tone: "good" as const }] : []),
           ]}
         />
       }
       legend={<KMapCellLegend showDontCare={dontCares.length > 0} />}
-      sideWidth={230}
       side={
+        <>
+        <PanelBox title={revealed ? "Minimal answer" : "Your expression"}>
+          <Expression
+            expression={
+              revealed
+                ? sopExpression(solution.cover, variables)
+                : confirmed.length > 0
+                  ? confirmed.map((g) => g.term).join(" + ")
+                  : null
+            }
+            empty="No groups yet."
+          />
+        </PanelBox>
         <PanelBox title="Target">
           <p className="text-xs leading-relaxed text-ink-soft">
             Cover every 1 using{" "}
@@ -220,6 +216,10 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
             )}
           </p>
         </PanelBox>
+        <SideNote>
+          Take the largest legal group you can each time. Groups may wrap around the edges of the map.
+        </SideNote>
+        </>
       }
       // One reserved slot for the running feedback, so it changing as you
       // build groups never resizes the widget.
@@ -236,8 +236,7 @@ export function KMapPracticeWidget({ data }: { data: Record<string, unknown> }) 
               </Banner>
             ) : confirmed.length === 0 ? (
               <p className="text-[11px] leading-relaxed text-slate">
-                Click cells to select them, then confirm. Take the largest legal group you can each time: groups may wrap
-                around the edges of the map.
+                Click cells to select them, then press Add group.
               </p>
             ) : grade.isMinimal ? (
               <div className="flex flex-col gap-2">

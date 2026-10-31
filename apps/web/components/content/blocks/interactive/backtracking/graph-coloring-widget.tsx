@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { COLOR_NAMES, mColoringSteps, type ColoringPayload } from "@/lib/backtracking/puzzles";
 import type { GraphSpec } from "@/lib/graph/types";
-import { Banner, PanelBox, StatReadout, WidgetButton, type SegmentedGroup } from "../shared/widget-ui";
+import { Banner, PanelBox, SideNote, StatReadout, WidgetButton, type SegmentedGroup } from "../shared/widget-ui";
 import { ActionDock, KeepWidgetView, WidgetShell, toggleSlots } from "../shared/widget-shell";
 import { BacktrackingRunner } from "./backtracking-runner";
 
@@ -107,7 +107,7 @@ function ColoringCanvas({
   const byId = new Map(graph.nodes.map((n) => [n.id, n]));
 
   return (
-    <svg viewBox="0 0 390 245" className="max-h-[min(280px,40svh)] w-full rounded-lg border border-border bg-surface-2/40" role="img" aria-label="Graph being coloured">
+    <svg viewBox="0 0 390 245" className="max-h-[min(280px,40svh)] w-full" role="img" aria-label="Graph being coloured">
       {graph.edges.map((e) => {
         const a = byId.get(e.from);
         const b = byId.get(e.to);
@@ -317,10 +317,10 @@ function ManualColoring({
     <WidgetShell
       kind="Backtracking"
       title="Graph colouring"
+      singleView
       {...toggleSlots(toggles, "mode")}
       stage={<ColoringCanvas graph={graph} colors={colors} onNodeClick={cycle} />}
       prompt={solved ? "Every node coloured, and no edge joins two of the same colour." : "Colour every node so no edge joins two of the same colour."}
-      caption={`Click a node to cycle it through the ${m} colours and back to uncoloured. ${note}`}
       readout={
         <StatReadout
           stats={[
@@ -330,7 +330,8 @@ function ManualColoring({
         />
       }
       side={
-        <PanelBox title="Edges joining two of the same colour" bodyClassName="h-24 overflow-y-auto">
+        <>
+        <PanelBox title="Same colour on both ends">
           {brokenEdges.length === 0 ? (
             <span className="text-xs italic text-slate">none</span>
           ) : (
@@ -343,10 +344,12 @@ function ManualColoring({
             </div>
           )}
         </PanelBox>
+        {note && <SideNote>{note}</SideNote>}
+        </>
       }
       status={solved ? <Banner tone="good">Every node coloured, no edge broken, {m} colours used.</Banner> : undefined}
       dock={
-        <ActionDock hint="Click a node to change its colour.">
+        <ActionDock hint={`Click a node to cycle it through the ${m} colours.`}>
           <WidgetButton onClick={() => setColors({})}>Clear colours</WidgetButton>
         </ActionDock>
       }

@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState } from "react";
 import { defaultSudoku, sudokuSteps, type SudokuPayload, type SudokuStrategy } from "@/lib/backtracking/puzzles";
 import { cn } from "@/lib/cn";
-import { PanelBox, StatReadout, type SegmentedOption } from "../shared/widget-ui";
+import { PanelBox, SideNote, StatReadout, type SegmentedOption } from "../shared/widget-ui";
 import { PlayerDock, useStepPlayer } from "../shared/step-player";
-import { WidgetShell, useWidgetView, modeTabs } from "../shared/widget-shell";
+import { WidgetShell, modeTabs } from "../shared/widget-shell";
 
 const STRATEGY_OPTIONS: readonly SegmentedOption<SudokuStrategy>[] = [
   { id: "first", label: "Next blank in reading order" },
@@ -91,27 +91,30 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
     <WidgetShell
       kind="Backtracking"
       title="Sudoku solver"
+      singleView
       tabs={modeTabs(STRATEGY_OPTIONS, strategy, setStrategy)}
       stage={
-        <Stage>
-          <div className="flex justify-center overflow-x-auto">
-            <SudokuBoard payload={payload} />
-          </div>
-        </Stage>
+        <div className="flex justify-center overflow-x-auto">
+          <SudokuBoard payload={payload} />
+        </div>
+      }
+      legend={
+        <p className="text-xs text-slate">
+          Bold digits are the given clues and never change. Copper digits are the solver&apos;s guesses.
+        </p>
       }
       readout={
         <StatReadout
           stats={[
-            { label: "cells filled", value: step.visited },
+            { label: "filled", value: step.visited },
             { label: "dead ends", value: step.pruned, tone: step.pruned > 0 ? "warn" : "good" },
             { label: "blanks left", value: payload?.board.filter((v) => v === 0).length ?? 0 },
           ]}
         />
       }
-      sideWidth={240}
       side={
         <>
-          <PanelBox title="Candidates for the active cell" bodyClassName="h-14 overflow-y-auto">
+          <PanelBox title="Candidates for this cell">
             {payload?.candidates && payload.candidates.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {payload.candidates.map((c) => (
@@ -147,12 +150,13 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
                   {comparison.mrv.filled} filled, {comparison.mrv.dead} dead
                 </span>
               </div>
-              <p className="mt-1 text-[11px] leading-relaxed text-slate">
-                Same algorithm and the same finished grid. Choosing the tightest cell first means a contradiction shows
-                up while the guess that caused it is still on the stack.
-              </p>
             </div>
           </PanelBox>
+
+          <SideNote>
+            Same algorithm and the same finished grid. Choosing the tightest cell first means a contradiction shows up
+            while the guess that caused it is still on the stack.
+          </SideNote>
         </>
       }
       status={
@@ -164,23 +168,7 @@ export function SudokuWidget({ data }: { data: Record<string, unknown> }) {
         ) : undefined
       }
       caption={step.caption}
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={run.steps.length} />}
     />
-  );
-}
-
-/** The board, plus what its colours mean in the detailed view only. */
-function Stage({ children }: { children: ReactNode }) {
-  const view = useWidgetView();
-  return (
-    <div className="flex flex-col items-center gap-2">
-      {children}
-      {view === "detailed" && (
-        <p className="max-w-[18rem] text-center text-[11px] text-slate">
-          Bold digits are the given clues and never change. Copper digits are values the solver is guessing.
-        </p>
-      )}
-    </div>
   );
 }

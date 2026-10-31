@@ -40,6 +40,7 @@ export function GraphEmbedWidget({ data }: { data: Record<string, unknown> }) {
   return (
     <WidgetShell
       kind="Figure"
+      singleView
       title={data.title ?? "A graph"}
       prompt={data.title}
       stage={<GraphCanvas graph={data.graph} />}

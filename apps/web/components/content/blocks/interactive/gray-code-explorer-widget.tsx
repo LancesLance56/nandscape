@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ActionDock, WidgetShell } from "./shared/widget-shell";
 import { cn } from "@/lib/cn";
-import { WidgetButton } from "./shared/widget-ui";
+import { StageNote, WidgetButton } from "./shared/widget-ui";
 
 interface GrayCodeData {
   bits?: unknown;
@@ -101,8 +101,8 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
   return (
     <WidgetShell
       kind="Number systems"
+      singleView
       title={title}
-      meta={`row ${index + 1} of ${size}`}
       className={className}
       prompt={
         isWrap
@@ -110,17 +110,19 @@ export function GrayCodeExplorerWidget({ data }: { data: Record<string, unknown>
           : `Row ${prevIndex} → row ${index}: binary flips ${binaryChanged.size} bit${binaryChanged.size === 1 ? "" : "s"}, Gray code flips 1.`
       }
       stage={
-        <div className="grid gap-3.5 sm:grid-cols-2">
-          {pane("Binary counting order", binaryNow, binaryChanged, binaryChanged.size === 1)}
-          {pane("Gray code order", grayNow, grayChanged, true)}
+        <div className="flex flex-col gap-3">
+          <div className="grid gap-3.5 sm:grid-cols-2">
+            {pane("Binary counting order", binaryNow, binaryChanged, binaryChanged.size === 1)}
+            {pane("Gray code order", grayNow, grayChanged, true)}
+          </div>
+          {/* The prompt already counts the flips; this is why it matters. */}
+          <StageNote>
+            {isWrap
+              ? "The last row and the first differ in one bit, which is why a K-map's edges count as neighbours."
+              : "One bit per step is why K-map rows and columns are labelled in this order."}
+          </StageNote>
         </div>
       }
-      caption={
-        isWrap
-          ? "Gray code wraps around too: the last row and the first differ in one bit, which is why a K-map's edges count as neighbours."
-          : `Counting in binary from ${prevIndex} to ${index} changes ${binaryChanged.size} bit${binaryChanged.size === 1 ? "" : "s"} at once. Gray code changes exactly one, which is why K-map rows and columns are labelled in this order.`
-      }
-      captionLabel={`${index + 1}/${size}`}
       dock={
         <ActionDock hint={isWrap ? "Back at the start." : `Row ${prevIndex} → row ${index}`}>
           <WidgetButton onClick={() => setIndex((i) => (i - 1 + size) % size)} aria-label="Previous row">

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Check, RotateCcw, X } from "lucide-react";
-import { ActionDock, DetailedOnly, WidgetShell } from "./shared/widget-shell";
+import { ActionDock, WidgetShell } from "./shared/widget-shell";
 import { cn } from "@/lib/cn";
 import { Banner, WidgetButton } from "./shared/widget-ui";
 
@@ -140,6 +140,7 @@ function Quiz({ data }: { data: QuizData }) {
   return (
     <WidgetShell
       kind="Check yourself"
+      singleView
       title={title}
       meta={finished ? "done" : `question ${step + 1} of ${questions.length}`}
       className={data.className}
@@ -181,9 +182,6 @@ function Quiz({ data }: { data: QuizData }) {
           </div>
         ) : (
           <div className="mx-auto flex w-full max-w-[34rem] flex-col gap-3">
-            <DetailedOnly>
-              <p className="text-[15px] font-semibold leading-relaxed text-ink">{current.prompt}</p>
-            </DetailedOnly>
             <div role="group" aria-label="Answer choices" className="flex flex-col gap-2.5">
               {current.options.map((option, i) => {
                 const isChosen = chosen === i;

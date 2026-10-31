@@ -183,7 +183,8 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
     <WidgetShell
       kind="Dynamic programming"
       title={`The recursion tree: ${problemName}`}
-      {...toggleSlots(toggles, "mode")}
+      singleView
+      {...toggleSlots(toggles, lockProblem ? "mode" : "problem")}
       stage={<CallTreeCanvas nodes={run.nodes} step={step} markRepeats={mode === "naive"} maxHeight={270} />}
       readout={
         <StatReadout
@@ -195,17 +196,20 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
         />
       }
       legend={<CallTreeLegend showRepeats={mode === "naive"} showHits={mode === "memo"} />}
-      sideWidth={240}
       side={
         <>
-          {/* The recurrence never changes frame to frame, so it is a reference
-              line rather than a panel competing with the ones that do. */}
-          <p className="font-label text-[10.5px] leading-relaxed text-slate">{run.recurrence.join("   ·   ")}</p>
-          <p className="font-label text-xs font-semibold text-signal-green-strong">{run.answer}</p>
+          <PanelBox title="Recurrence">
+            <div className="flex flex-col gap-0.5 font-label text-[11px] leading-relaxed text-ink-soft">
+              {run.recurrence.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+              <span className="mt-1 text-xs font-semibold text-signal-green-strong">{run.answer}</span>
+            </div>
+          </PanelBox>
 
           {/* The panel the whole widget is built around: reading a recursion as
               an induction proof, for whichever call is on screen right now. */}
-          <PanelBox title="Why this is correct" bodyClassName="h-28 overflow-y-auto">
+          <PanelBox title="Why this is correct">
             <div className="flex flex-col gap-2 text-xs leading-relaxed">
               <div>
                 <span className="font-semibold text-signal-green-strong">Base case. </span>
@@ -227,7 +231,7 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
           </PanelBox>
 
           {mode === "memo" && (
-            <PanelBox title="Memo" bodyClassName="h-14 overflow-y-auto">
+            <PanelBox title="Memo">
               {step.memo.length === 0 ? (
                 <span className="text-xs italic text-slate">still empty</span>
               ) : (
@@ -256,7 +260,6 @@ export function RecursionTreeWidget({ data }: { data: Record<string, unknown> })
           ? `${step.caption} Nothing was computed here, and the subtree that used to hang below it is simply gone.`
           : step.caption
       }
-      captionLabel={player.index + 1}
       dock={<PlayerDock player={player} total={run.steps.length} />}
     />
   );

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { ActionDock, WidgetShell } from "./shared/widget-shell";
-import { Stat, WidgetButton } from "./shared/widget-ui";
+import { StageNote, Stat, WidgetButton } from "./shared/widget-ui";
 
 const DEFAULT_BITS = 8;
 const DEFAULT_TITLE = "Number Base Explorer";
@@ -54,6 +54,7 @@ export function NumberBaseExplorerWidget({
   return (
     <WidgetShell
       kind="Number systems"
+      singleView
       title={title}
       bare={!frame}
       className={className}
@@ -88,10 +89,13 @@ export function NumberBaseExplorerWidget({
             <Stat label="Decimal" value={value} tone="warn" />
             <Stat label="Hex" value={`0x${hex}`} />
           </div>
+          {frame && (
+            <StageNote>
+              Each bit is worth twice the one to its right. Every group of four bits is exactly one hex digit.
+            </StageNote>
+          )}
         </div>
       }
-      caption={frame ? "Each bit is worth twice the one to its right. Every group of four bits is exactly one hex digit." : undefined}
-      captionLabel="Tip"
       dock={
         frame ? (
           <ActionDock hint="Click a bit to flip it.">
